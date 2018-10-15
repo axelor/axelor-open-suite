@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.base.service.app;
 
 import com.axelor.common.StringUtils;
@@ -61,10 +60,12 @@ public class DataBackupRestoreService {
 
             @Override
             public void handle(Model bean, Exception e) {
-              if (bean != null) {
-                sb1.append(bean.getClass().getSimpleName() + " : \n" + e.getMessage() + "\n\n");
-              } else {
-                sb1.append(e.getMessage() + "\n\n");
+              if (e.getMessage() != null && !e.getMessage().equals("null")) {
+                if (bean != null) {
+                  sb1.append(bean.getClass().getSimpleName() + " : \n" + e.getMessage() + "\n\n");
+                } else {
+                  sb1.append(e.getMessage() + "\n\n");
+                }
               }
             }
 

@@ -93,7 +93,7 @@ public class ProductionOrderController {
 
       if (billOfMaterial.getProdProcess() != null) {
         productionOrderService.addManufOrder(
-            productionOrder, product, billOfMaterial, qty, startDateT.toLocalDateTime());
+            productionOrder, product, billOfMaterial, qty, startDateT.toLocalDateTime(), null);
       } else {
         response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
       }

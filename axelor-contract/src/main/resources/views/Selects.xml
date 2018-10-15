@@ -45,4 +45,11 @@
 		<option value='7'>Periodic contract</option>
 	</selection>
 
+	<selection name="contract.batch.action.select">
+		<option value="1">Invoicing</option>
+		<option value="2">Terminate</option>
+		<option value="3">Current version activation</option>
+		<option value="4">Next version activation</option>
+	</selection>
+
 </object-views>

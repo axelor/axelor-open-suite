@@ -64,19 +64,14 @@ public class WkfService {
   @Inject protected RoleRepository roleRepo;
 
   @Inject private WkfNodeService nodeService;
-
   @Inject private WkfTransitionService transitionService;
-
+  @Inject private StudioMetaService metaService;
   @Inject private MetaJsonFieldRepository jsonFieldRepo;
-
   @Inject private MetaJsonModelRepository jsonModelRepo;
-
   @Inject private MetaSelectRepository metaSelectRepo;
 
-  @Inject private StudioMetaService metaService;
-
   /**
-   * Method to process workflow. It call node and transition service for nodes and transitions
+   * Method to process workflow. It calls node and transition service for nodes and transitions
    * linked with workflow.
    *
    * @param wkf Worklfow to process.
@@ -110,7 +105,7 @@ public class WkfService {
     if (workflow.getIsJson()) {
       wkfId = inflector.dasherize(model) + "-wkf";
     } else {
-      model = model.substring(model.lastIndexOf(".") + 1);
+      model = model.substring(model.lastIndexOf('.') + 1);
       wkfId = inflector.dasherize(model) + inflector.dasherize(workflow.getJsonField()) + "-wkf";
     }
   }
@@ -167,9 +162,9 @@ public class WkfService {
               .all()
               .filter(
                   "self.isWkf = true "
-                      + "and self.jsonModel.name = ?1 "
-                      + "and self.type in ('string','integer')",
-                  workflow.getModel())
+                      + "and self.jsonModel.name = :workflowModel "
+                      + "and self.type in ('string','integer')")
+              .bind("workflowModel", workflow.getModel())
               .fetchOne();
     } else {
       field =
@@ -177,11 +172,11 @@ public class WkfService {
               .all()
               .filter(
                   "self.isWkf = true "
-                      + "and self.model = ?1 "
-                      + "and self.modelField = ?2 "
-                      + "and self.type in ('string','integer')",
-                  workflow.getModel(),
-                  workflow.getJsonField())
+                      + "and self.model = :workflowModel "
+                      + "and self.modelField = :workflowJsonField "
+                      + "and self.type in ('string','integer')")
+              .bind("workflowModel", workflow.getModel())
+              .bind("workflowJsonField", workflow.getJsonField())
               .fetchOne();
     }
 
@@ -227,7 +222,7 @@ public class WkfService {
 
     ActionGroup actionGroup = new ActionGroup();
     actionGroup.setName(name);
-    List<ActionItem> actionItems = new ArrayList<ActionGroup.ActionItem>();
+    List<ActionItem> actionItems = new ArrayList<>();
 
     for (String[] action : actions) {
       ActionItem actionItem = new ActionItem();
@@ -274,17 +269,17 @@ public class WkfService {
               .all()
               .filter(
                   "self.isWkf = true "
-                      + "and self.model = ?1 "
-                      + "and self.modelField = ?2 "
-                      + "and self.name = ?3 and self.type = ?4",
-                  workflow.getModel(),
-                  workflow.getJsonField(),
-                  name,
-                  type)
+                      + "and self.model = :workflowModel "
+                      + "and self.modelField = :workflowJsonField "
+                      + "and self.name = :name and self.type = :type")
+              .bind("workflowModel", workflow.getModel())
+              .bind("workflowJsonField", workflow.getJsonField())
+              .bind("name", name)
+              .bind("type", type)
               .fetchOne();
 
       log.debug(
-          "Searching json field with model: {}, field: {}" + ", name: {}, type: {}",
+          "Searching json field with model: {}, field: {}, name: {}, type: {}",
           workflow.getModel(),
           workflow.getJsonField(),
           name,
@@ -314,14 +309,15 @@ public class WkfService {
   public void clearWkf(Wkf wkf) {
 
     String actions = "action-" + wkfId + ",action-group" + wkfId;
-
     actions = clearFields(wkf, actions);
 
+    StringBuilder builder = new StringBuilder(actions);
     for (WkfNode node : wkf.getNodes()) {
       if (!node.getMetaActionSet().isEmpty()) {
-        actions += "," + nodeService.getActionName(node.getName());
+        builder.append("," + nodeService.getActionName(node.getName()));
       }
     }
+    actions = builder.toString();
 
     metaService.removeMetaActions(actions);
 
@@ -344,21 +340,22 @@ public class WkfService {
 
     List<MetaJsonField> fields = getFields(wkf);
 
+    StringBuilder builder = new StringBuilder(actions);
     for (MetaJsonField field : fields) {
       if (field.getIsWkf() && !field.equals(wkf.getStatusField())) {
         if (field.getOnClick() != null) {
-          actions += "," + field.getOnClick();
+          builder.append("," + field.getOnClick());
         }
         jsonFieldRepo.remove(field);
       }
     }
 
-    return actions;
+    return builder.toString();
   }
 
   private List<MetaJsonField> getFields(Wkf wkf) {
 
-    List<MetaJsonField> fields = new ArrayList<MetaJsonField>();
+    List<MetaJsonField> fields;
 
     if (wkf.getIsJson()) {
       fields =
@@ -389,7 +386,7 @@ public class WkfService {
 
     skipList.add("trackFlow");
 
-    ArrayList<String> actions = new ArrayList<String>();
+    ArrayList<String> actions = new ArrayList<>();
 
     List<MetaJsonField> fields = null;
     if (workflow.getIsJson()) {
@@ -447,7 +444,7 @@ public class WkfService {
 
   public void clearNodes(Collection<WkfNode> nodes) {
 
-    List<String> actions = new ArrayList<String>();
+    List<String> actions = new ArrayList<>();
 
     for (WkfNode node : nodes) {
       if (workflow == null) {
@@ -464,7 +461,6 @@ public class WkfService {
   }
 
   private void setTrackOnSave(Wkf wkf, boolean remove) {
-
     if (wkf.getIsJson()) {
       MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
       if (jsonModel != null) {

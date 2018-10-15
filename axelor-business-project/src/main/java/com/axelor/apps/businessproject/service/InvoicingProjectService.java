@@ -41,13 +41,12 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -60,18 +59,16 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class InvoicingProjectService {
 
-  @Inject protected TimesheetServiceImpl timesheetServiceImpl;
+  @Inject protected TimesheetService timesheetService;
 
   @Inject protected ExpenseService expenseService;
 
@@ -118,7 +115,10 @@ public class InvoicingProjectService {
           @Override
           public Invoice generate() throws AxelorException {
 
-            return super.createInvoiceHeader();
+            Invoice invoice = super.createInvoiceHeader();
+            invoice.setProject(project);
+            invoice.setPriceList(project.getPriceList());
+            return invoice;
           }
         };
     Invoice invoice = invoiceGenerator.generate();
@@ -130,7 +130,6 @@ public class InvoicingProjectService {
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     Beans.get(InvoiceRepository.class).save(invoice);
 
-    this.setInvoiced(invoicingProject);
     invoicingProject.setInvoice(invoice);
     invoicingProjectRepo.save(invoicingProject);
     return invoice;
@@ -154,7 +153,7 @@ public class InvoicingProjectService {
         this.createPurchaseOrderInvoiceLines(
             invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        timesheetServiceImpl.createInvoiceLines(
+        timesheetService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
         expenseService.createInvoiceLines(
@@ -184,7 +183,6 @@ public class InvoicingProjectService {
       invoiceLineList.addAll(
           this.createInvoiceLine(invoice, saleOrderLine, priority * 100 + count));
       count++;
-      saleOrderLine.setInvoiced(true);
     }
 
     return invoiceLineList;
@@ -215,7 +213,7 @@ public class InvoicingProjectService {
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
-
+            invoiceLine.setProject(saleOrderLine.getProject());
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);
 
@@ -236,7 +234,6 @@ public class InvoicingProjectService {
       invoiceLineList.addAll(
           Beans.get(PurchaseOrderInvoiceProjectServiceImpl.class)
               .createInvoiceLine(invoice, purchaseOrderLine));
-      purchaseOrderLine.setInvoiced(true);
     }
     return invoiceLineList;
   }
@@ -276,27 +273,6 @@ public class InvoicingProjectService {
     return invoiceLineGenerator.creates();
   }
 
-  public void setInvoiced(InvoicingProject invoicingProject) {
-    for (SaleOrderLine saleOrderLine : invoicingProject.getSaleOrderLineSet()) {
-      saleOrderLine.setInvoiced(true);
-    }
-    for (PurchaseOrderLine purchaseOrderLine : invoicingProject.getPurchaseOrderLineSet()) {
-      purchaseOrderLine.setInvoiced(true);
-    }
-    for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
-      timesheetLine.setInvoiced(true);
-    }
-    for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
-      expenseLine.setInvoiced(true);
-    }
-    for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
-      teamTask.setInvoiced(true);
-    }
-    for (Project project : invoicingProject.getProjectSet()) {
-      project.setInvoiced(true);
-    }
-  }
-
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
@@ -317,115 +293,108 @@ public class InvoicingProjectService {
   }
 
   public void fillLines(InvoicingProject invoicingProject, Project project) {
-    if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
-        || project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED) {
+    String commonQuery =
+        "self.project = :project AND self.toInvoice = true AND self.invoiced = false";
 
-      String commonQuery =
-          "self.project = :project AND self.toInvoice = true AND self.invoiced = false";
+    StringBuilder solQueryBuilder = new StringBuilder(commonQuery);
+    solQueryBuilder.append(
+        " AND (self.saleOrder.statusSelect = :statusConfirmed OR self.saleOrder.statusSelect = :statusCompleted)");
 
-      StringBuilder solQueryBuilder = new StringBuilder(commonQuery);
-      solQueryBuilder.append(
-          " AND (self.saleOrder.statusSelect = :statusConfirmed OR self.saleOrder.statusSelect = :statusCompleted)");
+    Map<String, Object> solQueryMap = new HashMap<>();
+    solQueryMap.put("project", project);
+    solQueryMap.put("statusConfirmed", SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    solQueryMap.put("statusCompleted", SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
-      Map<String, Object> solQueryMap = new HashMap<>();
-      solQueryMap.put("project", project);
-      solQueryMap.put("statusConfirmed", SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-      solQueryMap.put("statusCompleted", SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    StringBuilder polQueryBuilder = new StringBuilder(commonQuery);
+    polQueryBuilder.append(
+        " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
 
-      StringBuilder polQueryBuilder = new StringBuilder(commonQuery);
-      polQueryBuilder.append(
-          " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
+    Map<String, Object> polQueryMap = new HashMap<>();
+    polQueryMap.put("project", project);
 
-      Map<String, Object> polQueryMap = new HashMap<>();
-      polQueryMap.put("project", project);
+    StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
+    logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :timesheetStatus");
 
-      StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
-      logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :timesheetStatus");
+    Map<String, Object> logTimesQueryMap = new HashMap<>();
+    logTimesQueryMap.put("project", project);
+    logTimesQueryMap.put("timesheetStatus", TimesheetRepository.STATUS_VALIDATED);
 
-      Map<String, Object> logTimesQueryMap = new HashMap<>();
-      logTimesQueryMap.put("project", project);
-      logTimesQueryMap.put("timesheetStatus", TimesheetRepository.STATUS_VALIDATED);
+    StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
+    expenseLineQueryBuilder.append(
+        " AND (self.expense.statusSelect = :statusValidated OR self.expense.statusSelect = :statusReimbursed)");
 
-      StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
-      expenseLineQueryBuilder.append(
-          " AND (self.expense.statusSelect = :statusValidated OR self.expense.statusSelect = :statusReimbursed)");
+    Map<String, Object> expenseLineQueryMap = new HashMap<>();
+    expenseLineQueryMap.put("project", project);
+    expenseLineQueryMap.put("statusValidated", ExpenseRepository.STATUS_VALIDATED);
+    expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
 
-      Map<String, Object> expenseLineQueryMap = new HashMap<>();
-      expenseLineQueryMap.put("project", project);
-      expenseLineQueryMap.put("statusValidated", ExpenseRepository.STATUS_VALIDATED);
-      expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
+    StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
+    taskQueryBuilder.append(" AND self.status = 'closed'");
 
-      StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
-      taskQueryBuilder.append(" AND self.status = 'closed'");
+    Map<String, Object> taskQueryMap = new HashMap<>();
+    taskQueryMap.put("project", project);
 
-      Map<String, Object> taskQueryMap = new HashMap<>();
-      taskQueryMap.put("project", project);
+    if (invoicingProject.getDeadlineDate() != null) {
+      solQueryBuilder.append(" AND self.saleOrder.creationDate < :deadlineDate");
+      solQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      if (invoicingProject.getDeadlineDate() != null) {
-        solQueryBuilder.append(" AND self.saleOrder.creationDate < :deadlineDate");
-        solQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
+      polQueryBuilder.append(" AND self.purchaseOrder.orderDate < :deadlineDate");
+      polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-        polQueryBuilder.append(" AND self.purchaseOrder.orderDate < :deadlineDate");
-        polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
+      logTimesQueryBuilder.append(" AND self.date < :deadlineDate");
+      logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-        logTimesQueryBuilder.append(" AND self.date < :deadlineDate");
-        logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
+      expenseLineQueryBuilder.append(" AND self.expenseDate < :deadlineDate");
+      expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-        expenseLineQueryBuilder.append(" AND self.expenseDate < :deadlineDate");
-        expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-
-        taskQueryBuilder.append(" AND self.taskDeadline < :deadlineDate");
-        taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-      }
-
-      invoicingProject
-          .getSaleOrderLineSet()
-          .addAll(
-              Beans.get(SaleOrderLineRepository.class)
-                  .all()
-                  .filter(solQueryBuilder.toString())
-                  .bind(solQueryMap)
-                  .fetch());
-
-      invoicingProject
-          .getPurchaseOrderLineSet()
-          .addAll(
-              Beans.get(PurchaseOrderLineRepository.class)
-                  .all()
-                  .filter(polQueryBuilder.toString())
-                  .bind(polQueryMap)
-                  .fetch());
-
-      invoicingProject
-          .getLogTimesSet()
-          .addAll(
-              Beans.get(TimesheetLineRepository.class)
-                  .all()
-                  .filter(logTimesQueryBuilder.toString())
-                  .bind(logTimesQueryMap)
-                  .fetch());
-
-      invoicingProject
-          .getExpenseLineSet()
-          .addAll(
-              Beans.get(ExpenseLineRepository.class)
-                  .all()
-                  .filter(expenseLineQueryBuilder.toString())
-                  .bind(expenseLineQueryMap)
-                  .fetch());
-
-      invoicingProject
-          .getTeamTaskSet()
-          .addAll(
-              Beans.get(TeamTaskRepository.class)
-                  .all()
-                  .filter(taskQueryBuilder.toString())
-                  .bind(taskQueryMap)
-                  .fetch());
-
-      if (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_FLAT_RATE
-          && !project.getInvoiced()) invoicingProject.addProjectSetItem(project);
+      taskQueryBuilder.append(" AND self.taskDeadline < :deadlineDate");
+      taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
+
+    invoicingProject
+        .getSaleOrderLineSet()
+        .addAll(
+            Beans.get(SaleOrderLineRepository.class)
+                .all()
+                .filter(solQueryBuilder.toString())
+                .bind(solQueryMap)
+                .fetch());
+
+    invoicingProject
+        .getPurchaseOrderLineSet()
+        .addAll(
+            Beans.get(PurchaseOrderLineRepository.class)
+                .all()
+                .filter(polQueryBuilder.toString())
+                .bind(polQueryMap)
+                .fetch());
+
+    invoicingProject
+        .getLogTimesSet()
+        .addAll(
+            Beans.get(TimesheetLineRepository.class)
+                .all()
+                .filter(logTimesQueryBuilder.toString())
+                .bind(logTimesQueryMap)
+                .fetch());
+
+    invoicingProject
+        .getExpenseLineSet()
+        .addAll(
+            Beans.get(ExpenseLineRepository.class)
+                .all()
+                .filter(expenseLineQueryBuilder.toString())
+                .bind(expenseLineQueryMap)
+                .fetch());
+
+    invoicingProject
+        .getTeamTaskSet()
+        .addAll(
+            Beans.get(TeamTaskRepository.class)
+                .all()
+                .filter(taskQueryBuilder.toString())
+                .bind(taskQueryMap)
+                .fetch());
   }
 
   public void clearLines(InvoicingProject invoicingProject) {
@@ -444,65 +413,6 @@ public class InvoicingProjectService {
     } else {
       return getRootCompany(project.getParentProject());
     }
-  }
-
-  @Transactional
-  public InvoicingProject createInvoicingProject(
-      SaleOrder saleOrder, LocalDate deadlineDate, int invoicingType) {
-
-    InvoicingProject invoicingProject = new InvoicingProject();
-    invoicingProject.setDeadlineDate(deadlineDate);
-
-    Project project = saleOrder.getProject();
-    invoicingProject.setProject(project);
-
-    Set<SaleOrderLine> saleOrderLineList =
-        new HashSet<>(
-            Beans.get(SaleOrderLineRepository.class)
-                .all()
-                .filter(
-                    "self.saleOrder.id = :_saleOrderId"
-                        + " AND self.toInvoice = true"
-                        + " AND self.invoiced = false"
-                        + " AND self.saleOrder.creationDate < :_deadlineDate")
-                .bind("_saleOrderId", saleOrder.getId())
-                .bind("_deadlineDate", deadlineDate)
-                .fetch());
-    invoicingProject.setSaleOrderLineSet(saleOrderLineList);
-
-    if (invoicingType == SaleOrderRepository.INVOICE_TIMESHEET) {
-      Set<TimesheetLine> timesheetLineList =
-          new HashSet<>(
-              Beans.get(TimesheetLineRepository.class)
-                  .all()
-                  .filter(
-                      "self.timesheet.statusSelect = :_statusValidated"
-                          + " AND self.project = :_project"
-                          + " AND self.toInvoice = true"
-                          + " AND self.invoiced = false"
-                          + " AND self.date < :_deadlineDate")
-                  .bind("_statusValidated", TimesheetRepository.STATUS_VALIDATED)
-                  .bind("_project", project)
-                  .bind("_deadlineDate", deadlineDate)
-                  .fetch());
-      invoicingProject.setLogTimesSet(timesheetLineList);
-    } else if (invoicingType == SaleOrderRepository.INVOICE_EXPENSE) {
-      Set<ExpenseLine> expenseLineList =
-          new HashSet<>(
-              Beans.get(ExpenseLineRepository.class)
-                  .all()
-                  .filter(
-                      "self.project = _project"
-                          + " AND self.toInvoice = true"
-                          + " AND self.invoiced = false"
-                          + " AND self.expenseDate < :_deadlineDate")
-                  .bind("_project", project)
-                  .bind("_deadlineDate", deadlineDate)
-                  .fetch());
-      invoicingProject.setExpenseLineSet(expenseLineList);
-    }
-
-    return invoicingProjectRepo.save(invoicingProject);
   }
 
   public int countToInvoice(Project project) {

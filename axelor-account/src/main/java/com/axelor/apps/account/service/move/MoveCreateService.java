@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
@@ -95,15 +96,15 @@ public class MoveCreateService {
   }
 
   /**
-   * Créer une écriture comptable impactant la compta.
+   * create an account move
    *
    * @param journal
-   * @param period
    * @param company
-   * @param invoice
+   * @param currency
    * @param partner
    * @param date
-   * @param isReject <code>true = écriture de rejet avec séquence spécifique</code>
+   * @param paymentMode
+   * @param technicalOriginSelect
    * @return
    * @throws AxelorException
    */
@@ -166,7 +167,7 @@ public class MoveCreateService {
     move.setIgnoreInDebtRecoveryOk(ignoreInDebtRecoveryOk);
     move.setIgnoreInAccountingOk(ignoreInAccountingOk);
 
-    Period period = periodService.rightPeriod(date, company);
+    Period period = periodService.rightPeriod(date, company, YearRepository.TYPE_FISCAL);
 
     move.setPeriod(period);
     move.setDate(date);

@@ -6,6 +6,7 @@
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
         <field name="$realQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
         <field name="$futureQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$reservedQty" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">

@@ -45,6 +45,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
@@ -88,6 +89,8 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
+import com.axelor.apps.supplychain.service.StockLocationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
@@ -165,5 +168,7 @@ public class SupplychainModule extends AxelorModule {
     bind(TimetableService.class).to(TimetableServiceImpl.class);
     bind(InvoiceServiceSupplychain.class).to(InvoiceServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(StockLocationServiceImpl.class).to(StockLocationServiceSupplychainImpl.class);
+    bind(StockLocationServiceSupplychain.class).to(StockLocationServiceSupplychainImpl.class);
   }
 }

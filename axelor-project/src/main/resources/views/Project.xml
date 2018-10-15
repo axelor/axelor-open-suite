@@ -5,7 +5,7 @@
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
-			<button name="projectPlanning" title="Project planning" onClick="action-project-open-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+			<button name="projectPlanning" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
@@ -228,9 +228,6 @@
 			<panel title="Resource booking" if="__config__.app.getApp('project').resourceManagement">
 				<panel-related field="resourceBookingList" form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project" colSpan="12"/>
 			</panel>
-			<panel title="Additional elements to be invoiced" name="additionalElementsToBeInvoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="isBusinessProject">
-				<panel-related colSpan="12" field="elementsToInvoiceList" grid-view="elements-to-invoice-grid" form-view="elements-to-invoice-form"/>
-			</panel>
 			<panel title="Expenses" name="expenses"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project') 
 				&amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()"
@@ -321,7 +318,7 @@
 		<panel>
 			<field name="attrs" colSpan="12" hidden="true" />
 		</panel>
-		<panel hideIf="statusSelect == 4" colSpan="2" sidebar="true">
+		<panel  colSpan="2" sidebar="true">
 			<button name="start" title="Start" hidden="true" showIf="statusSelect == 1"
 				colSpan="12" icon="fa-play" onClick="action-project-record-status-in-progress,save" />
 			<button name="finish" title="Finish" hidden="true" showIf="statusSelect == 2"
@@ -329,6 +326,9 @@
 			<button name="cancel" title="Cancel" hidden="true"
 				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
+			<button name="newStatus" title="Reset to New" hidden="true"
+				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
+				icon="fa-file" onClick="action-project-record-status-new,save" />
 		</panel>
 		<panel name="caracteristics" title="Caracteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
@@ -506,14 +506,6 @@
 		<action name="action-project-method-count-to-invoice" if="__config__.app.isApp('business-project')"/>
 		<action name="action-project-attrs-project-planning-time-cancel-remove" />
 	</action-group>
-
-	<action-record name="action-project-record-inv-type-select" model="com.axelor.apps.project.db.Project">
-		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
-	</action-record>
-	
-	<action-attrs name="action-project-attrs-hide-invoicing-panel">
-		<attribute name="hidden" for="invoicingPanel" expr="eval: projInvTypeSelect != 3"/>
-	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
 	    <attribute name="domain" for="assignedTo" expr="eval:&quot;self.id in (${(project?.membersUserSet?.collect{it->it.id}+[0,0]).join(',')}) &quot;"
@@ -612,7 +604,7 @@
 		<view-param name="popup-save" value="true"/>
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
-		<context name="_project" expr="eval:__self__"/>
+		<context name="_project" expr="eval:__this__"/>
 	</action-view>
 
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
@@ -734,6 +726,10 @@
 
 	<action-record name="action-project-record-status-canceled" model="com.axelor.apps.project.db.Project">
 		<field name="statusSelect" expr="eval: __repo__(Project).STATE_CANCELED"/>
+	</action-record>
+	
+	<action-record name="action-project-record-status-new" model="com.axelor.apps.project.db.Project">
+		<field name="statusSelect" expr="eval: __repo__(Project).STATE_NEW"/>
 	</action-record>
 	
 	 <action-validate name="action-wizard-validate-user-select">

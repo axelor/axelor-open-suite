@@ -5,14 +5,16 @@
 
   <entity name="BankReconciliationLine" lang="java">
 
-	<string name="name" title="Label" namecolumn="true"/>
+	<string name="name" title="Label" namecolumn="true" large="true" multiline="true"/>
     <many-to-one name="bankReconciliation" ref="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank Reconciliation" />
     <date name="effectDate" title="Effect Date" required="true"/>
-    <string name="reference" title="Reference" required="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
-    <integer name="typeSelect" title="Type" selection="bankpayment.bank.reconciliation.type.select" required="true"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account" required="true"/>
-    <decimal name="amount" title="Amount" required="true"/> 
+    <string name="reference" title="Reference"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <integer name="typeSelect" title="Type" selection="bankpayment.bank.reconciliation.type.select"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
+    <decimal name="debit" title="Debit"/> 
+    <decimal name="credit" title="Credit"/> 
+    <many-to-one name="bankStatementLine" ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail" />
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" />
     <boolean name="isPosted" title="Is posted"/>
     

@@ -24,6 +24,9 @@
 	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement" />
 
 	<integer name="sequence" title="Sequence"/>
+	
+<!-- 	Used for Bank reconcile process -->
+	<decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
 
   </entity>
   

@@ -44,7 +44,9 @@
   
     <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
   	<datetime name="plannedEndDateT" title="Planned end date"/>
-  	
+
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+
  	<datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>
   	<decimal name="endTimeDifference" title="Time difference (Minutes)"/>
@@ -57,6 +59,8 @@
     <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
+    
+    <string name="note" large="true"/>
     
     <unique-constraint columns="manufOrderSeq,company"/>
 

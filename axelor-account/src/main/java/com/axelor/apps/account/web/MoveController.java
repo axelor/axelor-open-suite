@@ -19,10 +19,12 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
@@ -30,6 +32,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -78,7 +81,8 @@ public class MoveController {
 
         response.setValue(
             "period",
-            Beans.get(PeriodService.class).rightPeriod(move.getDate(), move.getCompany()));
+            Beans.get(PeriodService.class)
+                .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       } else {
         response.setValue("period", null);
       }
@@ -195,5 +199,22 @@ public class MoveController {
             .getFileLink();
 
     response.setView(ActionView.define(moveName).add("html", fileLink).map());
+  }
+
+  public void showMoveLines(ActionRequest request, ActionResponse response) {
+
+    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move Lines"));
+    actionViewBuilder.model(MoveLine.class.getName());
+    actionViewBuilder.add("grid", "move-line-grid");
+    actionViewBuilder.add("form", "move-line-form");
+    actionViewBuilder.param("search-filters", "move-line-filters");
+
+    if (request.getContext().get("_accountingReportId") != null) {
+      Long accountingReportId =
+          Long.valueOf(request.getContext().get("_accountingReportId").toString());
+      actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+    }
+
+    response.setView(actionViewBuilder.map());
   }
 }

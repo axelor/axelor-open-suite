@@ -83,4 +83,50 @@
         </panel>
     </form>
 
+    <grid name="contract-line-grid-for-template" title="Contract Lines"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <hilite if="isConsumptionLine" background="primary"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="isConsumptionLine" hidden="true"/>
+    </grid>
+
+    <form name="contract-line-form-for-template" title="Contract Line"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <panel>
+            <field name="product" canEdit="false"
+              onChange="action-contract-template-method-change-product"/>
+            <field name="productName"/>
+            <field name="qty" readonlyIf="isConsumptionLine"/>
+            <field name="price"/>
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
+            <field name="isConsumptionLine"
+              onChange="action-method-contract-line-change-is-consumption-line"/>
+            <field name="description" colSpan="12" widget="html"/>
+        </panel>
+    </form>
+
+    <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+    </grid>
+
+    <form name="additional-contract-line-form-for-template" title="Additional benefit"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <panel>
+            <field name="product" canEdit="false"
+              onChange="action-contract-template-method-change-product"/>
+            <field name="productName"/>
+            <field name="qty"/>
+            <field name="price"/>
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
+            <field name="description" colSpan="12" widget="html"/>
+        </panel>
+    </form>
+
 </object-views>

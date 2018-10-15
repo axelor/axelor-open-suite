@@ -35,19 +35,20 @@
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="main" >
-   			<panel colSpan="6">
+   			<panel colSpan="5">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
-          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
-          				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="4" css="label-bold bold large" placeholder="Code" />
+          				<field name="name" showTitle="false" colSpan="8" css="label-bold bold large" placeholder="Name"/>
         			</editor>
       			</field>
     		</panel>
-    		<panel colSpan="6">
-       			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="4" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="8" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 			<button name="$realQty" title="Real qty" colSpan="6" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-       	 			<button name="$futureQty" title="Future qty" colSpan="6" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+    		<panel colSpan="7">
+       			<button name="$totalVariants" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
+      			<panel showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id" colSpan="9" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+       	 			<button name="$realQty" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
+       	 			<button name="$futureQty" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+       	 			<button name="$reservedQty" title="Reserved qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     	  			<field name="isModel" hidden="true"/>
 			</panel>
       		</panel>
@@ -156,7 +157,7 @@
 	    	</panel>
             <panel name="accounting" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-                <field name="customsCodeNomenclature" canEdit="false" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
                 <panel-related field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
@@ -165,8 +166,13 @@
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
                         <field name="inventoryTypeSelect" colSpan="6"/>
 	      			</panel>
+	      			<panel colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production')">
+						<field name="productStandard"/>
+      					<field name="productApproval" form-view="product-approval-form" grid-view="product-approval-grid" onChange="action-product-record-set-control-on-receipt"/>
+      					<field name="productApproval.controlOnReceipt" hidden="true"/>	      			
+	      			</panel>
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-						<field name="controlOnReceipt"/>
+						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice"/>
 				        <spacer/>
@@ -249,7 +255,7 @@
 	  			<panel name="mass" title="Mass" colSpan="6">
 	  				<field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossMass"/>
-	  				<field name="netMass"/>
+	  				<field name="netMass" requiredIf="usedInDEB"/>
 	  			</panel>
 			      <panel name="articleDimension" title="Article dimension" colSpan="6">
 			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
@@ -259,6 +265,11 @@
 			        <field name="diameter" readonlyIf="length > 0 || width > 0" onChange="action-product-record-calculate-volume-diameter"/>
 			        <field name="articleVolume" readonly="true"/>
 			      </panel>
+							<panel if-module="axelor-stock" if="__config__.app.isApp('stock')">
+								<field name="usedInDEB" title="Used in DEB"/>
+								<field name="customsCodeNomenclature" requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
+									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+							</panel>
   			</panel>
   		</panel-tabs>
   		<panel>
@@ -374,6 +385,10 @@
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:__config__.app.getApp('base').getProductInAtiSelect() == 2 || __config__.app.getApp('base').getProductInAtiSelect() == 4"/>
+    </action-record>
+    
+    <action-record name="action-product-record-set-control-on-receipt" model="com.axelor.apps.base.db.Product">
+    	<field name="controlOnReceipt" expr="eval: productApproval?.controlOnReceipt"/>
     </action-record>
     
     <action-attrs name="action-product-attrs-in-ati">

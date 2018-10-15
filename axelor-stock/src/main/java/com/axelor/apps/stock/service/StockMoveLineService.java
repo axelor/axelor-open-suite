@@ -221,7 +221,24 @@ public interface StockMoveLineService {
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException;
 
+  /**
+   * Check whether mass information is required.
+   *
+   * @param stockMove
+   * @return
+   */
+  boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
+
   @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
+
+  /**
+   * set the available quantity of product in a given location.
+   *
+   * @param stockMoveLine
+   * @param stockLocation
+   * @return
+   */
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 }

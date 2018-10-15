@@ -5,7 +5,7 @@
   
      <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement"  orderBy="-toDate,name">
 			<toolbar>
-				<button name="showBankStatementLines" title="See bank statement lines" onClick="account.bank.statement.line" />
+				<button name="showBankStatementLines" title="See bank statement lines" onClick="account-bank-statement-view-bank-statement-lines" />
 			</toolbar>
 		  	<field name="ebicsPartner.ebicsBank" width="250" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="ebicsPartner" width="150" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
@@ -19,7 +19,9 @@
   	<form name="bank-statement-form" title="Bank Statement" model="com.axelor.apps.bankpayment.db.BankStatement" width="large">
         <toolbar>
             <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-                onClick="action-bank-statement-print" />
+                onClick="action-bank-statement-method-print" />
+            <button name="generateBankReconciliationBtn" title="Run bank reconciliation" readonlyIf="statusSelect &lt; 2"
+                onClick="action-bank-statement-method-run-bank-reconciliation" />    
         </toolbar>
 
         <panel colSpan="12" readonlyIf="statusSelect == 2">
@@ -45,8 +47,8 @@
         </panel>
 	</form>
 	
-	<action-view name="account.bank.statement.line"
-		title="Bank Statement Line" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
+	<action-view name="account-bank-statement-view-bank-statement-lines"
+		title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine" >
 		<view type="grid" name="bank-statement-line-grid" />
 		<view type="form" name="bank-statement-line-form" />
 	</action-view>
@@ -56,7 +58,7 @@
 	</action-method>
 
  	<action-view name="action-bank-statement-view-bank-statement-lines" title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
- 		<view type="grid" name="bank-statement-line-grid"/>
+ 		<view type="grid" name="bank-statement-line-bank-statement-grid"/>
  		<view type="form" name="bank-statement-line-form"/>
 		<view-param name="limit" value="200"/>
  		<domain>self.bankStatement.id = :_id</domain>
@@ -71,8 +73,12 @@
  		<context name="_id" expr="eval: id"/>
  	</action-view>
 
-    <action-method name="action-bank-statement-print">
+    <action-method name="action-bank-statement-method-print">
         <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
+    </action-method>
+    
+    <action-method name="action-bank-statement-method-run-bank-reconciliation">
+    	<call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runBankReconciliation"/>	
     </action-method>
 
 </object-views>

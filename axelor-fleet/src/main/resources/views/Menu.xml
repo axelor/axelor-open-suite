@@ -79,13 +79,6 @@
 		<view type="form" name="vehicle-service-type-form"/>
 	</action-view>
 	
-	<menuitem name="fleet-conf-vehicle-state" title="Vehicle states" action="fleet.conf.vehicle.state" parent="fleet-conf" />
-	
-	<action-view name="fleet.conf.vehicle.state" title="Vehicle states" model="com.axelor.apps.fleet.db.VehicleState">
-		<view type="grid" name="vehicle-state-grid"/>
-		<view type="form" name="vehicle-state-form"/>
-	</action-view>
-	
 	<menuitem name="fleet-conf-vehicle-tag" title="Vehicle tags" action="fleet.conf.vehicle.tag" parent="fleet-conf" />
 	
 	<action-view name="fleet.conf.vehicle.tag" title="Vehicle tags" model="com.axelor.apps.fleet.db.VehicleTag">

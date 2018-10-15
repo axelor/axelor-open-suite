@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -64,6 +66,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected StockMoveService stockMoveService;
   private TrackingNumberService trackingNumberService;
   protected StockMoveLineRepository stockMoveLineRepository;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -71,12 +74,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       AppBaseService appBaseService,
       AppStockService appStockService,
       StockMoveService stockMoveService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      StockLocationLineService stockLocationLineService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   /**
@@ -828,7 +833,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (stockMove != null && !stockMoveService.checkMassesRequired(stockMove)) {
+      if (stockMove != null && !checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 
@@ -850,6 +855,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         Beans.get(UnitConversionService.class)
             .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
     return netMass;
+  }
+
+  @Override
+  public boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address fromAddress = stockMoveService.getFromAddress(stockMove);
+    Address toAddress = stockMoveService.getToAddress(stockMove);
+
+    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
+    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+
+    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
+        && fromCountry != null
+        && toCountry != null
+        && !fromCountry.equals(toCountry)
+        && stockMoveLine.getProduct() != null
+        && stockMoveLine.getProduct().getUsedInDEB();
   }
 
   @Override
@@ -881,12 +902,53 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (draft) {
         newStockMoveLine.setQty(counter);
       } else {
-        newStockMoveLine.setQty(counter);
+        newStockMoveLine.setRealQty(counter);
       }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
     }
     stockMoveLineRepository.remove(stockMoveLine);
+  }
+
+  @Override
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
+    BigDecimal availableQty = BigDecimal.ZERO;
+    BigDecimal availableQtyForProduct = BigDecimal.ZERO;
+
+    if (stockMoveLine.getProduct() != null) {
+      if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+
+        if (stockMoveLine.getTrackingNumber() != null) {
+          StockLocationLine stockLocationLine =
+              stockLocationLineService.getDetailLocationLine(
+                  stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
+
+          if (stockLocationLine != null) {
+            availableQty = stockLocationLine.getCurrentQty();
+          }
+        }
+
+        if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
+          StockLocationLine stockLocationLineForProduct =
+              stockLocationLineService.getStockLocationLine(
+                  stockLocation, stockMoveLine.getProduct());
+
+          if (stockLocationLineForProduct != null) {
+            availableQtyForProduct = stockLocationLineForProduct.getCurrentQty();
+          }
+        }
+      } else {
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getStockLocationLine(
+                stockLocation, stockMoveLine.getProduct());
+
+        if (stockLocationLine != null) {
+          availableQty = stockLocationLine.getCurrentQty();
+        }
+      }
+    }
+    stockMoveLine.setAvailableQty(availableQty);
+    stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
   }
 }

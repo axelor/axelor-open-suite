@@ -248,6 +248,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
+    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (saleOrderLine.getTaxLine() != null) {
       taxRate = saleOrderLine.getTaxLine().getValue();
@@ -266,16 +267,23 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
+    if (saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
+      subTotalCostPrice =
+          saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+    }
+
     saleOrderLine.setInTaxTotal(inTaxTotal);
     saleOrderLine.setExTaxTotal(exTaxTotal);
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
+    map.put("subTotalCostPrice", subTotalCostPrice);
 
     map.putAll(this.computeSubMargin(saleOrder, saleOrderLine));
 
@@ -502,8 +510,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     HashMap<String, BigDecimal> map = new HashMap<>();
 
     BigDecimal subTotalCostPrice = BigDecimal.ZERO;
-    BigDecimal subTotalGrossMargin = BigDecimal.ZERO;
+    BigDecimal subTotalGrossProfit = BigDecimal.ZERO;
     BigDecimal subMarginRate = BigDecimal.ZERO;
+    BigDecimal subTotalMarkup = BigDecimal.ZERO;
     BigDecimal totalWT = BigDecimal.ZERO;
 
     if (saleOrderLine.getProduct() != null
@@ -518,25 +527,30 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               null);
 
       logger.debug("Total WT in company currency: {}", totalWT);
-      subTotalCostPrice =
-          saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+      subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
       logger.debug("Subtotal cost price: {}", subTotalCostPrice);
-      subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
-      logger.debug("Subtotal gross margin: {}", subTotalGrossMargin);
+      subTotalGrossProfit = totalWT.subtract(subTotalCostPrice);
+      logger.debug("Subtotal gross margin: {}", subTotalGrossProfit);
       subMarginRate =
-          subTotalGrossMargin
-              .divide(subTotalCostPrice, RoundingMode.HALF_EVEN)
-              .multiply(new BigDecimal(100));
+          subTotalGrossProfit.divide(totalWT, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
       logger.debug("Subtotal gross margin rate: {}", subMarginRate);
+
+      if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
+        subTotalMarkup =
+            subTotalGrossProfit
+                .divide(subTotalCostPrice, RoundingMode.HALF_EVEN)
+                .multiply(new BigDecimal(100));
+        logger.debug("Subtotal markup: {}", subTotalMarkup);
+      }
     }
 
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
-    saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
+    saleOrderLine.setSubTotalGrossMargin(subTotalGrossProfit);
     saleOrderLine.setSubMarginRate(subMarginRate);
+    saleOrderLine.setSubTotalMarkup(subTotalMarkup);
 
-    map.put("subTotalCostPrice", subTotalCostPrice);
-    map.put("subTotalGrossMargin", subTotalGrossMargin);
+    map.put("subTotalGrossMargin", subTotalGrossProfit);
     map.put("subMarginRate", subMarginRate);
+    map.put("subTotalMarkup", subTotalMarkup);
     return map;
   }
 

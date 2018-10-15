@@ -51,7 +51,7 @@
 	<form name="project-planning-user-select-wizard-form" title="Select users"  model="com.axelor.apps.base.db.Wizard"
 		onNew="action-project-planning-time-attrs-default">
 		<panel>
-			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-attrs-project-domain"/>
+			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-time-attrs-project-domain"/>
 			<button name="showPlanning" title="Project Planning" onClick="action-project-planning-time-method-show-planning" colSpan="3" />
 		</panel>
 	</form>	
@@ -70,6 +70,7 @@
 	<action-view name="action-project-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
+		<view-param name="popup" value="true"/>
 		<domain>self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
@@ -95,6 +96,8 @@
 	<action-attrs name="action-project-planning-time-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;" 
 	   for="userSet,user" if="project != null"/>
+	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" 
+	   for="userSet"  if="project == null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-user-change">
@@ -113,7 +116,7 @@
 		<attribute name="hidden" for="removeSelectedPlanningTime" expr="eval:false"/>
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
 		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
-		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:'Select lines to remove'"/>
+		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
 		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id&quot;" if="!isShowPhasesElements"/>
 		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id OR self.project.parentProject.id = :id&quot;" if="isShowPhasesElements"/>
 	</action-attrs>

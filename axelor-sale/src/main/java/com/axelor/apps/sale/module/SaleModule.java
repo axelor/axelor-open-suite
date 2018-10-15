@@ -57,6 +57,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -82,5 +84,6 @@ public class SaleModule extends AxelorModule {
     bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
     bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
     bind(ConfiguratorFormulaService.class).to(ConfiguratorFormulaServiceImpl.class);
+    bind(SaleOrderPrintService.class).to(SaleOrderPrintServiceImpl.class);
   }
 }
