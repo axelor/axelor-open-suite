@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
@@ -80,7 +81,8 @@ public class MoveController {
 
         response.setValue(
             "period",
-            Beans.get(PeriodService.class).rightPeriod(move.getDate(), move.getCompany()));
+            Beans.get(PeriodService.class)
+                .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       } else {
         response.setValue("period", null);
       }

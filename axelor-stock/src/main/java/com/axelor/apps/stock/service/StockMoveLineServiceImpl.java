@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -831,7 +833,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (stockMove != null && !stockMoveService.checkMassesRequired(stockMove)) {
+      if (stockMove != null && !checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 
@@ -853,6 +855,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         Beans.get(UnitConversionService.class)
             .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
     return netMass;
+  }
+
+  @Override
+  public boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address fromAddress = stockMoveService.getFromAddress(stockMove);
+    Address toAddress = stockMoveService.getToAddress(stockMove);
+
+    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
+    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+
+    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
+        && fromCountry != null
+        && toCountry != null
+        && !fromCountry.equals(toCountry)
+        && stockMoveLine.getProduct() != null
+        && stockMoveLine.getProduct().getUsedInDEB();
   }
 
   @Override

@@ -57,24 +57,30 @@ public class PeriodServiceImpl implements PeriodService {
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company) throws AxelorException {
+  public Period rightPeriod(LocalDate date, Company company, int typeSelect)
+      throws AxelorException {
 
-    Period period = this.getPeriod(date, company);
+    Period period = this.getPeriod(date, company, typeSelect);
     if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PERIOD_1),
-          company.getName());
+          company.getName(),
+          date.toString());
     }
     LOG.debug("Period : {}", period);
     return period;
   }
 
-  public Period getPeriod(LocalDate date, Company company) {
+  public Period getPeriod(LocalDate date, Company company, int typeSelect) {
 
     return periodRepo
         .all()
-        .filter("year.company = ?1 and fromDate <= ?2 and toDate >= ?3", company, date, date)
+        .filter(
+            "self.year.company = ?1 and self.fromDate <= ?2 and self.toDate >= ?2 and self.year.typeSelect = ?3",
+            company,
+            date,
+            typeSelect)
         .fetchOne();
   }
 

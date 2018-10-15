@@ -84,7 +84,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_17 = /*$$(*/
       "Must set mass unit in stock configuration for customs." /*)*/;
   static final String STOCK_MOVE_18 = /*$$(*/
-      "All storable products must have net mass and mass unit information for customs." /*)*/;
+      "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
   static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
