@@ -72,6 +72,8 @@
    	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" massUpdate="true"/>
 	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
+	<string name="timeSlot" title="Time slot" large="true"/>
+	
 	<!-- -Json fields -->
 	<string name="partnerAttrs" title="Fields" json="true" />
 	<string name="contactAttrs" title="Fields" json="true" />
