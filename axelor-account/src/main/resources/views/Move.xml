@@ -147,7 +147,7 @@
     </action-record>
     
 	<!-- ACTION ATTRS -->
-	
+
 	<action-attrs name="action-move-attrs-set-domain-payment-mode">
 	  <attribute name="domain" for="paymentMode" expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
 	</action-attrs>

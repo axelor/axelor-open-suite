@@ -38,7 +38,7 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     BigDecimal marginRate = BigDecimal.ZERO;
     BigDecimal markup = BigDecimal.ZERO;
 
-    if (!saleOrder.getSaleOrderLineList().isEmpty()) {
+    if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
 
       for (SaleOrderLine saleOrderLineList : saleOrder.getSaleOrderLineList()) {
 
