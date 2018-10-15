@@ -284,7 +284,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public Map<String, Object> resetProductInformation(Invoice invoice) {
+  public Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException {
     Map<String, Object> productInformation = new HashMap<>();
     productInformation.put("taxLine", null);
     productInformation.put("taxEquiv", null);
@@ -304,9 +304,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("totalPack", null);
     productInformation.put("packPriceSelect", 0);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
-    if ((invoice.getOperationTypeSelect() == 3
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    if ((isPurchase
             && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (invoice.getOperationTypeSelect() == 1
+        || (!isPurchase
             && appAccountService
                 .getAppInvoice()
                 .getIsEnabledProductDescriptionCopyForSuppliers())) {
@@ -324,9 +325,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", invoiceLine.getProduct().getName());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
-    if ((invoice.getOperationTypeSelect() == 3
+    if ((isPurchase
             && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (invoice.getOperationTypeSelect() == 1
+        || (!isPurchase
             && appAccountService
                 .getAppInvoice()
                 .getIsEnabledProductDescriptionCopyForSuppliers())) {

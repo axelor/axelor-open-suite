@@ -226,11 +226,11 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         subLine.setIsSubLine(true);
         subLine.setPackPriceSelect(packPriceSelect);
         String description = null;
-        if ((invoice.getOperationTypeSelect() == 3
+        if ((isPurchase
                 && appAccountService
                     .getAppInvoice()
                     .getIsEnabledProductDescriptionCopyForCustomers())
-            || (invoice.getOperationTypeSelect() == 1
+            || (!isPurchase
                 && appAccountService
                     .getAppInvoice()
                     .getIsEnabledProductDescriptionCopyForSuppliers())) {
