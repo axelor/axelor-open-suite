@@ -17,6 +17,7 @@
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
 - LOGISITCAL FORM : alert message when user clicks on action buttons
 - ACCOUNT MOVE : printing new design
+- ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
