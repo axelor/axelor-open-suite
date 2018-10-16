@@ -605,17 +605,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         .fetch();
   }
 
-  // TODO: Move to ContractTemplateService
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Contract createContractFromTemplate(ContractTemplate template, Contract baseContract)
+  public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
-
-    Contract contract;
-    if (baseContract == null) {
-      contract = new Contract();
-    } else {
-      contract = contractRepository.copy(baseContract, false);
-    }
 
     if (template.getAdditionalBenefitContractLineList() != null
         && !template.getAdditionalBenefitContractLineList().isEmpty()) {
@@ -677,7 +669,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     contract.setCurrentContractVersion(version);
 
-    return save(contract);
+    return contract;
   }
 
   @Override
