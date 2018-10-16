@@ -89,6 +89,7 @@
 - BillOfMaterial : Add new large field 'Note'.
 - BANK RECONCILIATION : Fully rework the bank statement process.
 - Stock Location Line : Add new button 'Reserved qty' to display the reserved quantity on stock location line form.
+- Product : enable massUpdate on usedInDEB.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
