@@ -163,6 +163,7 @@ public class MoveValidateService {
 
     this.validateEquiponderanteMove(move);
     this.fillMoveLines(move);
+    move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
     moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(move);
@@ -209,7 +210,6 @@ public class MoveValidateService {
             totalDebit,
             totalCredit);
       }
-      move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
     }
   }
 

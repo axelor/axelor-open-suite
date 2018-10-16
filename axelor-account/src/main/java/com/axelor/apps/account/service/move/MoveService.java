@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -33,12 +34,15 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -458,5 +462,35 @@ public class MoveService {
       newMove.addMoveLineListItem(newMoveLine);
     }
     return moveRepository.save(newMove);
+  }
+
+  /**
+   * Checks that the given move is consistent, that is, sum of debits matches sum of credits and
+   * move is not empty. This is a subset of checks performed upon move validation.
+   *
+   * @param move A validated move to be checked for consistency.
+   * @throws AxelorException If move is inconsistent
+   * @throws IllegalArgumentException If move is not on validated status.
+   */
+  public void checkConsistency(Move move) throws AxelorException {
+    if (move.getStatusSelect() != MoveRepository.STATUS_VALIDATED)
+      throw new IllegalArgumentException(
+          "Only validated moves should be passed to this method (move #" + move.getId() + ")");
+
+    if (CollectionUtils.isEmpty(move.getMoveLineList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+    }
+
+    if (move.getMoveLineList()
+        .stream()
+        .allMatch(
+            moveLine ->
+                moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+    }
+
+    moveValidateService.validateEquiponderanteMove(move);
   }
 }

@@ -7,6 +7,7 @@
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
+- Account: add option to allow modification of validated but not-yet-exported moves.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 
 ## Bug Fixes

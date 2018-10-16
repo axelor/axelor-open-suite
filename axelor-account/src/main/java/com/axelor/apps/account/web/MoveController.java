@@ -23,11 +23,13 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,9 +44,21 @@ import java.util.List;
 @Singleton
 public class MoveController {
 
-  @Inject protected MoveService moveService;
+  protected MoveService moveService;
 
-  @Inject protected MoveRepository moveRepo;
+  protected MoveRepository moveRepo;
+
+  protected MoveCustAccountService moveCustAccountService;
+
+  @Inject
+  public MoveController(
+      MoveService moveService,
+      MoveRepository moveRepository,
+      MoveCustAccountService moveCustAccountService) {
+    this.moveService = moveService;
+    this.moveRepo = moveRepository;
+    this.moveCustAccountService = moveCustAccountService;
+  }
 
   public void validate(ActionRequest request, ActionResponse response) {
 
@@ -107,6 +121,22 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateConsistency(ActionRequest request, ActionResponse response) {
+    try {
+      moveService.checkConsistency(request.getContext().asType(Move.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updatePartnerAccount(ActionRequest request, ActionResponse response) {
+    try {
+      moveCustAccountService.updateCustomerAccount(request.getContext().asType(Move.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
