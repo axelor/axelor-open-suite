@@ -135,6 +135,7 @@
 - Data Backup : export the record sorted by Model fullName.
 - Improve opportunity view.
 - HR : Rename and reorder of timesheet menu entry and replace toolbar button to toolbar menu in grid.
+- Contact : Add new large field - timeSlot.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
