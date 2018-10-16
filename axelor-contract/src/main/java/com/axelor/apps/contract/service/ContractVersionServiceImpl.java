@@ -21,7 +21,9 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -29,6 +31,9 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
@@ -48,13 +53,21 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void waiting(ContractVersion version, LocalDate date) throws AxelorException {
-    if (version.getContract().getIsInvoicingManagement()
+
+    Contract contract = Stream.of(version.getContract(), version.getNextContract())
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElseThrow(() -> new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.CONTRACT_MISSING_FROM_VERSION))
+        );
+
+    if (contract.getIsInvoicingManagement()
         && version.getIsPeriodicInvoicing()
-        && (version.getContract().getFirstPeriodEndDate() == null
-            || version.getInvoicingDuration() == null)) {
+        && (contract.getFirstPeriodEndDate() == null || version.getInvoicingDuration() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("Please fill the first period end date and the invoice frequency."));
+          I18n.get(IExceptionMessage.CONTRACT_MISSING_FIRST_PERIOD));
     }
     version.setStatusSelect(WAITING_VERSION);
   }
