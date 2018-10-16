@@ -18,6 +18,7 @@
 package com.axelor.apps.contract.exception;
 
 public interface IExceptionMessage {
+
   String CONTRACT_MISSING_TERMINATE_DATE = /*$$(*/
       "Please enter a terminated date for this version." /*)*/;
   String CONTRACT_MISSING_ENGAGEMENT_DATE = /*$$(*/ "Please enter a engagement date." /*)*/;
@@ -30,4 +31,8 @@ public interface IExceptionMessage {
   String CONTRACT_CANT_REMOVE_INVOICED_LINE = /*$$(*/
       "You cannot remove a line which has been already invoiced." /*)*/;
   String CONTRACT_EMPTY_PRODUCT = /*$$(*/ "The product can't be empty." /*)*/;
+  String CONTRACT_MISSING_FROM_VERSION = /*$$(*/
+      "There is no contract associated with this version." /*)*/;
+  String CONTRACT_MISSING_FIRST_PERIOD = /*$$(*/
+      "Please fill the first period end date and the invoice frequency." /*)*/;
 }
