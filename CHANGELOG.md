@@ -15,6 +15,7 @@
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - Account: allow to have substitution & reverse charge on the same tax equivalence.
+- Account: add option to automatically create partners' accounts
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Currency conversion: allow to fetch today's rate on newly created conversion lines.
 - Remove unecessary table in VAT on invoice report.
