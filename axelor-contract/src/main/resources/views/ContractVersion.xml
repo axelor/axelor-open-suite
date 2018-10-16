@@ -72,7 +72,7 @@
             <panel title="Content">
                 <field if="__config__.app.getApp('contract').isInvoicingManagement" name="contractLineList" colSpan="12"/>
                 <field name="description" colSpan="9" widget="html"/>
-                <field name="metaField" colSpan="3" widget="binary-link"/>
+                <field name="metaFile" colSpan="3" widget="binary-link"/>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
                 <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
