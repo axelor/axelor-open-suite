@@ -28,6 +28,7 @@
 - BANKSTATEMENTAFB120 : DateTimeFormatter updated since we use java.date.time instead of joda.time
 - Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
 - Fix menuitem's translations.
+- Get correct stock location for intercompany (interco) orders.
 
 ## [5.0.6] - 2018-10-06
 ## Features
