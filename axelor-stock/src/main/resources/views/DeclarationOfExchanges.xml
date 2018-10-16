@@ -39,7 +39,7 @@
           domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
           onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
       </panel>
-      <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange"/>
+      <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange" selection-in="['service','storable']"/>
       <field name="stockMoveTypeSelect"
         selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
         readonlyIf="productTypeSelect == 'service'"/>
