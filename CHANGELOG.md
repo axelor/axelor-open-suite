@@ -88,6 +88,7 @@
 - Sale Order : add new large string field 'Production note' and display it on picking stock move report.
 - BillOfMaterial : Add new large field 'Note'.
 - BANK RECONCILIATION : Fully rework the bank statement process.
+- Stock Location Line : Add new button 'Reserved qty' to display the reserved quantity on stock location line form.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -133,11 +134,12 @@
 - Add App related data in Data Back & restore functionality.
 - Data Backup : export the record sorted by Model fullName.
 - Improve opportunity view.
+- HR : Rename and reorder of timesheet menu entry and replace toolbar button to toolbar menu in grid.
 - Contact : Add new large field - timeSlot.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
-- Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
+- Timesheet editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
 - Project: Fix multiple bugs and improve views.
