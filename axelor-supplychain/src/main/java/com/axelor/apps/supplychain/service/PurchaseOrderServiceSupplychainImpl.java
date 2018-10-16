@@ -444,7 +444,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void updatePurchaseOrderOnCancel(StockMove stockMove, PurchaseOrder purchaseOrder) {
 
     List<StockMove> stockMoveList = Lists.newArrayList();
-    stockMoveList = stockMoveRepo.all().filter("self.purchaseOrder = ?1", purchaseOrder).fetch();
+    stockMoveList =
+        stockMoveRepo
+            .all()
+            .filter(
+                "self.originTypeSelect =?1 and self.originId = ?2",
+                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
+                purchaseOrder.getId())
+            .fetch();
     purchaseOrder.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
     for (StockMove stock : stockMoveList) {
       if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
