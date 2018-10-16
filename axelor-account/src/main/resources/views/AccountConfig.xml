@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://axelor.com/xml/ns/object-views"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
@@ -19,6 +19,7 @@
 
 			<field name="hasChartImported"/>
 			<field name="allowRemovalValidatedMove"/>
+            <field name="allowNonExportedMoveEditing"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
@@ -27,18 +28,40 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="accountingPanel" title="Accounting">
 				<panel name="accountsPanel" title="Accounting.Accounts" colSpan="12">
-					<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="partnerAccountGenerationModeSelect" hideIf="parnerAccountGeneration == false" colSpan="12"/>
+					<panel name="accountsCustomer" title="AccountConfig.Customers" colSpan="12">
+						<field name="customerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" help="Select the default customer account to be used in sales invoices. It will also be used as parent account if automatic account creation is enabled."/>
+						<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="doubtfulCustomerAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="advancePaymentAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="customerAccountPrefix" help="Prefix to be prepended on customer accounts' codes, the code will be [prefix]PARTNERNAME"
+							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
+						<field name="customerAccountSequence" help="Sequence to be used to generate customer accounts' codes" canNew="true" canEdit="true"
+							   showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+					</panel>
+					<panel title="AccountConfig.Suppliers" colSpan="12">
+						<field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
+							   help="Select the default supplier account to be used in purchase invoices. It will also be used as parent account if automatic account creation is enabled."/>
+						<field name="supplierAccountPrefix" help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
+							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
+						<field name="supplierAccountSequence" help="Sequence to be used to generate supplier accounts' codes" canNew="true" canEdit="true"
+							   showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+					</panel>
+					<panel title="AccountConfig.Employees" colSpan="12">
+						<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
+							   help="Select the default employee account to be used in eg. expense payments. It will also be used as parent account if automatic account creation is enabled."/>
+						<field name="employeeAccountPrefix" help="Prefix to be prepended on employee accounts' codes, the code will be [prefix]PARTNERNAME"
+							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
+						<field name="employeeAccountSequence" help="Sequence to be used to generate employee accounts' codes" canNew="true" canEdit="true"
+							   showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+					</panel>
 					<panel name="accountFactorPanel" if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
-					<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-					<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-					<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-				</panel>
+						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+					</panel>
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -118,7 +141,8 @@
 				<field name="irrecoverableJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 				<field name="autoMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 				<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
-				<field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid" form-view="journal-form"/>
+                <field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid"
+                       form-view="journal-form"/>
 			</panel>
 
 			<panel name="cfonbPanel" title="CFONB" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">

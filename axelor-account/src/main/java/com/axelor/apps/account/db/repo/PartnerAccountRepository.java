@@ -25,12 +25,24 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.util.List;
+import com.google.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
+
 import javax.persistence.PersistenceException;
 
+@Singleton
 public class PartnerAccountRepository extends PartnerBaseRepository {
 
-  @Inject private AppService appService;
+  private AppService appService;
+
+  private AccountingSituationService accountingSituationService;
+
+  @Inject
+  public PartnerAccountRepository(
+      AppService appService, AccountingSituationService accountingSituationService) {
+    this.appService = appService;
+    this.accountingSituationService = accountingSituationService;
+  }
 
   @Override
   public Partner save(Partner partner) {
@@ -39,14 +51,19 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       if (partner.getId() == null) {
         partner = super.save(partner);
       }
-      if (!partner.getIsContact() && appService.isApp("account")) {
-        List<AccountingSituation> accountingSituationList =
-            Beans.get(AccountingSituationService.class)
-                .createAccountingSituation(
-                    Beans.get(PartnerRepository.class).find(partner.getId()));
 
-        if (accountingSituationList != null) {
-          partner.setAccountingSituationList(accountingSituationList);
+      if (appService.isApp("account")) {
+        if (partner.getIsContact() == false || partner.getIsEmployee()) {
+          // Create & fill
+            Beans.get(AccountingSituationService.class)
+              .createAccountingSituation(Beans.get(PartnerRepository.class).find(partner.getId()));
+        }
+
+        // We do this for contacts too as it seems this is the way employees are handled
+        if (CollectionUtils.isNotEmpty(partner.getAccountingSituationList())) {
+          for (AccountingSituation situation : partner.getAccountingSituationList()) {
+            accountingSituationService.createPartnerAccounts(situation);
+          }
         }
       }
 
