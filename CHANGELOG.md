@@ -171,6 +171,7 @@
 - PROJECT : Fix translations.
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
 - Sale Order Line : Fix pack type translations.
+- Sale Order : Fix NPE when we add a line and just enter the product name string field and enter unit price or qty.
 
 ## [Unreleased 5.0.7]
 ## Features

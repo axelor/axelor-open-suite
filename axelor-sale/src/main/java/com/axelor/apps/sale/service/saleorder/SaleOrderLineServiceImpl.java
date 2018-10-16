@@ -302,7 +302,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
-    if (saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
+    if (saleOrderLine.getProduct() != null
+        && saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
       subTotalCostPrice =
           saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
     }
