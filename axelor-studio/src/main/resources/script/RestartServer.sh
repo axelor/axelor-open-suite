@@ -22,7 +22,7 @@ echo "Catalina app: "$CATALINA_APP
 echo "Removing old app directory"
 rm -fr $CATALINA_APP*
 
-sleep 2
+sleep 5
 
 echo "Creating new app directory"
 mkdir -v $CATALINA_APP
@@ -30,11 +30,11 @@ mkdir -v $CATALINA_APP
 cd $CATALINA_APP
 
 echo "Extracting app"
-jar -xf $1
+jar -xvf $1
 
-if [ -f ../../../etc/application.properties ]; then
-	cp ../../../etc/application.properties META_INF/classes/
-fi
+#if [ -f ../../../etc/application.properties ]; then
+#	cp ../../../etc/application.properties META_INF/classes/
+#fi
 
 #if [ $# -eq 2 ]; then   
 #	echo "Reseting app...."

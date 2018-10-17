@@ -49,6 +49,7 @@ public class ImportAppBuilder {
       appBuilder.setImage(metaFile);
 
     } catch (Exception e) {
+      e.printStackTrace();
       LOG.warn("Can't load image {} for app {}", fileName, appBuilder.getName());
     }
 

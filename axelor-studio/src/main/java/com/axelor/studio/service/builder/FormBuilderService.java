@@ -205,13 +205,19 @@ public class FormBuilderService {
     item.setHideIf(field.getShowIf());
 
     if (widgetAttrs.containsKey("colSpan")) {
-      item.setColSpan(Integer.parseInt(widgetAttrs.get("colSpan").toString()));
+      Integer colSpan = Integer.parseInt(widgetAttrs.get("colSpan").toString());
+      if (colSpan != 6) {
+        item.setColSpan(colSpan);
+      }
       widgetAttrs.remove("colSpan");
     }
 
     Map<QName, String> otherAttrs = new HashMap<>();
     for (String key : widgetAttrs.keySet()) {
-      if (key.equals("col") || key.equals("width")) {
+      if (key.equals("col") || key.equals("width") || key.equals("tab")) {
+        continue;
+      }
+      if (key.equals("showTitle") && widgetAttrs.get("showTitle").equals("true")) {
         continue;
       }
       otherAttrs.put(new QName(key), widgetAttrs.get(key).toString());

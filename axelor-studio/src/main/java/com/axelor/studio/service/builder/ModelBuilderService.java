@@ -39,17 +39,15 @@ public class ModelBuilderService {
     if (model == null || module == null) {
       return null;
     }
-    
+
     String fieldsTxt = createFields(model.getFields(), module);
     if (fieldsTxt.isEmpty()) {
-    	return null;
+      return null;
     }
-    
+
     String packageName = getPackageName(module);
     //    String modelName = Inflector.getInstance().classify(model.getName());
     String modelName = model.getName();
-    
-    
 
     StringBuilder builder = new StringBuilder();
     builder.append("\t<module name=\"" + module + "\" package=\"" + packageName + "\"/>\n\n");
@@ -81,10 +79,10 @@ public class ModelBuilderService {
     if (model == null || module == null) {
       return null;
     }
-    
+
     String fieldsTxt = createFields(fields, module);
     if (fieldsTxt.isEmpty()) {
-    	return null;
+      return null;
     }
 
     String packageName = model.getPackageName();

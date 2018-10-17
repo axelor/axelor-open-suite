@@ -73,6 +73,7 @@
         <view type="grid" name="view-builder-grid" />
         <view type="form" name="view-builder-cards-form" />
         <view-param name="forceTitle" value="true"/>
+        <domain>self.viewType = :_viewType</domain>
         <context name="_viewType" expr="cards"/>
     </action-view>
     
@@ -82,6 +83,7 @@
         <view type="grid" name="view-builder-grid" />
         <view type="form" name="view-builder-kanban-form" />
         <view-param name="forceTitle" value="true"/>
+        <domain>self.viewType = :_viewType</domain>
         <context name="_viewType" expr="kanban"/>
     </action-view>
     
@@ -91,6 +93,7 @@
         <view type="grid" name="view-builder-grid" />
         <view type="form" name="view-builder-calendar-form" />
         <view-param name="forceTitle" value="true"/>
+        <domain>self.viewType = :_viewType</domain>
         <context name="_viewType" expr="calendar"/>
     </action-view>
     
