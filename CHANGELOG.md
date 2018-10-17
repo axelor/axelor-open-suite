@@ -179,11 +179,13 @@
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
+- PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Remove unecessary table in VAT on invoice report.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -202,6 +204,10 @@
 - MOVE : display missing description field in moveLines
 - MOVE : remove the wrong domain on company field that allow to select only the user active company
 - BANKSTATEMENTAFB120 : DateTimeFormatter updated since we use java.date.time instead of joda.time
+- Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
+- Fix menuitem's translations.
+- Get correct stock location for intercompany (interco) orders.
+- StockMove : make addresses updatable until it's not realized.
 
 ## [5.0.6] - 2018-10-06
 ## Features
