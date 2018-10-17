@@ -27,7 +27,7 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   @Inject DataBackupRestoreService restoreService;
 
-  static String configFileName = "config.xml";
+  static final String CONFIG_FILE_NAME = "config.xml";
 
   @Override
   public File createBackUp(Integer fetchLimit) {

@@ -175,6 +175,7 @@
 - Sale Order : Fix NPE when we add a line and just enter the product name string field and enter unit price or qty.
 - Diclaration of exchange : filter productTypeSelect.
 - Stock Move : Fix when try to cancel an incoming realized stock move.
+- Data backup : Fix binary field restore.
 
 ## [Unreleased 5.0.7]
 ## Features
