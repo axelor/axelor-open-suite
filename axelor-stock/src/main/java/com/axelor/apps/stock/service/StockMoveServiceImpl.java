@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -1243,10 +1244,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
+    String locale =
+        isPicking
+            ? Beans.get(UserService.class).getLanguage()
+            : ReportSettings.getPrintingLocale(stockMove.getPartner());
 
     return ReportFactory.createReport(report, title + "-${date}")
         .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
+        .addParam("Locale", locale)
         .generate()
         .getFileLink();
   }
