@@ -437,10 +437,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.clearPlannedStockMoveLineList();
 
     stockMoveLineList
-        .stream()
         .forEach(
             stockMoveLine -> {
               StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
+              copy.setArchived(true);
               stockMove.addPlannedStockMoveLineListItem(copy);
             });
   }
