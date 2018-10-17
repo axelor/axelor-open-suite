@@ -376,7 +376,7 @@
 	  </panel>
 	  <panel title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	  	<field name="accountedRevenue">
-	  		<hilite if="(accountedRevenue &gt; 0 || companyExTaxTotal &gt; 0) &amp;&amp; accountedRevenue != companyExTaxTotal" color="warning"/>
+	  		<hilite if="accountedRevenue &lt; companyExTaxTotal" color="warning"/>
 	  	</field>
 	    <field name="totalCostPrice"/>
 	    <field name="totalGrossMargin">

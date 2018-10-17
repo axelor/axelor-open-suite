@@ -14,7 +14,6 @@
      <panel>
         <field name="name"/>
         <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
-        <field name="parentMenu" />
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
         <panel colSpan="6">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name"/>

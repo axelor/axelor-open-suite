@@ -49,7 +49,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,6 +73,7 @@ public class DataBackupCreateService {
   private Logger LOG = LoggerFactory.getLogger(getClass());
 
   private boolean notNullReferenceFlag, referenceFlag;
+  private boolean byteArrFieldFlag = false;
 
   private static Set<String> exceptColumnNameList =
       ImmutableSet.of(
@@ -103,12 +103,14 @@ public class DataBackupCreateService {
           .put("com.axelor.apps.bankpayment.db.BankStatementFileFormat", "self.name = :name")
           .build();
 
+  List<String> fileNameList;
+
   /* Generate csv Files for each individual MetaModel and single config file */
   public File create(Integer fetchLimit) {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
 
-    List<String> fileNameList = new ArrayList<>();
+    fileNameList = new ArrayList<>();
     List<MetaModel> metaModelList = getMetaModels();
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
@@ -132,7 +134,8 @@ public class DataBackupCreateService {
                   SEPARATOR,
                   QUOTE_CHAR);
           CSVInput csvInput =
-              writeCSVData(metaModel, csvWriter, fetchLimit, totalRecord, subClasses);
+              writeCSVData(
+                  metaModel, csvWriter, fetchLimit, totalRecord, subClasses, tempDirectoryPath);
           csvWriter.close();
 
           if (notNullReferenceFlag) {
@@ -168,7 +171,7 @@ public class DataBackupCreateService {
     csvConfig.getInputs().addAll(notNullReferenceCsvs);
     generateConfig(tempDirectoryPath, csvConfig);
 
-    fileNameList.add(DataBackupServiceImpl.configFileName);
+    fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
     LOG.debug("Data Import Completed");
 
@@ -245,7 +248,8 @@ public class DataBackupCreateService {
       CSVWriter csvWriter,
       Integer fetchLimit,
       long totalRecord,
-      List<String> subClasses) {
+      List<String> subClasses,
+      String dirPath) {
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
     List<String> dataArr = null;
@@ -271,15 +275,25 @@ public class DataBackupCreateService {
             for (Property property : pro) {
               if (isPropertyExportable(property)) {
                 if (headerFlag) {
-                  headerArr.add(getMetaModelHeader(dataObject, property, csvInput));
+                  String headerStr = getMetaModelHeader(dataObject, property, csvInput);
+                  headerArr.add(headerStr);
                 }
                 dataArr.add(
                     getMetaModelData(
-                        property, metaModelMapper.get(dataObject, property.getName())));
+                        metaModel.getName(),
+                        metaModelMapper.get(dataObject, "id").toString(),
+                        property,
+                        metaModelMapper.get(dataObject, property.getName()),
+                        dirPath));
               }
             }
 
             if (headerFlag) {
+              if (byteArrFieldFlag) {
+                csvInput.setCallable(
+                    "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
+                byteArrFieldFlag = false;
+              }
               csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
               headerFlag = false;
             }
@@ -321,6 +335,9 @@ public class DataBackupCreateService {
     switch (propertyTypeStr) {
       case "LONG":
         return propertyName.equalsIgnoreCase("id") ? "importId" : propertyName;
+      case "BINARY":
+        byteArrFieldFlag = true;
+        return "byte_" + propertyName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
         return getRelationalFieldHeader(property, csvInput, "ONE");
@@ -367,10 +384,12 @@ public class DataBackupCreateService {
   }
 
   /* Get Data For csv File */
-  private String getMetaModelData(Property property, Object value) {
+  private String getMetaModelData(
+      String metaModelName, String id, Property property, Object value, String dirPath) {
     if (value == null) {
       return "";
     }
+
     String propertyTypeStr = property.getType().toString();
     switch (propertyTypeStr) {
       case "DATETIME":
@@ -378,7 +397,16 @@ public class DataBackupCreateService {
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
             : value.toString();
       case "BINARY":
-        return Arrays.toString((byte[]) value);
+        String fileName = metaModelName + "_" + property.getName() + "_" + id + ".png";
+
+        try {
+          org.apache.commons.io.FileUtils.writeByteArrayToFile(
+              new File(dirPath, fileName), (byte[]) value);
+          fileNameList.add(fileName);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        return fileName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
         return getRelationalFieldValue(property, value);
@@ -459,7 +487,7 @@ public class DataBackupCreateService {
   /* Generate XML File from CSVConfig */
   private void generateConfig(String dirPath, CSVConfig csvConfig) {
     try {
-      File file = new File(dirPath, DataBackupServiceImpl.configFileName);
+      File file = new File(dirPath, DataBackupServiceImpl.CONFIG_FILE_NAME);
       FileWriter fileWriter = new FileWriter(file, true);
 
       XStream xStream = new XStream();

@@ -69,7 +69,8 @@
       			<panel name="productTypology" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable','pack']" if="__config__.app.getApp('sale')?.getProductPackMgt()"/>
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!(__config__.app.getApp('sale')?.getProductPackMgt())"/>
-			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"
+			        	onChange="action-product-record-product-sub-type-select-onchange,action-product-attrs-hidden-is-shipping-costs-product"/>
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect == 'service' || productTypeSelect =='pack'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
@@ -183,12 +184,16 @@
 	    		</panel>
                 <panel name="productionInformations"
                     title="Production information" showTitle="false"
-                    showIf="productTypeSelect == 'storable' &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"
+                    showIf="productTypeSelect == 'storable' &amp;&amp; ((procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') || (productSubTypeSelect == 3 || productSubTypeSelect == 2))" 
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
-                    <panel-include view="product-production-form"/>
-                    <panel-dashlet colSpan="12" action="action-product-view-production-process" showIf="id"/>
+                    <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
+                    <panel colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
+                    	<panel-include view="product-production-form"/>
+                    </panel>
+                    <panel-dashlet colSpan="12" action="action-product-view-show-used-bill-of-material" showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"/>
+                    <panel-dashlet colSpan="12" action="action-product-view-production-process" showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
                 </panel>
 	    		<panel name="trackingNumber" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service' &amp;&amp; productTypeSelect != 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 	      			<panel colSpan="12">
@@ -331,9 +336,11 @@
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
     	<action name="action-product-record-default-production"/>
+    	<action name="action-product-record-sellable"/>
     	<action name="action-product-attrs-readonly-unit"/>
     	<action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     	<action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
+    	<action name="action-product-attrs-hidden-is-shipping-costs-product"/>
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
@@ -343,6 +350,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
+    	<action name="action-product-attrs-hidden-is-shipping-costs-product"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
@@ -370,6 +378,7 @@
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
+        <action name="action-product-attrs-hidden-is-shipping-costs-product"/>
 		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
     </action-group>
@@ -378,10 +387,18 @@
 		<action name="action-product-attrs-update-cost-price"/>
 		<action name="action-product-record-compute-sale-price"/>
 	</action-group>
+	
+	<action-attrs name="action-product-attrs-hidden-is-shipping-costs-product">
+		<attribute name="hidden" for="isShippingCostsProduct" expr="eval: (_fromProduction || _fromStock || _fromSale || _fromPurchase) || (_isModel &amp;&amp; (productTypeSelect == 'service' || productSubTypeSelect))"/>
+	</action-attrs>
 
     <action-attrs name="action-product-attrs-readonly-unit" if-module="axelor-stock">
     	<attribute name="readonly" for="unit" expr="eval: __repo__(StockLocationLine).all().filter('self.product.id = ?1 AND (self.currentQty != 0 OR self.futureQty != 0)', id).fetch().size &gt; 0" if="id != null &amp;&amp; __config__.app.isApp('stock')"/>
     </action-attrs>
+    
+    <action-record name="action-product-record-sellable" model="com.axelor.apps.base.db.Product">
+    	<field name="sellable" expr="eval: false" if="_fromProduction || _fromStock || _isShippingCostsProduct || _fromPurchase"/>
+    </action-record>
     
     <action-record name="action-product-record-in-ati" model="com.axelor.apps.base.db.Product">
     	<field name="inAti" expr="eval:__config__.app.getApp('base').getProductInAtiSelect() == 2 || __config__.app.getApp('base').getProductInAtiSelect() == 4"/>
@@ -441,6 +458,10 @@
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
+    </action-record>
+    
+    <action-record name="action-product-record-product-sub-type-select-onchange" model="com.axelor.apps.base.db.Product">
+    	<field name="procurementMethodSelect" expr="buy" if="productSubTypeSelect == 3"/>
     </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">

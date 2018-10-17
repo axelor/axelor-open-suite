@@ -458,6 +458,7 @@
 				</field>
 				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid" colSpan="12"/>
+				<field name="timeSlot" colSpan="12"/>
 			</panel>
 			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')" >
 				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>

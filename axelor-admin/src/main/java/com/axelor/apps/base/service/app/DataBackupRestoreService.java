@@ -22,8 +22,10 @@ import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -31,8 +33,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
@@ -50,7 +54,7 @@ public class DataBackupRestoreService {
     try {
       unZip(zipedBackupFile, dirPath);
       String configFName =
-          tempDir.getAbsolutePath() + File.separator + DataBackupServiceImpl.configFileName;
+          tempDir.getAbsolutePath() + File.separator + DataBackupServiceImpl.CONFIG_FILE_NAME;
 
       CSVImporter csvImporter = new CSVImporter(configFName, tempDir.getAbsolutePath());
       csvImporter.addListener(
@@ -129,5 +133,30 @@ public class DataBackupRestoreService {
     long total = (long) JPA.em().createQuery("SELECT count(*) FROM Sequence").getSingleResult();
     long total1 = (long) JPA.em().createQuery("SELECT count(*) FROM MrpLineType").getSingleResult();
     return total > 0 || total1 > 0 ? true : false;
+  }
+
+  public Object importObjectWithByteArray(Object bean, Map<String, Object> values)
+      throws IOException {
+    assert bean instanceof Model;
+    final Path path = (Path) values.get("__path__");
+
+    Mapper mapper = Mapper.of(bean.getClass());
+    for (String fieldName : values.keySet()) {
+      if (fieldName.startsWith("byte_")) {
+        String fileName = (String) values.get(fieldName);
+        if (Strings.isNullOrEmpty((fileName))) {
+          return bean;
+        }
+        try {
+          final File image = path.resolve(fileName).toFile();
+          byte[] bytes = new byte[(int) image.length()];
+          bytes = java.nio.file.Files.readAllBytes(image.toPath());
+          mapper.set(bean, fieldName.substring(5), bytes);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return bean;
   }
 }

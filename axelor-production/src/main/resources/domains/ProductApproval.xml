@@ -10,7 +10,7 @@
 	<string name="code" title="Code" unique="true" required="true"/>
 	<string name="name" title="name" namecolumn="true" unique="true" required="true"/>
 	<string name="description" title="Description" large="true"/>
-	<boolean name="controlOnReceipt" title="Contorl on receipt"/>
+	<boolean name="controlOnReceipt" title="Control on receipt"/>
   	
   </entity>
   

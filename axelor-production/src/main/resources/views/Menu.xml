@@ -18,6 +18,7 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromProduction" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"

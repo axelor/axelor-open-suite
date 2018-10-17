@@ -194,6 +194,7 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromStock" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="stock-root-stock-location" parent="stock-root"

@@ -88,6 +88,8 @@
 - Sale Order : add new large string field 'Production note' and display it on picking stock move report.
 - BillOfMaterial : Add new large field 'Note'.
 - BANK RECONCILIATION : Fully rework the bank statement process.
+- Stock Location Line : Add new button 'Reserved qty' to display the reserved quantity on stock location line form.
+- Product : enable massUpdate on usedInDEB.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -133,10 +135,12 @@
 - Add App related data in Data Back & restore functionality.
 - Data Backup : export the record sorted by Model fullName.
 - Improve opportunity view.
+- HR : Rename and reorder of timesheet menu entry and replace toolbar button to toolbar menu in grid.
+- Contact : Add new large field - timeSlot.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
-- Timeshee editor: Allows to delete a line when use unique product for the timesheet. 
+- Timesheet editor: Allows to delete a line when use unique product for the timesheet. 
 - Project Folder: The name is now display like title. Disable Project edit and new from Folder. 
 - Automatic mail default fields in stock move are now filled correctly on partner change.
 - Project: Fix multiple bugs and improve views.
@@ -167,16 +171,23 @@
 - Stock Move : Fix display email fields title.
 - PROJECT : Fix translations.
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
+- Sale Order Line : Fix pack type translations.
+- Sale Order : Fix NPE when we add a line and just enter the product name string field and enter unit price or qty.
+- Diclaration of exchange : filter productTypeSelect.
+- Stock Move : Fix when try to cancel an incoming realized stock move.
+- Data backup : Fix binary field restore.
 - Data backup : Include meta links.
 
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
+- PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Remove unecessary table in VAT on invoice report.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -195,6 +206,10 @@
 - MOVE : display missing description field in moveLines
 - MOVE : remove the wrong domain on company field that allow to select only the user active company
 - BANKSTATEMENTAFB120 : DateTimeFormatter updated since we use java.date.time instead of joda.time
+- Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
+- Fix menuitem's translations.
+- Get correct stock location for intercompany (interco) orders.
+- StockMove : make addresses updatable until it's not realized.
 
 ## [5.0.6] - 2018-10-06
 ## Features
