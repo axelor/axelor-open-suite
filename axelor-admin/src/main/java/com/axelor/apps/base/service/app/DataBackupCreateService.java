@@ -29,7 +29,6 @@ import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -175,6 +174,7 @@ public class DataBackupCreateService {
     fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
     LOG.debug("Data Import Completed");
+
     return zippedFile;
   }
 
@@ -273,8 +273,7 @@ public class DataBackupCreateService {
             dataArr = new ArrayList<>();
 
             for (Property property : pro) {
-              if (StringUtils.isEmpty(property.getMappedBy())
-                  && !exceptColumnNameList.contains(property.getName())) {
+              if (isPropertyExportable(property)) {
                 if (headerFlag) {
                   String headerStr = getMetaModelHeader(dataObject, property, csvInput);
                   headerArr.add(headerStr);
@@ -313,6 +312,22 @@ public class DataBackupCreateService {
     return csvInput;
   }
 
+  private boolean isPropertyExportable(Property property) {
+    if (!exceptColumnNameList.contains(property.getName())
+        && ((StringUtils.isEmpty(property.getMappedBy()))
+            || (!StringUtils.isEmpty(property.getMappedBy())
+                && (property.getTarget() != null
+                    && property
+                        .getTarget()
+                        .getPackage()
+                        .equals(Package.getPackage("com.axelor.meta.db"))
+                    && !property.getTarget().isAssignableFrom(MetaFile.class)
+                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))) {
+      return true;
+    }
+    return false;
+  }
+
   /* Get Header For csv File */
   private String getMetaModelHeader(Object value, Property property, CSVInput csvInput) {
     String propertyTypeStr = property.getType().toString();
@@ -344,8 +359,9 @@ public class DataBackupCreateService {
         relationship.equalsIgnoreCase("ONE")
             ? "self.importId = :" + columnName
             : "self.importId in :" + columnName;
-    if (property.getTarget().isAssignableFrom(MetaModel.class)
-        || property.getTarget().isAssignableFrom(MetaField.class)) {
+    if (property.getTarget() != null
+        && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
+        && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
       columnName = property.getName() + "_name";
       search =
           relationship.equalsIgnoreCase("ONE")
@@ -393,7 +409,7 @@ public class DataBackupCreateService {
         return fileName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationFieldValue(property, value);
+        return getRelationalFieldValue(property, value);
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
         return getRelationalFieldData(property, value);
@@ -407,7 +423,7 @@ public class DataBackupCreateService {
     Collection<?> valueList = (Collection<?>) value;
     String referenceData = "";
     for (Object val : valueList) {
-      referenceData = getRelationFieldValue(property, val);
+      referenceData = getRelationalFieldValue(property, val);
       if (StringUtils.notBlank(referenceData)) {
         idStringBuilder.append(referenceData + REFERENCE_FIELD_SEPARATOR);
       }
@@ -419,11 +435,15 @@ public class DataBackupCreateService {
     return idStringBuilder.toString();
   }
 
-  private String getRelationFieldValue(Property property, Object val) {
-    if (property.getTarget().isAssignableFrom(MetaModel.class)) {
-      return ((MetaModel) val).getName().toString();
-    } else if (property.getTarget().isAssignableFrom(MetaField.class)) {
-      return ((MetaField) val).getName().toString();
+  private String getRelationalFieldValue(Property property, Object val) {
+    if (property.getTarget() != null
+        && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
+        && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+      try {
+        return Mapper.of(val.getClass()).get(val, "name").toString();
+      } catch (Exception e) {
+        return ((Model) val).getId().toString();
+      }
     } else {
       return ((Model) val).getId().toString();
     }

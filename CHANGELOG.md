@@ -176,6 +176,7 @@
 - Diclaration of exchange : filter productTypeSelect.
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
+- Data backup : Include meta links.
 
 ## [Unreleased 5.0.7]
 ## Features
