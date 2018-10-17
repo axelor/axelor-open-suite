@@ -31,6 +31,7 @@
 - Fix menuitem's translations.
 - Get correct stock location for intercompany (interco) orders.
 - StockMove : make addresses updatable until it's not realized.
+- StockMove : Modify Locale for Picking Order report.
 
 ## [5.0.6] - 2018-10-06
 ## Features
