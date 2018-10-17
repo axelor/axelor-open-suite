@@ -162,6 +162,7 @@
 - Stock Move : Fix display email fields title.
 - PROJECT : Fix translations.
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
+- Data backup : Fix binary field restore.
 
 ## [Unreleased 5.0.7]
 ## Features
