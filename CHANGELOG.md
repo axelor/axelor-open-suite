@@ -33,6 +33,7 @@
 - StockMove : make addresses updatable until it's not realized.
 - Fix a bug where duplicated stock move line were shown in a dashlet.
 - StockMove : Modify Locale for Picking Order report.
+- StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 
 ## [5.0.6] - 2018-10-06
 ## Features
