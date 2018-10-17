@@ -31,6 +31,7 @@
 - Fix menuitem's translations.
 - Get correct stock location for intercompany (interco) orders.
 - StockMove : make addresses updatable until it's not realized.
+- StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 
 ## [5.0.6] - 2018-10-06
 ## Features
