@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -64,9 +65,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected StockMoveService stockMoveService;
-  private TrackingNumberService trackingNumberService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected StockLocationLineService stockLocationLineService;
+  protected UnitConversionService unitConversionService;
+  private TrackingNumberService trackingNumberService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -75,13 +77,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       AppStockService appStockService,
       StockMoveService stockMoveService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      UnitConversionService unitConversionService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.stockLocationLineService = stockLocationLineService;
+    this.unitConversionService = unitConversionService;
   }
 
   /**
@@ -651,6 +655,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
+  public Unit getStockUnit(StockMoveLine stockMoveLine) {
+    Unit stockUnit = stockMoveLine.getUnit();
+    if (stockUnit == null && stockMoveLine.getProduct() != null) {
+      stockUnit = stockMoveLine.getProduct().getUnit();
+    }
+    return stockUnit;
+  }
+
+  @Override
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
@@ -659,6 +672,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
+      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
+          && stockMove.getFromStockLocation() != null
+          && stockMove.getFromStockLocation().getTypeSelect()
+              != StockLocationRepository.TYPE_VIRTUAL) {
+        unitPriceUntaxed =
+            computeFromStockLocation(stockMoveLine, stockMove.getFromStockLocation());
       } else {
         unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
       }
@@ -666,6 +685,32 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
     return stockMoveLine;
+  }
+
+  /**
+   * Compute the price corresponding to the stock move line in the stock location. The price is the
+   * average price in the stock location line with the same product as the stock move line, after
+   * converting the unit.
+   *
+   * @param stockMoveLine a stock move line with a product.
+   * @param stockLocation a stock location.
+   * @return the computed price.
+   * @throws AxelorException if the conversion fails.
+   */
+  protected BigDecimal computeFromStockLocation(
+      StockMoveLine stockMoveLine, StockLocation stockLocation) throws AxelorException {
+    Optional<StockLocationLine> stockLocationLine =
+        Optional.ofNullable(
+            stockLocationLineService.getStockLocationLine(
+                stockLocation, stockMoveLine.getProduct()));
+    BigDecimal priceFromLocation = BigDecimal.ZERO;
+    if (stockLocationLine.isPresent()) {
+      priceFromLocation = stockLocationLine.get().getAvgPrice();
+      priceFromLocation =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(), getStockUnit(stockMoveLine), priceFromLocation);
+    }
+    return priceFromLocation;
   }
 
   @Override

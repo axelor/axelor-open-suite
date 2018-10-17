@@ -74,68 +74,92 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         appStockService,
         stockMoveService,
         stockMoveLineRepository,
-        stockLocationLineService);
+        stockLocationLineService,
+        unitConversionService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
-    this.unitConversionService = unitConversionService;
   }
 
   @Override
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
+
+    // the case when stockMove is null is made in super.
+    if (stockMove == null) {
+      return super.compute(stockMoveLine, null);
+    }
+
+    // if this is a pack do not compute price
+    if (stockMoveLine.getProduct() == null
+        || (stockMoveLine.getLineTypeSelect() != null
+            && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK)) {
+      return stockMoveLine;
+    }
+
+    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+      // the stock move comes from a sale or purchase order, we take the price from the order.
+      stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
+    } else {
+      stockMoveLine = super.compute(stockMoveLine, stockMove);
+    }
+    return stockMoveLine;
+  }
+
+  protected StockMoveLine computeFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
     BigDecimal unitPriceTaxed = BigDecimal.ZERO;
     Unit orderUnit = null;
-    if (stockMove == null || stockMove.getOriginId() == null || stockMove.getOriginId() == 0L) {
-      return super.compute(stockMoveLine, stockMove);
-    }
-    if (stockMoveLine.getProduct() != null
-        && (stockMoveLine.getLineTypeSelect() == null
-            || stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK)) {
-      if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-        if (saleOrderLine == null) {
-          // log the exception
-          TraceBackService.trace(
-              new AxelorException(
-                  IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
-                  TraceBackRepository.TYPE_TECHNICAL,
-                  stockMove.getOriginId(),
-                  stockMove.getName()));
-        } else {
-          unitPriceUntaxed = saleOrderLine.getExTaxTotal();
-          unitPriceTaxed = saleOrderLine.getInTaxTotal();
-          orderUnit = saleOrderLine.getUnit();
-        }
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+      if (saleOrderLine == null) {
+        // log the exception
+        TraceBackService.trace(
+            new AxelorException(
+                TraceBackRepository.TYPE_TECHNICAL,
+                IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
+                stockMove.getOriginId(),
+                stockMove.getName()));
       } else {
-        PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
-        if (purchaseOrderLine == null) {
-          // log the exception
-          TraceBackService.trace(
-              new AxelorException(
-                  IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
-                  TraceBackRepository.TYPE_TECHNICAL,
-                  stockMove.getOriginId(),
-                  stockMove.getName()));
-        } else {
-          unitPriceUntaxed = purchaseOrderLine.getExTaxTotal();
-          unitPriceTaxed = purchaseOrderLine.getInTaxTotal();
-          orderUnit = purchaseOrderLine.getUnit();
-        }
+        unitPriceUntaxed = saleOrderLine.getExTaxTotal();
+        unitPriceTaxed = saleOrderLine.getInTaxTotal();
+        orderUnit = saleOrderLine.getUnit();
+      }
+    } else {
+      PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+      if (purchaseOrderLine == null) {
+        // log the exception
+        TraceBackService.trace(
+            new AxelorException(
+                TraceBackRepository.TYPE_TECHNICAL,
+                IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
+                stockMove.getOriginId(),
+                stockMove.getName()));
+      } else {
+        unitPriceUntaxed = purchaseOrderLine.getExTaxTotal();
+        unitPriceTaxed = purchaseOrderLine.getInTaxTotal();
+        orderUnit = purchaseOrderLine.getUnit();
       }
     }
-    Unit stockUnit = stockMoveLine.getUnit();
-    if (stockUnit == null && stockMoveLine.getProduct() != null) {
-      stockUnit = stockMoveLine.getProduct().getUnit();
-    }
 
-    // convert units
-    if (stockUnit != null && orderUnit != null) {
-      unitPriceUntaxed = unitConversionService.convert(orderUnit, stockUnit, unitPriceUntaxed);
-      unitPriceTaxed = unitConversionService.convert(orderUnit, stockUnit, unitPriceTaxed);
-    }
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
+
+    Unit stockUnit = getStockUnit(stockMoveLine);
+    return convertUnitPrice(stockMoveLine, orderUnit, stockUnit);
+  }
+
+  protected StockMoveLine convertUnitPrice(StockMoveLine stockMoveLine, Unit fromUnit, Unit toUnit)
+      throws AxelorException {
+    // convert units
+    if (toUnit != null && fromUnit != null) {
+      BigDecimal unitPriceUntaxed =
+          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceUntaxed());
+      BigDecimal unitPriceTaxed =
+          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceTaxed());
+      stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
+      stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
+    }
     return stockMoveLine;
   }
 

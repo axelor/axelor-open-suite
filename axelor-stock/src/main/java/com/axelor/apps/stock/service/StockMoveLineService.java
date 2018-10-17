@@ -163,6 +163,11 @@ public interface StockMoveLineService {
    */
   public void checkExpirationDates(StockMove stockMove) throws AxelorException;
 
+  /**
+   * Return unit found in stock move line, or if the unit is empty, take the unit from the product.
+   */
+  Unit getStockUnit(StockMoveLine stockMoveLine);
+
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
