@@ -89,6 +89,7 @@
 - BillOfMaterial : Add new large field 'Note'.
 - BANK RECONCILIATION : Fully rework the bank statement process.
 - Stock Location Line : Add new button 'Reserved qty' to display the reserved quantity on stock location line form.
+- Product : enable massUpdate on usedInDEB.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -172,6 +173,7 @@
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
 - Sale Order Line : Fix pack type translations.
 - Sale Order : Fix NPE when we add a line and just enter the product name string field and enter unit price or qty.
+- Diclaration of exchange : filter productTypeSelect.
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 
 ## [Unreleased 5.0.7]
