@@ -28,20 +28,24 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,10 +83,17 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void transmitRelease(SubrogationRelease subrogationRelease) {
+  public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
         sequenceService.getSequenceNumber("subrogationRelease", subrogationRelease.getCompany());
+    if (Strings.isNullOrEmpty(sequenceNumber)) {
+      throw new AxelorException(
+          Sequence.class,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
+          subrogationRelease.getCompany().getName());
+    }
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
   }

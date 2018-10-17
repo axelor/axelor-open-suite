@@ -721,4 +721,10 @@ public interface IExceptionMessage {
       "There is no configured sequence for temporary reconcile group" /*)*/;
   String RECONCILE_GROUP_NO_FINAL_SEQUENCE = /*$$(*/
       "There is no configured sequence for final reconcile group" /*)*/;
+  
+  /*
+   * Subrogation Release
+   */
+  static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
+      "Missing subrogation release sequence for company %s" /*)*/;
 }

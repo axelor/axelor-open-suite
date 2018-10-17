@@ -44,9 +44,9 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -444,28 +444,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   public String createDomainForBankDetails(BankOrder bankOrder) {
-    String domain = "";
-    if (bankOrder.getSenderCompany() != null) {
 
-      String bankDetailsIds =
-          StringTool.getIdListString(bankOrder.getSenderCompany().getBankDetailsSet());
+    String domain =
+        Beans.get(BankDetailsService.class)
+            .getActiveCompanyBankDetails(bankOrder.getSenderCompany());
 
-      if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
-        bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
-        bankDetailsIds += bankOrder.getSenderCompany().getDefaultBankDetails().getId().toString();
-      }
-      if (bankDetailsIds.equals("")) {
-        return "";
-      }
-      domain = "self.id IN(" + bankDetailsIds + ")";
-    }
-
-    if (domain.equals("")) {
-      return domain;
-    }
-
-    // filter the result on active bank details
-    domain += " AND self.active = true";
     // filter on the bank details identifier type from the bank order file
     // format
     if (bankOrder.getBankOrderFileFormat() != null) {

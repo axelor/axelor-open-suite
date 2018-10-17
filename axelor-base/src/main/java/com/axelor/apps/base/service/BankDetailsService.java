@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -82,6 +83,23 @@ public interface BankDetailsService {
    */
   BankDetails getDefaultCompanyBankDetails(
       Company company, PaymentMode paymentMode, Partner partner);
+
+  /**
+   * Get active company bank details filtered on a currency
+   *
+   * @param company
+   * @param currency
+   * @return A string field that can used as domain (Jpql WHERE clause)
+   */
+  String getActiveCompanyBankDetails(Company company, Currency currency);
+
+  /**
+   * Get active company bank details
+   *
+   * @param company
+   * @return A string field that can used as domain (Jpql WHERE clause)
+   */
+  String getActiveCompanyBankDetails(Company company);
 
   /**
    * ABS method to validate a iban.

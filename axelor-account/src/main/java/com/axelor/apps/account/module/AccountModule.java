@@ -48,6 +48,8 @@ import com.axelor.apps.account.db.repo.ReconcileGroupAccountRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingReportService;
@@ -211,5 +213,7 @@ public class AccountModule extends AxelorModule {
     bind(ReconcileGroupRepository.class).to(ReconcileGroupAccountRepository.class);
 
     bind(ReconcileGroupService.class).to(ReconcileGroupServiceImpl.class);
+
+    bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
   }
 }

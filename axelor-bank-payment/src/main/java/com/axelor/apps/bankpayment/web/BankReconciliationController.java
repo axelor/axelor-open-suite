@@ -19,7 +19,8 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.service.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,7 +32,21 @@ public class BankReconciliationController {
 
   @Inject BankReconciliationService bankReconciliationService;
 
+  @Inject BankReconciliationValidateService bankReconciliationValidateService;
+
   @Inject BankReconciliationRepository bankReconciliationRepo;
+
+  public void loadBankStatement(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.loadBankStatement(
+          bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -48,10 +63,22 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.validate(bankReconciliationRepo.find(bankReconciliation.getId()));
+      bankReconciliationValidateService.validate(
+          bankReconciliationRepo.find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    String domain = bankReconciliationService.createDomainForBankDetails(bankReconciliation);
+    // if nothing was found for the domain, we set it at a default value.
+    if (domain.equals("")) {
+      response.setAttr("bankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetails", "domain", domain);
     }
   }
 }

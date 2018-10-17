@@ -278,7 +278,7 @@
 	    </panel>
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformation" title="Delivery information" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
-	      <field name="stockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field name="stockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="deliveryDate"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
@@ -376,7 +376,7 @@
 	  </panel>
 	  <panel title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	  	<field name="accountedRevenue">
-	  		<hilite if="(accountedRevenue &gt; 0 || companyExTaxTotal &gt; 0) &amp;&amp; accountedRevenue != companyExTaxTotal" color="warning"/>
+	  		<hilite if="accountedRevenue &lt; companyExTaxTotal" color="warning"/>
 	  	</field>
 	    <field name="totalCostPrice"/>
 	    <field name="totalGrossMargin">

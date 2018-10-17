@@ -38,8 +38,9 @@ public interface SubrogationReleaseService {
    * Transmit a subrogation release (generate a sequence number and change status).
    *
    * @param subrogationRelease
+   * @throws AxelorException
    */
-  void transmitRelease(SubrogationRelease subrogationRelease);
+  void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException;
 
   /**
    * Generate a PDF export.

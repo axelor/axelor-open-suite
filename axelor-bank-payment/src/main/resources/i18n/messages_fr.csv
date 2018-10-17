@@ -3,7 +3,7 @@
 "%d line successfully rejected","%d ligne rejetée avec succès",,
 "%d lines successfully rejected","%d lignes rejetées avec succès",,
 "%s : Bank statement line %s amount can't be null",,,
-"%s : Computed balance and Ending Balance must be equal",,,
+"Computed balance and Ending Balance should be equal","Le solde d'arrivée et le solde calculé devrait être égaux",,
 "%s : MoveLine amount is not equals with bank statement line %s",,,
 "%s : Please configure an ICS number for the company %s.","%s : Veuillez configurer un numéro ICS pour la société %s.",,
 "%s : Please, configure a default signer for the company %s","%s : Veuillez configurer un signataire par défaut pour la société %s",,

@@ -302,7 +302,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
 
-    if (saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
+    if (saleOrderLine.getProduct() != null
+        && saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
       subTotalCostPrice =
           saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
     }
@@ -569,9 +570,14 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       subMarginRate =
           subTotalGrossProfit.divide(totalWT, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
       logger.debug("Subtotal gross margin rate: {}", subMarginRate);
-      subTotalMarkup =
-          subTotalCostPrice.divide(totalWT, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
-      logger.debug("Subtotal markup: {}", subTotalMarkup);
+
+      if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
+        subTotalMarkup =
+            subTotalGrossProfit
+                .divide(subTotalCostPrice, RoundingMode.HALF_EVEN)
+                .multiply(new BigDecimal(100));
+        logger.debug("Subtotal markup: {}", subTotalMarkup);
+      }
     }
 
     saleOrderLine.setSubTotalGrossMargin(subTotalGrossProfit);

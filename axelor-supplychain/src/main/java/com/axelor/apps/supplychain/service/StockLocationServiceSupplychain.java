@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.stock.service.StockLocationService;
+import java.math.BigDecimal;
 
 public interface StockLocationServiceSupplychain extends StockLocationService {
 

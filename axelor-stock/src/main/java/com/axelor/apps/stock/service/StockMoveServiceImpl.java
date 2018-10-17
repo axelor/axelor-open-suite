@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -620,16 +619,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   private void computeMasses(StockMove stockMove) throws AxelorException {
-    boolean massesRequired = checkMassesRequired(stockMove);
     StockConfig stockConfig = stockMove.getCompany().getStockConfig();
     Unit endUnit = stockConfig != null ? stockConfig.getCustomsMassUnit() : null;
-
-    if (massesRequired && endUnit == null) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.STOCK_MOVE_17));
-    }
+    boolean massesRequiredForStockMove = false;
 
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
@@ -641,6 +633,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
+      boolean massesRequiredForStockMoveLine =
+          stockMoveLineService.checkMassesRequired(stockMove, stockMoveLine);
 
       if (product == null
           || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
@@ -652,7 +646,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (netMass.signum() == 0) {
         Unit startUnit = product.getMassUnit();
 
-        if (startUnit != null) {
+        if (startUnit != null && endUnit != null) {
           netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass());
           stockMoveLine.setNetMass(netMass);
         }
@@ -661,27 +655,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (netMass.signum() != 0) {
         BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
         stockMoveLine.setTotalNetMass(totalNetMass);
-      } else if (massesRequired) {
+      } else if (massesRequiredForStockMoveLine) {
         throw new AxelorException(
             stockMove,
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(IExceptionMessage.STOCK_MOVE_18));
       }
+
+      if (!massesRequiredForStockMove && massesRequiredForStockMoveLine) {
+        massesRequiredForStockMove = true;
+      }
     }
-  }
 
-  @Override
-  public boolean checkMassesRequired(StockMove stockMove) {
-    Address fromAddress = getFromAddress(stockMove);
-    Address toAddress = getToAddress(stockMove);
-
-    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
-    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
-
-    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-        && fromCountry != null
-        && toCountry != null
-        && !fromCountry.equals(toCountry);
+    if (massesRequiredForStockMove && endUnit == null) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STOCK_MOVE_17));
+    }
   }
 
   @Override

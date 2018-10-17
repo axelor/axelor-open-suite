@@ -7,40 +7,52 @@
 			<field name="name" />
 			<field name="fromDate" />
 			<field name="toDate" />
+			<field name="company"/>
+			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
 			<field name="startingBalance" />
 			<field name="endingBalance" />
             <field name="statusSelect"/> 
      </grid>
   
-	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" readonlyIf="statusSelect == 2" 
+	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" 
 	onNew="action-bank-reconciliation-onnew-group" >
 		<panel name="main" colSpan="12">
-			<field name="name"/>
-			<field name="bankStatement" domain="self.statusSelect = 2"/>
-			<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid"/>
-			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
+			<panel readonlyIf="statusSelect == 2" colSpan="12">
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+				<field name="name"/>
+				<field name="bankStatement" domain="self.statusSelect = 2"/>
+				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
+				<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
+				<field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"/>
+				<field name="includeOtherBankStatements"/>
+				<field name="fromDate"/>
+				<field name="toDate"/>
+				<field name="journal" canEdit="false" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+				<field name="cashAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
+			</panel>
+			<panel colSpan="12">
+				<button name="loadBankStatement" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
+				<button name="validate" title="Validate" hideIf="statusSelect == 2" onClick="save,action-group-bankreconciliation-validate-click" colSpan="3"/>
+				<button name="showReconciledMoveLine" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3"/>
+			</panel>
 		</panel>
-		
-		<panel title="Bank reconciliation" colSpan="12">
-			<field name="journal" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-			<field name="cashAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
-		
-			<panel name="status" title="Status" colSpan="12">
-				<field name="statusSelect" title="Status"/>
-				<button name="validated" title="Validated" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-validate-click"/>
-			</panel>
-			
+		<panel title="Bank reconciliation" colSpan="12" readonlyIf="statusSelect == 2">
 			<panel name="balance" title="Balance" colSpan="12">
-				<field name="startingBalance"/>
-				<field name="endingBalance"/>
-				<field name="computedBalance"/>
-				<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click"/>
+				<field name="totalPaid"/>
+				<field name="totalCashed"/>
+				<separator title="Bank statements"/>
+				<separator title="Account"/>
+				<field name="startingBalance" colSpan="3" readonlyIf="bankStatement"/>
+				<field name="endingBalance" colSpan="3" readonlyIf="bankStatement"/>
+				<field name="accountBalance" colSpan="3" readonlyIf="bankStatement"/>
+				<field name="computedBalance" colSpan="3"/>
+				<label colSpan="12" css="label-danger" title="Computed balance and Ending Balance should be equal" showIf="computedBalance = endingBalance"/>
+				<button name="compute" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click" colSpan="3"/>
 			</panel>
-			
-			<panel-related field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form"/>
+			<panel-related field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click"/>
+			<panel-dashlet action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12"/>
 		</panel>
 		
 	</form>
@@ -77,13 +89,34 @@
        <field name="currency" expr="eval: company?.currency"/>
    </action-record>
    
-	<action-method name="action-bank-reconciliation-method-compute">
-		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="compute"/>
-	</action-method>
+   <action-method name="action-bank-reconciliation-method-set-bank-details-domain">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setBankDetailsDomain"/>
+   </action-method>
+   
+   <action-method name="action-bank-reconciliation-method-load-bank-statement">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="loadBankStatement"/>
+   </action-method>
 	
-	<action-method name="action-bank-reconciliation-method-validate">
-		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate"/>
-	</action-method>
-	 
+   <action-method name="action-bank-reconciliation-method-compute">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="compute"/>
+   </action-method>
+	
+   <action-method name="action-bank-reconciliation-method-validate">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate"/>
+   </action-method>
+	
+   <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">
+     <view type="grid" name="move-line-bank-reconciliation-grid"/>
+     <view type="form" name="move-line-form"/>
+     <domain>self.move.journal.id = :journal and ((self.debit &gt; 0 and self.bankReconciledAmount &lt; self.debit) or (self.credit &gt; 0 and self.bankReconciledAmount &lt; self.credit)) and self.account.id = :cashAccount and self.move.statusSelect != 4</domain>
+   </action-view>	 
+   
+   <action-view name="action-bank-reconciliation-view-show-reconciled-move-lines" title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
+   	 <view type="grid" name="move-line-bank-reconciliation-grid"/>
+     <view type="form" name="move-line-form"/>
+     <domain>self.move.id in (select ML.move from BankReconciliationLine as BRL left join BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId)</domain>
+     <context name="bankReconciliationId" expr="eval: id"/>
+   </action-view>	
+   
     
 </object-views>

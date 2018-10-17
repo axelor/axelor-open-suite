@@ -13,13 +13,10 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onLoad="action-stock-location-line-atts-avg-price-scale">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onLoad="action-stock-location-line-group-onload">
     	<panel name="main">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	        <field name="currentQty"/>
-	        <field name="futureQty"/>
 	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
             <field name="avgPrice"/>
             <field name="rack"/>
         </panel>
@@ -28,9 +25,10 @@
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
 		<panel>
-        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="4"/>
-        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="4"/>
-        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="4"/>
+        	<button name="$realQty" title="Real qty" icon="fa-building-o" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$futureQty" title="Future qty" icon="fa-line-chart" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$reservedQty" title="Reserved qty" icon="fa-cubes" onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3" widget="info-button" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
         </panel>
     </form>
 
@@ -120,6 +118,11 @@
 		</panel>
     </form>
     
+    <action-group name="action-stock-location-line-group-onload">
+    	<action name="action-stock-location-line-atts-avg-price-scale"/>
+    	<action name="action-stock-location-line-record-total-quantities"/>
+    </action-group>
+    
     <action-view name="action-stock-location-line-view-planned-stock-move-lines" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     	<view type="grid" name="stock-move-line-all-grid-planned"/>
     	<view type="form" name="stock-move-line-all-form"/>
@@ -147,5 +150,11 @@
     <action-attrs name="action-stock-location-line-atts-avg-price-scale">
     	<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
+    
+    <action-record name="action-stock-location-line-record-total-quantities" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<field name="$realQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id)"/>
+        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id)"/>
+        <field name="$reservedQty" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id)" if="__config__.app.isApp('supplychain')" />
+    </action-record>
     
 </object-views>

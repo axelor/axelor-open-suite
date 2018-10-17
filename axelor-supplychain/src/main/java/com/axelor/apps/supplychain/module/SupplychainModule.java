@@ -45,7 +45,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
