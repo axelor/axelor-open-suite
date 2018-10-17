@@ -30,6 +30,7 @@
 - Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
 - Fix menuitem's translations.
 - Get correct stock location for intercompany (interco) orders.
+- StockMove : make addresses updatable until it's not realized.
 
 ## [5.0.6] - 2018-10-06
 ## Features
