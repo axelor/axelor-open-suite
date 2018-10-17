@@ -20,10 +20,13 @@ package com.axelor.studio.service.module;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVInput;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.WkfTransition;
 import com.axelor.studio.db.repo.WkfRepository;
+import com.axelor.studio.service.builder.ModelBuilderService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.io.IOException;
@@ -37,6 +40,10 @@ public class ModuleExportWkfService {
   @Inject private WkfRepository wkfRepo;
 
   @Inject private ModuleExportDataInitService exportDataInitService;
+
+  @Inject private MetaJsonModelRepository metaJsonModelRepo;
+
+  @Inject private ModelBuilderService modelBuilderService;
 
   private static final String[] WKF_HEADER =
       new String[] {
@@ -79,8 +86,10 @@ public class ModuleExportWkfService {
         "successMsg"
       };
 
-  public void exportWkf(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig)
+  public void exportWkf(String moduleName, ZipOutputStream zipOut, CSVConfig csvConfig)
       throws IOException {
+
+    String modulePrefix = exportDataInitService.getModulePrefix(moduleName);
 
     //		List<Wkf> wkfs = wkfRepo.all().filter("self.isJson = true "
     //				+ "AND self.model in (SELECT name FROM MetaJsonModel WHERE isReal = false) "
@@ -94,12 +103,13 @@ public class ModuleExportWkfService {
     List<WkfTransition> transitions = new ArrayList<>();
 
     for (Wkf wkf : wkfs) {
+      String model = getModel(wkf, moduleName);
       data.add(
           new String[] {
             wkf.getName(),
-            wkf.getModel(),
+            model,
             wkf.getJsonField(),
-            wkf.getIsJson().toString(),
+            wkf.getIsJson() && wkf.getModel().equals(model) ? "true" : "false",
             wkf.getStatusField().getName(),
             wkf.getDisplayTypeSelect().toString(),
             wkf.getBpmnXml(),
@@ -132,6 +142,18 @@ public class ModuleExportWkfService {
       addNodes(modulePrefix, zipOut, csvConfig, nodes);
       addTransitions(modulePrefix, zipOut, csvConfig, transitions);
     }
+  }
+
+  private String getModel(Wkf wkf, String moduleName) {
+
+    if (wkf.getIsJson()) {
+      MetaJsonModel jsonModel = metaJsonModelRepo.findByName(wkf.getModel());
+      if (jsonModel != null && jsonModel.getIsReal()) {
+        return modelBuilderService.getModelFullName(moduleName, jsonModel.getName());
+      }
+    }
+
+    return wkf.getModel();
   }
 
   private void addNodes(

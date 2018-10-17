@@ -112,14 +112,20 @@ public class ModuleExportService {
   @Inject private MetaFileRepository metaFileRepo;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
-  
+
   @Transactional
   public MetaFile export(String module, MetaFile metaFile)
       throws AxelorException, ZipException, IOException, JAXBException {
 
     List<MetaJsonModel> jsonModels = metaJsonModelRepo.all().filter("self.isReal = true").fetch();
     List<MetaModel> metaModels = metaModelRepo.all().filter("self.isReal = true").fetch();
-    List<ViewBuilder> viewBuilders = viewBuilderRepo.all().fetch();
+    List<ViewBuilder> viewBuilders =
+        viewBuilderRepo
+            .all()
+            .filter(
+                "self.model IN (SELECT name FROM MetaModel WHERE isReal = true)"
+                    + " OR self.model IN (SELECT name FROM MetaJsonModel WHERE isReal = true)")
+            .fetch();
 
     if (jsonModels.isEmpty() && metaModels.isEmpty() && viewBuilders.isEmpty()) {
       throw new AxelorException(
