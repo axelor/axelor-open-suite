@@ -35,10 +35,16 @@
         </node>
     </tree>
 
-	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new">
+	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance">
 		<panel name="main">
-			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
-			<field name="name" colSpan="9" css="bold"/>
+			<panel colSpan="8">
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
+				<field name="name" colSpan="9" css="bold"/>
+			</panel>
+			<panel colSpan="4" showIf="id">
+				<button name="$balance" title="Total balance" icon="fa-money" widget="info-button"/>
+			</panel>
 			<panel name="settings" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
 				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
@@ -48,6 +54,9 @@
 				<field name="reconcileOk" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
 			</panel>
+			<panel colSpan="12" showIf="id">
+				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
+      		</panel>
 		</panel>
 	</form>
 
@@ -143,6 +152,9 @@
         <field name="parentAccount" expr="eval:__repo__(AccountConfig).all().filter('self.company = ?', __parent__.company).fetchOne().employeeAccount"/>
         <field name="accountType" expr="eval:__repo__(AccountConfig).all().filter('self.company = ?', __parent__.company).fetchOne().employeeAccount?.accountType"/>
     </action-record>
-
+    
+    <action-method name="action-account-method-compute-balance">
+    	<call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
+    </action-method>
     
 </object-views>
