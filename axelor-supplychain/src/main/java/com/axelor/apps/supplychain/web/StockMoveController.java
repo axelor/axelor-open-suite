@@ -18,8 +18,10 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -46,6 +48,27 @@ public class StockMoveController {
           "stockMoveLineList", stockMoveService.removeSubLines(stockMove.getStockMoveLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  /**
+   * Called on stock move save. Call {@link StockMoveService#updateReservedQty(StockMove)} if the
+   * stock move is planned.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateReservedQty(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+        stockMoveService.updateReservedQty(stockMove);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
       response.setReload(true);
     }
   }

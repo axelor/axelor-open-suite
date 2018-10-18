@@ -92,6 +92,7 @@
 - Product : enable massUpdate on usedInDEB.
 - Account : Add a viewer to display the balance and add button to display all account move lines linked to the account on account form.
 - StockLocationLine : Add dashlet to know prosuct quantities in other stock locations.
+- Stock Move Line: add button to update reserved qty in stock location line.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

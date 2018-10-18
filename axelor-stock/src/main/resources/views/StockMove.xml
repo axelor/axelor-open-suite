@@ -151,6 +151,7 @@
                 <button name="generateReversion" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
                 <button name="cancel" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
                 <button name="draft" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+                <button name="updateLocation" title="Update location" showIf="statusSelect == 2" if-module="axelor-supplychain" onClick="save,action-method-supplychain-stock-move-reserved-qty"/>
             </panel>
         </panel>
 

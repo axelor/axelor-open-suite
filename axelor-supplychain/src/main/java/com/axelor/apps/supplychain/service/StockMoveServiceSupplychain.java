@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface StockMoveServiceSupplychain {
@@ -25,4 +27,11 @@ public interface StockMoveServiceSupplychain {
   public List<StockMoveLine> addSubLines(List<StockMoveLine> list);
 
   public List<StockMoveLine> removeSubLines(List<StockMoveLine> lines);
+
+  /**
+   * Update reserved qty of a stock move by canceling then planning it.
+   *
+   * @param stockMove a planned stock move.
+   */
+  public void updateReservedQty(StockMove stockMove) throws AxelorException;
 }

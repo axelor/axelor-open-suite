@@ -597,8 +597,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal reservedQty)
       throws AxelorException {
 
-    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
-
     switch (fromStatus) {
       case StockMoveRepository.STATUS_PLANNED:
         stockLocationLineService.updateLocation(
