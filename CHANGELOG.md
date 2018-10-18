@@ -90,6 +90,7 @@
 - BANK RECONCILIATION : Fully rework the bank statement process.
 - Stock Location Line : Add new button 'Reserved qty' to display the reserved quantity on stock location line form.
 - Product : enable massUpdate on usedInDEB.
+- Account : Add a viewer to display the balance and add button to display all account move lines linked to the account on account form.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

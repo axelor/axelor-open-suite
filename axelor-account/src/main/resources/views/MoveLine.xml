@@ -346,6 +346,12 @@
 		<field name="credit" expr="0" if="credit &lt; 0"/>
 	</action-record>
 	
+	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
+		<view type="grid" name="move-line-move-grid"/>
+		<view type="form" name="move-line-move-form"/>
+		<domain>self.account.id = :_id</domain>
+	</action-view>
+	
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>
 		<field name="move.journal" title="Journal"/>
