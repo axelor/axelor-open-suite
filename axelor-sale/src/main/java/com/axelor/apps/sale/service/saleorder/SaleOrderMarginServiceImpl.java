@@ -52,15 +52,13 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
           totalGrossProfit = totalGrossProfit.add(saleOrderLineList.getSubTotalGrossMargin());
           marginRate =
               totalGrossProfit
+                  .divide(accountedRevenue, RoundingMode.HALF_EVEN)
+                  .multiply(new BigDecimal(100));
+          markup =
+              totalGrossProfit
                   .divide(totalCostPrice, RoundingMode.HALF_EVEN)
                   .multiply(new BigDecimal(100));
-          markup = markup.add(saleOrderLineList.getSubTotalCostPrice());
         }
-      }
-
-      if (accountedRevenue.compareTo(BigDecimal.ZERO) != 0) {
-        markup =
-            markup.divide(accountedRevenue, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100));
       }
     }
 
