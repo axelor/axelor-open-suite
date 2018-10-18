@@ -179,6 +179,7 @@
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
+- SaleOrder : Hide contactPartner if clientPartner is individual.
 
 ## [Unreleased 5.0.7]
 ## Features
