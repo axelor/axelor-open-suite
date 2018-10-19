@@ -106,8 +106,27 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     } else if (model instanceof OperationOrder) {
 
       return ((OperationOrder) model).getName();
+
     } else {
+
       return super.computeReleatedName(model);
+    }
+  }
+
+  @Override
+  protected Partner getPartner(Model model) {
+
+    if (model instanceof ManufOrder) {
+
+      return ((ManufOrder) model).getClientPartner();
+
+    } else if (model instanceof OperationOrder) {
+
+      return ((OperationOrder) model).getManufOrder().getClientPartner();
+
+    } else {
+
+      return super.getPartner(model);
     }
   }
 }

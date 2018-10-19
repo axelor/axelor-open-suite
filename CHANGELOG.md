@@ -142,6 +142,7 @@
 - HR : Rename and reorder of timesheet menu entry and replace toolbar button to toolbar menu in grid.
 - Contact : Add new large field - timeSlot.
 - Use price from stock location when making an internal stock move.
+- Add Partner fullName field in MRP (grid and report)
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
