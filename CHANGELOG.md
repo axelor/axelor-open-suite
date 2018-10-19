@@ -94,6 +94,7 @@
 - StockLocationLine : Add dashlet to know prosuct quantities in other stock locations.
 - Stock Move Line: add button to update reserved qty in stock location line.
 - Bank Statement : Add action to BankPaymentBatch. 
+- Account : Import FEC file exported from accounting export.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
