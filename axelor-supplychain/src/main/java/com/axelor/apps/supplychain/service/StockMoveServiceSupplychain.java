@@ -29,6 +29,14 @@ public interface StockMoveServiceSupplychain {
   public List<StockMoveLine> removeSubLines(List<StockMoveLine> lines);
 
   /**
+   * Check reserved qty of a stock move by comparing old and new lines.
+   *
+   * @param stockMove a planned stock move.
+   */
+  public boolean hasReservedQtyChanged(StockMove oldStockMove, StockMove newStockMove)
+      throws AxelorException;
+
+  /**
    * Update reserved qty of a stock move by canceling then planning it.
    *
    * @param stockMove a planned stock move.
