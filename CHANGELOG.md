@@ -182,6 +182,7 @@
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
+- PurchaseOrder : Hide 'Completed' button conditionally.
 
 ## [Unreleased 5.0.7]
 ## Features
