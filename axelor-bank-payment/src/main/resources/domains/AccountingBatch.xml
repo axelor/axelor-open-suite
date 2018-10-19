@@ -12,10 +12,6 @@
 			selection="iaccount.account.batch.direct.debit.data.type.select"
 			default="1" />
 
-		<!-- BANK STATEMENT -->
-		<many-to-many name="ebicsPartnerSet" title="Ebics partners" ref="com.axelor.apps.bankpayment.db.EbicsPartner"/>
-        <many-to-many name="bankStatementFileFormatSet" title="Bank statement file formats" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat"/>
-
 		<extra-code><![CDATA[
 		   	// ACTION TYPE
 			public static final int ACTION_DIRECT_DEBIT = 12;
