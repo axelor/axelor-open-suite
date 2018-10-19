@@ -18,4 +18,7 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
 
+  <action-attrs name="action-supplychain-attrs-stock-order-line-max-reserved-qty">
+    <attribute name="value" for="reservedQty" expr="eval: realQty" if="reservedQty > realQty"/>
+  </action-attrs>
 </object-views>	
