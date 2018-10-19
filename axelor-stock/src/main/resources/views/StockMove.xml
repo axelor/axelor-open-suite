@@ -144,13 +144,13 @@
             <field name="isWithBackorder" colSpan="3"/>
 
             <panel stacked="true">
-                <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-                <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 1" height="3">
+                <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 2" height="3">
                     <viewer>{{record.fromAddressStr}}</viewer>
                 </field>
 
-                <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect == 1 &amp;&amp; typeSelect == 2" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-                <field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 1" height="3">
+                <field name="toAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 2" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <field name="toAddressStr" showIf="typeSelect == 2" readonlyIf="statusSelect &gt; 2" height="3">
                     <viewer>{{record.toAddressStr}}</viewer>
                 </field>
             </panel>
