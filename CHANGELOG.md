@@ -27,6 +27,7 @@
 - MOVE : remove the wrong domain on company field that allow to select only the user active company
 - BANKSTATEMENTAFB120 : DateTimeFormatter updated since we use java.date.time instead of joda.time
 - Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 
 ## [5.0.6] - 2018-10-06
 ## Features
