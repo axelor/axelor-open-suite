@@ -15,9 +15,13 @@
 	  	<!-- OTHERS INFORMATIONS -->
 	  	<string name="description" title="Description" large="true" />
 	    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="bankPaymentBatch" title="Batchs" />
-	  
-	  	<many-to-one name="template" ref="com.axelor.apps.message.db.Template" title="Template" required="true"/>
+
+	  	<many-to-one name="template" ref="com.axelor.apps.message.db.Template" title="Template"/>
 	  	<integer name="daysNbr" title="Number of days to take into account to alert"/>
+
+	  	<!-- BANK STATEMENT -->
+		<many-to-many name="ebicsPartnerSet" title="Ebics partners" ref="com.axelor.apps.bankpayment.db.EbicsPartner"/>
+		<many-to-many name="bankStatementFileFormatSet" title="Bank statement file formats" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat"/>
 	  		
   	</entity>
 </domain-models>
