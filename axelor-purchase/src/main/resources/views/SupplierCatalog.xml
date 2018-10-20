@@ -5,8 +5,8 @@
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="productSupplierName"/>
         <field name="productSupplierCode"/>
+        <field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="updateDate"/>
         <field name="minQty"/>
@@ -16,8 +16,8 @@
 	<grid name="supplier-catalog-partner-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
 		<field name="product.code"/>
 		<field name="product.name"/>
-		<field name="productSupplierName"/>
 		<field name="productSupplierCode"/>
+		<field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="updateDate"/>
 		<field name="minQty"/>
@@ -30,8 +30,8 @@
 			<field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
-        	<field name="productSupplierName"/>
         	<field name="productSupplierCode"/>
+        	<field name="productSupplierName"/>
         	<field name="minQty"/>
         	<field name="price"/>
        	</panel>
@@ -47,8 +47,8 @@
 			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update"/>
 			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
-			<field name="productSupplierName"/>
 			<field name="productSupplierCode"/>
+			<field name="productSupplierName"/>
 			<field name="minQty"/>
 			<field name="price"/>
 		</panel>

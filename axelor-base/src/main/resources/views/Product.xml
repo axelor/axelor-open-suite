@@ -126,6 +126,8 @@
 						<field name="allowToForceSaleQty"/>
 						<panel-related field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
+		      		<panel-related field="customerCatalogList" form-view="customer-catalog-form" grid-view="customer-catalog-grid" title="Customer catalog" showIf="sellable" colSpan="12"
+	      		if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="12">
 	        		<field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -153,7 +155,7 @@
 					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	      		</panel>
-	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
+	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Supplier catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	    	</panel>
             <panel name="accounting" title="Accounting">
