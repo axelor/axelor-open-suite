@@ -85,7 +85,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     contact.setMobilePhone(jobApplication.getMobilePhone());
     contact.setEmailAddress(jobApplication.getEmailAddress());
     partnerService.setPartnerFullName(contact);
-    
+
     return contact;
   }
 
