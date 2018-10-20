@@ -505,7 +505,6 @@
 	</form>
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
-		<field name="partnerSeq"/>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -514,7 +513,6 @@
 		<field name="partnerTypeSelect" />
 		<field name="titleSelect" />
 		<template><![CDATA[
-			<div class="span12"><strong>{{partnerSeq}}</strong></div>
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
@@ -544,7 +542,6 @@
 		<toolbar>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 		</toolbar>
-		<field name="partnerSeq"/>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -553,7 +550,6 @@
 		<field name="contactAddress" />
 		<field name="titleSelect" />
 		<template><![CDATA[
-			<div class="span12"><strong>{{partnerSeq}}</strong></div>
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
