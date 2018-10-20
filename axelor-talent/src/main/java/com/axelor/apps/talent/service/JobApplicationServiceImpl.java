@@ -31,11 +31,11 @@ import java.util.Set;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
 
-  @Inject private JobApplicationRepository jobApplicationRepo;
+  @Inject protected JobApplicationRepository jobApplicationRepo;
 
-  @Inject private AppBaseService appBaseService;
+  @Inject protected AppBaseService appBaseService;
 
-  @Inject private PartnerService partnerSerivce;
+  @Inject protected PartnerService partnerService;
 
   @Transactional
   @Override
@@ -56,7 +56,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     return employee;
   }
 
-  private Employee createEmployee(JobApplication jobApplication) {
+  protected Employee createEmployee(JobApplication jobApplication) {
 
     Employee employee = new Employee();
     employee.setDateOfHire(appBaseService.getTodayDate());
@@ -73,7 +73,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     return employee;
   }
 
-  private Partner createContact(JobApplication jobApplication) {
+  protected Partner createContact(JobApplication jobApplication) {
 
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(2);
@@ -84,8 +84,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     contact.setFixedPhone(jobApplication.getFixedPhone());
     contact.setMobilePhone(jobApplication.getMobilePhone());
     contact.setEmailAddress(jobApplication.getEmailAddress());
-    contact.setFullName(partnerSerivce.computeFullName(contact));
-
+    partnerService.setPartnerFullName(contact);
+    
     return contact;
   }
 
