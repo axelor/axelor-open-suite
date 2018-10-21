@@ -523,6 +523,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void checkConformitySelection(StockMove stockMove) throws AxelorException {
+	  
+	if(!appStockService.getAppStock().getRequireToFillConformityOnReceipt())  {  return;  }
+	
     List<String> productsWithErrors = new ArrayList<>();
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
