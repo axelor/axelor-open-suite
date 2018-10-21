@@ -145,7 +145,7 @@
 - Contact : Add new large field - timeSlot.
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
-- Add a new option in Supplychain to require to fill conformity for products ticked "Control on Receipt"
+- Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
