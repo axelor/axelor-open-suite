@@ -9,6 +9,7 @@
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
+- Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
