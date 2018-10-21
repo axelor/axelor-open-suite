@@ -1405,12 +1405,6 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
             <header>
                 <row id="4675">
                     <property name="height">0.5cm</property>
-                    <list-property name="visibility">
-                        <structure>
-                            <property name="format">all</property>
-                            <expression name="valueExpr" type="javascript">row["countLocation"] == 1</expression>
-                        </structure>
-                    </list-property>
                     <cell id="4676"/>
                     <cell id="4677"/>
                     <cell id="4678"/>
@@ -1968,6 +1962,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             <property name="rowSpan">1</property>
                             <property name="backgroundColor">#7F7F7F</property>
                             <property name="textAlign">right</property>
+                            <property name="verticalAlign">middle</property>
                             <text id="4570">
                                 <property name="fontSize">10pt</property>
                                 <property name="fontWeight">bold</property>
