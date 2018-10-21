@@ -146,7 +146,7 @@
 			</panel>
 			<panel colSpan="10">
 				<panel colSpan="12">
-					<field name="fullName" colSpan="7" showTitle="false" css="label-bold bold large">
+					<field name="simpleFullName" colSpan="7" showTitle="false" css="label-bold bold large">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
 						  <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
