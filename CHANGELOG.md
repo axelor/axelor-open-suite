@@ -95,6 +95,7 @@
 - Stock Move Line: add button to update reserved qty in stock location line.
 - Bank Statement : Add action to BankPaymentBatch. 
 - Add support of Customer catalog and display customer product code and name on SaleOrder, StockMove and Invoice reports.
+- Add WAP value in StockLocation report
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

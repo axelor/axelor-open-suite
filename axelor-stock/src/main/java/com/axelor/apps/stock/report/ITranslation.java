@@ -27,6 +27,8 @@ public interface ITranslation {
       "StockLocation.totalSaleValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.totalAccountingValue"; /*)*/
+  public static final String STOCK_LOCATION_TOTAL_WAP_VALUE = /*$$(*/
+      "StockLocation.totalWapValue"; /*)*/
   public static final String STOCK_LOCATION_LOCATION_TOTAL_CONTENT = /*$$(*/
       "StockLocation.locationTotalContent"; /*)*/
   public static final String STOCK_LOCATION_PRODUCT_NAME = /*$$(*/
@@ -36,6 +38,7 @@ public interface ITranslation {
   public static final String STOCK_LOCATION_SALE_VALUE = /*$$(*/ "StockLocation.saleValue"; /*)*/
   public static final String STOCK_LOCATION_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.accountingValue"; /*)*/
+  public static final String STOCK_LOCATION_WAP_VALUE = /*$$(*/ "StockLocation.wapValue"; /*)*/
   public static final String STOCK_LOCATION_UNIT_VALUE = /*$$(*/ "StockLocation.unitValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL = /*$$(*/ "StockLocation.total"; /*)*/
   public static final String STOCK_LOCATION_DETAILS_BY_STOCK_LOCATION = /*$$(*/
