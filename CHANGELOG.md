@@ -36,6 +36,7 @@
 - StockMove : Modify Locale for Picking Order report.
 - StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 - Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 
 ## [5.0.6] - 2018-10-06

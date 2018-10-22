@@ -18,7 +18,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -88,11 +87,12 @@ public interface PurchaseOrderLineService {
   public SupplierCatalog getSupplierCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner);
-
   public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> updateInfoFromCatalog(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+  
+  public Map<String, Object> getDiscountsFromPriceLists(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(

@@ -122,7 +122,7 @@ public interface SaleOrderLineService {
    */
   public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
 
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
