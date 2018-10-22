@@ -197,6 +197,7 @@
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
+- Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -219,6 +220,10 @@
 - Fix menuitem's translations.
 - Get correct stock location for intercompany (interco) orders.
 - StockMove : make addresses updatable until it's not realized.
+- Fix a bug where duplicated stock move line were shown in a dashlet.
+- StockMove : Modify Locale for Picking Order report.
+- StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
+- Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
 
 ## [5.0.6] - 2018-10-06
 ## Features
