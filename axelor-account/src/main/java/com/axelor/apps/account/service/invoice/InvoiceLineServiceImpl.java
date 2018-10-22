@@ -421,7 +421,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
 
     productInformation.put("productName", invoiceLine.getProduct().getName());
-    
+
     return productInformation;
   }
 }

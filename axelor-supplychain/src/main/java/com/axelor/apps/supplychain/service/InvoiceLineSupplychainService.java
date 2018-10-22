@@ -24,23 +24,18 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
@@ -48,6 +43,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   protected PurchaseProductService purchaseProductService;
 
   @Inject protected AppBaseService appBaseService;
+
+  @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public InvoiceLineSupplychainService(
@@ -110,7 +107,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   private Map<String, Object> updateInfoFromCatalog(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
+    
+    return supplierCatalogService.updateInfoFromCatalog(invoiceLine.getProduct(), invoiceLine.getQty(), invoice.getPartner(), invoice.getCurrency(), invoice.getInvoiceDate());
+    
+    /*
     Map<String, Object> info = null;
 
     List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
@@ -153,8 +153,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
 
     return info;
+    */
   }
 
+  /*
   private SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
 
     if (product != null && product.getSupplierCatalogList() != null) {
@@ -174,4 +176,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
     return null;
   }
+  
+  */
 }

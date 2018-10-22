@@ -19,7 +19,6 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -32,12 +31,10 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,7 +42,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -65,6 +61,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PurchaseProductService productService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+  
+  @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Deprecated private int sequence = 0;
 
@@ -163,7 +161,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
-        getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     if (supplierCatalog != null) {
       String productName = supplierCatalog.getProductSupplierName();
@@ -216,7 +214,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Currency purchaseCurrency;
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
-        getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     if (supplierCatalog != null) {
       purchasePrice = supplierCatalog.getPrice();
@@ -473,7 +471,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = purchaseOrderLine.getProduct();
 
     SupplierCatalog supplierCatalog =
-        this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     //		If there is no catalog for supplier, then we don't take the default catalog.
 
@@ -483,27 +481,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     //		}
 
     return supplierCatalog;
-  }
-
-  @Override
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
-
-    if (product != null && product.getSupplierCatalogList() != null) {
-      SupplierCatalog resSupplierCatalog = null;
-
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
-        if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
-          resSupplierCatalog =
-              (resSupplierCatalog == null
-                      || resSupplierCatalog.getMinQty().compareTo(supplierCatalog.getMinQty()) > 0)
-                  ? supplierCatalog
-                  : resSupplierCatalog;
-        }
-      }
-
-      return resSupplierCatalog;
-    }
-    return null;
   }
 
   @Override
@@ -524,54 +501,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Override
   public Map<String, Object> updateInfoFromCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
-
-    Map<String, Object> info = null;
-
-    List<SupplierCatalog> supplierCatalogList =
-        purchaseOrderLine.getProduct().getSupplierCatalogList();
-    if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
-      SupplierCatalog supplierCatalog =
-          Beans.get(SupplierCatalogRepository.class)
-              .all()
-              .filter(
-                  "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
-                  purchaseOrderLine.getProduct(),
-                  purchaseOrderLine.getQty(),
-                  purchaseOrder.getSupplierPartner())
-              .fetchOne();
-
-      if (supplierCatalog != null) {
-        info = new HashMap<>();
-        info.put(
-            "price",
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    supplierCatalog.getSupplierPartner().getCurrency(),
-                    purchaseOrder.getCurrency(),
-                    supplierCatalog.getPrice(),
-                    purchaseOrder.getOrderDate())
-                .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-        info.put("productName", supplierCatalog.getProductSupplierName());
-        info.put("productCode", supplierCatalog.getProductSupplierCode());
-      } else if (getSupplierCatalog(
-              purchaseOrderLine.getProduct(), purchaseOrder.getSupplierPartner())
-          != null) {
-        info = new HashMap<>();
-        info.put(
-            "price",
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    purchaseOrderLine.getProduct().getPurchaseCurrency(),
-                    purchaseOrder.getCurrency(),
-                    purchaseOrderLine.getProduct().getPurchasePrice(),
-                    purchaseOrder.getOrderDate())
-                .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
-        info.put("productName", null);
-        info.put("productCode", null);
-      }
-    }
-
-    return info;
+    return supplierCatalogService.updateInfoFromCatalog(purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), purchaseOrder.getSupplierPartner(), purchaseOrder.getCurrency(), purchaseOrder.getOrderDate());
   }
 
   @Override
