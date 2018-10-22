@@ -10,6 +10,7 @@
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- Added possibility to hide lines with currentQuantity or futureQuantity equal to 0 in stock locations.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
