@@ -146,6 +146,7 @@
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
+- Improve PickingStockMove report : add some static informations
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

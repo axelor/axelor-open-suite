@@ -89,6 +89,19 @@ public interface ITranslation {
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
   public static final String STOCK_MOVE_PRODUCTION_NOTE = /*$$(*/ "StockMove.productionNote"; /*)*/
+  public static final String PICKING_STOCK_MOVE_LINE_NUMBER = /*$$(*/
+      "PickingStockMove.lineNumber"; /*)*/
+  public static final String PICKING_STOCK_MOVE_WEEK_CODE = /*$$(*/
+      "PickingStockMove.weekCode"; /*)*/
+  public static final String PICKING_STOCK_MOVE_SIGNALING = /*$$(*/
+      "PickingStockMove.signaling"; /*)*/
+  public static final String PICKING_STOCK_MOVE_MANUAL = /*$$(*/ "PickingStockMove.manual"; /*)*/
+  public static final String PICKING_STOCK_MOVE_ASPECT = /*$$(*/ "PickingStockMove.aspect"; /*)*/
+  public static final String PICKING_STOCK_MOVE_MARK = /*$$(*/ "PickingStockMove.mark"; /*)*/
+  public static final String PICKING_STOCK_MOVE_VISA = /*$$(*/ "PickingStockMove.visa"; /*)*/
+  public static final String PICKING_STOCK_MOVE_QTY = /*$$(*/ "PickingStockMove.qty"; /*)*/
+  public static final String PICKING_STOCK_MOVE_WITH_WITHOUT = /*$$(*/
+      "PickingStockMove.withWithout"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/
