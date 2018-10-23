@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -50,6 +51,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -415,13 +417,12 @@ public class StockMoveServiceImpl implements StockMoveService {
         MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
     stockMove.clearPlannedStockMoveLineList();
 
-    stockMoveLineList
-        .stream()
-        .forEach(
-            stockMoveLine -> {
-              StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
-              stockMove.addPlannedStockMoveLineListItem(copy);
-            });
+    stockMoveLineList.forEach(
+        stockMoveLine -> {
+          StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
+          copy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(copy);
+        });
   }
 
   @Override
@@ -1222,9 +1223,14 @@ public class StockMoveServiceImpl implements StockMoveService {
               : I18n.get("StockMove(s)");
     }
 
+    String locale =
+        reportType.equals(IReport.PICKING_STOCK_MOVE)
+            ? Beans.get(UserService.class).getLanguage()
+            : ReportSettings.getPrintingLocale(stockMove.getPartner());
+
     return ReportFactory.createReport(reportType, title + "-${date}")
         .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
+        .addParam("Locale", locale)
         .generate()
         .getFileLink();
   }

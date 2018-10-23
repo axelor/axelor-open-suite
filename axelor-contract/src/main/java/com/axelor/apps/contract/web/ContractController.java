@@ -39,7 +39,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 @Singleton
@@ -186,25 +185,18 @@ public class ContractController {
     response.setReload(true);
   }
 
-  @Transactional
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
     try {
       ContractTemplate template =
           ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
       template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 
-      Contract origin = request.getContext().asType(Contract.class);
-      Contract copy = Beans.get(ContractService.class).createContractFromTemplate(template, origin);
+      Contract contract =
+          Beans.get(ContractRepository.class)
+              .find(request.getContext().asType(Contract.class).getId());
+      Beans.get(ContractService.class).copyFromTemplate(contract, template);
 
-      response.setCanClose(true);
-      response.setView(
-          ActionView.define(I18n.get("Contract"))
-              .model(Contract.class.getName())
-              .add("form", "contract-form")
-              .add("grid", "contract-grid")
-              .param("forceTitle", "true")
-              .context("_showRecord", copy.getId().toString())
-              .map());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

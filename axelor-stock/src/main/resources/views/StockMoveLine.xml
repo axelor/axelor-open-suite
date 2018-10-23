@@ -26,7 +26,7 @@
             onChange="action-stock-move-line-group-real-qty-onchange"
             width="100px"/>
         <field name="reservedQty" if-module="axelor-supplychain"
-            onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"
+            onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
             if="__config__.app.getApp('supplychain').getManageStockReservation()"
             aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"/>
@@ -73,7 +73,7 @@
             onChange="action-stock-move-line-group-real-qty-onchange"
             width="100px"/>
         <field name="reservedQty" if-module="axelor-supplychain"
-            onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"
+            onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
             if="__config__.app.getApp('supplychain').getManageStockReservation()"
             aggregate="sum"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"/>
@@ -126,7 +126,7 @@
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-			    <field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+			    <field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed" />
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>

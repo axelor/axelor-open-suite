@@ -36,9 +36,6 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
       case AccountingBatchRepository.ACTION_DIRECT_DEBIT:
         batch = directDebit(accountingBatch);
         break;
-      case AccountingBatchRepository.ACTION_BANK_STATEMENT:
-        batch = bankStatement(accountingBatch);
-        break;
       default:
         batch = super.run(accountingBatch);
     }
@@ -65,9 +62,5 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
     }
 
     return Beans.get(batchClass).run(accountingBatch);
-  }
-
-  public Batch bankStatement(AccountingBatch accountingBatch) {
-    return Beans.get(BatchBankStatement.class).run(accountingBatch);
   }
 }

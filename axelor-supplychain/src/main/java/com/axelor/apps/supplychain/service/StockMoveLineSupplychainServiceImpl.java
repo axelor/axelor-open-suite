@@ -55,8 +55,6 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 
   protected PriceListService priceListService;
 
-  private UnitConversionService unitConversionService;
-
   @Inject
   public StockMoveLineSupplychainServiceImpl(
       TrackingNumberService trackingNumberService,

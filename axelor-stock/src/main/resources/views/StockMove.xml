@@ -85,7 +85,8 @@
         <field name="name" />
     </calendar>
 
-    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large" onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-method-supplychain-stock-move-reserved-qty">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -254,6 +255,7 @@
                 <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                 <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
+                <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
             </panel>
         </panel-tabs>
         
@@ -348,6 +350,7 @@
     	<action name="save" if="stockMoveLineList.find{it->it.lineTypeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-stock-move-method-add-subline"/>
     	<action name="action-stock-move-method-compute"/>
+      <action name="action-method-supplychain-stock-move-check-reserved-qty-change" if="__config__.app.isApp('supplychain')"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     </action-group>
     
@@ -414,7 +417,6 @@
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
 	</action-attrs>
-    
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>

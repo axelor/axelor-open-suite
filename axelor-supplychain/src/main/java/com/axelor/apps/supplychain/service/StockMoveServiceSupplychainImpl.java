@@ -39,12 +39,15 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +81,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
     LOG.debug(
         "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
@@ -120,7 +123,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void cancel(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -134,7 +137,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     super.cancel(stockMove);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void updateSaleOrderOnCancel(StockMove stockMove) {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
@@ -238,5 +241,50 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     return moveLines;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateReservedQty(StockMove stockMove) throws AxelorException {
+    cancel(stockMove);
+    plan(stockMove);
+  }
+
+  @Override
+  public boolean hasReservedQtyChanged(StockMove oldStockMove, StockMove newStockMove)
+      throws AxelorException {
+    List<StockMoveLine> oldStockMoveLineList =
+        MoreObjects.firstNonNull(oldStockMove.getStockMoveLineList(), new ArrayList<>());
+    List<StockMoveLine> newStockMoveLineList =
+        MoreObjects.firstNonNull(newStockMove.getStockMoveLineList(), new ArrayList<>());
+
+    for (StockMoveLine oldStockMoveLine : oldStockMoveLineList) {
+      Optional<StockMoveLine> newStockMoveLine =
+          newStockMoveLineList
+              .stream()
+              .filter(stockMoveLine -> stockMoveLine.getId().equals(oldStockMoveLine.getId()))
+              .findAny();
+      if (newStockMoveLine.isPresent()) {
+        if (newStockMoveLine.get().getReservedQty().compareTo(oldStockMoveLine.getReservedQty())
+            != 0) {
+          return true;
+        }
+      } else if (oldStockMoveLine.getReservedQty().signum() != 0) {
+        return true;
+      }
+    }
+    // get added lines
+    List<StockMoveLine> newStockMoveLineListFiltered =
+        newStockMoveLineList
+            .stream()
+            .filter(stockMoveLine -> !oldStockMoveLineList.contains(stockMoveLine))
+            .collect(Collectors.toList());
+    for (StockMoveLine filteredNewStockMoveLine : newStockMoveLineListFiltered) {
+      if (filteredNewStockMoveLine.getReservedQty().signum() != 0) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

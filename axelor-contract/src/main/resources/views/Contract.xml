@@ -70,7 +70,7 @@
                             </panel>
                         </editor>
                     </field>
-                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" readonlyIf="statusSelect >= 2" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
                 </panel>
             </panel>
             <panel colSpan="3" stacked="true">
@@ -96,7 +96,7 @@
             <panel title="Content">
                 <label title="You need to save your contract for add lines." hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
                 <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                    <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2 || !id" colSpan="12" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
                             <field name="contractLineList" showTitle="false" colSpan="12" form-view="contract-line-form" grid-view="contract-line-grid"/>
                         </editor>
@@ -155,7 +155,7 @@
                 </panel>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
-                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" readonlyIf="statusSelect > 1" colSpan="12">
+                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
                     <field name="isInvoicingManagement" colSpan="6" widget="boolean-switch" onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
                     <panel hidden="true" showIf="isInvoicingManagement" colSpan="6">
                         <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
@@ -167,21 +167,21 @@
                         </editor>
                     </field>
                     <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
-                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                        <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6">
                                     <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel colSpan="6">
-                                    <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6" widget="boolean-switch"/>
+                                    <field name="automaticInvoicing" colSpan="6" widget="boolean-switch"/>
                                     <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
                                 </panel>
                             </editor>
                         </field>
-                        <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                        <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3" widget="boolean-switch"/>
+                                <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                                     <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
@@ -192,7 +192,7 @@
                     </panel>
                 </panel>
                 <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
-                    <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                    <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
                             <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
@@ -200,7 +200,7 @@
                         </editor>
                     </field>
                 </panel>
-                <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
+                <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                         <panel title="Engagement">
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
@@ -230,6 +230,7 @@
     <action-group name="action-contract-group-on-load">
         <action name="action-contract-attrs-require-payment-config"/>
         <action name="action-contract-attrs-readonly-by-config"/>
+        <action name="action-contract-readonly-if-unchangable"/>
     </action-group>
 
     <action-attrs name="action-contract-attrs-readonly-by-config">
@@ -370,5 +371,21 @@
         date ${currentContractVersion.supposedActivationDate}, Are you sure?"
           if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __date__"/>
     </action-validate>
+
+    <action-attrs name="action-contract-readonly-if-unchangable" model="com.axelor.apps.contract.db.Contract">
+        <attribute for="currentContractVersion.contractLineList,isInvoicingManagement,isAdditionaBenefitManagement,isConsumptionManagement,
+          currentContractVersion.isConsumptionBeforeEndDate,currentContractVersion.paymentMode,currentContractVersion.paymentCondition,
+          currentContractVersion.automaticInvoicing,currentContractVersion.invoicingMomentSelect,currentContractVersion.invoicingDuration,
+          currentContractVersion.isTimeProratedInvoice,currentContractVersion.isVersionProratedInvoice,currentContractVersion.isTacitRenewal,
+          currentContractVersion.renewalDuration,currentContractVersion.isAutoEnableVersionOnRenew,currentContractVersion.isWithEngagement,
+          currentContractVersion.engagementDuration,currentContractVersion.engagementStartFromVersion,currentContractVersion.isWithPriorNotice,
+          currentContractVersion.priorNoticeDuration,currentContractVersion.isPeriodicInvoicing,firstPeriodEndDate"
+          name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+          || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)"/>
+        <attribute for="currentContractVersion.contractLineList"
+          name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+          || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)
+          || !id"/>
+    </action-attrs>
 
 </object-views>

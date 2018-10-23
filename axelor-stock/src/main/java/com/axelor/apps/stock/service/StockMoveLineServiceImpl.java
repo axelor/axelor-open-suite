@@ -523,6 +523,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void checkConformitySelection(StockMove stockMove) throws AxelorException {
+
+    if (!appStockService.getAppStock().getRequireToFillConformityOnReceipt()) {
+      return;
+    }
+
     List<String> productsWithErrors = new ArrayList<>();
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
@@ -596,8 +601,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       TrackingNumber trackingNumber,
       BigDecimal reservedQty)
       throws AxelorException {
-
-    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
 
     switch (fromStatus) {
       case StockMoveRepository.STATUS_PLANNED:

@@ -52,7 +52,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -178,7 +177,7 @@ public class MrpLineServiceImpl implements MrpLineService {
       LocalDate maturityDate,
       BigDecimal cumulativeQty,
       StockLocation stockLocation,
-      Model... models) {
+      Model model) {
 
     MrpLine mrpLine = new MrpLine();
 
@@ -196,7 +195,9 @@ public class MrpLineServiceImpl implements MrpLineService {
 
     mrpLine.setMinQty(this.getMinQty(product, stockLocation));
 
-    this.createMrpLineOrigins(mrpLine, models);
+    this.updatePartner(mrpLine, model);
+
+    this.createMrpLineOrigins(mrpLine, model);
 
     return mrpLine;
   }
@@ -216,15 +217,12 @@ public class MrpLineServiceImpl implements MrpLineService {
     return BigDecimal.ZERO;
   }
 
-  protected void createMrpLineOrigins(MrpLine mrpLine, Model... models) {
+  protected void createMrpLineOrigins(MrpLine mrpLine, Model model) {
 
-    if (models != null) {
+    if (model != null) {
 
-      for (Model model : Arrays.asList(models)) {
-
-        mrpLine.addMrpLineOriginListItem(this.createMrpLineOrigin(model));
-        mrpLine.setRelatedToSelectName(this.computeReleatedName(model));
-      }
+      mrpLine.addMrpLineOriginListItem(this.createMrpLineOrigin(model));
+      mrpLine.setRelatedToSelectName(this.computeReleatedName(model));
     }
   }
 
@@ -257,10 +255,35 @@ public class MrpLineServiceImpl implements MrpLineService {
     } else if (model instanceof PurchaseOrderLine) {
 
       return ((PurchaseOrderLine) model).getPurchaseOrder().getPurchaseOrderSeq();
+
     } else if (model instanceof MrpForecast) {
 
       MrpForecast mrpForecast = (MrpForecast) model;
       return mrpForecast.getId() + "-" + mrpForecast.getForecastDate();
+    }
+    return null;
+  }
+
+  protected void updatePartner(MrpLine mrpLine, Model model) {
+
+    if (model != null) {
+      mrpLine.setPartner(this.getPartner(model));
+    }
+  }
+
+  protected Partner getPartner(Model model) {
+
+    if (model instanceof SaleOrderLine) {
+
+      return ((SaleOrderLine) model).getSaleOrder().getClientPartner();
+
+    } else if (model instanceof PurchaseOrderLine) {
+
+      return ((PurchaseOrderLine) model).getPurchaseOrder().getSupplierPartner();
+
+    } else if (model instanceof MrpForecast) {
+
+      return ((MrpForecast) model).getPartner();
     }
     return null;
   }

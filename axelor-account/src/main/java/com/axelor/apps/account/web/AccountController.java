@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.AccountService;
@@ -29,6 +27,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 
 @Singleton
 public class AccountController {

@@ -81,7 +81,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     Long stockMoveId = (Long) json.get("id");
     StockMove stockMove = find(stockMoveId);
 
-    if (stockMove.getStatusSelect() > STATUS_PLANNED || stockMove.getStockMoveLineList() == null) {
+    if (stockMove.getStatusSelect() > STATUS_PLANNED
+        || stockMove.getStockMoveLineList() == null
+        || (stockMove.getFromStockLocation() != null
+            && stockMove.getFromStockLocation().getTypeSelect()
+                == StockLocationRepository.TYPE_VIRTUAL)) {
       return super.populate(json, context);
     }
 

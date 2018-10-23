@@ -19,7 +19,8 @@
   		<boolean name="proposalGenerated" default="false" required="true" readonly="true"/>
   		<string name="proposalSelect" selection="mrp.line.proposal.ref.select" readonly="true"/>
   		<long name="proposalSelectId" readonly="true"/>
-
+		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+		
   </entity>
 
 </domain-models>

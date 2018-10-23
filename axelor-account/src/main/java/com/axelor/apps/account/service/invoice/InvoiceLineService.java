@@ -64,7 +64,7 @@ public interface InvoiceLineService {
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  Map<String, Object> resetProductInformation();
+  Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
   boolean isAccountRequired(InvoiceLine invoiceLine);
 

@@ -47,7 +47,7 @@ public interface MrpLineService {
       LocalDate maturityDate,
       BigDecimal cumulativeQty,
       StockLocation stockLocation,
-      Model... models);
+      Model model);
 
   MrpLineOrigin createMrpLineOrigin(Model model);
 
