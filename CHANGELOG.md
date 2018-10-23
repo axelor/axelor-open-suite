@@ -186,6 +186,7 @@
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
+- SaleOrder : Hide contactPartner if clientPartner is individual.
 - Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
 
 ## [Unreleased 5.0.7]
