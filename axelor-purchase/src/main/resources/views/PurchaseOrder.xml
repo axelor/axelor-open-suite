@@ -547,7 +547,7 @@
 	</action-validate>
 
 	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
+		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
