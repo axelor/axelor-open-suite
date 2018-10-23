@@ -40,21 +40,6 @@
 		<view type="form" name="team-task-form"/>
 		<domain>self.project.statusSelect IN (1,2)</domain>
 	</action-view>
-	
-	<menuitem name="project-planning" title="Project planning" order="25" parent="menu-project-root" action="project.planning" />
-	<action-view name="project.planning" title="Project planning" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="form" name="project-planning-user-select-form"/>
-		<view-param name="show-confirm" value="false"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="popup" value="true"/>
-	</action-view>
-	
-	<menuitem name="project-planning-calendar" title="Planning Calendar" order="26" parent="menu-project-root" action="project.planning.calendar" />
-	<action-view name="project.planning.calendar" title="Planning Calendar" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="calendar" name="project-planning-calendar" />
-		<view type="grid" name="project-planning-grid" />
-		<view type="form" name="project-planning-form" />
-	</action-view>
 
 	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>
 	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">

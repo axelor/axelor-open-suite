@@ -53,8 +53,27 @@ public class StockMoveController {
   }
 
   /**
+   * Called on stock move save. Check if reserved quantity has changed in stock move line and put
+   * the info in the view.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkReservedQtyChange(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove newStockMove = request.getContext().asType(StockMove.class);
+      StockMove oldStockMove = Beans.get(StockMoveRepository.class).find(newStockMove.getId());
+      response.setValue(
+          "$reservedQtyChanged",
+          stockMoveService.hasReservedQtyChanged(oldStockMove, newStockMove));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Called on stock move save. Call {@link StockMoveService#updateReservedQty(StockMove)} if the
-   * stock move is planned.
+   * stock move is planned and reserved quantity has been changed.
    *
    * @param request
    * @param response
@@ -63,7 +82,10 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-      if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+      Boolean reservedQtyChanged = (Boolean) request.getContext().get("reservedQtyChanged");
+      // manage null case
+      if (Boolean.TRUE.equals(reservedQtyChanged)
+          && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
         stockMoveService.updateReservedQty(stockMove);
       }
     } catch (Exception e) {

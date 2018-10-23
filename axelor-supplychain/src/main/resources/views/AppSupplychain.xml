@@ -4,21 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
-		<panel>
+		<panel title="Sale order">
 			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
 			<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
-			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification" />
-		</panel>
-		<panel>
-			<field name="supplStockMoveMgtOnSO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
-			<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
-			<field name="terminatePurchaseOrderOnReceipt" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
-		</panel>
-		<panel>
-			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
-		</panel>
-		<panel title="Sale order">
+			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification"  widget="boolean-switch" colSpan="4"/>
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
 			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
@@ -28,8 +18,15 @@
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Purchase order">
+			<field name="supplStockMoveMgtOnSO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
+			<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="terminatePurchaseOrderOnReceipt" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
 			<field name="generateInvoiceFromPurchaseOrder" widget="boolean-switch" colSpan="4"/>
             <field name="allowFinishManuallyPurchaseOrder" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel title="Stock">
+			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
+			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>
@@ -37,9 +34,6 @@
 			<field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
 			<field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"/>
 			<field name="intercoFromInvoice" widget="boolean-switch"/>
-		</panel>
-		<panel>
-			<field name="manageStockReservation" widget="boolean-switch"/>
 		</panel>
 		<panel>
 			<button name="generateSupplychainConfigurations" colSpan="4" title="Generate supply chain configurations" onClick="save,com.axelor.apps.supplychain.web.AppSupplychainController:generateSupplychainConfigurations"/>

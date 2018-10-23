@@ -226,7 +226,14 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         subLine.setIsSubLine(true);
         subLine.setPackPriceSelect(packPriceSelect);
         String description = null;
-        if (appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopy()) {
+        if ((isPurchase
+                && appAccountService
+                    .getAppInvoice()
+                    .getIsEnabledProductDescriptionCopyForCustomers())
+            || (!isPurchase
+                && appAccountService
+                    .getAppInvoice()
+                    .getIsEnabledProductDescriptionCopyForSuppliers())) {
           description = invoiceLine.getProduct().getDescription();
         }
         Map<String, Object> accountInfo = super.fillPriceAndAccount(invoice, subLine, isPurchase);

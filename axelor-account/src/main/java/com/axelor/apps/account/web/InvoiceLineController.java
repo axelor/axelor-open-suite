@@ -151,8 +151,7 @@ public class InvoiceLineController {
     }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
-    Map<String, Object> productInformation = invoiceLineService.resetProductInformation();
-
+    Map<String, Object> productInformation = invoiceLineService.resetProductInformation(invoice);
     if (invoice != null && product != null) {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);

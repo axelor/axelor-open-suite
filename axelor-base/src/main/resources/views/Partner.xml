@@ -146,7 +146,7 @@
 			</panel>
 			<panel colSpan="10">
 				<panel colSpan="12">
-					<field name="fullName" colSpan="7" showTitle="false" css="label-bold bold large">
+					<field name="simpleFullName" colSpan="7" showTitle="false" css="label-bold bold large">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
 						  <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
@@ -300,6 +300,7 @@
 					<field name="password" widget="password"/>
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
+				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
 			</panel>
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
@@ -504,7 +505,6 @@
 	</form>
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
-		<field name="partnerSeq"/>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -513,7 +513,6 @@
 		<field name="partnerTypeSelect" />
 		<field name="titleSelect" />
 		<template><![CDATA[
-			<div class="span12"><strong>{{partnerSeq}}</strong></div>
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
@@ -543,7 +542,6 @@
 		<toolbar>
 			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 		</toolbar>
-		<field name="partnerSeq"/>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -552,7 +550,6 @@
 		<field name="contactAddress" />
 		<field name="titleSelect" />
 		<template><![CDATA[
-			<div class="span12"><strong>{{partnerSeq}}</strong></div>
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>

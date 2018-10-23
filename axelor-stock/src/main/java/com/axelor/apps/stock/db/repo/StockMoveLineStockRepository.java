@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.i18n.I18n;
@@ -39,8 +40,13 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
     Long stockMoveLineId = (Long) json.get("id");
     StockMoveLine stockMoveLine = find(stockMoveLineId);
 
-    if (stockMoveLine.getStockMove() == null
-        || stockMoveLine.getStockMove().getStatusSelect() > StockMoveRepository.STATUS_PLANNED) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+
+    if (stockMove == null
+        || stockMove.getStatusSelect() > StockMoveRepository.STATUS_PLANNED
+        || (stockMove.getFromStockLocation() != null
+            && stockMove.getFromStockLocation().getTypeSelect()
+                == StockLocationRepository.TYPE_VIRTUAL)) {
 
       return super.populate(json, context);
     }

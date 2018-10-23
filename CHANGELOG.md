@@ -8,7 +8,7 @@
 - Prod Process: add status and create manufacturing order only with "Applicable" prod process
 - Add ISPM15 feature on Picking stock move report.
 - New menu entry for calendars and a new sharing system.
-- Product description can be copy to Invoice/Order/Purchase line.
+- Product description can be copied to Invoice/Order/Purchase/StockMove line.
 - Add Wiki tab in project view form and disable project edit from Wiki view.
 - Automatic mail on stock move planning.
 - New printing: certificate of conformity on stock move.
@@ -94,6 +94,8 @@
 - StockLocationLine : Add dashlet to know prosuct quantities in other stock locations.
 - Stock Move Line: add button to update reserved qty in stock location line.
 - Bank Statement : Add action to BankPaymentBatch. 
+- Add support of Customer catalog and display customer product code and name on SaleOrder, StockMove and Invoice reports.
+- Add WAP value in StockLocation report
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -142,6 +144,8 @@
 - HR : Rename and reorder of timesheet menu entry and replace toolbar button to toolbar menu in grid.
 - Contact : Add new large field - timeSlot.
 - Use price from stock location when making an internal stock move.
+- Add Partner fullName field in MRP (grid and report)
+- Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -182,7 +186,7 @@
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
-- PurchaseOrder : Hide 'Completed' button conditionally.
+- Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -194,6 +198,7 @@
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
+- Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -216,6 +221,11 @@
 - Fix menuitem's translations.
 - Get correct stock location for intercompany (interco) orders.
 - StockMove : make addresses updatable until it's not realized.
+- Fix a bug where duplicated stock move line were shown in a dashlet.
+- StockMove : Modify Locale for Picking Order report.
+- StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
+- Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 
 ## [5.0.6] - 2018-10-06
 ## Features
