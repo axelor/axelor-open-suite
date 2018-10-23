@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -104,26 +105,35 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
     saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
 
-    Map<String, Object> discounts;
-    if (product.getInAti()) {
-      discounts = this.getDiscount(saleOrder, saleOrderLine, inTaxPrice);
-    } else {
-      discounts = this.getDiscount(saleOrder, saleOrderLine, price);
-    }
+    Map<String, Object> discounts =
+        this.getDiscountsFromPriceLists(
+            saleOrder, saleOrderLine, product.getInAti() ? inTaxPrice : price);
 
     if (discounts != null) {
-      saleOrderLine.setDiscountAmount(new BigDecimal(discounts.get("discountAmount").toString()));
-      saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
       if (discounts.get("price") != null) {
-        if (product.getInAti()) {
-          inTaxPrice = (BigDecimal) discounts.get("price");
-          price = this.convertUnitPrice(true, taxLine, inTaxPrice);
+        BigDecimal discountPrice = (BigDecimal) discounts.get("price");
+        if (saleOrderLine.getProduct().getInAti()) {
+          inTaxPrice = discountPrice;
+          price = this.convertUnitPrice(true, saleOrderLine.getTaxLine(), discountPrice);
         } else {
-          price = (BigDecimal) discounts.get("price");
-          inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+          price = discountPrice;
+          inTaxPrice = this.convertUnitPrice(false, saleOrderLine.getTaxLine(), discountPrice);
         }
       }
+      if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
+          && (Integer) discounts.get("discountTypeSelect")
+              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+        saleOrderLine.setDiscountAmount(
+            this.convertUnitPrice(
+                saleOrderLine.getProduct().getInAti(),
+                saleOrderLine.getTaxLine(),
+                (BigDecimal) discounts.get("discountAmount")));
+      } else {
+        saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      }
+      saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
+
     saleOrderLine.setPrice(price);
     saleOrderLine.setInTaxPrice(inTaxPrice);
   }
@@ -322,16 +332,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
 
+    Map<String, Object> discounts = null;
+
     PriceList priceList = saleOrder.getPriceList();
-    if (priceList == null) {
-      return null;
+
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
-    return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+    return discounts;
   }
 
   @Override
@@ -492,9 +505,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Map<String, Object> discounts;
     if (subLine.getProduct().getInAti()) {
-      discounts = this.getDiscount(saleOrder, subLine, inTaxPrice);
+      discounts = this.getDiscountsFromPriceLists(saleOrder, subLine, inTaxPrice);
     } else {
-      discounts = this.getDiscount(saleOrder, subLine, price);
+      discounts = this.getDiscountsFromPriceLists(saleOrder, subLine, price);
     }
 
     if (discounts != null) {
