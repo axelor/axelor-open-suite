@@ -10,6 +10,7 @@
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- BankOrder : Specify limit for BankOrderLines.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
