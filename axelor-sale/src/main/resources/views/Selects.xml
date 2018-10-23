@@ -75,4 +75,8 @@
 		<option value="1">Subline price only</option>
 	</selection>
 	
+	<selection name="sale.order.fill.saleman.select">
+		<option value="1">Current Login user</option>
+		<option value="2">User assigned to customer</option>
+	</selection>
 </object-views>
