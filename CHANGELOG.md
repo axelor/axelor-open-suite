@@ -97,6 +97,7 @@
 - Add support of Customer catalog and display customer product code and name on SaleOrder, StockMove and Invoice reports.
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
+- Analytic move line : accountType added on grid view.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
