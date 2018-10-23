@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -3162,9 +3162,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -3568,6 +3568,13 @@ else dataSetRow["planned_end_datet"]</expression>
                                 <property name="hideDetail">false</property>
                                 <property name="pageBreakAfter">auto</property>
                                 <property name="pageBreakBefore">auto</property>
+                                <list-property name="sort">
+                                    <structure>
+                                        <expression name="key" type="javascript">row["priority"]</expression>
+                                        <property name="direction">asc</property>
+                                        <property name="strength">-1</property>
+                                    </structure>
+                                </list-property>
                                 <header>
                                     <row id="4401">
                                         <cell id="4402">
@@ -3683,12 +3690,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
+                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
-                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4097,9 +4104,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
+                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">

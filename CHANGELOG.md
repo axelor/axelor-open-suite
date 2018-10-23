@@ -189,6 +189,7 @@
 - SaleOrder : Hide contactPartner if clientPartner is individual.
 - Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
+- Manuf order: Fix sequence of operation details on report.
 
 ## [Unreleased 5.0.7]
 ## Features
