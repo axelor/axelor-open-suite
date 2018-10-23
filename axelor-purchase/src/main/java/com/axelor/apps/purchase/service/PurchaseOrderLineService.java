@@ -91,7 +91,7 @@ public interface PurchaseOrderLineService {
 
   public Map<String, Object> updateInfoFromCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
-  
+
   public Map<String, Object> getDiscountsFromPriceLists(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price);
 

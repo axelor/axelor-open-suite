@@ -61,7 +61,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PurchaseProductService productService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
-  
+
   @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Deprecated private int sequence = 0;
@@ -501,7 +501,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Override
   public Map<String, Object> updateInfoFromCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
-    return supplierCatalogService.updateInfoFromCatalog(purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), purchaseOrder.getSupplierPartner(), purchaseOrder.getCurrency(), purchaseOrder.getOrderDate());
+    return supplierCatalogService.updateInfoFromCatalog(
+        purchaseOrderLine.getProduct(),
+        purchaseOrderLine.getQty(),
+        purchaseOrder.getSupplierPartner(),
+        purchaseOrder.getCurrency(),
+        purchaseOrder.getOrderDate());
   }
 
   @Override

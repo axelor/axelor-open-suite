@@ -23,7 +23,6 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-
 import java.util.Map;
 import javax.inject.Inject;
 

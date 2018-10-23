@@ -96,7 +96,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                   stockMove.getSaleOrder().getClientPartner().getFiscalPosition(),
                   false);
           price = stockMoveLine.getProduct().getSalePrice();
-          
+
           PriceList priceList = stockMove.getSaleOrder().getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
@@ -109,7 +109,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
               price =
                   priceListService.computeDiscount(
                       price, (int) discounts.get("discountTypeSelect"), discountAmount);
-              }
+            }
           }
         } else {
           taxLine =
@@ -120,13 +120,22 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                   stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(),
                   true);
           price = stockMoveLine.getProduct().getPurchasePrice();
-          
-          BigDecimal catalogPrice = (BigDecimal) supplierCatalogService.updateInfoFromCatalog(stockMoveLine.getProduct(), stockMoveLine.getRealQty(), stockMove.getPurchaseOrder().getSupplierPartner(), stockMove.getPurchaseOrder().getCurrency(), stockMove.getPurchaseOrder().getOrderDate()).get("price");
-          
+
+          BigDecimal catalogPrice =
+              (BigDecimal)
+                  supplierCatalogService
+                      .updateInfoFromCatalog(
+                          stockMoveLine.getProduct(),
+                          stockMoveLine.getRealQty(),
+                          stockMove.getPurchaseOrder().getSupplierPartner(),
+                          stockMove.getPurchaseOrder().getCurrency(),
+                          stockMove.getPurchaseOrder().getOrderDate())
+                      .get("price");
+
           if (catalogPrice != null) {
             price = catalogPrice;
           }
-          
+
           PriceList priceList = stockMove.getPurchaseOrder().getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
@@ -142,10 +151,11 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
             }
           }
         }
-        
+
         if (stockMoveLine.getProduct().getInAti()) {
           unitPriceTaxed = price;
-          unitPriceUntaxed = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          unitPriceUntaxed =
+              price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
         } else {
           unitPriceUntaxed = price;
           unitPriceTaxed = price.add(price.multiply(taxLine.getValue()));

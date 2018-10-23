@@ -29,7 +29,8 @@ import java.util.Map;
 public interface SupplierCatalogService {
 
   public Map<String, Object> updateInfoFromCatalog(
-      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date) throws AxelorException;
-  
+      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date)
+      throws AxelorException;
+
   public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner);
 }

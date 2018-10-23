@@ -436,13 +436,12 @@ public class StockMoveServiceImpl implements StockMoveService {
         MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
     stockMove.clearPlannedStockMoveLineList();
 
-    stockMoveLineList
-        .forEach(
-            stockMoveLine -> {
-              StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
-              copy.setArchived(true);
-              stockMove.addPlannedStockMoveLineListItem(copy);
-            });
+    stockMoveLineList.forEach(
+        stockMoveLine -> {
+          StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
+          copy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(copy);
+        });
   }
 
   @Override

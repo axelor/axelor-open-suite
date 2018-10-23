@@ -35,19 +35,19 @@ import java.util.List;
 import java.util.Map;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
-  
+
   @Inject protected AppBaseService appBaseService;
-  
+
   @Inject protected CurrencyService currencyService;
 
   @Override
-  public Map<String, Object> updateInfoFromCatalog(Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date)
+  public Map<String, Object> updateInfoFromCatalog(
+      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date)
       throws AxelorException {
 
     Map<String, Object> info = null;
 
-    List<SupplierCatalog> supplierCatalogList =
-        product.getSupplierCatalogList();
+    List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
     if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
       SupplierCatalog supplierCatalog =
           Beans.get(SupplierCatalogRepository.class)
@@ -58,7 +58,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
                   qty,
                   partner)
               .fetchOne();
-      
+
       if (supplierCatalog != null) {
         info = new HashMap<>();
         info.put(
@@ -72,27 +72,22 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", supplierCatalog.getProductSupplierName());
         info.put("productCode", supplierCatalog.getProductSupplierCode());
-      } else if (this.getSupplierCatalog(
-              product, partner)
-          != null) {
+      } else if (this.getSupplierCatalog(product, partner) != null) {
         info = new HashMap<>();
         info.put(
             "price",
             currencyService
                 .getAmountCurrencyConvertedAtDate(
-                    product.getPurchaseCurrency(),
-                    currency,
-                    product.getPurchasePrice(),
-                    date)
+                    product.getPurchaseCurrency(), currency, product.getPurchasePrice(), date)
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", null);
         info.put("productCode", null);
       }
     }
-    
+
     return info;
   }
-  
+
   @Override
   public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
 
@@ -113,5 +108,4 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     }
     return null;
   }
-
 }

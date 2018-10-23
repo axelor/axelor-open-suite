@@ -107,9 +107,14 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   private Map<String, Object> updateInfoFromCatalog(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    
-    return supplierCatalogService.updateInfoFromCatalog(invoiceLine.getProduct(), invoiceLine.getQty(), invoice.getPartner(), invoice.getCurrency(), invoice.getInvoiceDate());
-    
+
+    return supplierCatalogService.updateInfoFromCatalog(
+        invoiceLine.getProduct(),
+        invoiceLine.getQty(),
+        invoice.getPartner(),
+        invoice.getCurrency(),
+        invoice.getInvoiceDate());
+
     /*
     Map<String, Object> info = null;
 
@@ -176,6 +181,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
     return null;
   }
-  
+
   */
 }
