@@ -3,6 +3,7 @@
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- PurchaseOrder : Modify views to display company and stockLocation.
 
 ## Improvements
 - Show full name for products in Mrp report.
