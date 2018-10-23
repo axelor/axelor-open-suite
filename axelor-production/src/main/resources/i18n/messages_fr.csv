@@ -496,7 +496,7 @@
 "You must configure a finished products default stock location for company %s.","Veuillez configurer un emplacement par défaut des produits finis pour la société %s",,
 "You must configure a production for company %s","Veuillez configurer la production pour la société %s",,
 "You must configure a production virtual stock location for company %s","Veuillez configurer un Emplacement Virtuel Production pour la société %s",,
-"You must configure a sequence for manufacturing order for company %s","Merci de configurer une séquence pour les opérations de fabrication pour la société %s",,
+"You must configure a sequence for manufacturing order for company %s","Merci de configurer une séquence pour les ordres de fabrication pour la société %s",,
 "You must configure a waste stock location for company %s.","Veuillez configurer un emplacement de rebuts pour la société %s.",,
 "You must select a nomenclature","Veuillez sélectionner une nomenclature",,
 "inOrOut is invalid",,,
