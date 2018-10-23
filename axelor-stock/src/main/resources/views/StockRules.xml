@@ -46,6 +46,11 @@
 			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
 		</panel>
+		
+		<panel-mail>
+	    	<mail-messages limit="4"/>
+	    	<mail-followers/>
+	  	</panel-mail>
     </form>
 
     <action-record name="action-stock-rules-record-new" model="com.axelor.apps.stock.db.StockRules">

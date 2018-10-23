@@ -42,5 +42,22 @@
 	
 	]]></extra-code>
 	
+	<track>
+		<field name="stockLocation"/>
+		<field name="product"/>
+		<field name="useCaseSelect"/>
+		<field name="typeSelect" if="useCaseSelect == 2"/>
+		<field name="orderAlertSelect"/>
+		<field name="minQty"/>
+		<field name="useIdealQty"/>
+		<field name="idealQty" if="userIdealQty"/>
+		<field name="useMaxQty"/>
+		<field name="maxQty" if="useMaxQty"/>
+		<field name="reOrderQty"/>
+		<field name="user" if="orderAlertSelect == 1"/>
+		<field name="team" if="orderAlertSelect == 1"/>
+		<message if="true" on="CREATE">Stock rules created</message>
+	</track>
+	
   </entity>
 </domain-models>
