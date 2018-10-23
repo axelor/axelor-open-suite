@@ -27,7 +27,7 @@
 	        <field name="createdOn"/>
 	        <field name="createdBy"/>
 	        <field name="endDate" colSpan="6"/>
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="typeSelect != 3"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3"/>
 	        <field name="stockLocation.company"/>
 	        <panel-related field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false"/>
 	        <panel-related field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
