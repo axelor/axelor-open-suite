@@ -3,6 +3,7 @@
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- SaleOrder : Modify views to display company and stockLocation.
 - PurchaseOrder : Modify views to display company and stockLocation.
 
 ## Improvements
@@ -37,6 +38,7 @@
 - StockMove : Modify Locale for Picking Order report.
 - StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 - Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- PurchaseOrder : Hide 'Completed' button conditionally.
 - Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 
