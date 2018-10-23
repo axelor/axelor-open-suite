@@ -197,6 +197,7 @@
 - Stock Rules : Fix enable change tracking on all fields.
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
+- In manufacturing order, Stock move for produced product now uses the price from the product instead of from the costsheet.
 
 ## [Unreleased 5.0.7]
 ## Features
