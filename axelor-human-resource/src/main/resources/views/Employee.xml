@@ -39,8 +39,8 @@
 					<panel colSpan="9">
 						<panel colSpan="12">
 							<field name="titleSelect" css="bold" colSpan="2"/>
-							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
-							<field name="firstName"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="name" title="Name"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="firstName"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
 				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 							<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>

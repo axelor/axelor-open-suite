@@ -146,6 +146,7 @@
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
+- Partner : Modify actions to compute simpleFullName & fullName. 
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -191,6 +192,7 @@
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
 - Added missing translations for advanced exports in french version.
+- Stock Rules : Fix enable change tracking on all fields.
 
 ## [Unreleased 5.0.7]
 ## Features
