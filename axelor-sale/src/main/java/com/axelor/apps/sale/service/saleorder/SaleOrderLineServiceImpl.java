@@ -107,11 +107,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       BigDecimal inTaxPrice;
       if (saleOrderLine.getProduct().getInAti()) {
         inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
-        saleOrderLine.setInTaxPrice(fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
+        inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
+        saleOrderLine.setInTaxPrice(inTaxPrice);
         saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
       } else {
         exTaxPrice = this.getExTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
-        saleOrderLine.setPrice(fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
+        exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
+        saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
