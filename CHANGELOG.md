@@ -148,7 +148,8 @@
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
-- Partner : Modify actions to compute simpleFullName & fullName. 
+- Partner : Modify actions to compute simpleFullName & fullName.
+- Customer catalog: added option to enable/disable customer catalog management on sales app. 
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
