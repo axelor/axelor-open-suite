@@ -97,6 +97,7 @@
 - Add support of Customer catalog and display customer product code and name on SaleOrder, StockMove and Invoice reports.
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
+- Analytic move line : accountType added on grid view.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -147,7 +148,8 @@
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
-- Partner : Modify actions to compute simpleFullName & fullName. 
+- Partner : Modify actions to compute simpleFullName & fullName.
+- Customer catalog: added option to enable/disable customer catalog management on sales app. 
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -193,6 +195,7 @@
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
 - Stock Rules : Fix enable change tracking on all fields.
+- Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 
 ## [Unreleased 5.0.7]

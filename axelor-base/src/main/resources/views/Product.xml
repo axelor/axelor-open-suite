@@ -127,7 +127,7 @@
 						<panel-related field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
 		      		<panel-related field="customerCatalogList" form-view="customer-catalog-form" grid-view="customer-catalog-grid" title="Customer catalog" showIf="sellable" colSpan="12"
-	      		if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+	      		if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
 				</panel>
 	      		<panel name="description" title="Description" colSpan="12">
 	        		<field name="description" showTitle="false" colSpan="12" widget="html"/>
