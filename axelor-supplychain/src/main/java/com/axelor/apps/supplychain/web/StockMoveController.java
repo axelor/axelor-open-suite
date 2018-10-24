@@ -62,6 +62,9 @@ public class StockMoveController {
   public void checkReservedQtyChange(ActionRequest request, ActionResponse response) {
     try {
       StockMove newStockMove = request.getContext().asType(StockMove.class);
+      if (newStockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+        return;
+      }
       StockMove oldStockMove = Beans.get(StockMoveRepository.class).find(newStockMove.getId());
       response.setValue(
           "$reservedQtyChanged",
