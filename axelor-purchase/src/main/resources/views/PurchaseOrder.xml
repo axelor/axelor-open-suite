@@ -14,6 +14,8 @@
             </menu>
         </menubar>
 		<field name="purchaseOrderSeq"/>
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="orderDate"/>
@@ -34,6 +36,8 @@
             </menu>
         </menubar>
 		<field name="purchaseOrderSeq"/>
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="orderDate"/>
@@ -238,6 +242,8 @@
 		<field name="statusSelect"/>
 		<field name="receiptState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -277,6 +283,10 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -292,6 +302,8 @@
 		<field name="statusSelect"/>
 		<field name="receiptState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -330,6 +342,10 @@
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
 			  </div>
+			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
 		</template>
@@ -559,7 +575,7 @@
 	</action-validate>
 
 	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
+		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">

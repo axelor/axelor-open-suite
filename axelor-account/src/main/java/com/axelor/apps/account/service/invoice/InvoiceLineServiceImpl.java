@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -255,16 +256,64 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public Map<String, Object> getDiscount(
-      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
+  public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
+      throws AxelorException {
 
-    PriceList priceList = invoice.getPriceList();
-    if (priceList == null) {
-      return null;
+    Map<String, Object> rawDiscounts = getDiscountsFromPriceLists(invoice, invoiceLine, price);
+
+    Map<String, Object> processedDiscounts = new HashMap<>();
+
+    if (rawDiscounts != null) {
+      if (rawDiscounts.get("price") != null) {
+        price = (BigDecimal) rawDiscounts.get("price");
+      }
+      if (invoiceLine.getProduct().getInAti() != invoice.getInAti()
+          && (Integer) rawDiscounts.get("discountTypeSelect")
+              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+        processedDiscounts.put(
+            "discountAmount",
+            this.convertUnitPrice(
+                invoiceLine.getProduct().getInAti(),
+                invoiceLine.getTaxLine(),
+                (BigDecimal) rawDiscounts.get("discountAmount")));
+      } else {
+        processedDiscounts.put("discountAmount", rawDiscounts.get("discountAmount"));
+      }
+      processedDiscounts.put("discountTypeSelect", rawDiscounts.get("discountTypeSelect"));
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
-    return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+    if (price
+        != (invoiceLine.getProduct().getInAti()
+            ? invoiceLine.getInTaxPrice()
+            : invoiceLine.getPrice())) {
+      if (invoiceLine.getProduct().getInAti()) {
+        processedDiscounts.put("inTaxPrice", price);
+        processedDiscounts.put(
+            "price", this.convertUnitPrice(true, invoiceLine.getTaxLine(), price));
+      } else {
+        processedDiscounts.put("price", price);
+        processedDiscounts.put(
+            "inTaxPrice", this.convertUnitPrice(false, invoiceLine.getTaxLine(), price));
+      }
+    }
+
+    return processedDiscounts;
+  }
+
+  @Override
+  public Map<String, Object> getDiscountsFromPriceLists(
+      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
+
+    Map<String, Object> discounts = null;
+
+    PriceList priceList = invoice.getPriceList();
+
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList);
+      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+    }
+
+    return discounts;
   }
 
   @Override
@@ -348,9 +397,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     TaxLine taxLine = null;
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
+      invoiceLine.setTaxLine(taxLine);
       productInformation.put("taxLine", taxLine);
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
+      
       Tax tax =
           accountManagementAccountService.getProductTax(
               accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
@@ -359,6 +410,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
       productInformation.put("taxEquiv", taxEquiv);
+      
     } catch (AxelorException e) {
       productInformation.put("taxLine", null);
       productInformation.put("taxRate", null);
@@ -369,28 +421,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if (isAccountRequired) {
       BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
       BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-      Map<String, Object> discounts;
-      if (product.getInAti()) {
-        discounts = this.getDiscount(invoice, invoiceLine, inTaxPrice);
-      } else {
-        discounts = this.getDiscount(invoice, invoiceLine, price);
-      }
 
-      if (discounts != null) {
-        productInformation.put("discountAmount", discounts.get("discountAmount"));
-        productInformation.put("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          if (product.getInAti()) {
-            inTaxPrice = (BigDecimal) discounts.get("price");
-            price = this.convertUnitPrice(true, taxLine, inTaxPrice);
-          } else {
-            price = (BigDecimal) discounts.get("price");
-            inTaxPrice = this.convertUnitPrice(false, taxLine, price);
-          }
-        }
-      }
       productInformation.put("price", price);
       productInformation.put("inTaxPrice", inTaxPrice);
+      
+      productInformation.putAll(
+    	        this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
+      
+      productInformation.put("productName", invoiceLine.getProduct().getName());
     }
 
     try {
