@@ -193,6 +193,7 @@
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
 - Stock Rules : Fix enable change tracking on all fields.
+- StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 
 ## [Unreleased 5.0.7]
 ## Features
