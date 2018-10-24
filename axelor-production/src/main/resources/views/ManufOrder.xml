@@ -190,7 +190,7 @@
 	
 	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
 		<panel>
-			<field name="qty" colSpan="8"/>
+			<field name="qty" min="1" colSpan="8"/>
 			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
 		</panel>
 	</form>
