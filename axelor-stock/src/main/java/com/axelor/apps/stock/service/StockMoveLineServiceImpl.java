@@ -311,6 +311,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
     }
 
+    stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+
     return stockMoveLine;
   }
 

@@ -4,7 +4,7 @@
 "
 "axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"customerStockMoveGenerationAuto";"Enable automatic generation of customer delivery when a sales order is confirmed."
 "axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"terminateSaleOrderOnDelivery";"When this option is activated, the sales orders automatically change to the ""Finished"" status when the deliveries for these orders have been made (when the customer delivery change to the ""Realized"" status)."
-"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"supplStockMoveMgtOnSO";"Allows to activate the management of the supplier arrivals. You will be able to generate supplier arrivals from purchase orders and stock management.
+"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"supplStockMoveMgtOnPO";"Allows to activate the management of the supplier arrivals. You will be able to generate supplier arrivals from purchase orders and stock management.
 "
 "axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"supplierStockMoveGenerationAuto";"Enable automatic generation of supplier arrivals when a purchase order is confirmed."
 "axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"terminatePurchaseOrderOnReceipt";"When this option is activated, the purchase orders automatically change to the ""Finished"" status when the receipt for these orders have been made (when the supplier arrival change to the ""Realized"" status)."

@@ -98,6 +98,10 @@
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
+- Stock Move : Attach conformity certificate to record.
+- Stock Rules : Add massUpdate on 'Stock location', 'Product', 'Refill type' and 'Min. Qty'.
+- Inventory : Add filter on two new string fields on form when click on 'Fill inventory' button.
+- Add direct order stock location.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -113,6 +117,7 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Hide delivery panel depending on the type of product and if the delivery process is enabled in sale order line form view.
 - Refactor purchase order view.
 - Rework project view
 - Set project on invoice and invoice line when generating it from sale order and stock move.
@@ -197,11 +202,17 @@
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
 - Stock Rules : Fix enable change tracking on all fields.
+- Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
+- StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
+- In manufacturing order, Stock move for produced product now uses the price from the product instead of from the costsheet.
+- Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
 
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- SaleOrder : Modify views to display company and stockLocation.
+- PurchaseOrder : Modify views to display company and stockLocation.
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -209,6 +220,7 @@
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- BankOrder : Specify limit for BankOrderLines.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -235,6 +247,8 @@
 - StockMove : Modify Locale for Picking Order report.
 - StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 - Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- PurchaseOrder : Hide 'Completed' button conditionally.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 
 ## [5.0.6] - 2018-10-06

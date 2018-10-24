@@ -18,9 +18,9 @@
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel title="Purchase order">
-			<field name="supplStockMoveMgtOnSO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
-			<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
-			<field name="terminatePurchaseOrderOnReceipt" showIf="supplStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="supplStockMoveMgtOnPO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>
+			<field name="supplierStockMoveGenerationAuto" showIf="supplStockMoveMgtOnPO" widget="boolean-switch" colSpan="4"/>
+			<field name="terminatePurchaseOrderOnReceipt" showIf="supplStockMoveMgtOnPO" widget="boolean-switch" colSpan="4"/>
 			<field name="generateInvoiceFromPurchaseOrder" widget="boolean-switch" colSpan="4"/>
             <field name="allowFinishManuallyPurchaseOrder" widget="boolean-switch" colSpan="4"/>
 		</panel>

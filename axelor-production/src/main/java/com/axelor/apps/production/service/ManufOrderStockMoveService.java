@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -192,7 +193,7 @@ public class ManufOrderStockMoveService {
             stockMove,
             StockMoveLineService.TYPE_OUT_PRODUCTIONS,
             prodProduct.getQty(),
-            manufOrder.getBillOfMaterial().getCostPrice());
+            getCostPriceFromProduct(prodProduct));
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -206,6 +207,17 @@ public class ManufOrderStockMoveService {
         }
       }
     }
+  }
+
+  /**
+   * A null safe method to get costPrice from the product in the prod product.
+   *
+   * @param prodProduct a nullable prodProduct.
+   * @return the cost price or {@link BigDecimal.ZERO} if the product is null.
+   */
+  protected BigDecimal getCostPriceFromProduct(ProdProduct prodProduct) {
+    Optional<Product> product = Optional.ofNullable(prodProduct.getProduct());
+    return product.map(Product::getCostPrice).orElse(BigDecimal.ZERO);
   }
 
   protected StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company)
@@ -248,7 +260,7 @@ public class ManufOrderStockMoveService {
       ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
       throws AxelorException {
     return _createStockMoveLine(
-        prodProduct, stockMove, inOrOutType, qty, prodProduct.getProduct().getCostPrice());
+        prodProduct, stockMove, inOrOutType, qty, getCostPriceFromProduct(prodProduct));
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -575,7 +587,7 @@ public class ManufOrderStockMoveService {
           stockMove,
           StockMoveLineService.TYPE_OUT_PRODUCTIONS,
           qty,
-          manufOrder.getBillOfMaterial().getCostPrice());
+          getCostPriceFromProduct(prodProduct));
 
       // Update produced StockMoveLineList with created stock move lines
       stockMove

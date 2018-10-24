@@ -47,6 +47,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -515,6 +516,16 @@ public class InventoryService {
     if (inventory.getProductCategory() != null) {
       query += " and self.product.productCategory = ?";
       params.add(inventory.getProductCategory());
+    }
+
+    if (!Strings.isNullOrEmpty(inventory.getFromRack())) {
+      query += " and self.rack >= ?";
+      params.add(inventory.getFromRack());
+    }
+
+    if (!Strings.isNullOrEmpty(inventory.getToRack())) {
+      query += " and self.rack <= ?";
+      params.add(inventory.getToRack());
     }
 
     return Beans.get(StockLocationLineRepository.class)
