@@ -196,6 +196,7 @@
 - Manuf order: Fix sequence of operation details on report.
 - Stock Rules : Fix enable change tracking on all fields.
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
+- StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 
 ## [Unreleased 5.0.7]
 ## Features
