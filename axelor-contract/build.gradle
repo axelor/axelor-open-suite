@@ -6,7 +6,7 @@ apply {
 	version = absVersion
 }
 
-spotless { 
+spotless {
 	java {  
 		googleJavaFormat()
 	} 

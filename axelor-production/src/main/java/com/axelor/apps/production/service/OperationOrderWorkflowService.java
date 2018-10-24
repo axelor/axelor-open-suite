@@ -22,7 +22,6 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -457,24 +456,19 @@ public class OperationOrderWorkflowService {
 
   public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException {
-
-    long machineDuration = this.computeMachineDuration(operationOrder, qty);
-
-    long humanDuration = this.computeHumanDuration(operationOrder, qty);
-
-    if (machineDuration >= humanDuration) {
-      return machineDuration;
-    } else {
-      return humanDuration;
-    }
-  }
-
-  public long computeMachineDuration(OperationOrder operationOrder, BigDecimal qty)
-      throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
+
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+
+    BigDecimal nbCycles;
+    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+      nbCycles = qty;
+    } else {
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
+    }
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
@@ -489,44 +483,17 @@ public class OperationOrderWorkflowService {
             workCenter.getName());
       }
       duration += machine.getStartingDuration();
-
-      BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-      BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-      if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-        duration += qty.multiply(durationPerCycle).longValue();
-      } else {
-        duration +=
-            (qty.divide(maxCapacityPerCycle, RoundingMode.HALF_UP))
-                .multiply(durationPerCycle)
-                .longValue();
-      }
-
       duration += machine.getEndingDuration();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
     }
+
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;
-  }
-
-  public long computeHumanDuration(OperationOrder operationOrder, BigDecimal qty) {
-    WorkCenter workCenter = operationOrder.getProdProcessLine().getWorkCenter();
-
-    long duration = 0;
-
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-    if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-        || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
-
-      if (operationOrder.getProdHumanResourceList() != null) {
-
-        for (ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList()) {
-
-          duration += prodHumanResource.getDuration();
-        }
-      }
-    }
-
-    return qty.multiply(new BigDecimal(duration)).longValue();
   }
 }

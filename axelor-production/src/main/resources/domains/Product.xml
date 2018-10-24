@@ -12,6 +12,8 @@
   	
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <integer name="realOrEstimatedPriceSelect" title="Price method" selection="production.product.price.method.select" default="1"/>
+    <string name="productStandard" title="Production.productStandard"/>
+    <many-to-one name="productApproval" ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
 		<extra-code>
 	   		<![CDATA[
 				// PRICE METHOD SELECT

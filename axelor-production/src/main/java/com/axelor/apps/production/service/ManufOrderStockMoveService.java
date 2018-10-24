@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -75,6 +76,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 
@@ -178,6 +182,9 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
+      stockMove.setOriginId(manufOrder.getId());
+      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
@@ -186,7 +193,7 @@ public class ManufOrderStockMoveService {
             stockMove,
             StockMoveLineService.TYPE_OUT_PRODUCTIONS,
             prodProduct.getQty(),
-            manufOrder.getBillOfMaterial().getCostPrice());
+            getCostPriceFromProduct(prodProduct));
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -200,6 +207,17 @@ public class ManufOrderStockMoveService {
         }
       }
     }
+  }
+
+  /**
+   * A null safe method to get costPrice from the product in the prod product.
+   *
+   * @param prodProduct a nullable prodProduct.
+   * @return the cost price or {@link BigDecimal.ZERO} if the product is null.
+   */
+  protected BigDecimal getCostPriceFromProduct(ProdProduct prodProduct) {
+    Optional<Product> product = Optional.ofNullable(prodProduct.getProduct());
+    return product.map(Product::getCostPrice).orElse(BigDecimal.ZERO);
   }
 
   protected StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company)
@@ -242,7 +260,7 @@ public class ManufOrderStockMoveService {
       ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
       throws AxelorException {
     return _createStockMoveLine(
-        prodProduct, stockMove, inOrOutType, qty, prodProduct.getProduct().getCostPrice());
+        prodProduct, stockMove, inOrOutType, qty, getCostPriceFromProduct(prodProduct));
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -501,18 +519,23 @@ public class ManufOrderStockMoveService {
    */
   public void createNewConsumedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
+    // find planned stock move
+    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getInStockMoveList());
+    if (!stockMoveOpt.isPresent()) {
+      return;
+    }
+
+    StockMove stockMove = stockMoveOpt.get();
+
+    stockMoveService.cancel(stockMove);
+
     // clear all lists from planned lines
     manufOrder
         .getConsumedStockMoveLineList()
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_PLANNED);
-    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getInStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
-    }
-    StockMove stockMove = stockMoveOpt.get();
+                    == StockMoveRepository.STATUS_CANCELED);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -528,6 +551,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.plan(stockMove);
   }
 
   /**
@@ -538,18 +562,21 @@ public class ManufOrderStockMoveService {
    */
   public void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
+    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
+    if (!stockMoveOpt.isPresent()) {
+      return;
+    }
+    StockMove stockMove = stockMoveOpt.get();
+
+    stockMoveService.cancel(stockMove);
+
     // clear all lists
     manufOrder
         .getProducedStockMoveLineList()
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_PLANNED);
-    Optional<StockMove> stockMoveOpt = getPlannedStockMove(manufOrder.getOutStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
-    }
-    StockMove stockMove = stockMoveOpt.get();
+                    == StockMoveRepository.STATUS_CANCELED);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -560,7 +587,7 @@ public class ManufOrderStockMoveService {
           stockMove,
           StockMoveLineService.TYPE_OUT_PRODUCTIONS,
           qty,
-          manufOrder.getBillOfMaterial().getCostPrice());
+          getCostPriceFromProduct(prodProduct));
 
       // Update produced StockMoveLineList with created stock move lines
       stockMove
@@ -570,6 +597,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);
     }
+    stockMoveService.plan(stockMove);
   }
 
   /**

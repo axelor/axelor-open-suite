@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppAccount" lang="java" cachable="true" extends="App">
+	<entity name="AppAccount" lang="java" extends="App">
 
 		<!-- Comptabilité -->
 		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"

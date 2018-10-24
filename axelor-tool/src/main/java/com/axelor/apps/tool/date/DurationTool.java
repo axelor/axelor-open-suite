@@ -23,22 +23,18 @@ import java.time.LocalDateTime;
 public class DurationTool {
 
   public static Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-
     return Duration.between(startDateTime, endDateTime);
   }
 
   public static long getDaysDuration(Duration duration) {
-
     return duration.toDays();
   }
 
   public static long getHoursDuration(Duration duration) {
-
     return duration.toHours();
   }
 
   public static long getMinutesDuration(Duration duration) {
-
     return duration.toMinutes();
   }
 

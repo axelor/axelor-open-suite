@@ -75,5 +75,10 @@
 		<option value="0">Javascript</option>
     	<option value="1">Groovy</option>
 	</selection>
+	
+	<selection name="studio.action.builder.email.send.option.select">
+		<option value="0">Send directly</option>
+		<option value="1">Edit before send</option>
+	</selection>
     
 </object-views>

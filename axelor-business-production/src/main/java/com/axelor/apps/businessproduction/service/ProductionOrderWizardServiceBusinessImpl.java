@@ -98,7 +98,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 
     ProductionOrder productionOrder =
         productionOrderServiceBusinessImpl.generateProductionOrder(
-            product, billOfMaterial, qty, project, startDateT.toLocalDateTime());
+            product, billOfMaterial, qty, project, startDateT.toLocalDateTime(), null);
 
     if (productionOrder != null) {
       return productionOrder.getId();

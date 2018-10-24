@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <action-view name="action-stock-move-line-product-reserved-planned" title="${fullName} plan. st. move"
+		model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid-planned"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+	</action-view>
+	
+	<action-view name="action-stock-location-line-view-reserved-stock-move-lines" title="Reserved stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<view type="grid" name="stock-move-line-all-grid-planned"/>
+    	<view type="form" name="stock-move-line-all-form"/>
+    	<domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id "/>
+    </action-view>
+
+  <action-attrs name="action-supplychain-attrs-stock-order-line-max-reserved-qty">
+    <attribute name="value" for="reservedQty" expr="eval: realQty" if="reservedQty > realQty"/>
+  </action-attrs>
+</object-views>	

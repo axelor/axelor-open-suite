@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
   public static final String DEFAULT_LOCALE = "en";
 
   private static final String PATTERN_ACCES_RESTRICTION =
-      "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z[0-9]]))|((?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z[0-9]]))|((?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z[0-9]])).{8,}";
-
+      "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
   private static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(

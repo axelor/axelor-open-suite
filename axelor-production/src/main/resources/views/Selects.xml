@@ -96,5 +96,6 @@
 	<selection name="sequence.generic.code.select" id="production.sequence.generic.code.select">
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>
+		<option value="rawMaterialRequirement">Raw material requirement</option>
 	</selection>
 </object-views>

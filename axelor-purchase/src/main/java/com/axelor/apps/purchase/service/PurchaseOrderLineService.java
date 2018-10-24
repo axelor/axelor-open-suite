@@ -18,7 +18,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -35,7 +34,11 @@ import java.util.Optional;
 
 public interface PurchaseOrderLineService {
 
-  public BigDecimal getUnitPrice(
+  public BigDecimal getExTaxUnitPrice(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
+      throws AxelorException;
+
+  public BigDecimal getInTaxUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException;
 
@@ -55,7 +58,7 @@ public interface PurchaseOrderLineService {
    * @param purchaseOrderLine
    * @return
    */
-  Optional<TaxLine> geOptionalTaxLine(
+  Optional<TaxLine> getOptionalTaxLine(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
   public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
@@ -68,7 +71,7 @@ public interface PurchaseOrderLineService {
   public Map<String, BigDecimal> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine);
+  public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine, Boolean inAti);
 
   public PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder,
@@ -84,20 +87,18 @@ public interface PurchaseOrderLineService {
   public SupplierCatalog getSupplierCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner);
+  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
-  public BigDecimal convertUnitPrice(
-      Product product, TaxLine taxLine, BigDecimal price, PurchaseOrder purchaseOrder);
+  public Map<String, Object> updateInfoFromCatalog(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-
-  public boolean unitPriceShouldBeUpdate(PurchaseOrder purchaseOrder, Product product);
 
   /**
    * Get minimum quantity from supplier catalog if available, else return one.

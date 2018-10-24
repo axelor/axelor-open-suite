@@ -144,7 +144,7 @@
 			<field name="senderLabel"/>
 		</panel>
 		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
-			<field name="bankOrderLineList" colSpan="12" showTitle="false">
+			<field name="bankOrderLineList" colSpan="12" showTitle="false" canNew="bankOrderLineList.length &lt; 10"> 
 				<editor x-layout="table" x-show-on-new="false" x-viewer="true" onNew="action-bank-order-line-onnew">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
 					<field name="bankOrderDate" hidden="true"/>

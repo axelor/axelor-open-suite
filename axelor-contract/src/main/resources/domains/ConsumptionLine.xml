@@ -9,7 +9,7 @@
 		<decimal name="qty" title="Quantity"/>
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-		<date name="consumptionLineDate" title="Date" />
+		<date name="lineDate" title="Date" />
 		<boolean name="isInvoiced" title="Invoiced" />
 		<boolean name="isError" title="Error" />
 		<string name="reference" title="Reference" />

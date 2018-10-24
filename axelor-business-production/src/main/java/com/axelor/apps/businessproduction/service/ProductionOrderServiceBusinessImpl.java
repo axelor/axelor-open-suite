@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ProductionOrderServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -56,12 +57,14 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       Project project,
-      LocalDateTime startDate)
+      LocalDateTime startDate,
+      SaleOrder saleOrder)
       throws AxelorException {
 
     ProductionOrder productionOrder = this.createProductionOrder(project, false);
 
-    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
+    this.addManufOrder(
+        productionOrder, product, billOfMaterial, qtyRequested, startDate, saleOrder);
 
     return productionOrderRepo.save(productionOrder);
   }

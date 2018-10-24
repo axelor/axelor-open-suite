@@ -17,9 +17,10 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Client Partner" />
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order" />
-  
+
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
-    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/>
+    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/><boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
+    
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeManufOrder" title="Products to consume"/>
   	<one-to-many name="consumedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="consumedManufOrder" title="Consumed products" orphanRemoval="false"/>
@@ -37,13 +38,15 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>
     <one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet" mappedBy="manufOrder"/>
     <decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
-	
+
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
   
     <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
   	<datetime name="plannedEndDateT" title="Planned end date"/>
-  	
+
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+
  	<datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>
   	<decimal name="endTimeDifference" title="Time difference (Minutes)"/>
@@ -56,6 +59,8 @@
     <string name="wasteProdDescription" title="Waste description" large="true"/>
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
+    
+    <string name="note" large="true"/>
     
     <unique-constraint columns="manufOrderSeq,company"/>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -287,7 +287,7 @@
        emp.name as emp_name,
        sum(tml.hours_duration) as total_hours,
        emp.hourly_rate as emp_rate,
-       sum(tml.hours_duration)*emp.hourly_rate as emp_cost
+       sum(tml.hours_duration) * emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
@@ -605,7 +605,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select sum(tml.hours_duration) as total_hours,
-       sum(tml.hours_duration*emp.hourly_rate) as emp_cost,
+       sum(tml.hours_duration * emp.hourly_rate) as emp_cost,
        date_trunc('month',tml.date_val) as month_val,
        to_char(tml.date_val,'yyyy-mm') as month_text
 from hr_timesheet_line tml
@@ -729,14 +729,14 @@ group by month_val,month_text]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       sum(pp.total_planned_hrs) as total_hours,
+       sum(ppt.planned_hours) as total_hours,
        emp.hourly_rate as emp_rate,
-       sum(pp.total_planned_hrs*emp.hourly_rate) as emp_cost
-from project_project_planning pp
-left join auth_user usr on (usr.id = pp.user_id)
+       sum(ppt.planned_hours * emp.hourly_rate) as emp_cost
+from project_project_planning_time ppt
+left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-left join project_project project on (project.id = pp.project)
-where project.id = ? and pp.total_planned_hrs > 0
+left join project_project project on (project.id = ppt.project)
+where project.id = ? and ppt.planned_hours > 0
 group by emp.id,emp.name;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MonthProjectPlanning" id="5002">
@@ -833,15 +833,14 @@ group by emp.id,emp.name;]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select sum(ppt.hours) as total_hours,
-       sum(ppt.hours*emp.hourly_rate) as emp_cost,
+            <xml-property name="queryText"><![CDATA[select sum(ppt.real_hours) as total_hours,
+       sum(ppt.real_hours * emp.hourly_rate) as emp_cost,
        date_trunc('month',ppt.date_val) as month_val,
        to_char(ppt.date_val,'yyyy-mm') as month_text
 from project_project_planning_time ppt
-left join project_project_planning pp on (pp.id = ppt.project_planning)
-left join auth_user usr on (usr.id = pp.user_id)
+left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
-where pp.project = ?
+where ppt.project = ?
 group by month_val,month_text]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MonthTimeCost" id="5042">
@@ -1103,12 +1102,11 @@ from (
 	union 
 	select date_trunc('month',date_val) as month_val 
 	from project_project_planning_time ppt
-	join project_project_planning pp on (ppt.project_planning = pp.id)  
-	where pp.project = ?
+	where ppt.project = ?
 ) ts
 left join (
 	select  sum(tml_real.hours_duration) as real_hours,
-		sum(tml_real.hours_duration*emp_real.hourly_rate) as real_cost,
+		sum(tml_real.hours_duration * emp_real.hourly_rate) as real_cost,
 		date_trunc('month',tml_real.date_val) as month_val
 	from hr_timesheet_line tml_real
 	left join hr_timesheet tm_real on (tm_real.id = tml_real.timesheet)
@@ -1128,25 +1126,23 @@ left join (
 	group by month_val) theory_time
 on (ts.month_val = theory_time.month_val)
 left join (
-	select sum(ppt.hours) as planned_past_hours,
-      	       sum(ppt.hours*emp.hourly_rate) as planned_past_cost,
+	select sum(ppt.planned_hours) as planned_past_hours,
+      	       sum(ppt.planned_hours * emp.hourly_rate) as planned_past_cost,
        	       date_trunc('month',ppt.date_val) as month_val
 	from project_project_planning_time ppt
-	left join project_project_planning pp on (pp.id = ppt.project_planning)
-	left join auth_user usr on (usr.id = pp.user_id)
+	left join auth_user usr on (usr.id = ppt.user_id)
 	left join hr_employee emp on (emp.id = usr.employee)
-	where ppt.date_val < current_date and pp.project = ?
+	where ppt.date_val < current_date and ppt.project = ?
 	group by month_val) past_planned
 on (ts.month_val = past_planned.month_val)
 left join (
-	select sum(ppt.hours) as planned_hours,
-      	       sum(ppt.hours*emp.hourly_rate) as planned_cost,
+	select sum(ppt.planned_hours) as planned_hours,
+      	       sum(ppt.planned_hours * emp.hourly_rate) as planned_cost,
        	       date_trunc('month',ppt.date_val) as month_val
 	from project_project_planning_time ppt
-	left join project_project_planning pp on (pp.id = ppt.project_planning)
-	left join auth_user usr on (usr.id = pp.user_id)
+	left join auth_user usr on (usr.id = ppt.user_id)
 	left join hr_employee emp on (emp.id = usr.employee)
-	where ppt.date_val >= current_date and pp.project = ?
+	where ppt.date_val >= current_date and ppt.project = ?
 	group by month_val) planned
 on (ts.month_val = planned.month_val) 
 order by ts.month_val]]></xml-property>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppMobile" lang="java" extends="App">
+		<boolean name="isSaleAppEnable" default="true" title="Sale"/>
+		<boolean name="isCrmAppEnable" default="true" title="CRM"/>
+		<boolean name="isTimesheetAppEnable" default="true" title="Timesheet"/>
+		<boolean name="isLeaveAppEnable" default="true" title="Leave"/>
+		<boolean name="isExpenseAppEnable" default="true" title="Expense"/>
+		<decimal name="offlineRecordLimit" title="Offline record limit"/>
+		
+		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Customers"/>
+		<many-to-many name="partnerContactSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+		<many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Projects"/>
+		
+		<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
+		
+		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+	</entity>
+
+</domain-models>

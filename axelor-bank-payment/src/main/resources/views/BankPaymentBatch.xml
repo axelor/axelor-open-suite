@@ -20,11 +20,16 @@
   		
   		 <panel-tabs>
   		 	<panel name="ebicsCertificatePage" title="Ebics certificate page" showIf="actionSelect == 1">
-				<field name="template" domain="self.metaModel.name = 'EbicsCertificate' AND self.mediaTypeSelect = 2"/>
+				<field name="template" domain="self.metaModel.name = 'EbicsCertificate' AND self.mediaTypeSelect = 2" requiredIf="actionSelect == 1"/>
 				<field name="daysNbr"/>
 				<button name="bankPaymentBatch" title="Bank payment batch" onClick="save,action-ecbatch-method-check-ebics-certificate-validation-date"/>
 			</panel>
-    		
+
+			<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 2">
+				<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
+				<field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
+			</panel>
+
     		<panel name="information" title="Information" >
       			<field name="createdOn" title="Created on"/>
       			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -32,11 +37,18 @@
       			<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     		</panel>
   		</panel-tabs>
-		
+
+		<panel name="actions" sidebar="true" title="Actions" showIf="actionSelect == 2">
+		    <button name="bankStatementBatch" title="Bank Statement Batch" showIf="actionSelect == 2" onClick="save,action-bank-payment-batch-method-action-bank-statement" colSpan="12"/>
+		</panel>
 	</form>
 	
 	<action-method name="action-ecbatch-method-check-ebics-certificate-validation-date">
 		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="launchBankPaymentBatch"/>
+	</action-method>
+
+	<action-method name="action-bank-payment-batch-method-action-bank-statement">
+		<call class="com.axelor.apps.bankpayment.web.BankStatementController" method="actionBankStatement" />
 	</action-method>
 
 </object-views>

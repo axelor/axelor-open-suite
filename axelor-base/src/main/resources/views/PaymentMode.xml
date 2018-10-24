@@ -23,7 +23,7 @@
   			<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" if-module="axelor-bank-payment" if="__config__.app.isApp('account')" />
   			<field name="validatePaymentByDepositSlipPublication" showIf="inOutSelect == 1 &amp;&amp; [5, 7].indexOf(typeSelect) >= 0" if="__config__.app.getApp('account')?.paymentVouchersOnInvoice" />
         </panel>
-        <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
+        <panel-related field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-form"
 	        domain="self.typeSelect = 3" colSpan="12" showTitle="false" if-module="axelor-account" if="__config__.app.isApp('account')" />
     </form>
     

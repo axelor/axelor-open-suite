@@ -52,13 +52,19 @@
 					]]>
 				</viewer>
 			</field>
-		</panel>    
+		</panel>
 		<panel-tabs>
 			<panel name="locationContent" title="Location Content">
 				<panel-dashlet title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true" height="600"/>
 			</panel> 
 			<panel-dashlet title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true" height="600"/>
-		</panel-tabs>   
+			<panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<field name="usableOnSaleOrder" colSpan="3"/>
+				<field name="usableOnPurchaseOrder" colSpan="3"/>
+				<field name="usableOnProduction" colSpan="3"/>
+				<field name="directOrderLocation" colSpan="3"/>
+			</panel>
+		</panel-tabs>
 		
 	</form>
     

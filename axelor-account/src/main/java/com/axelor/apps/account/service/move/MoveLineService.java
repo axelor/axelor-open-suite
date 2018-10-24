@@ -76,6 +76,9 @@ public class MoveLineService {
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
 
+  public static final boolean IS_CREDIT = false;
+  public static final boolean IS_DEBIT = true;
+
   @Inject
   public MoveLineService(
       AccountManagementAccountService accountManagementService,

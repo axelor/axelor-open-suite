@@ -8,13 +8,17 @@
 	</form>
 	
      <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null"/>
+	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
 	</form>
 	
 	<form name="incl-sales-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
 	   <panel-dashlet colSpan="12" action="action-contact-view-sales-orders" title="Sales orders" showIf="id != null"/>
 	</form>
-	
+
+    <form name="incl-purchases-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; (isSupplier || isCarrier)"/>
+    </form>
+
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
 	     <panel-related  field="customerCreditLineList" colSpan="12" form-view="customer-credit-line-form" grid-view="customer-credit-line-grid" />
 	</form>
@@ -32,4 +36,10 @@
 		<domain>(self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
+
+     <action-view name="action-partner-view-purchases-orders" title="Purchases orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+        <view type="grid" name="purchase-order-partner-grid"/>
+        <view type="form" name="purchase-order-form"/>
+        <domain>(self.supplierPartner.id = :id)</domain>
+    </action-view>
 </object-views>

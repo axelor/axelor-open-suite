@@ -47,6 +47,10 @@ public interface IExceptionMessage {
   public static final String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all sale orders" /*)*/;
 
+  static final String SALE_ORDER_PRINT = /*$$(*/ "Please select the sale order(s) to print." /*)*/;
+  static final String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
+      "Please fill printing settings on sale order %s." /*)*/;
+
   /** Configurator creator */
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/
       "This script has errors, please see server logs for more details." /*)*/;

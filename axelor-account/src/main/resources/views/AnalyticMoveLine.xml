@@ -10,6 +10,7 @@
     	<hilite if="typeSelect == 4" color="primary"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="accountType" />
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="date"/>
         <field name="amount" aggregate="sum"/>
@@ -19,6 +20,7 @@
     <grid name="analytic-move-line-distribution-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
         <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="accountType" />
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
         <field name="percentage"/>
         <field name="amount"/>

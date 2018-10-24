@@ -20,6 +20,7 @@
 	  	<boolean name="extendsMembersFromParent" default="false"/>
 		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Parent project"/>
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
+		<one-to-many name="resourceBookingList" ref="com.axelor.apps.project.db.ResourceBooking" title="Resource booking" mappedBy="project"/>
 		
 		<string name="code" title="Code" />
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
@@ -30,9 +31,7 @@
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
 		
-		<decimal name="duration" title="Duration"/>
 		<decimal name="timeSpent" title="Time Spent"/>
-		<decimal name="leadDelay" title="Lead/Delay"/>
 		
 		<decimal name="progress" title="Progress (%)"/>
 		<decimal name="sequence" title="Sequence" />
@@ -54,7 +53,8 @@
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
 	 	<boolean name="isProject" title="Project/Phase" default="true" />
-
+	 	<boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
+	 	
         <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
 

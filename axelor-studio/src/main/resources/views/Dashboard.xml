@@ -6,8 +6,8 @@
   <dashboard name="dasbhoard-wkf" title="Workflow dashboard">
     <dashlet action="chart:chart.wkf.tracking.status.per.month" title="Status per month" height="350" />
     <dashlet action="chart:chart.wkf.tracking.status.per.day" title="Status per day" height="350"/>
-    <dashlet action="chart:chart.wkf.tracking.time.spent.per.status" title="Time spent per status (Hours)" height="350"/>
-    <dashlet action="chart:chart.wkf.tracking.time.spent.per.status.per.user" title="Time spent per status per user (Hours)" height="350"/>
+    <dashlet action="chart:chart.wkf.tracking.time.spent.per.status" title="Time spent per status (hours)" height="350"/>
+    <dashlet action="chart:chart.wkf.tracking.time.spent.per.status.per.user" title="Time spent per status per user (hours)" height="350"/>
   </dashboard>
   
  </object-views>

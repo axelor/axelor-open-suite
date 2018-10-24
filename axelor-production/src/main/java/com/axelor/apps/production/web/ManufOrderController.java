@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -182,9 +183,15 @@ public class ManufOrderController {
 
       if (!manufOrderIds.equals("")) {
 
-        String name = I18n.get("Print");
-        if (manufOrder.getManufOrderSeq() != null) {
-          name += lstSelectedManufOrder == null ? "OF " + manufOrder.getManufOrderSeq() : "OFs";
+        String name;
+        if (lstSelectedManufOrder == null) {
+          name =
+              String.format(
+                  "%s %s",
+                  I18n.get("Manufacturing order"),
+                  Strings.nullToEmpty(manufOrder.getManufOrderSeq()));
+        } else {
+          name = I18n.get("Manufacturing orders");
         }
 
         String fileLink =
@@ -194,7 +201,7 @@ public class ManufOrderController {
                 .generate()
                 .getFileLink();
 
-        LOG.debug("Printing " + name);
+        LOG.debug("Printing {}", name);
 
         response.setView(ActionView.define(name).add("html", fileLink).map());
 

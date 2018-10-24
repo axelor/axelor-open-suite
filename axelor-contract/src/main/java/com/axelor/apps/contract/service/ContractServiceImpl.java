@@ -17,12 +17,24 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -32,34 +44,67 @@ import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.supplychain.service.InvoiceGeneratorContract;
+import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Maps;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContractServiceImpl extends ContractRepository implements ContractService {
 
-  @Inject protected ContractVersionService versionService;
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  // TODO: put this var in another place
+  private static final int QTY_SCALE = 2;
 
-  @Inject protected ContractLineRepository contractLineRepo;
+  protected AppBaseService appBaseService;
+  protected ContractVersionService versionService;
+  protected ContractLineService contractLineService;
+  protected DurationService durationService;
 
-  @Inject protected ConsumptionLineRepository consumptionLineRepo;
+  protected ContractLineRepository contractLineRepo;
+  protected ConsumptionLineRepository consumptionLineRepo;
+  protected ContractRepository contractRepository;
+
+  @Inject
+  public ContractServiceImpl(
+      AppBaseService appBaseService,
+      ContractVersionService versionService,
+      ContractLineService contractLineService,
+      DurationService durationService,
+      ContractLineRepository contractLineRepo,
+      ConsumptionLineRepository consumptionLineRepo,
+      ContractRepository contractRepository) {
+    this.appBaseService = appBaseService;
+    this.versionService = versionService;
+    this.contractLineService = contractLineService;
+    this.durationService = durationService;
+    this.contractLineRepo = contractLineRepo;
+    this.consumptionLineRepo = consumptionLineRepo;
+    this.contractRepository = contractRepository;
+  }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void activeContract(Contract contract, LocalDate date) {
     contract.setStartDate(date);
     contract.setStatusSelect(ACTIVE_CONTRACT);
@@ -68,56 +113,138 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  // @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void waitingCurrentVersion(Contract contract, LocalDate date) {
-    ContractVersion currentVersion = contract.getCurrentVersion();
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
     versionService.waiting(currentVersion, date);
-
-    // save(contract);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
-    ContractVersion currentVersion = contract.getCurrentVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
+
+    if (currentVersion.getSupposedActivationDate() != null) {
+      date = currentVersion.getSupposedActivationDate();
+    }
 
     Invoice invoice = null;
 
-    if (currentVersion.getIsWithEngagement()) {
-
-      if (contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT
-          || currentVersion.getEngagementStartFromVersion()) {
-        contract.setEngagementStartDate(date);
-      }
+    if (currentVersion.getIsWithEngagement()
+            && contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT
+        || currentVersion.getEngagementStartFromVersion()) {
+      contract.setEngagementStartDate(date);
     }
 
-    // Active the contract if not yet activated
     if (contract.getStatusSelect() != ContractRepository.ACTIVE_CONTRACT) {
-      Beans.get(ContractService.class).activeContract(contract, date);
+      activeContract(contract, date);
     }
 
-    // Ongoing current version
     versionService.ongoing(currentVersion, date);
 
-    // Inc contract version number
     contract.setVersionNumber(contract.getVersionNumber() + 1);
-
-    if (contract.getCurrentVersion().getAutomaticInvoicing()
-        && contract.getCurrentVersion().getInvoicingMoment() == 2) {
-      // set date de factu a date du jour
-      // facturer
-      contract.setInvoicingDate(Beans.get(AppBaseService.class).getTodayDate());
-      invoice = invoicingContract(contract);
+    if (currentVersion.getIsPeriodicInvoicing() && contract.getVersionNumber() == 0) {
+      contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
+      contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
-
-    save(contract);
+    if (contract.getCurrentContractVersion().getAutomaticInvoicing()) {
+      if (contract.getCurrentContractVersion().getInvoicingMomentSelect()
+          == ContractVersionRepository.BEGIN_INVOICING_MOMENT) {
+        invoice = invoicingContract(contract);
+      } else {
+        fillInvoicingDateByInvoicingMoment(contract);
+      }
+    }
 
     return invoice;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void waitingNextVersion(Contract contract, LocalDate date) {
+  @Transactional
+  public Contract increaseInvoiceDates(Contract contract) {
+    ContractVersion version = contract.getCurrentContractVersion();
+    if (version.getIsPeriodicInvoicing()) {
+      contract.setInvoicePeriodStartDate(contract.getInvoicePeriodEndDate().plusDays(1));
+      contract.setInvoicePeriodEndDate(
+          durationService
+              .computeDuration(version.getInvoicingDuration(), contract.getInvoicePeriodStartDate())
+              .minusDays(1));
+    }
+
+    fillInvoicingDateByInvoicingMoment(contract);
+
+    return contract;
+  }
+
+  @Transactional
+  private void fillInvoicingDateByInvoicingMoment(Contract contract) {
+    ContractVersion version = contract.getCurrentContractVersion();
+    if (version.getAutomaticInvoicing()) {
+      switch (version.getInvoicingMomentSelect()) {
+        case ContractVersionRepository.END_INVOICING_MOMENT:
+          contract.setInvoicingDate(contract.getInvoicePeriodEndDate());
+          break;
+        case ContractVersionRepository.BEGIN_INVOICING_MOMENT:
+          contract.setInvoicingDate(contract.getInvoicePeriodStartDate());
+          break;
+        default:
+          contract.setInvoicingDate(appBaseService.getTodayDate());
+      }
+    }
+  }
+
+  @Override
+  public void isValid(Contract contract) throws AxelorException {
+    if (contract.getId() == null) {
+      return;
+    }
+    checkInvoicedConsumptionLines(contract);
+    checkInvoicedAdditionalContractLine(contract);
+  }
+
+  protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {
+    Contract origin = find(contract.getId());
+    List<ConsumptionLine> lineInvoiced =
+        origin
+            .getConsumptionLineList()
+            .stream()
+            .filter(ConsumptionLine::getIsInvoiced)
+            .collect(Collectors.toList());
+    for (ConsumptionLine line : contract.getConsumptionLineList()) {
+      if (lineInvoiced.contains(line)) {
+        lineInvoiced.remove(line);
+      }
+    }
+    if (!lineInvoiced.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+    }
+  }
+
+  protected void checkInvoicedAdditionalContractLine(Contract contract) throws AxelorException {
+    Contract origin = find(contract.getId());
+    List<ContractLine> lineInvoiced =
+        origin
+            .getAdditionalBenefitContractLineList()
+            .stream()
+            .filter(ContractLine::getIsInvoiced)
+            .collect(Collectors.toList());
+    for (ContractLine line : contract.getAdditionalBenefitContractLineList()) {
+      if (lineInvoiced.contains(line)) {
+        lineInvoiced.remove(line);
+      }
+    }
+    if (!lineInvoiced.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion version = contract.getNextVersion();
     versionService.waiting(version, date);
 
@@ -125,37 +252,37 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void activeNextVersion(Contract contract, LocalDate date) throws AxelorException {
-    ContractVersion currentVersion = contract.getCurrentVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     // Terminate currentVersion
     versionService.terminate(currentVersion, date.minusDays(1));
 
     // Archive current version
-    Beans.get(ContractService.class).archiveVersion(contract, date);
+    archiveVersion(contract, date);
 
-    if (contract.getCurrentVersion().getDoNotRenew()) {
-      contract.getCurrentVersion().setIsTacitRenewal(false);
+    if (contract.getCurrentContractVersion().getDoNotRenew()) {
+      contract.getCurrentContractVersion().setIsTacitRenewal(false);
     }
 
     // Ongoing current version
-    Beans.get(ContractService.class).ongoingCurrentVersion(contract, date);
+    ongoingCurrentVersion(contract, date);
 
     save(contract);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void archiveVersion(Contract contract, LocalDate date) {
-    ContractVersion currentVersion = contract.getCurrentVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
     ContractVersion nextVersion = contract.getNextVersion();
 
     contract.addVersionHistory(currentVersion);
     currentVersion.setContract(null);
 
-    contract.setCurrentVersion(nextVersion);
-    nextVersion.setContractNext(null);
+    contract.setCurrentContractVersion(nextVersion);
+    nextVersion.setNextContract(null);
     nextVersion.setContract(contract);
 
     contract.setNextVersion(null);
@@ -164,213 +291,291 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void terminateContract(Contract contract, Boolean isManual, LocalDate date)
-      throws AxelorException {
-    ContractVersion currentVersion = contract.getCurrentVersion();
+  public void checkCanTerminateContract(Contract contract) throws AxelorException {
+    if (contract.getTerminatedDate() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.CONTRACT_MISSING_TERMINATE_DATE));
+    }
+    ContractVersion version = contract.getCurrentContractVersion();
 
-    if (isManual) {
-      contract.setTerminatedManually(isManual);
-      contract.setTerminatedDate(date);
-      contract.setTerminatedBy(AuthUtils.getUser());
-    } else {
-      if (currentVersion.getIsTacitRenewal() == true && currentVersion.getDoNotRenew() == false) {
-        renewContract(contract, date);
-        return;
+    if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
+    }
+
+    if (version.getIsWithEngagement()) {
+      if (contract.getEngagementStartDate() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.CONTRACT_MISSING_ENGAGEMENT_DATE));
+      }
+      if (contract
+          .getTerminatedDate()
+          .isBefore(
+              durationService.computeDuration(
+                  version.getEngagementDuration(), contract.getEngagementStartDate()))) {
+        throw new AxelorException(
+            TraceBackRepository.TYPE_FUNCTIONNAL,
+            I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
       }
     }
 
-    if (contract.getTerminatedDate().equals(date)) {
+    if (version.getIsWithPriorNotice()
+        && contract
+            .getTerminatedDate()
+            .isBefore(
+                durationService.computeDuration(
+                    version.getPriorNoticeDuration(),
+                    Beans.get(AppBaseService.class).getTodayDate()))) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_FUNCTIONNAL,
+          I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void terminateContract(Contract contract, Boolean isManual, LocalDate date)
+      throws AxelorException {
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
+
+    if (currentVersion.getIsTacitRenewal() && !currentVersion.getDoNotRenew()) {
+      renewContract(contract, date);
+      return;
+    }
+
+    contract.setTerminatedManually(isManual);
+    contract.setTerminatedDate(date);
+    if (isManual) {
+      contract.setTerminationDemandDate(appBaseService.getTodayDate());
+      contract.setTerminatedByUser(AuthUtils.getUser());
+    }
+    contract.setEndDate(date);
+    if (date.isBefore(appBaseService.getTodayDate())
+        || date.equals(appBaseService.getTodayDate())) {
       versionService.terminate(currentVersion, date);
-      contract.setEndDate(date);
       contract.setStatusSelect(CLOSED_CONTRACT);
     }
+
     save(contract);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
-
-    InvoiceGenerator invoiceGenerator =
-        new InvoiceGeneratorContract(contract) {
-
-          @Override
-          public Invoice generate() throws AxelorException {
-            return super.createInvoiceHeader();
-          }
-        };
-
+    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+    invoiceRepository.save(invoice);
 
-    invoice.setOperationSubTypeSelect(
-        contract.getEndDate() == null
-                || contract.getEndDate().isAfter(Beans.get(AppBaseService.class).getTodayDate())
-            ? InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE
-            : InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
-    invoice.setContract(contract);
-    // invoice.setContractVersion(contract.getCurrentVersion());
+    // Compute all additional lines
+    List<ContractLine> additionalLines =
+        contract
+            .getAdditionalBenefitContractLineList()
+            .stream()
+            .filter(contractLine -> !contractLine.getIsInvoiced())
+            .peek(contractLine -> contractLine.setIsInvoiced(true))
+            .collect(Collectors.toList());
+    for (ContractLine line : additionalLines) {
+      generate(invoice, line);
+      contractLineRepo.save(line);
+    }
 
-    JPA.save(invoice);
-
-    ContractVersion version = null;
-
-    Map<ConsumptionLine, ContractLine> linesFromOlderVersionsMp = Maps.newHashMap();
-
-    for (ConsumptionLine consumptionLine : contract.getCurrentVersion().getConsumptionLineList()) {
-
-      if (consumptionLine.getIsInvoiced()) {
-        continue;
-      }
-
-      version = getVersionSpecificVersion(contract, consumptionLine.getConsumptionLineDate());
-
-      if (version == null) {
-        consumptionLine.setIsError(true);
-      } else {
-        ContractLine linkedContractLine = null;
-
-        for (ContractLine contractLine : version.getContractLineList()) {
-          if (contractLine.getProduct().equals(consumptionLine.getProduct())
-              && contractLine.getProductName().equals(consumptionLine.getReference())) {
-            linkedContractLine = contractLine;
-            break;
-          }
+    // Compute all classic contract lines
+    for (ContractVersion version : getVersions(contract)) {
+      BigDecimal ratio = BigDecimal.ONE;
+      if (contract.getCurrentContractVersion().getIsTimeProratedInvoice()) {
+        if (isFullProrated(contract)
+            && !DateTool.isProrata(
+                contract.getInvoicePeriodStartDate(),
+                contract.getInvoicePeriodEndDate(),
+                version.getActivationDate(),
+                version.getEndDate())) {
+          continue;
         }
+        LocalDate start =
+            version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
+                ? contract.getInvoicePeriodStartDate()
+                : version.getActivationDate();
+        LocalDate end =
+            version.getEndDate() == null
+                    || (version.getEndDate() != null
+                        && contract.getInvoicePeriodEndDate().isBefore(version.getEndDate()))
+                ? contract.getInvoicePeriodEndDate()
+                : version.getEndDate();
+        ratio =
+            durationService.computeRatio(
+                start, end, contract.getCurrentContractVersion().getInvoicingDuration());
+      }
+      List<ContractLine> lines =
+          version
+              .getContractLineList()
+              .stream()
+              .filter(contractLine -> !contractLine.getIsConsumptionLine())
+              .collect(Collectors.toList());
 
-        if (linkedContractLine == null) {
-          consumptionLine.setIsError(true);
-        } else {
-          linkedContractLine.setQty(linkedContractLine.getQty().add(consumptionLine.getQty()));
-          BigDecimal taxRate = BigDecimal.ZERO;
-          if (linkedContractLine.getTaxLine() != null) {
-            taxRate = linkedContractLine.getTaxLine().getValue();
-          }
-          linkedContractLine.setExTaxTotal(
-              linkedContractLine
-                  .getQty()
-                  .multiply(linkedContractLine.getPrice())
-                  .setScale(2, RoundingMode.HALF_EVEN));
-          linkedContractLine.setInTaxTotal(
-              linkedContractLine
-                  .getExTaxTotal()
-                  .add(linkedContractLine.getExTaxTotal().multiply(taxRate)));
-          consumptionLine.setContractLine(linkedContractLine);
-          if (!isInVersion(linkedContractLine, contract.getCurrentVersion())) {
-            linesFromOlderVersionsMp.put(consumptionLine, linkedContractLine);
-          }
-        }
+      for (ContractLine line : lines) {
+        ContractLine tmp = contractLineRepo.copy(line, false);
+        tmp.setQty(tmp.getQty().multiply(ratio).setScale(QTY_SCALE, RoundingMode.HALF_UP));
+        tmp = this.contractLineService.computeTotal(tmp);
+        generate(invoice, tmp);
       }
     }
 
-    for (ContractLine line : contract.getCurrentVersion().getContractLineList()) {
-
-      if (line.getIsConsumptionLine()) {
-        continue;
-      }
-
-      InvoiceLine invoiceLine = new InvoiceLine();
-
-      invoiceLine.setProduct(line.getProduct());
-      invoiceLine.setExTaxTotal(line.getExTaxTotal());
-      invoiceLine.setInTaxTotal(line.getInTaxTotal());
-      invoiceLine.setDescription(line.getDescription());
-      invoiceLine.setPrice(line.getPrice());
-      invoiceLine.setProductName(line.getProductName());
-      invoiceLine.setQty(line.getQty());
-      invoiceLine.setUnit(line.getUnit());
-      invoiceLine.setTaxLine(line.getTaxLine());
-      invoiceLine.setInvoice(invoice);
-      invoice.addInvoiceLineListItem(invoiceLine);
-
-      JPA.save(invoiceLine);
-
-      // invLineList.add(invoiceLine);
-    }
-    for (ContractLine line : contract.getAdditionalBenefitList()) {
-      if (!line.getIsInvoiced()) {
-        InvoiceLine invoiceLine = new InvoiceLine();
-        invoiceLine.setProduct(line.getProduct());
-        invoiceLine.setExTaxTotal(line.getExTaxTotal());
-        invoiceLine.setInTaxTotal(line.getInTaxTotal());
-        invoiceLine.setDescription(line.getDescription());
-        invoiceLine.setPrice(line.getPrice());
-        invoiceLine.setProductName(line.getProductName());
-        invoiceLine.setQty(line.getQty());
-        invoiceLine.setUnit(line.getUnit());
-        invoiceLine.setTaxLine(line.getTaxLine());
-        invoiceLine.setInvoice(invoice);
-        invoice.addInvoiceLineListItem(invoiceLine);
-
-        // invLineList.add(invoiceLine);
-        line.setIsInvoiced(true);
-        contractLineRepo.save(line);
-        JPA.save(invoiceLine);
-      }
+    // Compute all consumption lines
+    Multimap<ContractLine, ConsumptionLine> consLines = mergeConsumptionLines(contract);
+    for (Entry<ContractLine, Collection<ConsumptionLine>> entries : consLines.asMap().entrySet()) {
+      ContractLine line = entries.getKey();
+      InvoiceLine invoiceLine = generate(invoice, line);
+      entries
+          .getValue()
+          .stream()
+          .peek(cons -> cons.setInvoiceLine(invoiceLine))
+          .forEach(cons -> cons.setIsInvoiced(true));
+      line.setQty(BigDecimal.ZERO);
+      contractLineService.computeTotal(line);
     }
 
-    Multimap<ContractLine, ConsumptionLine> multiMap = HashMultimap.create();
-    for (Entry<ConsumptionLine, ContractLine> entry : linesFromOlderVersionsMp.entrySet()) {
-      multiMap.put(entry.getValue(), entry.getKey());
-    }
-
-    for (Entry<ContractLine, Collection<ConsumptionLine>> entry : multiMap.asMap().entrySet()) {
-
-      ContractLine line = entry.getKey();
-      InvoiceLine invoiceLine = new InvoiceLine();
-
-      invoiceLine.setProduct(line.getProduct());
-      invoiceLine.setExTaxTotal(line.getExTaxTotal());
-      invoiceLine.setInTaxTotal(line.getInTaxTotal());
-      invoiceLine.setDescription(line.getDescription());
-      invoiceLine.setPrice(line.getPrice());
-      invoiceLine.setProductName(line.getProductName());
-      invoiceLine.setQty(line.getQty());
-      invoiceLine.setUnit(line.getUnit());
-      invoiceLine.setTaxLine(line.getTaxLine());
-      invoiceLine.setInvoice(invoice);
-      invoice.addInvoiceLineListItem(invoiceLine);
-      JPA.save(invoiceLine);
-
-      for (ConsumptionLine consLine : entry.getValue()) {
-        consLine.setInvoiceLine(invoiceLine);
-        consLine.setIsInvoiced(true);
-        consumptionLineRepo.save(consLine);
-      }
-    }
-
-    JPA.save(invoice);
-
+    // Compute invoice
     if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
       Beans.get(InvoiceServiceImpl.class).compute(invoice);
     }
 
-    return invoice;
+    // Increase invoice period date
+    increaseInvoiceDates(contract);
+
+    return invoiceRepository.save(invoice);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract) {
+    Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap.create();
+
+    Stream<ConsumptionLine> lineStream =
+        contract.getConsumptionLineList().stream().filter(c -> !c.getIsInvoiced());
+
+    if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
+      lineStream =
+          lineStream.filter(
+              line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()));
+    }
+
+    lineStream.forEach(
+        line -> {
+          ContractVersion version = contract.getCurrentContractVersion();
+
+          if (isFullProrated(contract)) {
+            version = versionService.getContractVersion(contract, line.getLineDate());
+          }
+
+          if (version == null) {
+            line.setIsError(true);
+          } else {
+            ContractLine matchLine =
+                contractLineRepo.findOneBy(version, line.getProduct(), line.getReference(), true);
+            if (matchLine == null) {
+              line.setIsError(true);
+            } else {
+              matchLine.setQty(matchLine.getQty().add(line.getQty()));
+              contractLineService.computeTotal(matchLine);
+              line.setIsError(false);
+              line.setContractLine(matchLine);
+              mergedLines.put(matchLine, line);
+            }
+          }
+        });
+    return mergedLines;
+  }
+
+  InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+
+  public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            line.getProduct(),
+            line.getProductName(),
+            line.getPrice(),
+            invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()),
+            null,
+            line.getDescription(),
+            line.getQty(),
+            line.getUnit(),
+            line.getTaxLine(),
+            InvoiceLineGenerator.DEFAULT_SEQUENCE,
+            BigDecimal.ZERO,
+            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            line.getExTaxTotal(),
+            line.getInTaxTotal(),
+            false,
+            false,
+            0) {
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<>();
+            invoiceLines.add(invoiceLine);
+            return invoiceLines;
+          }
+        };
+
+    InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
+
+    FiscalPositionServiceAccountImpl fiscalPositionService =
+        Beans.get(FiscalPositionServiceAccountImpl.class);
+    FiscalPosition fiscalPosition = line.getFiscalPosition();
+    Account currentAccount = invoiceLine.getAccount();
+    Account replacedAccount = fiscalPositionService.getAccount(fiscalPosition, currentAccount);
+
+    boolean isPurchase =
+        Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)
+            == PriceListRepository.TYPE_PURCHASE;
+
+    TaxLine taxLine =
+        Beans.get(AccountManagementService.class)
+            .getTaxLine(
+                appBaseService.getTodayDate(),
+                invoiceLine.getProduct(),
+                invoice.getCompany(),
+                fiscalPosition,
+                isPurchase);
+
+    invoiceLine.setTaxLine(taxLine);
+    invoiceLine.setAccount(replacedAccount);
+
+    invoice.addInvoiceLineListItem(invoiceLine);
+
+    return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void renewContract(Contract contract, LocalDate date) throws AxelorException {
 
-    ContractVersion currentVersion = contract.getCurrentVersion();
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
     ContractVersion nextVersion =
         Beans.get(ContractVersionRepository.class).copy(currentVersion, true);
 
-    // Terminate currentVersion
     versionService.terminate(currentVersion, date.minusDays(1));
 
-    // Archive current version
     contract.addVersionHistory(currentVersion);
     currentVersion.setContract(null);
 
-    // Set new version
-    contract.setCurrentVersion(nextVersion);
-    nextVersion.setContractNext(null);
+    contract.setCurrentContractVersion(nextVersion);
+    nextVersion.setNextContract(null);
     nextVersion.setContract(contract);
-
-    // Ongoing current version : Don't call contract ongoingCurrentVersion because
-    // in case of renewal, we don't need to inc contract version number.
-    versionService.ongoing(currentVersion, date);
+    if (nextVersion.getIsTacitRenewal()) {
+      nextVersion.setSupposedEndDate(
+          durationService.computeDuration(nextVersion.getRenewalDuration(), date));
+    }
+    if (nextVersion.getIsAutoEnableVersionOnRenew()) {
+      versionService.ongoing(nextVersion, date);
+    } else {
+      versionService.waiting(nextVersion, date);
+    }
 
     contract.setLastRenewalDate(date);
     contract.setRenewalNumber(contract.getRenewalNumber() + 1);
@@ -381,8 +586,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public List<Contract> getContractToTerminate(LocalDate date) {
     return all()
         .filter(
-            "self.statusSelect = ?1 AND self.currentVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
-                + "AND (self.toClosed IS TRUE OR self.currentVersion.supposedEndDate >= ?3)",
+            "self.statusSelect = ?1 AND self.currentContractVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
+                + "AND (self.toClosed IS TRUE OR self.currentContractVersion.supposedEndDate >= ?3)",
             ACTIVE_CONTRACT,
             ContractVersionRepository.ONGOING_VERSION,
             date)
@@ -393,31 +598,32 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     return all()
         .filter(
             "self.statusSelect = ?1 AND self.isTacitRenewal IS TRUE AND self.toClosed IS FALSE "
-                + "AND self.currentVersion.statusSelect = ?2 AND self.currentVersion.supposedEndDate >= ?3",
+                + "AND self.currentContractVersion.statusSelect = ?2 AND self.currentContractVersion.supposedEndDate >= ?3",
             ACTIVE_CONTRACT,
             ContractVersionRepository.ONGOING_VERSION,
             date)
         .fetch();
   }
 
-  @Transactional
-  public Contract createContractFromTemplate(ContractTemplate template) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public Contract copyFromTemplate(Contract contract, ContractTemplate template)
+      throws AxelorException {
 
-    Contract contract = new Contract();
+    if (template.getAdditionalBenefitContractLineList() != null
+        && !template.getAdditionalBenefitContractLineList().isEmpty()) {
 
-    if (template.getAdditionalBenefitList() != null
-        && !template.getAdditionalBenefitList().isEmpty()) {
-
-      for (ContractLine line : template.getAdditionalBenefitList()) {
+      for (ContractLine line : template.getAdditionalBenefitContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
-        contract.addAdditionalBenefitListItem(newLine);
+        contract.addAdditionalBenefitContractLineListItem(newLine);
       }
     }
 
     contract.setCompany(template.getCompany());
-    contract.setDescription(template.getDescription());
+    contract.setCurrency(template.getCurrency());
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
     contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
     contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
@@ -431,6 +637,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : template.getContractLineList()) {
 
         ContractLine newLine = contractLineRepo.copy(line, false);
+        contractLineService.compute(newLine, contract, newLine.getProduct());
+        contractLineService.computeTotal(newLine);
         contractLineRepo.save(newLine);
         version.addContractLineListItem(newLine);
       }
@@ -446,46 +654,30 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     version.setIsVersionProratedInvoice(template.getIsVersionProratedInvoice());
     version.setIsWithEngagement(template.getIsWithEngagement());
     version.setIsWithPriorNotice(template.getIsWithPriorNotice());
+    version.setIsAutoEnableVersionOnRenew(template.getIsAutoEnableVersionOnRenew());
 
     version.setAutomaticInvoicing(template.getAutomaticInvoicing());
     version.setEngagementDuration(template.getEngagementDuration());
     version.setEngagementStartFromVersion(template.getEngagementStartFromVersion());
-    version.setInvoicingFrequency(template.getInvoicingFrequency());
-    version.setInvoicingMoment(template.getInvoicingMoment());
+    version.setInvoicingDuration(template.getInvoicingDuration());
+    version.setInvoicingMomentSelect(template.getInvoicingMomentSelect());
     version.setPaymentCondition(template.getPaymentCondition());
     version.setPaymentMode(template.getPaymentMode());
     version.setPriorNoticeDuration(template.getPriorNoticeDuration());
     version.setRenewalDuration(template.getRenewalDuration());
+    version.setDescription(template.getDescription());
 
-    contract.setCurrentVersion(version);
+    contract.setCurrentContractVersion(version);
 
-    return save(contract);
+    return contract;
   }
 
-  public ContractVersion getVersionSpecificVersion(Contract contract, LocalDate date) {
-
-    for (ContractVersion version : contract.getVersionHistory()) {
-
-      if (version.getActivationDate() == null || version.getEndDate() == null) {
-        continue;
-      }
-
-      if (date.isAfter(version.getActivationDate()) && date.isBefore(version.getEndDate())) {
-        return version;
-      }
+  @Override
+  public List<ContractVersion> getVersions(Contract contract) {
+    if (contract.getCurrentContractVersion() == null || isFullProrated(contract)) {
+      return ContractService.super.getVersions(contract);
+    } else {
+      return Collections.singletonList(contract.getCurrentContractVersion());
     }
-
-    return null;
-  }
-
-  public boolean isInVersion(ContractLine contractLine, ContractVersion version) {
-
-    for (ContractLine line : version.getContractLineList()) {
-
-      if (line.getId().compareTo(contractLine.getId()) == 0) {
-        return true;
-      }
-    }
-    return false;
   }
 }

@@ -22,12 +22,14 @@ import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
+import com.axelor.apps.helpdesk.exceptions.IExceptionMessage;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,9 +54,13 @@ public class TicketController {
     try {
       Long id = (Long) request.getContext().get("id");
       List<?> ids = (List<?>) request.getContext().get("_ids");
-      Beans.get(TicketService.class).assignToMeTicket(id, ids);
 
-      response.setReload(true);
+      if (id == null && ids == null) {
+        response.setAlert(I18n.get(IExceptionMessage.SELECT_TICKETS));
+      } else {
+        Beans.get(TicketService.class).assignToMeTicket(id, ids);
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

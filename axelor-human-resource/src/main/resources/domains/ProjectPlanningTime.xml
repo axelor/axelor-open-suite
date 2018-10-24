@@ -7,10 +7,42 @@
 
   <entity name="ProjectPlanningTime" cachable="true">
     
-      <date name="date" column="date_val" title="Date" />  
-      <decimal name="hours" title="Hours" />
-	  <many-to-one name="projectPlanning" ref="ProjectPlanning" />      
-		          
+      <date name="date" column="date_val" title="Date" required="true" />  
+      <decimal name="plannedHours" title="Planned hours" />
+      
+      <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>
+      <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"  required="true"/>
+      <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Team task" />
+      <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
+      <string name="description" title="Description" large="true" />
+      <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
+	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
+	  <decimal name="realHours" title="Real hours"/>
+	  
+	  <string name="fullName" namecolumn="true">
+			<![CDATA[
+	  		String fullName = "";
+	  		
+	  		if(user != null && user.getName() != null)  {
+				fullName += user.getName();
+			}
+			
+			if (project != null && project.getCode() != null) {
+				fullName += "-" + project.getCode();
+			}
+			
+			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+			if (!fullName.isEmpty()) {
+				fullName += "-" + dateStr;
+			}
+			else {
+				fullName = dateStr;
+			}
+			
+	  		return fullName;
+	  	]]>
+	  </string>
+		
   </entity>
   
 </domain-models>

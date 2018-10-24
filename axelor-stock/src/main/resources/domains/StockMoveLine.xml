@@ -13,6 +13,11 @@
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Expected Qty"/>
 	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="oldQty" hidden="true"/>
+	<decimal name="availableQty" title="Available qty" transient="true"/>
+	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
+	<string name="availableStatus" title="Status" transient="true"/>
+	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="netMass" title="Net mass"/>
     <decimal name="totalNetMass" title="Total net mass"/>
@@ -39,8 +44,9 @@
 
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
-
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
+    <integer name="lineTypeSelect" title="Type" selection="sale.order.line.type.select"/>
+    <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>
     <enum name="natureOfTransaction" ref="com.axelor.apps.stock.db.NatureOfTransaction"/>
@@ -65,6 +71,13 @@
         public static final int CONFORMITY_NONE = 1;
         public static final int CONFORMITY_COMPLIANT = 2;
         public static final int CONFORMITY_NON_COMPLIANT = 3;
+        
+        public static final int TYPE_NORMAL = 0;
+		public static final int TYPE_TITLE = 1;
+		public static final int TYPE_PACK = 2;
+		
+		public static final int PACK_PRICE_ONLY = 0;
+		public static final int SUBLINE_PRICE_ONLY = 1;
     ]]></extra-code>
   </entity>
 

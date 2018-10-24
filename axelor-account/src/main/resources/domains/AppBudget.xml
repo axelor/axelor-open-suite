@@ -5,7 +5,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBudget" lang="java" cachable="true" extends="App">
+	<entity name="AppBudget" lang="java" extends="App">
 		<boolean name="checkAvailableBudget" title="Check Available Budget"/>
 		<boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
 		<string name="budgetStatusSelect" title="Status considered to calculate the engaged amount" selection="purchase.purchase.order.status.select" default="4"/>

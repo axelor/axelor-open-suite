@@ -21,13 +21,13 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -35,6 +35,7 @@ import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.List;
+import javax.persistence.TypedQuery;
 
 public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
 
@@ -49,32 +50,42 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
   protected void process() {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
     List<Long> anomalyList = Lists.newArrayList(0L);
-    Query<StockMove> query = Beans.get(StockMoveRepository.class).all();
-    query.filter(
-        "self.statusSelect = :statusSelect AND self.saleOrder IS NOT NULL "
-            + "AND (self.invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect) "
-            + "AND self.id NOT IN (:anomalyList) "
-            + "AND self.partner.id NOT IN ("
-            + Beans.get(BlockingService.class)
-                .listOfBlockedPartner(
-                    supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING)
-            + ")");
+    SaleOrderRepository saleRepo = Beans.get(SaleOrderRepository.class);
 
-    query.bind("statusSelect", StockMoveRepository.STATUS_REALIZED);
-    query.bind("invoiceStatusSelect", InvoiceRepository.STATUS_CANCELED);
-    query.bind("anomalyList", anomalyList);
+    int start = 0;
+    TypedQuery<StockMove> query =
+        JPA.em()
+            .createQuery(
+                "SELECT self FROM StockMove self "
+                    + "LEFT JOIN self.invoice invoice "
+                    + "WHERE self.statusSelect = :statusSelect "
+                    + "AND self.originTypeSelect LIKE :typeSaleOrder "
+                    + "AND (invoice IS NULL OR self.invoice.statusSelect = :invoiceStatusSelect)"
+                    + "AND self.id NOT IN (:anomalyList) "
+                    + "AND self.partner.id NOT IN ("
+                    + Beans.get(BlockingService.class)
+                        .listOfBlockedPartner(
+                            supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING)
+                    + ")",
+                StockMove.class)
+            .setParameter("statusSelect", StockMoveRepository.STATUS_REALIZED)
+            .setParameter("typeSaleOrder", StockMoveRepository.ORIGIN_SALE_ORDER)
+            .setParameter("invoiceStatusSelect", InvoiceRepository.STATUS_CANCELED)
+            .setParameter("anomalyList", anomalyList)
+            .setMaxResults(FETCH_LIMIT);
 
     for (List<StockMove> stockMoveList;
-        !(stockMoveList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+        !(stockMoveList = query.getResultList()).isEmpty();
+        JPA.clear(), start += FETCH_LIMIT, query.setFirstResult(start)) {
       for (StockMove stockMove : stockMoveList) {
         try {
-          stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder());
+          stockMoveInvoiceService.createInvoiceFromSaleOrder(
+              stockMove, saleRepo.find(stockMove.getOriginId()));
           incrementDone();
         } catch (Exception e) {
           incrementAnomaly();
           anomalyList.add(stockMove.getId());
-          query.bind("anomalyList", anomalyList);
+          query.setParameter("anomalyList", anomalyList);
           TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
           e.printStackTrace();
           break;

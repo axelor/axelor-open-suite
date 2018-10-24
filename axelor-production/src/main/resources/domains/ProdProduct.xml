@@ -25,9 +25,11 @@
   	
 <!--   	Prod process line -->
   	<many-to-one name="toConsumeProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
-  	
-  	
-  	
+
+    <!--Used for showing diff-->
+		<decimal name="plannedQty" title="Planned Qty"/>
+		<decimal name="realQty" title="Real Qty"/>
+
   	
   </entity>
 </domain-models>

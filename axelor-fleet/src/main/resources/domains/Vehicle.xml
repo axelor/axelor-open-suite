@@ -9,7 +9,7 @@
 		<string name="name" title="Name"  required="false" readonly="true"/>
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 		<string name="chasisNo" title="Chassis Number" />
-		<many-to-one name="driverContact" title="Driver" ref="com.axelor.apps.base.db.Partner" />
+		<many-to-one name="driverPartner" title="Driver" ref="com.axelor.apps.base.db.Partner" />
 		<one-to-one  name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel" title="Model"  />
 		<one-to-many name="vehicleFuelLogList" ref="VehicleFuelLog" title="Fuel log" mappedBy="vehicle"/>
 		<one-to-many name="vehicleServiceLogList" ref="VehicleServiceLog" title="Service log" mappedBy="vehicle"/>
@@ -17,7 +17,7 @@
 		<one-to-many name="vehicleCostList" ref="VehicleCost" title="Vehicle Cost" mappedBy="vehicle"/>
 		<date name="acquisitionDate" title="Acquisition Date" />
 		<string name="color" title="Color" />
-		<many-to-one name="vehicleState" ref="VehicleState" title="State" />
+		<string name="vehicleState" title="State" large="true"/>
 		<string name="location" title="Location" />
 		<integer name="seats" title="Seats" />
 		<integer name="doors" title="Doors" />

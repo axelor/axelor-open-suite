@@ -41,8 +41,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,12 +212,15 @@ public class AccountingReportController {
   }
 
   public void showMoveExported(ActionRequest request, ActionResponse response) {
-
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    Map<String, Object> mapView = new HashMap<String, Object>();
-    mapView.put("title", I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
-    mapView.put("resource", Move.class.getName());
-    mapView.put("domain", "self.accountingReport.id = " + accountingReport.getId());
-    response.setView(mapView);
+
+    ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
+    actionViewBuilder.model(Move.class.getName());
+    actionViewBuilder.add("grid", "move-grid");
+    actionViewBuilder.domain("self.accountingReport.id = :_accountingReportId");
+    actionViewBuilder.context("_accountingReportId", accountingReport.getId());
+
+    response.setView(actionViewBuilder.map());
   }
 }

@@ -18,7 +18,7 @@
 		<field name="statusSelect"/>
 		<field name="timerState" hidden="true"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeCharge" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
+		<button name="takeCharge" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
 		<button name="startTicket" icon="fa-play" onClick="action-ticket-group-on-start" readonlyIf="timerState == true || statusSelect == 3"/>
 		<button name="pause" icon="fa-pause" onClick="action-ticket-group-on-pause" readonlyIf="timerState == false || statusSelect == 3"/>
 		<button name="validateTicket" icon="fa-check" onClick="action-ticket-group-on-validate" readonlyIf="statusSelect == 3"/>

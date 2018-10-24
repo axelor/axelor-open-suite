@@ -13,7 +13,7 @@
       <field name="name"/>
     </panel>
     <panel-related field="countryList" grid-view="country-grid" form-view="country-form"
-      canNew="false" canEdit="false" canSelect="true"/>
+      canNew="false" canEdit="false" canSelect="true" height="30"/>
   </form>
 
 </object-views>

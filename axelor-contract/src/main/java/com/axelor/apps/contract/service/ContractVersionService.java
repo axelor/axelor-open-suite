@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -25,29 +27,78 @@ import java.time.LocalDate;
 public interface ContractVersionService {
 
   /**
-   * Waiting version
+   * Waiting version at the today date.
    *
-   * @param version
-   * @param date
+   * @param version of the contract will be waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  void waiting(ContractVersion version, LocalDate date);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waiting(ContractVersion version) throws AxelorException;
 
   /**
-   * Ongoing version
+   * Waiting version at the specific date.
    *
-   * @param version
-   * @param date
+   * @param version of the contract will be waiting.
+   * @param date of waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waiting(ContractVersion version, LocalDate date) throws AxelorException;
+
+  /**
+   * Ongoing version at the today date.
+   *
+   * @param version of te contract will be ongoing.
+   */
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void ongoing(ContractVersion version) throws AxelorException;
+
+  /**
+   * Ongoing version at the specific date.
+   *
+   * @param version of the contract will be ongoing.
+   * @param date of activation.
+   */
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
-   * terminate version
+   * Terminate version at the today date.
    *
-   * @param version
-   * @param date
+   * @param version of the contract will be terminate.
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
+  void terminate(ContractVersion version);
+
+  /**
+   * Terminate version at the specific date.
+   *
+   * @param version of the contract will be terminate.
+   * @param date of terminate.
+   */
+  @Transactional
   void terminate(ContractVersion version, LocalDate date);
+
+  /**
+   * Create new version from contract but don't save it. There will be use for set values from form
+   * view.
+   *
+   * @param contract for use the actual version as base.
+   * @return the copy a contract's actual version.
+   */
+  ContractVersion newDraft(Contract contract);
+
+  default ContractVersion getContractVersion(Contract contract, LocalDate date) {
+    for (ContractVersion version : contract.getVersionHistory()) {
+      if (version.getActivationDate() == null || version.getEndDate() == null) {
+        continue;
+      }
+      if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
+        return version;
+      }
+    }
+    ContractVersion version = contract.getCurrentContractVersion();
+    if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
+      return version;
+    }
+    return null;
+  }
 }

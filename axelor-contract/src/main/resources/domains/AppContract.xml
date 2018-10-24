@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
-	<entity name="AppContract" lang="java" cachable="true" extends="App">
+	<entity name="AppContract" lang="java" extends="App">
 
 		<boolean name="isUnchangableContract" title="Unchangable contract" />
 		<boolean name="isAmendmentManagement" title="Amendment management" />

@@ -23,7 +23,6 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,9 +30,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class BankStatementCreateService {
-
-  @Inject
-  public BankStatementCreateService() {}
 
   public BankStatement createBankStatement(
       File file,

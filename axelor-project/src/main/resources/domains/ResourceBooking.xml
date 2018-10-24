@@ -1,21 +1,20 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
 	<module name="project" package="com.axelor.apps.project.db"/>
-	
-	<entity name="ResourceBooking">
-  		<string name="name" required="true"/>
-  		<many-to-one name="resource" ref="Resource" title="Resource" column="project_resource" required="true" />
-  		<many-to-one name="project" ref="Project" title="Project"/>
-  		<many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Task" />
-  		<boolean name="updateTaskFromPeriod" title="Update period accoriding to task" />
-  		<many-to-one name="user" ref="com.axelor.auth.db.User" column="user_id" title="Task" />
-  		<datetime name="fromDate" title="From date"/>
-  		<datetime name="toDate" title="To date"/>
-  		<long name="duration" title="Duration"/>
-  		<decimal name="cost" title="Cost" />
+
+	<entity name="ResourceBooking" repository="abstract">
+		<string name="name"/>
+		<many-to-one name="resource" ref="Resource" title="Resource" column="project_resource" required="true"/>
+		<many-to-one name="project" ref="Project" title="Project" required="true"/>
+		<many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Task" />
+		<boolean name="updateTaskFromPeriod" title="Update period according to task" />
+		<many-to-one name="user" ref="com.axelor.auth.db.User" column="user_id"/>
+		<datetime name="fromDate" title="From date"/>
+		<datetime name="toDate" title="To date"/>
+		<string name="notes" title="Notes" large="true" />
 	</entity>
- 
- </domain-models>
+
+</domain-models>

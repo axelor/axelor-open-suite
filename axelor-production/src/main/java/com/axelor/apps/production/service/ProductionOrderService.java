@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -57,6 +58,7 @@ public interface ProductionOrderService {
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
-      LocalDateTime startDate)
+      LocalDateTime startDate,
+      SaleOrder saleOrder)
       throws AxelorException;
 }

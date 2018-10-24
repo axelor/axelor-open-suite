@@ -22,6 +22,7 @@
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
   	
+  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" />
 	<many-to-one name="buyerUser" ref="com.axelor.auth.db.User" title="Buyer"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
 	<date name="deliveryDate" title="Estimated delivery Date"/>

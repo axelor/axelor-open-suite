@@ -46,4 +46,26 @@
 	<view type="form" name="object-data-config-form"/>
   </action-view>
   
+   <menuitem name="admin-root-data-backup" parent="admin-root-maintenance" title="Backup" order="11"/>
+  
+  <menuitem name="admin-root-data-create-backup" parent="admin-root-data-backup"
+   title="Create Backup"  action="admin.root.data.create.backup"/>
+  
+  <action-view name="admin.root.data.create.backup" title="Create Backup"
+  	model="com.axelor.apps.base.db.DataBackup" >
+	<view type="grid" name="data-create-backup-grid"/>
+	<view type="form" name="data-create-backup-form"/>
+	<domain>self.backupDate != null</domain>
+  </action-view>
+  
+  <menuitem name="admin-root-data-restore-backup" parent="admin-root-data-backup"
+   title="Restore Backup"  action="admin.root.data.restore.backup"/>
+  
+  <action-view name="admin.root.data.restore.backup" title="Restore Backup"
+  	model="com.axelor.apps.base.db.DataBackup" >
+	<view type="grid" name="data-restore-backup-grid"/>
+	<view type="form" name="data-restore-backup-form"/>
+	<domain>self.restoreDate != null</domain>
+  </action-view>
+  
 </object-views>

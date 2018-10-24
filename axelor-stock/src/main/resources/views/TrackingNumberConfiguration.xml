@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
+    	<field name="name" width="200"/>
         <field name="isPurchaseTrackingManaged"/>
         <field name="isProductionTrackingManaged"/>
         <field name="isSaleTrackingManaged"/>

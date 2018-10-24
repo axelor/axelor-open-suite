@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBusinessProject" lang="java" cachable="true" extends="App">
+	<entity name="AppBusinessProject" lang="java" extends="App">
 		
 		<many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product" title="Default Invoicing Product for Projects"/>
 		

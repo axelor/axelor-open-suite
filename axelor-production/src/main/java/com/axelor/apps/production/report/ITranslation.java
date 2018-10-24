@@ -89,6 +89,8 @@ public interface ITranslation {
   public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
   public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
   public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
+  public static final String MANUF_ORDER_STOCK_LOCATION = /*$$(*/ "ManufOrder.stockLocation"; /*)*/
+  public static final String MANUF_ORDER_RACK = /*$$(*/ "ManufOrder.rack"; /*)*/
 
   public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
   public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
@@ -127,4 +129,20 @@ public interface ITranslation {
       "BOM.defineSubBillOfMaterial"; /*)*/
   public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/
       "BOM.hasNoManageStock"; /*)*/
+
+  String RAW_MATERIAL_REQUIREMENT_TITLE = /*$$(*/ "RawMaterialRequirement.title"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_COMPANY = /*$$(*/ "RawMaterialRequirement.company"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_FROM = /*$$(*/ "RawMaterialRequirement.from"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_TO = /*$$(*/ "RawMaterialRequirement.to"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_PRODUCT = /*$$(*/ "RawMaterialRequirement.product"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_MANUF_ORDER = /*$$(*/ "RawMaterialRequirement.manufOrder"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_STOCK_LOCATION = /*$$(*/
+      "RawMaterialRequirement.stockLocation"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_STOCK_LOCATIONS = /*$$(*/
+      "RawMaterialRequirement.stockLocations"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_NEEDED_QUANTITY = /*$$(*/
+      "RawMaterialRequirement.neededQuantity"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_MISSING_QUANTITY = /*$$(*/
+      "RawMaterialRequirement.missingQuantity"; /*)*/
+  String RAW_MATERIAL_REQUIREMENT_AVAILABLE = /*$$(*/ "RawMaterialRequirement.available"; /*)*/
 }

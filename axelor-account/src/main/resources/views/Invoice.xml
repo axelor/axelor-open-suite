@@ -55,6 +55,7 @@
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
+        <field name="supplierInvoiceNb"/>
         <field name="externalReference"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
@@ -175,7 +176,6 @@
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
-            <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
             <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
@@ -193,20 +193,25 @@
             <field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
             <field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-            <field name="saleOrder" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
-            <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+            <field name="saleOrder" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+            <field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
 
-		<panel name="subscriptionPanel" title="Subscription period" showIf="operationSubTypeSelect == 6">
-        	<field name="subscriptionFromDate" />
-        	<field name="subscriptionToDate" />
-        </panel>
+		<panel name="subscriptionPanel" title="Subscription period"
+			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			<field name="subscriptionFromDate" />
+			<field name="subscriptionToDate" />
+		</panel>
 
 		<panel-tabs hideIf="partner == null">
 			<panel name="invoiceContent" title="Invoice content" showTitle="false">
-				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
 				<panel-related field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+			</panel>
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
+				<field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" colSpan="6"/>
+				<button name="updateLines" title="Update lines with selected project" onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6" readonlyIf="!project"/>
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
 				<panel name="accountingDetails" title="Accounting details"  colSpan="12">
@@ -438,8 +443,8 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
 			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
-			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+			<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
@@ -674,15 +679,26 @@
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 	</action-group>
 
+	<action-group name="action-invoice-group-invoice-line-onchange">
+		<action name="action-invoice-method-remove-subline"/> 
+		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
+		<action name="action-invoice-method-add-subline"/>
+		<action name="action-invoice-method-compute"/>
+		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
+	</action-group>
+	
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
+    	<attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.inTaxTotal" expr="!inAti"/>
+    	<attribute name="hidden" for="invoiceLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 1
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"/>
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.projectTypeSelect = 1 AND self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
 
 	<!-- ACTION RECORD -->
@@ -890,6 +906,14 @@
 
 	<action-method name="action-invoice-method-create-refund">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-add-subline">
+		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="addSubLines"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-remove-subline">
+		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="removeSubLines"/>
 	</action-method>
 
 	<action-method name="action-invoice-method-compute">

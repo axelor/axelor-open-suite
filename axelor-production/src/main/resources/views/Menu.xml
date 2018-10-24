@@ -18,6 +18,7 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromProduction" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
@@ -57,6 +58,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
+		<domain>self.isPermanent is null OR self.isPermanent = false</domain>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
@@ -99,6 +101,15 @@
 	<action-view name="manufacturing.root.charge.by.machine.dashboard" title="Charge by machine">
 		<view type="dashboard" name="charge.by.machine.dashboard" />
 		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+
+	<menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
+		title="Raw material requirement" action="manufacturing.root.raw.material.requirement" order="42"/>
+
+	<action-view name="manufacturing.root.raw.material.requirement" title="Raw material requirement"
+		model="com.axelor.apps.production.db.RawMaterialRequirement">
+		<view type="grid" name="raw-material-requirement-report-grid"/>
+		<view type="form" name="raw-material-requirement-report-form"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
@@ -153,6 +164,19 @@
 		<view type="grid" name="cost-sheet-group-grid" />
 		<view type="form" name="cost-sheet-group-form" />
 	</action-view>
+
+	<menuitem name="manufacturing-conf-manuf-order" parent="manufacturing-conf"
+		title="Permanent manufacturing orders" action="manufacturing.conf.manuf.order" />
+
+	<action-view name="manufacturing.conf.manuf.order" title="Permanent manufacturing orders"
+		model="com.axelor.apps.production.db.ManufOrder" >
+		<view type="grid" name="manuf-order-grid" />
+		<view type="form" name="manuf-order-form" />
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<domain>self.isPermanent = true</domain>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+		<context name="_createPermanent" expr="eval: true"/>
+	</action-view>
 	
 	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
 		title="Configurators" if="__config__.app.getApp('production').getEnableConfigurator()"/>
@@ -202,6 +226,14 @@
 				 model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" >
 	<view type="grid" name="configurator-prod-process-line-grid" />
 	<view type="form" name="configurator-prod-process-line-form" />
+	</action-view>
+	
+	<menuitem title="Product approvals" name="manufacturing-conf-product-approvals" parent="manufacturing-conf" 
+				action="manufacturing.conf.product.approvals"/>
+				
+	<action-view name="manufacturing.conf.product.approvals" title="Product approvals" model="com.axelor.apps.production.db.ProductApproval">
+		<view type="grid" name="product-approval-grid"/>
+		<view type="form" name="product-approval-form"/>
 	</action-view>
 
 	<!-- TOP MENU -->

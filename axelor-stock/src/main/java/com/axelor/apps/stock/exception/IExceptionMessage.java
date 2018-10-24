@@ -54,6 +54,9 @@ public interface IExceptionMessage {
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
+  static final String LOCATION_LINE_RESERVED_QTY = /*$$(*/
+      "Not enough quantity are available for reservation for product %s (%s)" /*)*/;
+
   /** Stock Move Service and Controller */
   static final String STOCK_MOVE_1 = /*$$(*/
       "There's no configured sequence for stock's intern moves for the company %s" /*)*/;
@@ -81,7 +84,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_17 = /*$$(*/
       "Must set mass unit in stock configuration for customs." /*)*/;
   static final String STOCK_MOVE_18 = /*$$(*/
-      "All storable products must have net mass and mass unit information for customs." /*)*/;
+      "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
   static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
@@ -173,4 +176,7 @@ public interface IExceptionMessage {
       "No economic area is configured for %s." /*)*/;
   String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED = /*$$(*/
       "Declaration of exchanges for %s is not supported." /*)*/;
+
+  String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
+  String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
 }

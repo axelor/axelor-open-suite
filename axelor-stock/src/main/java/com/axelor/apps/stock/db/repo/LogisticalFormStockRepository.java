@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -50,6 +51,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
 
       return super.save(logisticalForm);
     } catch (Exception e) {
+      TraceBackService.trace(e);
       throw new PersistenceException(e.getLocalizedMessage());
     }
   }

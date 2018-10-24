@@ -4,7 +4,7 @@
 
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
-	<entity name="ContractLine" repository="none">
+	<entity name="ContractLine">
 
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -17,7 +17,7 @@
 	  	]]>
 		</string>
 
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true" />
 		<decimal name="qty" title="Qty" default="1"/>
 
 		<string name="productName" title="Displayed Product name" required="true"/>
@@ -26,6 +26,7 @@
 		<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
 		<decimal name="exTaxTotal" title="Total W.T."/>
 		<decimal name="inTaxTotal" title="Total A.T.I."/>
+		<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
 
 		<string name="description" title="Description" large="true"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -35,7 +36,10 @@
 		<boolean name="isInvoiced" title="Is invoiced" />
 
         <many-to-one name="contractVersion" ref="com.axelor.apps.contract.db.ContractVersion"/>
-		
+
+		<finder-method name="findOneBy"
+					   using="contractVersion, product, productName,
+					   isConsumptionLine"/>
 	</entity>
 
 </domain-models>

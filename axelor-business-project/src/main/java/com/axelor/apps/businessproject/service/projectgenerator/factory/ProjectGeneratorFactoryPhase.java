@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
@@ -34,28 +35,34 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
   private SaleOrderLineRepository saleOrderLineRepository;
+  private ProductTaskTemplateService productTaskTemplateService;
 
   @Inject
   public ProjectGeneratorFactoryPhase(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      ProductTaskTemplateService productTaskTemplateService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.productTaskTemplateService = productTaskTemplateService;
   }
 
   @Override
   @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
-    project.setIsProject(false);
+    project.setIsProject(true);
     project.setIsBusinessProject(true);
     return projectRepository.save(project);
   }
@@ -72,6 +79,19 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
         phase.setFromDate(startDate);
         saleOrderLineRepository.save(saleOrderLine);
         projects.add(phase);
+
+        if (!CollectionUtils.isEmpty(product.getTaskTemplateList())) {
+          productTaskTemplateService.convert(
+              product
+                  .getTaskTemplateList()
+                  .stream()
+                  .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
+                  .collect(Collectors.toList()),
+              phase,
+              null,
+              startDate,
+              saleOrderLine.getQty());
+        }
       }
     }
     return ActionView.define(String.format("Project%s generated", (projects.size() > 1 ? "s" : "")))

@@ -44,6 +44,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,12 +63,12 @@ public class IntercoServiceImpl implements IntercoService {
 
     SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
-
+    Company intercoCompany = findIntercoCompany(purchaseOrder.getSupplierPartner());
     // create sale order
     SaleOrder saleOrder =
         saleOrderCreateService.createSaleOrder(
             null,
-            findIntercoCompany(purchaseOrder.getSupplierPartner()),
+            intercoCompany,
             purchaseOrder.getContactPartner(),
             purchaseOrder.getCurrency(),
             purchaseOrder.getDeliveryDate(),
@@ -89,9 +90,12 @@ public class IntercoServiceImpl implements IntercoService {
 
     // copy delivery info
     saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
-    saleOrder.setStockLocation(purchaseOrder.getStockLocation());
     saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
     saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
+
+    // get stock location
+    saleOrder.setStockLocation(
+        Beans.get(StockLocationService.class).getPickupDefaultStockLocation(intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -114,17 +118,18 @@ public class IntercoServiceImpl implements IntercoService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException {
 
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
 
+    Company intercoCompany = findIntercoCompany(saleOrder.getClientPartner());
     // create purchase order
     PurchaseOrder purchaseOrder;
     purchaseOrder =
         purchaseOrderService.createPurchaseOrder(
             null,
-            findIntercoCompany(saleOrder.getClientPartner()),
+            intercoCompany,
             saleOrder.getContactPartner(),
             saleOrder.getCurrency(),
             saleOrder.getDeliveryDate(),
@@ -145,7 +150,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // copy delivery info
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
-    purchaseOrder.setStockLocation(saleOrder.getStockLocation());
+    purchaseOrder.setStockLocation(
+        Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
@@ -187,6 +193,7 @@ public class IntercoServiceImpl implements IntercoService {
                 saleOrderLine.getUnit());
     // compute amount
     purchaseOrderLine.setPrice(saleOrderLine.getPrice());
+    purchaseOrderLine.setInTaxPrice(saleOrderLine.getInTaxPrice());
     purchaseOrderLine.setExTaxTotal(saleOrderLine.getExTaxTotal());
     purchaseOrderLine.setDiscountTypeSelect(saleOrderLine.getDiscountTypeSelect());
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
@@ -220,6 +227,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // compute amount
     saleOrderLine.setPrice(purchaseOrderLine.getPrice());
+    saleOrderLine.setInTaxPrice(purchaseOrderLine.getInTaxPrice());
     saleOrderLine.setExTaxTotal(purchaseOrderLine.getExTaxTotal());
     saleOrderLine.setDiscountTypeSelect(purchaseOrderLine.getDiscountTypeSelect());
     saleOrderLine.setDiscountAmount(purchaseOrderLine.getDiscountAmount());

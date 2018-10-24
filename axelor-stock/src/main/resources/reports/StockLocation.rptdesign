@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -75,6 +75,7 @@
         <scalar-parameter name="UserName" id="3947">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -87,6 +88,7 @@
         <scalar-parameter name="Password" id="3675">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -115,6 +117,7 @@
         <scalar-parameter name="DefaultDriver" id="3819">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -146,8 +149,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -502,7 +505,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
 		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
-		Currency.code AS currency_code, Product.cost_price, StockLocationLine.avg_price, Product.cost_type_select
+		Currency.code AS currency_code, 
+		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
+		StockLocationLine.avg_price as "wap", Product.cost_type_select
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
@@ -516,6 +521,7 @@ LEFT JOIN
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
 where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Location.id in (@INJECTID)
+order by Product.code
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -615,11 +621,42 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
             <property name="showFooterOnLast">true</property>
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0.2in</property>
+            <page-footer>
+                <grid id="4662">
+                    <property name="width">19cm</property>
+                    <column id="4674">
+                        <property name="suppressDuplicates">false</property>
+                        <property name="width">85%</property>
+                    </column>
+                    <column id="4663"/>
+                    <column id="4664"/>
+                    <column id="4665"/>
+                    <row id="4666">
+                        <cell id="4673"/>
+                        <cell id="4667">
+                            <auto-text id="4668">
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4669">
+                            <text id="4670">
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4671">
+                            <auto-text id="4672">
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
         <grid id="3342">
-            <property name="marginLeft">2pt</property>
+            <property name="marginLeft">0pt</property>
             <property name="height">6.164791666666667cm</property>
             <property name="width">19.341041666666666cm</property>
             <property name="dataSet">StockLocationDS</property>
@@ -656,7 +693,7 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 </structure>
             </list-property>
             <column id="3343">
-                <property name="width">1.5833333333333333in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="3344">
                 <property name="width">0.9166666666666666in</property>
@@ -665,16 +702,16 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 <property name="width">0.9583333333333334in</property>
             </column>
             <column id="3346">
-                <property name="width">0.375in</property>
+                <property name="width">0.2in</property>
             </column>
             <column id="3347">
-                <property name="width">1.7916666666666667in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="3348">
-                <property name="width">5.053541666666667cm</property>
+                <property name="width">5.1cm</property>
             </column>
             <row id="3349">
-                <property name="height">1.4166666666666667in</property>
+                <property name="height">1.2in</property>
                 <cell id="3350">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
@@ -734,6 +771,7 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 </cell>
             </row>
             <row id="4042">
+                <property name="verticalAlign">middle</property>
                 <property name="height">0.635cm</property>
                 <cell id="4043">
                     <property name="colSpan">1</property>
@@ -792,7 +830,7 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 <cell id="4345"/>
             </row>
             <row id="4416">
-                <property name="height">0.6614583333333334cm</property>
+                <property name="height">0.15in</property>
                 <cell id="4417"/>
                 <cell id="4418"/>
                 <cell id="4419"/>
@@ -801,6 +839,7 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 <cell id="4422"/>
             </row>
             <row id="4066">
+                <property name="verticalAlign">middle</property>
                 <property name="height">0.635cm</property>
                 <list-property name="visibility"/>
                 <cell id="4067">
@@ -855,7 +894,7 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                 </cell>
             </row>
             <row id="4423">
-                <property name="height">0.23958333333333334in</property>
+                <property name="height">0.15in</property>
                 <cell id="4424"/>
                 <cell id="4425"/>
                 <cell id="4426"/>
@@ -923,14 +962,20 @@ where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Locati
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
+                    <property name="name">wap</property>
+                    <text-property name="displayName">wap</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["wap"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
                     <property name="name">totalSalePrice</property>
-                    <text-property name="displayName">Total Sale Price</text-property>
+                    <text-property name="displayName">Total Sale Value</text-property>
                     <property name="dataType">float</property>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["sale_price"] * dataSetRow["current_qty"]</expression>
+                            <expression name="value" type="javascript">dataSetRow["sale_price"] * dataSetRow["current_qty"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -970,95 +1015,48 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">avg_price</property>
-                    <text-property name="displayName">avg_price</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["avg_price"]</expression>
-                    <property name="dataType">decimal</property>
-                    <property name="allowExport">false</property>
-                </structure>
-                <structure>
                     <property name="name">cost_type_select</property>
                     <text-property name="displayName">cost_type_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">TotalWapPrice</property>
+                    <text-property name="displayName">Total Wap Value</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">dataSetRow["wap"] * dataSetRow["current_qty"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4453">
-                <property name="width">1.6041666666666667in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="4454">
                 <property name="width">1.115in</property>
             </column>
             <column id="4455">
-                <property name="width">1.4479166666666667in</property>
+                <property name="width">1in</property>
             </column>
             <column id="4456">
-                <property name="width">1.78125in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="4457">
                 <property name="width">1.1145833333333333in</property>
             </column>
             <column id="4458">
-                <property name="width">0.9583333333333334in</property>
+                <property name="width">1in</property>
             </column>
             <row id="4459">
+                <property name="verticalAlign">middle</property>
                 <property name="height">0.635cm</property>
                 <cell id="4460">
-                    <property name="backgroundColor">#606062</property>
-                    <property name="color">#FFFFFF</property>
-                    <text id="4413">
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.totalSaleValue'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4461">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <data id="4481">
-                        <property name="marginLeft">3pt</property>
-                        <structure name="numberFormat">
-                            <property name="category">Custom</property>
-                            <property name="pattern">###,##0.00</property>
-                        </structure>
-                        <property name="textAlign">left</property>
-                        <property name="resultSetColumn">totalSalePrice</property>
-                    </data>
-                </cell>
-                <cell id="4625">
-                    <text id="4627">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4463">
                     <property name="backgroundColor">#606062</property>
                     <property name="color">#FFFFFF</property>
                     <text id="4415">
@@ -1093,37 +1091,154 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
                     </text>
                 </cell>
-                <cell id="4464">
+                <cell id="4461">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <property name="fontWeight">bold</property>
                     <data id="4529">
+                        <property name="fontWeight">bold</property>
                         <property name="marginLeft">2pt</property>
                         <structure name="numberFormat">
                             <property name="category">Custom</property>
                             <property name="pattern">###,##0.00</property>
                         </structure>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
                         <property name="resultSetColumn">totalAccountValue</property>
                     </data>
                 </cell>
-                <cell id="4626">
-                    <property name="fontWeight">bold</property>
+                <cell id="4625">
                     <text id="4628">
+                        <property name="fontWeight">bold</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="4463">
+                    <property name="color">#FFFFFF</property>
+                </cell>
+                <cell id="4464">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontWeight">bold</property>
+                </cell>
+                <cell id="4626">
+                    <property name="fontWeight">bold</property>
+                </cell>
             </row>
             <row id="4466">
+                <property name="height">0.15in</property>
                 <cell id="4467"/>
                 <cell id="4468"/>
-                <cell id="4469">
-                    <text id="4483"/>
-                </cell>
+                <cell id="4469"/>
                 <cell id="4470"/>
                 <cell id="4471"/>
                 <cell id="4472"/>
+            </row>
+            <row id="4652">
+                <property name="verticalAlign">middle</property>
+                <property name="height">0.635cm</property>
+                <cell id="4653">
+                    <property name="backgroundColor">#606062</property>
+                    <text id="4659">
+                        <property name="color">white</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'StockLocation.totalWapValue'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4654">
+                    <data id="4661">
+                        <structure name="numberFormat">
+                            <property name="category">Custom</property>
+                            <property name="pattern">###,##0.00</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="resultSetColumn">TotalWapPrice</property>
+                    </data>
+                </cell>
+                <cell id="4655">
+                    <text id="4660">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4656">
+                    <property name="backgroundColor">#606062</property>
+                    <text id="4413">
+                        <property name="color">white</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'StockLocation.totalSaleValue'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4657">
+                    <data id="4481">
+                        <property name="marginLeft">3pt</property>
+                        <structure name="numberFormat">
+                            <property name="category">Custom</property>
+                            <property name="pattern">###,##0.00</property>
+                        </structure>
+                        <property name="textAlign">right</property>
+                        <property name="resultSetColumn">totalSalePrice</property>
+                    </data>
+                </cell>
+                <cell id="4658">
+                    <text id="4627">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
             </row>
         </grid>
         <table id="4484">
@@ -1192,6 +1307,12 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
+                    <property name="name">wap</property>
+                    <text-property name="displayName">wap</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["wap"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
                     <property name="name">countLocation</property>
                     <text-property name="displayName">Count Location</text-property>
                     <property name="dataType">integer</property>
@@ -1215,7 +1336,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["sale_price"] * dataSetRow["current_qty"]</expression>
+                            <expression name="value" type="javascript">row["current_qty"] * row["sale_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -1231,7 +1352,23 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["current_qty"] * dataSetRow["cost_price"]</expression>
+                            <expression name="value" type="javascript">row["current_qty"] * row["cost_price"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">LocationTotalWapValue</property>
+                    <text-property name="displayName">Location Wap value</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>GroupByLocation</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["current_qty"] * row["wap"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -1239,30 +1376,43 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
             </list-property>
             <list-property name="sort">
                 <structure>
-                    <expression name="key" type="javascript">row["product_name"]</expression>
+                    <expression name="key" type="javascript">row["product_code"]</expression>
                     <property name="direction">asc</property>
                     <property name="strength">-1</property>
                 </structure>
             </list-property>
             <column id="4503">
-                <property name="width">5.529791666666667cm</property>
+                <property name="width">2cm</property>
             </column>
             <column id="4504">
-                <property name="width">2.778125cm</property>
+                <property name="width">5cm</property>
             </column>
             <column id="4505">
                 <property name="width">1.6404166666666669cm</property>
             </column>
             <column id="4549">
-                <property name="width">1.74625cm</property>
+                <property name="width">1.5cm</property>
             </column>
             <column id="4506">
-                <property name="width">3.8364583333333337cm</property>
+                <property name="width">3.1cm</property>
             </column>
             <column id="4557">
-                <property name="width">3.9422916666666667cm</property>
+                <property name="width">3.1cm</property>
+            </column>
+            <column id="4639">
+                <property name="width">3.1cm</property>
             </column>
             <header>
+                <row id="4675">
+                    <property name="height">0.5cm</property>
+                    <cell id="4676"/>
+                    <cell id="4677"/>
+                    <cell id="4678"/>
+                    <cell id="4679"/>
+                    <cell id="4680"/>
+                    <cell id="4681"/>
+                    <cell id="4682"/>
+                </row>
                 <row id="4603">
                     <list-property name="visibility">
                         <structure>
@@ -1307,22 +1457,27 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4630">
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                    </cell>
                 </row>
                 <row id="4596">
+                    <property name="height">0.5cm</property>
                     <list-property name="visibility">
                         <structure>
                             <property name="format">all</property>
                             <expression name="valueExpr" type="javascript">row["countLocation"] == 1</expression>
                         </structure>
                     </list-property>
-                    <cell id="4597">
-                        <text id="4610"/>
-                    </cell>
+                    <cell id="4597"/>
                     <cell id="4598"/>
                     <cell id="4599"/>
                     <cell id="4600"/>
                     <cell id="4601"/>
                     <cell id="4602"/>
+                    <cell id="4631"/>
                 </row>
             </header>
             <group id="4508">
@@ -1342,7 +1497,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             </structure>
                         </list-property>
                         <cell id="4510">
-                            <property name="colSpan">6</property>
+                            <property name="colSpan">7</property>
                             <property name="rowSpan">1</property>
                             <property name="backgroundColor">#606062</property>
                             <property name="verticalAlign">middle</property>
@@ -1387,7 +1542,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             </structure>
                         </list-property>
                         <cell id="4531">
-                            <property name="colSpan">6</property>
+                            <property name="colSpan">7</property>
                             <property name="rowSpan">1</property>
                             <property name="backgroundColor">#606062</property>
                             <property name="verticalAlign">middle</property>
@@ -1438,6 +1593,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         </cell>
                     </row>
                     <row id="4522">
+                        <property name="verticalAlign">middle</property>
                         <cell id="4523">
                             <property name="backgroundColor">#7F7F7F</property>
                             <property name="borderBottomColor">#606062</property>
@@ -1475,7 +1631,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'StockLocation.productName'</value>
+                                            <value type="javascript">'StockLocation.code'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1534,7 +1690,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'StockLocation.code'</value>
+                                            <value type="javascript">'StockLocation.productName'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1735,6 +1891,65 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
+                        <cell id="4634">
+                            <property name="backgroundColor">#7F7F7F</property>
+                            <property name="borderBottomColor">#606062</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#606062</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#606062</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#606062</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4640">
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="color">#FFFFFF</property>
+                                <property name="borderBottomColor">#7F7F7F</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderLeftColor">#7F7F7F</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightColor">#7F7F7F</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <property name="borderTopColor">#7F7F7F</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="marginTop">-2pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'StockLocation.wapValue'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">key</property>
+                                        <text-property name="displayName">key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
                     </row>
                 </header>
                 <footer>
@@ -1742,9 +1957,11 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="height">0.6879166666666666cm</property>
                         <cell id="4572"/>
                         <cell id="4573"/>
-                        <cell id="4574"/>
-                        <cell id="4575">
+                        <cell id="4574">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
                             <property name="backgroundColor">#7F7F7F</property>
+                            <property name="textAlign">right</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4570">
                                 <property name="fontSize">10pt</property>
@@ -1763,7 +1980,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <property name="marginTop">-2pt</property>
-                                <property name="textAlign">center</property>
+                                <property name="textAlign">right</property>
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
                                     <structure>
@@ -1811,7 +2028,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <property name="marginTop">-2pt</property>
-                                <property name="textAlign">center</property>
+                                <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["LocationTotalSaleValue"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                             </text>
@@ -1836,24 +2053,47 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <property name="marginTop">-2pt</property>
-                                <property name="textAlign">center</property>
+                                <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["LocationTotalAccValue"]</VALUE-OF>  <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4636">
+                            <property name="backgroundColor">#7F7F7F</property>
+                            <property name="textAlign">right</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="4643">
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="color">#FFFFFF</property>
+                                <property name="borderBottomColor">#7F7F7F</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderLeftColor">#7F7F7F</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightColor">#7F7F7F</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <property name="borderTopColor">#7F7F7F</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="marginTop">-2pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["LocationTotalWapValue"]</VALUE-OF>  <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
                     <row id="4515">
                         <property name="height">0.6145833333333334in</property>
-                        <cell id="4516">
-                            <text id="4567"/>
-                            <text id="4568"/>
-                            <text id="4569"/>
-                        </cell>
+                        <cell id="4516"/>
                         <cell id="4517"/>
                         <cell id="4518"/>
                         <cell id="4547"/>
                         <cell id="4519"/>
                         <cell id="4555"/>
+                        <cell id="4637"/>
                     </row>
                 </footer>
             </group>
@@ -1874,9 +2114,32 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
+                        <text id="4560">
+                            <property name="fontSize">9pt</property>
+                            <property name="color">#000000</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4493">
+                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
                         <text id="4496">
+                            <property name="fontSize">9pt</property>
                             <property name="color">black</property>
                             <property name="display">block</property>
+                            <property name="canShrink">true</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
@@ -1900,28 +2163,9 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                                     <property name="dataType">string</property>
                                 </structure>
                             </list-property>
+                            <structure name="toc"/>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4493">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4560">
-                            <property name="color">#000000</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4494">
@@ -1936,10 +2180,11 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4561">
+                            <property name="fontSize">9pt</property>
                             <property name="color">#000000</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["current_qty"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4546">
@@ -1954,6 +2199,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4562">
+                            <property name="fontSize">9pt</property>
                             <property name="color">#000000</property>
                             <property name="textAlign">left</property>
                             <property name="contentType">html</property>
@@ -1975,6 +2221,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4564">
+                            <property name="fontSize">9pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -1983,7 +2230,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["sale_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4563">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">7pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -2030,6 +2277,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4566">
+                            <property name="fontSize">9pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -2038,7 +2286,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["cost_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4565">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">7pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -2070,6 +2318,62 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="###,##0.00">row._outer["cost_price"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4635">
+                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4641">
+                            <property name="fontSize">9pt</property>
+                            <property name="color">#000000</property>
+                            <property name="marginTop">1pt</property>
+                            <property name="marginRight">2pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["wap"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                        </text>
+                        <text id="4642">
+                            <property name="fontSize">7pt</property>
+                            <property name="fontStyle">italic</property>
+                            <property name="color">#000000</property>
+                            <property name="marginRight">2pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'StockLocation.unitValue'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="###,##0.00">row._outer["wap"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                 </row>
             </detail>
             <footer>
@@ -2080,6 +2384,7 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <cell id="4548"/>
                     <cell id="4501"/>
                     <cell id="4556"/>
+                    <cell id="4638"/>
                 </row>
             </footer>
         </table>

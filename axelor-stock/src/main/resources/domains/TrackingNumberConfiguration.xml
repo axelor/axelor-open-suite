@@ -16,10 +16,10 @@
 	<boolean name="generateSaleAutoTrackingNbr"  title="Generate new sale auto tracking Nbr."/>
 	
 	<boolean name="hasSaleAutoSelectTrackingNbr"  title="Auto select sale tracking Nbr."/>
-	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking Nbr. order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
+	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking Nbr. order" selection="tracking.number.configuration.tracking.number.order.select"/>
 
 	<boolean name="hasProductAutoSelectTrackingNbr"  title="Auto select product tracking Nbr."/>
-	<integer name="productAutoTrackingNbrOrderSelect"  title="Auto product tracking Nbr. order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
+	<integer name="productAutoTrackingNbrOrderSelect"  title="Auto product tracking Nbr. order" selection="tracking.number.configuration.tracking.number.order.select"/>
 
 	<decimal name="saleQtyByTracking"  title="Sale Qty by tracking"/>
 	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
@@ -27,8 +27,18 @@
 	
 	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" required="true"/>
 
-      <string name="name" title="Name" required="true"/>
-      <string name="fullName" title="Full name" namecolumn="true"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="fullName" title="Full name" namecolumn="true"/>
+
+	<extra-code>
+   		<![CDATA[
+
+			// TRACKING NUMBER ORDER SELECT
+			public static final int TRACKING_NUMBER_ORDER_FIFO = 1;
+			public static final int TRACKING_NUMBER_ORDER_LIFO = 2;
+
+   		]]>
+   	</extra-code>
 
   </entity>
 

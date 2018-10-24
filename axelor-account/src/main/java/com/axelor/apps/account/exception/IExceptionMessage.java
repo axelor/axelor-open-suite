@@ -333,12 +333,6 @@ public interface IExceptionMessage {
   static final String COMPANY_CURRENCY = /*$$(*/
       "%s : Please, configure a currency for the company %s" /*)*/;
 
-  /** Account config service */
-  static final String ACCOUNT_CONFIG_39 = /*$$(*/
-      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
-
-  static final String ACCOUNT_CONFIG_40 = /*$$(*/
-      "%s : You must configure an employee account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_1 = /*$$(*/
       "%s : You must configure account's informations for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_2 = /*$$(*/
@@ -403,8 +397,6 @@ public interface IExceptionMessage {
       "%s : You must configure a payment mode after reject for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_32 = /*$$(*/
       "%s : You must configure a shift to irrecoverable's reason for the company %s" /*)*/;
-  static final String ACCOUNT_CONFIG_33 = /*$$(*/
-      "%s : You must configure a exported file path (if -> AGRESSO) for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_34 = /*$$(*/
       "%s : You must configure a reject import letter template for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_35 = /*$$(*/
@@ -415,6 +407,14 @@ public interface IExceptionMessage {
       "%s : You must configure a debt recovery tab for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_38 = /*$$(*/
       "%s : You must configure an advance payment account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_39 = /*$$(*/
+      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_40 = /*$$(*/
+      "%s : You must configure an employee account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_41 = /*$$(*/
+      "%s : You must configure a factor credit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_42 = /*$$(*/
+      "%s : You must configure a factor debit account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -721,4 +721,10 @@ public interface IExceptionMessage {
       "There is no configured sequence for temporary reconcile group" /*)*/;
   String RECONCILE_GROUP_NO_FINAL_SEQUENCE = /*$$(*/
       "There is no configured sequence for final reconcile group" /*)*/;
+
+  /*
+   * Subrogation Release
+   */
+  static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
+      "Missing subrogation release sequence for company %s" /*)*/;
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+   
+	<grid name="invoice-line-project-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
+		<field name="project"/>
+		<field name="invoice" />
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="price" x-scale="2"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="exTaxTotal" aggregate="sum"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+	</grid>
+	
+	<action-method name="action-invoice-line-method-set-customer-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setCustomerInvoiceLineProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-unset-customer-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetCustomerInvoiceLineProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-set-supplier-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="setSupplierInvoiceLineProject"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-unset-supplier-invoice-line-project">
+		<call class="com.axelor.apps.businessproject.web.InvoiceLineProjectController" method="unsetSupplierInvoiceLineProject"/>
+	</action-method>
+
+</object-views>

@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
-    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine"
+    canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
     <field name="productModel" form-view="product-form" grid-view="product-grid"
@@ -19,7 +20,8 @@
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
-    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine">
+    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine"
+    canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
     <field name="productModel" form-view="product-form" grid-view="product-grid"
@@ -35,6 +37,7 @@
 
   <form name="stock-move-line-production-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine"
+    canNew="false" canDelete="false"
     onNew="action-group-stock-stockmoveline-production-onnew"
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
     <panel name="main" readonlyIf="stockMove.statusSelect == 3">

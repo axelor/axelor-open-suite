@@ -148,7 +148,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getManageSaleOrderVersion()) {
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
       this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
     if (saleOrder.getVersionNumber() == 1

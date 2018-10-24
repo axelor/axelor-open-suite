@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -37,7 +38,9 @@ public class MoveManagementRepository extends MoveRepository {
 
     Period period = null;
     try {
-      period = Beans.get(PeriodService.class).rightPeriod(entity.getDate(), entity.getCompany());
+      period =
+          Beans.get(PeriodService.class)
+              .rightPeriod(entity.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }

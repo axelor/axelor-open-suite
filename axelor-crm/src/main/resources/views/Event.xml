@@ -63,7 +63,7 @@
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="grabEvent" icon="fa-suitcase" help="Take charge" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
 			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
 			<button name="start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
 			<button name="pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
@@ -76,32 +76,73 @@
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="meetingGeneral">
-			<field name="subject" colSpan="6"/>
-			<field name="location" colSpan="5" css="highlight" showIf="typeSelect == 2"/>
-			<button name="viewOnMap" colSpan="1" icon="fa-map-marker" showIf="typeSelect == 2" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
+	        	<viewer depends="typeSelect"><![CDATA[
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+	       		 ]]>
+	        	</viewer>
+	      	</field>
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" >
+	        	<viewer depends="statusSelect"><![CDATA[
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+	       		 ]]>
+	        	</viewer>
+        	</field>
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3">
+				<viewer depends="statusSelect"><![CDATA[
+					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
+					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
+					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 13" x-translate>Pending</span>
+					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 14" x-translate>Finished</span>
+					<span class="label label-default" style="background-color: #D9534F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
+				]]>
+				</viewer>
+			</field>
+			<field name="subject" showTitle="false" colSpan="12">
+				<viewer depends="subject">
+				<![CDATA[
+					<h3>
+						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
+					</h3>
+				]]>
+				</viewer>
+				<editor>
+					<field name="subject" showTitle="true" colSpan="12"/>
+				</editor>
+			</field>
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
-			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time" hideIf="typeSelect == 1"/>
-			<field name="limitDateT" colSpan="4" showIf="typeSelect == 3"/>
-			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
-			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-			<field name="disponibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
-			<field name="visibilitySelect" widget="RadioSelect" readonlyIf="calendar != null"/>
-			<field name="computedAttendeeList" hidden="true"/>
-            <field name="description" widget="html" colSpan="12"/>
+			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+			<field name="allDay" colSpan="2"/>
+			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
+		</panel>
+
+		<panel-tabs>
+			<panel name="description" title="Description">
+				<field name="description" showTitle="false" widget="html" colSpan="12"/>
+			</panel>
+			<panel name="organizationPanel" title="Organization">
+				<field name="location" css="highlight"/>
+				<field name="geo" colSpan="5"/>
+				<button name="viewOnMap" colSpan="1" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
+				<field name="organizer"/>
+			</panel>
+			<panel title="Information">
+				<field name="visibilitySelect" readonlyIf="calendar != null"/>
+				<field name="disponibilitySelect" readonlyIf="calendar != null"/>
+				<field name="status"/>
+				<field name="subjectTeam" hidden="true"/>
+				<field name="computedAttendeeList" hidden="true"/>
+			</panel>
 			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
-			<field name="subjectTeam" hidden="true"/>
-		</panel>
-		<panel colSpan="12">
-			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator"/>
-		</panel>
-		<panel colSpan="12">
-			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence"/>
-		</panel>
-		<panel title="Add Guests" name="addGuests" sidebar="true">
-			<field name="$guestEmail" title="Email address" colSpan="12" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true" onChange="action-event-method-add-email-guest"/>
-		</panel>
-		<panel name="guests" title="Guests" colSpan="12" showIf="attendees.length != 0 &amp;&amp; (typeSelect == 0 || typeSelect == 1 || typeSelect == 2)" sidebar="true">
+		</panel-tabs>
+
+		<panel title="Guests" name="addGuests" sidebar="true" canCollapse="true">
+			<field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true" onChange="action-event-method-add-email-guest"/>
 			<field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
 				<editor layout="table" x-show-titles="false">
 					<field name="name" readonly="true" />
@@ -110,22 +151,25 @@
 			</field>
 		</panel>
 
-		<panel sidebar="true" title="Attributes" name="meetingAttributes">
-      <field name="typeSelect" domain="self.value IN ('0','1','2','3')" onChange="action-event-type-select-onchange-group"/>
-      <field name="eventCategory" domain="self.typeSelect = :typeSelect" />
-			<field name="callTypeSelect"  showIf="typeSelect == 1" />
-			<field name="prioritySelect" showIf="typeSelect == 3"/>
-			<field name="statusSelect" selection-in="[1, 2, 3]"  hidden="true" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" />
-			<field name="statusSelect" selection-in="[11, 12, 13, 14, 15]" hidden="true" showIf="typeSelect == 3"/>
- 			<field name="limitDateT" showIf="typeSelect == 4"/>
+		<panel sidebar="true" name="follow-up" title="Follow up" canCollapse="true">
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6"/>
+			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator" colSpan="6"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+		</panel>
+
+		<panel sidebar="true" title="Caracteristics" name="meetingAttributes" canCollapse="true">
+			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
+			<field name="eventCategory" domain="self.typeSelect = :typeSelect" colSpan="6"/>
+			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
+			<field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
 		</panel>
 		
-		<panel sidebar="true" title="Linked to" name="meetingLinked">
-			<field name="partner" onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="contactPartner" hideIf="partner.partnerTypeSelect == 2" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
+		<panel sidebar="true" title="References" name="meetingLinked" canCollapse="true">
+			<field name="partner" colSpan="6" onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="contactPartner" colSpan="6" hideIf="partner.partnerTypeSelect == 2" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="lead" colSpan="6" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
+			<field name="campaign" colSpan="6" form-view="campaign-form" grid-view="campaign-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
-			<field name="campaign" form-view="campaign-form" grid-view="campaign-grid"/>
 			<field name="relatedToSelectId" hidden="true" />
 			<field name="partner.partnerTypeSelect" hidden="true"/>
 		</panel>

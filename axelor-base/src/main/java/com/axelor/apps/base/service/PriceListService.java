@@ -136,20 +136,17 @@ public class PriceListService {
 
   public BigDecimal computeDiscount(
       BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount) {
-
     if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
       return unitPrice
           .subtract(discountAmount)
           .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
-          .multiply(
-              BigDecimal.ONE.subtract(
-                  discountAmount.divide(
-                      new BigDecimal(100),
-                      appBaseService.getNbDecimalDigitForUnitPrice(),
-                      RoundingMode.HALF_UP)))
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          .multiply(new BigDecimal(100).subtract(discountAmount))
+          .divide(
+              new BigDecimal(100),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP);
     }
 
     return unitPrice;

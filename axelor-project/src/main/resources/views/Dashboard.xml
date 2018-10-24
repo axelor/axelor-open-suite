@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<dashboard name="project-dashboard" title="Dashboard">
+	<dashboard name="project-my-projects" title="My projects">
 		<dashlet action="action-project-db-my-tasks-to-do"/>
 		<dashlet action="action-project-db-my-tasks-due"/>
 		<dashlet action="action-project-db-my-today-planning"/>
@@ -30,16 +30,16 @@
     <context name="closed_status" expr="#{['closed', 'canceled']}"/>
 	</action-view>
 	
-	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-form" />
-		<domain>self.fromDate &lt;= :__datetime__ AND self.toDate &gt;= :__datetime__ AND self.user = :__user__</domain>
+		<view type="form" name="project-planning-time-form" />
+		<domain>self.date = :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
 	
-	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanning">
+	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-form" />
-		<domain>self.fromDate &gt; :__datetime__ AND self.user = :__user__</domain>
+		<view type="form" name="project-planning-time-form" />
+		<domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
 	
 	

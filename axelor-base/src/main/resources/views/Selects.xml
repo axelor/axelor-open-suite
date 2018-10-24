@@ -47,6 +47,7 @@
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
 		<option value='storable'>Product</option>
+		<option value='pack'>Pack</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -145,11 +146,6 @@
 		<option value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
 	</selection>
 
-	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
-		<option value="1">FIFO</option>
-		<option value="2">LIFO</option>
-	</selection>
-	
 	<selection name="base.price.list.type.select">
 		<option value="1">Sale</option>
 		<option value="2">Purchase</option>

@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Notification;
 import com.axelor.apps.account.db.NotificationItem;
 import com.axelor.apps.account.db.SubrogationRelease;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
@@ -74,10 +73,9 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validate(Notification notification) throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);
-    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
     InvoicePaymentCreateService invoicePaymentCreateService =
         Beans.get(InvoicePaymentCreateService.class);
     ReconcileService reconcileService = Beans.get(ReconcileService.class);
@@ -114,7 +112,7 @@ public class NotificationServiceImpl implements NotificationService {
         MoveLine creditMoveLine, debitMoveLine;
         boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
 
-        if (isOutPayment) {
+        if (!isOutPayment) {
           creditMoveLine =
               moveService
                   .getMoveLineService()
@@ -174,12 +172,13 @@ public class NotificationServiceImpl implements NotificationService {
                       invoice.getInvoiceId());
         }
 
-        moveLineRepo.save(creditMoveLine);
-        moveLineRepo.save(debitMoveLine);
-        invoicePaymentCreateService.createInvoicePayment(invoice, amountPaid, paymentMove);
+        paymentMove.addMoveLineListItem(debitMoveLine);
+        paymentMove.addMoveLineListItem(creditMoveLine);
+        paymentMove = Beans.get(MoveRepository.class).save(paymentMove);
+
         moveService.getMoveValidateService().validateMove(paymentMove);
 
-        if (isOutPayment) {
+        if (!isOutPayment) {
           reconcileService.reconcile(
               findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
         } else {

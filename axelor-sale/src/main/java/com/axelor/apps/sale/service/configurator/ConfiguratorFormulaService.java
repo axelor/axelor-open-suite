@@ -31,4 +31,13 @@ public interface ConfiguratorFormulaService {
    */
   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException;
+
+  /**
+   * Get the name of the given object. Use EntityHelper to get the right class name for proxy
+   * classes.
+   *
+   * @param calculatedValue a result from groovy script.
+   * @return the name of the class.
+   */
+  String getCalculatedClassName(Object calculatedValue);
 }

@@ -90,7 +90,7 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
             + "WHERE invoiceLine.purchaseOrderLine MEMBER OF self.purchaseOrderLineList)))");
 
     filterList.add(
-        "self.partner.id NOT IN ("
+        "self.supplierPartner.id NOT IN ("
             + Beans.get(BlockingService.class)
                 .listOfBlockedPartner(
                     supplychainBatch.getCompany(), BlockingRepository.INVOICING_BLOCKING)

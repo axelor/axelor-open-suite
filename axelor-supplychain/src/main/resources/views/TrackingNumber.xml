@@ -18,8 +18,7 @@
 			<field name="stockLocation" title="Stock location" type="string"/>
 			<field name="moveLine" title="Stock move line" type="string"/>
 			<field name="date" type="date"/>
-			<field name="saleOrder" title="Sale order" type="string"/>
-			<field name="purchaseOrder" title="Purchase order" type="string"/>
+			<field name="origin" title="Origin" type="string"/>
 		</result-fields>
 
 		<select model="com.axelor.apps.stock.db.StockMove" title="Stock move">
@@ -29,8 +28,7 @@
 			<field name="stockMoveLineList[].realQty" as="currentQty"/>
 			<field name="stockMoveLineList[].qty" as="futureQty"/>
 			<field name="stockMoveLineList[].stockMove.realDate" as="date"/>
-			<field name="stockMoveLineList[].stockMove.saleOrder.saleOrderSeq" as="saleOrder"/>
-			<field name="stockMoveLineList[].stockMove.purchaseOrder.purchaseOrderSeq" as="purchaseOrder"/>
+			<field name="stockMoveLineList[].stockMove.origin" as="origin" />
 			<where>
 				<input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
 			</where>

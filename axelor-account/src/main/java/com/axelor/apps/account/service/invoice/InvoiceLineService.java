@@ -40,7 +40,11 @@ public interface InvoiceLineService {
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
-  BigDecimal getUnitPrice(
+  BigDecimal getExTaxUnitPrice(
+      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      throws AxelorException;
+
+  BigDecimal getInTaxUnitPrice(
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException;
 
@@ -50,23 +54,27 @@ public interface InvoiceLineService {
 
   PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
 
-  BigDecimal computeDiscount(InvoiceLine invoiceLine, Invoice invoice);
+  BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
-  BigDecimal computeDiscount(
-      int discountTypeSelect, BigDecimal discountAmount, BigDecimal unitPrice, Invoice invoice);
+  BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
-  BigDecimal convertUnitPrice(Product product, TaxLine taxLine, BigDecimal price, Invoice invoice);
+  Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
+      throws AxelorException;
 
-  Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
+  Map<String, Object> getDiscountsFromPriceLists(
+      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
   int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  boolean unitPriceShouldBeUpdate(Invoice invoice, Product product);
+  Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
-  Map<String, Object> resetProductInformation();
+  boolean isAccountRequired(InvoiceLine invoiceLine);
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;
+
+  public Map<String, Object> fillPriceAndAccount(
+      Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
 }

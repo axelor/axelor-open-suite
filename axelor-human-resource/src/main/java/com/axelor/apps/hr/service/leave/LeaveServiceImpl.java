@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
@@ -164,9 +165,12 @@ public class LeaveServiceImpl implements LeaveService {
 
       WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
       if (weeklyPlanning == null) {
-        HRConfig conf = leave.getCompany().getHrConfig();
-        if (conf != null) {
-          weeklyPlanning = conf.getWeeklyPlanning();
+        Company comp = leave.getCompany();
+        if (comp != null) {
+          HRConfig conf = comp.getHrConfig();
+          if (conf != null) {
+            weeklyPlanning = conf.getWeeklyPlanning();
+          }
         }
       }
       if (weeklyPlanning == null) {

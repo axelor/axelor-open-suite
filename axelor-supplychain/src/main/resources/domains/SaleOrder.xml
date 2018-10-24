@@ -23,7 +23,7 @@
         <boolean name="createdByInterco" default="false"/>
         <date name="expectedRealisationDate" title="Expected realisation date"/>
         <integer name="standardDelay" title="Standard delay (days)" default="0"  />
-        <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" mappedBy="saleOrder" title="Stock moves" />
+        <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves" />
 
 		<many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
 	    <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
@@ -33,6 +33,7 @@
 
       <boolean name="isNeedingConformityCertificate" title="Is certificate of conformity required"/>
 
+        <boolean name="directOrderLocation" title="Direct order"/>
         <extra-code>
             <![CDATA[
                 // INVOICE

@@ -74,21 +74,22 @@ public class PartnerService {
 
     partner.setName(name);
     partner.setFirstName(firstName);
-    partner.setFullName(this.computeFullName(partner));
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
     partner.setIsProspect(true);
     partner.setFixedPhone(fixedPhone);
     partner.setMobilePhone(mobilePhone);
     partner.setEmailAddress(emailAddress);
     partner.setCurrency(currency);
+    this.setPartnerFullName(partner);
+
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     contact.setIsContact(true);
     contact.setName(name);
     contact.setFirstName(firstName);
     contact.setMainPartner(partner);
-    contact.setFullName(this.computeFullName(partner));
     partner.addContactPartnerSetItem(contact);
+    this.setPartnerFullName(contact);
 
     if (deliveryAddress == mainInvoicingAddress) {
       addPartnerAddress(partner, mainInvoicingAddress, true, true, true);
@@ -101,11 +102,18 @@ public class PartnerService {
   }
 
   public void setPartnerFullName(Partner partner) {
-
+    partner.setSimpleFullName(this.computeSimpleFullName(partner));
     partner.setFullName(this.computeFullName(partner));
   }
 
   public String computeFullName(Partner partner) {
+    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
+      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
+    }
+    return partner.getSimpleFullName();
+  }
+
+  public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
       return partner.getName() + " " + partner.getFirstName();
@@ -367,7 +375,7 @@ public class PartnerService {
    * @return if there is a duplicate partner
    */
   public boolean isThereDuplicatePartner(Partner partner) {
-    String newName = this.computeFullName(partner);
+    String newName = this.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
       return false;
     }
@@ -377,7 +385,7 @@ public class PartnerService {
           partnerRepo
               .all()
               .filter(
-                  "lower(self.fullName) = lower(:newName) "
+                  "lower(self.simpleFullName) = lower(:newName) "
                       + "and self.partnerTypeSelect = :_partnerTypeSelect")
               .bind("newName", newName)
               .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
@@ -388,7 +396,7 @@ public class PartnerService {
           partnerRepo
               .all()
               .filter(
-                  "lower(self.fullName) = lower(:newName) "
+                  "lower(self.simpleFullName) = lower(:newName) "
                       + "and self.id != :partnerId "
                       + "and self.partnerTypeSelect = :_partnerTypeSelect")
               .bind("newName", newName)

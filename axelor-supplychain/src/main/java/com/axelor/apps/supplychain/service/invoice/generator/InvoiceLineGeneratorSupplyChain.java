@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -32,7 +33,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -49,12 +50,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
+  protected UnitConversionService unitConversionService;
+
   @Inject
   public InvoiceLineGeneratorSupplyChain(
       Invoice invoice,
       Product product,
       String productName,
       BigDecimal price,
+      BigDecimal inTaxPrice,
       BigDecimal priceDiscounted,
       String description,
       BigDecimal qty,
@@ -68,12 +72,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine) {
+      StockMoveLine stockMoveLine,
+      boolean isSubLine,
+      Integer packPriceSelect) {
     super(
         invoice,
         product,
         productName,
         price,
+        inTaxPrice,
         priceDiscounted,
         description,
         qty,
@@ -84,10 +91,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         discountTypeSelect,
         exTaxTotal,
         inTaxTotal,
-        isTaxInvoice);
+        isTaxInvoice,
+        isSubLine,
+        packPriceSelect);
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
   }
 
   protected InvoiceLineGeneratorSupplyChain(
@@ -101,27 +111,56 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine)
+      StockMoveLine stockMoveLine,
+      boolean isSubLine,
+      Integer packPriceSelect)
       throws AxelorException {
 
-    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
+    super(
+        invoice,
+        product,
+        productName,
+        description,
+        qty,
+        unit,
+        sequence,
+        isTaxInvoice,
+        isSubLine,
+        packPriceSelect);
 
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.unitConversionService = Beans.get(UnitConversionService.class);
 
     if (saleOrderLine != null) {
       this.discountAmount = saleOrderLine.getDiscountAmount();
       this.price = saleOrderLine.getPrice();
+      this.inTaxPrice = saleOrderLine.getInTaxPrice();
+      if (this.unit != null && !this.unit.equals(saleOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrderLine.getUnit(), qty, product);
+        this.unit = saleOrderLine.getUnit();
+      }
       this.priceDiscounted = saleOrderLine.getPriceDiscounted();
       this.taxLine = saleOrderLine.getTaxLine();
       this.discountTypeSelect = saleOrderLine.getDiscountTypeSelect();
-      this.isTitleLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK;
+      this.typeSelect = saleOrderLine.getTypeSelect();
     } else if (purchaseOrderLine != null) {
-      this.isTitleLine = purchaseOrderLine.getIsTitleLine();
+      if (purchaseOrderLine.getIsTitleLine()) {
+        this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+      }
       this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
+      this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
+      if (this.unit != null && !this.unit.equals(purchaseOrderLine.getUnit())) {
+        this.qty =
+            unitConversionService.convertWithProduct(
+                this.unit, purchaseOrderLine.getUnit(), qty, product);
+        this.unit = purchaseOrderLine.getUnit();
+      }
       this.priceDiscounted = purchaseOrderLine.getPriceDiscounted();
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
@@ -133,11 +172,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           && this.unit != null
           && !this.unit.equals(saleOrPurchaseUnit)) {
         this.qty =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, qty, stockMoveLine.getProduct());
         this.priceDiscounted =
-            Beans.get(UnitConversionService.class)
-                .convertWithProduct(this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
+            unitConversionService.convertWithProduct(
+                this.unit, saleOrPurchaseUnit, this.priceDiscounted, product);
         this.unit = saleOrPurchaseUnit;
       }
     }
@@ -168,14 +207,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (stockMoveLine != null) {
 
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       this.price =
-          Beans.get(InvoiceLineService.class)
-              .getUnitPrice(invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+          invoiceLineService.getExTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice =
+          invoiceLineService.getInTaxUnitPrice(
+              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+
       this.price =
-          Beans.get(UnitConversionService.class)
-              .convertWithProduct(stockMoveLine.getUnit(), this.unit, this.price, product);
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.price, product);
+      this.inTaxPrice =
+          unitConversionService.convertWithProduct(
+              stockMoveLine.getUnit(), this.unit, this.inTaxPrice, product);
 
       invoiceLine.setPrice(price);
+      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     return invoiceLine;
@@ -250,5 +300,22 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     } else {
       return product.getPurchasesUnit();
     }
+  }
+
+  @Override
+  public boolean isAccountRequired() {
+
+    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+
+      if (isSubLine && packPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY) {
+        return false;
+      }
+      if (typeSelect == InvoiceLineRepository.TYPE_PACK
+          && packPriceSelect == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

@@ -17,27 +17,20 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
-import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InvoicingProjectController {
@@ -46,19 +39,16 @@ public class InvoicingProjectController {
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
     invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
-    invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_INVOICED);
     if (invoicingProject.getSaleOrderLineSet().isEmpty()
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getElementsToInvoiceSet().isEmpty()
-        && invoicingProject.getProjectSet().isEmpty()) {
+        && invoicingProject.getProjectSet().isEmpty()
+        && invoicingProject.getTeamTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -105,38 +95,5 @@ public class InvoicingProjectController {
     invoicingProjectService.clearLines(invoicingProject);
     invoicingProjectService.setLines(invoicingProject, project, 0);
     response.setValues(invoicingProject);
-  }
-
-  /**
-   * Generates invoicing project minutes report
-   *
-   * @param request
-   * @param response
-   * @throws AxelorException
-   */
-  public void print(ActionRequest request, ActionResponse response) {
-    InvoicingProject invoicingProject =
-        invoicingProjectRepo.find(request.getContext().asType(InvoicingProject.class).getId());
-
-    String name = I18n.get("Invoicing Project");
-
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.INVOICING_PROJECT, name + " - ${date}")
-              .addParam("InvoicingProjectId", invoicingProject.getId())
-              .addParam(
-                  "Locale",
-                  ReportSettings.getPrintingLocale(
-                      invoicingProject.getProject().getClientPartner()))
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
-
-      log.debug("Printing " + name);
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 }

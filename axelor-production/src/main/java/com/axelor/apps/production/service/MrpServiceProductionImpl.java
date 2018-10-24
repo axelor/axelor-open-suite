@@ -126,7 +126,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     + "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
                 this.productMap.keySet(),
                 this.stockLocationList,
-                statusList,
+                statusList, // TODO ETRANGE ICI : DEVRAIT ETRE
+                // L'INVERSE.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 appBaseService.getTodayDate().atStartOfDay())
             .fetch();
 

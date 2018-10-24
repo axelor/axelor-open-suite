@@ -18,14 +18,16 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
@@ -39,7 +41,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +52,8 @@ public class ProjectController {
   @Inject private ProjectBusinessService projectBusinessService;
 
   @Inject private InvoicingProjectService invoicingProjectService;
+
+  @Inject private ProjectRepository projectRepo;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
@@ -64,6 +67,19 @@ public class ProjectController {
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generatePurchaseQuotation(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (project.getId() != null) {
+      response.setView(
+          ActionView.define("Purchase Order")
+              .model(PurchaseOrder.class.getName())
+              .add("form", "purchase-order-form")
+              .add("grid", "purchase-order-quotation-grid")
+              .context("_project", projectRepo.find(project.getId()))
+              .map());
     }
   }
 
@@ -85,37 +101,26 @@ public class ProjectController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
+  // TODO: Duration is removed. Have to change calcuation
   public void computeProgress(ActionRequest request, ActionResponse response) {
 
-    Project project = request.getContext().asType(Project.class);
+    //    Project project = request.getContext().asType(Project.class);
 
     BigDecimal duration = BigDecimal.ZERO;
-    if (BigDecimal.ZERO.compareTo(project.getDuration()) != 0) {
-      duration =
-          project
-              .getTimeSpent()
-              .add(project.getLeadDelay())
-              .divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP)
-              .multiply(new BigDecimal(100));
-    }
+    //    if (BigDecimal.ZERO.compareTo(project.getDuration()) != 0) {
+    //      duration =
+    //          project
+    //              .getTimeSpent()
+    //              .add(project.getLeadDelay())
+    //              .divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP)
+    //              .multiply(new BigDecimal(100));
+    //    }
 
     if (duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1) {
       duration = BigDecimal.ZERO;
     }
 
     response.setValue("progress", duration);
-  }
-
-  public void computeDurationFromChildren(ActionRequest request, ActionResponse response) {
-    try {
-      Project project = request.getContext().asType(Project.class);
-
-      BigDecimal duration = projectBusinessService.computeDurationFromChildren(project.getId());
-
-      response.setValue("duration", duration);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   public void countToInvoice(ActionRequest request, ActionResponse response) {
@@ -137,6 +142,7 @@ public class ProjectController {
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")
+            .param("show-toolbar", "false")
             .context("_project", project)
             .map());
   }
@@ -163,31 +169,20 @@ public class ProjectController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  public void managePurchaseInvoiceLine(ActionRequest request, ActionResponse response) {
-    Project project =
-        Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
-    InvoiceLine purchaseInvoiceLine =
-        Beans.get(InvoiceLineRepository.class)
-            .find(
-                Long.valueOf(
-                    ((Integer) ((Map) request.getContext().get("purchaseInvoiceLine")).get("id"))));
+  public void getPartnerData(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    Partner partner = project.getClientPartner();
 
-    projectBusinessService.manageInvoiceLine(purchaseInvoiceLine, project);
+    if (partner != null) {
 
-    response.setReload(true);
-  }
+      response.setValue("currency", partner.getCurrency());
 
-  public void manageSaleInvoiceLine(ActionRequest request, ActionResponse response) {
-    Project project =
-        Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
-    InvoiceLine saleInvoiceLine =
-        Beans.get(InvoiceLineRepository.class)
-            .find(
-                Long.valueOf(
-                    ((Integer) ((Map) request.getContext().get("saleInvoiceLine")).get("id"))));
-
-    projectBusinessService.manageInvoiceLine(saleInvoiceLine, project);
-
-    response.setReload(true);
+      response.setValue(
+          "priceList",
+          project.getClientPartner() != null
+              ? Beans.get(PartnerPriceListService.class)
+                  .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE)
+              : null);
+    }
   }
 }

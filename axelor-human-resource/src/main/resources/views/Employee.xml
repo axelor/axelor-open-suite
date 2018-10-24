@@ -19,7 +19,7 @@
 	</grid>
 
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
-		onNew="action-employee-record-default" width="large">
+		onNew="action-employee-record-default" onLoad="action-employee-method-set-social-network-url" width="large">
 		<toolbar>
 			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
@@ -39,13 +39,13 @@
 					<panel colSpan="9">
 						<panel colSpan="12">
 							<field name="titleSelect" css="bold" colSpan="2"/>
-							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
-							<field name="firstName"  css="bold" onChange="action-partner-record-full-name" colSpan="5"/>
+							<field name="name" title="Name"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="firstName"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
 				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 							<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 							<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-				           	<field name="webSite"/>
+							<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				         </panel>
 			        </panel>
 	            </editor>
@@ -240,7 +240,15 @@
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
-
+	
+	<action-method name="action-employee-method-set-social-network-url">
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="setEmployeeSocialNetworkUrl"/>
+	</action-method>
+	
+	<action-method name="action-employee-contact-method-set-social-network-url">
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="setContactSocialNetworkUrl"/>
+	</action-method>
+	
     <action-method name="action-employee-method-normalize-fixedProPhone">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>

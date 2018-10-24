@@ -100,6 +100,19 @@
 		<option value="inventory">Inventory</option>
 		<option value="productTrackingNumber">Product tracking number</option>
 		<option value="logisticalForm">Logistical form</option>
-	</selection>	
+	</selection>
+	
+	<selection name="tracking.number.configuration.tracking.number.order.select">
+		<option value="1">FIFO</option>
+		<option value="2">LIFO</option>
+	</selection>
+
+	<selection name="stockmove.origin.select">
+		<option value="com.axelor.apps.stock.db.Inventory">Inventory</option>
+		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
+		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+	</selection>
 
 </object-views>

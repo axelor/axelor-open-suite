@@ -1,13 +1,13 @@
-"importId";"saleOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
-14;6;1;411;"Consultant";15;103;800;"12000";"true";"true";3
-18;8;1;410;"Chef de projet";10;103;1000;"10000";"true";"true";3
-19;8;2;111;"Serveur haute performance";2;1;2500;"5000";"true";"true";1
-20;8;3;110;"Serveur classique";1;1;1500;"1500";"true";"true";1
-21;8;4;121;"Imprimante Laser";4;1;429;"1716";"true";"true";1
-22;8;5;2;"Maintenance annuelle";1;106;2000;"2000";"true";"true";1
-23;9;1;400;"Etude";1;1;8000;"8000";"true";"true";3
-24;9;2;410;"Chef de projet";20;103;1000;"20000";"true";"true";3
-27;11;1;120;"Imprimante Jet d'encre";5;1;329;"1645";"true";"true";1
-28;11;2;302;"Cartouche jet d'encre";15;1;"32.9";"493.5";"true";"true";1
-29;11;3;121;"Imprimante Laser";3;1;429;"1287";"true";"true";1
-30;11;4;303;"Cartouche encre laser";6;1;"84.5";"507";"true";"true";1
+"importId";"saleOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"inTaxPrice";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
+14;6;1;411;"Consultant";15;103;800;960;"12000";"true";"true";3
+18;8;1;410;"Chef de projet";10;103;1000;1200;"10000";"true";"true";3
+19;8;2;111;"Serveur haute performance";2;1;2500;3000;"5000";"true";"true";1
+20;8;3;110;"Serveur classique";1;1;1500;1800;"1500";"true";"true";1
+21;8;4;121;"Imprimante Laser";4;1;429;"514.8";"1716";"true";"true";1
+22;8;5;2;"Maintenance annuelle";1;106;2000;2400;"2000";"true";"true";1
+23;9;1;400;"Etude";1;1;8000;9600;"8000";"true";"true";3
+24;9;2;410;"Chef de projet";20;103;1000;1200;"20000";"true";"true";3
+27;11;1;120;"Imprimante Jet d'encre";5;1;329;394;"1645";"true";"true";1
+28;11;2;302;"Cartouche jet d'encre";15;1;"32.9";"39.48";"493.5";"true";"true";1
+29;11;3;121;"Imprimante Laser";3;1;429;"514.8";"1287";"true";"true";1
+30;11;4;303;"Cartouche encre laser";6;1;"84.5";"101.4";"507";"true";"true";1

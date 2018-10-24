@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -37,7 +38,6 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 public interface TimesheetService {
-  public void getTimeFromTask(Timesheet timesheet) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
@@ -115,7 +115,8 @@ public interface TimesheetService {
       User user,
       String date,
       BigDecimal hoursDuration,
-      int priority)
+      int priority,
+      PriceList priceList)
       throws AxelorException;
 
   @Transactional
@@ -145,4 +146,8 @@ public interface TimesheetService {
    * @return the updated timesheet
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
+
+  @Transactional
+  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
+      throws AxelorException;
 }

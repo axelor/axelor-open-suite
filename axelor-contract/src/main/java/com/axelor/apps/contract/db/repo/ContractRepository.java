@@ -20,31 +20,19 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.contract.db.Contract;
-import com.axelor.db.JpaRepository;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
-public class ContractRepository extends JpaRepository<Contract> {
-
-  static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
-  static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
-
-  public static final int DRAFT_CONTRACT = 1;
-  public static final int ACTIVE_CONTRACT = 2;
-  public static final int CLOSED_CONTRACT = 3;
-
-  public ContractRepository() {
-    super(Contract.class);
-  }
-
+public class ContractRepository extends AbstractContractRepository {
   @Override
   public Contract save(Contract contract) {
     try {
       if (contract.getContractId() == null) {
-        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetType()));
+        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
       }
       return super.save(contract);
     } catch (Exception e) {
@@ -69,5 +57,13 @@ public class ContractRepository extends JpaRepository<Contract> {
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
+  }
+
+  @Override
+  public Contract copy(Contract entity, boolean deep) {
+    Contract contract = super.copy(entity, deep);
+    ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    contract.setCurrentContractVersion(version);
+    return contract;
   }
 }

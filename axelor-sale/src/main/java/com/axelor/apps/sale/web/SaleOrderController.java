@@ -40,10 +40,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -53,7 +56,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -61,6 +66,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +77,8 @@ public class SaleOrderController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private SaleOrderRepository saleOrderRepo;
+
+  @Inject private SaleOrderPrintService saleOrderPrintService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -91,9 +99,11 @@ public class SaleOrderController {
     try {
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
 
+      response.setValue("accountedRevenue", saleOrder.getAccountedRevenue());
       response.setValue("totalCostPrice", saleOrder.getTotalCostPrice());
       response.setValue("totalGrossMargin", saleOrder.getTotalGrossMargin());
       response.setValue("marginRate", saleOrder.getMarginRate());
+      response.setValue("markup", saleOrder.getMarkup());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -133,23 +143,43 @@ public class SaleOrderController {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
+  @SuppressWarnings("unchecked")
   public void exportSaleOrder(
       ActionRequest request, ActionResponse response, boolean proforma, String format) {
+
+    Context context = request.getContext();
+    String fileLink;
+    String title;
+
     try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) request.getContext().get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = saleOrderPrintService.printSaleOrders(ids);
+        title = I18n.get("Sale orders");
 
-      String language = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
+      } else if (context.get("id") != null) {
 
-      SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
 
-      String name = saleOrderService.getFileName(saleOrder);
-
-      String fileLink = saleOrderService.getReportLink(saleOrder, name, language, proforma, format);
-
-      logger.debug("Printing " + name);
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-    } catch (AxelorException e) {
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.SALE_ORDER_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
@@ -576,5 +606,18 @@ public class SaleOrderController {
         Beans.get(PartnerPriceListService.class)
             .getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
     response.setAttr("priceList", "domain", domain);
+  }
+
+  public void removeSubLines(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      response.setValue(
+          "saleOrderLineList",
+          Beans.get(SaleOrderComputeService.class)
+              .removeSubLines(saleOrder.getSaleOrderLineList()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
   }
 }

@@ -47,6 +47,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -363,6 +364,9 @@ public class InventoryService {
     StockMove stockMove =
         this.createStockMoveHeader(
             inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
+    stockMove.setOriginId(inventory.getId());
+    stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       BigDecimal currentQty = inventoryLine.getCurrentQty();
@@ -514,6 +518,16 @@ public class InventoryService {
       params.add(inventory.getProductCategory());
     }
 
+    if (!Strings.isNullOrEmpty(inventory.getFromRack())) {
+      query += " and self.rack >= ?";
+      params.add(inventory.getFromRack());
+    }
+
+    if (!Strings.isNullOrEmpty(inventory.getToRack())) {
+      query += " and self.rack <= ?";
+      params.add(inventory.getToRack());
+    }
+
     return Beans.get(StockLocationLineRepository.class)
         .all()
         .filter(query, params.toArray())
@@ -595,5 +609,15 @@ public class InventoryService {
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, fileName, inventory);
     }
+  }
+
+  public StockMove findStockMove(Inventory inventory) {
+    return stockMoveRepo
+        .all()
+        .filter(
+            "self.originTypeSelect = ?1 AND self.originId = ?2",
+            StockMoveRepository.ORIGIN_INVENTORY,
+            inventory.getId())
+        .fetchOne();
   }
 }

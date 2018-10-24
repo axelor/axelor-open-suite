@@ -22,6 +22,7 @@
      <string name="scriptText" title="Script" large="true"/>
      <boolean name="openRecord" title="Open record" />
      <string name="displayMsg" title="Display message" />
+     <integer name="emailSendOptionSelect" title="Send option" selection="studio.action.builder.email.send.option.select"/>
      
      <!-- Action view fields -->
      <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder" orderBy="sequence"/>
@@ -34,6 +35,15 @@
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
      
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
+     
+    <extra-code><![CDATA[
+        public static final int TYPE_SELECT_CREATE = 0;
+        public static final int TYPE_SELECT_UPDATE = 1;
+        public static final int TYPE_SELECT_SCRIPT = 2;
+        public static final int TYPE_SELECT_VIEW= 3;
+        public static final int TYPE_SELECT_EMAIL = 4;
+        public static final int TYPE_SELECT_REPORT = 5;
+    ]]></extra-code>
      
   </entity>
   

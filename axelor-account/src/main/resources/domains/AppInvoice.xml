@@ -4,12 +4,12 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppInvoice" lang="java" cachable="true" extends="App">
+	<entity name="AppInvoice" lang="java" extends="App">
 
 		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines"/>
 		<boolean name="isVentilationSkipped" title="Skip ventilation"/>
-		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
-
+		<boolean name="isEnabledProductDescriptionCopyForCustomers" title="Enable product description copy for customers"/>
+		<boolean name="isEnabledProductDescriptionCopyForSuppliers" title="Enable product description copy for suppliers"/>
 	</entity>
 
 </domain-models>

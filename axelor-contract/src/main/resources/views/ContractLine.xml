@@ -1,65 +1,131 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-    
-    <grid name="contract-line-grid" title="Contract Lines" model="com.axelor.apps.contract.db.ContractLine">
-    	<hilite if="isComsumptionLine" background="primary" />
-       <field name="productName"/>
-       <field name="qty"/>
-       <field name="price"/>
-       <field name="exTaxTotal"/>
-       <field name="inTaxTotal"/>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+              http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="contract-line-grid" title="Contract Lines"
+          model="com.axelor.apps.contract.db.ContractLine">
+        <hilite if="isConsumptionLine" background="primary"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+        <field name="inTaxTotal"/>
+        <field name="isConsumptionLine" hidden="true"/>
     </grid>
 
-    <form name="contract-line-form" title="Contract Line" model="com.axelor.apps.contract.db.ContractLine">
+    <form name="contract-line-form" title="Contract Line"
+          model="com.axelor.apps.contract.db.ContractLine">
         <panel>
-            <field name="product" canEdit="false" onChange="action-method-contract-line-change-product,action-method-contract-line-compute"/>
+            <field name="product" canEdit="false"
+                   onChange="action-method-contract-version-change-product,
+                   action-method-contract-line-compute-total"/>
             <field name="productName"/>
-            <field name="qty" onChange="action-method-contract-line-compute" readonlyIf="isConsumptionLine"/>
-            <field name="price" onChange="action-method-contract-line-compute"/>
-            <field name="taxLine" onChange="action-method-contract-line-compute"/>
-            <field name="unit"/>
+            <field name="qty" readonlyIf="isConsumptionLine"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="price"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="taxLine" canEdit="false"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="unit" canEdit="false"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
-            <field name="isConsumptionLine" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute"/>
+            <field name="isConsumptionLine"
+               onChange="action-method-contract-line-change-is-consumption-line,
+               action-method-contract-line-compute-total"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            <field name="description" colSpan="12"/>
+            <field name="description" colSpan="12" widget="html"/>
             <field name="contractVersion" hidden="true"/>
         </panel>
     </form>
 
-    <action-record name="action-method-contract-line-change-is-consumption-line" model="com.axelor.apps.contract.db.ContractLine">
+    <action-record name="action-method-contract-line-change-is-consumption-line"
+                   model="com.axelor.apps.contract.db.ContractLine">
         <field name="qty" expr="eval: 0"/>
     </action-record>
-    
-    <action-method name="action-method-contract-line-change-product">
-        <call class="com.axelor.apps.contract.web.ContractLineController" method="changeProduct"/>
+
+    <action-method name="action-method-contract-line-compute-total">
+        <call class="com.axelor.apps.contract.web.ContractLineController"
+              method="computeTotal"/>
     </action-method>
 
-    <action-method name="action-method-contract-line-compute">
-        <call class="com.axelor.apps.contract.web.ContractLineController" method="compute"/>
-    </action-method>
-
-    <grid name="additional-contract-line-grid" title="Additional benefit lines" model="com.axelor.apps.contract.db.ContractLine">
-       <field name="productName"/>
-       <field name="qty"/>
-       <field name="price"/>
-       <field name="exTaxTotal"/>
-       <field name="inTaxTotal"/>
+    <grid name="additional-contract-line-grid" title="Additional benefit lines"
+          model="com.axelor.apps.contract.db.ContractLine">
+        <hilite if="isInvoiced" background="success"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+        <field name="inTaxTotal"/>
+        <field name="isInvoiced" hidden="true"/>
     </grid>
 
-    <form name="additional-contract-line-form" title="Additional benefit" model="com.axelor.apps.contract.db.ContractLine">
+    <form name="additional-contract-line-form" title="Additional benefit"
+          model="com.axelor.apps.contract.db.ContractLine"
+          readonlyIf="isInvoiced">
         <panel>
-            <field name="product" canEdit="false" onChange="action-method-contract-line-change-product,action-method-contract-line-compute"/>
+            <field name="product" canEdit="false"
+                   onChange="action-method-contract-change-product,
+                   action-method-contract-line-compute-total"/>
             <field name="productName"/>
-            <field name="qty" onChange="action-method-contract-line-compute" readonlyIf="isConsumptionLine"/>
-            <field name="price" onChange="action-method-contract-line-compute"/>
-            <field name="taxLine" onChange="action-method-contract-line-compute"/>
-            <field name="unit"/>
+            <field name="qty" readonlyIf="isConsumptionLine"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="price"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="taxLine" canEdit="false"
+                   onChange="action-method-contract-line-compute-total"/>
+            <field name="unit" canEdit="false"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            <field name="description" colSpan="12"/>
+            <field name="description" colSpan="12" widget="html"/>
+        </panel>
+    </form>
+
+    <grid name="contract-line-grid-for-template" title="Contract Lines"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <hilite if="isConsumptionLine" background="primary"/>
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="isConsumptionLine" hidden="true"/>
+    </grid>
+
+    <form name="contract-line-form-for-template" title="Contract Line"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <panel>
+            <field name="product" canEdit="false"
+              onChange="action-contract-template-method-change-product"/>
+            <field name="productName"/>
+            <field name="qty" readonlyIf="isConsumptionLine"/>
+            <field name="price"/>
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
+            <field name="isConsumptionLine"
+              onChange="action-method-contract-line-change-is-consumption-line"/>
+            <field name="description" colSpan="12" widget="html"/>
+        </panel>
+    </form>
+
+    <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <field name="productName"/>
+        <field name="qty"/>
+        <field name="price"/>
+    </grid>
+
+    <form name="additional-contract-line-form-for-template" title="Additional benefit"
+      model="com.axelor.apps.contract.db.ContractLine">
+        <panel>
+            <field name="product" canEdit="false"
+              onChange="action-contract-template-method-change-product"/>
+            <field name="productName"/>
+            <field name="qty"/>
+            <field name="price"/>
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
+            <field name="description" colSpan="12" widget="html"/>
         </panel>
     </form>
 

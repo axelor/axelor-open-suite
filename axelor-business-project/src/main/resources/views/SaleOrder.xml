@@ -43,5 +43,8 @@
 		<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="fillProject"/>
 	</action-method>
 
+    <action-method name="action-business-project-sale-order-method-update-lines">
+    	<call class="com.axelor.apps.businessproject.web.SaleOrderProjectController" method="updateLines"/>
+    </action-method>
 
 </object-views>

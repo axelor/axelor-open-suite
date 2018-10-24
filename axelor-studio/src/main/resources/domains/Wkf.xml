@@ -21,6 +21,7 @@
       <integer name="displayTypeSelect" title="Process display type" selection="studio.business.wkf.display.type.select"/>
       <string name="bpmnXml" title="Bpmn xml" large="true" />
       <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
+      <string name="description" title="Description" large="true"/>
   </entity>
     
  </domain-models>

@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBase" lang="java" cachable="true" extends="App" >
+	<entity name="AppBase" lang="java" extends="App" >
 
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>

@@ -1,0 +1,19 @@
+"importId";"name";"image_fileName";"vehicleModel.importId";"plateNo";"vehicleTagSetImportId";"vehicleState";"driverPartner.importId";"vehicleOdometer";"location";"acquisitionDate";"chasisNo";"carValue";"isArchived";"company.importId";"seats";"doors";"color";"transmissionSelect";"fuelTypeSelect";"co2emission";"horsePower";"horsePowerTax";"powerKw"
+"1";"Mercedes Classe C";"img/mercedes.png";"1";"EW 231 RG";;;"20";"178000";"77";"TODAY[+5d]";;"40000";"true";"1";"5";"5";"Gris";"0";"0";"2.00";"110";;
+"2";"Fiat 500";"img/fiat.png";"2";"EA 456 TH";;;"88";"90000";"75";"TODAY[+6d]";;"15000";"false";"1";"4";"3";"Noir";"1";"1";"2.01";"110";;
+"3";"Toyota Yaris";"img/toyota.png";"3";"RG 638 KF";;;"205";"134039";"22";"TODAY[-30d]";;"16000";"true";"1";"5";"5";"Bleu";"0";"2";"2.02";"70";;
+"4";"Honda Civic";"img/honda.png";"4";"HU 846 AE";;;"44";"121234";"13";"TODAY[-50d]";;"20000";"false";"1";"5";"5";"Blanc";"1";"3";"2.03";"70";;
+"5";"Citroen C3";"img/citroen.png";"5";"UI 685 OA";;;"132";"79778";"93";"TODAY[+20d]";;"12000";"true";"1";"5";"5";"rouge";"0";"0";"2.04";"100";;
+"6";"BMW Série 3";"img/bmw.png";"6";"OK 623 TH";;;"70";"190754";"92";"TODAY[+14d]";;"40000";"false";"1";"5";"5";"Jaune";"1";"1";"2.05";"90";;
+"7";"Suzuki Swift";"img/suzuki.png";"7";"NI 679 EE";;;"185";"123566";"60";"TODAY[+45d]";;"16000";"true";"1";"5";"5";"Gris";"0";"2";"2.06";"120";;
+"8";"Volvo V40";"img/volvo.png";"8";"BN 453 IO";;;"136";"99345";"77";"TODAY[+30d]";;"28000";"false";"1";"5";"5";"Noir";"1";"3";"2.07";"90";;
+"9";"Renault Twingo";"img/renault.png";"9";"GF 509 FF";;;"197";"32565";"77";"TODAY[+23d]";;"12000";"true";"1";"5";"5";"Bleu";"0";"0";"2.08";"110";;
+"10";"Alfa Romeo Mito";"img/alfaromeo.png";"10";"ZD 357 VB";;;"20";"12345";"77";"TODAY[+13d]";;"22000";"false";"1";"5";"5";"Blanc";"1";"1";"2.09";"60";;
+"11";"DS Crossback";"img/ds.png";"11";"UI 987 BN";;;"88";"15354";"93";"TODAY[+16d]";;"25000";"true";"1";"5";"5";"rouge";"0";"2";"2.10";"100";;
+"12";"Mercedes Classe C";"img/mercedes.png";"1";"OK 023 MP";;;"205";"144334";"92";"TODAY[+9d]";;"40000";"false";"1";"5";"5";"Jaune";"1";"3";"2.11";"110";;
+"13";"Fiat 500";"img/fiat.png";"2";"AZ 453 BN";;;"44";"145354";"60";"TODAY[-43d]";;"15000";"true";"1";"5";"5";"Gris";"0";"0";"2.12";"70";;
+"14";"Toyota Yaris";"img/toyota.png";"3";"CF 129 NI";;;"132";"67654";"35";"TODAY[-23d]";;"16000";"false";"1";"5";"5";"Noir";"1";"1";"2.13";"70";;
+"15";"Honda Civic";"img/honda.png";"4";"NI 145 PE";;;"70";"4355";"49";"TODAY[-50d]";;"20000";"true";"1";"5";"5";"Bleu";"0";"2";"2.14";"110";;
+"16";"Citroen C3";"img/citroen.png";"5";"MP 432 VI";;;"185";"30744";"39";"TODAY[-17d]";;"12000";"false";"1";"5";"5";"Blanc";"1";"3";"2.15";"70";;
+"17";"BMW Série 3";"img/bmw.png";"6";"SD 458 AZ";;;"136";"19643";"22";"TODAY[-6d]";;"40000";"true";"1";"5";"5";"rouge";"0";"0";"2.16";"70";;
+"18";"Suzuki Swift";"img/suzuki.png";"7";"FD 567 GY";;;"197";"180000";"75";"TODAY[-8d]";;"16000";"false";"1";"5";"5";"Jaune";"1";"1";"2.17";"100";;

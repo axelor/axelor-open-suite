@@ -609,6 +609,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               product,
               product.getName(),
               expenseLine.getUntaxedAmount(),
+              expenseLine.getTotalAmount(),
               expenseLine.getUntaxedAmount(),
               expenseLine.getComments(),
               BigDecimal.ONE,
@@ -619,7 +620,9 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
-              false) {
+              false,
+              false,
+              0) {
 
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
@@ -638,6 +641,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               invoice,
               product,
               product.getName(),
+              expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
               expenseLine.getTotalAmount(),
               expenseLine.getComments(),
@@ -649,7 +653,9 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
-              false) {
+              false,
+              false,
+              0) {
 
             @Override
             public List<InvoiceLine> creates() throws AxelorException {

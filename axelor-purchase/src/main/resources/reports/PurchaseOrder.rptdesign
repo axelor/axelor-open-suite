@@ -784,6 +784,12 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">in_tax_total</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">in_tax_total</text-property>
+                    <text-property name="heading">in_tax_total</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">in_ati</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">in_ati</text-property>
@@ -868,16 +874,21 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
+                        <property name="name">in_tax_total</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
                         <property name="name">in_ati</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">isTitleLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">TaxValue</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -957,20 +968,27 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
+                    <property name="name">in_tax_total</property>
+                    <property name="nativeName">in_tax_total</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
                     <property name="name">in_ati</property>
                     <property name="nativeName">in_ati</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">isTitleLine</property>
                     <property name="nativeName">isTitleLine</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">TaxValue</property>
                     <property name="nativeName">TaxValue</property>
                     <property name="dataType">decimal</property>
@@ -985,8 +1003,16 @@ where PurchaseOrder.id in (@INJECTID)]]></xml-property>
 	PurchaseOrderLine.description, 
 	PurchaseOrderLine.qty,
 	Unit.name as "UnitCode", 
-	PurchaseOrderLine.price as "UnitPrice", 
-	(PurchaseOrderLine.price_discounted - PurchaseOrderLine.price) * PurchaseOrderLine.qty as "totalDiscountAmount",
+	(CASE WHEN PurchaseOrder.in_ati 
+		THEN PurchaseOrderLine.in_tax_price
+		ELSE PurchaseOrderLine.price END)
+		as "UnitPrice", 
+	(PurchaseOrderLine.price_discounted 
+		- (CASE WHEN PurchaseOrder.in_ati 
+			THEN PurchaseOrderLine.in_tax_price
+			ELSE PurchaseOrderLine.price END))
+		* PurchaseOrderLine.qty 
+		as "totalDiscountAmount",
 	PurchaseOrderLine.ex_tax_total,
 	PurchaseOrderLine.in_tax_total,
 	PurchaseOrder.in_ati,
@@ -2443,7 +2469,7 @@ row["first_name"]
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["tot_all_sub"] == 0</expression>
+                                        <expression name="valueExpr" type="javascript">row["tot_all_sub"] == 0</expression>
                                     </structure>
                                 </list-property>
                                 <property name="width">0.6in</property>
@@ -3392,6 +3418,11 @@ row["first_name"]
                                             </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="3779">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3436">

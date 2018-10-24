@@ -61,6 +61,8 @@ public interface IExceptionMessage {
       "You must configure a finished products default stock location for company %s." /*)*/;
   static final String PRODUCTION_CONFIG_5 = /*$$(*/
       "You must configure a component default stock location for company %s." /*)*/;
+  static final String PRODUCTION_CONFIG_MISSING_MANUF_ORDER_SEQ = /*$$(*/
+      "You must configure a sequence for manufacturing order for company %s" /*)*/;
 
   /** Manuf Order Controller */
   static final String MANUF_ORDER_1 = /*$$(*/
@@ -108,4 +110,8 @@ public interface IExceptionMessage {
 
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
+
+  /** Raw Material RequirementService */
+  String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
+      "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
 }

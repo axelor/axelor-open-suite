@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -93,7 +94,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     ProductionOrder productionOrder = this.createProductionOrder();
 
-    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate);
+    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate, null);
 
     return productionOrderRepo.save(productionOrder);
   }
@@ -104,7 +105,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
-      LocalDateTime startDate)
+      LocalDateTime startDate,
+      SaleOrder saleOrder)
       throws AxelorException {
 
     ManufOrder manufOrder =
@@ -116,6 +118,10 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             billOfMaterial,
             startDate);
 
+    if (saleOrder != null) {
+      manufOrder.setSaleOrder(saleOrder);
+      manufOrder.setClientPartner(saleOrder.getClientPartner());
+    }
     productionOrder.addManufOrderListItem(manufOrder);
 
     return productionOrderRepo.save(productionOrder);

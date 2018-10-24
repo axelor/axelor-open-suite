@@ -9,13 +9,6 @@
   	
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
 
-      <extra-code>
-          <![CDATA[
-                // INVOICE
-                public static final int INVOICE_TIMESHEET = 5;
-                public static final int INVOICE_EXPENSE = 6;
-            ]]>
-      </extra-code>
   </entity>
 
 </domain-models>

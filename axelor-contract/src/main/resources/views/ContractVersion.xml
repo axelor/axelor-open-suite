@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <form name="contract-version-next-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion" width="large" onLoad="action-contract-version-attrs-load" onSave="save,action-contract-version-method-save" onNew="action-contract-version-method-new-draft,action-contract-version-attrs-load">
+        <panel>
+            <panel colSpan="9">
+                <panel name="hiddenFields" hidden="true" colSpan="12">
+                    <field name="nextContract.contractId"/>
+                    <field name="nextContract.statusSelect"/>
+                    <field name="nextContract.targetTypeSelect"/>
+                </panel>
+                <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
+                <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
+                    <viewer depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
+			<h3 class="text-right">
+                      <span style="margin-right: 10px;"><span x-translate>Version</span><span ng-show="record.nextContract.contractId"> - {{ record.nextContract.contractId }}</span></span>
+
+                      <span class="label label-info" x-translate ng-show="record.nextContract.targetTypeSelect == 1">Customer</span>
+                      <span class="label label-warning" x-translate ng-show="record.nextContract.targetTypeSelect == 2">Supplier</span>
+
+											<span class="label label-default" x-translate ng-show="record.nextContract.statusSelect == 1">Draft</span>
+                      <span class="label label-info" x-translate ng-show="record.nextContract.statusSelect == 2">Active</span>
+                      <span class="label label-important" x-translate ng-show="record.nextContract.statusSelect == 3">Closed</span>
+			</h3>
+                  ]]></viewer>
+                </field>
+                <field name="nextContract.company" colSpan="4"/>
+                <field name="nextContract.partner" colSpan="4"/>
+                <field if="__config__.app.getApp('contract').isInvoicingManagement" name="nextContract.currency" colSpan="4"/>
+                <field name="nextContract.name" css="highlight" colSpan="12"/>
+                <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
+                    <field name="nextContract.createdOn" colSpan="3"/>
+                    <field name="nextContract.createdBy" colSpan="3"/>
+                    <field name="nextContract.startDate" readonly="true" showIf="nextContract.statusSelect >= 2" colSpan="3"/>
+                    <field name="nextContract.endDate" hidden="true" showIf="nextContract.statusSelect == 3" colSpan="3"/>
+                </panel>
+                <panel title="Current version" colSpan="12">
+                    <panel colSpan="6">
+                        <panel hideIf="statusSelect >= 3" colSpan="12">
+                            <field name="supposedActivationDate"/>
+                            <field name="supposedEndDate"/>
+                        </panel>
+                        <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                            <field name="activatedByUser" colSpan="4"/>
+                            <field name="activationDate" colSpan="4"/>
+                            <panel colSpan="4">
+                                <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
+                                <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
+                            </panel>
+                        </panel>
+                    </panel>
+                    <panel showIf="id" colSpan="6">
+                        <field name="createdOn"/>
+                        <field name="createdBy"/>
+                    </panel>
+                </panel>
+            </panel>
+            <panel colSpan="3" stacked="true">
+                <panel stacked="true">
+                    <button name="cancelBtn" title="Cancel" hidden="true" showIf="!id" onClick="action.contract.view.contract,close"/>
+                    <button name="showBtn" title="Show contract" showIf="id" onClick="action.contract.view.contract,close"/>
+                    <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; statusSelect == 1" onClick="save,action-contract-version-method-waiting"/>
+                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; statusSelect == 2" onClick="save,action-contract-version-method-active,close"/>
+                </panel>
+                <panel title="Notes" stacked="true">
+                    <field name="nextContract.note" showTitle="false"/>
+                </panel>
+            </panel>
+        </panel>
+        <panel-tabs>
+            <panel title="Content">
+                <field if="__config__.app.getApp('contract').isInvoicingManagement" hidden="true"
+                  showIf="nextContract.isInvoicingManagement" name="contractLineList"
+                  colSpan="12"/>
+                <field name="description" colSpan="9" widget="html"/>
+                <field name="metaFile" colSpan="3" widget="binary-link"/>
+            </panel>
+            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
+                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
+                    <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
+                    <panel hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="6">
+                        <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
+                        <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
+                    </panel>
+                    <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true" showIf="nextContract.isConsumptionManagement" colSpan="6"/>
+                    <panel name="invoicingSubPanel" hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="12">
+                        <panel colSpan="12">
+                            <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                            <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                            <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
+                            <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
+                        </panel>
+                        <panel colSpan="12">
+                            <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+                            <panel showIf="isPeriodicInvoicing" colSpan="9">
+                                <field name="invoicingDuration" colSpan="4"/>
+                                <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
+                                <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
+                            </panel>
+                        </panel>
+                    </panel>
+                </panel>
+                <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
+                    <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
+                    <field name="renewalDuration" colSpan="3" requiredIf="isTacitRenewal"/>
+                    <field name="isAutoEnableVersionOnRenew" colSpan="6" hidden="true" showIf="isTacitRenewal" widget="boolean-switch"/>
+                </panel>
+                <panel title="Engagement" colSpan="6">
+                    <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
+                    <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
+                    <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
+                </panel>
+                <panel title="Prior notice" colSpan="6">
+                    <field name="isWithPriorNotice" widget="boolean-switch"/>
+                    <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
+                </panel>
+            </panel>
+        </panel-tabs>
+        <panel hidden="true">
+            <field name="nextContract"/>
+            <field name="$_xIsNext" type="Boolean"/>
+        </panel>
+        <panel-mail>
+            <mail-messages limit="4"/>
+            <mail-followers/>
+        </panel-mail>
+    </form>
+
+    <action-attrs name="action-contract-version-attrs-load">
+        <attribute for="$_xIsNext" name="value" expr="eval: nextContract"/>
+        <attribute for="$_xIsNext" name="value" expr="eval: _xIsNextVersion" if="_xIsNextVersion"/>
+    </action-attrs>
+
+    <action-method name="action-contract-version-method-new-draft">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="newDraft"/>
+    </action-method>
+
+    <action-method name="action-contract-version-method-save">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="save"/>
+    </action-method>
+
+    <action-method name="action-contract-version-method-active">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="active"/>
+    </action-method>
+
+    <action-method name="action-contract-version-method-waiting">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
+    </action-method>
+
+    <action-method name="action-method-contract-version-change-product">
+        <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
+    </action-method>
+
+</object-views>

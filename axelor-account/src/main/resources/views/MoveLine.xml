@@ -21,6 +21,7 @@
         <field name="amountRemaining" aggregate="sum" width="100"/>
         <field name="move.statusSelect" width="90"/>
         <field name="reconcileGroup"/>
+        <field name="description"/>
     </grid>
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" editable="true" onNew="action-account-move-line-onnew-group">
@@ -49,6 +50,7 @@
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
         <field name="move.statusSelect"/>
+        <field name="description"/>
     </grid>
     
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
@@ -64,6 +66,7 @@
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
         <field name="move.statusSelect"/>
+        <field name="description"/>
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
@@ -140,12 +143,13 @@
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
+				<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
 		<panel name="movePanel" title="Move" sidebar="true" canCollapse="true">
 			<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="6"/>
-			<field name="$viewerTags" showTitle="false" colSpan="6">
+			<field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
 				<viewer depends="move.statusSelect">
 					<![CDATA[
 						<h4>
@@ -165,7 +169,7 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
-				<panel readonly="true">
+		<panel>
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
 					<![CDATA[
@@ -190,8 +194,8 @@
 			</panel>
 			<field name="partner" onSelect="action-move-line-attrs-domain-partner" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="account" onSelect="action-move-line-attrs-domain-account" form-view="account-form" grid-view="account-grid"/>
-			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
-			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" readonlyIf="credit != 0"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" readonlyIf="debit != 0"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3"/>
 			<field name="origin" colSpan="12"/>
@@ -218,8 +222,8 @@
 						]]>
 					</viewer>
 					<editor colSpan="12" layout="table" x-show-titles="false">
-						<field name="currencyRate" readonly="true"/>
-						<field name="currencyAmount" readonly="true"/>
+						<field name="currencyRate" onChange="action-move-line-record-set-currencyAmount"/>
+						<field name="currencyAmount" onChange="action-move-line-record-set-amount"/>
 						<field name="move.currencyCode" readonly="true"/>
 					</editor>
 				</field>
@@ -229,6 +233,7 @@
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
+				<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
@@ -281,7 +286,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
-		<attribute name="readonly" for="informations" expr="eval: move.statusSelect != 1"/>
+		<attribute name="readonly" for="informations" expr="eval: move?.statusSelect != 1"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
@@ -313,13 +318,18 @@
 
 	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
 		<field name="currencyRate" expr="1" if="_parent?.currency == _parent?.companyCurrency"/>
-		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.companyCurrency, __parent__.currency)" if="_parent?.currency != _parent?.companyCurrency"/>
+		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.currency, __parent__.companyCurrency)" if="_parent?.currency != _parent?.companyCurrency"/>
 	</action-record>
 
 	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
-		<field name="currencyAmount" expr="eval: debit" if="debit != 0"/>
-		<field name="currencyAmount" expr="eval: credit" if="credit != 0"/>
+		<field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
+		<field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
 		<field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0"/>
+	</action-record>
+
+	<action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0"/>
+		<field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0"/>
 	</action-record>
 
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
@@ -335,6 +345,12 @@
 		<field name="debit" expr="0" if="debit &lt; 0"/>
 		<field name="credit" expr="0" if="credit &lt; 0"/>
 	</action-record>
+	
+	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
+		<view type="grid" name="move-line-move-grid"/>
+		<view type="form" name="move-line-move-form"/>
+		<domain>self.account.id = :_id</domain>
+	</action-view>
 	
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>

@@ -19,34 +19,29 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
-import com.itextpdf.text.DocumentException;
-import java.io.IOException;
-import java.util.Map;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import java.io.File;
+import java.util.List;
+import javax.persistence.Query;
 
 public interface AdvancedExportService {
 
   public static final String LANGUAGE_FR = "fr";
 
-  public static final String PDF_EXTENSION = ".pdf";
-  public static final String EXCEL_EXTENSION = ".xlsx";
-  public static final String CSV_EXTENSION = ".csv";
-
   public static final String PDF = "PDF";
   public static final String EXCEL = "EXCEL";
   public static final String CSV = "CSV";
 
-  public String getTargetField(Context context, MetaField metaField, MetaModel parentMetaModel);
+  public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
+      throws AxelorException;
 
-  public Map<Boolean, MetaFile> getAdvancedExport(
-      AdvancedExport advancedExport, String criteria, String fileType)
-      throws ClassNotFoundException, DocumentException, IOException, AxelorException,
-          InvalidFormatException;
+  public File export(AdvancedExport advancedExport, List<Long> recordIds, String fileType)
+      throws AxelorException;
 
   public Filter getJpaSecurityFilter(MetaModel metaModel);
+
+  public boolean getIsReachMaxExportLimit();
+
+  public String getExportFileName();
 }

@@ -4,7 +4,7 @@
 
   <grid model="com.axelor.apps.stock.db.DeclarationOfExchanges" title="Declarations of exchanges"
     name="declaration-of-exchanges-grid" orderBy="createdOn" onNew="action-declaration-of-exchanges-onnew">
-    <field name="company" onSelect="action-declaration-of-exchanges-company-onselect" canEdit="false"/>
+    <field name="company" canEdit="false"/>
     <field name="country"
       domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
       canEdit="false"/>
@@ -28,8 +28,7 @@
     </toolbar>
 
     <panel>
-      <field name="company" onSelect="action-declaration-of-exchanges-company-onselect"
-        canEdit="false"/>
+      <field name="company" canEdit="false"/>
       <field name="country"
         domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
         canEdit="false"/>
@@ -40,7 +39,7 @@
           domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
           onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
       </panel>
-      <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange"/>
+      <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange" selection-in="['service','storable']"/>
       <field name="stockMoveTypeSelect"
         selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
         readonlyIf="productTypeSelect == 'service'"/>
@@ -68,11 +67,6 @@
     model="com.axelor.apps.stock.db.DeclarationOfExchanges">
     <field name="stockMoveTypeSelect" expr="eval: STOCK_MOVE_TYPE_OUTGOING" if="productTypeSelect == 'service'"/>
   </action-record>
-
-  <action-attrs name="action-declaration-of-exchanges-company-onselect">
-    <attribute name="domain" for="company"
-      expr="eval: &quot; self.id IN (${(__user__.companySet?.collect { it.id } ?: [0]).join(', ')}) &quot;"/>
-  </action-attrs>
 
   <action-group name="action-declaration-of-exchanges-export">
     <action name="save"/>

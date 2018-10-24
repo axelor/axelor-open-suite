@@ -18,68 +18,51 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
-import java.util.Map;
 
 @Singleton
 public class ContractController {
 
-  @Inject protected ContractService contractService;
-
   public void waiting(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
     try {
-      contractService.waitingCurrentVersion(
-          JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()),
-          getToDay());
+      Beans.get(ContractService.class).waitingCurrentVersion(contract, getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void waitingNextVersion(ActionRequest request, ActionResponse response) {
-    try {
-      contractService.waitingNextVersion(
-          JPA.find(
-                  ContractVersion.class, request.getContext().asType(ContractVersion.class).getId())
-              .getContractNext(),
-          getToDay());
-      response.setReload(true);
-    } catch (Exception e) {
-      String flash = e.toString();
-      if (e.getMessage() != null) {
-        flash = e.getMessage();
-      }
-      response.setError(flash);
-    }
-  }
-
   public void ongoing(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
     try {
       Invoice invoice =
-          contractService.ongoingCurrentVersion(
-              JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()),
-              getToDay());
+          Beans.get(ContractService.class).ongoingCurrentVersion(contract, getTodayDate());
       if (invoice == null) {
         response.setReload(true);
       } else {
@@ -92,23 +75,18 @@ public class ContractController {
                 .context("_showRecord", invoice.getId().toString())
                 .map());
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void invoicing(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void invoicing(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
     try {
-      Invoice invoice =
-          contractService.invoicingContract(
-              JPA.find(Contract.class, request.getContext().asType(Contract.class).getId()));
-
-      if (invoice == null) {
-        response.setError("ERROR");
-        return;
-      }
-
+      Invoice invoice = Beans.get(ContractService.class).invoicingContract(contract);
+      response.setReload(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
               .model(Invoice.class.getName())
@@ -117,91 +95,34 @@ public class ContractController {
               .param("forceTitle", "true")
               .context("_showRecord", invoice.getId().toString())
               .map());
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void terminated(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void terminated(ActionRequest request, ActionResponse response) {
     Contract contract =
-        JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
     try {
-
-      if (contract.getTerminatedDate() == null) {
-        response.setError("Please enter a terminated date for this version.");
-        return;
-      }
-
-      DurationService durationService = Beans.get(DurationService.class);
-
-      if (contract.getCurrentVersion().getIsWithEngagement()) {
-
-        if (contract.getEngagementStartDate() == null) {
-          response.setError("Please enter a engagement date.");
-          return;
-        }
-        if (contract
-            .getTerminatedDate()
-            .isBefore(
-                durationService.computeDuration(
-                    contract.getCurrentVersion().getEngagementDuration(),
-                    contract.getEngagementStartDate()))) {
-          response.setError("Engagement duration is not fullfilled.");
-          return;
-        }
-      }
-
-      if (contract.getCurrentVersion().getIsWithPriorNotice()) {
-
-        if (contract.getEngagementStartDate() == null) {
-          response.setError("Please enter a engagement date.");
-          return;
-        }
-
-        if (contract
-            .getTerminatedDate()
-            .isBefore(
-                durationService.computeDuration(
-                    contract.getCurrentVersion().getPriorNoticeDuration(), getToDay()))) {
-          response.setError("Prior notice duration is not respected.");
-          return;
-        }
-      }
-
-      contractService.terminateContract(contract, true, getToDay());
+      ContractService service = Beans.get(ContractService.class);
+      service.checkCanTerminateContract(contract);
+      service.terminateContract(contract, true, contract.getTerminatedDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void renew(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void renew(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
     try {
-      Contract contract =
-          JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
-      contractService.renewContract(contract, getToDay());
+      Beans.get(ContractService.class).renewContract(contract, getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void activeNextVersion(ActionRequest request, ActionResponse response) {
-    try {
-      contractService.activeNextVersion(
-          JPA.find(
-                  ContractVersion.class, request.getContext().asType(ContractVersion.class).getId())
-              .getContractNext(),
-          getToDay());
-      response.setReload(true);
-    } catch (Exception e) {
-      String flash = e.toString();
-      if (e.getMessage() != null) {
-        flash = e.getMessage();
-      }
-      response.setError(flash);
     }
   }
 
@@ -209,6 +130,7 @@ public class ContractController {
     final Contract contract =
         JPA.find(Contract.class, request.getContext().asType(Contract.class).getId());
 
+    // TODO: move this code in Service
     JPA.runInTransaction(
         new Runnable() {
 
@@ -231,7 +153,7 @@ public class ContractController {
   public void saveNextVersion(ActionRequest request, ActionResponse response) {
     final ContractVersion version =
         JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
-    if (version.getContractNext() != null) {
+    if (version.getNextContract() != null) {
       return;
     }
 
@@ -263,31 +185,51 @@ public class ContractController {
     response.setReload(true);
   }
 
-  @Transactional
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      ContractTemplate template =
+          ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
+      template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 
-    ContractTemplate template =
-        JPA.find(
-            ContractTemplate.class,
-            new Long((Integer) ((Map) request.getContext().get("contractTemplate")).get("id")));
+      Contract contract =
+          Beans.get(ContractRepository.class)
+              .find(request.getContext().asType(Contract.class).getId());
+      Beans.get(ContractService.class).copyFromTemplate(contract, template);
 
-    Contract copy = contractService.createContractFromTemplate(template);
-
-    if (request.getContext().asType(Contract.class).getPartner() != null) {
-      copy.setPartner(
-          Beans.get(PartnerRepository.class)
-              .find(request.getContext().asType(Contract.class).getPartner().getId()));
-      Beans.get(ContractRepository.class).save(copy);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setCanClose(true);
+  }
 
-    response.setView(
-        ActionView.define(I18n.get("Contract"))
-            .model(Contract.class.getName())
-            .add("form", "contract-form")
-            .add("grid", "contract-grid")
-            .param("forceTitle", "true")
-            .context("_showRecord", copy.getId().toString())
-            .map());
+  public void changeProduct(ActionRequest request, ActionResponse response) {
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
+    ContractLine contractLine = new ContractLine();
+
+    try {
+      contractLine = request.getContext().asType(ContractLine.class);
+
+      Contract contract = request.getContext().getParent().asType(Contract.class);
+      Product product = contractLine.getProduct();
+
+      contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
+      response.setValues(contractLine);
+    } catch (Exception e) {
+      response.setValues(contractLineService.reset(contractLine));
+    }
+  }
+
+  private LocalDate getTodayDate() {
+    return Beans.get(AppBaseService.class).getTodayDate();
+  }
+
+  public void isValid(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().asType(Contract.class);
+
+    try {
+      Beans.get(ContractService.class).isValid(contract);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

@@ -46,7 +46,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
+          I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
 
@@ -127,10 +127,20 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         throw new AxelorException(
             stockLocationLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LOCATION_LINE_1),
+            I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
             stockLocationLine.getProduct().getName(),
             stockLocationLine.getProduct().getCode());
       }
     }
+  }
+
+  @Override
+  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
+    StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
+    BigDecimal availableQty = BigDecimal.ZERO;
+    if (stockLocationLine != null) {
+      availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+    }
+    return availableQty;
   }
 }

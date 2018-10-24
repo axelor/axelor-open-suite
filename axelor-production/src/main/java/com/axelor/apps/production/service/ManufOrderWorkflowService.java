@@ -63,9 +63,14 @@ public class ManufOrderWorkflowService {
     this.manufOrderRepo = manufOrderRepo;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+
+    if (Beans.get(SequenceService.class)
+        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
+      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
+    }
 
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
@@ -97,15 +102,10 @@ public class ManufOrderWorkflowService {
     manufOrderStockMoveService.createToProduceStockMove(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
 
-    if (Beans.get(SequenceService.class)
-        .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
-      manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq());
-    }
-
     return manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void start(ManufOrder manufOrder) throws AxelorException {
 
     manufOrder.setRealStartDateT(
@@ -146,7 +146,7 @@ public class ManufOrderWorkflowService {
     return newStockMove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void pause(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -160,7 +160,7 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void resume(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -174,7 +174,7 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -244,7 +244,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -257,7 +257,7 @@ public class ManufOrderWorkflowService {
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void cancel(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -299,7 +299,7 @@ public class ManufOrderWorkflowService {
     return manufOrder.getPlannedStartDateT();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
     int count = 0;
     List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
@@ -334,7 +334,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @param plannedStartDateT
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
       throws AxelorException {
     manufOrder.setPlannedStartDateT(plannedStartDateT);

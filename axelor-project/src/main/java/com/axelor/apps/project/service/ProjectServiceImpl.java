@@ -20,8 +20,6 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanning;
-import com.axelor.apps.project.db.repo.ProjectPlanningRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -31,27 +29,21 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.TypedQuery;
 
 public class ProjectServiceImpl implements ProjectService {
 
   public static final int MAX_LEVEL_OF_PROJECT = 10;
 
-  private ProjectPlanningRepository projectPlanningRepo;
   private ProjectRepository projectRepository;
 
   @Inject
-  public ProjectServiceImpl(
-      ProjectPlanningRepository projectPlanningRepo, ProjectRepository projectRepository) {
-    this.projectPlanningRepo = projectPlanningRepo;
+  public ProjectServiceImpl(ProjectRepository projectRepository) {
     this.projectRepository = projectRepository;
   }
 
@@ -147,70 +139,5 @@ public class ProjectServiceImpl implements ProjectService {
     TypedQuery<BigDecimal> q = JPA.em().createQuery(query, BigDecimal.class);
     q.setParameter("projectId", projectId);
     return q.getSingleResult();
-  }
-
-  @Override
-  @Transactional
-  public List<ProjectPlanning> createPlanning(Project project) {
-    project = Beans.get(ProjectRepository.class).find(project.getId());
-
-    List<ProjectPlanning> plannings = new ArrayList<>();
-
-    if (project.getExcludePlanning()) {
-      return plannings;
-    }
-
-    if (project.getAssignedTo() != null) {
-      ProjectPlanning projectPlanning =
-          projectPlanningRepo
-              .all()
-              .filter("self.project = ?1 and self.task is null", project)
-              .fetchOne();
-      if (projectPlanning == null) {
-        projectPlanning = new ProjectPlanning();
-        projectPlanning.setProject(project);
-        projectPlanning.setUser(project.getAssignedTo());
-        projectPlanning.setFromDate(project.getFromDate());
-        projectPlanning.setToDate(project.getToDate());
-      }
-      plannings.add(projectPlanningRepo.save(projectPlanning));
-    }
-
-    for (TeamTask task : project.getTeamTaskList()) {
-      ProjectPlanning taskPlanning = createPlanning(project, task);
-      if (taskPlanning != null) {
-        plannings.add(taskPlanning);
-      }
-    }
-
-    for (Project child : project.getChildProjectList()) {
-      plannings.addAll(createPlanning(child));
-    }
-
-    return plannings;
-  }
-
-  @Override
-  @Transactional
-  public ProjectPlanning createPlanning(Project project, TeamTask task) {
-
-    if (task.getAssignedTo() != null) {
-      ProjectPlanning projectPlanning =
-          projectPlanningRepo
-              .all()
-              .filter("self.project = ?1 and self.task = ?2", project, task)
-              .fetchOne();
-      if (projectPlanning == null) {
-        projectPlanning = new ProjectPlanning();
-        projectPlanning.setProject(project);
-        projectPlanning.setUser(task.getAssignedTo());
-        projectPlanning.setTask(task);
-        projectPlanning.setFromDate(task.getTaskDate().atStartOfDay());
-        projectPlanning = projectPlanningRepo.save(projectPlanning);
-      }
-      return projectPlanning;
-    }
-
-    return null;
   }
 }

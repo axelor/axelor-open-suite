@@ -20,11 +20,9 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Duration;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 public interface DurationService {
+  LocalDate computeDuration(Duration duration, LocalDate date);
 
-  public LocalDate computeDuration(Duration duration, LocalDate date);
-
-  public BigDecimal computeDurationInDays(ZonedDateTime startDate, ZonedDateTime endDate);
+  BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration);
 }

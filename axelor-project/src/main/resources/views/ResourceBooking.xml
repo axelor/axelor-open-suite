@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	
 	<grid name="resource-booking-grid" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
 		<field name="name"/>
 		<field name="resource"/>
@@ -12,40 +11,49 @@
 		<field name="fromDate"/>
 		<field name="toDate"/>
 	</grid>
-	
-	<form name="resource-booking-form" title="Resource booking"  model="com.axelor.apps.project.db.ResourceBooking" width="large"
-		onNew="action-resource-booking-defaults">
+
+	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults">
 		<panel>
-			<field name="name"/>
-			<field name="resource" onChange="action-resource-booking-resource-on-change"/>
-			<field name="project" />
-			<field name="task" />
-			<field name="user" />
-			<field name="updateTaskFromPeriod" />
-			<spacer/>
-			<field name="fromDate"/>
-			<field name="toDate"/>
-			<field name="duration" widget="duration" x-big="true" />
-			<field name="cost"/>
+			<panel colSpan="12">
+				<field name="name" colSpan="12" css="label-bold bold large"/>
+				<static name="nameLabel" hideIf="id" colSpan="12"><![CDATA[<span class='label label-info'>Computed automatically if left empty</span>]]></static>
+			</panel>
+			<field name="resource" canEdit="false"/>
+			<field name="user" canEdit="false"/>
+			<field name="project" canEdit="false"/>
+			<field name="task" canEdit="false" onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
+			<field name="fromDate" colSpan="4"/>
+			<field name="toDate" colSpan="4"/>
+			<field name="updateTaskFromPeriod" onChange="action-resource-booking-attrs-update-period" colSpan="4"/>
+			<field name="notes" colSpan="12"/>
 		</panel>
 	</form>
-	
-	
+
+	<grid name="resource-booking-grid-incl-project" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking">
+		<field name="name"/>
+		<field name="resource"/>
+		<field name="task"/>
+		<field name="user"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+	</grid>
+
 	<calendar name="resource-booking-calendar" model="com.axelor.apps.project.db.ResourceBooking" eventStart="fromDate" title="Resource booking" eventStop="toDate" colorBy="resource">
 		<field name="project"/>
 	</calendar>
-	
+
 	<action-record name="action-resource-booking-defaults" model="com.axelor.apps.project.db.ResourceBooking">
 		<field name="project" expr="eval:_project" if="_project != null"/>
 		<field name="task" expr="eval:_task" if="_task != null"/>
 		<field name="resource" expr="eval:_resource" if="_resource != null"/>
-		<field name="cost" expr="eval:_resource.cost" if="_resource != null"/>
 		<field name="user" expr="eval:__user__" />
 	</action-record>
-	
-	<action-record name="action-resource-booking-resource-on-change" model="com.axelor.apps.project.db.ResourceBooking">
-		<field name="cost" expr="eval:resource.cost" if="resource != null"/>
-	</action-record>
-	
-	
+
+	<action-attrs name="action-resource-booking-attrs-update-period" model="com.axelor.apps.project.db.ResourceBooking">
+		<attribute name="value" expr="#{updateTaskFromPeriod ? task.taskDate.atStartOfDay() : null}" for="fromDate"/>
+		<attribute name="readonly" expr="#{updateTaskFromPeriod}" for="fromDate"/>
+		<attribute name="value" expr="#{updateTaskFromPeriod ? task.taskEndDate.atStartOfDay() : null}" for="toDate"/>
+		<attribute name="readonly" expr="#{updateTaskFromPeriod}" for="toDate"/>
+	</action-attrs>
+
 </object-views>

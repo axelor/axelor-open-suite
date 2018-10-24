@@ -276,6 +276,10 @@ public interface ITranslation {
   public static final String ACCOUNT_MOVE_LINE_TAX_RATE = /*$$(*/ "moveLine.tax.rate"; /*)*/
   public static final String ACCOUNT_MOVE_LINE_RECONCILE_LIST = /*$$(*/
       "moveLine.reconcile.list"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_DESC = /*$$(*/ "moveLine.description"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_ORIGIN = /*$$(*/ "moveLine.origin"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_RECONCILE_GROUP = /*$$(*/
+      "moveLine.reconcileGroup"; /*)*/
 
   public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
   public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/

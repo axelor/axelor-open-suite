@@ -81,7 +81,7 @@
     		 </panel>
         	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
         	 <panel name="teams" title="Teams" if="__config__.app.getApp('base').getTeamManagement()">
-        		<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+				<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid" onSelect="action-user-attrs-domain-active-team"/>
         		<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
         	<panel name="calendarsConfiguration" title="Calendars Configuration">
@@ -150,6 +150,10 @@
     
     <action-attrs name="action-user-attrs-domain-active-company">
   		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany" if="companySet ?: false" />
+    </action-attrs>
+
+    <action-attrs name="action-user-attrs-domain-active-team">
+		<attribute name="domain" expr="eval: &quot; self.id IN (${(teamSet?.collect{it.id}+[0]).join(',')}) &quot; " for="activeTeam" />
     </action-attrs>
 
     <action-attrs name="action-user-attrs">

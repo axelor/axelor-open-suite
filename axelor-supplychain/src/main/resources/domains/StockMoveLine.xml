@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="stock" package="com.axelor.apps.stock.db"/>
+	<module name="stock" package="com.axelor.apps.stock.db" />
 
-  <entity name="StockMoveLine" lang="java">
-  
-    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sales order line"/>
-    <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
+	<entity name="StockMoveLine" lang="java">
 
-    <decimal name="reservedQty" title="Reserved Qty"/>
+		<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+			title="Sales order line" />
+		<many-to-one name="purchaseOrderLine"
+			ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line" />
 
-    <finder-method name="findAllBySaleOrder"
-                   using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-                   filter="self.stockMove.saleOrder = :saleOrder"/>
+		<decimal name="reservedQty" title="Reserved Qty" />
 
-    <finder-method name="findAllBySaleOrderAndStatusSelect"
-                   using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
-                   filter="self.stockMove.saleOrder = :saleOrder AND self.stockMove.statusSelect = :statusSelect"/>
-  </entity>
+		<many-to-one name="parentLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
+		<one-to-many name="subLineList" ref="com.axelor.apps.stock.db.StockMoveLine"
+			mappedBy="parentLine" title="Pack lines" />
+
+		<finder-method name="findAllBySaleOrder"
+			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
+			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id" />
+
+		<finder-method name="findAllBySaleOrderAndStatusSelect"
+			using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect"
+			all="true"
+			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect" />
+
+	</entity>
 </domain-models>

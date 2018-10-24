@@ -11,13 +11,18 @@
     <date name="toDate" title="To Date" />
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"  title="Currency" />
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"  title="Cash account"/>
     <decimal name="startingBalance" title="Starting Balance" /> 
     <decimal name="endingBalance" title="Ending Balance" /> 
+    <decimal name="accountBalance" title="Account balance"/>
     <one-to-many name="bankReconciliationLineList" ref="com.axelor.apps.bankpayment.db.BankReconciliationLine" mappedBy="bankReconciliation" title="Bank Reconciliation Lines"/>
     <decimal name="computedBalance" title="Computed Balance" readonly="true"/> 
     <integer name="statusSelect" title="Status" selection="bankpayment.bank.reconciliation.status.select" readonly="true" default="1"/>
 	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement"/>
+	<decimal name="totalPaid" title="Total paid" readonly="true"/>
+	<decimal name="totalCashed" title="Total cashed" readonly="true"/>
+	<boolean name="includeOtherBankStatements" title="Include other bank statements"/>
 
 	<extra-code><![CDATA[
 	

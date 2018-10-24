@@ -28,8 +28,10 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface StockMoveLineService {
@@ -161,6 +163,11 @@ public interface StockMoveLineService {
    */
   public void checkExpirationDates(StockMove stockMove) throws AxelorException;
 
+  /**
+   * Return unit found in stock move line, or if the unit is empty, take the unit from the product.
+   */
+  Unit getStockUnit(StockMoveLine stockMoveLine);
+
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
@@ -211,9 +218,32 @@ public interface StockMoveLineService {
   /**
    * Set product information.
    *
+   * @param stockMove
    * @param stockMoveLine
    * @param company
    * @throws AxelorException
    */
-  public void setProductInfo(StockMoveLine stockMoveLine, Company company) throws AxelorException;
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException;
+
+  /**
+   * Check whether mass information is required.
+   *
+   * @param stockMove
+   * @return
+   */
+  boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
+
+  @Transactional
+  public void splitStockMoveLineByTrackingNumber(
+      StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
+
+  /**
+   * set the available quantity of product in a given location.
+   *
+   * @param stockMoveLine
+   * @param stockLocation
+   * @return
+   */
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 }

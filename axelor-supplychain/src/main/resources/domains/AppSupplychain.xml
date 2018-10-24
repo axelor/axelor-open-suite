@@ -4,11 +4,11 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppSupplychain" lang="java" cachable="true" extends="App">
+	<entity name="AppSupplychain" lang="java" extends="App">
 		<boolean name="manageInvoicedAmountByLine" title="Manage the invoiced amount by line" default="false"/>
 		<boolean name="custStockMoveMgtOnSO" title="Customer deliveries management" default="false"/>
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
-		<boolean name="supplStockMoveMgtOnSO" title="Supplier arrivals management" default="false"/>
+		<boolean name="supplStockMoveMgtOnPO" title="Supplier arrivals management" default="false"/>
 		<boolean name="supplierStockMoveGenerationAuto" title="Generate supplier arrivals automatically" default="false"/>
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders" default="false"/>
 		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>

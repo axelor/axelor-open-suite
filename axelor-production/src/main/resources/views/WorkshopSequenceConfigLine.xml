@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="workshop-sequence-config-line-grid" title="Sequence by workshop"
+    model="com.axelor.apps.production.db.WorkshopSequenceConfigLine">
+    <field name="workshopStockLocation"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="workshop-sequence-config-line-form" title="Sequence by workshop"
+    model="com.axelor.apps.production.db.WorkshopSequenceConfigLine">
+    <panel name="main">
+      <field name="sequence" canEdit="true" canNew="true"
+        onSelect="action-workshop-sequence-config-line-attrs-seq-domain"
+        form-view="sequence-form" grid-view="sequence-grid"/>
+      <field name="workshopStockLocation" form-view="stock-location-form"
+        grid-view="stock-location-grid"
+        onSelect="action-workshop-sequence-config-line-attrs-workshop-domain"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-workshop-sequence-config-line-attrs-seq-domain">
+    <attribute for="sequence" name="domain"
+      expr="eval: &quot; self.code = 'manufOrder' and self.company.id = ${__parent__.company.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-workshop-sequence-config-line-attrs-workshop-domain">
+    <attribute for="workshopStockLocation" name="domain"
+      expr="eval: &quot; self.company = ${__parent__.company.id} and self.typeSelect = 1&quot;"/>
+  </action-attrs>
+
+</object-views>

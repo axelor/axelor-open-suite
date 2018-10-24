@@ -11,7 +11,7 @@
 			translatable="true" />
 		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="sequence" title="Product N°" readonly="true" />
-		<string name="code" title="Code" required="true" initParam="true" />
+		<string name="code" title="Code" required="true" initParam="true" unique="true"/>
 
 		<string name="description" large="true" title="Description"
 			initParam="true" translatable="true" />
@@ -134,10 +134,7 @@
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				
-				// SALE TRACKING ORDER SELECT
-				public static final int SALE_TRACKING_ORDER_FIFO = 1;
-				public static final int SALE_TRACKING_ORDER_LIFO = 2;
+				public static final String PRODUCT_TYPE_PACK = "pack";
 				
 				// SALE SUPPLY SELECT
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;

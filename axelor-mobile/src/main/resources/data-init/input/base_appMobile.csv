@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Axelor Mobile";"mobile";32;"Axelor Mobile Management";"app-mobile.png";"axelor-mobile";"sale,expense,leave,timesheet";110

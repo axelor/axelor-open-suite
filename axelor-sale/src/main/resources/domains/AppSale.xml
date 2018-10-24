@@ -4,8 +4,9 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppSale" lang="java" cachable="true" extends="App">
+	<entity name="AppSale" lang="java" extends="App">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
+    <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
 		<boolean name="productPackMgt" title="Product Pack Management" />
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
@@ -14,6 +15,8 @@
         <boolean  name="printingConfigPerSaleOrder" title="Printing config per Sale Order"/>
         <boolean name="closeOpportunityUponSaleOrderConfirmation"
             title="Close opportunity when one of the linked sale orders is confirmed"/><boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+        <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
+		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 	</entity>
 
 </domain-models>

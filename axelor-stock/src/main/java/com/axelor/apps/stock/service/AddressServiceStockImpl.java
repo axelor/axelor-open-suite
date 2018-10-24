@@ -18,25 +18,21 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.db.JPA;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
+  static {
+    registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);
+  }
 
-  @Inject private StockMoveRepository stockMoveRepo;
-
-  @Override
-  public boolean checkAddressUsed(Long addressId) {
-
-    super.checkAddressUsed(addressId);
-
-    if (addressId != null) {
-      if (stockMoveRepo
-              .all()
-              .filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1", addressId)
-              .fetchOne()
-          != null) return true;
-    }
-    return false;
+  private static boolean checkAddressUsedStock(Long addressId) {
+    return JPA.all(StockMove.class)
+                .filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1", addressId)
+                .fetchOne()
+            != null
+        || JPA.all(StockLocation.class).filter("self.address.id = ?1", addressId).fetchOne()
+            != null;
   }
 }

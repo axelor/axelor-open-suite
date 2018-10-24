@@ -22,19 +22,20 @@
 			<button name="exportBtn" title="Export CSV" icon="fa-file-text-o" showIf="statusSelect == 3 &amp;&amp; csvFile == null" onClick="action-lunch-voucher-method-export"/>
 		</toolbar>
   		<panel name="main" readonlyIf="statusSelect == 4">
-  			<panel colSpan="6">
-  				<panel colSpan="12" readonlyIf="statusSelect != 1">
-  					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
-		    		<field name="company" canEdit="false" colSpan="6" onChange="action-lunch-voucher-record-company-onchange" />
-		    		<spacer colSpan="6"/>
-					<field name="payPeriod" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
-					<field name="leavePeriod" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
+  			<panel colSpan="12">
+  				<panel colSpan="9" readonlyIf="statusSelect != 1">
+  					<panel colSpan="12">
+	  					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+  					</panel>
+		    		<field name="company" canEdit="false" colSpan="4" onChange="action-lunch-voucher-record-company-onchange" />
+					<field name="payPeriod" colSpan="4" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
+					<field name="leavePeriod" colSpan="4" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
   				</panel>
-	        	<panel colSpan="12">
-	        		<button name="calculateBtn" title="Calculate" colSpan="6"
+	        	<panel colSpan="3">
+	        		<button name="calculateBtn" title="Calculate" colSpan="12"
 							onClick="save,action-lunch-voucher-method-calculate" showIf="statusSelect &lt; 3" hidden="true"/>
-		    		<button name="validateBtn" title="Validate" colSpan="6" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
-					<button name="closeBtn" title="Finish" colSpan="6"
+		    		<button name="validateBtn" title="Validate" colSpan="12" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
+					<button name="closeBtn" title="Finish" colSpan="12"
 							onClick="action-lunch-voucher-group-close"
 							showIf="statusSelect == 3" hidden="true"/>
 	        	</panel>
@@ -43,23 +44,31 @@
    					<field name="csvFile" widget="binary-link" showTitle="false"/>
 	        	</panel>
   			</panel>
-    		<panel name="charges" title="Charges and Contributions" colSpan="3">
-				<field name="lunchVoucherWageShare" colSpan="12"/>
-				<field name="lunchVoucherEmployersShare" colSpan="12"/>
-			</panel>
-			<panel title="Informations" colSpan="3" readonly="true">
-				<field name="requestedLunchVouchers" css="label-bold bold" colSpan="12"/>
-				<field name="totalLunchVouchers" css="label-bold bold" colSpan="12"/>
-				<field name="stockQuantityStatus" css="label-bold bold" colSpan="12"/>
-				<field name="givenLunchVouchers" css="label-bold bold"
-					   colSpan="12" showIf="statusSelect == 4"/>
-			</panel>
   		</panel>
-    	<panel title="Quantity for stock" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
-   			<field name="stockLineQuantity" colSpan="6" css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
-   			<field name="stockLineComment" colSpan="6"/>
+    	<panel title="Quantities" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
+			<panel colSpan="12">
+				<field name="stockQuantityStatus" css="label-bold bold" colSpan="3"/>
+				<field name="stockLineQuantity" title="Quantity to stock" colSpan="3" css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
+			</panel>
+			<panel colSpan="12">
+				<field name="requestedLunchVouchers" css="label-bold bold" colSpan="3"/>
+				<field name="totalLunchVouchers" css="label-bold bold" colSpan="3"/>
+				<field name="givenLunchVouchers" css="label-bold bold"
+					   colSpan="3" showIf="statusSelect == 4"/>
+			</panel>
+			<field name="stockLineComment" colSpan="12"/>
    		</panel>
-  		<panel-related field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total"/>
+   		<panel-tabs>
+   			<panel title="Content">
+   				<panel-related colSpan="12" field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total"/>
+   			</panel>
+			<panel title="Configuration">
+	   			<panel name="charges" title="Charges and Contributions" colSpan="12">
+					<field name="lunchVoucherWageShare" colSpan="3"/>
+					<field name="lunchVoucherEmployersShare" colSpan="3"/>
+				</panel>
+   			</panel>
+   		</panel-tabs>
 	</form>
 
 	<!-- ACTION GROUPS -->

@@ -3,16 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<form name="app-sale-config-form" title="App sale" model="com.axelor.apps.base.db.AppSale" canDelete="false" canNew="false" width="large">
+	<form name="app-sale-config-form" title="App sale" model="com.axelor.apps.base.db.AppSale" canDelete="false" canNew="false" width="large" onLoad="action-app-sale-attrs-readonly-manage-sale-order-version-onchange">
 		<panel>
 			<field name="manageSalesUnits" widget="boolean-switch"/>
-			<field name="manageSaleOrderVersion"  widget="boolean-switch"/>
+      <field name="manageSaleOrderVersion" widget="boolean-switch" onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
+      <field name="printingOnSOFinalization" widget="boolean-switch" readonlyIf="manageSaleOrderVersion" />
 			<field name="productPackMgt" widget="boolean-switch"/>
 			<field name="enableConfigurator" widget="boolean-switch"/>
 			<field name="allowPendingOrderModification" widget="boolean-switch"/>
             <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
             <field  name="printingConfigPerSaleOrder" widget="boolean-switch"/>
             <field name="closeOpportunityUponSaleOrderConfirmation" widget="boolean-switch"/><field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
+            <field name="salemanSelect"/>
+            <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
 		</panel>
 		<panel>
 			<button name="generateSaleConfigurations" colSpan="4" title="Generate sale configurations" onClick="save,com.axelor.apps.sale.web.AppSaleController:generateSaleConfigurations"/>
@@ -25,5 +28,9 @@
 		<view type="grid" name="sale-config-grid" />
 		<view type="form" name="sale-config-form"/>
 	</action-view>
-	
+
+  <action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
+    <attribute name="value" expr="eval: true" for="printingOnSOFinalization" if="manageSaleOrderVersion"/>
+  </action-attrs>
+
 </object-views>

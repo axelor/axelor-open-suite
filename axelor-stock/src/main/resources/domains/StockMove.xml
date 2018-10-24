@@ -17,6 +17,7 @@
 
     <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
+    <string name="availableStatus" title="Available status" transient="true"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
     <many-to-one name="toAddress" ref="com.axelor.apps.base.db.Address" title="To address"/>
@@ -69,11 +70,15 @@
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
-    
+
+    <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
+    <long name="originId" title="Origin Id" />
+    <string name="origin" readonly="true" title="Origin"/>
+
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
-
+    
     <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -92,7 +97,24 @@
 		public static final int CONFORMITY_COMPLIANT = 2;
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
+		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
 	]]></extra-code>
+	
+	<track>
+      <field name="stockMoveSeq" />
+      <field name="typeSelect" />
+      <field name="partner" />
+      <field name="statusSelect" />
+      <field name="fromStockLocation" />
+      <field name="toStockLocation" />
+      <field name="estimatedDate" />
+      <field name="realDate" if="statusSelect == 3" />
+      <message if="true" on="CREATE">Move created</message>
+      <message if="statusSelect == 1" tag="important">Draft move</message>
+      <message if="statusSelect == 2" tag="info">Planned move</message>
+      <message if="statusSelect == 3" tag="success">Move realized</message>
+      <message if="statusSelect == 4" tag="warning">Move canceled</message>
+    </track>
 
   </entity>
 

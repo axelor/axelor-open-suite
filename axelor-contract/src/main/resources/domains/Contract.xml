@@ -4,57 +4,59 @@
 
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
-	<entity name="Contract" repository="none">
+	<entity name="Contract" repository="abstract">
+
+		<integer name="targetTypeSelect" title="Type" selection="contract.target.type.select" default="1" required="true"/>
+		<integer name="periodNumber" title="Number of finished periods" default="0"/>
+		<integer name="statusSelect" title="Status" selection="contract.status.select" default="1" required="true"/>
+		<integer name="renewalNumber" title="Number of renewal"/>
+		<integer name="versionNumber" title="Contract version" default="-1"/>
 
 		<string name="name" title="Name" namecolumn="true" />
+		<string name="note" multiline="true" large="true" title="Notes"/>
 		<string name="contractId" title="Contract N°" readonly="true"/>
-		<integer name="statusSelect" title="Status" selection="contract.status.select" default="1" required="true"/>
-		<integer name="targetType" title="Type" selection="contract.target.type.select" default="1" required="true"/>
 
-		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
-		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" />
+		<boolean name="isInvoicingManagement" title="Manage invoices" />
+		<boolean name="isConsumptionManagement" title="Consumption management" />
+		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" />
+		<boolean name="toClosed" title="To closed"/>
+		<boolean name="terminatedManually" title="Terminated manually" default="false"/>
 
+		<date name="firstPeriodEndDate" title="First period end date"/>
 		<date name="startDate" title="Start date"/>
 		<date name="endDate" title="End date"/>
 		<date name="terminatedDate" title="Terminated date"/>
 		<date name="engagementStartDate" title="Engagement start date" />
 		<date name="terminationDemandDate" title="Termination demand date" />
-		<many-to-one name="terminatedBy" ref="com.axelor.auth.db.User" title="Terminated By"/>
-
-		<integer name="renewalNumber" title="Number of renewal"/>
 		<date name="lastRenewalDate" title="Last renewal date"/>
-
-		<date name="firstPeriodEndDate" title="First period end date"/>
-		<integer name="periodNumber" title="Number of finished periods" default="0"/>
-		<many-to-one name="currentInvoicePeriod" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Current invoice period"/>
-		<one-to-many name="invoicePeriodHistory" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Invoice period history"/>
-
-		<boolean name="toClosed" title="To closed"/>
-		<string name="note" multiline="true" large="true" title="Notes"/>
-
-		<integer name="versionNumber" title="Contract version" default="-1"/>
-		<one-to-one name="currentVersion" ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
-		<one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion" title="Next version"/>
-
-		<boolean name="terminatedManually" title="Terminated manually" default="false"/>
-
-		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
-		
-		<boolean name="isInvoicingManagement" title="Manage invoices" />
-		
-		<boolean name="isConsumptionManagement" title="Consumption management" />
-		<boolean name="isAdditionaBenefitManagement" title="Additional benefit management" />
-		
 		<date name="invoicePeriodStartDate" title="Start of next invoicing period" />
 		<date name="invoicePeriodEndDate" title="End of next invoicing period" />
 		<date name="invoicingDate" title="Invoicing date" />
-		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
-		
-		<one-to-many name="additionalBenefitList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
-		
-		<string name="description" title="Description" multiline="true" large="true" />
-		
+
+		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="true"/>
+		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner" />
+		<many-to-one name="terminatedByUser" ref="com.axelor.auth.db.User" title="Terminated By"/>
+		<many-to-one name="currentInvoicePeriod" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Current invoice period"/>
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
+
+		<one-to-one name="currentContractVersion" ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
+		<one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion" title="Next version"/>
+
+		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
+		<one-to-many name="historyInvoicePeriodList" ref="com.axelor.apps.contract.db.InvoicePeriod" title="Invoice period history"/>
+		<one-to-many name="versionHistory" ref="com.axelor.apps.contract.db.ContractVersion" mappedBy="contractHistory" orderBy="-createdOn"/>
+		<one-to-many name="consumptionLineList" ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
+
+		<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+
+		<extra-code><![CDATA[
+            static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
+            static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";
+
+            public static final int DRAFT_CONTRACT = 1;
+            public static final int ACTIVE_CONTRACT = 2;
+            public static final int CLOSED_CONTRACT = 3;
+        ]]></extra-code>
 		
 	</entity>
 

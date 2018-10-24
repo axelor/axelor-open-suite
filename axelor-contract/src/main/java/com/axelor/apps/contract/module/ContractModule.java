@@ -18,6 +18,10 @@
 package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.contract.service.ConsumptionLineService;
+import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
+import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
@@ -29,5 +33,7 @@ public class ContractModule extends AxelorModule {
   protected void configure() {
     bind(ContractService.class).to(ContractServiceImpl.class);
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
+    bind(ContractLineService.class).to(ContractLineServiceImpl.class);
+    bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
   }
 }

@@ -17,80 +17,92 @@
  */
 package com.axelor.apps.base.service.advancedExport;
 
+import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaModel;
-import com.itextpdf.text.DocumentException;
 import com.opencsv.CSVWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class CsvExportGenerator implements AdvancedExportGenerator {
-
-  private List<AdvancedExportLine> advancedExportLineList = null;
+public class CsvExportGenerator extends AdvancedExportGenerator {
 
   private CSVWriter csvWriter;
 
   private String[] totalCols;
 
-  private int index;
+  private AdvancedExport advancedExport;
 
-  @Override
-  public void initialize(
-      List<AdvancedExportLine> advancedExportLineList, MetaModel metaModel, File exportFile)
-      throws DocumentException, FileNotFoundException, IOException {
-    this.advancedExportLineList = advancedExportLineList;
-    csvWriter = new CSVWriter(new FileWriter(exportFile, true), ';');
-    totalCols = new String[advancedExportLineList.size()];
-    index = 0;
+  private File exportFile;
+
+  private String exportFileName;
+
+  public CsvExportGenerator(AdvancedExport advancedExport) throws AxelorException {
+    this.advancedExport = advancedExport;
+    exportFileName = advancedExport.getMetaModel().getName() + ".csv";
+    try {
+      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".csv");
+      csvWriter = new CSVWriter(new FileWriter(exportFile, true), ';');
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+    totalCols = new String[advancedExport.getAdvancedExportLineList().size()];
   }
 
   @Override
-  public void generateHeader() throws DocumentException, IOException {
-    for (AdvancedExportLine advancedExportLine : advancedExportLineList) {
+  public void generateHeader() {
+    int index = 0;
+    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
       totalCols[index++] = I18n.get(advancedExportLine.getTitle());
     }
     csvWriter.writeNext(totalCols);
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("rawtypes")
   @Override
-  public void generateBody(List<Map> dataList) {
-    index = 0;
-    for (Map<String, Object> field : dataList) {
-      String[] allCols = field.keySet().toArray(new String[field.size()]);
-      Integer[] allColIndices = new Integer[allCols.length];
-
-      for (int j = 0; j < allCols.length; j++) {
-        String col = allCols[j];
-        allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
-      }
-      Arrays.sort(allColIndices);
-
-      for (Integer colIndex : allColIndices) {
-        String colName = "Col_" + colIndex;
-        Object value = field.get(colName);
+  public void generateBody(List<List> dataList) {
+    for (List listObj : dataList) {
+      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+        Object value = listObj.get(colIndex);
         String columnValue = null;
         if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal)
-            columnValue = AdvancedExportServiceImpl.convertDecimalValue(value);
+          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
           else columnValue = value.toString();
         }
-        totalCols[index++] = columnValue;
+        totalCols[colIndex] = columnValue;
       }
       csvWriter.writeNext(totalCols);
-      index = 0;
     }
   }
 
   @Override
-  public void close() throws DocumentException, FileNotFoundException, IOException {
-    csvWriter.close();
+  public void close() throws AxelorException {
+    try {
+      csvWriter.close();
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  @Override
+  public AdvancedExport getAdvancedExport() {
+    return advancedExport;
+  }
+
+  @Override
+  public File getExportFile() {
+    return exportFile;
+  }
+
+  @Override
+  public String getFileName() {
+    return exportFileName;
   }
 }

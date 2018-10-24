@@ -83,7 +83,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     String wantedClassName;
     String wantedType = jsonTypeToType(indicator.getType());
-    String calculatedValueClassName = calculatedValue.getClass().getSimpleName();
+    String calculatedValueClassName =
+        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
     if (wantedType.equals("ManyToOne")
         || wantedType.equals("ManyToMany")
         || wantedType.equals("OneToMany")
@@ -94,11 +95,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       String targetName = indicator.getTargetModel();
       // get only the class without the package
       wantedClassName = targetName.substring(targetName.lastIndexOf('.') + 1);
-      // if the formula returns an object from context, the class name can be modified
-      if (calculatedValueClassName.contains("$ByteBuddy$")) {
-        calculatedValueClassName =
-            calculatedValueClassName.substring(0, calculatedValueClassName.indexOf('$'));
-      }
     } else {
       wantedClassName = wantedType;
     }
@@ -221,7 +217,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     if (saleOrderLine.getProduct() != null) {
-      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
+      saleOrderLineService.computeProductInformation(
+          saleOrderLine, saleOrderLine.getSaleOrder(), null);
     }
   }
 

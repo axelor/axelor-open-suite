@@ -24,7 +24,6 @@ import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -35,6 +34,10 @@ public class ActionViewBuilderService {
   @Inject private StudioMetaService metaService;
 
   public MetaAction build(ActionBuilder builder) {
+
+    if (builder == null) {
+      return null;
+    }
 
     List<ActionBuilderView> views = builder.getActionBuilderViews();
     if (views == null || views.isEmpty()) {
@@ -84,7 +87,7 @@ public class ActionViewBuilderService {
 
     if (addJsonCtx && builder.getIsJson() && builder.getModel() != null) {
       xml.append("\n" + INDENT + "<context name=\"jsonModel\" ");
-      xml.append("expr=\"eval:" + builder.getModel() + "\" />");
+      xml.append("expr=\"" + builder.getModel() + "\" />");
     }
   }
 
@@ -106,13 +109,7 @@ public class ActionViewBuilderService {
 
   private void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
 
-    views.sort(
-        new Comparator<ActionBuilderView>() {
-          @Override
-          public int compare(ActionBuilderView action1, ActionBuilderView action2) {
-            return action1.getSequence().compareTo(action2.getSequence());
-          }
-        });
+    views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
     for (ActionBuilderView view : views) {
       xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
       xml.append("name=\"" + view.getViewName() + "\" />");

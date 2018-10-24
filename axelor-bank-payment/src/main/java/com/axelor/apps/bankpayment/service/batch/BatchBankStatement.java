@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -55,8 +56,8 @@ public class BatchBankStatement extends AbstractBatch {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
-    Collection<EbicsPartner> ebicsPartners = accountingBatch.getEbicsPartnerSet();
+    BankPaymentBatch bankPaymentBatch = batch.getBankPaymentBatch();
+    Collection<EbicsPartner> ebicsPartners = bankPaymentBatch.getEbicsPartnerSet();
 
     // Retrieve all active EBICS partners if there is no configured EBICS partners
     // on the batch.
@@ -69,7 +70,7 @@ public class BatchBankStatement extends AbstractBatch {
         List<BankStatement> bankStatementList =
             ebicsPartnerService.getBankStatements(
                 ebicsPartnerRepository.find(ebicsPartner.getId()),
-                accountingBatch.getBankStatementFileFormatSet());
+                bankPaymentBatch.getBankStatementFileFormatSet());
 
         bankStatementCount += bankStatementList.size();
 
@@ -141,5 +142,9 @@ public class BatchBankStatement extends AbstractBatch {
         .filter("self.transportEbicsUser.statusSelect = :statusSelect")
         .bind("statusSelect", EbicsUserRepository.STATUS_ACTIVE_CONNECTION)
         .fetch();
+  }
+
+  public Batch bankStatement(BankPaymentBatch bankPaymentBatch) {
+    return Beans.get(BatchBankStatement.class).run(bankPaymentBatch);
   }
 }

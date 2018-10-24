@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+    <module name="contract" package="com.axelor.apps.contract.db" />
+
+    <entity name="ContractBatch">
+        <string name="code" title="Code" namecolumn="true" unique="true"/>
+        <integer name="actionSelect" required="true" title="Action" selection="contract.batch.action.select"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+        <string name="description" title="Description" large="true" />
+        <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="contractBatch" title="Batchs" />
+
+        <extra-code><![CDATA[
+        public static final int INVOICING = 1;
+        public static final int TERMINATE = 2;
+        public static final int CURRENT_VERSION_ACTIVATION = 3;
+        public static final int NEXT_VERSION_ACTIVATION = 4;
+      ]]></extra-code>
+    </entity>
+
+</domain-models>

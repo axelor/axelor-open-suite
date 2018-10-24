@@ -24,6 +24,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderView;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +46,12 @@ public class ActionBuilderController {
     if (builder.getIsJson() != null) {
       isJson = builder.getIsJson();
     }
-    if (builder.getTypeSelect() == 3 && model != null) {
+    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_VIEW && model != null) {
       if (!isJson) {
-        model = model.substring(model.lastIndexOf(".") + 1);
+        model = model.substring(model.lastIndexOf('.') + 1);
         model = inflector.dasherize(model);
       }
-      List<ActionBuilderView> views = new ArrayList<ActionBuilderView>();
+      List<ActionBuilderView> views = new ArrayList<>();
       addActionBuilderView(views, model, "grid", isJson, 0);
       addActionBuilderView(views, model, "form", isJson, 1);
       response.setValue("actionBuilderViews", views);

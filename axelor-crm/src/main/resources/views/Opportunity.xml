@@ -5,7 +5,7 @@
     
     <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
-    		<button name="grabOpportunity" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+    		<button name="grabOpportunity" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 <!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     	</toolbar>
     	<hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
@@ -21,13 +21,13 @@
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
 		<field name="amount" aggregate="sum"/>
-		<field name="probability" aggregate="avg"/>
+		<field name="probability" aggregate="avg" widget="Progress"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
-        <button name="grabOpportunity" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
-        <button name="next-stage" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
-        <button name="closed-won" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
-        <button name="closed-lost" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
+        <button name="grabOpportunity" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+        <button name="next-stage" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
+        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
+        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
     </grid>
 
    <grid name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate" >
@@ -44,11 +44,11 @@
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
 		<field name="amount" aggregate="sum"/>
-		<field name="probability" aggregate="avg"/>
+		<field name="probability" aggregate="avg" widget="Progress"/>
 		<field name="expectedCloseDate"/>
-		<button name="next-stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-group-crm-opportunity-nextstage-click"/>
-		<button name="closed-won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-group-crm-opportunity-closedwon-click"/>
-		<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" onClick="action-group-crm-opportunity-closedlost-click"/>
+		<button name="next-stage" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click"/>
+		<button name="closed-won" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
+		<button name="closed-lost" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
 	</grid>
 
     
@@ -80,7 +80,7 @@
         <field name="name"/>
         <field name="salesStageSelect"/>
         <field name="amount" aggregate="sum"/>
-        <field name="probability" aggregate="avg"/>
+        <field name="probability" aggregate="avg" widget="Progress"/>
         <field name="expectedCloseDate"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
     </grid>
@@ -109,7 +109,7 @@
             <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
             <field name="expectedCloseDate" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="nextStep" colSpan="12" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
-            <field name="probability" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="SelectProgress"/>
+            <field name="probability" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
             <field name="currency" colSpan="4" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
             <panel readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
                 <field name="amount" colSpan="4"/>
@@ -120,17 +120,16 @@
 
         <panel-tabs>
             <panel name="description" title="Description">
-                <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12"/>
+                <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
             </panel>
             <panel-related if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
         </panel-tabs>
 
         <panel sidebar="true">
-            <button name="grabOpportunity" title="Assign to me" hideIf="user.id == _internalUserId" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
-            <button name="previous-stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
-            <button name="next-stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
-            <button name="closed-won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
-            <button name="closed-lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
+            <button name="previous-stage" help="Previous stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
+            <button name="next-stage" help="Next stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
+            <button name="closed-won" help="Closed won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
+            <button name="closed-lost" help="Closed lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUp" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
                 <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
                 <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
@@ -179,7 +178,7 @@
             <h4>{{record.name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
             <div class="card-body">
-                <p>{{record.description}}</p>
+                <p ng-bind-html="record.description"></p>
                 <dl>
                     <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{record.partner.name}}</dd>
                     <dt ng-show="record.partner.fixedPhone" x-translate>Fixed phone</dt><dd ng-show="record.partner.fixedPhone"><a href="tel:{{record.partner.fixedPhone}}">{{record.partner.fixedPhone}}</a></dd>

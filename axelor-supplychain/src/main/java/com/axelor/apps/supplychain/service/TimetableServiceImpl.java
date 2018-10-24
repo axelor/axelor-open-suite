@@ -137,6 +137,7 @@ public class TimetableServiceImpl implements TimetableService {
             timetable.getProductName(),
             timetable.getAmount(),
             timetable.getAmount(),
+            timetable.getAmount(),
             timetable.getComments(),
             timetable.getQty(),
             timetable.getUnit(),
@@ -149,7 +150,9 @@ public class TimetableServiceImpl implements TimetableService {
             false,
             this.findFirstSaleOrderLine(timetable),
             this.findFirstPurchaseOrderLine(timetable),
-            null) {
+            null,
+            false,
+            0) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

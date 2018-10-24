@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules">
+    <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
         <toolbar>
         <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
@@ -46,6 +46,11 @@
 			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
 		</panel>
+		
+		<panel-mail>
+	    	<mail-messages limit="4"/>
+	    	<mail-followers/>
+	  	</panel-mail>
     </form>
 
     <action-record name="action-stock-rules-record-new" model="com.axelor.apps.stock.db.StockRules">

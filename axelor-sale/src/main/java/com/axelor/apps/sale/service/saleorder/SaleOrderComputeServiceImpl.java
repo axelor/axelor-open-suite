@@ -29,6 +29,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,15 +167,17 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       return;
     }
 
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+
     List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
-    lines.addAll(saleOrder.getSaleOrderLineList());
+    lines.addAll(saleOrderLines);
     for (SaleOrderLine line : lines) {
-      if (line.getSubLineList() == null) {
+      if (line.getSubLineList() == null || line.getSubLineList().isEmpty()) {
         continue;
       }
       for (SaleOrderLine subLine : line.getSubLineList()) {
         if (subLine.getSaleOrder() == null) {
-          saleOrder.addSaleOrderLineListItem(subLine);
+          saleOrderLines.add(subLine);
         }
       }
     }
@@ -202,5 +205,39 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       price = price.add(saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted()));
     }
     return price;
+  }
+
+  @Override
+  public List<SaleOrderLine> removeSubLines(List<SaleOrderLine> soLines) {
+
+    if (soLines == null) {
+      return soLines;
+    }
+
+    List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
+    for (SaleOrderLine packLine : soLines) {
+      if (packLine.getTypeSelect() == 2 && packLine.getSubLineList() != null) {
+        packLine.getSubLineList().removeIf(it -> it.getId() != null && !soLines.contains(it));
+        packLine.setTotalPack(
+            packLine
+                .getSubLineList()
+                .stream()
+                .map(it -> it.getExTaxTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+        subLines.addAll(packLine.getSubLineList());
+      }
+    }
+    Iterator<SaleOrderLine> lines = soLines.iterator();
+
+    while (lines.hasNext()) {
+      SaleOrderLine subLine = lines.next();
+      if (subLine.getId() != null
+          && subLine.getParentLine() != null
+          && !subLines.contains(subLine)) {
+        lines.remove();
+      }
+    }
+
+    return soLines;
   }
 }

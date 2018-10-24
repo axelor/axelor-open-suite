@@ -17,77 +17,69 @@
  */
 package com.axelor.apps.base.service.advancedExport;
 
+import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.MetaModel;
-import com.itextpdf.text.DocumentException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExcelExportGenerator implements AdvancedExportGenerator {
-
-  private List<AdvancedExportLine> advancedExportLineList = null;
+public class ExcelExportGenerator extends AdvancedExportGenerator {
 
   private Workbook workbook;
 
   private Sheet sheet;
 
+  private AdvancedExport advancedExport;
+
   private File exportFile;
 
-  @Override
-  public void initialize(
-      List<AdvancedExportLine> advancedExportLineList, MetaModel metaModel, File exportFile)
-      throws DocumentException, FileNotFoundException, IOException {
-    this.advancedExportLineList = advancedExportLineList;
-    this.exportFile = exportFile;
+  private String exportFileName;
+
+  public ExcelExportGenerator(AdvancedExport advancedExport) throws AxelorException {
+    this.advancedExport = advancedExport;
+    exportFileName = advancedExport.getMetaModel().getName() + ".xlsx";
+    try {
+      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".xlsx");
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
     workbook = new XSSFWorkbook();
-    sheet = workbook.createSheet(metaModel.getName());
+    sheet = workbook.createSheet(advancedExport.getMetaModel().getName());
   }
 
   @Override
-  public void generateHeader() throws DocumentException, IOException {
+  public void generateHeader() {
     Row headerRow = sheet.createRow(sheet.getFirstRowNum());
     int colHeaderNum = 0;
-    for (AdvancedExportLine advancedExportLine : advancedExportLineList) {
+    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
       Cell headerCell = headerRow.createCell(colHeaderNum++);
       headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
     }
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("rawtypes")
   @Override
-  public void generateBody(List<Map> dataList) {
-    for (Map<String, Object> field : dataList) {
-      String[] allCols = field.keySet().toArray(new String[field.size()]);
-      Integer[] allColIndices = new Integer[allCols.length];
-
-      for (int j = 0; j < allCols.length; j++) {
-        String col = allCols[j];
-        allColIndices[j] = Integer.parseInt(col.replace("Col_", ""));
-      }
-      Arrays.sort(allColIndices);
-
+  public void generateBody(List<List> dataList) {
+    for (List listObj : dataList) {
       Row row = sheet.createRow(sheet.getLastRowNum() + 1);
-      int colNum = 0;
-      for (Integer colIndex : allColIndices) {
-        String colName = "Col_" + colIndex;
-        Object value = field.get(colName);
-        Cell cell = row.createCell(colNum++);
+      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+        Object value = listObj.get(colIndex);
+        Cell cell = row.createCell(colIndex);
         String columnValue = null;
         if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal)
-            columnValue = AdvancedExportServiceImpl.convertDecimalValue(value);
+          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
           else columnValue = value.toString();
         } else continue;
         cell.setCellValue(columnValue);
@@ -96,9 +88,29 @@ public class ExcelExportGenerator implements AdvancedExportGenerator {
   }
 
   @Override
-  public void close() throws DocumentException, FileNotFoundException, IOException {
-    FileOutputStream fout = new FileOutputStream(exportFile);
-    workbook.write(fout);
-    fout.close();
+  public void close() throws AxelorException {
+    try {
+      FileOutputStream fout = new FileOutputStream(exportFile);
+      workbook.write(fout);
+      fout.close();
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  @Override
+  public AdvancedExport getAdvancedExport() {
+    return advancedExport;
+  }
+
+  @Override
+  public File getExportFile() {
+    return exportFile;
+  }
+
+  @Override
+  public String getFileName() {
+    return exportFileName;
   }
 }

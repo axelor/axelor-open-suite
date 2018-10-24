@@ -194,6 +194,24 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromStock" expr="eval:true" />
+	</action-view>
+	
+	<menuitem name="stock-root-stock-location" parent="stock-root"
+		title="Stock Locations" action="stock.root.stock.location" order="41"/>
+	
+	<action-view name="stock.root.stock.location" title="Stock Locations"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="grid" name="stock-location-grid"/>
+		<view type="form" name="stock-location-form"/>
+	</action-view>
+	
+	<menuitem name="stock-root-stock-location-tree" parent="stock-root"
+		title="Stock Location Tree" action="stock.root.stock.location.tree" order="42"/>
+	
+	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="tree" name="stock-location-tree"/>
 	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
@@ -207,23 +225,6 @@
 		model="com.axelor.apps.stock.db.Incoterm" >
 		<view type="grid" name="incoterm-grid"/>
 		<view type="form" name="incoterm-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location" parent="stock-root-conf"
-		title="Stock Locations" action="stock.root.stock.location" />
-	
-	<action-view name="stock.root.stock.location" title="Stock Locations"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="grid" name="stock-location-grid"/>
-		<view type="form" name="stock-location-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location-tree" parent="stock-root-conf"
-		title="Stock Location Tree" action="stock.root.stock.location.tree" />
-	
-	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="tree" name="stock-location-tree"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
