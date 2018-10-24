@@ -149,7 +149,8 @@
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
 - Partner : Modify actions to compute simpleFullName & fullName.
-- Customer catalog: added option to enable/disable customer catalog management on sales app. 
+- Customer catalog: added option to enable/disable customer catalog management on sales app.
+- PRODUCT : location lines form view
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
