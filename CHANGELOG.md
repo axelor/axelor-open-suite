@@ -208,6 +208,8 @@
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- SaleOrder : Modify views to display company and stockLocation.
+- PurchaseOrder : Modify views to display company and stockLocation.
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -215,6 +217,7 @@
 - PERIOD : allow to reopen a period if the fiscal year is not closed
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- BankOrder : Specify limit for BankOrderLines.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -241,6 +244,8 @@
 - StockMove : Modify Locale for Picking Order report.
 - StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 - Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- PurchaseOrder : Hide 'Completed' button conditionally.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 
 ## [5.0.6] - 2018-10-06

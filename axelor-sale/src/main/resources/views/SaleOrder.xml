@@ -18,6 +18,7 @@
         <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -47,6 +48,7 @@
 		<field name="endOfValidityDate" hidden="true" />
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
@@ -652,6 +654,8 @@
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
         <field name="orderBeingEdited" />
+        <field name="company"/>
+        <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -694,6 +698,10 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -709,6 +717,8 @@
 		<field name="statusSelect"/>
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -747,6 +757,10 @@
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
 			  </div>
+			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
 		</template>

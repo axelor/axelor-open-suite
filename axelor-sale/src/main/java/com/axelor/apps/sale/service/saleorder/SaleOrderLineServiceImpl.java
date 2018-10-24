@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -104,7 +105,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
       BigDecimal exTaxPrice;
       BigDecimal inTaxPrice;
-      if (saleOrder.getInAti()) {
+      if (saleOrderLine.getProduct().getInAti()) {
         inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
         saleOrderLine.setInTaxPrice(fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
         saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
@@ -118,6 +119,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       saleOrderLine.setPrice(BigDecimal.ZERO);
       saleOrderLine.setInTaxPrice(BigDecimal.ZERO);
       saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
+      saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
       saleOrderLine.setCompanyCostPrice(BigDecimal.ZERO);
     }
   }
@@ -160,14 +162,25 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   private BigDecimal fillDiscount(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price) {
 
-    Map<String, Object> discounts = this.getDiscount(saleOrder, saleOrderLine, price);
+    Map<String, Object> discounts =
+        this.getDiscountsFromPriceLists(saleOrder, saleOrderLine, price);
 
     if (discounts != null) {
-      saleOrderLine.setDiscountAmount(new BigDecimal(discounts.get("discountAmount").toString()));
-      saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
       if (discounts.get("price") != null) {
         price = (BigDecimal) discounts.get("price");
       }
+      if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
+          && (Integer) discounts.get("discountTypeSelect")
+              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+        saleOrderLine.setDiscountAmount(
+            this.convertUnitPrice(
+                saleOrderLine.getProduct().getInAti(),
+                saleOrderLine.getTaxLine(),
+                (BigDecimal) discounts.get("discountAmount")));
+      } else {
+        saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      }
+      saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
 
     return price;
@@ -432,16 +445,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
 
+    Map<String, Object> discounts = null;
+
     PriceList priceList = saleOrder.getPriceList();
-    if (priceList == null) {
-      return null;
+
+    if (priceList != null) {
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
-    return priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+    return discounts;
   }
 
   @Override
