@@ -65,12 +65,10 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale"> 
+    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale,action-stock-location-line-group-onload"> 
 		<panel name="main">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	        <field name="currentQty"/>
-	        <field name="futureQty"/>
 	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice"/>
 	        <field name="lastFutureStockMoveDate"/>
@@ -80,6 +78,13 @@
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+		<panel>
+        	<button name="$realQty" title="Real qty" icon="fa-building-o" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$futureQty" title="Future qty" icon="fa-line-chart" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$reservedQty" title="Reserved qty" icon="fa-cubes" onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3" widget="info-button" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
+        </panel>
+        <panel-dashlet action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
     </form>
     
      <grid name="stock-location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" groupBy="product">
