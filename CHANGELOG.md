@@ -10,6 +10,7 @@
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Currency conversion: allow to fetch today's rate on newly created conversion lines.
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
 - Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
