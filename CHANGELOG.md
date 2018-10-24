@@ -98,6 +98,7 @@
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
+- Stock Move : Attach conformity certificate to record.
 - Stock Rules : Add massUpdate on 'Stock location', 'Product', 'Refill type' and 'Min. Qty'.
 
 ## Improvements
@@ -199,6 +200,7 @@
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 - In manufacturing order, Stock move for produced product now uses the price from the product instead of from the costsheet.
+- Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
 
 ## [Unreleased 5.0.7]
 ## Features
