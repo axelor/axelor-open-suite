@@ -96,6 +96,8 @@
 - Bank Statement : Add action to BankPaymentBatch. 
 - Add support of Customer catalog and display customer product code and name on SaleOrder, StockMove and Invoice reports.
 - Add WAP value in StockLocation report
+- Contract: Removed wrong demo data and added demo data for app configuration.
+- Analytic move line : accountType added on grid view.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -147,6 +149,9 @@
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
 - Improve PickingStockMove report : add some static informations
+- Partner : Modify actions to compute simpleFullName & fullName.
+- Customer catalog: added option to enable/disable customer catalog management on sales app. 
+- Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -187,7 +192,11 @@
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
+- SaleOrder : Hide contactPartner if clientPartner is individual.
 - Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
+- SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
+- Manuf order: Fix sequence of operation details on report.
+- Stock Rules : Fix enable change tracking on all fields.
 
 ## [Unreleased 5.0.7]
 ## Features

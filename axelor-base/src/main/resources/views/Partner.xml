@@ -300,7 +300,7 @@
 					<field name="password" widget="password"/>
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
-				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
 			</panel>
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
@@ -354,8 +354,8 @@
 			<panel colSpan="8">
 				<field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
 				<spacer/>
-				<field name="name" css="highlight" onChange="action-partner-record-full-name,action-partner-record-simple-full-name"/>
-				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name,action-partner-record-simple-full-name"/>
+				<field name="name" css="highlight" onChange="action-partner-record-simple-and-full-name"/>
+				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-simple-and-full-name"/>
 				<field name="partnerCategory" widget="SuggestBox"/>
 				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
 				<field name="isContact" hideIf="partnerTypeSelect != 2"/>
@@ -673,8 +673,7 @@
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
 		<action name="action-partner-method-check-name"/>
-		<action name="action-partner-record-full-name"/>
-		<action name="action-partner-record-simple-full-name"/>
+		<action name="action-partner-record-simple-and-full-name"/>
 		<action name="action-partner-method-set-social-network-url"/>
 	</action-group>
 
@@ -764,23 +763,10 @@
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
 		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
 	</action-record>
-
-	<action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
-		<field name="fullName" expr="#{name += ' ' += firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
-		<field name="fullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
-		<field name="fullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
-		<field name="fullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
-		<field name="fullName" expr="#{partnerSeq += ' - ' += name += ' ' += firstName}" if="#{partnerSeq != null &amp;&amp; firstName != null &amp;&amp; name != null}"/>
-		<field name="fullName" expr="#{partnerSeq += ' - ' += firstName}" if="#{partnerSeq != null &amp;&amp; firstName != null &amp;&amp; name == null}"/>
-		<field name="fullName" expr="#{partnerSeq += ' - ' += name}" if="#{partnerSeq != null &amp;&amp; firstName == null &amp;&amp; name != null}"/>
-		<field name="fullName" expr="#{partnerSeq}" if="#{partnerSeq != null &amp;&amp; firstName == null &amp;&amp; name == null}"/>
-	</action-record>
-
-	<action-record name="action-partner-record-simple-full-name" model="com.axelor.apps.base.db.Partner" >
-		<field name="simpleFullName" expr="#{name += ' ' += firstName}" if="#{name != null &amp;&amp; firstName != null}"/>
-		<field name="simpleFullName" expr="#{name}" if="#{name != null &amp;&amp; firstName == null}"/>
-		<field name="simpleFullName" expr="#{firstName}" if="#{firstName != null &amp;&amp; name == null}"/>
-		<field name="simpleFullName" expr="#{id}" if="#{firstName == null &amp;&amp; name == null}"/>
+	
+	<action-record name="action-partner-record-simple-and-full-name" model="com.axelor.apps.base.db.Partner" >
+		<field name="simpleFullName" expr="call:com.axelor.apps.base.service.PartnerService:computeFullName(__this__)"/>
+		<field name="fullName" expr="call:com.axelor.apps.base.service.PartnerService:computeFullName(__this__)"/>
 	</action-record>
 	
 	<action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
