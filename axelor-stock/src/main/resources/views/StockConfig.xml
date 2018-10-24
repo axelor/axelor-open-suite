@@ -25,6 +25,7 @@
 			  <field name="wasteStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="componentDefaultStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="finishedProductsDefaultStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			  <field name="directOrderStockLocation" domain="self.directOrderLocation = True and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		  </panel>
 	  </panel>
 	  <panel name="customsInformation" title="Customs">
