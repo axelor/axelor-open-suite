@@ -99,6 +99,7 @@
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
 - Stock Move : Attach conformity certificate to record.
+- Inventory : Add filter on two new string fields on form when click on 'Fill inventory' button.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
