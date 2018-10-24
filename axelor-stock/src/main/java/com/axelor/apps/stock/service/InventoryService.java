@@ -517,6 +517,11 @@ public class InventoryService {
       params.add(inventory.getProductCategory());
     }
 
+    if (inventory.getProduct() != null) {
+      query += " and self.product = ?";
+      params.add(inventory.getProduct());
+    }
+
     return Beans.get(StockLocationLineRepository.class)
         .all()
         .filter(query, params.toArray())
