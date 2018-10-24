@@ -261,8 +261,10 @@ public class PurchaseOrderLineController {
     try {
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
-              ? purchaseOrderLine.getInTaxPrice()
-              : purchaseOrderLine.getPrice();
+              ? purchaseOrderLineService.getInTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine())
+              : purchaseOrderLineService.getExTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
 
       Map<String, Object> catalogInfo =
           purchaseOrderLineService.updateInfoFromCatalog(purchaseOrder, purchaseOrderLine);

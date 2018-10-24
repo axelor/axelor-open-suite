@@ -185,8 +185,16 @@ public class InvoiceLineController {
               invoice,
               invoiceLine,
               invoiceLine.getProduct().getInAti()
-                  ? invoiceLine.getInTaxPrice()
-                  : invoiceLine.getPrice());
+                  ? invoiceLineService.getInTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      invoiceLineService.isPurchase(invoice))
+                  : invoiceLineService.getExTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      invoiceLineService.isPurchase(invoice)));
 
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());

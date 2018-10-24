@@ -204,11 +204,17 @@ public class SaleOrderLineController {
       if (saleOrderLine.getProduct().getInAti()) {
         discounts =
             saleOrderLineService.getDiscountsFromPriceLists(
-                saleOrder, saleOrderLine, saleOrderLine.getInTaxPrice());
+                saleOrder,
+                saleOrderLine,
+                saleOrderLineService.getInTaxUnitPrice(
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
       } else {
         discounts =
             saleOrderLineService.getDiscountsFromPriceLists(
-                saleOrder, saleOrderLine, saleOrderLine.getPrice());
+                saleOrder,
+                saleOrderLine,
+                saleOrderLineService.getExTaxUnitPrice(
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
       }
 
       if (discounts != null) {
