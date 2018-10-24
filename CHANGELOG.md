@@ -98,6 +98,7 @@
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
+- Stock Rules : Add massUpdate on 'Stock location', 'Product', 'Refill type' and 'Min. Qty'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
