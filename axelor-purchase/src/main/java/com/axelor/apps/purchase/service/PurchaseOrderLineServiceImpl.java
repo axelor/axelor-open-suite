@@ -19,12 +19,10 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -33,12 +31,10 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -46,7 +42,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -66,6 +61,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PurchaseProductService productService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+
+  @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Deprecated private int sequence = 0;
 
@@ -164,7 +161,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
-        getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     if (supplierCatalog != null) {
       String productName = supplierCatalog.getProductSupplierName();
@@ -202,7 +199,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
    * @param purchaseOrder the purchase order containing the purchase order line
    * @param purchaseOrderLine
    * @param taxLine the tax applied to the unit price
-   * @param resultInAti whether or not you want the result to be in ati or not
+   * @param resultInAti whether or not you want the result to be in ati
    * @return the unit price of the purchase order line or null if the product is not available for
    *     purchase at the supplier of the purchase order
    * @throws AxelorException
@@ -217,7 +214,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Currency purchaseCurrency;
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
-        getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     if (supplierCatalog != null) {
       purchasePrice = supplierCatalog.getPrice();
@@ -388,25 +385,31 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal price = this.getExTaxUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
     BigDecimal inTaxPrice = this.getInTaxUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
 
-    Map<String, Object> discounts;
-    if (product.getInAti()) {
-      discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, inTaxPrice);
-    } else {
-      discounts = this.getDiscount(purchaseOrder, purchaseOrderLine, price);
-    }
+    Map<String, Object> discounts =
+        this.getDiscountsFromPriceLists(
+            purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
 
     if (discounts != null) {
-      purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-      purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
       if (discounts.get("price") != null) {
-        if (product.getInAti()) {
-          inTaxPrice = (BigDecimal) discounts.get("price");
-          price = this.convertUnitPrice(true, taxLine, inTaxPrice);
+        BigDecimal discountPrice = (BigDecimal) discounts.get("price");
+        if (purchaseOrderLine.getProduct().getInAti()) {
+          inTaxPrice = discountPrice;
+          price = this.convertUnitPrice(true, purchaseOrderLine.getTaxLine(), discountPrice);
         } else {
-          price = (BigDecimal) discounts.get("price");
-          inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+          price = discountPrice;
+          inTaxPrice = this.convertUnitPrice(false, purchaseOrderLine.getTaxLine(), discountPrice);
         }
       }
+      if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()) {
+        purchaseOrderLine.setDiscountAmount(
+            this.convertUnitPrice(
+                purchaseOrderLine.getProduct().getInAti(),
+                purchaseOrderLine.getTaxLine(),
+                (BigDecimal) discounts.get("discountAmount")));
+      } else {
+        purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      }
+      purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
 
     purchaseOrderLine.setPrice(price);
@@ -468,7 +471,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = purchaseOrderLine.getProduct();
 
     SupplierCatalog supplierCatalog =
-        this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
+        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     //		If there is no catalog for supplier, then we don't take the default catalog.
 
@@ -478,21 +481,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     //		}
 
     return supplierCatalog;
-  }
-
-  @Override
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
-
-    if (product != null && product.getSupplierCatalogList() != null) {
-
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
-
-        if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
-          return supplierCatalog;
-        }
-      }
-    }
-    return null;
   }
 
   @Override
@@ -511,48 +499,27 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> updateInfoFromCatalog(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+    return supplierCatalogService.updateInfoFromCatalog(
+        purchaseOrderLine.getProduct(),
+        purchaseOrderLine.getQty(),
+        purchaseOrder.getSupplierPartner(),
+        purchaseOrder.getCurrency(),
+        purchaseOrder.getOrderDate());
+  }
+
+  @Override
+  public Map<String, Object> getDiscountsFromPriceLists(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price) {
 
-    PriceList priceList = purchaseOrder.getPriceList();
-    BigDecimal discountAmount = BigDecimal.ZERO;
-
-    int computeMethodDiscountSelect = appBaseService.getAppBase().getComputeMethodDiscountSelect();
-
     Map<String, Object> discounts = null;
+
+    PriceList priceList = purchaseOrder.getPriceList();
 
     if (priceList != null) {
       PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
-    }
-
-    if (discountAmount.compareTo(BigDecimal.ZERO) == 0) {
-      List<SupplierCatalog> supplierCatalogList =
-          purchaseOrderLine.getProduct().getSupplierCatalogList();
-      if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
-        SupplierCatalog supplierCatalog =
-            Beans.get(SupplierCatalogRepository.class)
-                .all()
-                .filter(
-                    "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
-                    purchaseOrderLine.getProduct(),
-                    purchaseOrderLine.getQty(),
-                    purchaseOrder.getSupplierPartner())
-                .fetchOne();
-        if (supplierCatalog != null) {
-
-          discounts = productService.getDiscountsFromCatalog(supplierCatalog, price);
-
-          if (computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE) {
-            discounts.put(
-                "price",
-                priceListService.computeDiscount(
-                    price,
-                    (int) discounts.get("discountTypeSelect"),
-                    (BigDecimal) discounts.get("discountAmount")));
-          }
-        }
-      }
     }
 
     return discounts;

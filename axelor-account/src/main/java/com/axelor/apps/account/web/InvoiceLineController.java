@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Singleton
 public class InvoiceLineController {
@@ -178,34 +179,27 @@ public class InvoiceLineController {
     }
 
     try {
-      Map<String, Object> discounts;
-      if (invoiceLine.getProduct().getInAti()) {
-        discounts =
-            invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getInTaxPrice());
-      } else {
-        discounts = invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getPrice());
+
+      Map<String, Object> discounts =
+          invoiceLineService.getDiscount(
+              invoice,
+              invoiceLine,
+              invoiceLine.getProduct().getInAti()
+                  ? invoiceLineService.getInTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      invoiceLineService.isPurchase(invoice))
+                  : invoiceLineService.getExTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      invoiceLineService.isPurchase(invoice)));
+
+      for (Entry<String, Object> entry : discounts.entrySet()) {
+        response.setValue(entry.getKey(), entry.getValue());
       }
 
-      if (discounts != null) {
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-
-        if (discounts.get("price") != null) {
-          if (invoiceLine.getProduct().getInAti()) {
-            response.setValue("inTaxPrice", discounts.get("price"));
-            response.setValue(
-                "price",
-                invoiceLineService.convertUnitPrice(
-                    true, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          } else {
-            response.setValue("price", discounts.get("price"));
-            response.setValue(
-                "inTaxPrice",
-                invoiceLineService.convertUnitPrice(
-                    false, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          }
-        }
-      }
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
