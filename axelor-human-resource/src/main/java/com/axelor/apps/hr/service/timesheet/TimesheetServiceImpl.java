@@ -63,6 +63,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -832,6 +833,31 @@ public class TimesheetServiceImpl implements TimesheetService {
         return I18n.get("Minutes");
       default:
         return I18n.get("Hours");
+    }
+  }
+
+  @Override
+  public void createDomainAllTimesheetLine(
+      User user, Employee employee, ActionViewBuilder actionView) {
+
+    actionView
+        .domain("self.timesheet.company = :_activeCompany")
+        .context("_activeCompany", user.getActiveCompany());
+
+    if (employee == null || !employee.getHrManager()) {
+      if (employee == null || employee.getManagerUser() == null) {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.managerUser = :_user)")
+            .context("_user", user);
+      } else {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND self.timesheet.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
     }
   }
 

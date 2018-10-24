@@ -279,12 +279,11 @@
 	<!-- Timesheet app -->
 	<menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')" title="Timesheets" icon="fa-clock-o" icon-background="#84429f" order="15"/>
 
-	<menuitem title="Timesheets" name="all-timesheet" parent="timesheet-root" action="action.timesheet.view.all.timesheet" order="0"/>
+	<menuitem title="Timesheets" name="all-timesheet" parent="timesheet-root" if="(__user__.employee != null &amp;&amp; __user__.employee.hrManager) || __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() &gt; 0" action="action.timesheet.method.all.timesheet" order="0"/>
 	
-	<action-view name="action.timesheet.view.all.timesheet" title="Timesheets" model="com.axelor.apps.hr.db.Timesheet">
-		<view type="grid" name="all-timesheet-grid"/>
-		<view type="form" name="timesheet-form"/>
-	</action-view>
+	<action-method name="action.timesheet.method.all.timesheet">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
+	</action-method>
 	
 	<menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet" action="edit.timesheet" order="1"/>
 

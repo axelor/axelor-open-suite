@@ -136,6 +136,9 @@ public interface TimesheetService {
 
   public String getPeriodTotalConvertTitle(Timesheet timesheet);
 
+  public void createDomainAllTimesheetLine(
+      User user, Employee employee, ActionView.ActionViewBuilder actionView);
+
   public void createValidateDomainTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView);
 
