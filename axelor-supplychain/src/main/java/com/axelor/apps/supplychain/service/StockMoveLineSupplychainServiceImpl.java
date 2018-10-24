@@ -119,8 +119,8 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
-        unitPriceUntaxed = saleOrderLine.getExTaxTotal();
-        unitPriceTaxed = saleOrderLine.getInTaxTotal();
+        unitPriceUntaxed = saleOrderLine.getPrice();
+        unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
     } else {
@@ -134,8 +134,8 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
-        unitPriceUntaxed = purchaseOrderLine.getExTaxTotal();
-        unitPriceTaxed = purchaseOrderLine.getInTaxTotal();
+        unitPriceUntaxed = purchaseOrderLine.getPrice();
+        unitPriceTaxed = purchaseOrderLine.getInTaxPrice();
         orderUnit = purchaseOrderLine.getUnit();
       }
     }

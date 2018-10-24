@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -162,7 +162,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   private BigDecimal fillDiscount(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price) {
 
-    Map<String, Object> discounts = this.getDiscountsFromPriceLists(saleOrder, saleOrderLine, price);
+    Map<String, Object> discounts =
+        this.getDiscountsFromPriceLists(saleOrder, saleOrderLine, price);
 
     if (discounts != null) {
       if (discounts.get("price") != null) {
@@ -591,5 +592,4 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         product.getAllowToForceSaleQty(),
         response);
   }
-
 }

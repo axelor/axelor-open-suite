@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -47,7 +48,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {

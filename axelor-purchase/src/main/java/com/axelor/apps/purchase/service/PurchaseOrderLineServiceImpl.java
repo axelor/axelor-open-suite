@@ -267,50 +267,46 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setQty(getQty(order, line));
 
     Tax tax =
-    	accountManagementService.getProductTax(
-            accountManagementService.getAccountManagement(product, order.getCompany()),
-            true);
+        accountManagementService.getProductTax(
+            accountManagementService.getAccountManagement(product, order.getCompany()), true);
     TaxEquiv taxEquiv =
         Beans.get(FiscalPositionService.class)
             .getTaxEquiv(order.getSupplierPartner().getFiscalPosition(), tax);
     line.setTaxEquiv(taxEquiv);
 
-    Map<String, Object> discounts = getDiscountsFromPriceLists(order, line, order.getInAti() ? inTaxPrice : price);
+    Map<String, Object> discounts =
+        getDiscountsFromPriceLists(order, line, order.getInAti() ? inTaxPrice : price);
 
     if (discounts != null) {
-		if (discounts.get("price") != null) {
-	        BigDecimal discountPrice = (BigDecimal) discounts.get("price");
-	        if (product.getInAti()) {
-	          inTaxPrice = discountPrice;
-	          price =
-	              this.convertUnitPrice(
-	                  true, line.getTaxLine(), discountPrice);
-	        } else {
-	          price = discountPrice;
-	          inTaxPrice =
-	              this.convertUnitPrice(
-	                  false, line.getTaxLine(), discountPrice);
-	        }
-	    }
-	      if (product.getInAti() != order.getInAti()
-	          && (Integer) discounts.get("discountTypeSelect")
-	              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
-	        line.setDiscountAmount(
-	            this.convertUnitPrice(
-	                product.getInAti(),
-	                line.getTaxLine(),
-	                (BigDecimal) discounts.get("discountAmount")));
-	      } else {
-	    	  line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-	      }
-	      line.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-	}
-  
+      if (discounts.get("price") != null) {
+        BigDecimal discountPrice = (BigDecimal) discounts.get("price");
+        if (product.getInAti()) {
+          inTaxPrice = discountPrice;
+          price = this.convertUnitPrice(true, line.getTaxLine(), discountPrice);
+        } else {
+          price = discountPrice;
+          inTaxPrice = this.convertUnitPrice(false, line.getTaxLine(), discountPrice);
+        }
+      }
+      if (product.getInAti() != order.getInAti()
+          && (Integer) discounts.get("discountTypeSelect")
+              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+        line.setDiscountAmount(
+            this.convertUnitPrice(
+                product.getInAti(),
+                line.getTaxLine(),
+                (BigDecimal) discounts.get("discountAmount")));
+      } else {
+        line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+      }
+      line.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+    }
+
     line.setPrice(price);
     line.setInTaxPrice(inTaxPrice);
     line.setProductName(productName);
     line.setProductCode(productCode);
-    
+
     line.setSaleMinPrice(getMinSalePrice(order, line));
     line.setSalePrice(
         getSalePrice(order, line.getProduct(), order.getInAti() ? inTaxPrice : price));

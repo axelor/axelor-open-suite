@@ -401,7 +401,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxLine", taxLine);
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
-      
+
       Tax tax =
           accountManagementAccountService.getProductTax(
               accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
@@ -410,7 +410,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
       productInformation.put("taxEquiv", taxEquiv);
-      
+
     } catch (AxelorException e) {
       productInformation.put("taxLine", null);
       productInformation.put("taxRate", null);
@@ -424,10 +424,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
       productInformation.put("price", price);
       productInformation.put("inTaxPrice", inTaxPrice);
-      
+
       productInformation.putAll(
-    	        this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
-      
+          this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
+
       productInformation.put("productName", invoiceLine.getProduct().getName());
     }
 
