@@ -100,6 +100,7 @@
 - Analytic move line : accountType added on grid view.
 - Stock Move : Attach conformity certificate to record.
 - Stock Rules : Add massUpdate on 'Stock location', 'Product', 'Refill type' and 'Min. Qty'.
+- Inventory : Add filter on two new string fields on form when click on 'Fill inventory' button.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
