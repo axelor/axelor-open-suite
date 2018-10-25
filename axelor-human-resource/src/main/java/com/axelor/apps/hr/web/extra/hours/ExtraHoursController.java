@@ -294,4 +294,16 @@ public class ExtraHoursController {
       response.setReload(true);
     }
   }
+
+  // counting total hours while computing extra hours lines
+  public void compute(ActionRequest request, ActionResponse response) {
+    try {
+      ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
+      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+      extraHoursService.compute(extraHours);
+      response.setValue("totalQty", extraHours.getTotalQty());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

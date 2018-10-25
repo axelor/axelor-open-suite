@@ -18,6 +18,8 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       
+      <decimal name="totalQty" title="Total (h)" readonly="true"/>
+      
       <one-to-many name="extraHoursLineList" ref="com.axelor.apps.hr.db.ExtraHoursLine" title="Extra Hours" mappedBy="extraHours"/>
       
       <string name="fullName" namecolumn="true" readonly="true">

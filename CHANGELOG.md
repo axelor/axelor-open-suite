@@ -103,6 +103,7 @@
 - Inventory : Add filter on two new string fields on form when click on 'Fill inventory' button.
 - Add direct order stock location.
 - Inventory:Allow to do an inventory for one product.
+- Extra Hours : Add new field 'totalQty' to compute extra hours line.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

@@ -53,4 +53,6 @@ public interface ExtraHoursService {
   public Message sendRefusalEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
+
+  public void compute(ExtraHours extraHours);
 }
