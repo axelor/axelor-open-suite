@@ -96,8 +96,8 @@
 		<panel colSpan="8">
 			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="3"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="3"/>
-			<field name="company" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" domain="self.company = :company and self.typeSelect = 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" domain="self.company = :company and self.typeSelect = 1"/>
 			<field name="$viewerIsPermanent" showTitle="false" colSpan="3" showIf="isPermanent &amp;&amp; $readonly()">
 				<viewer depends="isPermanent">
 					<![CDATA[
