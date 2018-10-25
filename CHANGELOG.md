@@ -18,6 +18,7 @@
 - Purchase : Fix wrong translation of fields.
 - PurchaseOrder : Disable edit button in Supplier-partner field
 - Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- PARTNER : balance viewer
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
