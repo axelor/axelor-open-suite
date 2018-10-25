@@ -1228,11 +1228,16 @@ public class StockMoveServiceImpl implements StockMoveService {
             ? Beans.get(UserService.class).getLanguage()
             : ReportSettings.getPrintingLocale(stockMove.getPartner());
 
-    return ReportFactory.createReport(reportType, title + "-${date}")
-        .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", locale)
-        .generate()
-        .getFileLink();
+    ReportSettings reportSettings =
+        ReportFactory.createReport(reportType, title + "-${date}")
+            .addParam("StockMoveId", stockMoveIds)
+            .addParam("Locale", locale);
+
+    if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
+      reportSettings.toAttach(stockMove);
+    }
+
+    return reportSettings.generate().getFileLink();
   }
 
   @Override

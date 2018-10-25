@@ -18,10 +18,10 @@
 			<button name="updateCustomerAcceptedCredit" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
 		</panel>
 		<panel name="printingSettings" title="Printing settings">
-			<field name="displaySalemanOnPrinting"/>
-			<field name="displayDelCondOnPrinting"/>
-			<field name="displayProductCodeOnPrinting"/>
-			<field name="displayTaxDetailOnPrinting"/>
+			<field name="displaySalemanOnPrinting" widget="boolean-switch"/>
+			<field name="displayDelCondOnPrinting" widget="boolean-switch"/>
+			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
+			<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
 			<field name="saleOrderClientBox" widget="html" x-lite="true" colSpan="12"/>
 			<field name="saleOrderLegalNote" widget="html" x-lite="true" colSpan="12"/>
 		</panel>

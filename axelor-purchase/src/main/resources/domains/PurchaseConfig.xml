@@ -12,6 +12,10 @@
   	<integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT" selection="base.in.ati.select" default="1"/>
   	
   	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
+	<boolean name="displayBuyerOnPrinting" title="Display buyer on printing"/>
+	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
+	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
+  	<boolean name="displayProductDetailOnPrinting" title="Display product detail on printing"/>
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
   	

@@ -48,7 +48,7 @@
 				<panel name="discount" colSpan="12">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
 					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
-					<field name="priceDiscounted" colSpan="3" hidden="true"/>
+					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 				</panel>
 				<field name="taxLine" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="exTaxTotal" colSpan="3" readonly="true"/>
