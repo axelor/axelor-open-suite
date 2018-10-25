@@ -15,6 +15,7 @@
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
 - Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
 - BankOrder : Specify limit for BankOrderLines.
+- Purchase : Fix wrong translation of fields.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
