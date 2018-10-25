@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -251,6 +252,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
     if (partnerAccount != null) {
+      if (invoice.getPartner() != null) {
+        partnerAccount =
+            Beans.get(FiscalPositionAccountService.class)
+                .getAccount(invoice.getPartner().getFiscalPosition(), partnerAccount);
+      }
       invoice.setPartnerAccount(partnerAccount);
     }
 

@@ -62,7 +62,8 @@ import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
-import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.FiscalPositionAccountServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
@@ -125,7 +126,9 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
-    bind(FiscalPositionServiceImpl.class).to(FiscalPositionServiceAccountImpl.class);
+    bind(FiscalPositionServiceImpl.class).to(FiscalPositionAccountServiceImpl.class);
+    
+    bind(FiscalPositionAccountService.class).to(FiscalPositionAccountServiceImpl.class);
 
     bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
 
@@ -178,6 +181,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
     bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
+    
     bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
 
     bind(AccountRepository.class).to(AccountAccountRepository.class);

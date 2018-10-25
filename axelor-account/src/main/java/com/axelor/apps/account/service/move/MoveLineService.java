@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
-import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -70,7 +70,7 @@ public class MoveLineService {
 
   protected AccountManagementAccountService accountManagementService;
   protected TaxAccountService taxAccountService;
-  protected FiscalPositionServiceAccountImpl fiscalPositionService;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
@@ -83,14 +83,14 @@ public class MoveLineService {
   public MoveLineService(
       AccountManagementAccountService accountManagementService,
       TaxAccountService taxAccountService,
-      FiscalPositionServiceAccountImpl fiscalPositionService,
+      FiscalPositionAccountService fiscalPositionAccountService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
       CompanyConfigService companyConfigService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
-    this.fiscalPositionService = fiscalPositionService;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
@@ -158,7 +158,7 @@ public class MoveLineService {
             amountInSpecificMoveCurrency, currencyRate);
 
     if (partner != null) {
-      account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
+      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
     }
 
     return this.createMoveLine(
@@ -218,7 +218,7 @@ public class MoveLineService {
         });
 
     if (partner != null) {
-      account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
+      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
     }
 
     BigDecimal debit = BigDecimal.ZERO;

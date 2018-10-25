@@ -208,6 +208,7 @@
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 - In manufacturing order, Stock move for produced product now uses the price from the product instead of from the costsheet.
 - Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
+- Invoice : fix fiscal position of account for partner account.
 
 ## [Unreleased 5.0.7]
 ## Features
