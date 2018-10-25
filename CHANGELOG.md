@@ -160,7 +160,7 @@
 - Customer catalog: added option to enable/disable customer catalog management on sales app. 
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 - Product : Improved StockLocationLine Form which is opened from Product Form.
-
+- Production : Add workshop Location.
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timesheet editor: Allows to delete a line when use unique product for the timesheet. 
