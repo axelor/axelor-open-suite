@@ -16,6 +16,7 @@
 - Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
 - BankOrder : Specify limit for BankOrderLines.
 - Purchase : Fix wrong translation of fields.
+- PurchaseOrder : Disable edit button in Supplier-partner field
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
