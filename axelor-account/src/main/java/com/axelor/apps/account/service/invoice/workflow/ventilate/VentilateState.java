@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -134,6 +135,11 @@ public class VentilateState extends WorkflowInvoice {
             I18n.get(IExceptionMessage.VENTILATE_STATE_5));
       }
 
+      if (invoice.getPartner() != null) {
+        account =
+            Beans.get(FiscalPositionAccountService.class)
+                .getAccount(invoice.getPartner().getFiscalPosition(), account);
+      }
       invoice.setPartnerAccount(account);
     }
   }

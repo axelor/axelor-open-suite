@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
@@ -524,11 +524,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
 
-    FiscalPositionServiceAccountImpl fiscalPositionService =
-        Beans.get(FiscalPositionServiceAccountImpl.class);
+    FiscalPositionAccountService fiscalPositionAccountService =
+        Beans.get(FiscalPositionAccountService.class);
     FiscalPosition fiscalPosition = line.getFiscalPosition();
     Account currentAccount = invoiceLine.getAccount();
-    Account replacedAccount = fiscalPositionService.getAccount(fiscalPosition, currentAccount);
+    Account replacedAccount =
+        fiscalPositionAccountService.getAccount(fiscalPosition, currentAccount);
 
     boolean isPurchase =
         Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice)

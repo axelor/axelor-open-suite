@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 
-public class FiscalPositionServiceAccountImpl extends FiscalPositionServiceImpl {
+public class FiscalPositionAccountServiceImpl extends FiscalPositionServiceImpl
+    implements FiscalPositionAccountService {
 
+  @Override
   public Account getAccount(FiscalPosition fiscalPosition, Account account) {
 
     if (fiscalPosition != null && fiscalPosition.getAccountEquivList() != null) {
