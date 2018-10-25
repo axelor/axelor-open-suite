@@ -75,6 +75,8 @@
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 
+	<boolean name="isPassedForPayment" title="Passed for payment"/>
+
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>

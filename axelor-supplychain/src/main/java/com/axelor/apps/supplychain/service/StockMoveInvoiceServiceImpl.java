@@ -227,6 +227,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
       invoiceRepository.save(invoice);
 
+      invoice.setIsPassedForPayment(stockMove.getIsPassedForPayment());
+
       stockMove.setInvoice(invoice);
       stockMoveRepo.save(stockMove);
     }

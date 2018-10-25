@@ -104,6 +104,7 @@
 - Add direct order stock location.
 - Inventory:Allow to do an inventory for one product.
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
+- Stock Move & Invoice : Add new boolean field - 'Passed for payment'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
