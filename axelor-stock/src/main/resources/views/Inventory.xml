@@ -45,6 +45,7 @@
         <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
             <field name="productFamily" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
             <field name="productCategory" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+			<field name="product" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
             <field name="excludeOutOfStock" colSpan="3"/>
             <field name="includeObsolete" colSpan="3"/>
             <panel title="Racks range">
@@ -187,12 +188,23 @@
 	<action-attrs name="action-inventory-on-change-product-category">
 		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(productCategory.productFamily.id)" if="productFamily == null &amp;&amp; productCategory.productFamily != null"/>    
 	</action-attrs>
-	
+
+	<action-attrs name="action-inventory-on-change-product">
+		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
+		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
+	</action-attrs>
+		
 	<action-attrs name="action-inventory-on-select-product-category">
 		<attribute name="domain" for="productCategory" expr="eval:&quot;self.productFamily.id = ${productFamily.id}&quot;" if="productFamily != null"/>
 		<attribute name="domain" for="productCategory" expr="eval:null" if="productFamily == null"/>
 	</action-attrs>
-
+	
+	<action-attrs name="action-inventory-on-select-product">
+		<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id}&quot;" if="productCategory != null"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id}&quot;" if="productCategory == null &amp;&amp; productFamily != null"/>
+		<attribute name="domain" for="product" expr="eval:null" if="productCategory == null &amp;&amp; productFamily == null"/>
+	</action-attrs>
+	
 	<action-method name="action-inventory-method-show-stockmove">
 		<call class="com.axelor.apps.stock.web.InventoryController" method="showStockMove"/>
 	</action-method>
