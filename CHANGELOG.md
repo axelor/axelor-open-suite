@@ -211,6 +211,7 @@
 - Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
 - Manuf Order & ProdProcess : Added canEdit false on company and stockLocations fields and used widget SuggestBox for company.
 - Invoice : fix fiscal position of account for partner account.
+- Stock Move : Fix availability status language.
 
 ## [Unreleased 5.0.7]
 ## Features
