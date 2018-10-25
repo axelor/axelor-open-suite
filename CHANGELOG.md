@@ -50,6 +50,7 @@
 - Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 - Purchase Order:Sequence should be assigned when we click on button Requested only
+- Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
 
 ## [5.0.6] - 2018-10-06
 ## Features
