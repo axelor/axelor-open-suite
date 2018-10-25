@@ -18,6 +18,7 @@
 - Purchase : Fix wrong translation of fields.
 - PurchaseOrder : Disable edit button in Supplier-partner field
 - Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- InvoiceLine : Added field product.code in grid 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
