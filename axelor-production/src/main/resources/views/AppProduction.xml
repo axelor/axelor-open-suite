@@ -37,6 +37,9 @@
 			<panel name="printing" title="Printings">
 				<field name="printPlannedDateOnManufOrder"/>
 			</panel>
+			<panel name="stockLocation" title="Stock Location">
+				<field name="manageWorkshop" widget="boolean-switch"/>
+			</panel>
 		</panel>
 		<panel>
 			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>

@@ -20,6 +20,7 @@
  		<boolean name="manageProdProcessVersion" title="Manage production process versions" />
 
 		<boolean name="enableConfigurator" title="Enable production configurator"/>
+		<boolean name="manageWorkshop" title="Manage workshop" />
 		
 		<integer name="nbDecimalDigitForBomQty" title="Nb of digits for BOM quantities" max="10" default="2"/>
 		
