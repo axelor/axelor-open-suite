@@ -518,6 +518,11 @@ public class InventoryService {
       params.add(inventory.getProductCategory());
     }
 
+    if (inventory.getProduct() != null) {
+      query += " and self.product = ?";
+      params.add(inventory.getProduct());
+    }
+
     if (!Strings.isNullOrEmpty(inventory.getFromRack())) {
       query += " and self.rack >= ?";
       params.add(inventory.getFromRack());
