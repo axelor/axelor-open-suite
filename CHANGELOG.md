@@ -158,6 +158,7 @@
 - Partner : Modify actions to compute simpleFullName & fullName.
 - Customer catalog: added option to enable/disable customer catalog management on sales app. 
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
+- Product : Improved StockLocationLine Form which is opened from Product Form.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
