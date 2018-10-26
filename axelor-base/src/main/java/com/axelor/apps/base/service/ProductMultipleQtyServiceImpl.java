@@ -40,13 +40,16 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
 
     for (ProductMultipleQty productMultipleQty : productMultipleQties) {
 
-      LOG.debug(
-          "Check on multiple qty : {}, Modulo : {}",
-          qty,
-          qty.remainder(productMultipleQty.getMultipleQty()));
+      if (productMultipleQty.getMultipleQty().compareTo(BigDecimal.ZERO) != 0) {
 
-      if (qty.remainder(productMultipleQty.getMultipleQty()).compareTo(BigDecimal.ZERO) == 0) {
-        return true;
+        LOG.debug(
+            "Check on multiple qty : {}, Modulo : {}",
+            qty,
+            qty.remainder(productMultipleQty.getMultipleQty()));
+
+        if (qty.remainder(productMultipleQty.getMultipleQty()).compareTo(BigDecimal.ZERO) == 0) {
+          return true;
+        }
       }
     }
 

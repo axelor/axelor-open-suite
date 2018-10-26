@@ -214,6 +214,7 @@
 - Invoice : fix fiscal position of account for partner account.
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
+- PURCHASE ORDER : Division by zero
 
 ## [Unreleased 5.0.7]
 ## Features
