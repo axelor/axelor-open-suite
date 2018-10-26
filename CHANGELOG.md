@@ -160,7 +160,8 @@
 - Customer catalog: added option to enable/disable customer catalog management on sales app. 
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 - Product : Improved StockLocationLine Form which is opened from Product Form.
-- Production : Add workshop Location.
+- Production App : Add workshop configuration.
+
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
 - Timesheet editor: Allows to delete a line when use unique product for the timesheet. 
@@ -212,6 +213,7 @@
 - Manuf Order & ProdProcess : Added canEdit false on company and stockLocations fields and used widget SuggestBox for company.
 - Invoice : fix fiscal position of account for partner account.
 - Purchase Order : Fix minor form view corrections.
+- Stock Move : Fix availability status language.
 
 ## [Unreleased 5.0.7]
 ## Features

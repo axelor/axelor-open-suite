@@ -43,9 +43,9 @@
             canNew="true"/>
         <field name="conformitySelect"/>
         <field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
         <field name="stockMove.statusSelect" hidden="true"/>
         <field name="isSubLine" hidden="true"/>
@@ -90,9 +90,9 @@
             canNew="true"/>
         <field name="conformitySelect"/>
         <field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
         <field name="stockMove.statusSelect" hidden="true"/>
         <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
@@ -158,9 +158,9 @@
 		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
 		<field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
 	</grid>
     
@@ -178,9 +178,9 @@
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="conformitySelect"/>
         <field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
     </grid>
     
@@ -200,9 +200,9 @@
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="stockMove.statusSelect"/>
         <field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
     </grid>
 
@@ -222,9 +222,9 @@
 		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.statusSelect" />
 		<field name="availableStatus" width="150">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="info" if="availableStatus == 'Av. for product' || availableStatus == 'Disp. pour le produit'"/>
-        	<hilite color="danger" strong="true" if="$contains(availableStatus, 'Missing') || $contains(availableStatus, 'Manquants')"/>
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
 	</grid>
 

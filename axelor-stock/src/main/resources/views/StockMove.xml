@@ -18,10 +18,10 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="statusSelect"/>
         <field name="origin"/>
-        <field name="availableStatus">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="warning" if="availableStatus == 'Partially available' || availableStatus == 'Partiellement disponible'"/>
-        	<hilite strong="true" color="danger" if="availableStatus == 'Unavailable' || availableStatus == 'Indisponible'"/>
+        <field name="availableStatusSelect">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
         <field name="typeSelect" hidden="true" />
         <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
@@ -45,10 +45,10 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="origin"/>
-        <field name="availableStatus">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="warning" if="availableStatus == 'Partially available' || availableStatus == 'Partiellement disponible'"/>
-        	<hilite strong="true" color="danger" if="availableStatus == 'Unavailable' || availableStatus == 'Indisponible'"/>
+        <field name="availableStatusSelect">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -70,10 +70,10 @@
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="origin"/>
-        <field name="availableStatus">
-        	<hilite strong="true" color="success" if="availableStatus == 'Available' || availableStatus == 'Disponible'"/>
-        	<hilite strong="true" color="warning" if="availableStatus == 'Partially available' || availableStatus == 'Partiellement disponible'"/>
-        	<hilite strong="true" color="danger" if="availableStatus == 'Unavailable' || availableStatus == 'Indisponible'"/>
+        <field name="availableStatusSelect">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -113,12 +113,12 @@
                 </panel>
 
                 <panel>
-                	<field name="availableStatus" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" showTitle="false" readonly="true">
 						<viewer><![CDATA[
                             <h4 class="text-right">
-                            	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatus == 'Available' || record.availableStatus == 'Disponible'" x-translate>Available</span>
-                            	<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatus == 'Partially available' || record.availableStatus == 'Partiellement disponible'" x-translate>Partially available</span>
-                            	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatus == 'Unavailable' || record.availableStatus == 'Indisponible'" x-translate>Unavailable</span>
+                            	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
+                            	<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 2" x-translate>Partially available</span>
+                            	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 3" x-translate>Unavailable</span>
                     		</h4>
 						]]></viewer>
 					</field>

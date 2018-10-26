@@ -106,11 +106,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     }
 
     if ((available > 0 || availableForProduct > 0) && missing == 0) {
-      json.put("availableStatus", I18n.get("Available"));
-    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
-      json.put("availableStatus", I18n.get("Unavailable"));
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_AVAILABLE);
     } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
-      json.put("availableStatus", I18n.get("Partially available"));
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
+    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_UNAVAILABLE);
     }
     return super.populate(json, context);
   }
