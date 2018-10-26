@@ -259,7 +259,7 @@
 		title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-grid" />
 		<view type="form" name="accounting-report-form" />
-		<domain>self.typeSelect &lt; 1000</domain>
+		<domain>self.typeSelect &lt; 1000 or self.typeSelect &gt;= 2000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -269,7 +269,7 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-export-grid" />
 		<view type="form" name="accounting-report-export-form" />
-		<domain>self.typeSelect &gt;= 1000</domain>
+		<domain>self.typeSelect &gt;= 1000 and self.typeSelect &lt; 2000</domain>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"

@@ -160,6 +160,7 @@
 - Customer catalog: added option to enable/disable customer catalog management on sales app. 
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 - Product : Improved StockLocationLine Form which is opened from Product Form.
+- Production App : Add workshop configuration.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -211,6 +212,7 @@
 - Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
 - Manuf Order & ProdProcess : Added canEdit false on company and stockLocations fields and used widget SuggestBox for company.
 - Invoice : fix fiscal position of account for partner account.
+- Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 
 ## [Unreleased 5.0.7]
@@ -224,9 +226,17 @@
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Currency conversion: allow to fetch today's rate on newly created conversion lines.
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
 - BankOrder : Specify limit for BankOrderLines.
+- Purchase : Fix wrong translation of fields.
+- PurchaseOrder : Disable edit button in Supplier-partner field
+- Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- InvoiceLine : Added field product.code in grid 
+- PARTNER : balance viewer
+- SaleOrderLine : Added field product.code in grid
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -256,7 +266,11 @@
 - PurchaseOrder : Hide 'Completed' button conditionally.
 - Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
-
+- Purchase Order:Sequence should be assigned when we click on button Requested only
+- Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
+- Use sign of General accounting move line to sign the analytic move line on analytic balance.
+		
+		
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.

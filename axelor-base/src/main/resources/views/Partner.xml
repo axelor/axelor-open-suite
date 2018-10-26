@@ -161,7 +161,8 @@
 						</editor>
 					</field>
           			<field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
-					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+					<button if="__config__.app.isApp('account')" name="$positiveBalance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+					<field name="$balance" hidden="true"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -656,6 +657,7 @@
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
 		<action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
+		<action name="action-partner-record-set-positive-balance" if="__config__.app.isApp('account')"/>
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
@@ -728,9 +730,9 @@
 	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-name-balance">
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalance == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-set-default">
@@ -750,6 +752,11 @@
                     : (x -> x.balanceCustAccount)
                 ).sum()}"/>
     </action-record>
+	
+	<action-record name="action-partner-record-set-positive-balance" model="com.axelor.apps.base.db.Partner">
+		<field name="$positiveBalance" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance" if="$balance != null"/>
+		<field name="$positiveBalance" expr="eval: 0" if="$balance == null"/>
+	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
 		<field name="contactPartnerSet" expr="eval: null"/>

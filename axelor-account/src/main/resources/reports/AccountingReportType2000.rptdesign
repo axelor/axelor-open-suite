@@ -344,8 +344,7 @@
 AnalyticAxis.id as analytic_axis_id, AnalyticAxis.code as analytic_axis_code, AnalyticAxis.name as analytic_axis_name,
 AnalyticAccount.id as analytic_account_id, AnalyticAccount.code as analytic_account_code, AnalyticAccount.name as analytic_account_name, 
 AccountType.name as account_type_name,
-SUM(AnalyticMoveLine.amount) as amount
---, AnalyticMoveLine.status_select as status_select
+SUM(AnalyticMoveLine.amount * sign(MoveLine.debit - MoveLine.credit)) as amount
 
 from public.account_accounting_report as AccountingReport 
 

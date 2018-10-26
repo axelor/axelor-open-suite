@@ -8,6 +8,7 @@
   <entity name="StockLocation" lang="java">
 
     <boolean name="usableOnProduction" title="Usable on production" />
+    <boolean name="isWorkshop"/>
 
   </entity>
 </domain-models>
