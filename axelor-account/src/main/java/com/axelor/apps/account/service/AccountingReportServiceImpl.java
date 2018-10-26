@@ -283,6 +283,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException {
+
+    if (accountingReport.getTypeSelect() == null) {
+      return null;
+    }
+
     Company company = accountingReport.getCompany();
 
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
@@ -310,6 +315,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   public Account getAccount(AccountingReport accountingReport) {
+
+    if (accountingReport.getTypeSelect() == null) {
+      return null;
+    }
+
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES
         && accountingReport.getCompany() != null) {
       return accountRepo
