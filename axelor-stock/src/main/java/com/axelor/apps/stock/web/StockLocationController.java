@@ -23,18 +23,21 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Query;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -47,9 +50,13 @@ public class StockLocationController {
 
   private StockLocationRepository stockLocationRepo;
 
+  private StockLocationService stockLocationService;
+
   @Inject
-  public StockLocationController(StockLocationRepository stockLocationRepo) {
+  public StockLocationController(
+      StockLocationRepository stockLocationRepo, StockLocationService stockLocationService) {
     this.stockLocationRepo = stockLocationRepo;
+    this.stockLocationService = stockLocationService;
   }
 
   /**
@@ -70,7 +77,11 @@ public class StockLocationController {
     List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
     if (lstSelectedLocations != null) {
       for (Integer it : lstSelectedLocations) {
-        locationIds += it.toString() + ",";
+        Set<Long> idSet =
+            stockLocationService.getContentStockLocationIds(stockLocationRepo.find(new Long(it)));
+        if (!idSet.isEmpty()) {
+          locationIds += Joiner.on(",").join(idSet) + ",";
+        }
       }
     }
 
@@ -78,7 +89,12 @@ public class StockLocationController {
       locationIds = locationIds.substring(0, locationIds.length() - 1);
       stockLocation = stockLocationRepo.find(new Long(lstSelectedLocations.get(0)));
     } else if (stockLocation.getId() != null) {
-      locationIds = stockLocation.getId().toString();
+      Set<Long> idSet =
+          stockLocationService.getContentStockLocationIds(
+              stockLocationRepo.find(stockLocation.getId()));
+      if (!idSet.isEmpty()) {
+        locationIds = Joiner.on(",").join(idSet);
+      }
     }
 
     if (!locationIds.equals("")) {

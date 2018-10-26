@@ -98,6 +98,7 @@
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
+- StockMove : Include sub stock location's lines in Report. 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
