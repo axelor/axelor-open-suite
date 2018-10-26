@@ -52,7 +52,8 @@
 					]]>
 				</viewer>
 			</field>
-		</panel>
+            <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
+		</panel>    
 		<panel-tabs>
 			<panel name="locationContent" title="Location Content">
 				<panel-dashlet title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true" height="600"/>
@@ -87,14 +88,14 @@
     <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-grid" />
 		<view type="form" name="stock-location-line-form" />
-		<domain>self.stockLocation.id IN :contentLocationIds</domain>
+		<domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
 
     <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-details-grid" />
 		<view type="form" name="stock-location-line-details-form" />
-		<domain>self.detailsStockLocation.id IN :contentLocationIds</domain>
+		<domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
     

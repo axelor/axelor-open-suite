@@ -108,7 +108,7 @@
 	        ]]></viewer>
 	      </field>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
-        <field name="supplierPartner" hideIf="company == null" colSpan="3" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			  <field name="currency" canEdit="false" colSpan="3" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
 	      <field name="priceList" onSelect="action-purchase-order-method-price-list-domain" colSpan="3" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" />
   			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" hideIf="company == null" />
@@ -118,7 +118,7 @@
           <field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
-      </panel>
+      	</panel>
 		</panel>
 		<panel-tabs hideIf="supplierPartner == null">
 			<panel name="content" title="Content" colSpan="12">

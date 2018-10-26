@@ -503,10 +503,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
 
-    if (purchaseOrder.getCompany() != null) {
-      purchaseOrder.setPurchaseOrderSeq(getSequence(purchaseOrder.getCompany()));
-    }
-
     updateCostPrice(purchaseOrder);
   }
 

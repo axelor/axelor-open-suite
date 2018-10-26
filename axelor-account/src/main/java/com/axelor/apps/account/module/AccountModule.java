@@ -127,7 +127,7 @@ public class AccountModule extends AxelorModule {
     bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
 
     bind(FiscalPositionServiceImpl.class).to(FiscalPositionAccountServiceImpl.class);
-    
+
     bind(FiscalPositionAccountService.class).to(FiscalPositionAccountServiceImpl.class);
 
     bind(TemplateMessageService.class).to(TemplateMessageServiceImpl.class);
@@ -181,7 +181,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
 
     bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
-    
+
     bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
 
     bind(AccountRepository.class).to(AccountAccountRepository.class);
