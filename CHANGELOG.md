@@ -18,6 +18,8 @@
 - Purchase : Fix wrong translation of fields.
 - PurchaseOrder : Disable edit button in Supplier-partner field
 - Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- InvoiceLine : Added field product.code in grid 
+- PARTNER : balance viewer
 - SaleOrderLine : Added field product.code in grid
 
 ## Bug Fixes
@@ -49,7 +51,10 @@
 - Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
 - Purchase Order:Sequence should be assigned when we click on button Requested only
-
+- Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
+- Use sign of General accounting move line to sign the analytic move line on analytic balance.
+		
+		
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
