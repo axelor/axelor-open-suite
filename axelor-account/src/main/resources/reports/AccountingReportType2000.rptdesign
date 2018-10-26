@@ -25,7 +25,7 @@
     <property name="imageDPI">96</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="570">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
@@ -39,7 +39,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="DBName" id="3033">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -51,7 +51,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3034">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -63,7 +63,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Password" id="3035">
-            <property name="hidden">false</property>
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -75,6 +75,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="Locale" id="4050">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -89,6 +90,7 @@
             </structure>
         </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
             <property name="dataType">string</property>
@@ -342,7 +344,8 @@ SUM(AnalyticMoveLine.amount * sign(MoveLine.debit - MoveLine.credit)) as amount
 from public.account_accounting_report as AccountingReport 
 
 left outer join public.account_analytic_move_line as AnalyticMoveLine on (AccountingReport.id = ?) 
-
+left outer join public.account_move_line as MoveLine on (AnalyticMoveLine.move_line = MoveLine.id)
+left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
 left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
@@ -1374,28 +1377,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <column id="4147">
-                            <property name="width">1in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="4090">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.3in</property>
                         </column>
                         <column id="4091">
-                            <property name="width">1in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="4092">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.3in</property>
                         </column>
                         <column id="4095">
-                            <property name="width">1in</property>
+                            <property name="width">1.7in</property>
                         </column>
                         <column id="4280">
-                            <property name="width">1.5in</property>
+                            <property name="width">2in</property>
                         </column>
                         <column id="4096">
-                            <property name="width">1in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="4246">
-                            <property name="width">1in</property>
+                            <property name="width">0.2in</property>
                         </column>
                         <header>
                             <row id="4211">
@@ -1414,7 +1417,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4200">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1461,7 +1464,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4218">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1508,7 +1511,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4219">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1555,7 +1558,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4281">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1602,7 +1605,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4206">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1649,7 +1652,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4247">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1700,7 +1703,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4201">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1747,7 +1750,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4202">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1794,7 +1797,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4203">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1839,7 +1842,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">middle</property>
                                     <text id="4205">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1914,7 +1917,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <text id="4270">
-                                            <property name="fontSize">10pt</property>
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="borderBottomStyle">none</property>
                                             <property name="borderLeftStyle">none</property>
@@ -1952,6 +1955,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <data id="4271">
+                                            <property name="fontSize">9pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">###,##0.00</property>
@@ -2004,7 +2008,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <cell id="4277">
                                         <property name="textAlign">right</property>
                                         <text id="4269">
-                                            <property name="fontSize">10pt</property>
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="borderBottomStyle">none</property>
                                             <property name="borderLeftStyle">none</property>
@@ -2041,6 +2045,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <cell id="4238">
                                         <property name="textAlign">right</property>
                                         <data id="4248">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2053,6 +2058,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
                                         <data id="4250">
+                                            <property name="fontSize">9pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">###,##0.00%</property>
@@ -2117,7 +2123,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4303">
-                                            <property name="fontSize">10pt</property>
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="borderBottomStyle">none</property>
                                             <property name="borderLeftStyle">none</property>
@@ -2155,6 +2161,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4306">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -2170,6 +2177,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4307">
+                                            <property name="fontSize">9pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">0.00%</property>
@@ -2188,41 +2196,48 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderLeftWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <data id="4210">
+                                        <property name="fontSize">9pt</property>
                                         <property name="resultSetColumn">analytic_journal_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4068">
                                     <data id="4223">
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">analytic_axis_code</property>
                                     </data>
                                 </cell>
                                 <cell id="4070">
                                     <data id="4222">
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">analytic_axis_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4072">
                                     <data id="4221">
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">analytic_account_code</property>
                                     </data>
                                 </cell>
                                 <cell id="4078">
                                     <data id="4220">
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">analytic_account_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4276">
                                     <data id="4282">
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">account_type_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4080">
                                     <data id="4209">
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -2235,6 +2250,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4249">
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00%</property>
