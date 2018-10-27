@@ -215,6 +215,7 @@
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 - PURCHASE ORDER : Division by zero
+- Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
 
 ## [Unreleased 5.0.7]
 ## Features
