@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -395,6 +396,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     boolean isAccountRequired = isAccountRequired(invoiceLine);
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
+    Company company = invoice.getCompany();
+    FiscalPosition fiscalPosition = invoice.getPartner().getFiscalPosition();
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);
@@ -402,13 +405,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
 
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
-              isPurchase);
-      TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+      Tax tax = accountManagementAccountService.getProductTax(product, company, null, isPurchase);
+      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
       productInformation.put("taxEquiv", taxEquiv);
 
     } catch (AxelorException e) {
@@ -432,11 +430,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     try {
-      // getting correct account for the product
-      AccountManagement accountManagement =
-          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
       Account account =
-          accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
+          accountManagementAccountService.getProductAccount(
+              product, company, fiscalPosition, isPurchase, invoiceLine.getFixedAssets());
       productInformation.put("account", account);
     } catch (Exception e) {
       if (isAccountRequired) {

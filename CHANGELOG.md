@@ -104,6 +104,7 @@
 - Add direct order stock location.
 - Inventory:Allow to do an inventory for one product.
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
+- ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

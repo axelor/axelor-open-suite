@@ -18,18 +18,17 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -327,26 +326,28 @@ public class InvoiceLineController {
   }
 
   public void getAccount(ActionRequest request, ActionResponse response) {
+
     try {
+
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
       if (invoiceLine != null) {
         Product product = invoiceLine.getProduct();
         Invoice invoice = this.getInvoice(request.getContext());
+
         if (product != null) {
-          AccountManagement accountManagement =
-              Beans.get(AccountManagementService.class)
-                  .getAccountManagement(product, invoice.getCompany());
-          if (accountManagement != null) {
-            Account account = null;
-            if (invoiceLine.getFixedAssets()) {
-              account = accountManagement.getPurchFixedAssetsAccount();
-            } else {
-              account = accountManagement.getPurchaseAccount();
-            }
-            response.setValue("account", account);
-          }
+          Account account =
+              Beans.get(AccountManagementServiceAccountImpl.class)
+                  .getProductAccount(
+                      product,
+                      invoice.getCompany(),
+                      invoice.getPartner().getFiscalPosition(),
+                      InvoiceToolService.isPurchase(invoice),
+                      invoiceLine.getFixedAssets());
+          response.setValue("account", account);
         }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

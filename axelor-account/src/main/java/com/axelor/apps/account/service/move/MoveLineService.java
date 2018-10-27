@@ -157,10 +157,6 @@ public class MoveLineService {
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
             amountInSpecificMoveCurrency, currencyRate);
 
-    if (partner != null) {
-      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
-    }
-
     return this.createMoveLine(
         move,
         partner,

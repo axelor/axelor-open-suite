@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
@@ -126,7 +126,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
   }
 
-  private List<SaleOrderLine> createPackLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected List<SaleOrderLine> createPackLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
 
@@ -161,7 +161,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return subLines;
   }
 
-  private BigDecimal fillDiscount(
+  protected BigDecimal fillDiscount(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal price) {
 
     Map<String, Object> discounts =
@@ -188,19 +188,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     return price;
   }
 
-  private void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
     saleOrderLine.setTaxLine(taxLine);
 
-    AccountManagement accountManagement =
-        accountManagementService.getAccountManagement(
-            saleOrderLine.getProduct(), saleOrder.getCompany());
-    Tax tax = accountManagementService.getProductTax(accountManagement, false);
-    TaxEquiv taxEquiv =
-        Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(saleOrder.getClientPartner().getFiscalPosition(), tax);
+    FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+
+    Tax tax =
+        accountManagementService.getProductTax(
+            saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+
+    TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
 
     saleOrderLine.setTaxEquiv(taxEquiv);
   }

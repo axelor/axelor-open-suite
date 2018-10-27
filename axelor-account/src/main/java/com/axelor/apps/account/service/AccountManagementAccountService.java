@@ -18,7 +18,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -26,11 +27,34 @@ import com.axelor.exception.AxelorException;
 
 public interface AccountManagementAccountService extends AccountManagementService {
 
-  public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase);
-
-  public void generateAccountManagementException(Product product, Company company)
+  /**
+   * Get the product tax according to the fiscal position
+   *
+   * @param product
+   * @param company
+   * @param fiscalPosition
+   * @param isPurchase Specify if we want get the tax for purchase or sale
+   * @param fixedAsset Specify if we should get the purchase account for fixed asset or not. Used
+   *     only if isPurchase param is true.
+   * @return the tax defined for the product, according to the fiscal position
+   * @throws AxelorException
+   */
+  public Account getProductAccount(
+      Product product,
+      Company company,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase,
+      boolean fixedAsset)
       throws AxelorException;
 
-  public Account getProductAccount(Product product, Company company, boolean isPurchase)
-      throws AxelorException;
+  /**
+   * Get the product analytic distribution template
+   *
+   * @param product
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Product product, Company company);
 }

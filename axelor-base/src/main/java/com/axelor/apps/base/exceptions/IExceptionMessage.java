@@ -65,12 +65,10 @@ public interface IExceptionMessage {
       "WARNING : To Date must be after or equals to From Date" /*)*/;
 
   /** Account management service */
-  public static final String ACCOUNT_MANAGEMENT_1 = /*$$(*/
-      "Tax configuration is missing for Product: %s (company: %s)" /*)*/;
-
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_3 = /*$$(*/
-      "Tax is missing for Product: %s (company: %s)" /*)*/;
+      "Tax configuration is missing for Product: %s (company: %s)" /*)*/;
 
   /** Period service */
   public static final String PERIOD_1 = /*$$(*/

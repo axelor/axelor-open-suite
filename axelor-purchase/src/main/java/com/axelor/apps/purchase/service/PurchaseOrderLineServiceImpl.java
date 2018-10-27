@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -248,6 +249,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Preconditions.checkNotNull(
         line.getPurchaseOrder(), I18n.get("You need a purchase order associated to line."));
     PurchaseOrder order = line.getPurchaseOrder();
+    Partner supplierPartner = order.getSupplierPartner();
 
     TaxLine taxLine = getTaxLine(order, line);
     line.setTaxLine(taxLine);
@@ -268,10 +270,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Tax tax =
         accountManagementService.getProductTax(
-            accountManagementService.getAccountManagement(product, order.getCompany()), true);
+            product, order.getCompany(), supplierPartner.getFiscalPosition(), true);
+
     TaxEquiv taxEquiv =
         Beans.get(FiscalPositionService.class)
-            .getTaxEquiv(order.getSupplierPartner().getFiscalPosition(), tax);
+            .getTaxEquiv(supplierPartner.getFiscalPosition(), tax);
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
