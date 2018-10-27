@@ -8,11 +8,11 @@
 	onNew="action-account-management-record-default, action-account-management-attrs-type">
 		<field name="typeSelect" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"
-			onChange="action-group-account-account-management-onchange-common" />
+			onChange="action-group-account-account-management-onchange-common" canEdit="false"/>
         <field name="cashAccount" form-view="account-form" grid-view="account-grid"
-        	domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
-        <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-	  	<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+        	domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'" canEdit="false"/>
+        <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+	  	<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" canEdit="false"/>
     </grid>
  
 	<grid name="account-management-tax-grid" title="Account management list"
@@ -20,16 +20,16 @@
 		onNew="action-account-management-record-default, action-account-management-attrs-type">
 		<field name="typeSelect" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"
-			onChange="action-group-account-account-management-onchange-common" />
+			onChange="action-group-account-account-management-onchange-common" canEdit="false"/>
 		<field name="purchaseAccount" if-module="axelor-account"
 			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" canEdit="false"/>
 		<field name="purchFixedAssetsAccount" if-module="axelor-account"
 			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" canEdit="false"/>
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
 			grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" canEdit="false"/>
 	</grid>
 	
     <action-group name="action-group-account-account-management-onchange-common">

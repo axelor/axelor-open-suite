@@ -162,6 +162,7 @@
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 - Product : Improved StockLocationLine Form which is opened from Product Form.
 - Production App : Add workshop configuration.
+- Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
