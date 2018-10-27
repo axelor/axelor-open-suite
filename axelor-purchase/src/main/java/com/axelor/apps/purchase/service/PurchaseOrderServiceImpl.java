@@ -502,7 +502,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
     purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
-    
+
     updateCostPrice(purchaseOrder);
   }
 

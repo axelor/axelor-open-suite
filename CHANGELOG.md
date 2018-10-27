@@ -54,7 +54,8 @@
 - Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
 - Use sign of General accounting move line to sign the analytic move line on analytic balance.
 - Move : Fix generated move lines.
-		
+- Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
+
 		
 ## [5.0.6] - 2018-10-06
 ## Features

@@ -377,18 +377,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
 
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
-              isPurchase);
+      AccountManagement accountManagement =
+          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
+
+      Tax tax = accountManagementAccountService.getProductTax(accountManagement, isPurchase);
       TaxEquiv taxEquiv =
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
       productInformation.put("taxEquiv", taxEquiv);
 
       // getting correct account for the product
-      AccountManagement accountManagement =
-          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
       Account account =
           accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
       productInformation.put("account", account);
@@ -406,13 +404,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     productInformation.put("productName", invoiceLine.getProduct().getName());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
-
-    // getting correct account for the product
-    AccountManagement accountManagement =
-        accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
-    Account account =
-        accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
-    productInformation.put("account", account);
 
     productInformation.put("price", price);
     productInformation.put("inTaxPrice", inTaxPrice);
