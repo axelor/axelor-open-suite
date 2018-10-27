@@ -238,34 +238,40 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getMinSalePrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
-    Product product = purchaseOrderLine.getProduct();
+    try {
 
-    if (product == null || !product.getSellable()) {
+      Product product = purchaseOrderLine.getProduct();
+
+      if (product == null || !product.getSellable()) {
+        return BigDecimal.ZERO;
+      }
+
+      TaxLine saleTaxLine =
+          accountManagementService.getTaxLine(
+              purchaseOrder.getOrderDate(),
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getCompany(),
+              purchaseOrder.getSupplierPartner().getFiscalPosition(),
+              false);
+
+      BigDecimal price;
+      if (purchaseOrder.getInAti() != product.getInAti()) {
+        price = this.convertUnitPrice(product.getInAti(), saleTaxLine, product.getSalePrice());
+      } else {
+        price = product.getSalePrice();
+      }
+
+      return currencyService
+          .getAmountCurrencyConvertedAtDate(
+              product.getSaleCurrency(),
+              purchaseOrder.getCurrency(),
+              price,
+              purchaseOrder.getOrderDate())
+          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+
+    } catch (Exception e) {
       return BigDecimal.ZERO;
     }
-
-    TaxLine saleTaxLine =
-        accountManagementService.getTaxLine(
-            purchaseOrder.getOrderDate(),
-            purchaseOrderLine.getProduct(),
-            purchaseOrder.getCompany(),
-            purchaseOrder.getSupplierPartner().getFiscalPosition(),
-            false);
-
-    BigDecimal price;
-    if (purchaseOrder.getInAti() != product.getInAti()) {
-      price = this.convertUnitPrice(product.getInAti(), saleTaxLine, product.getSalePrice());
-    } else {
-      price = product.getSalePrice();
-    }
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            product.getSaleCurrency(),
-            purchaseOrder.getCurrency(),
-            price,
-            purchaseOrder.getOrderDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override

@@ -110,9 +110,13 @@ public class PurchaseOrderLineController {
       String productCode =
           purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
-      if (price == null || inTaxPrice == null || productName == null || productCode == null) {
+      response.setValue("productName", productName);
+      response.setValue("productCode", productCode);
+
+      if (price == null || inTaxPrice == null || (productName == null && productCode == null)) {
         response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
-        resetProductInformation(response);
+        this.resetProductInformation(response);
+        response.setValue("taxLine", taxLine.orElse(null));
         return;
       }
 
@@ -168,8 +172,6 @@ public class PurchaseOrderLineController {
 
       response.setValue("price", price);
       response.setValue("inTaxPrice", inTaxPrice);
-      response.setValue("productName", productName);
-      response.setValue("productCode", productCode);
 
       response.setValue(
           "saleMinPrice",
@@ -182,20 +184,11 @@ public class PurchaseOrderLineController {
               purchaseOrder.getInAti() ? inTaxPrice : price));
 
       if (!taxLine.isPresent()) {
-        String msg;
-
-        if (purchaseOrder.getCompany() != null) {
-          msg =
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                  product.getCode(),
-                  purchaseOrder.getCompany().getName());
-        } else {
-          msg =
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_2),
-                  product.getCode());
-        }
+        String msg =
+            String.format(
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+                product.getCode(),
+                purchaseOrder.getCompany().getName());
 
         response.setFlash(msg);
       }
@@ -222,6 +215,7 @@ public class PurchaseOrderLineController {
     response.setValue("companyInTaxTotal", null);
     response.setValue("companyExTaxTotal", null);
     response.setValue("productCode", null);
+    response.setValue("qty", BigDecimal.ONE);
     response.setAttr("minQtyNotRespectedLabel", "hidden", true);
     response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
   }

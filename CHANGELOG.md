@@ -21,6 +21,9 @@
 - InvoiceLine : Added field product.code in grid 
 - PARTNER : balance viewer
 - SaleOrderLine : Added field product.code in grid
+- Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
+- Purchase order : Fill the tax line even if there is no supplier catalog
+- Invoice : Fill the product code and product name even if tax or account are missing for the product
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

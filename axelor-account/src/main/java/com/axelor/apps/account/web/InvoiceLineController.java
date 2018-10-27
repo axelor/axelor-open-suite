@@ -25,7 +25,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -35,6 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -143,21 +143,10 @@ public class InvoiceLineController {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
 
-        if (productInformation.get("taxLine") == null) {
-          String msg;
+        String errorMsg = (String) productInformation.get("error");
 
-          if (invoice.getCompany() != null) {
-            msg =
-                String.format(
-                    I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                    product.getCode(),
-                    invoice.getCompany().getName());
-          } else {
-            msg =
-                String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
-          }
-
-          response.setFlash(msg);
+        if (!Strings.isNullOrEmpty(errorMsg)) {
+          response.setFlash(errorMsg);
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

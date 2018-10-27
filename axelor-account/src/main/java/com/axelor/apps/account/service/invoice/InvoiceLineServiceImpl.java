@@ -397,6 +397,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxCode", null);
       productInformation.put("taxEquiv", null);
       productInformation.put("account", null);
+      productInformation.put("error", e.getMessage());
     }
 
     BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
