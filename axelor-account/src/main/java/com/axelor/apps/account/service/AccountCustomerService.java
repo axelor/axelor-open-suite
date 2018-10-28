@@ -95,10 +95,11 @@ public class AccountCustomerService {
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null)"
                     + "AND account.use_for_partner_balance = 'true'"
-                    + "AND move.status_select = ?3 AND ml.amount_remaining > 0 ")
+                    + "AND (move.status_select = ?3 or move.status_select = ?4) AND ml.amount_remaining > 0 ")
             .setParameter(1, partner)
             .setParameter(2, company)
-            .setParameter(3, MoveRepository.STATUS_VALIDATED);
+            .setParameter(3, MoveRepository.STATUS_VALIDATED)
+            .setParameter(4, MoveRepository.STATUS_DAYBOOK);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -145,7 +146,7 @@ public class AccountCustomerService {
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_debt_recovery_ok IN ('false', null) "
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND move.status_select = ?4 AND ml.amount_remaining > 0 ")
+                    + "AND (move.status_select = ?4 OR move.status_select = ?5) AND ml.amount_remaining > 0 ")
             .setParameter(
                 1,
                 Date.from(
@@ -157,7 +158,8 @@ public class AccountCustomerService {
                 TemporalType.DATE)
             .setParameter(2, partner)
             .setParameter(3, company)
-            .setParameter(4, MoveRepository.STATUS_VALIDATED);
+            .setParameter(4, MoveRepository.STATUS_VALIDATED)
+            .setParameter(5, MoveRepository.STATUS_DAYBOOK);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -220,7 +222,7 @@ public class AccountCustomerService {
                     + "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "
                     + "WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) "
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND move.status_select = ?5 AND ml.amount_remaining > 0 AND invoice.debt_recovery_blocking_ok = FALSE ")
+                    + "AND (move.status_select = ?5 OR move.status_select = ?6) AND ml.amount_remaining > 0 AND invoice.debt_recovery_blocking_ok = FALSE ")
             .setParameter(1, mailTransitTime)
             .setParameter(
                 2,
@@ -233,7 +235,8 @@ public class AccountCustomerService {
                 TemporalType.DATE)
             .setParameter(3, partner)
             .setParameter(4, company)
-            .setParameter(5, MoveRepository.STATUS_VALIDATED);
+            .setParameter(5, MoveRepository.STATUS_VALIDATED)
+            .setParameter(6, MoveRepository.STATUS_DAYBOOK);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -305,30 +308,6 @@ public class AccountCustomerService {
         accSituationRepo.save(accountingSituation);
       }
     }
-  }
-
-  /**
-   * Méthode permettant de mettre à jour les soldes du compte client d'un tiers.
-   *
-   * @param accountingSituation Un compte client
-   */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void updateCustomerAccount(AccountingSituation accountingSituation)
-      throws AxelorException {
-
-    log.debug("Begin updateCustomerAccount service ...");
-
-    Partner partner = accountingSituation.getPartner();
-    Company company = accountingSituation.getCompany();
-
-    accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
-    accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
-    accountingSituation.setBalanceDueDebtRecoveryCustAccount(
-        this.getBalanceDueDebtRecovery(partner, company));
-
-    accSituationRepo.save(accountingSituation);
-
-    log.debug("End updateCustomerAccount service");
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -332,7 +332,7 @@ or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = Parent
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
-AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))
+AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
 group by Account.id, MoveLine.account_code, MoveLine.account_name
 
 order by MoveLine.account_code]]></xml-property>

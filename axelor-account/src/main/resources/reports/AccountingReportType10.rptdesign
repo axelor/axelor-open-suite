@@ -328,6 +328,7 @@ Move.company = AccountingReport.company  AND
 Move.ignore_in_accounting_ok = false AND
 MoveLine.credit > 0.00 AND 
 PaymentMode.type_select = 5
+AND (Move.status_select = 2 OR Move.status_select = 3)
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
