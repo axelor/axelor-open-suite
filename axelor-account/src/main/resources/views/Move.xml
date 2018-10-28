@@ -114,13 +114,11 @@
 	<action-group name="action-group-account-move-validate-click">
 		<action name="save"/>
 		<action name="action-move-method-validate"/>
-		<action name="save"/>
 	</action-group>
 
 	<action-group name="action-group-account-move-account-click">
 		<action name="save"/>
 		<action name="action-move-method-account"/>
-		<action name="save"/>
 	</action-group>
 
    	<!-- ACTION RECORD -->

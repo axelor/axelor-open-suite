@@ -59,6 +59,7 @@
 - Move : Fix generated move lines.
 - Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
 - Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
+- Account move : removed unnecessary save on xml action after call an action-method with reload param
 
 		
 ## [5.0.6] - 2018-10-06
