@@ -144,8 +144,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    *
    * @param product
    * @param compan
-   * 
-   *
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family

@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -38,9 +37,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -151,31 +152,21 @@ public class InvoiceLineController {
     }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
-    Map<String, Object> productInformation = invoiceLineService.resetProductInformation(invoice);
+    Map<String, Object> productInformation = new HashMap<>();
     if (invoice != null && product != null) {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
 
-        if (productInformation.get("taxLine") == null
-            && invoiceLineService.isAccountRequired(invoiceLine)) {
-          String msg;
+        String errorMsg = (String) productInformation.get("error");
 
-          if (invoice.getCompany() != null) {
-            msg =
-                String.format(
-                    I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                    product.getCode(),
-                    invoice.getCompany().getName());
-          } else {
-            msg =
-                String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
-          }
-
-          response.setFlash(msg);
+        if (!Strings.isNullOrEmpty(errorMsg) && invoiceLineService.isAccountRequired(invoiceLine)) {
+          response.setFlash(errorMsg);
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
+    } else {
+      productInformation = invoiceLineService.resetProductInformation(invoice);
     }
     response.setValues(productInformation);
   }

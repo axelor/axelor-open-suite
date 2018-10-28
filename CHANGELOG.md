@@ -240,6 +240,9 @@
 - InvoiceLine : Added field product.code in grid 
 - PARTNER : balance viewer
 - SaleOrderLine : Added field product.code in grid
+- Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
+- Purchase order : Fill the tax line even if there is no supplier catalog
+- Invoice : Fill the product code and product name even if tax or account are missing for the product
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -273,7 +276,8 @@
 - Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
 - Use sign of General accounting move line to sign the analytic move line on analytic balance.
 - Move : Fix generated move lines.
-		
+- Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
+
 		
 ## [5.0.6] - 2018-10-06
 ## Features

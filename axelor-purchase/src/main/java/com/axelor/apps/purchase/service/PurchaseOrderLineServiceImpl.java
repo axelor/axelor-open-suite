@@ -251,22 +251,28 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     PurchaseOrder order = line.getPurchaseOrder();
     Partner supplierPartner = order.getSupplierPartner();
 
+    String productName = getProductSupplierInfos(order, line)[0];
+    String productCode = getProductSupplierInfos(order, line)[1];
+    line.setProductName(productName);
+    line.setProductCode(productCode);
+    line.setUnit(getPurchaseUnit(line));
+    line.setQty(getQty(order, line));
+
+    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
+      line.setDescription(product.getDescription());
+    }
+
     TaxLine taxLine = getTaxLine(order, line);
     line.setTaxLine(taxLine);
 
     BigDecimal price = getExTaxUnitPrice(order, line, taxLine);
     BigDecimal inTaxPrice = getInTaxUnitPrice(order, line, taxLine);
-    String productName = getProductSupplierInfos(order, line)[0];
-    String productCode = getProductSupplierInfos(order, line)[1];
 
-    if (price == null || inTaxPrice == null || productName == null || productCode == null) {
+    if (price == null || inTaxPrice == null || (productName == null && productCode == null)) {
       throw new AxelorException(
           TraceBackRepository.TYPE_FUNCTIONNAL,
           I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
-
-    line.setUnit(getPurchaseUnit(line));
-    line.setQty(getQty(order, line));
 
     Tax tax =
         accountManagementService.getProductTax(
@@ -307,16 +313,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     line.setPrice(price);
     line.setInTaxPrice(inTaxPrice);
-    line.setProductName(productName);
-    line.setProductCode(productCode);
 
     line.setSaleMinPrice(getMinSalePrice(order, line));
     line.setSalePrice(
         getSalePrice(order, line.getProduct(), order.getInAti() ? inTaxPrice : price));
-
-    if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
-      line.setDescription(product.getDescription());
-    }
 
     return line;
   }
@@ -337,6 +337,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setCompanyInTaxTotal(null);
     line.setCompanyExTaxTotal(null);
     line.setProductCode(null);
+    line.setQty(BigDecimal.ZERO);
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
@@ -347,34 +348,40 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getMinSalePrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
-    Product product = purchaseOrderLine.getProduct();
+    try {
 
-    if (product == null || !product.getSellable()) {
+      Product product = purchaseOrderLine.getProduct();
+
+      if (product == null || !product.getSellable()) {
+        return BigDecimal.ZERO;
+      }
+
+      TaxLine saleTaxLine =
+          accountManagementService.getTaxLine(
+              purchaseOrder.getOrderDate(),
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getCompany(),
+              purchaseOrder.getSupplierPartner().getFiscalPosition(),
+              false);
+
+      BigDecimal price;
+      if (purchaseOrder.getInAti() != product.getInAti()) {
+        price = this.convertUnitPrice(product.getInAti(), saleTaxLine, product.getSalePrice());
+      } else {
+        price = product.getSalePrice();
+      }
+
+      return currencyService
+          .getAmountCurrencyConvertedAtDate(
+              product.getSaleCurrency(),
+              purchaseOrder.getCurrency(),
+              price,
+              purchaseOrder.getOrderDate())
+          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+
+    } catch (Exception e) {
       return BigDecimal.ZERO;
     }
-
-    TaxLine saleTaxLine =
-        accountManagementService.getTaxLine(
-            purchaseOrder.getOrderDate(),
-            purchaseOrderLine.getProduct(),
-            purchaseOrder.getCompany(),
-            purchaseOrder.getSupplierPartner().getFiscalPosition(),
-            false);
-
-    BigDecimal price;
-    if (purchaseOrder.getInAti() != product.getInAti()) {
-      price = this.convertUnitPrice(product.getInAti(), saleTaxLine, product.getSalePrice());
-    } else {
-      price = product.getSalePrice();
-    }
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            product.getSaleCurrency(),
-            purchaseOrder.getCurrency(),
-            price,
-            purchaseOrder.getOrderDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override
