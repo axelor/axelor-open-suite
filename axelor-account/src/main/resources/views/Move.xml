@@ -66,8 +66,8 @@
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
-                <button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
-                <button name="account" title="Accounting.toAccount" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
+                <button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!company?.accountConfig?.accountingDaybook"/>
+                <button name="account" title="Accounting.toAccount" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="company?.accountConfig?.accountingDaybook"/>
             </panel>
 		</panel>
 		
