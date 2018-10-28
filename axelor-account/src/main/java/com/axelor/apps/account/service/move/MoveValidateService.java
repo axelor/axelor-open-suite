@@ -22,11 +22,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -44,17 +45,19 @@ public class MoveValidateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AccountConfigService accountConfigService;
   protected SequenceService sequenceService;
   protected MoveCustAccountService moveCustAccountService;
   protected MoveRepository moveRepository;
 
   @Inject
   public MoveValidateService(
-      AppAccountService appAccountService,
+      AccountConfigService accountConfigService,
       SequenceService sequenceService,
       MoveCustAccountService moveCustAccountService,
       MoveRepository moveRepository) {
 
+    this.accountConfigService = accountConfigService;
     this.sequenceService = sequenceService;
     this.moveCustAccountService = moveCustAccountService;
     this.moveRepository = moveRepository;
@@ -120,13 +123,17 @@ public class MoveValidateService {
     log.debug("Validation de l'écriture comptable {}", move.getReference());
     Journal journal = move.getJournal();
     Company company = move.getCompany();
-    if (journal == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
-    }
+
     if (company == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
+    }
+
+    Boolean daybook = accountConfigService.getAccountConfig(company).getAccountingDaybook();
+
+    if (journal == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
     }
 
     if (move.getPeriod() == null) {
@@ -134,7 +141,7 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
     }
 
-    if (journal.getSequence() == null) {
+    if (journal.getSequence() == null && !daybook) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MOVE_5),
@@ -155,7 +162,9 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+    if (!daybook) {
+      move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+    }
 
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       move.setAdjustingMove(true);
@@ -165,9 +174,12 @@ public class MoveValidateService {
     this.fillMoveLines(move);
     moveRepository.save(move);
 
-    moveCustAccountService.updateCustomerAccount(move);
-
+    this.updateValidateStatus(move, daybook);
     move.setValidationDate(LocalDate.now());
+
+    if (updateCustomerAccount) {
+      moveCustAccountService.updateCustomerAccount(move);
+    }
   }
 
   /**
@@ -209,6 +221,14 @@ public class MoveValidateService {
             totalDebit,
             totalCredit);
       }
+    }
+  }
+
+  public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
+
+    if (daybook && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK) {
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+    } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
     }
   }
@@ -234,10 +254,12 @@ public class MoveValidateService {
     boolean error = false;
     for (Move move : moveList) {
       try {
-        validate(move);
+        validate(moveRepository.find(move.getId()));
       } catch (Exception e) {
         TraceBackService.trace(e);
         error = true;
+      } finally {
+        JPA.clear();
       }
     }
     return error;

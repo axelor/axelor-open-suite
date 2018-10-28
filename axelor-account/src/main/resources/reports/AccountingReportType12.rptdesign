@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -261,6 +261,8 @@ left outer join public.account_invoice as Invoice on (Invoice.id = Move.invoice)
 where AccountingReport.year = period.year 
 and (AccountType.technical_type_select = 'income'
         or AccountType.technical_type_select = 'charge')
+AND (Move.status_select = 3 OR Move.status_select = 2)
+        
 group by MoveLine.account_code, MoveLine.account_name, TaxLine.value, Tax.name, TaxMoveLine, move_id, TaxLine.id
 order by MoveLine.account_code desc]]></xml-property>
         </oda-data-set>

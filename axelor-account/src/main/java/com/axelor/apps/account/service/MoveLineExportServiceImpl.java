@@ -340,7 +340,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -525,7 +528,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -711,7 +717,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -896,7 +905,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -1156,7 +1168,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         moveLineRepo
             .all()
             .filter(
-                "self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED)
+                "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
+                MoveRepository.STATUS_VALIDATED,
+                MoveRepository.STATUS_DAYBOOK)
             .order("date")
             .order("name")
             .fetch();
@@ -1302,7 +1316,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             "AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.accountingReport = %s",
             accountingReport.getId());
     moveLineQueryStr +=
-        String.format(" AND self.move.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+        String.format(
+            " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
 
     Query queryDate =
         JPA.em()

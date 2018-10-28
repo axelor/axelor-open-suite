@@ -59,19 +59,6 @@ public class MoveController {
     }
   }
 
-  public void account(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
-
-    try {
-      moveService.getMoveAccountService().account(move);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void getPeriod(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
