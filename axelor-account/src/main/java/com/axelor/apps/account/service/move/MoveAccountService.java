@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -184,10 +185,13 @@ public class MoveAccountService {
     boolean error = false;
     for (Move move : moveList) {
       try {
-        account(move);
+        account(moveRepository.find(move.getId()));
       } catch (Exception e) {
         TraceBackService.trace(e);
         error = true;
+      }
+      finally {
+    	JPA.clear();
       }
     }
     return error;
