@@ -291,9 +291,11 @@ public class MoveValidateService {
     return partnerList;
   }
 
-  // Procédure permettant de remplir les champs dans les lignes d'écriture relatifs au compte
-  // comptable et au tiers
-  @Transactional
+  /**
+   * Method that freeze the account and partner fields on move lines
+   * 
+   * @param move
+   */
   public void freezeAccountAndPartnerFieldsOnMoveLines(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       Account account = moveLine.getAccount();
