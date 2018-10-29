@@ -217,6 +217,7 @@
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 - PURCHASE ORDER : Division by zero
+- Account Move : Removed readonlyIf from MoveLine-form and made editable even after validated status.
 
 ## [Unreleased 5.0.7]
 ## Features
