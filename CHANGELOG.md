@@ -218,6 +218,7 @@
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 - PURCHASE ORDER : Division by zero
+- PURCHASE ORDER : Completed Button french translation corrections and prompt added for it. 
 
 ## [Unreleased 5.0.7]
 ## Features
