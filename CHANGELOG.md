@@ -218,7 +218,9 @@
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 - PURCHASE ORDER : Division by zero
-- PURCHASE ORDER : Completed Button french translation corrections and prompt added for it. 
+- PURCHASE ORDER : Completed Button french translation corrections and prompt added for it.
+- Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
+ 
 
 ## [Unreleased 5.0.7]
 ## Features
