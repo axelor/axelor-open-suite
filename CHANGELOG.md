@@ -506,6 +506,7 @@ Also, improve the sale order line grid and form views.
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
 - Timesheet editor: No group by on project when unique product is used.
+- Invoice : Added domain filter for purchaseOrder field using supplierPartner and company.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
