@@ -104,6 +104,8 @@
 - Add direct order stock location.
 - Inventory:Allow to do an inventory for one product.
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
+- ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
+- STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -161,6 +163,7 @@
 - Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
 - Product : Improved StockLocationLine Form which is opened from Product Form.
 - Production App : Add workshop configuration.
+- Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -215,7 +218,9 @@
 - Purchase Order : Fix minor form view corrections.
 - Stock Move : Fix availability status language.
 - PURCHASE ORDER : Division by zero
+- PURCHASE ORDER : Completed Button french translation corrections and prompt added for it.
 - Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
+ 
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -239,6 +244,9 @@
 - InvoiceLine : Added field product.code in grid 
 - PARTNER : balance viewer
 - SaleOrderLine : Added field product.code in grid
+- Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
+- Purchase order : Fill the tax line even if there is no supplier catalog
+- Invoice : Fill the product code and product name even if tax or account are missing for the product
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -272,7 +280,12 @@
 - Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
 - Use sign of General accounting move line to sign the analytic move line on analytic balance.
 - Move : Fix generated move lines.
-		
+- Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
+- Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
+- Account move : removed unnecessary save on xml action after call an action-method with reload param
+- ACCOUNT MOVE : mass daybook validation - manage JPA cache
+- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views)
+- Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
 		
 ## [5.0.6] - 2018-10-06
 ## Features

@@ -105,7 +105,8 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
+          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
+                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
               && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
             moveLineList.add(moveLine);
           }

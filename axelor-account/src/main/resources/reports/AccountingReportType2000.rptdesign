@@ -367,6 +367,8 @@ AnalyticMoveLine.date_val <= AccountingReport.date_val AND
 AnalyticJournal.company = AccountingReport.company 
 AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_journal  = AnalyticJournal.id)  
 AND AnalyticMoveLine.type_select = 3
+AND  Move.ignore_in_accounting_ok = false 
+AND (Move.status_select = 3 OR Move.status_select = 2)
 
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id 
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>

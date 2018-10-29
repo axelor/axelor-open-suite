@@ -51,7 +51,6 @@ public class MoveService {
   protected MoveLineService moveLineService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
-  protected MoveAccountService moveAccountService;
   protected MoveRemoveService moveRemoveService;
   protected MoveToolService moveToolService;
   protected ReconcileService reconcileService;
@@ -69,7 +68,6 @@ public class MoveService {
       MoveLineService moveLineService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveAccountService moveAccountService,
       MoveToolService moveToolService,
       MoveRemoveService moveRemoveService,
       ReconcileService reconcileService,
@@ -82,7 +80,6 @@ public class MoveService {
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveAccountService = moveAccountService;
     this.moveRemoveService = moveRemoveService;
     this.moveToolService = moveToolService;
     this.reconcileService = reconcileService;
@@ -105,10 +102,6 @@ public class MoveService {
 
   public MoveValidateService getMoveValidateService() {
     return moveValidateService;
-  }
-
-  public MoveAccountService getMoveAccountService() {
-    return moveAccountService;
   }
 
   public MoveRemoveService getMoveRemoveService() {

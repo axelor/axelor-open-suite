@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -40,7 +41,6 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -53,7 +53,6 @@ import java.util.Map;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
-  protected AccountManagementService accountManagementService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
@@ -62,14 +61,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   @Inject
   public InvoiceLineServiceImpl(
-      AccountManagementService accountManagementService,
       CurrencyService currencyService,
       PriceListService priceListService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService) {
 
-    this.accountManagementService = accountManagementService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -133,7 +130,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException {
 
-    return accountManagementService.getTaxLine(
+    return accountManagementAccountService.getTaxLine(
         appAccountService.getTodayDate(),
         invoiceLine.getProduct(),
         invoice.getCompany(),
@@ -390,11 +387,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public Map<String, Object> fillPriceAndAccount(
       Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
 
-    Map<String, Object> productInformation = new HashMap<>();
+    Map<String, Object> productInformation = resetProductInformation(invoice);
 
     boolean isAccountRequired = isAccountRequired(invoiceLine);
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
+    Company company = invoice.getCompany();
+    FiscalPosition fiscalPosition = invoice.getPartner().getFiscalPosition();
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);
@@ -402,20 +401,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
 
-      Tax tax =
-          accountManagementAccountService.getProductTax(
-              accountManagementAccountService.getAccountManagement(product, invoice.getCompany()),
-              isPurchase);
-      TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+      Tax tax = accountManagementAccountService.getProductTax(product, company, null, isPurchase);
+      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
       productInformation.put("taxEquiv", taxEquiv);
 
+      Account account =
+          accountManagementAccountService.getProductAccount(
+              product, company, fiscalPosition, isPurchase, invoiceLine.getFixedAssets());
+      productInformation.put("account", account);
+
     } catch (AxelorException e) {
-      productInformation.put("taxLine", null);
-      productInformation.put("taxRate", null);
-      productInformation.put("taxCode", null);
-      productInformation.put("taxEquiv", null);
+      productInformation.put("error", e.getMessage());
     }
 
     if (isAccountRequired) {
@@ -429,19 +425,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
 
       productInformation.put("productName", invoiceLine.getProduct().getName());
-    }
-
-    try {
-      // getting correct account for the product
-      AccountManagement accountManagement =
-          accountManagementAccountService.getAccountManagement(product, invoice.getCompany());
-      Account account =
-          accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
-      productInformation.put("account", account);
-    } catch (Exception e) {
-      if (isAccountRequired) {
-        throw e;
-      }
     }
 
     return productInformation;

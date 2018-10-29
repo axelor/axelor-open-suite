@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -29,7 +28,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -43,14 +41,15 @@ import java.util.Map;
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
-  protected AccountManagementService accountManagementService;
+  protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
-      AppAccountService appAccountService, AccountManagementService accountManagementService) {
+      AppAccountService appAccountService,
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
 
     this.appAccountService = appAccountService;
-    this.accountManagementService = accountManagementService;
+    this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
   }
 
   @Override
@@ -143,12 +142,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public List<AnalyticMoveLine> generateLinesFromProduct(
       Product product, Company company, BigDecimal total) throws AxelorException {
-    AnalyticDistributionTemplate analyticDistributionTemplate = null;
-    AccountManagement accountManagement =
-        accountManagementService.getAccountManagement(product, company);
-    if (accountManagement != null) {
-      analyticDistributionTemplate = accountManagement.getAnalyticDistributionTemplate();
-    }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
     return this.generateLinesWithTemplate(analyticDistributionTemplate, total);
   }
 

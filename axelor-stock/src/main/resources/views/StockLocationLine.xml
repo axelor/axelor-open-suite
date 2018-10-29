@@ -31,6 +31,7 @@
         	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
         </panel>
         <panel-dashlet action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
+        <panel-dashlet action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -170,5 +171,13 @@
         <field name="$futureQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id)"/>
         <field name="$reservedQty" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id)" if="__config__.app.isApp('supplychain')" />
     </action-record>
+    
+    <action-view name="action-stock-location-line-view-stock-rule" title="Stock Rules" model="com.axelor.apps.stock.db.StockRules">
+    	<view type="grid" name="stock-rules-grid"/>
+    	<view type="form" name="stock-rules-form"/>
+    	<domain>self.product.id = :productId AND self.stockLocation.id = :locationId</domain>
+    	<context name="productId" expr="eval: product?.id"/> 
+    	<context name="locationId" expr="eval: stockLocation?.id "/>
+    </action-view>
     
 </object-views>
