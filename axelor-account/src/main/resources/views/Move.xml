@@ -70,7 +70,7 @@
             </panel>
 		</panel>
 		
-		<panel-related field="moveLineList" showIf="journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" readonlyIf="statusSelect == 3" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		<panel-related field="moveLineList" showIf="journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="statusSelect &lt; 2" canRemove="statusSelect &lt; 2" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
 
         <panel-tabs>
             <panel name="relatedTo" title="Related to" readonly="true">
