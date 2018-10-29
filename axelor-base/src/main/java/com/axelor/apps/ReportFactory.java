@@ -19,11 +19,26 @@ package com.axelor.apps;
 
 import com.axelor.apps.report.engine.EmbeddedReportSettings;
 import com.axelor.apps.report.engine.ExternalReportSettings;
+import com.axelor.apps.report.engine.JasperReportSettings;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.report.ReportResourceLocator;
+import org.apache.commons.io.FilenameUtils;
+import org.eclipse.birt.report.model.api.IResourceLocator;
+
+import java.net.URL;
 
 public class ReportFactory {
 
   public static ReportSettings createReport(String rptdesign, String outputName) {
+    if (ReportSettings.getReportEngine() == ReportSettings.ReportEngine.JASPER_REPORTS) {
+      IResourceLocator locator = new ReportResourceLocator();
+      URL reportURL =
+          locator.findResource(
+              null, FilenameUtils.removeExtension(rptdesign) + ".jrxml", IResourceLocator.OTHERS);
+      if (reportURL != null) {
+        return new JasperReportSettings(reportURL, outputName);
+      }
+    }
 
     if (ReportSettings.useIntegratedEngine()) {
 
