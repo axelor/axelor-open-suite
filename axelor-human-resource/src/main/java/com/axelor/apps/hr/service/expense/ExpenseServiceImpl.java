@@ -462,7 +462,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
 
     expense.setMove(move);
     return move;

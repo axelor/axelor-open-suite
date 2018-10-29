@@ -172,7 +172,7 @@ public class MoveService {
         invoice.setMove(move);
 
         invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
-        moveValidateService.validateMove(move);
+        moveValidateService.validate(move);
       }
     }
 
@@ -327,7 +327,7 @@ public class MoveService {
               invoice.getInvoiceDate(),
               invoice.getDueDate());
 
-          moveValidateService.validateMove(move);
+          moveValidateService.validate(move);
 
           // Création de la réconciliation
           Reconcile reconcile =
@@ -401,7 +401,7 @@ public class MoveService {
           account,
           appAccountService.getTodayDate());
 
-      moveValidateService.validateMove(oDmove);
+      moveValidateService.validate(oDmove);
 
       // Création de la réconciliation
       Reconcile reconcile =

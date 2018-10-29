@@ -69,6 +69,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PeriodServiceAccountImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
@@ -104,6 +105,7 @@ import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
+import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -203,5 +205,7 @@ public class AccountModule extends AxelorModule {
     bind(UmrNumberService.class).to(UmrNumberServiceImpl.class);
 
     bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
+
+    bind(PeriodServiceImpl.class).to(PeriodServiceAccountImpl.class);
   }
 }

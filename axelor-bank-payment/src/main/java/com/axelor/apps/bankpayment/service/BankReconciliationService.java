@@ -174,7 +174,7 @@ public class BankReconciliationService {
 
     moveRepository.save(move);
 
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
 
     bankReconciliationLine.setMoveLine(partnerMoveLine);
 

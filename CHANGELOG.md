@@ -61,8 +61,10 @@
 - Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
 - Account move : removed unnecessary save on xml action after call an action-method with reload param
 - ACCOUNT MOVE : mass daybook validation - manage JPA cache
-- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views)
+- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views). 
+When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
 - Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
+- Validate all draft or daybook account moves when we close a period.
 		
 ## [5.0.6] - 2018-10-06
 ## Features
