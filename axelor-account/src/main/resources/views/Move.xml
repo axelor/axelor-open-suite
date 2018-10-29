@@ -24,7 +24,8 @@
 
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
-          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status,action-move-attrs-validate-button-title">
+          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status,action-move-attrs-validate-button-title" 
+          onSave="save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
             <button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
@@ -165,9 +166,9 @@
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
 	</action-method>
-
-	<action-method name="action-move-method-account">
-		<call class="com.axelor.apps.account.web.MoveController" method="account"/>
+	
+	<action-method name="action-move-method-update-in-day-book-mode">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateInDayBookMode"/>
 	</action-method>
 
 	<action-method name="action-move-method-generate-reverse-move">

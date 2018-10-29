@@ -109,6 +109,7 @@ public class MoveController {
                   moveIds,
                   MoveRepository.STATUS_VALIDATED,
                   MoveRepository.STATUS_CANCELED)
+              .order("date")
               .fetch();
       if (!moveList.isEmpty()) {
         boolean error = moveService.getMoveValidateService().validateMultiple(moveList);
@@ -203,5 +204,20 @@ public class MoveController {
     }
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+    move = moveRepo.find(move.getId());
+
+    try {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+        moveService.getMoveValidateService().updateInDayBookMode(move);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

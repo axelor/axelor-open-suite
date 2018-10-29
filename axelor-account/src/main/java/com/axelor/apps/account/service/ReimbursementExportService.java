@@ -248,7 +248,7 @@ public class ReimbursementExportService {
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
-      moveService.getMoveValidateService().validateMove(newMove);
+      moveService.getMoveValidateService().validate(newMove);
       moveRepo.save(newMove);
     }
   }

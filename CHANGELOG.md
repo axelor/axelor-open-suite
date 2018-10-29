@@ -247,6 +247,7 @@
 - Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
 - Purchase order : Fill the tax line even if there is no supplier catalog
 - Invoice : Fill the product code and product name even if tax or account are missing for the product
+- FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -284,8 +285,11 @@
 - Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
 - Account move : removed unnecessary save on xml action after call an action-method with reload param
 - ACCOUNT MOVE : mass daybook validation - manage JPA cache
-- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views)
+- Tracking Number Configuration : Fix put requiredIf on 'Sequence' field.
+- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views). 
+When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
 - Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
+- Validate all draft or daybook account moves when we close a period.
 		
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -727,6 +731,7 @@ Also, improve the sale order line grid and form views.
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
 - Timesheet editor: No group by on project when unique product is used.
+- Invoice : Added domain filter for purchaseOrder field using supplierPartner and company.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.

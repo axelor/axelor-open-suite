@@ -185,7 +185,7 @@ public class DoubtfulCustomerService {
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validateMove(newMove);
+    moveService.getMoveValidateService().validate(newMove);
     moveRepo.save(newMove);
 
     Reconcile reconcile =
@@ -277,7 +277,7 @@ public class DoubtfulCustomerService {
     debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validateMove(newMove);
+    moveService.getMoveValidateService().validate(newMove);
     moveRepo.save(newMove);
 
     this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
