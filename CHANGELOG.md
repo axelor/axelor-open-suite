@@ -78,6 +78,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - AnalyticBalance report: Fix order by.
 - Product: Removed 'shippingCoef' value set from onLoad.
 - Alphabetical order on the table producedStockMoveLineList
+- Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 
 
 ## [5.0.6] - 2018-10-06
