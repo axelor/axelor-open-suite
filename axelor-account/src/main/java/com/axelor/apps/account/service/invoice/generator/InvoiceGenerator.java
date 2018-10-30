@@ -210,22 +210,10 @@ public abstract class InvoiceGenerator {
     if (paymentCondition == null) {
       paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
     }
-    if (paymentCondition == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
-    }
     invoice.setPaymentCondition(paymentCondition);
 
     if (paymentMode == null) {
       paymentMode = InvoiceToolService.getPaymentMode(invoice);
-    }
-    if (paymentMode == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     invoice.setPaymentMode(paymentMode);
 
@@ -287,7 +275,7 @@ public abstract class InvoiceGenerator {
 
     // Set Company bank details
     if (companyBankDetails == null) {
-      if (accountingSituation != null) {
+      if (accountingSituation != null && paymentMode != null) {
         if (paymentMode.equals(partner.getOutPaymentMode())) {
           companyBankDetails = accountingSituation.getCompanyOutBankDetails();
         } else if (paymentMode.equals(partner.getInPaymentMode())) {

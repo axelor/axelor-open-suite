@@ -106,6 +106,7 @@
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
 - ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
 - STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
+- Invoice : Allow to generate invoice without payment mode and condition.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
