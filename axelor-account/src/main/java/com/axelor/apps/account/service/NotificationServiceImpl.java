@@ -176,7 +176,7 @@ public class NotificationServiceImpl implements NotificationService {
         paymentMove.addMoveLineListItem(creditMoveLine);
         paymentMove = Beans.get(MoveRepository.class).save(paymentMove);
 
-        moveService.getMoveValidateService().validateMove(paymentMove);
+        moveService.getMoveValidateService().validate(paymentMove);
 
         if (!isOutPayment) {
           reconcileService.reconcile(

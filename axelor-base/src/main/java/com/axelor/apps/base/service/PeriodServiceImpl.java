@@ -118,7 +118,6 @@ public class PeriodServiceImpl implements PeriodService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void close(Period period) {
-    period = periodRepo.find(period.getId());
 
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);

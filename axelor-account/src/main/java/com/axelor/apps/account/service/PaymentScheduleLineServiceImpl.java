@@ -222,7 +222,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     move.addMoveLineListItem(debitMoveLine);
     debitMoveLine = moveLineRepo.save(debitMoveLine);
 
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
 
     // Reconcile
     if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
