@@ -25,6 +25,7 @@
 - Purchase order : Fill the tax line even if there is no supplier catalog
 - Invoice : Fill the product code and product name even if tax or account are missing for the product
 - FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
+- INVENTORY : stock location filter
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
