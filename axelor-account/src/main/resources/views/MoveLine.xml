@@ -238,6 +238,11 @@
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
+		
+		<panel-mail>
+		    <mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
     
     <action-method name="action-method-accounting-reconcile">
