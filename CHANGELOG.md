@@ -221,6 +221,7 @@
 - PURCHASE ORDER : Completed Button french translation corrections and prompt added for it.
 - Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
 - Purchase ORDER : Fix issue when we click on Cancel receipt button and changed translation message for 'Cancel receipt'. 
+- Invoice Line : Fix client side crash when clear the product.
 
 ## [Unreleased 5.0.7]
 ## Features
