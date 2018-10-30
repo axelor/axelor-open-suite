@@ -227,6 +227,7 @@
 - Purchase ORDER : Fix issue when we click on Cancel receipt button and changed translation message for 'Cancel receipt'. 
 - Invoice Line : Fix client side crash when clear the product.
 - Purchase Request:Set fields to canEdit false and Removed Field Delivered Quantity and changed cancel button accessible status. 
+- StockMove : Fix the 'back order' generation.
 
 ## [Unreleased 5.0.7]
 ## Features

@@ -472,7 +472,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     resetMasses(stockMove);
 
     try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
+      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
         Optional<StockMove> newStockMove =
             copyAndSplitStockMove(stockMove, stockMove.getPlannedStockMoveLineList());
         if (newStockMove.isPresent()) {
@@ -480,8 +480,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
       }
 
-      if (stockMove.getIsWithReturnSurplus()
-          && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
+      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
         Optional<StockMove> newStockMove =
             copyAndSplitStockMoveReverse(stockMove, stockMove.getPlannedStockMoveLineList(), true);
         if (newStockMove.isPresent()) {
