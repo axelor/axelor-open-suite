@@ -108,13 +108,4 @@ public interface PurchaseOrderService {
   public void finishPurchaseOrder(PurchaseOrder purchaseOrder);
 
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder);
-
-  /**
-   * Print a purchase order
-   *
-   * @return ReportSettings
-   * @throws AxelorException
-   */
-  public String printPurchaseOrder(PurchaseOrder purchaseOrder, List<Integer> lstSelectedMove)
-      throws AxelorException;
 }

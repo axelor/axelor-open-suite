@@ -106,6 +106,7 @@
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
 - ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
 - STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
+- Account Move, Move Line : Add change tracking.
 - Invoice : Allow to generate invoice without payment mode and condition.
 
 ## Improvements
@@ -165,6 +166,8 @@
 - Product : Improved StockLocationLine Form which is opened from Product Form.
 - Production App : Add workshop configuration.
 - Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
+- Purchase Order:Allow to cancel a validated purchase order.If a stock move is already generated, cancel it.
+- PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
