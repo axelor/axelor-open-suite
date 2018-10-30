@@ -16,7 +16,6 @@
     <decimal name="price" title="Price"  />
     <string name="description" title="Description" large="true"/>
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address" />
-    <decimal name="deliveredQty" title="Delivered quantity" />
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select" default="1"/>
   	
