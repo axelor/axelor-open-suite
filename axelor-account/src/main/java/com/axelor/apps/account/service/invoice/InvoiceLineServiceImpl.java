@@ -106,6 +106,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     analyticMoveLine.setInvoiceLine(invoiceLine);
     analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
+    analyticMoveLine.setInvoiceLine(null);
     analyticMoveLine.setDate(appAccountService.getTodayDate());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
   }
@@ -358,6 +359,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                 .getAppInvoice()
                 .getIsEnabledProductDescriptionCopyForSuppliers())) {
       productInformation.put("description", null);
+    }
+    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
+        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      productInformation.put("analyticMoveLineList", null);
     }
     return productInformation;
   }
