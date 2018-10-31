@@ -24,7 +24,7 @@
         <field name="description"/>
     </grid>
     
-    <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" editable="true" onNew="action-account-move-line-onnew-group">
+    <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
 		<field name="date" width="100"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
@@ -171,6 +171,7 @@
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
 		<panel name="informations" title="Informations" colSpan="12">
+
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
 					<![CDATA[
@@ -204,8 +205,8 @@
 			<field name="taxAmount" showIf="taxAmount != 0"/>
 		</panel>
 		<panel-tabs>
-			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel-related showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
 				<field name="passageReason" showIf="$number(debit) > 0.00"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
@@ -293,6 +294,7 @@
 	
 	<action-attrs name="action-move-line-attrs-readonly">
 		<attribute name="readonly" for="informations" expr="eval: move.statusSelect == 3 || move.statusSelect == 4"/>
+		<attribute name="readonly" for="irrecoverable,currency,others" expr="eval: move?.statusSelect == 3 "/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
