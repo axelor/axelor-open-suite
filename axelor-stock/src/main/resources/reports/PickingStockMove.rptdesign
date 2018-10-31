@@ -905,7 +905,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">qty</property>
+                        <property name="name">real_qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -986,8 +986,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">qty</property>
-                    <property name="nativeName">qty</property>
+                    <property name="name">real_qty</property>
+                    <property name="nativeName">real_qty</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
@@ -1026,16 +1026,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeName">sequence</property>
                     <property name="dataType">integer</property>
                 </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">isTitleLine</property>
-                    <property name="nativeName">isTitleLine</property>
-                    <property name="dataType">integer</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
-StockMoveLine.qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq,
+StockMoveLine.real_qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
@@ -1883,12 +1877,6 @@ row["first_name"]
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">qty</property>
-                                    <text-property name="displayName">qty</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                                <structure>
                                     <property name="name">unit_code</property>
                                     <text-property name="displayName">unit_code</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
@@ -1911,7 +1899,7 @@ row["first_name"]
                                     <list-property name="arguments">
                                         <structure>
                                             <property name="name">Expression</property>
-                                            <expression name="value" type="javascript">dataSetRow["qty"]</expression>
+                                            <expression name="value" type="javascript">row["real_qty"]</expression>
                                         </structure>
                                     </list-property>
                                     <property name="allowExport">true</property>
@@ -1994,6 +1982,12 @@ row["first_name"]
                                     <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
                                     <property name="dataType">integer</property>
                                     <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">real_qty</property>
+                                    <text-property name="displayName">real_qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["real_qty"]</expression>
+                                    <property name="dataType">decimal</property>
                                 </structure>
                             </list-property>
                             <list-property name="filter">
