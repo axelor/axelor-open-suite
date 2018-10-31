@@ -176,6 +176,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       String productName = supplierCatalog.getProductSupplierName();
       String productCode = supplierCatalog.getProductSupplierCode();
       return new String[] {productName, productCode};
+    } else {
+      if (product != null) {
+        return new String[] {product.getName(), product.getCode()};
+      }
     }
     return new String[] {"", ""};
   }
@@ -219,8 +223,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       TaxLine taxLine,
       boolean resultInAti)
       throws AxelorException {
-    BigDecimal purchasePrice;
-    Currency purchaseCurrency;
+    BigDecimal purchasePrice = new BigDecimal(0);
+    Currency purchaseCurrency = null;
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
         supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
@@ -229,7 +233,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       purchasePrice = supplierCatalog.getPrice();
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
-      return null;
+      if (product != null) {
+        purchasePrice = product.getPurchasePrice();
+        purchaseCurrency = product.getPurchaseCurrency();
+      }
     }
 
     BigDecimal price =

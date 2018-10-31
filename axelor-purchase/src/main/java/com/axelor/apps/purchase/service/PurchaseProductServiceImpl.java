@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -49,7 +50,8 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
 
   @Override
   public Optional<BigDecimal> getShippingCoefFromPartners(Product product) {
-    if (product.getSupplierCatalogList() == null) {
+    if (product.getSupplierCatalogList() == null
+        || !Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
       return Optional.empty();
     }
     Company userActiveCompany = Beans.get(UserService.class).getUserActiveCompany();

@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -154,7 +155,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Override
   public List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine) {
     Product product = saleOrderLine.getProduct();
-    if (product == null || product.getSupplierCatalogList() == null) {
+    if (!Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        || product == null
+        || product.getSupplierCatalogList() == null) {
       return new ArrayList<>();
     }
     return product
