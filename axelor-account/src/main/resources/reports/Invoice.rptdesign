@@ -3043,6 +3043,27 @@ if(row["operation_type_select"] == "1" ){
             <column id="4486">
                 <property name="width">0.3439583333333333cm</property>
             </column>
+            <row id="5330">
+                <property name="borderBottomStyle">solid</property>
+                <property name="borderBottomWidth">thin</property>
+                <property name="verticalAlign">top</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5331">
+                    <property name="colSpan">9</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5344">
+                        <property name="dataSet">InvoiceLineProc</property>
+                        <property name="contentType">auto</property>
+                        <text-property name="content"><![CDATA[InvoiceLineProc : Used for load the InvoiceLineProc function
+]]></text-property>
+                    </text>
+                </cell>
+            </row>
             <row id="3349">
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
