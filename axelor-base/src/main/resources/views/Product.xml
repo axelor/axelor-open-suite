@@ -165,10 +165,11 @@
             </panel>
 	    		<panel name="stock" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettings" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
-				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable'" colSpan="6"/>
+				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable' &amp;&amp; !stockManaged" colSpan="6"/>
+				        <field name="stockManaged" onChange="action-stock-product-record-stock-managed-onchange"/>
 				        <field name="mrpFamily" showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6" canNew="true"/>
-                        <field name="inventoryTypeSelect" colSpan="6"/>
-	      			</panel>
+                        <field name="inventoryTypeSelect" hideIf="stockManaged" colSpan="6"/>
+                    </panel>
 	      			<panel colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production')">
 						<field name="productStandard"/>
       					<field name="productApproval" form-view="product-approval-form" grid-view="product-approval-grid" onChange="action-product-record-set-control-on-receipt"/>
@@ -177,7 +178,7 @@
 	      			<panel colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
 				        <button name="showAllStockMoveLine" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
-						<field name="avgPrice"/>
+						<field name="avgPrice" hideIf="stockManaged"/>
 				        <spacer/>
 				        <panel-dashlet colSpan="12" action="action-product-view-stock" showIf="id" />
 				        <panel-dashlet colSpan="12" action="action-stock-report-for-product" showIf="id" />

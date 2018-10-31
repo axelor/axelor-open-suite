@@ -171,6 +171,7 @@
 - Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
 - Purchase Order:Allow to cancel a validated purchase order.If a stock move is already generated, cancel it.
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
+- Product : add new boolean to manage stock in stockLocation.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

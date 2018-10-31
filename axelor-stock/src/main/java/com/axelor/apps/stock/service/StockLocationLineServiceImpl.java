@@ -98,37 +98,40 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       BigDecimal reservedQty)
       throws AxelorException {
 
-    StockLocationLine stockLocationLine = this.getOrCreateStockLocationLine(stockLocation, product);
+    if (!product.getStockManaged()) {
+      StockLocationLine stockLocationLine =
+          this.getOrCreateStockLocationLine(stockLocation, product);
 
-    LOG.debug(
-        "Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
-        stockLocation.getName(),
-        product.getCode(),
-        qty,
-        current,
-        future,
-        isIncrement,
-        lastFutureStockMoveDate);
+      LOG.debug(
+          "Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
+          stockLocation.getName(),
+          product.getCode(),
+          qty,
+          current,
+          future,
+          isIncrement,
+          lastFutureStockMoveDate);
 
-    if (!isIncrement) {
-      minStockRules(product, qty, stockLocationLine, current, future);
-    } else {
-      maxStockRules(product, qty, stockLocationLine, current, future);
+      if (!isIncrement) {
+        minStockRules(product, qty, stockLocationLine, current, future);
+      } else {
+        maxStockRules(product, qty, stockLocationLine, current, future);
+      }
+
+      stockLocationLine =
+          this.updateLocation(
+              stockLocationLine,
+              qty,
+              current,
+              future,
+              isIncrement,
+              lastFutureStockMoveDate,
+              reservedQty);
+
+      this.checkStockMin(stockLocationLine, false);
+
+      stockLocationLineRepo.save(stockLocationLine);
     }
-
-    stockLocationLine =
-        this.updateLocation(
-            stockLocationLine,
-            qty,
-            current,
-            future,
-            isIncrement,
-            lastFutureStockMoveDate,
-            reservedQty);
-
-    this.checkStockMin(stockLocationLine, false);
-
-    stockLocationLineRepo.save(stockLocationLine);
   }
 
   @Override
@@ -217,33 +220,35 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       BigDecimal reservedQty)
       throws AxelorException {
 
-    StockLocationLine detailLocationLine =
-        this.getOrCreateDetailLocationLine(stockLocation, product, trackingNumber);
+    if (!product.getStockManaged()) {
+      StockLocationLine detailLocationLine =
+          this.getOrCreateDetailLocationLine(stockLocation, product, trackingNumber);
 
-    LOG.debug(
-        "Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
-        stockLocation.getName(),
-        product.getCode(),
-        qty,
-        current,
-        future,
-        isIncrement,
-        lastFutureStockMoveDate,
-        trackingNumber);
+      LOG.debug(
+          "Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
+          stockLocation.getName(),
+          product.getCode(),
+          qty,
+          current,
+          future,
+          isIncrement,
+          lastFutureStockMoveDate,
+          trackingNumber);
 
-    detailLocationLine =
-        this.updateLocation(
-            detailLocationLine,
-            qty,
-            current,
-            future,
-            isIncrement,
-            lastFutureStockMoveDate,
-            reservedQty);
+      detailLocationLine =
+          this.updateLocation(
+              detailLocationLine,
+              qty,
+              current,
+              future,
+              isIncrement,
+              lastFutureStockMoveDate,
+              reservedQty);
 
-    this.checkStockMin(detailLocationLine, true);
+      this.checkStockMin(detailLocationLine, true);
 
-    stockLocationLineRepo.save(detailLocationLine);
+      stockLocationLineRepo.save(detailLocationLine);
+    }
   }
 
   @Override

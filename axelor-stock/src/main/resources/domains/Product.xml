@@ -9,6 +9,7 @@
 	  <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature" title="Customs code"/>
       <boolean name="controlOnReceipt" title="Control on Receipt"/>
       <boolean name="usedInDEB" title="Used in DEB/DES" massUpdate="true"/>
+	  <boolean name="stockManaged"/>
 
     <track on="UPDATE">
         <field name="trackingNumberConfiguration"/>
