@@ -110,6 +110,7 @@
 - Invoice : Allow to generate invoice without payment mode and condition.
 - ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
 - Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
+- Purchase : Add Suppier Catalog management configurtion on purchase app .
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
 
 ## Improvements
@@ -232,6 +233,7 @@
 - Purchase Request:Set fields to canEdit false and Removed Field Delivered Quantity and changed cancel button accessible status. 
 - StockMove : Fix the 'back order' generation.
 - PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
+- PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 
 ## [Unreleased 5.0.7]
 ## Features

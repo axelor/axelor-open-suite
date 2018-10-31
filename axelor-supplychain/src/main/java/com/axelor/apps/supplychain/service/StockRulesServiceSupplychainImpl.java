@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
@@ -172,11 +173,13 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    */
   private BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
-    List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
-    if (defaultSupplierPartner != null && supplierCatalogList != null) {
-      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-        if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
-          return supplierCatalog.getMinQty();
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
+      List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
+      if (defaultSupplierPartner != null && supplierCatalogList != null) {
+        for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+          if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
+            return supplierCatalog.getMinQty();
+          }
         }
       }
     }

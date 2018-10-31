@@ -10,6 +10,7 @@
 			<field name="supplierRequestMgt"  widget="boolean-switch" if-module="axelor-supplier-management"/>
             <field name="manageMultiplePurchaseQuantity" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
+			<field name="manageSupplierCatalog" widget="boolean-switch"/>
 		</panel>
 		<panel>
 			<button name="generatePurchaseConfigurations" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />

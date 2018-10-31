@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -38,6 +39,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
   @Inject protected AppBaseService appBaseService;
 
+  @Inject protected AppPurchaseService appPurchaseService;
+
   @Inject protected CurrencyService currencyService;
 
   @Override
@@ -46,8 +49,11 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     Map<String, Object> info = null;
+    List<SupplierCatalog> supplierCatalogList = null;
 
-    List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
+    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
+      supplierCatalogList = product.getSupplierCatalogList();
+    }
     if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
       SupplierCatalog supplierCatalog =
           Beans.get(SupplierCatalogRepository.class)
@@ -91,7 +97,9 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   @Override
   public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
 
-    if (product != null && product.getSupplierCatalogList() != null) {
+    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
+        && product != null
+        && product.getSupplierCatalogList() != null) {
       SupplierCatalog resSupplierCatalog = null;
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
