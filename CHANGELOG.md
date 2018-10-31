@@ -109,6 +109,7 @@
 - Account Move, Move Line : Add change tracking.
 - Invoice : Allow to generate invoice without payment mode and condition.
 - ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
+- Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
 
 
 ## Improvements
