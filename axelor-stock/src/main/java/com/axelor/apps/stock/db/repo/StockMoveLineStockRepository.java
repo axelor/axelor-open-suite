@@ -59,7 +59,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();
 
-      if (availableQty.compareTo(realQty) >= 0) {
+      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
 
         json.put("availableStatus", I18n.get("Available"));
         json.put("availableStatusSelect", StockMoveLineRepository.STATUS_AVAILABLE);

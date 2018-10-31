@@ -297,7 +297,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
     stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
- 
+
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
       stockMoveLine.setNetMass(
@@ -443,6 +443,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return;
+    }
+
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
     } else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
