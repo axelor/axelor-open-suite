@@ -30,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,6 +51,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     this.reconcileGroupRepository = reconcileGroupRepository;
     this.reconcileRepository = reconcileRepository;
   }
+
+  @Inject private ReconcileRepository reconcileRepo;
+
+  @Inject private ReconcileService reconcileService;
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -238,6 +243,17 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
         Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
       }
+    }
+  }
+
+  @Override
+  public void unreconcile(ReconcileGroup reconcileGroup) throws AxelorException {
+    Preconditions.checkNotNull(
+        reconcileGroup, I18n.get(IExceptionMessage.RECONCILE_GROUP_NOT_FOUND));
+    List<Reconcile> reconcileList =
+        reconcileRepo.all().filter("self.reconcileGroup = ?", reconcileGroup.getId()).fetch();
+    for (Reconcile reconcile : reconcileList) {
+      reconcileService.unreconcile(reconcile);
     }
   }
 }

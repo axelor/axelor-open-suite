@@ -108,4 +108,11 @@ public interface ReconcileGroupService {
    * @param reconcileGroup
    */
   void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException;
+
+  /**
+   * Unreconcile all Reconciles linked to the reconcile group.
+   *
+   * @param reconcileGroup
+   */
+  void unreconcile(ReconcileGroup reconcileGroup) throws AxelorException;
 }
