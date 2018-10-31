@@ -111,6 +111,7 @@
 - ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
 - Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
 - Purchase : Add Suppier Catalog management configurtion on purchase app .
+- LOGISTICAL FORM : action-validate added for mass validation on-save.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
