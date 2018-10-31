@@ -288,6 +288,9 @@
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 			</panel>
+			<panel title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
+				<panel-dashlet action="action-invoice-view-show-stock-move" colSpan="12" />
+			</panel>
 		</panel-tabs>
 
         <panel hideIf="partner == null" sidebar="true">
@@ -995,6 +998,13 @@
 
     <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="customer-invoices-merge-form"/>
+	</action-view>
+	
+	<action-view name="action-invoice-view-show-stock-move" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">	
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<domain>self.invoice.id=:invoiceId</domain>
+		<context name="invoiceId" expr="eval:id" />
 	</action-view>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
