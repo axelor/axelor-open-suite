@@ -232,6 +232,7 @@
 - Purchase Request:Set fields to canEdit false and Removed Field Delivered Quantity and changed cancel button accessible status. 
 - StockMove : Fix the 'back order' generation.
 - PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
+- PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 
 ## [Unreleased 5.0.7]
 ## Features

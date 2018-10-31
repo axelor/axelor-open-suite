@@ -296,7 +296,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
-
+    stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
+ 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
       stockMoveLine.setNetMass(
@@ -862,6 +863,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (Beans.get(AppBaseService.class).getAppBase().getManageProductVariants()) {
       stockMoveLine.setProductModel(product.getParentProduct());
     }
+
+    stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
 
     BigDecimal netMass = this.computeNetMass(stockMove, stockMoveLine, company);
     stockMoveLine.setNetMass(netMass);

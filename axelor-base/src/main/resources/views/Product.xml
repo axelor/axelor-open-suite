@@ -276,6 +276,7 @@
 								<field name="usedInDEB" title="Used in DEB"/>
 								<field name="customsCodeNomenclature" requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
 									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+								<field name="countryOfOrigin" showIf="usedInDEB"/>	
 							</panel>
   			</panel>
   		</panel-tabs>
