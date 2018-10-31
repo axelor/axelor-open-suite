@@ -75,7 +75,7 @@
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
-                        onChange="action-product-record-tick-checkbox-purchasable"/>
+                        onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
 			        <field name="standardDelay" colSpan="12" hideIf="productTypeSelect =='pack'" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
@@ -276,6 +276,7 @@
 								<field name="usedInDEB" title="Used in DEB"/>
 								<field name="customsCodeNomenclature" requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
 									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+								<field name="countryOfOrigin" showIf="usedInDEB"/>	
 							</panel>
   			</panel>
   		</panel-tabs>

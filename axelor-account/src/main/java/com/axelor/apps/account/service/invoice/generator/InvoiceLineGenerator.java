@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
@@ -190,6 +189,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     InvoiceLine invoiceLine = new InvoiceLine();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     boolean accountRequired = isAccountRequired();
+    Partner partner = invoice.getPartner();
+    Company company = invoice.getCompany();
 
     invoiceLine.setInvoice(invoice);
 
@@ -198,9 +199,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setProductName(productName);
     if (product != null && accountRequired) {
       invoiceLine.setProductCode(product.getCode());
-      AccountManagement accountManagement =
-          accountManagementService.getAccountManagement(product, invoice.getCompany());
-      Account account = accountManagementService.getProductAccount(accountManagement, isPurchase);
+      Account account =
+          accountManagementService.getProductAccount(
+              product,
+              company,
+              partner.getFiscalPosition(),
+              isPurchase,
+              invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
     }
 
@@ -223,13 +228,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (product != null && accountRequired) {
       Tax tax =
           Beans.get(AccountManagementService.class)
-              .getProductTax(
-                  Beans.get(AccountManagementService.class)
-                      .getAccountManagement(product, invoice.getCompany()),
-                  isPurchase);
+              .getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv =
-          Beans.get(FiscalPositionService.class)
-              .getTaxEquiv(invoice.getPartner().getFiscalPosition(), tax);
+          Beans.get(FiscalPositionService.class).getTaxEquiv(partner.getFiscalPosition(), tax);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }

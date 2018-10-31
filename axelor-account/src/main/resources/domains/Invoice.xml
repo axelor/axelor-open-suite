@@ -17,8 +17,8 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
- 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true" />
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true" />
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" />
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />

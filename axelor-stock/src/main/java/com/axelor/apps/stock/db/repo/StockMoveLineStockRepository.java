@@ -62,10 +62,11 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
       if (availableQty.compareTo(realQty) >= 0) {
 
         json.put("availableStatus", I18n.get("Available"));
+        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_AVAILABLE);
       } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
 
         json.put("availableStatus", I18n.get("Av. for product"));
-
+        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
       } else if (availableQty.compareTo(realQty) < 0
           && availableQtyForProduct.compareTo(realQty) < 0) {
 
@@ -76,6 +77,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
           missingQty = availableQty.subtract(realQty);
         }
         json.put("availableStatus", I18n.get("Missing") + " (" + missingQty + ")");
+        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_MISSING);
       }
     }
     return super.populate(json, context);

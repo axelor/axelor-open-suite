@@ -348,7 +348,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder)
+            .filter(
+                "self.originTypeSelect = ? AND self.originId = ? AND self.statusSelect = 2",
+                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
+                purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {

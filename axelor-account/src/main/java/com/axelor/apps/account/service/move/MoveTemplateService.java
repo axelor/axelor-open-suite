@@ -77,6 +77,7 @@ public class MoveTemplateService {
     BigDecimal hundred = new BigDecimal(100);
     for (HashMap<String, Object> data : dataList) {
       LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
+      boolean isDebit = false;
       Partner debitPartner = null;
       Partner creditPartner = null;
       BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
@@ -110,12 +111,18 @@ public class MoveTemplateService {
 
       for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
         partner = null;
-        if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)
-            && moveTemplateLine.getHasPartnerToDebit()) {
-          partner = debitPartner;
-        } else if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.CREDIT)
-            && moveTemplateLine.getHasPartnerToCredit()) {
-          partner = creditPartner;
+        if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
+          isDebit = true;
+          if (moveTemplateLine.getHasPartnerToDebit()) {
+            partner = debitPartner;
+          }
+        } else if (moveTemplateLine
+            .getDebitCreditSelect()
+            .equals(MoveTemplateLineRepository.CREDIT)) {
+          isDebit = false;
+          if (moveTemplateLine.getHasPartnerToCredit()) {
+            partner = creditPartner;
+          }
         }
 
         MoveLine moveLine =
@@ -126,7 +133,7 @@ public class MoveTemplateService {
                 moveBalance
                     .multiply(moveTemplateLine.getPercentage())
                     .divide(hundred, RoundingMode.HALF_EVEN),
-                false,
+                isDebit,
                 moveDate,
                 moveDate,
                 counter,

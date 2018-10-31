@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.sale.db.PackLine;
@@ -62,7 +61,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Inject
   public InvoiceLineSupplychainService(
-      AccountManagementService accountManagementService,
       CurrencyService currencyService,
       PriceListService priceListService,
       AppAccountService appAccountService,
@@ -71,7 +69,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       PurchaseProductService purchaseProductService) {
 
     super(
-        accountManagementService,
         currencyService,
         priceListService,
         appAccountService,

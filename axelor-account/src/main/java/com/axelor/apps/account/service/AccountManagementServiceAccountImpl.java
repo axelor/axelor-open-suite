@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -36,51 +38,133 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
-   * Obtenir le compte comptable d'un produit.
+   * Get the product tax according to the fiscal position
    *
    * @param product
    * @param company
-   * @param isPurchase
-   * @return
+   * @param fiscalPosition
+   * @param isPurchase Specify if we want get the tax for purchase or sale
+   * @param fixedAsset Specify if we should get the purchase account for fixed asset or not. Used
+   *     only if isPurchase param is true.
+   * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
-  @Override
-  public Account getProductAccount(Product product, Company company, boolean isPurchase)
+  public Account getProductAccount(
+      Product product,
+      Company company,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase,
+      boolean fixedAsset)
       throws AxelorException {
 
     log.debug(
-        "Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
-        new Object[] {product, company, isPurchase});
+        "Get the account for the product {} (company : {}, purchase : {}, fixed asset : {}, fiscal position : {})",
+        new Object[] {
+          product.getCode(),
+          company.getName(),
+          isPurchase,
+          fixedAsset,
+          fiscalPosition != null ? fiscalPosition.getCode() : null
+        });
 
-    return this.getProductAccount(this.getAccountManagement(product, company), isPurchase);
-  }
+    Account generalAccount =
+        this.getProductAccount(product, company, isPurchase, fixedAsset, CONFIG_OBJECT_PRODUCT);
 
-  /**
-   * Obtenir le compte comptable d'un produit.
-   *
-   * @param product
-   * @param company
-   * @param isPurchase
-   * @return
-   */
-  @Override
-  public Account getProductAccount(AccountManagement accountManagement, boolean isPurchase) {
+    Account account =
+        new FiscalPositionAccountServiceImpl().getAccount(fiscalPosition, generalAccount);
 
-    if (isPurchase) {
-      return accountManagement.getPurchaseAccount();
-    } else {
-      return accountManagement.getSaleAccount();
+    if (account != null) {
+      return account;
     }
-  }
-
-  @Override
-  public void generateAccountManagementException(Product product, Company company)
-      throws AxelorException {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
         product.getCode(),
         company.getName());
+  }
+
+  /**
+   * Get the product tax
+   *
+   * @param product
+   * @param company
+   * @param isPurchase
+   * @param fixedAsset Specify if we should get the purchase account for fixed asset or not. Used
+   *     only if isPurchase param is true.
+   * @param configObject Specify if we want get the tax from the product or its product family
+   *     <li>1 : product
+   *     <li>2 : product family
+   * @return
+   * @throws AxelorException
+   */
+  protected Account getProductAccount(
+      Product product, Company company, boolean isPurchase, boolean fixedAsset, int configObject) {
+
+    AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
+
+    Account account = null;
+
+    if (accountManagement != null) {
+      if (isPurchase) {
+        if (fixedAsset) {
+          account = accountManagement.getPurchFixedAssetsAccount();
+        } else {
+          account = accountManagement.getPurchaseAccount();
+        }
+      } else {
+        account = accountManagement.getSaleAccount();
+      }
+    }
+
+    if (account == null && configObject == CONFIG_OBJECT_PRODUCT) {
+      return getProductAccount(
+          product, company, isPurchase, fixedAsset, CONFIG_OBJECT_PRODUCT_FAMILY);
+    }
+
+    return account;
+  }
+
+  /**
+   * Get the product analytic distribution template
+   *
+   * @param product
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Product product, Company company) {
+
+    return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT);
+  }
+
+  /**
+   * Get the product analytic distribution template
+   *
+   * @param product
+   * @param compan
+   * @param configObject Specify if we want get the tax from the product or its product family
+   *     <li>1 : product
+   *     <li>2 : product family
+   * @return
+   * @throws AxelorException
+   */
+  protected AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Product product, Company company, int configObject) {
+
+    AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
+
+    AnalyticDistributionTemplate analyticDistributionTemplate = null;
+
+    if (accountManagement != null) {
+      analyticDistributionTemplate = accountManagement.getAnalyticDistributionTemplate();
+    }
+
+    if (analyticDistributionTemplate == null && configObject == CONFIG_OBJECT_PRODUCT) {
+      return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT_FAMILY);
+    }
+
+    return analyticDistributionTemplate;
   }
 }

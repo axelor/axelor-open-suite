@@ -152,7 +152,7 @@ public class BankReconciliationValidateService {
 
     moveRepository.save(move);
 
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
 
     bankReconciliationLine.setMoveLine(cashMoveLine);
 

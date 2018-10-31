@@ -245,6 +245,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(
         invoice,
         this.createInvoiceLinesFromTax(invoice, taxLineList, invoicingProduct, percentToInvoice));
+
     this.fillInLines(invoice);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
@@ -252,10 +253,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
     if (partnerAccount != null) {
-      if (invoice.getPartner() != null) {
+      Partner partner = invoice.getPartner();
+      if (partner != null) {
         partnerAccount =
             Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), partnerAccount);
+                .getAccount(partner.getFiscalPosition(), partnerAccount);
       }
       invoice.setPartnerAccount(partnerAccount);
     }
@@ -433,9 +435,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice) {
 
     saleOrder.setOrderDate(appSupplychainService.getTodayDate());
-
-    // TODO Créer une séquence pour les commandes (Porter sur la facture ?)
-    //		saleOrder.setOrderNumber();
 
     return saleOrder;
   }

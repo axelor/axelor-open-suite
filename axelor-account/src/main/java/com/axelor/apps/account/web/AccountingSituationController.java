@@ -19,13 +19,10 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,22 +30,6 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AccountingSituationController {
-
-  public void updateCustomerAccount(ActionRequest request, ActionResponse response) {
-
-    AccountingSituation accountingSituation =
-        request.getContext().asType(AccountingSituation.class);
-    accountingSituation =
-        Beans.get(AccountingSituationRepository.class).find(accountingSituation.getId());
-
-    try {
-      if (accountingSituation != null) {
-        Beans.get(AccountCustomerService.class).updateCustomerAccount(accountingSituation);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
   /**
    * return the domain of the field companyInBankDetails in the view.

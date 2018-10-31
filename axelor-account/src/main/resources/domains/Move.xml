@@ -52,5 +52,22 @@
 	
 	]]></extra-code>
     
+    <track>
+    	<field name="statusSelect"/>
+    	<field name="journal"/>
+    	<field name="reference"/>
+    	<field name="period"/>
+    	<field name="partner"/>
+    	<field name="currency"/>
+    	<field name="companyCurrency"/>
+    	<field name="ignoreInAccountingOk"/>
+    	<field name="ignoreInDebtRecoveryOk"/>
+    	<message if="true" on="CREATE">Move created</message>
+    	<message if="statusSelect == 1" tag="important">New move</message>
+	    <message if="statusSelect == 2" tag="info">Daybook move</message>
+	    <message if="statusSelect == 3" tag="success">Move validated</message>
+	    <message if="statusSelect == 4" tag="warning">Move canceled</message>
+    </track>
+    
   </entity>
 </domain-models>

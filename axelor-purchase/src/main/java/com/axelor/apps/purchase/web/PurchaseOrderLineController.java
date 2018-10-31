@@ -75,21 +75,17 @@ public class PurchaseOrderLineController {
       PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
       Product product = purchaseOrderLine.getProduct();
 
+      this.resetProductInformation(response);
+      response.setValues(service.reset(purchaseOrderLine));
+
       if (purchaseOrder == null || product == null) {
-        response.setValues(service.reset(purchaseOrderLine));
-        this.resetProductInformation(response);
         return;
       }
 
-      try {
-        purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-        service.fill(purchaseOrderLine, product);
-        response.setValues(purchaseOrderLine);
-      } catch (Exception e) {
-        response.setValues(service.reset(purchaseOrderLine));
-        this.resetProductInformation(response);
-        TraceBackService.trace(response, e);
-      }
+      purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+      service.fill(purchaseOrderLine, product);
+      response.setValues(purchaseOrderLine);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

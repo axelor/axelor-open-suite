@@ -278,6 +278,9 @@ public class BatchReimbursementImport extends BatchStrategy {
    */
   @Override
   protected void stop() {
+
+    AccountingService.setUpdateCustomerAccount(true);
+
     String comment = "";
     comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_8) + "\n";
     comment +=

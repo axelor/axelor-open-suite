@@ -20,9 +20,9 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.rpc.Context;
@@ -32,8 +32,9 @@ import java.math.RoundingMode;
 public class AnalyticMoveLineServiceSupplychainImpl extends AnalyticMoveLineServiceImpl {
 
   public AnalyticMoveLineServiceSupplychainImpl(
-      AppAccountService appAccountService, AccountManagementService accountManagementService) {
-    super(appAccountService, accountManagementService);
+      AppAccountService appAccountService,
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
+    super(appAccountService, accountManagementServiceAccountImpl);
   }
 
   @Override

@@ -53,6 +53,10 @@
     <string name="partnerFullName" readonly="true"/>
     <string name="partnerSeq" readonly="true"/>
     
+<!--     Used for update partner balances when we change the partner of a move line in daybook mode -->
+    <long name="partnerId"/>
+    <long name="accountId"/>
+    
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
       
@@ -98,7 +102,17 @@
 	
 	]]></extra-code>
 
-
+	<track>
+		 <field name="date"/>
+		 <field name="partner"/>
+		 <field name="account"/>
+		 <field name="debit"/>
+		 <field name="credit"/>
+		 <field name="origin"/>
+		 <field name="description"/>
+		 <message if="true" on="CREATE">Move line created</message>
+	</track>
+	
   </entity>
 
 </domain-models>

@@ -38,14 +38,6 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void updateCustomerAccount(AccountingSituation accountingSituation)
-      throws AxelorException {
-    super.updateCustomerAccount(accountingSituation);
-    accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
