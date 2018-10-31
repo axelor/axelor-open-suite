@@ -36,7 +36,6 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
-import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -227,6 +226,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    if (invoice.getPaymentCondition() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+    }
+    if (invoice.getPaymentMode() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
@@ -244,10 +256,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-
-    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    }
+    // FIXME: Disabled temporary due to RM#14505
+    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
+    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    //    }
   }
 
   /**

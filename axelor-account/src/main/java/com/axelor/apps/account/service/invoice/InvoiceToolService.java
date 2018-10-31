@@ -37,6 +37,10 @@ public class InvoiceToolService {
 
   public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate) {
 
+    if (paymentCondition == null) {
+      return invoiceDate;
+    }
+
     LocalDate nDaysDate = null;
     if (paymentCondition
         .getPeriodTypeSelect()

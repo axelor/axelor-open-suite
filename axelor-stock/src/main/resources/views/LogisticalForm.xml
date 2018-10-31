@@ -21,7 +21,7 @@
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form" name="logistical-form-form"
-        width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save">
+        width="large" onNew="action-logistical-form-new" onSave="action-logistical-form-save,action-logistical-form-validate-mass-on-save">
         <toolbar>
             <button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-carrier-validated" icon="fa-check" />
@@ -90,6 +90,10 @@
 
     <action-validate name="action-logistical-form-validate-mass">
         <error message="The total net mass is higher than the total gross mass." if="totalNetMass > totalGrossMass" />
+    </action-validate>
+    
+    <action-validate name="action-logistical-form-validate-mass-on-save">
+    	<alert message="The total net mass is higher than the total gross mass." if="totalNetMass > totalGrossMass" />
     </action-validate>
 
     <action-record name="action-logistical-form-company-change" model="com.axelor.apps.stock.db.LogisticalForm">

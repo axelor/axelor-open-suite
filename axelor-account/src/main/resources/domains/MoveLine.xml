@@ -102,7 +102,17 @@
 	
 	]]></extra-code>
 
-
+	<track>
+		 <field name="date"/>
+		 <field name="partner"/>
+		 <field name="account"/>
+		 <field name="debit"/>
+		 <field name="credit"/>
+		 <field name="origin"/>
+		 <field name="description"/>
+		 <message if="true" on="CREATE">Move line created</message>
+	</track>
+	
   </entity>
 
 </domain-models>

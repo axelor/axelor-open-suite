@@ -106,6 +106,13 @@
 - Extra Hours : Add new field 'totalQty' to compute extra hours line.
 - ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
 - STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
+- Account Move, Move Line : Add change tracking.
+- Invoice : Allow to generate invoice without payment mode and condition.
+- ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
+- Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
+- Purchase : Add Suppier Catalog management configurtion on purchase app .
+- LOGISTICAL FORM : action-validate added for mass validation on-save.
+- STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -164,6 +171,8 @@
 - Product : Improved StockLocationLine Form which is opened from Product Form.
 - Production App : Add workshop configuration.
 - Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
+- Purchase Order:Allow to cancel a validated purchase order.If a stock move is already generated, cancel it.
+- PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -220,7 +229,12 @@
 - PURCHASE ORDER : Division by zero
 - PURCHASE ORDER : Completed Button french translation corrections and prompt added for it.
 - Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
- 
+- Purchase ORDER : Fix issue when we click on Cancel receipt button and changed translation message for 'Cancel receipt'. 
+- Invoice Line : Fix client side crash when clear the product.
+- Purchase Request:Set fields to canEdit false and Removed Field Delivered Quantity and changed cancel button accessible status. 
+- StockMove : Fix the 'back order' generation.
+- PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
+- PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 
 ## [Unreleased 5.0.7]
 ## Features

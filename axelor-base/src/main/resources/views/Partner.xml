@@ -306,7 +306,7 @@
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
-				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>

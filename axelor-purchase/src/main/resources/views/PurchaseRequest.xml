@@ -60,13 +60,13 @@
 				showTitle="false" />
 		</panel>
 		<panel name="main" readonlyIf="![1,2].includes(statusSelect)">
-			<field name="company" form-view="company-form" grid-view="company-grid" />
+			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<field name="newProduct" widget="boolean-switch" colSpan="2"
 				colOffset="4" hideIf="statusSelect &gt; 2 &amp;&amp; !newProduct" />
 			<field name="product" colSpan="3" form-view="product-form"
 				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
-				onChange="action-purchase-request-product-on-change" />
-			<field name="unit" colSpan="3" />
+				onChange="action-purchase-request-product-on-change" canEdit="false"/>
+			<field name="unit" colSpan="3" canEdit="false"/>
 			<field name="quantity" colSpan="3" />
 			<field name="price" colSpan="3" />
 			<field name="$product" hidden="true" />
@@ -94,20 +94,19 @@
 			<button name="refuse" title="Refuse" icon="fa-times" css="btn-danger"
 				showIf="statusSelect == 2" onClick="save,action-purchase-request-set-status-refused,save" />
 			<button name="cancel" title="Cancel" icon="fa-times-circle"
-				css="btn-danger" showIf="statusSelect == 2 || statusSelect == 7  || statusSelect == 3"
-				onClick="save,action-purchase-request-set-status-cancel,save" />
+				css="btn-danger"
+				onClick="save,action-purchase-request-set-status-cancel,save" hideIf="statusSelect == 8"/>
 			<button name="draft" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
 				onClick="save,action-purchase-request-set-status-draft, save" />
 		</panel>
 		<panel sidebar="true" name="caracteristics" title="Caracteristics"
 			canCollapse="true">
 			<field name="deliveryAddress"
-				onSelect="action-purchase-request-set-delivery-address-domain" />
-			<field name="supplier" search="self.isSupplier = true" colSpan="6" />
+				onSelect="action-purchase-request-set-delivery-address-domain" canEdit="false"/>
+			<field name="supplier" search="self.isSupplier = true" colSpan="6" canEdit="false"/>
 		</panel>
 		<panel sidebar="true" name="follow-up" title="Follow-up"
 			canCollapse="true">
-			<field name="deliveredQty" readonly="true" colSpan="6" />
 			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
 		</panel>
 		<panel>
