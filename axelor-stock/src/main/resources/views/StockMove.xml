@@ -217,7 +217,7 @@
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
 
-                <field name="saleOrder.specificPackage" readonly="true" colSpan="4" showIf="saleOrder.specificPackage"/>
+                <field name="specificPackage" readonly="true" colSpan="12" showIf="specificPackage" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
                 <panel stacked="true" colSpan="8">
                     <field name="isIspmRequired" showIf="!$readonly()"/>
                     <field name="$IspmTag" showTitle="false" showIf="$readonly()">
