@@ -110,7 +110,7 @@
 - Invoice : Allow to generate invoice without payment mode and condition.
 - ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
 - Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
-
+- Purchase : Add Suppier Catalog management configurtion on purchase app .
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -147,6 +148,13 @@ public class PurchaseOrderLineController {
         }
         response.setValue("productName", catalogInfo.get("productName"));
         response.setValue("productCode", catalogInfo.get("productCode"));
+      } else {
+        Product product = purchaseOrderLine.getProduct();
+        if (product != null) {
+          price = product.getPurchasePrice();
+          response.setValue("productName", product.getName());
+          response.setValue("productCode", product.getCode());
+        }
       }
 
       Map<String, Object> discounts =
@@ -338,7 +346,8 @@ public class PurchaseOrderLineController {
     Company company = purchaseOrder.getCompany();
 
     String domain = "";
-    if (purchaseOrderLine.getProduct() != null
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        && purchaseOrderLine.getProduct() != null
         && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
       domain +=
           "self.id != "
