@@ -215,6 +215,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
+    stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
 
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);

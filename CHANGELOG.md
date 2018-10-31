@@ -112,6 +112,7 @@
 - Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
 - Purchase : Add Suppier Catalog management configurtion on purchase app .
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
+- STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
