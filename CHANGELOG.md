@@ -108,6 +108,8 @@
 - STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
 - Account Move, Move Line : Add change tracking.
 - Invoice : Allow to generate invoice without payment mode and condition.
+- ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
+
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
