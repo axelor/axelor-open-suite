@@ -26,6 +26,7 @@
 - Invoice : Fill the product code and product name even if tax or account are missing for the product
 - FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
 - INVENTORY : stock location filter
+- INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
 - INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
 
 ## Bug Fixes
