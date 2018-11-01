@@ -606,8 +606,12 @@ CASE
 	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.sale_order_seq 
 	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.purchase_order_seq
 END
-as "origin"
-
+as "origin",
+CASE
+	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.external_reference
+	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.external_reference
+END
+as "externalReference"
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1326,6 +1330,13 @@ order by StockMoveLine.sequence]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["origin"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">externalReference</property>
+                    <text-property name="displayName">externalReference</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["externalReference"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1533,6 +1544,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                                 <text id="3646">
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["externalReference"] != null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
@@ -1565,6 +1582,52 @@ order by StockMoveLine.sequence]]></xml-property>
                                                     </list-property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["origin"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                        <row id="4521">
+                                            <cell id="4522">
+                                                <text id="4523">
+                                                    <property name="marginLeft">2pt</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">row._outer["externalReference"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">if(row["type_select"] == "1"){
+	'StockMove.reference'
+}else if(row["type_select"] == "2"){
+	'StockMove.purchaseOrder'
+}else if(row["type_select"] == "3"){
+	'StockMove.purchaseOrder'
+}</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]
+															</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]
+															</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["origin"]</VALUE-OF> / <VALUE-OF>row._outer["externalReference"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
