@@ -136,7 +136,7 @@ public interface SaleOrderLineService {
   public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 
