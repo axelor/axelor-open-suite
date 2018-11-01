@@ -45,7 +45,7 @@
         <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
             <field name="productFamily" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
             <field name="productCategory" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
             <field name="excludeOutOfStock" colSpan="3"/>
             <field name="includeObsolete" colSpan="3"/>
             <panel title="Racks range">
