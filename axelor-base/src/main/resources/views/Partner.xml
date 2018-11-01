@@ -16,6 +16,10 @@
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
+		<field name="fiscalPosition.code" title="Fiscal position"/>
+		<field name="registrationCode" />
+		<field name="address.fullName" title="Address"/>
+		<field name="companyStr" />
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
@@ -513,6 +517,9 @@
 		<field name="partnerCategory" />
 		<field name="partnerTypeSelect" />
 		<field name="titleSelect" />
+		<field name="fiscalPosition.code"/>
+		<field name="registrationCode" />
+		<field name="companyStr"/>
 		<template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -526,13 +533,16 @@
                 <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
+			  	{{registrationCode}}
 			  	<address>
 			  	{{address.fullName}}
 			  	</address>
 			    <span>
 			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}</span>
+			    {{partnerCategory.name}}<br/>
+			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
+			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
 			  </div>
 			</div>
 		]]>
