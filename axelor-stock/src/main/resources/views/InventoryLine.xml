@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
-        <field name="product" onChange="action-inventory-line-attrs-tracking-number" grid-view="product-grid" form-view="product-form"/>
+        <field name="product" canEdit="false" onChange="action-inventory-line-attrs-tracking-number" grid-view="product-grid" form-view="product-form"/>
         <field name="currentQty" readonly="true" aggregate="sum" width="120"/>
         <field name="realQty" aggregate="sum" width="120"/>
         <field name="description"/>

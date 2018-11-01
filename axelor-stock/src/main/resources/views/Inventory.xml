@@ -31,15 +31,15 @@
         <panel>
             <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
             <field name="dateT" readonlyIf="statusSelect >= 2"/>
-            <field name="stockLocation" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
             <field name="validatedBy" readonly="true" showIf="validatedBy"/>
             <field name="validatedOn" readonly="true" showIf="validatedOn"/>
             <field name="description" colSpan="12" height="3"/>
         </panel>
 
         <panel title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-            <field name="productFamily" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
-            <field name="productCategory" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+            <field name="productFamily" canEdit="false" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
+            <field name="productCategory" canEdit="false" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
             <field name="excludeOutOfStock" colSpan="3"/>
             <field name="includeObsolete" colSpan="3"/>
             <spacer/>
