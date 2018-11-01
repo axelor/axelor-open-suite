@@ -71,6 +71,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
 - Validate all draft or daybook account moves when we close a period.
 - Sequence : Fix fill automatically the company field and put it readonly when create sequence from another model.
+- Sale Order Line : Fix calculate "Available stock" on onload.
 		
 ## [5.0.6] - 2018-10-06
 ## Features

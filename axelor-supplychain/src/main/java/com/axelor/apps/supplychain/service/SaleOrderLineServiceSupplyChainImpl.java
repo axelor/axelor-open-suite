@@ -31,7 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -110,17 +110,14 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
-    QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
-    queryBuilder.add("self.stockLocation = :stockLocation");
-    queryBuilder.add("self.product = :product");
-    queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
-    queryBuilder.bind("product", saleOrderLine.getProduct());
-    StockLocationLine stockLocationLine = queryBuilder.build().fetchOne();
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
     }
-
     return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
   }
 
