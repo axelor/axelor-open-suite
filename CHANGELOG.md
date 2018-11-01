@@ -174,7 +174,7 @@
 - Purchase Order:Allow to cancel a validated purchase order.If a stock move is already generated, cancel it.
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 - Product : add new boolean to manage stock in stockLocation.
-- INVENTORY : Disabled canEdit attribute on Product.
+- PARTNER : grid and card view
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
