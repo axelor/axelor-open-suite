@@ -27,6 +27,7 @@
 - FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
 - INVENTORY : stock location filter
 - INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
+- INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
