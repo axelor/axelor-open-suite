@@ -136,6 +136,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
 
+    invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+
     invoice = invoiceRepo.save(invoice);
 
     return invoice;

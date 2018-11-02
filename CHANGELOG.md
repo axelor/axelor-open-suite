@@ -116,6 +116,7 @@
 - STOCKMOVE : External Reference field added in StockMove Report.
 - STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
 - AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
+- INVOICE : Customer tax nbr field added for the invoices based on sale order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
