@@ -180,6 +180,7 @@
 - Product : add new boolean to manage stock in stockLocation.
 - PARTNER : grid and card view
 - Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
+- Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
