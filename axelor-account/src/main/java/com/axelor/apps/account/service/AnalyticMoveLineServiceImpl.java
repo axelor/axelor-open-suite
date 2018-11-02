@@ -63,8 +63,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               .multiply(
                   analyticMoveLine
                       .getInvoiceLine()
-                      .getExTaxTotal()
-                      .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+                      .getExTaxTotal())
+              .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
     }
     if (analyticMoveLine.getMoveLine() != null) {
       if (analyticMoveLine.getMoveLine().getCredit().compareTo(BigDecimal.ZERO) != 0) {
@@ -74,8 +74,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 .multiply(
                     analyticMoveLine
                         .getMoveLine()
-                        .getCredit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+                        .getCredit())
+                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
       } else {
         amount =
             analyticMoveLine
@@ -83,8 +83,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 .multiply(
                     analyticMoveLine
                         .getMoveLine()
-                        .getDebit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+                        .getDebit())
+                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
       }
     }
     return amount;
