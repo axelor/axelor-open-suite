@@ -115,6 +115,8 @@
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 - STOCKMOVE : External Reference field added in StockMove Report.
 - STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
+- AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
+- INVOICE : Customer tax nbr field added for the invoices based on sale order.
 - MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
 
 ## Improvements
@@ -178,6 +180,8 @@
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 - Product : add new boolean to manage stock in stockLocation.
 - PARTNER : grid and card view
+- Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
+- Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -320,6 +324,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - STOCK LOCATION : report for external stock location
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
+- Product: Removed 'shippingCoef' value set from onLoad.
 
 ## [5.0.6] - 2018-10-06
 ## Features

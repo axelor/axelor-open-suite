@@ -12,6 +12,7 @@
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     <integer name="operationSubTypeSelect" title="Document Subtype" required="true" default="1" selection="iinvoice.operation.sub.type.select"/>
+    <string name="partnerTaxNbr" title="Customer Tax Number"/>
     
     <!-- Legal information -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />

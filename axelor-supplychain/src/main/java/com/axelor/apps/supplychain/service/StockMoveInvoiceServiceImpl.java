@@ -119,6 +119,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setAdvancePaymentInvoiceSet(
             Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
       }
+
+      invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+
       invoiceRepository.save(invoice);
 
       stockMove.setInvoice(invoice);
