@@ -72,6 +72,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Validate all draft or daybook account moves when we close a period.
 - Sequence : Fix fill automatically the company field and put it readonly when create sequence from another model.
 - Sale Order Line : Fix calculate "Available stock" on onload.
+- STOCK LOCATION : report for external stock location
 		
 ## [5.0.6] - 2018-10-06
 ## Features
