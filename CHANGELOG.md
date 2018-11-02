@@ -321,6 +321,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - STOCK LOCATION : report for external stock location
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
+- Product: Removed 'shippingCoef' value set from onLoad.
 
 ## [5.0.6] - 2018-10-06
 ## Features
