@@ -114,6 +114,7 @@
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 - STOCKMOVE : External Reference field added in StockMove Report.
+- INVOICE : Customer tax nbr field added for the invoices based on sale order.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
