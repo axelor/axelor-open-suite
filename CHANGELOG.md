@@ -115,6 +115,7 @@
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 - STOCKMOVE : External Reference field added in StockMove Report.
 - STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
+- MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
