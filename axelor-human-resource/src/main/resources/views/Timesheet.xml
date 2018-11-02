@@ -22,7 +22,7 @@
 	<grid name="all-timesheet-grid" title="All timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item action="action-timesheet-view-see-all-timesheet-lines" title="See timesheet lines"/>
+				<item action="action-timesheet-method-all-timesheet-line" title="See timesheet lines"/>
 			</menu>
 		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -448,11 +448,9 @@
 		<context name="company_id" expr="eval: company_id"/>
 	</action-view>
 	
-	<action-view name="action-timesheet-view-see-all-timesheet-lines" title="See timesheet lines"
-		model="com.axelor.apps.hr.db.TimesheetLine">
-		<view type="grid" name="timesheet-line-grid"/>
-		<view type="form" name="timesheet-line-form"/>
-	</action-view>
+	<action-method name="action-timesheet-method-all-timesheet-line">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheetLine"/>
+	</action-method>
 
 	<action-method name="action-timesheet-method-timesheet-line-validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheetLine"/>

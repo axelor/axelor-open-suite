@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -93,8 +94,9 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       Beans.get(StockMoveLineService.class)
           .updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
-
-      if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0) {
+      Product product = stockMoveLine.getProduct();
+      if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
+          || product != null && !product.getStockManaged()) {
         available++;
       } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
           >= 0) {
@@ -106,11 +108,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     }
 
     if ((available > 0 || availableForProduct > 0) && missing == 0) {
-      json.put("availableStatus", I18n.get("Available"));
-    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
-      json.put("availableStatus", I18n.get("Unavailable"));
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_AVAILABLE);
     } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
-      json.put("availableStatus", I18n.get("Partially available"));
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
+    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
+      json.put("availableStatusSelect", StockMoveRepository.STATUS_UNAVAILABLE);
     }
     return super.populate(json, context);
   }

@@ -10,6 +10,7 @@
 		<hilite color="success" if="deliveryState == 3"/>
 		<field name="typeSelect" hidden="true"/>
 		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" />
+		<field name="product.code"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
@@ -24,6 +25,7 @@
       	<field name="saleOrder"/>
   		<field name="saleOrder.clientPartner"/>
   		<field name="saleOrder.inTaxTotal"/>
+  		<field name="product.code"/>
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -36,6 +38,7 @@
     <grid name="sale-order-line-invoice-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
   		<field name="saleOrder.inTaxTotal"/>
+  		<field name="product.code"/>
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -331,6 +334,7 @@
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
 		<action name="action-sale-order-line-method-check-qty"/>
+		<action if="__config__.app.isApp('supplychain')" name="action-sale-order-line-attrs-show-delivery-panel"/>
 		<action name="action-sale-order-line-compute-total-pack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
 		<action name="action-method-sale-order-line-available-stock" />
     	<action name="action-sale-order-attrs-hide-ati"/>
@@ -537,6 +541,11 @@
 	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
 		<attribute name="hidden" for="allPanelTabs" if="eval: __user__.group.isClient" expr="true"/>
 	</action-attrs>
+
+    <action-attrs name="action-sale-order-line-attrs-show-delivery-panel">
+      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForStorableProduct()" if="product.productTypeSelect == 'storable'"/>
+      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForNonStorableProduct()" if="product.productTypeSelect == 'service'"/>
+    </action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-sub-line">
 	  <attribute if="eval: __parent__.typeSelect == 2" name="value" expr="eval: true" for="isSubLine"/>

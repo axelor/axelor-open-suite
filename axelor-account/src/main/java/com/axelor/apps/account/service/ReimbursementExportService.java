@@ -248,7 +248,7 @@ public class ReimbursementExportService {
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
-      moveService.getMoveValidateService().validateMove(newMove);
+      moveService.getMoveValidateService().validate(newMove);
       moveRepo.save(newMove);
     }
   }
@@ -557,8 +557,9 @@ public class ReimbursementExportService {
             .all()
             .filter(
                 "self.account.useForPartnerBalance = 'true' "
-                    + "AND self.move.statusSelect = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStatusSelect = ?3 ",
+                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
                 MoveRepository.STATUS_VALIDATED,
+                MoveRepository.STATUS_DAYBOOK,
                 partner,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();

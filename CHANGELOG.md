@@ -98,6 +98,22 @@
 - Add WAP value in StockLocation report
 - Contract: Removed wrong demo data and added demo data for app configuration.
 - Analytic move line : accountType added on grid view.
+- Stock Move : Attach conformity certificate to record.
+- Stock Rules : Add massUpdate on 'Stock location', 'Product', 'Refill type' and 'Min. Qty'.
+- Inventory : Add filter on two new string fields on form when click on 'Fill inventory' button.
+- Add direct order stock location.
+- Inventory:Allow to do an inventory for one product.
+- Extra Hours : Add new field 'totalQty' to compute extra hours line.
+- ACCOUNT MANAGEMENT : Allow to define all elements (account, tax, analytic distribution) per product family and only override one element in product account management.
+- STOCK LOCATION : On StockLocationLine, add a dashlet to display all StockRules linked to the current product and current stock location.
+- Account Move, Move Line : Add change tracking.
+- Invoice : Allow to generate invoice without payment mode and condition.
+- ACCOUNT MOVE : Removed readonlyIf from MoveLine-form and made editable form even after validated status
+- Invoice : Add new panel-dashlet of StockMove in new panel 'Delivery'
+- Purchase : Add Suppier Catalog management configurtion on purchase app .
+- LOGISTICAL FORM : action-validate added for mass validation on-save.
+- STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
+- STOCKMOVE : External Reference field added in StockMove Report.
 - StockMove : Include sub stock location's lines in Report. 
 
 ## Improvements
@@ -114,6 +130,7 @@
 - Production processes: display status in grid view.
 - Rework Ticket UI.
 - Tax configuration: display only necessary fields for tax account management.
+- Hide delivery panel depending on the type of product and if the delivery process is enabled in sale order line form view.
 - Refactor purchase order view.
 - Rework project view
 - Set project on invoice and invoice line when generating it from sale order and stock move.
@@ -149,8 +166,17 @@
 - Use price from stock location when making an internal stock move.
 - Add Partner fullName field in MRP (grid and report)
 - Add a new option in Stock app to require to fill conformity for products ticked "Control on Receipt"
+- Improve PickingStockMove report : add some static informations
 - Partner : Modify actions to compute simpleFullName & fullName.
 - Customer catalog: added option to enable/disable customer catalog management on sales app. 
+- Improve PurchaseOrder report : add company invoice and stock address, buyer, desired delivery date...
+- Product : Improved StockLocationLine Form which is opened from Product Form.
+- Production App : Add workshop configuration.
+- Account management views : add CanEdit = false on some M2O fields (company, account, tax...) and allow to create new analytic distribution template directly.
+- Purchase Order:Allow to cancel a validated purchase order.If a stock move is already generated, cancel it.
+- PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
+- Product : add new boolean to manage stock in stockLocation.
+- PARTNER : grid and card view
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -199,18 +225,48 @@
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
 - In manufacturing order, Stock move for produced product now uses the price from the product instead of from the costsheet.
+- Manuf Order : Fix forbid to set a value equal to zero on wizard when we click on 'Updated planned quantities (Components and FP)' button.
+- Manuf Order & ProdProcess : Added canEdit false on company and stockLocations fields and used widget SuggestBox for company.
+- Invoice : fix fiscal position of account for partner account.
+- Purchase Order : Fix minor form view corrections.
+- Stock Move : Fix availability status language.
+- PURCHASE ORDER : Division by zero
+- PURCHASE ORDER : Completed Button french translation corrections and prompt added for it.
+- Purchase Order : Fix move 'Generate control invoice' button from toolbar to sidebar panel on form view.
+- Purchase ORDER : Fix issue when we click on Cancel receipt button and changed translation message for 'Cancel receipt'. 
+- Invoice Line : Fix client side crash when clear the product.
+- Purchase Request:Set fields to canEdit false and Removed Field Delivered Quantity and changed cancel button accessible status. 
+- StockMove : Fix the 'back order' generation.
+- PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
+- PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
+- SALEORDER : allow to change the payment condition and payment mode
 
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- SaleOrder : Modify views to display company and stockLocation.
+- PurchaseOrder : Modify views to display company and stockLocation.
 
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
 - PERIOD : allow to reopen a period if the fiscal year is not closed
+- Currency conversion: allow to fetch today's rate on newly created conversion lines.
 - Remove unecessary table in VAT on invoice report.
 - Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
+- BankOrder : Specify limit for BankOrderLines.
+- Purchase : Fix wrong translation of fields.
+- PurchaseOrder : Disable edit button in Supplier-partner field
+- Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- InvoiceLine : Added field product.code in grid 
+- PARTNER : balance viewer
+- SaleOrderLine : Added field product.code in grid
+- Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
+- Purchase order : Fill the tax line even if there is no supplier catalog
+- Invoice : Fill the product code and product name even if tax or account are missing for the product
+- FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -237,8 +293,23 @@
 - StockMove : Modify Locale for Picking Order report.
 - StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
 - Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- PurchaseOrder : Hide 'Completed' button conditionally.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
 - Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
-
+- Purchase Order:Sequence should be assigned when we click on button Requested only
+- Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
+- Use sign of General accounting move line to sign the analytic move line on analytic balance.
+- Move : Fix generated move lines.
+- Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
+- Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
+- Account move : removed unnecessary save on xml action after call an action-method with reload param
+- ACCOUNT MOVE : mass daybook validation - manage JPA cache
+- Tracking Number Configuration : Fix put requiredIf on 'Sequence' field.
+- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views). 
+When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
+- Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
+- Validate all draft or daybook account moves when we close a period.
+		
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
@@ -679,6 +750,7 @@ Also, improve the sale order line grid and form views.
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
 - Timesheet editor: No group by on project when unique product is used.
+- Invoice : Added domain filter for purchaseOrder field using supplierPartner and company.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.

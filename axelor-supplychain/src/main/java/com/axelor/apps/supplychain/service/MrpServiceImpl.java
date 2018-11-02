@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -401,7 +402,8 @@ public class MrpServiceImpl implements MrpService {
 
     Partner supplierPartner = product.getDefaultSupplierPartner();
 
-    if (supplierPartner != null) {
+    if (supplierPartner != null
+        && Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
 

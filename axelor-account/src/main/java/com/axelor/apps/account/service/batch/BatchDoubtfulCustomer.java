@@ -256,6 +256,8 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
   @Override
   protected void stop() {
 
+    AccountingService.setUpdateCustomerAccount(true);
+
     String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
     comment +=
         String.format("\t" + I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());

@@ -472,7 +472,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     resetMasses(stockMove);
 
     try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
+      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
         Optional<StockMove> newStockMove =
             copyAndSplitStockMove(stockMove, stockMove.getPlannedStockMoveLineList());
         if (newStockMove.isPresent()) {
@@ -480,8 +480,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
       }
 
-      if (stockMove.getIsWithReturnSurplus()
-          && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
+      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
         Optional<StockMove> newStockMove =
             copyAndSplitStockMoveReverse(stockMove, stockMove.getPlannedStockMoveLineList(), true);
         if (newStockMove.isPresent()) {
@@ -1228,11 +1227,16 @@ public class StockMoveServiceImpl implements StockMoveService {
             ? Beans.get(UserService.class).getLanguage()
             : ReportSettings.getPrintingLocale(stockMove.getPartner());
 
-    return ReportFactory.createReport(reportType, title + "-${date}")
-        .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", locale)
-        .generate()
-        .getFileLink();
+    ReportSettings reportSettings =
+        ReportFactory.createReport(reportType, title + "-${date}")
+            .addParam("StockMoveId", stockMoveIds)
+            .addParam("Locale", locale);
+
+    if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
+      reportSettings.toAttach(stockMove);
+    }
+
+    return reportSettings.generate().getFileLink();
   }
 
   @Override

@@ -16,6 +16,10 @@
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
+		<field name="fiscalPosition.code" title="Fiscal position"/>
+		<field name="registrationCode" />
+		<field name="address.fullName" title="Address"/>
+		<field name="companyStr" />
 		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
@@ -161,7 +165,8 @@
 						</editor>
 					</field>
           			<field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
-					<button if="__config__.app.isApp('account')" name="$balance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+					<button if="__config__.app.isApp('account')" name="$positiveBalance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+					<field name="$balance" hidden="true"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
@@ -305,7 +310,7 @@
 			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
-				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer/>
@@ -512,6 +517,9 @@
 		<field name="partnerCategory" />
 		<field name="partnerTypeSelect" />
 		<field name="titleSelect" />
+		<field name="fiscalPosition.code"/>
+		<field name="registrationCode" />
+		<field name="companyStr"/>
 		<template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -525,13 +533,16 @@
                 <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
+			  	{{registrationCode}}
 			  	<address>
 			  	{{address.fullName}}
 			  	</address>
 			    <span>
 			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}</span>
+			    {{partnerCategory.name}}<br/>
+			    <strong><span x-translate>Companies</span></strong> : {{companyStr}}<br/>
+			    <strong><span x-translate>Fiscal position</span></strong> : {{fiscalPosition.code}}</span>
 			  </div>
 			</div>
 		]]>
@@ -656,6 +667,7 @@
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
 		<action name="action-partner-record-set-balance" if="__config__.app.isApp('account')"/>
+		<action name="action-partner-record-set-positive-balance" if="__config__.app.isApp('account')"/>
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
@@ -728,9 +740,9 @@
 	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-name-balance">
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
-		<attribute name="title" for="$balance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$balance == 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
+		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalance == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-set-default">
@@ -750,6 +762,11 @@
                     : (x -> x.balanceCustAccount)
                 ).sum()}"/>
     </action-record>
+	
+	<action-record name="action-partner-record-set-positive-balance" model="com.axelor.apps.base.db.Partner">
+		<field name="$positiveBalance" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance" if="$balance != null"/>
+		<field name="$positiveBalance" expr="eval: 0" if="$balance == null"/>
+	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
 		<field name="contactPartnerSet" expr="eval: null"/>

@@ -18,18 +18,16 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -39,10 +37,13 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Singleton
 public class InvoiceLineController {
@@ -151,31 +152,21 @@ public class InvoiceLineController {
     }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
-    Map<String, Object> productInformation = invoiceLineService.resetProductInformation(invoice);
+    Map<String, Object> productInformation = new HashMap<>();
     if (invoice != null && product != null) {
       try {
         productInformation = invoiceLineService.fillProductInformation(invoice, invoiceLine);
 
-        if (productInformation.get("taxLine") == null
-            && invoiceLineService.isAccountRequired(invoiceLine)) {
-          String msg;
+        String errorMsg = (String) productInformation.get("error");
 
-          if (invoice.getCompany() != null) {
-            msg =
-                String.format(
-                    I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                    product.getCode(),
-                    invoice.getCompany().getName());
-          } else {
-            msg =
-                String.format(I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_2), product.getCode());
-          }
-
-          response.setFlash(msg);
+        if (!Strings.isNullOrEmpty(errorMsg) && invoiceLineService.isAccountRequired(invoiceLine)) {
+          response.setFlash(errorMsg);
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
+    } else {
+      productInformation = invoiceLineService.resetProductInformation(invoice);
     }
     response.setValues(productInformation);
   }
@@ -197,34 +188,27 @@ public class InvoiceLineController {
     }
 
     try {
-      Map<String, Object> discounts;
-      if (invoiceLine.getProduct().getInAti()) {
-        discounts =
-            invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getInTaxPrice());
-      } else {
-        discounts = invoiceLineService.getDiscount(invoice, invoiceLine, invoiceLine.getPrice());
+
+      Map<String, Object> discounts =
+          invoiceLineService.getDiscount(
+              invoice,
+              invoiceLine,
+              invoiceLine.getProduct().getInAti()
+                  ? invoiceLineService.getInTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      InvoiceToolService.isPurchase(invoice))
+                  : invoiceLineService.getExTaxUnitPrice(
+                      invoice,
+                      invoiceLine,
+                      invoiceLine.getTaxLine(),
+                      InvoiceToolService.isPurchase(invoice)));
+
+      for (Entry<String, Object> entry : discounts.entrySet()) {
+        response.setValue(entry.getKey(), entry.getValue());
       }
 
-      if (discounts != null) {
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-
-        if (discounts.get("price") != null) {
-          if (invoiceLine.getProduct().getInAti()) {
-            response.setValue("inTaxPrice", discounts.get("price"));
-            response.setValue(
-                "price",
-                invoiceLineService.convertUnitPrice(
-                    true, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          } else {
-            response.setValue("price", discounts.get("price"));
-            response.setValue(
-                "inTaxPrice",
-                invoiceLineService.convertUnitPrice(
-                    false, invoiceLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          }
-        }
-      }
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -333,26 +317,28 @@ public class InvoiceLineController {
   }
 
   public void getAccount(ActionRequest request, ActionResponse response) {
+
     try {
+
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
       if (invoiceLine != null) {
         Product product = invoiceLine.getProduct();
         Invoice invoice = this.getInvoice(request.getContext());
+
         if (product != null) {
-          AccountManagement accountManagement =
-              Beans.get(AccountManagementService.class)
-                  .getAccountManagement(product, invoice.getCompany());
-          if (accountManagement != null) {
-            Account account = null;
-            if (invoiceLine.getFixedAssets()) {
-              account = accountManagement.getPurchFixedAssetsAccount();
-            } else {
-              account = accountManagement.getPurchaseAccount();
-            }
-            response.setValue("account", account);
-          }
+          Account account =
+              Beans.get(AccountManagementServiceAccountImpl.class)
+                  .getProductAccount(
+                      product,
+                      invoice.getCompany(),
+                      invoice.getPartner().getFiscalPosition(),
+                      InvoiceToolService.isPurchase(invoice),
+                      invoiceLine.getFixedAssets());
+          response.setValue("account", account);
         }
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

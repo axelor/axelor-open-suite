@@ -18,8 +18,11 @@
   	
   	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
   	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<boolean name="excludeOutOfStock" title="Excl. out of stock products"/>
   	<boolean name="includeObsolete" title="Incl. obsolete products"/>
+  	<string name="fromRack" title="From rack"/>
+  	<string name="toRack" title="To rack"/>
   	<many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
   	<date name="validatedOn" title="Validated On"/>
   	

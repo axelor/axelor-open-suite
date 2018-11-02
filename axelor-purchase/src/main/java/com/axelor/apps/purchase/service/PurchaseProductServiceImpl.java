@@ -20,8 +20,10 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ShippingCoef;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -33,17 +35,23 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
   @Override
   public Map<String, Object> getDiscountsFromCatalog(
       SupplierCatalog supplierCatalog, BigDecimal price) {
-    Map<String, Object> discounts = new HashMap<String, Object>();
+    Map<String, Object> discounts = new HashMap<>();
 
-    discounts.put("discountAmount", supplierCatalog.getPrice().subtract(price));
-    discounts.put("discountTypeSelect", 2);
+    if (supplierCatalog.getPrice().compareTo(price) != 0) {
+      discounts.put("discountAmount", price.subtract(supplierCatalog.getPrice()));
+      discounts.put("discountTypeSelect", 2);
+    } else {
+      discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
+      discounts.put("discountAmount", BigDecimal.ZERO);
+    }
 
     return discounts;
   }
 
   @Override
   public Optional<BigDecimal> getShippingCoefFromPartners(Product product) {
-    if (product.getSupplierCatalogList() == null) {
+    if (product.getSupplierCatalogList() == null
+        || !Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
       return Optional.empty();
     }
     Company userActiveCompany = Beans.get(UserService.class).getUserActiveCompany();

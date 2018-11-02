@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -42,6 +41,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
@@ -349,10 +349,13 @@ public class ExpenseServiceImpl implements ExpenseService {
       expense.setMoveDate(moveDate);
     }
 
-    Account account = null;
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(expense.getCompany());
+    Company company = expense.getCompany();
+    Partner partner = expense.getUser().getPartner();
 
-    if (expense.getUser().getPartner() == null) {
+    Account account = null;
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (partner == null) {
       throw new AxelorException(
           expense,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -365,28 +368,25 @@ public class ExpenseServiceImpl implements ExpenseService {
             .getMoveCreateService()
             .createMove(
                 accountConfigService.getExpenseJournal(accountConfig),
-                accountConfig.getCompany(),
+                company,
                 null,
-                expense.getUser().getPartner(),
+                partner,
                 moveDate,
-                expense.getUser().getPartner().getInPaymentMode(),
+                partner.getInPaymentMode(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
-    AccountManagement accountManagement = null;
     Set<AnalyticAccount> analyticAccounts = new HashSet<>();
     BigDecimal exTaxTotal = null;
 
     int moveLineId = 1;
     int expenseLineId = 1;
-    Account employeeAccount =
-        accountingSituationService.getEmployeeAccount(
-            expense.getUser().getPartner(), expense.getCompany());
+    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
     moveLines.add(
         moveLineService.createMoveLine(
             move,
-            expense.getUser().getPartner(),
+            partner,
             employeeAccount,
             expense.getInTaxTotal(),
             false,
@@ -399,10 +399,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
       analyticAccounts.clear();
       Product product = expenseLine.getExpenseProduct();
-      accountManagement =
-          accountManagementService.getAccountManagement(product, expense.getCompany());
 
-      account = accountManagementService.getProductAccount(accountManagement, true);
+      account =
+          accountManagementService.getProductAccount(
+              product, company, partner.getFiscalPosition(), true, false);
 
       if (account == null) {
         throw new AxelorException(
@@ -410,14 +410,14 @@ public class ExpenseServiceImpl implements ExpenseService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_4),
             expenseLineId,
-            expense.getCompany().getName());
+            company.getName());
       }
 
       exTaxTotal = expenseLine.getUntaxedAmount();
       MoveLine moveLine =
           moveLineService.createMoveLine(
               move,
-              expense.getUser().getPartner(),
+              partner,
               account,
               exTaxTotal,
               true,
@@ -448,7 +448,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       MoveLine moveLine =
           moveLineService.createMoveLine(
               move,
-              expense.getUser().getPartner(),
+              partner,
               account,
               taxTotal,
               true,
@@ -462,7 +462,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
 
     expense.setMove(move);
     return move;

@@ -116,7 +116,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       throws AxelorException {
     super.checkIfEnoughStock(stockLocation, product, qty);
 
-    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
+    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()
+        && product.getStockManaged()) {
       StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null
           && stockLocationLine

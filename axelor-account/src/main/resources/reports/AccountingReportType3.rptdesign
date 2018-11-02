@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -485,7 +485,7 @@ left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as m
 				(AccountSet2.account_set IS NULL OR AccountSet2.account_set = MoveLineAccount2.id) AND
 				(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
 				MoveLineAccount2.reconcile_ok = true AND 
-				Move2.ignore_in_accounting_ok = false  AND Move2.status_select = 3 AND Reconcile2.status_select = 2
+				Move2.ignore_in_accounting_ok = false  AND (Move2.status_select = 3 OR Move2.status_select = 2) AND Reconcile2.status_select = 2
 				
 				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
@@ -497,7 +497,7 @@ Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = MoveLineAccount.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 MoveLineAccount.reconcile_ok = true 
-AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (Move.status_select = 2 AND AccountConfig.accounting_daybook = true))
+AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
 
 ]]></xml-property>
         </oda-data-set>

@@ -15,6 +15,7 @@
   		<field name="prioritySelect" hidden="true"/>
         <field name="manufOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -96,8 +97,8 @@
 		<panel colSpan="8">
 			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="3"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="3"/>
-			<field name="company" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" domain="self.company = :company and self.typeSelect = 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation" colSpan="3" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsPermanent" showTitle="false" colSpan="3" showIf="isPermanent &amp;&amp; $readonly()">
 				<viewer depends="isPermanent">
 					<![CDATA[
@@ -190,7 +191,7 @@
 	
 	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
 		<panel>
-			<field name="qty" colSpan="8"/>
+			<field name="qty" min="1" colSpan="8"/>
 			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
 		</panel>
 	</form>

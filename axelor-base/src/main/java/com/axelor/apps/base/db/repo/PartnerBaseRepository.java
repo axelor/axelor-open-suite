@@ -70,6 +70,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
       partnerService.setPartnerFullName(partner);
+      partnerService.setCompanyStr(partner);
       return super.save(partner);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

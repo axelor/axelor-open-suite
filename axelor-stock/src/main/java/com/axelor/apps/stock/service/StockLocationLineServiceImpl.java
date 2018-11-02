@@ -100,6 +100,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     StockLocationLine stockLocationLine = this.getOrCreateStockLocationLine(stockLocation, product);
 
+    if (stockLocationLine == null) {
+      return;
+    }
+
     LOG.debug(
         "Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ",
         stockLocation.getName(),
@@ -287,6 +291,11 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
       throws AxelorException {
+
+    if (!product.getStockManaged()) {
+      return;
+    }
+
     StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
 
     if (stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
@@ -332,6 +341,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public StockLocationLine getOrCreateStockLocationLine(
       StockLocation stockLocation, Product product) {
 
+    if (!product.getStockManaged()) {
+      return null;
+    }
+
     StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
 
     if (stockLocationLine == null) {
@@ -375,6 +388,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   @Override
   public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product) {
+
+    if (product != null && !product.getStockManaged()) {
+      return null;
+    }
 
     return stockLocationLineRepo
         .all()

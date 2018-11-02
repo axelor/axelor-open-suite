@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -244,6 +245,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(
         invoice,
         this.createInvoiceLinesFromTax(invoice, taxLineList, invoicingProduct, percentToInvoice));
+
     this.fillInLines(invoice);
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
@@ -251,6 +253,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
     if (partnerAccount != null) {
+      Partner partner = invoice.getPartner();
+      if (partner != null) {
+        partnerAccount =
+            Beans.get(FiscalPositionAccountService.class)
+                .getAccount(partner.getFiscalPosition(), partnerAccount);
+      }
       invoice.setPartnerAccount(partnerAccount);
     }
 
@@ -427,9 +435,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice) {
 
     saleOrder.setOrderDate(appSupplychainService.getTodayDate());
-
-    // TODO Créer une séquence pour les commandes (Porter sur la facture ?)
-    //		saleOrder.setOrderNumber();
 
     return saleOrder;
   }
