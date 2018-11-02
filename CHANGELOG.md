@@ -75,6 +75,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Sale Order Line : Fix calculate "Available stock" on onload.
 - STOCK LOCATION : report for external stock location
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
+- AnalyticBalance report: Fix order by.
 
 ## [5.0.6] - 2018-10-06
 ## Features
