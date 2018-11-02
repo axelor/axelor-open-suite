@@ -293,7 +293,7 @@ public class MoveValidateService {
 
   /**
    * Method that freeze the account and partner fields on move lines
-   * 
+   *
    * @param move
    */
   public void freezeAccountAndPartnerFieldsOnMoveLines(Move move) {
