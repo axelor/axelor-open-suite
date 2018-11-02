@@ -301,6 +301,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
+- INVENTORy : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
