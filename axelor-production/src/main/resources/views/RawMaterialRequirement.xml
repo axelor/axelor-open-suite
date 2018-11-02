@@ -18,7 +18,7 @@
     <panel>
       <field name="code" readonly="true"/>
       <field name="name"/>
-      <field name="company" required="true"/>
+      <field name="company" required="true" canEdit="false"/>
       <field name="duration"/>
       <field name="showAllRequirements"/>
       <field name="stockLocationSet" colSpan="12"

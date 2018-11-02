@@ -178,6 +178,7 @@
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 - Product : add new boolean to manage stock in stockLocation.
 - PARTNER : grid and card view
+- Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
