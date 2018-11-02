@@ -15,22 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.job;
+package com.axelor.apps.base.job;
 
-import com.axelor.apps.base.job.ThreadedJob;
-import com.axelor.apps.base.job.UncheckedJobExecutionException;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
-import com.axelor.inject.Beans;
-import org.quartz.JobExecutionContext;
+public class UncheckedJobExecutionException extends RuntimeException {
 
-public class BillSubJob extends ThreadedJob {
-  @Override
-  public void executeInThread(JobExecutionContext context) {
-    try {
-      Beans.get(SupplychainBatchService.class).run(SupplychainBatchRepository.CODE_BATCH_BILL_SUB);
-    } catch (Exception e) {
-      throw new UncheckedJobExecutionException(e);
-    }
+  private static final long serialVersionUID = -3636564667401795286L;
+
+  public UncheckedJobExecutionException(Throwable cause) {
+    super(cause);
+  }
+
+  public UncheckedJobExecutionException(String message) {
+    super(message);
   }
 }
