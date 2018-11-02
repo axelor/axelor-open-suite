@@ -113,7 +113,8 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-
+		<decimal name="economicManufOrderQty" title="Economic manuf. qty"/>
+		
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
 		<one-to-many name="saleProductMultipleQtyList"
@@ -127,8 +128,7 @@
 			title="Multiple quantities" orderBy="multipleQty" />
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
-			
-
+		
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

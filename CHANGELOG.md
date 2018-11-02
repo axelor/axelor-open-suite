@@ -118,6 +118,7 @@
 - AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
 - INVOICE : Customer tax nbr field added for the invoices based on sale order.
 - MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
+- Product : Add a decimal field 'economicManufOrderQty' and product.economicManufOrderQty in ManufOrder form view and its translation.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

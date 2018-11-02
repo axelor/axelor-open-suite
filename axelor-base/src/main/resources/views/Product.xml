@@ -192,6 +192,7 @@
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
                     <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
+                    <field name="economicManufOrderQty"/>
                     <panel colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>

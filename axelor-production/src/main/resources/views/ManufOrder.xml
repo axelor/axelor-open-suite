@@ -113,6 +113,7 @@
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
+			<field name="product.economicManufOrderQty" readonly="true"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-atts-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
