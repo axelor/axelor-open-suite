@@ -45,9 +45,9 @@ public class InventoryLineService {
     return inventoryLine;
   }
 
-  public InventoryLine updateInventoryLine(InventoryLine inventoryLine) {
+  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory) {
 
-    StockLocation stockLocation = inventoryLine.getInventory().getStockLocation();
+    StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
