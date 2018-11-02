@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.base.job;
 
+import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaSchedule;
+import com.axelor.meta.db.repo.MetaScheduleRepository;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,19 +35,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import com.axelor.apps.base.service.administration.AbstractBatchService;
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaSchedule;
-import com.axelor.meta.db.repo.MetaScheduleRepository;
-import com.axelor.rpc.Context;
-import com.axelor.script.GroovyScriptHelper;
-import com.axelor.script.ScriptHelper;
 
-public class BatchJob implements ThreadedJob {
+public class BatchJob extends ThreadedJob {
 
   @Override
   public void executeInThread(JobExecutionContext context) {
@@ -51,20 +50,18 @@ public class BatchJob implements ThreadedJob {
       batchServiceClass =
           Class.forName(batchServiceClassName).asSubclass(AbstractBatchService.class);
     } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
       throw new UncheckedJobExecutionException(e);
     }
 
     AbstractBatchService batchService = Beans.get(batchServiceClass);
     String batchCode = metaSchedule.getBatchCode();
+
     Model batchModel = batchService.findModelByCode(batchCode);
 
     if (batchModel == null) {
       String msg =
           String.format("Batch %s not found with service %s", batchCode, batchServiceClassName);
-      UncheckedJobExecutionException e = new UncheckedJobExecutionException(msg);
-      TraceBackService.trace(e);
-      throw e;
+      throw new UncheckedJobExecutionException(msg);
     }
 
     // Apply job's parameters to the batch.
@@ -74,7 +71,6 @@ public class BatchJob implements ThreadedJob {
     try {
       batchService.run(batchModel);
     } catch (Exception e) {
-      TraceBackService.trace(e);
       throw new UncheckedJobExecutionException(e);
     } finally {
       if (!JPA.em().contains(batchModel)) {
@@ -113,7 +109,6 @@ public class BatchJob implements ThreadedJob {
               } catch (IllegalAccessException
                   | InvocationTargetException
                   | NoSuchMethodException e) {
-                TraceBackService.trace(e);
                 throw new UncheckedJobExecutionException(e);
               }
             }

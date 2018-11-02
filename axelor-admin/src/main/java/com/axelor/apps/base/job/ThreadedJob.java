@@ -17,24 +17,58 @@
  */
 package com.axelor.apps.base.job;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.axelor.exception.service.TraceBackService;
+import java.lang.invoke.MethodHandles;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract interface ThreadedJob extends Job {
+public abstract class ThreadedJob implements Job {
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  default void execute(JobExecutionContext context) throws JobExecutionException {
-    ExecutorService executor = Executors.newSingleThreadExecutor();
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    if (isRunning(context)) {
+      return;
+    }
+
+    String name = context.getJobDetail().getKey().getName();
+    Thread thread = new Thread(() -> executeInThread(context));
 
     try {
-      executor.submit(() -> executeInThread(context));
-      executor.shutdown();
+      long startTime = System.currentTimeMillis();
+      thread.start();
+      thread.join();
+      float duration = (System.currentTimeMillis() - startTime) / 1000f;
+      logger.debug("Job {} duration: {}s", name, duration);
     } catch (UncheckedJobExecutionException e) {
-      throw new JobExecutionException(e.getCause());
+      Throwable cause = e.getCause();
+      TraceBackService.trace(cause);
+      throw new JobExecutionException(cause);
+    } catch (InterruptedException e) {
+      TraceBackService.trace(e);
+      Thread.currentThread().interrupt();
     }
   }
 
-  void executeInThread(JobExecutionContext context);
+  public abstract void executeInThread(JobExecutionContext context);
+
+  private boolean isRunning(JobExecutionContext context) {
+    try {
+      return context
+          .getScheduler()
+          .getCurrentlyExecutingJobs()
+          .stream()
+          .anyMatch(
+              j ->
+                  j.getTrigger().equals(context.getTrigger())
+                      && !j.getFireInstanceId().equals(context.getFireInstanceId()));
+    } catch (SchedulerException e) {
+      return false;
+    }
+  }
 }
