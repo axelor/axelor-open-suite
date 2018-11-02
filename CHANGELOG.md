@@ -114,6 +114,7 @@
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 - STOCKMOVE : External Reference field added in StockMove Report.
+- STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
