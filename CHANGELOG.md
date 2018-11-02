@@ -239,6 +239,7 @@
 - PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
 - PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 - SALEORDER : allow to change the payment condition and payment mode
+- MRP : Fix Null pointer exception.
 
 ## [Unreleased 5.0.7]
 ## Features
