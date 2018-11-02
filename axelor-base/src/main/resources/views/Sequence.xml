@@ -20,7 +20,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
                 </editor>
             </field>
 			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" readonlyIf="$popup() &amp;&amp; company"/>
 		</panel>
 		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
 			<label title="The tags below can be used as a prefix or a suffix" />
@@ -68,8 +68,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
     	<field name="toBeAdded" expr="1"/>
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="company" expr="eval: _parent?.company"/>
+    	<field name="company" expr="eval:__user__.activeCompany" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany != null"/>
+    	<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     </action-record>
     
 	<action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">

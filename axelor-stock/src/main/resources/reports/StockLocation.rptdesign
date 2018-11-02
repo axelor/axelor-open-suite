@@ -268,7 +268,7 @@ LEFT JOIN
 LEFT JOIN 
 	meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE
-	Location.type_select = 1
+	Location.type_select in (1,2)
 AND
 	Location.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -520,7 +520,7 @@ LEFT JOIN
 	base_company AS Company ON (Company.id = Location.company)
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
-where StockLocationLine.current_qty != 0	and Location.type_select = 1 and Location.id in (@INJECTID)
+where StockLocationLine.current_qty != 0	and Location.type_select in (1,2) and Location.id in (@INJECTID)
 order by Product.code
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

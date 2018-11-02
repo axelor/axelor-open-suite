@@ -114,6 +114,8 @@
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
 - STOCKMOVE : External Reference field added in StockMove Report.
+- STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
+- AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
 - INVOICE : Customer tax nbr field added for the invoices based on sale order.
 
 ## Improvements
@@ -177,6 +179,7 @@
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 - Product : add new boolean to manage stock in stockLocation.
 - PARTNER : grid and card view
+- Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -240,6 +243,7 @@
 - PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
 - PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 - SALEORDER : allow to change the payment condition and payment mode
+- MRP : Fix Null pointer exception.
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -247,6 +251,7 @@
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 - SaleOrder : Modify views to display company and stockLocation.
 - PurchaseOrder : Modify views to display company and stockLocation.
+- Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -267,6 +272,9 @@
 - Purchase order : Fill the tax line even if there is no supplier catalog
 - Invoice : Fill the product code and product name even if tax or account are missing for the product
 - FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
+- INVENTORY : stock location filter
+- INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
+- INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -309,7 +317,13 @@
 When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
 - Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
 - Validate all draft or daybook account moves when we close a period.
-		
+- Sequence : Fix fill automatically the company field and put it readonly when create sequence from another model.
+- Sale Order Line : Fix calculate "Available stock" on onload.
+- STOCK LOCATION : report for external stock location
+- AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
+- AnalyticBalance report: Fix order by.
+- Product: Removed 'shippingCoef' value set from onLoad.
+
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
@@ -538,6 +552,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
+- INVENTORy : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22

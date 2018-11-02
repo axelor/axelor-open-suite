@@ -74,7 +74,7 @@
     <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
-
+	<boolean name="availabilityRequest" title="Availability request"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
