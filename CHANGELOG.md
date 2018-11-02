@@ -5,6 +5,7 @@
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 - SaleOrder : Modify views to display company and stockLocation.
 - PurchaseOrder : Modify views to display company and stockLocation.
+- Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 
 ## Improvements
 - Show full name for products in Mrp report.

@@ -357,7 +357,7 @@ public class PaymentVoucherLoadService {
       companyBankDetails =
           Beans.get(BankDetailsService.class)
               .getDefaultCompanyBankDetails(
-                  invoice.getCompany(), invoice.getPaymentMode(), invoice.getPartner());
+                  invoice.getCompany(), invoice.getPaymentMode(), invoice.getPartner(), null);
     }
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);
