@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -101,9 +102,11 @@ public class InvoicePaymentController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
-  public void fillBankDetails(ActionRequest request, ActionResponse response) {
+  public void fillBankDetails(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
 
@@ -127,7 +130,7 @@ public class InvoicePaymentController {
     }
     BankDetails defaultBankDetails =
         Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner);
+            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("bankDetails", defaultBankDetails);
   }
 }

@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.exception.AxelorException;
+
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
@@ -71,17 +73,22 @@ public interface BankDetailsService {
    * @param company
    * @param paymentMode
    * @return
+   * @throws AxelorException
    */
-  String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode);
+  String createCompanyBankDetailsDomain(
+      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      throws AxelorException;
 
   /**
    * @param company
    * @param paymentMode
    * @param partner
    * @return default value for the field companyBankDetails
+   * @throws AxelorException
    */
   BankDetails getDefaultCompanyBankDetails(
-      Company company, PaymentMode paymentMode, Partner partner);
+      Company company, PaymentMode paymentMode, Partner partner, Integer operationTypeSelect)
+      throws AxelorException;
 
   /**
    * ABS method to validate a iban.
