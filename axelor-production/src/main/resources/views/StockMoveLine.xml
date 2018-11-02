@@ -20,7 +20,7 @@
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
-    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine"
+    orderBy="stockMove.statusSelect,product.name,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
