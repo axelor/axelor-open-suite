@@ -33,6 +33,7 @@
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
+    	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"/>
         <field name="origin"/>
         <field name="description"/>
 	</grid>
@@ -140,7 +141,7 @@
 				</field>
 			</panel>
 			<panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
@@ -231,7 +232,7 @@
 				</field>
 			</panel>
 			<panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
+				<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>

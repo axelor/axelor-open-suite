@@ -313,6 +313,10 @@ public class MoveValidateService {
         moveLine.setPartnerFullName(partner.getFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
       }
+      if (moveLine.getTaxLine() != null) {
+        moveLine.setTaxRate(moveLine.getTaxLine().getValue());
+        moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
+      }
     }
   }
 
