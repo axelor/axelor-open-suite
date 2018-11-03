@@ -169,7 +169,7 @@
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["ManufOrderId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet"/>
-            <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id, MetaFile.file_path AS logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
+            <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id,ManufOrder.note AS note, MetaFile.file_path AS logo_path, ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
 ManufOrder.qty, Unit.name as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet,Product.bar_code as bar_code,
 BarCodeFile.file_path as barcode_picture, ManufOrder.status_select, ManufOrder.is_cons_pro_on_operation
 FROM production_manuf_order AS ManufOrder
@@ -1353,6 +1353,13 @@ INNER JOIN
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">manuf_order_note</text-property>
+                    <expression name="expression" type="javascript">dataSetRow['note'] != null ? dataSetRow['note'] : ""</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4231">
                 <property name="width">11.135416666666666in</property>
@@ -1672,7 +1679,7 @@ INNER JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["qty"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["qty"]</VALUE-OF> &amp;nbsp;<VALUE-OF>row._outer["unit_code"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4217">
@@ -1713,16 +1720,13 @@ INNER JOIN
                             <row id="4062">
                                 <property name="height">0.2708333333333333in</property>
                                 <cell id="4063">
-                                    <property name="colSpan">2</property>
+                                    <property name="colSpan">6</property>
                                     <property name="rowSpan">1</property>
+                                    <data id="4608">
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="resultSetColumn">Column Binding</property>
+                                    </data>
                                 </cell>
-                                <cell id="4065">
-                                    <property name="colSpan">1</property>
-                                    <property name="rowSpan">1</property>
-                                </cell>
-                                <cell id="4214"/>
-                                <cell id="4215"/>
-                                <cell id="4216"/>
                             </row>
                             <row id="4086">
                                 <property name="height">0.2708333333333333in</property>
@@ -2650,6 +2654,12 @@ INNER JOIN
                                     <property name="name">rack</property>
                                     <text-property name="displayName">rack</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["rack"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">Column Binding</property>
+                                    <expression name="expression" type="javascript">dataSetRow['note'] != null ? dataSetRow['note'] : ""</expression>
                                     <property name="dataType">string</property>
                                     <property name="allowExport">true</property>
                                 </structure>
