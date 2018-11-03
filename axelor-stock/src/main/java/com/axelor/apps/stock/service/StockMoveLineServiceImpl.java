@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
@@ -942,18 +943,30 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
 
-      TrackingNumber trackingNumber = new TrackingNumber();
-      trackingNumber.setCounter(counter);
-      trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
-      if (trackingNumberItem.get("warrantyExpirationDate") != null) {
-        trackingNumber.setWarrantyExpirationDate(
-            LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+      TrackingNumber trackingNumber = null;
+      trackingNumber =
+          Beans.get(TrackingNumberRepository.class)
+              .all()
+              .filter(
+                  "self.product.id = ?1 and self.trackingNumberSeq = ?2",
+                  stockMoveLine.getProduct(),
+                  trackingNumberItem.get("trackingNumberSeq").toString())
+              .fetchOne();
+
+      if (trackingNumber == null) {
+        trackingNumber = new TrackingNumber();
+        trackingNumber.setCounter(counter);
+        trackingNumber.setTrackingNumberSeq(trackingNumberItem.get("trackingNumberSeq").toString());
+        if (trackingNumberItem.get("warrantyExpirationDate") != null) {
+          trackingNumber.setWarrantyExpirationDate(
+              LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
+        }
+        if (trackingNumberItem.get("perishableExpirationDate") != null) {
+          trackingNumber.setPerishableExpirationDate(
+              LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
+        }
+        trackingNumber.setProduct(stockMoveLine.getProduct());
       }
-      if (trackingNumberItem.get("perishableExpirationDate") != null) {
-        trackingNumber.setPerishableExpirationDate(
-            LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
-      }
-      trackingNumber.setProduct(stockMoveLine.getProduct());
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
       if (draft) {

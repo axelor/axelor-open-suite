@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
@@ -126,7 +127,17 @@ public class StockMoveLineController {
   }
 
   public void openTrackNumberWizard(ActionRequest request, ActionResponse response) {
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove = null;
+    if (context.getParent() != null
+        && context.getParent().get("_model").equals("com.axelor.apps.stock.db.StockMove")) {
+      stockMove = context.getParent().asType(StockMove.class);
+    } else if (stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getId() != null) {
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
+    }
+    
     boolean _hasWarranty = false, _isPerishable = false;
     if (stockMoveLine.getProduct() != null) {
       _hasWarranty = stockMoveLine.getProduct().getHasWarranty();
@@ -141,6 +152,7 @@ public class StockMoveLineController {
             .param("show-confirm", "false")
             .param("width", "500")
             .param("popup-save", "false")
+            .context("_stockMove", stockMove)
             .context("_stockMoveLine", stockMoveLine)
             .context("_hasWarranty", _hasWarranty)
             .context("_isPerishable", _isPerishable)

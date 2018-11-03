@@ -15,8 +15,16 @@
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
     <field name="trackingNumber" form-view="tracking-number-form"
-      grid-view="tracking-number-grid" readonlyIf="id" />
+		grid-view="tracking-number-grid"
+		canNew="false"
+		readonlyIf="$get('stockMove.statusSelect') > 2"
+		domain="action-stock-move-line-attrs-tracking-number-domain"
+		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+	<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
+    <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
@@ -31,8 +39,16 @@
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
     <field name="trackingNumber" form-view="tracking-number-form"
-      grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="id" />
+		grid-view="tracking-number-grid"
+		canNew="true"
+		readonlyIf="$get('stockMove.statusSelect') > 2"
+		domain="action-stock-move-line-attrs-tracking-number-domain"
+		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+	<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
+    <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"
@@ -56,7 +72,14 @@
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid" />
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"
-        domain="self.product = :product" readonlyIf="id" />
+        canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+        onSelect="action-stock-move-line-attrs-tracking-number-domain" 
+        readonlyIf="$get('stockMove.statusSelect') > 2" 
+		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+        <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
+		<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
       <field name="stockMove" hidden="true" />
       <field name="stockMove.statusSelect" hidden="true" />
     </panel>
