@@ -260,6 +260,9 @@
 - SaleOrder : Modify views to display company and stockLocation.
 - PurchaseOrder : Modify views to display company and stockLocation.
 - Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
+- JOURNAL : Enable massUpdate feature
+- SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -283,6 +286,8 @@
 - INVENTORY : stock location filter
 - INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
 - INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
+- StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
+- GROUP : Enable massUpdate feature.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -333,6 +338,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Product: Removed 'shippingCoef' value set from onLoad.
 - Alphabetical order on the table producedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
+- PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 
 
 ## [5.0.6] - 2018-10-06

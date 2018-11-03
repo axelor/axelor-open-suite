@@ -7,8 +7,11 @@
 
     <entity name="Group" cachable="true">
 
-        <boolean name="isClient" default="false" title="Client"/>
-        <boolean name="isSupplier" default="false" title="Supplier"/>
+		<boolean name="technicalStaff" help="Specify whether the members of this group are technical staff." massUpdate="true"/>
+		<string name="navigation" selection="select.user.navigation" massUpdate="true"/>
+		<string name="homeAction" help="Default home action." massUpdate="true"/>
+        <boolean name="isClient" default="false" massUpdate="true" title="Client"/>
+        <boolean name="isSupplier" default="false" massUpdate="true" title="Supplier"/>
 
     </entity>
 

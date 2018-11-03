@@ -318,6 +318,7 @@
 "Validation date",,,
 "Version Number",,,
 "WT",,,
+"Warning, a completed order can't be changed anymore, do you want to continue?",,,
 "You have to choose at least one purchase order",,,
 "You must configure Purchase module for the company %s",,,
 "You need a purchase order associated to line.",,,
