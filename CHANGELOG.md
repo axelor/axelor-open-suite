@@ -7,6 +7,8 @@
 - PurchaseOrder : Modify views to display company and stockLocation.
 - Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 - JOURNAL : Enable massUpdate feature
+- SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+
 
 ## Improvements
 - Show full name for products in Mrp report.
