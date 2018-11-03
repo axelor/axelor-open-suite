@@ -30,6 +30,7 @@
 - INVENTORY : stock location filter
 - INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
 - INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
+- StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
