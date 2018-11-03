@@ -297,6 +297,7 @@
 "Validation date","Date de validation",,
 "Version Number","Numéro de la version",,
 "WT",,,
+"Warning, a completed order can't be changed anymore, do you want to continue?","Attention, une commande terminée ne peut plus être modifiée. Voulez-vous continuer ?",,
 "You have to choose at least one purchase order","Vous devez choisir au moins une commande fournisseur",,
 "You must configure Purchase module for the company %s","Vous devez configurer le module Purchase pour la compagnie %s",,
 "important",,,
@@ -305,3 +306,5 @@
 "value:Purchase","Achats",,
 "value:Purchase Request","Demandes d'achat",,
 "warning",,,
+"{{ company.name }}",,,
+"{{ stockLocation.name }}",,,
