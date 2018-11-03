@@ -56,7 +56,7 @@
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid" />
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"
-        domain="self.product = :product" readonlyIf="id" />
+        domain="self.product = :product" />
       <field name="stockMove" hidden="true" />
       <field name="stockMove.statusSelect" hidden="true" />
     </panel>
