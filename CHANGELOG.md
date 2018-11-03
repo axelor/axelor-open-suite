@@ -81,6 +81,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Product: Removed 'shippingCoef' value set from onLoad.
 - Alphabetical order on the table producedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
+- PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 
 
 ## [5.0.6] - 2018-10-06

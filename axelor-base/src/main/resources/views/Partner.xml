@@ -395,8 +395,8 @@
 
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
-		  onNew="action-partner-contact-record-default"
-		  onLoad="action-partner-method-check-name,action-partner-attrs-change-name,action-partner-method-set-social-network-url"
+		  onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
+		  onLoad="action-group-partner-contact-onload"
 		  onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
 		<toolbar>
 			<button name="convertToIndividualPartner" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
@@ -487,7 +487,7 @@
 			<mail-followers />
 		</panel-mail>
 	</form>
-
+	
 	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner">
 		<panel name="main" >
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
@@ -710,6 +710,13 @@
     <action-group name="action-partner-partner-type-select-change">
         <action name="action-partner-attrs-change-name"/>
         <action name="action-partner-empty-first-name" if="partnerTypeSelect != __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-group>
+    
+    <action-group name="action-group-partner-contact-onload">
+    	<action name="action-partner-method-check-name"/>
+    	<action name="action-partner-attrs-change-name"/>
+    	<action name="action-partner-method-set-social-network-url"/>
+    	<action name="action-partner-attrs-partner-seq-editable"/>
     </action-group>
 
     <action-record name="action-partner-empty-first-name" model="com.axelor.apps.base.db.Partner">
