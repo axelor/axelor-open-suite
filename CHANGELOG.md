@@ -118,6 +118,7 @@
 - AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
 - INVOICE : Customer tax nbr field added for the invoices based on sale order.
 - MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
+- Product : Add a decimal field 'economicManufOrderQty' and product.economicManufOrderQty in ManufOrder form view and its translation.
 - Account MOVE Line:Add new field originDate.On FEC move line export,use the originDate instead of date field.
 
 ## Improvements
@@ -326,6 +327,9 @@ When we update an existing move in daybook mode, we update the partner balances 
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
 - Product: Removed 'shippingCoef' value set from onLoad.
+- Alphabetical order on the table producedStockMoveLineList
+- Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features
