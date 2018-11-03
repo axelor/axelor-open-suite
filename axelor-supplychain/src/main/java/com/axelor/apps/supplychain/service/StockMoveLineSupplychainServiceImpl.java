@@ -105,8 +105,8 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 
   protected StockMoveLine computeFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
-    BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
-    BigDecimal unitPriceTaxed = BigDecimal.ZERO;
+    BigDecimal unitPriceUntaxed = stockMoveLine.getUnitPriceUntaxed();
+    BigDecimal unitPriceTaxed = stockMoveLine.getUnitPriceTaxed();
     Unit orderUnit = null;
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
@@ -123,7 +123,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
-    } else {
+    } else if(StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())){
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       if (purchaseOrderLine == null) {
         // log the exception
