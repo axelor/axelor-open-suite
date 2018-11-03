@@ -29,6 +29,7 @@ import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -57,6 +58,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,7 @@ public class DataBackupCreateService {
 
   private boolean notNullReferenceFlag, referenceFlag;
   private boolean byteArrFieldFlag = false;
+  private boolean metaFileFieldFlag = false;
 
   private static Set<String> exceptColumnNameList =
       ImmutableSet.of(
@@ -173,7 +176,7 @@ public class DataBackupCreateService {
 
     fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
-    LOG.debug("Data Import Completed");
+    LOG.debug("Data Export Completed");
 
     return zippedFile;
   }
@@ -275,10 +278,9 @@ public class DataBackupCreateService {
             for (Property property : pro) {
               if (isPropertyExportable(property)) {
                 if (headerFlag) {
-                  String headerStr = getMetaModelHeader(dataObject, property, csvInput);
-                  headerArr.add(headerStr);
+                  headerArr.addAll(getMetaModelHeader(dataObject, property, csvInput));
                 }
-                dataArr.add(
+                dataArr.addAll(
                     getMetaModelData(
                         metaModel.getName(),
                         metaModelMapper.get(dataObject, "id").toString(),
@@ -293,6 +295,11 @@ public class DataBackupCreateService {
                 csvInput.setCallable(
                     "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
                 byteArrFieldFlag = false;
+              }
+              if (metaFileFieldFlag) {
+                csvInput.setCallable(
+                    "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithMetaFile");
+                metaFileFieldFlag = false;
               }
               csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
               headerFlag = false;
@@ -329,23 +336,39 @@ public class DataBackupCreateService {
   }
 
   /* Get Header For csv File */
-  private String getMetaModelHeader(Object value, Property property, CSVInput csvInput) {
+  private ArrayList<String> getMetaModelHeader(Object value, Property property, CSVInput csvInput) {
+    ArrayList<String> headerValues = new ArrayList<>();
     String propertyTypeStr = property.getType().toString();
     String propertyName = property.getName();
     switch (propertyTypeStr) {
       case "LONG":
-        return propertyName.equalsIgnoreCase("id") ? "importId" : propertyName;
+        headerValues.add(propertyName.equalsIgnoreCase("id") ? "importId" : propertyName);
+        return headerValues;
       case "BINARY":
         byteArrFieldFlag = true;
-        return "byte_" + propertyName;
+        headerValues.add("byte_" + propertyName);
+        return headerValues;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationalFieldHeader(property, csvInput, "ONE");
+        if (property.getTarget() != null
+            && property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+          metaFileFieldFlag = true;
+          headerValues.add("meta_file_" + propertyName);
+        }
+        headerValues.add(getRelationalFieldHeader(property, csvInput, "ONE"));
+        return headerValues;
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
-        return getRelationalFieldHeader(property, csvInput, "MANY");
+        if (property.getTarget() != null
+            && property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+          metaFileFieldFlag = true;
+          headerValues.add("meta_file_" + propertyName);
+        }
+        headerValues.add(getRelationalFieldHeader(property, csvInput, "MANY"));
+        return headerValues;
       default:
-        return propertyName;
+        headerValues.add(propertyName);
+        return headerValues;
     }
   }
 
@@ -384,21 +407,28 @@ public class DataBackupCreateService {
   }
 
   /* Get Data For csv File */
-  private String getMetaModelData(
+  private ArrayList<String> getMetaModelData(
       String metaModelName, String id, Property property, Object value, String dirPath) {
+    ArrayList<String> dataValues = new ArrayList<>();
     if (value == null) {
-      return "";
+      if (property.getTarget() != null
+          && property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+        dataValues.add("");
+      }
+      dataValues.add("");
+      return dataValues;
     }
 
     String propertyTypeStr = property.getType().toString();
     switch (propertyTypeStr) {
       case "DATETIME":
-        return property.getJavaType() == ZonedDateTime.class
-            ? ((ZonedDateTime) value).toLocalDateTime().toString()
-            : value.toString();
+        dataValues.add(
+            property.getJavaType() == ZonedDateTime.class
+                ? ((ZonedDateTime) value).toLocalDateTime().toString()
+                : value.toString());
+        return dataValues;
       case "BINARY":
         String fileName = metaModelName + "_" + property.getName() + "_" + id + ".png";
-
         try {
           org.apache.commons.io.FileUtils.writeByteArrayToFile(
               new File(dirPath, fileName), (byte[]) value);
@@ -406,15 +436,24 @@ public class DataBackupCreateService {
         } catch (IOException e) {
           e.printStackTrace();
         }
-        return fileName;
+        dataValues.add(fileName);
+        return dataValues;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationalFieldValue(property, value);
+        if (property.getTarget() != null
+            && property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
+          String metafileName = metaModelName + "_" + property.getName() + "_" + id;
+          dataValues.add(backUpMetaFile(value, metafileName, dirPath));
+        }
+        dataValues.add(getRelationalFieldValue(property, value));
+        return dataValues;
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
-        return getRelationalFieldData(property, value);
+        dataValues.add(getRelationalFieldData(property, value));
+        return dataValues;
       default:
-        return value.toString();
+        dataValues.add(value.toString());
+        return dataValues;
     }
   }
 
@@ -500,5 +539,19 @@ public class DataBackupCreateService {
       e.printStackTrace();
       LOG.debug("Error From DataBackupCreateService - generateConfig() : " + e.getMessage());
     }
+  }
+
+  private String backUpMetaFile(Object value, String fileName, String dirPath) {
+    MetaFile metaFile = (MetaFile) value;
+    fileName += "_" + metaFile.getFileName();
+    File fileObj = new File(dirPath, fileName);
+    try {
+      FileUtils.copyFile(MetaFiles.getPath(metaFile).toFile(), fileObj);
+      fileNameList.add(fileName);
+      return fileName;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
   }
 }

@@ -27,6 +27,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.google.inject.Inject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,6 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DataBackupRestoreService {
+
+  @Inject private MetaFiles metaFiles;
 
   /* Restore the Data using provided zip File and prepare Log File and Return it*/
   public File restore(MetaFile zipedBackupFile) {
@@ -93,7 +96,7 @@ public class DataBackupRestoreService {
             }
           });
       csvImporter.run();
-      LOG.info("Data Export Completed");
+      LOG.info("Data Import Completed");
       FileUtils.cleanDirectory(new File(tempDir.getAbsolutePath()));
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
       String logFileName = "DataBackupLog_" + LocalDateTime.now().format(formatter) + ".log";
@@ -153,6 +156,30 @@ public class DataBackupRestoreService {
           bytes = java.nio.file.Files.readAllBytes(image.toPath());
           mapper.set(bean, fieldName.substring(5), bytes);
         } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    return bean;
+  }
+
+  public Object importObjectWithMetaFile(Object bean, Map<String, Object> values)
+      throws IOException {
+    assert bean instanceof Model;
+
+    final Path path = (Path) values.get("__path__");
+
+    for (String fieldName : values.keySet()) {
+      if (fieldName.startsWith("meta_file_")) {
+        String fileName = (String) values.get(fieldName);
+        if (Strings.isNullOrEmpty((fileName))) {
+          return bean;
+        }
+        final File image = path.resolve(fileName).toFile();
+
+        try {
+          metaFiles.upload(image);
+        } catch (IOException e) {
           e.printStackTrace();
         }
       }

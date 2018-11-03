@@ -251,7 +251,7 @@
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
 - DECLARATION OF EXCHANGE : stock move lines
-
+- DataBackup : manage metafile documents in backup. 
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
