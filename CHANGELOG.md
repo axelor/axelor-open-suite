@@ -249,6 +249,7 @@
 - SALEORDER : allow to change the payment condition and payment mode
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
+- DECLARATION OF EXCHANGE : stock move lines
 
 ## [Unreleased 5.0.7]
 ## Features
