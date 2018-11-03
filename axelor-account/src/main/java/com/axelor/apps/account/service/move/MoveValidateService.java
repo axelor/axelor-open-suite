@@ -96,6 +96,11 @@ public class MoveValidateService {
           && moveLine.getDueDate() == null) {
         moveLine.setDueDate(date);
       }
+
+      if (moveLine.getOriginDate() == null) {
+        moveLine.setOriginDate(date);
+      }
+
       if (partner != null) {
         moveLine.setPartner(partner);
       }

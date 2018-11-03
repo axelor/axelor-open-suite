@@ -254,7 +254,8 @@ public class MoveLineService {
         this.determineDescriptionMoveLine(move.getJournal(), origin, description),
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
-        amountInSpecificMoveCurrency);
+        amountInSpecificMoveCurrency,
+        date);
   }
 
   /**

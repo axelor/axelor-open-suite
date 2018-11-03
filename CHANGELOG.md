@@ -118,6 +118,7 @@
 - AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
 - INVOICE : Customer tax nbr field added for the invoices based on sale order.
 - MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
+- Account MOVE Line:Add new field originDate.On FEC move line export,use the originDate instead of date field.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
