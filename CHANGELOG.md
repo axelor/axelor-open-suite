@@ -120,6 +120,7 @@
 - MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
 - Product : Add a decimal field 'economicManufOrderQty' and product.economicManufOrderQty in ManufOrder form view and its translation.
 - Account MOVE Line:Add new field originDate.On FEC move line export,use the originDate instead of date field.
+- ManufOrder : Add new many-to-one field 'unit' and set its value from billOfMaterial unit and also added to report.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
