@@ -37,10 +37,17 @@
             onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
         <field name="trackingNumber"
-            form-view="tracking-number-stock-move-line-form"
-            grid-view="tracking-number-grid"
-            onSelect="action-stock-move-line-attrs-tracking-number-domain"
-            canNew="true"/>
+			canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+			onSelect="action-stock-move-line-attrs-tracking-number-domain"
+			form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" 
+			readonlyIf="$get('stockMove.statusSelect') > 2" 
+			requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged') || ($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') == 2)" />
+		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+		<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+		<field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
+		<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+		<field name="stockMove.typeSelect" hidden="true"/>
         <field name="conformitySelect"/>
         <field name="availableStatus" width="150">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -49,7 +56,7 @@
         </field>
         <field name="stockMove.statusSelect" hidden="true"/>
         <field name="isSubLine" hidden="true"/>
-        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 1 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') || (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') != 2))"/>
     </grid>
 
     <grid name="stock-move-line-planned-grid" title="Stock move lines"
@@ -84,10 +91,17 @@
             onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
         <field name="trackingNumber"
-            form-view="tracking-number-stock-move-line-form"
-            grid-view="tracking-number-grid"
-            onSelect="action-stock-move-line-attrs-tracking-number-domain"
-            canNew="true"/>
+			canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+			onSelect="action-stock-move-line-attrs-tracking-number-domain"
+			readonlyIf="$get('stockMove.statusSelect') > 2" 
+			form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" 
+			requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged') || ($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
+		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+		<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+		<field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
+		<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+		<field name="stockMove.typeSelect" hidden="true"/>
         <field name="conformitySelect"/>
         <field name="availableStatus" width="150">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -95,7 +109,7 @@
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
         <field name="stockMove.statusSelect" hidden="true"/>
-        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') || (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') != 2)"/>
     </grid>
 
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" readonlyIf="$isReadOnly"
@@ -132,7 +146,19 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange" />
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass"/>
-	        <field name="trackingNumber" canNew="true" onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="trackingNumber"
+				canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+				onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form"
+				grid-view="tracking-number-grid" onSelect="action-stock-move-line-attrs-tracking-number-domain"
+				readonlyIf="$get('stockMove.statusSelect') > 2" 
+				requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged') || ($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') == 2)" />
+			<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+			<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+			<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+	        <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
+			<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+			<field name="stockMove.typeSelect" hidden="true"/>
+			<field name="stockMove.statusSelect" hidden="true"/>
 	        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
 	        <field name="isSubLine" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 	        <field name="$isReadOnly" hidden="true"/>
@@ -265,10 +291,20 @@
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
             <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange" />
 	        <field name="totalNetMass"/>
-	        <field name="trackingNumber" onChange="action-stock-move-line-record-product" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="trackingNumber"
+				canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+				onChange="action-stock-move-line-record-product" form-view="tracking-number-form"
+				grid-view="tracking-number-grid" onSelect="action-stock-move-line-attrs-tracking-number-domain"
+				readonlyIf="$get('stockMove.statusSelect') > 2"
+				requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged') || ($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') == 2)" />
+			<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+			<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+			<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+	        <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
+			<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
 	        <field name="stockMove.statusSelect" hidden="true"/>
+	        <field name="stockMove.typeSelect" hidden="true"/>
 	        <field name="description" colSpan="12" widget="html" />
-
             <field name="regime"/>
             <field name="natureOfTransaction"/>
             <field name="countryOfOrigin"/>
@@ -280,6 +316,7 @@
 	    	<panel-related field="$trackingNumbers" canEdit="true" canNew="true" canRemove="true" canSelect="false"
 	    	 			   editable="true" type="one-to-many" colSpan="12" title="Enter tracking numbers"
 	    	 			   target="com.axelor.apps.stock.db.TrackingNumber" >
+	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain"/>
 	   			<field name="trackingNumberSeq" title="Tracking Nbr." />
 				<field name="counter" title="Quantity" min="1"/>
 				<field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
@@ -296,10 +333,29 @@
     <action-method name="action-stock-move-line-method-empty-line">
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="emptyLine"/>
 	</action-method>
+	
+	<action-attrs name="action-stock-move-line-wizard-attrs-tracking-number-domain">
+        <attribute name="domain"
+            expr="eval:
+                &quot;
+                self.product.id in (select id from Product where id = ${__parent__._stockMoveLine.product.id}) AND
+                self in
+                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
+                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
+                    WHERE sl.id = ${__parent__._stockMove.fromStockLocation.id})
+                &quot;"
+            for="trackingNumber"/>
+    </action-attrs>
 
     <action-attrs name="action-track-number-atts-from-stock-move-line">
     	<attribute name="hidden" for="$trackingNumbers.warrantyExpirationDate" expr="eval: !_hasWarranty"/>
     	<attribute name="hidden" for="$trackingNumbers.perishableExpirationDate" expr="eval: !_isPerishable"/>
+    	<attribute name="hidden"
+			expr="eval: __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect != 3 &amp;&amp; (__repo__(StockLocation).find(_stockMove?.toStockLocation?.id).typeSelect != 1 || __repo__(StockLocation).find(_stockMove?.toStockLocation?.id).typeSelect != 2)"
+			for="$trackingNumbers.trackingNumberSeq"/>
+		<attribute name="hidden"
+			expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect != 1 &amp;&amp; __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect != 2) &amp;&amp; __repo__(StockLocation).find(_stockMove?.toStockLocation?.id).typeSelect == 3"
+			for="$trackingNumbers.trackingNumber"/>
     </action-attrs>
 
     <action-attrs name="action-stock-move-attrs-change-conformity">
@@ -370,6 +426,10 @@
 	<action-attrs name="action-stock-move-line-qty-attrs">
 		<attribute name="readonly" for="qty" expr="eval: _parent?.statusSelect == 2" />
 	</action-attrs>
+	
+	<action-record name="action-stock-move-line-wizard-record-set-tracking-number-seq" model="com.axelor.apps.stock.db.TrackingNumber">
+		<field name="trackingNumberSeq" expr="eval: trackingNumber?.trackingNumberSeq"/>
+	</action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">
 	    <field name="qty" expr="1"/>
@@ -424,19 +484,26 @@
 	</action-attrs>
 
     <action-attrs name="action-stock-move-line-attrs-tracking-number-domain">
-        <attribute name="domain"
-            expr="eval:
-                __parent__.typeSelect &lt; 3 ?
-                &quot;
-                self.product = :product AND
-                self in
-                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-                    WHERE sl.id = ${__parent__.fromStockLocation.id})
-                &quot;
-                : null"
-            for="trackingNumber"/>
-    </action-attrs>
+		<attribute name="domain" for="trackingNumber"
+			expr="eval: &quot;
+	                self.product = :product AND
+	                self in
+	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
+	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
+	                    WHERE sl.id = ${__parent__.fromStockLocation.id})
+	                &quot;"
+			if="__parent__ &amp;&amp; __parent__.fromStockLocation != null" />
+	
+		<attribute name="domain" for="trackingNumber"
+			expr="eval: &quot;
+	                self.product = :product AND
+	                self in
+	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
+	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
+	                    WHERE sl.id = ${stockMove.fromStockLocation.id})
+	                &quot;"
+			if="(!__parent__ || __parent__.fromStockLocation == null) &amp;&amp; stockMove != null" />
+	</action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
