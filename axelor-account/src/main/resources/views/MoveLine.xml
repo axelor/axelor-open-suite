@@ -10,7 +10,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date" width="90"/>
+        <field name="date" width="90" onChange="account-move-line-record-date-onchange"/>
    		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -26,7 +26,7 @@
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
-		<field name="date" width="100"/>
+		<field name="date" width="100" onChange="account-move-line-record-date-onchange"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
@@ -43,7 +43,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date"/>
+        <field name="date" onChange="account-move-line-record-date-onchange"/>
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -59,7 +59,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date"/>
+        <field name="date" onChange="account-move-line-record-date-onchange"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
@@ -101,8 +101,9 @@
 				</viewer>
 			</field>
 			<panel colSpan="12">
-				<field name="date"/>
+				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
+				<field name="originDate"/>
 			</panel>
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
 	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"/>
@@ -192,8 +193,9 @@
 				</viewer>
 			</field>
 			<panel colSpan="12">
-				<field name="date"/>
+				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
+				<field name="originDate"/>
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
 			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
@@ -309,6 +311,7 @@
 		<field name="partner" expr="eval: _parent?.partner"/>
 		<field name="date" expr="eval: _parent?.date"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
+		<field name="originDate" expr="eval: date"/>
 	</action-record>
 	
 	<action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
@@ -350,6 +353,10 @@
 	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
 		<field name="debit" expr="0" if="debit &lt; 0"/>
 		<field name="credit" expr="0" if="credit &lt; 0"/>
+	</action-record>
+	
+	<action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="originDate" expr="eval: date"/>
 	</action-record>
 	
 	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">

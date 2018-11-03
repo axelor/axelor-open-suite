@@ -1199,7 +1199,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         items[8] = moveLine.getOrigin();
         items[9] =
             moveLine
-                .getDate()
+                .getOriginDate()
                 .format(
                     DateTimeFormatter.ofPattern(
                         DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des lignes
