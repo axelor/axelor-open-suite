@@ -47,6 +47,8 @@
 				<field name="paymentModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="displayFeesImputationModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="feesImputationModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
+				<field name="displayReceiverAddress" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
+				<panel-related field="bankOrderFileFormatCountryList" grid-view="bank-order-file-format-country-grid" form-view="bank-order-file-format-country-form"/>
 			</panel>
 			<field name="displayFurtherInformations" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'"/>
 		</panel>

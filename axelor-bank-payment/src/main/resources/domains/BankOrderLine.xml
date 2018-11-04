@@ -35,6 +35,7 @@
   	<integer name="feesImputationModeSelect" title="Fees imputation" selection="bankpayment.bank.order.line.fees.imputation.mode.select"/>
   	<integer name="paymentModeSelect" title="Payment Mode" selection="bankpayment.bank.order.line.payment.mode.select"/>
   	<many-to-one name="receiverCountry" ref="com.axelor.apps.base.db.Country" title="Receiver country"/>
+  	<string name="receiverAddressStr" title="Receiver address"/>
   	
   	<string name="paymentReasonLine1" max="35"/>
   	<string name="paymentReasonLine2" max="35"/>

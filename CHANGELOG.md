@@ -263,7 +263,6 @@
 - JOURNAL : Enable massUpdate feature
 - SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
 
-
 ## Improvements
 - Show full name for products in Mrp report.
 - Sale and Purchase order form: Remove edit from stockLocation field.
@@ -911,7 +910,40 @@ Also, improve the sale order line grid and form views.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
 
-## [Unreleased 4.x]
+## [4.2.5] - 2018-10-06
+### Improvements
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Hide Ebics user full name in grid view.
+- Add a new button on bank order grids to display the bank order lines.
+- Bank orders can now be deleted when their status is "draft" or "canceled".
+- Improve bank order printing layout.
+- BANK ORDER : receiver address management for internationnal transfer
+
+### Bug Fixes
+- Fix NPE in BankOrder generation on missing bank name.
+- Timesheets : use the timesheet user to filter the projects/tasks instead of the connected user.
+- Cannot create a new bank order from the menu entry "awaiting signature".
+
+## [4.2.4] - 2018-07-12
+### Improvements
+- Fiscal Position interface reworked and moved from Account to Base module
+- Accounting export, use 1000 for administration and 1001 for FEC
+- Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
+- Web service mobile, create getKilometricAllowParam
+- Add a new bank order type for existing file transfer
+		
+### Bug Fixes
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Filter on values selection
+- Fix translation in base module, add traceback on checkPlanning method in WeeklyPlanningController
+- MoveLine, show tab of reconcile credit or debit
+- Human ressource, remove french title in Employee, employee-filters + add translation
+- Invoice, replace empty line on pending total by a color line (blue, info-text)
+- In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
+- Only "Active" EbicsUsers can be selected as signatoryEbicsUser in BankOrder form views.
+
+## [4.2.3] - 2018-02-28
+4.1.3 with axelor-process-studio modules
 
 ## [4.1.3] - 2018-02-28
 ### Improvements
@@ -935,7 +967,6 @@ Also, improve the sale order line grid and form views.
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
-- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -1242,7 +1273,11 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
+[4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
+[4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
+[4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
+[4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
+[4.2.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.2.1
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
