@@ -656,13 +656,20 @@ Also, improve the sale order line grid and form views.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
 
-## [Unreleased 4.x]
+## [Unreleased 4.2.5]
+### Improvements
+
+### Bug Fixes
+
+
+## [4.2.4] - 2018-07-12
 ### Improvements
 - Fiscal Position interface reworked and moved from Account to Base module
 - Accounting export, use 1000 for administration and 1001 for FEC
 - Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
 - Web service mobile, create getKilometricAllowParam
-
+- Add a new bank order type for existing file transfer
+		
 ### Bug Fixes
 - Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
 - Filter on values selection
@@ -1003,8 +1010,11 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
+[Unreleased 4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
+[4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
 [4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
+[4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
+[4.2.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.2.1
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1
