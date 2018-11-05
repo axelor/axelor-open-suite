@@ -37,7 +37,6 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -209,44 +208,51 @@ public class StockLocationServiceImpl implements StockLocationService {
     return idList;
   }
 
-  private void findLocationIds(List<StockLocation> childStockLocations) {
-
-    Long id;
-
-    childStockLocations =
-        Beans.get(StockLocationRepository.class)
-            .all()
-            .filter("self.parentStockLocation IN ?", childStockLocations)
-            .fetch();
-
-    Iterator<StockLocation> it = childStockLocations.iterator();
-
-    while (it.hasNext()) {
-
-      id = it.next().getId();
-      if (locationIdSet.contains(id)) {
-        it.remove();
-      } else {
-        locationIdSet.add(id);
-      }
-    }
-
-    if (!childStockLocations.isEmpty()) findLocationIds(childStockLocations);
-  }
-
   @Override
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
-
-    List<StockLocation> stockLocations = new ArrayList<>();
-
+    locationIdSet = new HashSet<>();
     if (stockLocation != null) {
-      stockLocations.add(stockLocation);
-      locationIdSet.add(stockLocation.getId());
-      findLocationIds(stockLocations);
+      List<StockLocation> stockLocations = getAllLocationAndSubLocation(stockLocation, true);
+      for (StockLocation item : stockLocations) {
+        locationIdSet.add(item.getId());
+      }
     } else {
       locationIdSet.add(0L);
     }
 
     return locationIdSet;
+  }
+
+  public List<StockLocation> getAllLocationAndSubLocation(
+      StockLocation stockLocation, boolean isVirtualInclude) {
+
+    List<StockLocation> resultList = new ArrayList<>();
+
+    if (isVirtualInclude) {
+      for (StockLocation subLocation :
+          stockLocationRepo
+              .all()
+              .filter("self.parentStockLocation.id = :stockLocationId")
+              .bind("stockLocationId", stockLocation.getId())
+              .fetch()) {
+
+        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+      }
+    } else {
+      for (StockLocation subLocation :
+          stockLocationRepo
+              .all()
+              .filter(
+                  "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
+              .bind("stockLocationId", stockLocation.getId())
+              .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
+              .fetch()) {
+
+        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+      }
+    }
+    resultList.add(stockLocation);
+
+    return resultList;
   }
 }

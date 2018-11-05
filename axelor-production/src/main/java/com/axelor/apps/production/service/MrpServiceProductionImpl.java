@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -74,7 +75,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      ManufOrderRepository manufOrderRepository) {
+      ManufOrderRepository manufOrderRepository,
+      StockLocationService stockLocationService) {
 
     super(
         appProductionService,
@@ -88,7 +90,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineRepository,
         stockRulesService,
         mrpLineService,
-        mrpForecastRepository);
+        mrpForecastRepository,
+        stockLocationService);
 
     this.manufOrderRepository = manufOrderRepository;
   }

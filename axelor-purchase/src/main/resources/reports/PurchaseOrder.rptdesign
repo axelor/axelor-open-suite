@@ -6024,7 +6024,7 @@ row["first_name"]
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["display_tax_detail_on_printing"] || (!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["display_tax_detail_on_printing"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                         </structure>
                                     </list-property>
                                     <list-property name="boundDataColumns">
@@ -6493,7 +6493,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]|| (!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]|| (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6506,7 +6506,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"] || (!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6575,7 +6575,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6588,7 +6588,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6650,7 +6650,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6663,7 +6663,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6769,7 +6769,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6782,7 +6782,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6887,7 +6887,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6900,7 +6900,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -7014,7 +7014,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -7027,7 +7027,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>

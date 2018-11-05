@@ -55,4 +55,7 @@ public interface StockLocationService {
   public List<Long> getBadStockLocationLineId();
 
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
+
+  public List<StockLocation> getAllLocationAndSubLocation(
+      StockLocation stockLocation, boolean isVirtualInclude);
 }
