@@ -7,6 +7,7 @@
 	<entity name="AppStock" lang="java" cachable="true" extends="App">
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="requireToFillConformityOnReceipt" title="Require to fill conformity for products ticked 'Control on Receipt'" default="true"/>
+		<boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
 	</entity>
 
 </domain-models>

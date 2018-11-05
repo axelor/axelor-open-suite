@@ -34,6 +34,7 @@
     
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations" initParam="true"/>
     
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>
     <one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet" mappedBy="manufOrder"/>

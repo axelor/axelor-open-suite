@@ -273,14 +273,19 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    // Set Company bank details
-    if (companyBankDetails == null) {
-      if (accountingSituation != null && paymentMode != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
+    if (partner.getFactorizedCustomer()) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList
+              .stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode.equals(partner.getOutPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+      } else if (paymentMode.equals(partner.getInPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyInBankDetails();
       }
       if (companyBankDetails == null) {
         companyBankDetails = company.getDefaultBankDetails();

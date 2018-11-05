@@ -192,6 +192,7 @@
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
                     <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
+                    <field name="economicManufOrderQty"/>
                     <panel colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
@@ -383,7 +384,6 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
         <action name="action-product-attrs-hidden-is-shipping-costs-product"/>
-		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
     </action-group>
 

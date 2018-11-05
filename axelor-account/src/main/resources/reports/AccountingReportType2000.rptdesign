@@ -1938,6 +1938,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <expression name="expressionValue" type="javascript">row["analytic_journal_id"]</expression>
                             </structure>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["analytic_journal_name"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <header>
                                 <row id="4252">
                                     <cell id="4253">
@@ -2030,6 +2037,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <expression name="expressionValue" type="javascript">row["analytic_axis_id"]</expression>
                             </structure>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["analytic_axis_code"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <header>
                                 <row id="4225">
                                     <cell id="4226">
@@ -2130,6 +2144,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <expression name="expressionValue" type="javascript">row["analytic_account_id"]</expression>
                             </structure>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["analytic_account_code"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                                <structure>
+                                    <expression name="key" type="javascript">row["account_type_name"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <header>
                                 <row id="4284">
                                     <cell id="4285">

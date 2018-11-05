@@ -354,8 +354,11 @@ public class PurchaseOrderController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
     Company company = purchaseOrder.getCompany();
@@ -368,7 +371,7 @@ public class PurchaseOrderController {
     }
     BankDetails defaultBankDetails =
         Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner);
+            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
 

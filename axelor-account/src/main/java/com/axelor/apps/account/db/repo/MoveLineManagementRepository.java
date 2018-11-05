@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.account.db.repo;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
+import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class MoveLineManagementRepository extends MoveLineRepository {
@@ -31,5 +33,17 @@ public class MoveLineManagementRepository extends MoveLineRepository {
     } else {
       entity.setArchived(true);
     }
+  }
+
+  @Override
+  public MoveLine save(MoveLine entity) {
+    List<AnalyticMoveLine> analyticMoveLineList = entity.getAnalyticMoveLineList();
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setAccount(entity.getAccount());
+        analyticMoveLine.setAccountType(entity.getAccount().getAccountType());
+      }
+    }
+    return super.save(entity);
   }
 }

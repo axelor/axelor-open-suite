@@ -105,6 +105,8 @@ public class MoveLineService {
             != AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
         analyticDistributionLine.setMoveLine(moveLine);
+        analyticDistributionLine.setAccount(moveLine.getAccount());
+        analyticDistributionLine.setAccountType(moveLine.getAccount().getAccountType());
         analyticDistributionLine.setAmount(
             analyticMoveLineService.computeAmount(analyticDistributionLine));
         analyticDistributionLine.setDate(appAccountService.getTodayDate());
@@ -252,7 +254,8 @@ public class MoveLineService {
         this.determineDescriptionMoveLine(move.getJournal(), origin, description),
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
-        amountInSpecificMoveCurrency);
+        amountInSpecificMoveCurrency,
+        date);
   }
 
   /**

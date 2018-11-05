@@ -96,6 +96,11 @@ public class MoveValidateService {
           && moveLine.getDueDate() == null) {
         moveLine.setDueDate(date);
       }
+
+      if (moveLine.getOriginDate() == null) {
+        moveLine.setOriginDate(date);
+      }
+
       if (partner != null) {
         moveLine.setPartner(partner);
       }
@@ -312,6 +317,10 @@ public class MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
+      }
+      if (moveLine.getTaxLine() != null) {
+        moveLine.setTaxRate(moveLine.getTaxLine().getValue());
+        moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
       }
     }
   }

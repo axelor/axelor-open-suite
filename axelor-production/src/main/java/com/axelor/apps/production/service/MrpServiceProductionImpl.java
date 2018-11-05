@@ -32,8 +32,10 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
@@ -73,7 +75,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      ManufOrderRepository manufOrderRepository) {
+      ManufOrderRepository manufOrderRepository,
+      StockLocationService stockLocationService) {
 
     super(
         appProductionService,
@@ -87,7 +90,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineRepository,
         stockRulesService,
         mrpLineService,
-        mrpForecastRepository);
+        mrpForecastRepository,
+        stockLocationService);
 
     this.manufOrderRepository = manufOrderRepository;
   }
@@ -148,8 +152,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
 
         if (this.isBeforeEndDate(maturityDate) && this.isMrpProduct(product)) {
-
-          mrp.addMrpLineListItem(
+          MrpLine mrpLine =
               this.createMrpLine(
                   product,
                   manufOrderMrpLineType,
@@ -157,7 +160,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                   maturityDate,
                   BigDecimal.ZERO,
                   stockLocation,
-                  manufOrder));
+                  manufOrder);
+          if (mrpLine != null) {
+            mrp.addMrpLineListItem(mrpLine);
+          }
         }
       }
 
@@ -168,8 +174,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             Product product = prodProduct.getProduct();
 
             if (this.isMrpProduct(product)) {
-
-              mrp.addMrpLineListItem(
+              MrpLine mrpLine =
                   this.createMrpLine(
                       prodProduct.getProduct(),
                       manufOrderNeedMrpLineType,
@@ -177,7 +182,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                       operationOrder.getPlannedStartDateT().toLocalDate(),
                       BigDecimal.ZERO,
                       stockLocation,
-                      operationOrder));
+                      operationOrder);
+              if (mrpLine != null) {
+                mrp.addMrpLineListItem(mrpLine);
+              }
             }
           }
         }
@@ -198,7 +206,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                   product, manufOrder.getProdProcess().getStockLocation());
             }
 
-            mrp.addMrpLineListItem(
+            MrpLine mrpLine =
                 this.createMrpLine(
                     product,
                     manufOrderNeedMrpLineType,
@@ -206,7 +214,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     manufOrder.getPlannedStartDateT().toLocalDate(),
                     BigDecimal.ZERO,
                     stockLocation,
-                    manufOrder));
+                    manufOrder);
+            if (mrpLine != null) {
+              mrp.addMrpLineListItem(mrpLine);
+            }
           }
         }
       }

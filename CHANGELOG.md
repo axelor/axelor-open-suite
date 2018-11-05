@@ -113,6 +113,16 @@
 - Purchase : Add Suppier Catalog management configurtion on purchase app .
 - LOGISTICAL FORM : action-validate added for mass validation on-save.
 - STOCK MOVE : Display specificPackage field on Stock Move generated from Sale Order.
+- STOCKMOVE : External Reference field added in StockMove Report.
+- STOCK MOVE :	Add a new option in Stock app : "Separate the shipment operations".Add new field Avilability Request in Stock Move and Add new Menu entries for this.
+- AnalyticMoveLine : Displayed 'accountType' in right of column 'Analytic Account' in grid view and also added to analytic-move-line-distribution-form
+- INVOICE : Customer tax nbr field added for the invoices based on sale order.
+- MOVELINE : Taxline display on accountType='tax', 'immobilisation' and moveline grid, also fill taxRate and taxCode accordingly onSave and update to daybook.
+- Product : Add a decimal field 'economicManufOrderQty' and product.economicManufOrderQty in ManufOrder form view and its translation.
+- Account MOVE Line:Add new field originDate.On FEC move line export,use the originDate instead of date field.
+- ManufOrder : Add new many-to-one field 'unit' and set its value from billOfMaterial unit and also added to report.
+- Tracking Number : change in stock move and stock move line based on tracking number configuration.
+- StockMove : Include sub stock location's lines in Report. 
 - Notification : Improve notification management. 
 
 ## Improvements
@@ -176,6 +186,9 @@
 - PURCHASE ORDER: Updated Purchase Order Report using PDFMergeTool
 - Product : add new boolean to manage stock in stockLocation.
 - PARTNER : grid and card view
+- Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
+- Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
+- PURCHASE ORDER : Supplier Box field added and Printing on Purchase Order Report.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -239,6 +252,9 @@
 - PICKING STOCK MOVE :report  display the stockMoveLine.realQty instead of stockMoveLine.plannedQty
 - PRODUCT : added field Country Of Origin in Packaging Panel and When we select manually a product on StockMoveLine fill CountryOfOrigin.
 - SALEORDER : allow to change the payment condition and payment mode
+- MRP : Fix Null pointer exception.
+- Manufacturing Order:Unit price problem on consumedStockMoveLineList
+- DECLARATION OF EXCHANGE : stock move lines
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -246,6 +262,9 @@
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
 - SaleOrder : Modify views to display company and stockLocation.
 - PurchaseOrder : Modify views to display company and stockLocation.
+- Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
+- JOURNAL : Enable massUpdate feature
+- SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -266,6 +285,12 @@
 - Purchase order : Fill the tax line even if there is no supplier catalog
 - Invoice : Fill the product code and product name even if tax or account are missing for the product
 - FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
+- INVENTORY : stock location filter
+- INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
+- INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
+- StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
+- GROUP : Enable massUpdate feature.
+- Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -308,7 +333,17 @@
 When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
 - Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
 - Validate all draft or daybook account moves when we close a period.
-		
+- Sequence : Fix fill automatically the company field and put it readonly when create sequence from another model.
+- Sale Order Line : Fix calculate "Available stock" on onload.
+- STOCK LOCATION : report for external stock location
+- AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
+- AnalyticBalance report: Fix order by.
+- Product: Removed 'shippingCoef' value set from onLoad.
+- Alphabetical order on the table producedStockMoveLineList
+- Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
+- PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
+
+
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
@@ -537,6 +572,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
+- INVENTORy : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
@@ -878,7 +914,40 @@ Also, improve the sale order line grid and form views.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
 
-## [Unreleased 4.x]
+## [4.2.5] - 2018-10-06
+### Improvements
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Hide Ebics user full name in grid view.
+- Add a new button on bank order grids to display the bank order lines.
+- Bank orders can now be deleted when their status is "draft" or "canceled".
+- Improve bank order printing layout.
+- BANK ORDER : receiver address management for internationnal transfer
+
+### Bug Fixes
+- Fix NPE in BankOrder generation on missing bank name.
+- Timesheets : use the timesheet user to filter the projects/tasks instead of the connected user.
+- Cannot create a new bank order from the menu entry "awaiting signature".
+
+## [4.2.4] - 2018-07-12
+### Improvements
+- Fiscal Position interface reworked and moved from Account to Base module
+- Accounting export, use 1000 for administration and 1001 for FEC
+- Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
+- Web service mobile, create getKilometricAllowParam
+- Add a new bank order type for existing file transfer
+		
+### Bug Fixes
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Filter on values selection
+- Fix translation in base module, add traceback on checkPlanning method in WeeklyPlanningController
+- MoveLine, show tab of reconcile credit or debit
+- Human ressource, remove french title in Employee, employee-filters + add translation
+- Invoice, replace empty line on pending total by a color line (blue, info-text)
+- In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
+- Only "Active" EbicsUsers can be selected as signatoryEbicsUser in BankOrder form views.
+
+## [4.2.3] - 2018-02-28
+4.1.3 with axelor-process-studio modules
 
 ## [4.1.3] - 2018-02-28
 ### Improvements
@@ -902,7 +971,6 @@ Also, improve the sale order line grid and form views.
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
-- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -1209,7 +1277,11 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [5.0.0-rc3]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc2...v5.0.0-rc3
 [5.0.0-rc2]: https://github.com/axelor/axelor-business-suite/compare/v5.0.0-rc1...v5.0.0-rc2
 [5.0.0-rc1]: https://github.com/axelor/axelor-business-suite/compare/4.2-dev...v5.0.0-rc1
-[Unreleased 4.x]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...4.2-dev
+[4.2.5]: https://github.com/axelor/axelor-business-suite/compare/v4.2.4...v4.2.5
+[4.2.4]: https://github.com/axelor/axelor-business-suite/compare/v4.2.3...v4.2.4
+[4.2.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.3...v4.2.3
+[4.2.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.2.2
+[4.2.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.2.1
 [4.1.3]: https://github.com/axelor/axelor-business-suite/compare/v4.1.2...v4.1.3
 [4.1.2]: https://github.com/axelor/axelor-business-suite/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/axelor/axelor-business-suite/compare/v4.1.0...v4.1.1

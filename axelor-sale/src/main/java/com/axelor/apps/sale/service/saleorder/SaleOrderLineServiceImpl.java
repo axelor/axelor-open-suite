@@ -574,7 +574,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     // defined in supplychain
     return BigDecimal.ZERO;
   }

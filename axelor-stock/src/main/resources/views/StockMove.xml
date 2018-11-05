@@ -54,6 +54,36 @@
         <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
+
+     <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+			<button name="printPickingStockMoveGrid" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
+    	</toolbar>
+        <field name="stockMoveSeq"/>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="estimatedDate"/>
+        <field name="realDate"/>
+        <field name="fromAddressStr" hidden="true"/>
+        <field name="toAddressStr"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="statusSelect"/>
+        <field name="origin"/>
+        <field name="availableStatusSelect">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
+        </field>
+        <field name="availabilityRequest">
+        	<hilite strong="true" color="warning" if="statusSelect==2"/>
+        	<hilite strong="true" color="success" if="statusSelect==3"/>
+        </field>
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMove" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirection" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+    </grid>
     
     <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
@@ -197,6 +227,9 @@
                     ]]>
                 </viewer>
             </field>
+            
+            <field name="availabilityRequest" widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2" readonlyIf="statusSelect==3"/>
+        
         </panel>
 
         <panel-tabs>
