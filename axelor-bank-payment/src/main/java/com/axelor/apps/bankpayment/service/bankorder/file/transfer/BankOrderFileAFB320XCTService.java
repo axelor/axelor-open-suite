@@ -779,10 +779,10 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       if (receiverAddressRequired(bankOrderLine.getReceiverCountry())) {
 
         throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
                 I18n.get(IExceptionMessage.BANK_ORDER_LINE_NO_RECEIVER_ADDRESS),
-                bankOrderLine.getPartner().getFullName()),
-            IException.INCONSISTENCY);
+                bankOrderLine.getPartner().getFullName()));
       } else {
         return "";
       }
@@ -864,7 +864,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
       // utiliser le début de la première zone
       // pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
       String bankAddress = "";
-      if(bank.getBankName() != null && bank.getBankName().length() > 35)  {
+      if (bank.getBankName() != null && bank.getBankName().length() > 35) {
         bankAddress = bank.getBankName().substring(35) + " ";
       }
       if (receiverBankDetails.getBankAddress() != null) {
