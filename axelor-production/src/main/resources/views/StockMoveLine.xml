@@ -24,7 +24,7 @@
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
-    <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
+    <button name="trackNumberWizard" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
@@ -48,7 +48,7 @@
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
-    <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
+    <button name="trackNumberWizard" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"

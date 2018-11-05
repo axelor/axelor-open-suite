@@ -98,6 +98,8 @@ public interface StockMoveLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
+  public void checkTrackingNumber(StockMove stockMove) throws AxelorException;
+
   public void assignTrackingNumber(
       StockMoveLine stockMoveLine, Product product, StockLocation stockLocation)
       throws AxelorException;

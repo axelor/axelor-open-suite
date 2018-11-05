@@ -137,6 +137,8 @@ public interface IExceptionMessage {
   /** Stock Move Line Service */
   static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
       /*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
+  static final String STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER =
+      /*$$(*/ "Please fill the tracking number for the product(s) : %s" /*)*/;
 
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/

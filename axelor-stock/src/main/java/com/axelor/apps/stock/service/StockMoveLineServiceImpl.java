@@ -597,6 +597,35 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
+  public void checkTrackingNumber(StockMove stockMove) throws AxelorException {
+    List<String> productsWithErrors = new ArrayList<>();
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+      TrackingNumberConfiguration trackingNumberConfig =
+          stockMoveLine.getProduct().getTrackingNumberConfiguration();
+
+      if (stockMoveLine.getProduct() != null
+          && (trackingNumberConfig != null && trackingNumberConfig.getIsPurchaseTrackingManaged()
+              || trackingNumberConfig.getIsProductionTrackingManaged()
+              || (trackingNumberConfig.getIsSaleTrackingManaged()
+                  && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
+          && stockMoveLine.getTrackingNumber() == null) {
+
+        productsWithErrors.add(stockMoveLine.getProduct().getName());
+      }
+    }
+
+    if (!productsWithErrors.isEmpty()) {
+      String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
+          productWithErrorsStr);
+    }
+  }
+
+  @Override
   public void updateLocations(
       StockMoveLine stockMoveLine,
       StockLocation fromStockLocation,
@@ -935,16 +964,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers) {
-    boolean draft = true;
-    if (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
-      draft = false;
-    }
-
+    //    boolean draft = true;
+    //    if (stockMoveLine.getStockMove() != null
+    //        && stockMoveLine.getStockMove().getStatusSelect() ==
+    // StockMoveRepository.STATUS_PLANNED) {
+    //      draft = false;
+    //    }
+    BigDecimal totalSplitQty = BigDecimal.ZERO;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
+      totalSplitQty = totalSplitQty.add(counter);
 
-      TrackingNumber trackingNumber = null;
-      trackingNumber =
+      TrackingNumber trackingNumber =
           Beans.get(TrackingNumberRepository.class)
               .all()
               .filter(
@@ -969,16 +1000,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      if (draft) {
-        newStockMoveLine.setQty(counter);
-      } else {
-        newStockMoveLine.setRealQty(counter);
-      }
+      //      if (draft) {
+      newStockMoveLine.setQty(counter);
+      //      } else {
+      newStockMoveLine.setRealQty(counter);
+      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
     }
-    stockMoveLineRepository.remove(stockMoveLine);
+
+    if (totalSplitQty.compareTo(stockMoveLine.getQty()) < 0) {
+      BigDecimal remainingQty = stockMoveLine.getQty().subtract(totalSplitQty);
+      stockMoveLine.setQty(remainingQty);
+      stockMoveLine.setRealQty(remainingQty);
+      stockMoveLine.setTrackingNumber(null);
+      stockMoveLine.setStockMove(stockMoveLine.getStockMove());
+    } else {
+      stockMoveLineRepository.remove(stockMoveLine);
+    }
   }
 
   @Override
