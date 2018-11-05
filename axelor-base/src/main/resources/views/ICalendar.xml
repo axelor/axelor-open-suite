@@ -40,8 +40,8 @@
 			</panel>
 			<panel name="connectionSettings" title="Connection settings" colSpan="12">
 				<panel colSpan="12">
-					<field name="url"/>
-					<field name="typeSelect"/>
+					<field name="url" required="true"/>
+					<field name="typeSelect" required="true"/>
 					<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>
 					<field name="port"/>
 					<field name="synchronizationSelect"/>
@@ -49,10 +49,10 @@
 					<field name="keepRemote" widget="boolean-switch"/>
 				</panel>
 				<panel colSpan="12">
-					<field name="login"/>
+					<field name="login" required="true"/>
 					<field name="change" title="Change password" showIf="id &amp;&amp; !$readonly()" widget="boolean-switch"/>
 					<panel colSpan="12" showIf="change || !id">
-						<field name="newPassword" title="Password" placeholder="new password" requiredIf="change" validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password" />
+						<field name="newPassword" title="Password" placeholder="new password" requiredIf="change || password==null" validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password" />
 						<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 						<field name="password" hidden="true"/>
 					</panel>

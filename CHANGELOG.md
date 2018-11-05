@@ -255,6 +255,7 @@
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
 - DECLARATION OF EXCHANGE : stock move lines
+- ICalendar : Fix Nullpointer exception
 
 ## [Unreleased 5.0.7]
 ## Features
