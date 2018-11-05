@@ -36,7 +36,7 @@ public class FiscalPositionServiceImpl implements FiscalPositionService {
   public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Tax tax) {
     if (fiscalPosition != null && fiscalPosition.getTaxEquivList() != null) {
       for (TaxEquiv taxEquiv : fiscalPosition.getTaxEquivList()) {
-        if (taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null) {
+        if (taxEquiv.getFromTax() != null && taxEquiv.getFromTax().equals(tax) && taxEquiv.getToTax() != null) {
           return taxEquiv;
         }
       }

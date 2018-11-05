@@ -255,6 +255,7 @@
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
 - DECLARATION OF EXCHANGE : stock move lines
+- Base : fix Null pointer exception in fiscal position service implementation.
 
 ## [Unreleased 5.0.7]
 ## Features
