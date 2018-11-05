@@ -113,7 +113,9 @@
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
-			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0"/>
+			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
+			<field name="product.economicManufOrderQty" colSpan="3"/>
+			<field name="unit" readonly="true"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-atts-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
 			<field name="isConsProOnOperation" />
@@ -252,6 +254,10 @@
 	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
 	</action-attrs>
 	
+	<action-attrs name="action-manuf-order-attrs-set-unit">
+		<attribute name="value" for="unit" expr="eval: billOfMaterial.unit"/>
+	</action-attrs>
+	
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
 	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
 	</action-attrs>
@@ -313,6 +319,7 @@
         <action name="action-manuf-order-attrs-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
         <action name="action-manuf-order-reset"/>
+        <action name="action-manuf-order-attrs-set-unit"  if="billOfMaterial != null"/>
 	</action-group>
 
     <action-method name="action-manuf-order-method-print">

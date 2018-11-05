@@ -324,7 +324,7 @@
 	  </panel>
 	  <panel name="actions" hideIf="clientPartner == null" sidebar="true" stacked="true">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize-quotation"/>
-	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrder" title="Complete manually sale order" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
+	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrder" title="Complete manually sale order" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
 	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrder" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
 	    <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>

@@ -10,7 +10,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date" width="90"/>
+        <field name="date" width="90" onChange="account-move-line-record-date-onchange"/>
    		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -26,13 +26,14 @@
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
-		<field name="date" width="100"/>
+		<field name="date" width="100" onChange="account-move-line-record-date-onchange"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
+    	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"/>
         <field name="origin"/>
         <field name="description"/>
 	</grid>
@@ -42,7 +43,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date"/>
+        <field name="date" onChange="account-move-line-record-date-onchange"/>
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -58,7 +59,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date"/>
+        <field name="date" onChange="account-move-line-record-date-onchange"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
@@ -71,7 +72,7 @@
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-move-line-attrs-read-only-distribution-lines">
+    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
 			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
     </form>
@@ -100,8 +101,9 @@
 				</viewer>
 			</field>
 			<panel colSpan="12">
-				<field name="date"/>
+				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
+				<field name="originDate"/>
 			</panel>
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
 	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"/>
@@ -140,7 +142,7 @@
 				</field>
 			</panel>
 			<panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
+				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
@@ -191,8 +193,9 @@
 				</viewer>
 			</field>
 			<panel colSpan="12">
-				<field name="date"/>
+				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
+				<field name="originDate"/>
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
 			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
@@ -231,7 +234,7 @@
 				</field>
 			</panel>
 			<panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
+				<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
 				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
@@ -249,10 +252,7 @@
     <action-method name="action-method-accounting-reconcile">
     	<call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
     </action-method>
-    
-    <action-attrs name="action-move-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
-	</action-attrs>
+
     
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-attrs-collapse-irrecoverable-group"/>
@@ -311,6 +311,7 @@
 		<field name="partner" expr="eval: _parent?.partner"/>
 		<field name="date" expr="eval: _parent?.date"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
+		<field name="originDate" expr="eval: date"/>
 	</action-record>
 	
 	<action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
@@ -352,6 +353,10 @@
 	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
 		<field name="debit" expr="0" if="debit &lt; 0"/>
 		<field name="credit" expr="0" if="credit &lt; 0"/>
+	</action-record>
+	
+	<action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="originDate" expr="eval: date"/>
 	</action-record>
 	
 	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">

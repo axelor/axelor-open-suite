@@ -11,7 +11,6 @@
 		<hilite if="statusSelect &lt; 3" color="primary"/>
 	    <hilite if="statusSelect == 3" color="success"/>
 	    <hilite if="statusSelect == 4" color="danger"/>
-		<field name="fullName"/>
 		<field name="name" />
 		<field name="userId" />
 		<field name="ebicsPartner"/>
