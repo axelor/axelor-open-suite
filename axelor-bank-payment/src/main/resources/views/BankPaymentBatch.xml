@@ -15,17 +15,16 @@
 		<panel name="main" >
     		<field name="actionSelect"/>
     		<field name="code"/>
-    		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+    		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" hideIf="actionSelect &gt; 2" hidden="true"/>
   		</panel>
   		
   		 <panel-tabs>
   		 	<panel name="ebicsCertificatePage" title="Ebics certificate page" showIf="actionSelect == 1">
 				<field name="template" domain="self.metaModel.name = 'EbicsCertificate' AND self.mediaTypeSelect = 2" requiredIf="actionSelect == 1"/>
 				<field name="daysNbr"/>
-				<button name="bankPaymentBatch" title="Bank payment batch" onClick="save,action-ecbatch-method-check-ebics-certificate-validation-date"/>
 			</panel>
 
-			<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 2">
+			<panel name="bankStatementPage" title="Bank statement retrieval configuration" showIf="actionSelect == 2">
 				<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
 				<field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
 			</panel>
@@ -38,17 +37,18 @@
     		</panel>
   		</panel-tabs>
 
-		<panel name="actions" sidebar="true" title="Actions" showIf="actionSelect == 2">
-		    <button name="bankStatementBatch" title="Bank Statement Batch" showIf="actionSelect == 2" onClick="save,action-bank-payment-batch-method-action-bank-statement" colSpan="12"/>
+		<panel name="actions" sidebar="true" title="Actions">
+			<button name="ebicsCertificateBatch" title="Ebics certificate batch" onClick="save,action-bank-payment-batch-method-action-ebics-certificate" colSpan="12" showIf="actionSelect == 1"/>
+		    <button name="bankStatementBatch" title="Bank Statement Batch" onClick="save,action-bank-payment-batch-method-action-bank-statement" colSpan="12"  showIf="actionSelect == 2"/>
 		</panel>
 	</form>
 	
-	<action-method name="action-ecbatch-method-check-ebics-certificate-validation-date">
-		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="launchBankPaymentBatch"/>
+	<action-method name="action-bank-payment-batch-method-action-ebics-certificate">
+		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="actionEbicsCertificate"/>
 	</action-method>
 
 	<action-method name="action-bank-payment-batch-method-action-bank-statement">
-		<call class="com.axelor.apps.bankpayment.web.BankStatementController" method="actionBankStatement" />
+		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="actionBankStatement" />
 	</action-method>
 
 </object-views>

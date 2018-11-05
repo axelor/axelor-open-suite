@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BatchBankPayment extends AbstractBatch {
+public class BatchEbicsCertificate extends AbstractBatch {
 
   protected BankPaymentBatch bankPaymentBatch;
 
@@ -116,6 +116,6 @@ public class BatchBankPayment extends AbstractBatch {
 
   public Batch ebicsCertificate(BankPaymentBatch bankPaymentBatch) {
 
-    return Beans.get(BatchBankPayment.class).run(bankPaymentBatch);
+    return Beans.get(BatchEbicsCertificate.class).run(bankPaymentBatch);
   }
 }
