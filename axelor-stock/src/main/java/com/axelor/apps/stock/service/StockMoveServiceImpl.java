@@ -436,12 +436,14 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     LOG.debug(
         "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    
 
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
     }
 
     String newStockSeq = null;
+    stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     stockMoveLineService.checkExpirationDates(stockMove);
 
