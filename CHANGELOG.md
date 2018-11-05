@@ -123,6 +123,7 @@
 - ManufOrder : Add new many-to-one field 'unit' and set its value from billOfMaterial unit and also added to report.
 - Tracking Number : change in stock move and stock move line based on tracking number configuration.
 - StockMove : Include sub stock location's lines in Report. 
+- Notification : Improve notification management. 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

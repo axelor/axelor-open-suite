@@ -352,4 +352,8 @@
 		<option value="subrogationRelease">Subrogation release</option>
 	</selection>
 
+	<selection name="account.notification.item.type.select">
+		<option value="1">Payment to the factor</option>
+		<option value="2">Payment to the factor after factor return</option>
+	</selection>
 </object-views>
