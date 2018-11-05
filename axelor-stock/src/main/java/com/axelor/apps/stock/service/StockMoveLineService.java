@@ -135,7 +135,7 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus);
 
   /**
    * Check in the product if the stock move line needs to have a conformity selected.

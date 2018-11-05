@@ -50,6 +50,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -59,10 +60,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService {
 
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected StockMoveService stockMoveService;
@@ -420,7 +424,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
+          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
         }
         this.updateLocations(
             stockMoveLine,
@@ -440,7 +444,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus) {
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
@@ -450,7 +454,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-    } else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
+    } else if (fromStatus == StockMoveRepository.STATUS_REALIZED
+        && toStatus == StockMoveRepository.STATUS_CANCELED) {
       this.cancelAveragePriceLocationLine(stockLocationLine, stockMoveLine);
     }
   }
@@ -470,6 +475,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       oldAvgPrice = BigDecimal.ZERO;
       oldQty = BigDecimal.ZERO;
     }
+    log.debug(
+        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
+        oldAvgPrice,
+        oldQty,
+        newPrice,
+        newQty);
     BigDecimal sum = oldAvgPrice.multiply(oldQty);
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
