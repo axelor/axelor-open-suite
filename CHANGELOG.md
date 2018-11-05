@@ -86,6 +86,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
+- ICalendar: Fix Nullpointer Exception
 
 
 ## [5.0.6] - 2018-10-06
