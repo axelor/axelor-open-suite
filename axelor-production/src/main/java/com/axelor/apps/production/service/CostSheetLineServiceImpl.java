@@ -132,7 +132,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     BigDecimal costPrice =
         unitConversionService
-            .convert(unit, product.getUnit(), product.getCostPrice())
+            .convert(
+                unit,
+                product.getUnit(),
+                product.getCostPrice(),
+                appProductionService.getNbDecimalDigitForUnitPrice())
             .multiply(consumptionQty);
 
     return this.createCostSheetLine(
@@ -159,7 +163,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     BigDecimal costPrice =
         unitConversionService
-            .convert(unit, product.getUnit(), product.getCostPrice())
+            .convert(
+                unit,
+                product.getUnit(),
+                product.getCostPrice(),
+                appProductionService.getNbDecimalDigitForUnitPrice())
             .multiply(consumptionQty);
 
     return this.createCostSheetLine(
@@ -195,7 +203,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     BigDecimal costPrice =
         unitConversionService
-            .convert(unit, product.getUnit(), product.getCostPrice())
+            .convert(
+                unit,
+                product.getUnit(),
+                product.getCostPrice(),
+                appProductionService.getNbDecimalDigitForUnitPrice())
             .multiply(qty);
 
     return this.createCostSheetLine(

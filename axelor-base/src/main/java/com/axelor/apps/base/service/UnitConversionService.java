@@ -27,19 +27,16 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
-import javax.validation.constraints.Digits;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -91,7 +88,8 @@ public class UnitConversionService {
    * @return Le coefficient de conversion.
    * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
    */
-  public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
+  public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value, int scale)
+      throws AxelorException {
 
     if (startUnit == null || endUnit == null)
       throw new AxelorException(
@@ -103,9 +101,7 @@ public class UnitConversionService {
       BigDecimal coefficient =
           this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit);
 
-      return value
-          .multiply(coefficient)
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+      return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
     }
   }
 
@@ -171,9 +167,7 @@ public class UnitConversionService {
         if (unitConversion.getTypeSelect() == UnitConversionRepository.TYPE_COEFF
             && unitConversion.getCoef().compareTo(BigDecimal.ZERO) != 0) {
           return BigDecimal.ONE.divide(
-              unitConversion.getCoef(),
-              getInverseCoefficientScale(unitConversion),
-              RoundingMode.HALF_EVEN);
+              unitConversion.getCoef(), DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_EVEN);
         } else if (product != null) {
           maker.setTemplate(unitConversion.getFormula());
           eval = maker.make();
@@ -185,8 +179,7 @@ public class UnitConversionService {
           GroovyShell shell = new GroovyShell(binding, conf);
           BigDecimal result = new BigDecimal(shell.evaluate(eval).toString());
           if (result.compareTo(BigDecimal.ZERO) != 0) {
-            return BigDecimal.ONE.divide(
-                result, getInverseCoefficientScale(unitConversion), RoundingMode.HALF_EVEN);
+            return BigDecimal.ONE.divide(result, DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_EVEN);
           }
         }
       }
@@ -197,26 +190,5 @@ public class UnitConversionService {
         I18n.get(IExceptionMessage.UNIT_CONVERSION_1),
         startUnit.getName(),
         endUnit.getName());
-  }
-
-  private int getInverseCoefficientScale(UnitConversion unitConversion) {
-    Preconditions.checkNotNull(unitConversion.getCoef());
-
-    if (unitConversion.getCoef().doubleValue() % 10 == 0) {
-      return (int) Math.ceil(Math.log10(unitConversion.getCoef().intValue()));
-    }
-
-    return getCoefficientScale();
-  }
-
-  private int getCoefficientScale() {
-    try {
-      Field field = UnitConversion.class.getDeclaredField("coef");
-      Digits digits = field.getAnnotation(Digits.class);
-      return digits.fraction();
-    } catch (NoSuchFieldException e) {
-      logger.error(e.getMessage());
-      return DEFAULT_COEFFICIENT_SCALE;
-    }
   }
 }
