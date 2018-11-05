@@ -5,6 +5,7 @@
     
     <grid name="stock-location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="stockLocation"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
@@ -100,6 +101,7 @@
     
     <grid name="stock-location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="stockLocation"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>

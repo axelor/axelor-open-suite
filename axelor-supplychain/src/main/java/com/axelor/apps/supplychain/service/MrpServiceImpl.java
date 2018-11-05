@@ -39,6 +39,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpFamily;
@@ -90,6 +91,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockRulesService stockRulesService;
   protected MrpLineService mrpLineService;
   protected MrpForecastRepository mrpForecastRepository;
+  protected StockLocationService stockLocationService;
 
   protected AppBaseService appBaseService;
 
@@ -110,7 +112,8 @@ public class MrpServiceImpl implements MrpService {
       MrpLineRepository mrpLineRepository,
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
-      MrpForecastRepository mrpForecastRepository) {
+      MrpForecastRepository mrpForecastRepository,
+      StockLocationService stockLocationService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -125,6 +128,7 @@ public class MrpServiceImpl implements MrpService {
     this.mrpForecastRepository = mrpForecastRepository;
 
     this.appBaseService = appBaseService;
+    this.stockLocationService = stockLocationService;
   }
 
   @Override
@@ -168,7 +172,8 @@ public class MrpServiceImpl implements MrpService {
 
     // Initialize
     this.mrp = mrp;
-    this.stockLocationList = this.getAllLocationAndSubLocation(mrp.getStockLocation());
+    this.stockLocationList =
+        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
     this.assignProductAndLevel(this.getProductList());
 
     // Get the stock for each product on each stock location
@@ -886,27 +891,6 @@ public class MrpServiceImpl implements MrpService {
         mrpLine.addMrpLineOriginListItem(mrpLineService.copyMrpLineOrigin(mrpLineOrigin));
       }
     }
-  }
-
-  protected List<StockLocation> getAllLocationAndSubLocation(StockLocation stockLocation) {
-
-    List<StockLocation> resultList = new ArrayList<>();
-
-    for (StockLocation subLocation :
-        stockLocationRepository
-            .all()
-            .filter(
-                "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
-            .bind("stockLocationId", stockLocation.getId())
-            .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
-            .fetch()) {
-
-      resultList.addAll(this.getAllLocationAndSubLocation(subLocation));
-    }
-
-    resultList.add(stockLocation);
-
-    return resultList;
   }
 
   @Override
