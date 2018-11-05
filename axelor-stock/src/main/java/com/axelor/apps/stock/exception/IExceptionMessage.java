@@ -50,7 +50,7 @@ public interface IExceptionMessage {
       "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 
   static final String LOCATION_LINE_2 = /*$$(*/
-      "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
+      "Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the delivery" /*)*/;
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
