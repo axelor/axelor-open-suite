@@ -34,6 +34,7 @@
 - StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
+- Databackup : Include thread in backup & restore task.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
