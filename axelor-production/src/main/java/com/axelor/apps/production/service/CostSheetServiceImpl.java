@@ -393,7 +393,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
     for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-      if (!stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
+      if (stockMoveLine.getProduct() != null
+          && manufOrder.getProduct() != null
+          && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
                 stockMoveLine.getProduct(), stockMoveLine.getUnit(), stockMoveLine.getRealQty());

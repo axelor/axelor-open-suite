@@ -17,7 +17,7 @@
 			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
 			<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
 			<field name="displayProductDetailOnPrinting" widget="boolean-switch"/>
-			<field name="purchaseOrderSupplierBox" widget="html" x-lite="true" colSpan="12"/>
+			<field name="purchaseOrderSupplierBox" widget="html" colSpan="12"/>
 			<field name="priceDisplay" widget="boolean-switch"/>
 		  	<field name="priceRequest" colSpan="12"/>
 		</panel>

@@ -19,9 +19,10 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
-import com.axelor.apps.bankpayment.service.batch.BatchBankPayment;
+import com.axelor.apps.bankpayment.service.batch.BatchBankStatement;
+import com.axelor.apps.bankpayment.service.batch.BatchEbicsCertificate;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -30,17 +31,22 @@ public class BankPaymentBatchController {
 
   @Inject private BankPaymentBatchRepository bankPaymentBatchRepo;
 
-  @Inject private BatchBankPayment batchBankPayment;
+  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response) {
 
-  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+    BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
+    bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
 
-    BankPaymentBatch ebicsCertificateBatch = request.getContext().asType(BankPaymentBatch.class);
+    Batch batch = Beans.get(BatchEbicsCertificate.class).ebicsCertificate(bankPaymentBatch);
 
-    Batch batch = null;
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 
-    batch =
-        batchBankPayment.ebicsCertificate(bankPaymentBatchRepo.find(ebicsCertificateBatch.getId()));
+  public void actionBankStatement(ActionRequest request, ActionResponse response) {
+    BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
+    bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
+
+    Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);

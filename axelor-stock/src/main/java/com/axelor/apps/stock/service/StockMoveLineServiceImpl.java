@@ -50,6 +50,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -59,10 +60,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class StockMoveLineServiceImpl implements StockMoveLineService {
 
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected StockMoveService stockMoveService;
@@ -420,7 +424,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, toStatus);
+          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
         }
         this.updateLocations(
             stockMoveLine,
@@ -440,7 +444,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus) {
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus) {
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
@@ -450,7 +454,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-    } else if (toStatus == StockMoveRepository.STATUS_CANCELED) {
+    } else if (fromStatus == StockMoveRepository.STATUS_REALIZED
+        && toStatus == StockMoveRepository.STATUS_CANCELED) {
       this.cancelAveragePriceLocationLine(stockLocationLine, stockMoveLine);
     }
   }
@@ -470,6 +475,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       oldAvgPrice = BigDecimal.ZERO;
       oldQty = BigDecimal.ZERO;
     }
+    log.debug(
+        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
+        oldAvgPrice,
+        oldQty,
+        newPrice,
+        newQty);
     BigDecimal sum = oldAvgPrice.multiply(oldQty);
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
@@ -593,6 +604,38 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
           errorStr);
+    }
+  }
+
+  @Override
+  public void checkTrackingNumber(StockMove stockMove) throws AxelorException {
+    List<String> productsWithErrors = new ArrayList<>();
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getProduct() == null) {
+        continue;
+      }
+
+      TrackingNumberConfiguration trackingNumberConfig =
+          stockMoveLine.getProduct().getTrackingNumberConfiguration();
+      if (stockMoveLine.getProduct() != null
+          && (trackingNumberConfig != null
+              && (trackingNumberConfig.getIsPurchaseTrackingManaged()
+                  || trackingNumberConfig.getIsProductionTrackingManaged()
+                  || (trackingNumberConfig.getIsSaleTrackingManaged()
+                      && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)))
+          && stockMoveLine.getTrackingNumber() == null) {
+
+        productsWithErrors.add(stockMoveLine.getProduct().getName());
+      }
+    }
+
+    if (!productsWithErrors.isEmpty()) {
+      String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
+          productWithErrorsStr);
     }
   }
 
@@ -935,16 +978,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers) {
-    boolean draft = true;
-    if (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
-      draft = false;
-    }
-
+    //    boolean draft = true;
+    //    if (stockMoveLine.getStockMove() != null
+    //        && stockMoveLine.getStockMove().getStatusSelect() ==
+    // StockMoveRepository.STATUS_PLANNED) {
+    //      draft = false;
+    //    }
+    BigDecimal totalSplitQty = BigDecimal.ZERO;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
+      totalSplitQty = totalSplitQty.add(counter);
 
-      TrackingNumber trackingNumber = null;
-      trackingNumber =
+      TrackingNumber trackingNumber =
           Beans.get(TrackingNumberRepository.class)
               .all()
               .filter(
@@ -969,16 +1014,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      if (draft) {
-        newStockMoveLine.setQty(counter);
-      } else {
-        newStockMoveLine.setRealQty(counter);
-      }
+      //      if (draft) {
+      newStockMoveLine.setQty(counter);
+      //      } else {
+      newStockMoveLine.setRealQty(counter);
+      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
     }
-    stockMoveLineRepository.remove(stockMoveLine);
+
+    if (totalSplitQty.compareTo(stockMoveLine.getQty()) < 0) {
+      BigDecimal remainingQty = stockMoveLine.getQty().subtract(totalSplitQty);
+      stockMoveLine.setQty(remainingQty);
+      stockMoveLine.setRealQty(remainingQty);
+      stockMoveLine.setTrackingNumber(null);
+      stockMoveLine.setStockMove(stockMoveLine.getStockMove());
+    } else {
+      stockMoveLineRepository.remove(stockMoveLine);
+    }
   }
 
   @Override

@@ -188,7 +188,8 @@
 - PARTNER : grid and card view
 - Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
 - Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
-- PURCHASE ORDER : Supplier Box field added and Printing on Purchase Order Report.
+- PURCHASE ORDER : Supplier Box field and order date added and Printing on Purchase Order Report.
+- Manufacturing Orders : Improvement in Manufacturing Order Report.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -255,6 +256,7 @@
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
 - DECLARATION OF EXCHANGE : stock move lines
+- MANUF ORDER : NPE when no product is selected on producedStockMoveLineList line
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -342,6 +344,9 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Alphabetical order on the table producedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
+- MANUF ORDER : Exception Message tracking number not filled
+- ICalendar: Fix Nullpointer Exception
+- Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - PRODUCTION : Update stockMoveLine onclick of splitByTrackingNo validation button. 
 
 ## [5.0.6] - 2018-10-06

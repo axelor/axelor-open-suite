@@ -98,6 +98,8 @@ public interface StockMoveLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
+  public void checkTrackingNumber(StockMove stockMove) throws AxelorException;
+
   public void assignTrackingNumber(
       StockMoveLine stockMoveLine, Product product, StockLocation stockLocation)
       throws AxelorException;
@@ -133,7 +135,7 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus);
 
   /**
    * Check in the product if the stock move line needs to have a conformity selected.

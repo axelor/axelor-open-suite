@@ -442,6 +442,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     String newStockSeq = null;
+    stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     stockMoveLineService.checkExpirationDates(stockMove);
 

@@ -50,7 +50,7 @@ public interface IExceptionMessage {
       "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 
   static final String LOCATION_LINE_2 = /*$$(*/
-      "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
+      "Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the delivery" /*)*/;
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
@@ -137,6 +137,9 @@ public interface IExceptionMessage {
   /** Stock Move Line Service */
   static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
       /*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
+
+  static final String STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER =
+      /*$$(*/ "Please fill the tracking number for the product(s) : %s" /*)*/;
 
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/

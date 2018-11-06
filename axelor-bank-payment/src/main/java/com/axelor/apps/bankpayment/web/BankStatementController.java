@@ -17,15 +17,11 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
-import com.axelor.apps.bankpayment.service.batch.BatchBankStatement;
-import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -101,14 +97,6 @@ public class BankStatementController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-    response.setReload(true);
-  }
-
-  public void actionBankStatement(ActionRequest request, ActionResponse response) {
-    BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
-    bankPaymentBatch = Beans.get(BankPaymentBatchRepository.class).find(bankPaymentBatch.getId());
-    Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
-    response.setFlash(batch.getComments());
     response.setReload(true);
   }
 }

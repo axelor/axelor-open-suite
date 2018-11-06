@@ -123,7 +123,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
-    } else if(StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())){
+    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       if (purchaseOrderLine == null) {
         // log the exception

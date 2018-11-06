@@ -137,7 +137,7 @@ public class StockMoveLineController {
         && stockMoveLine.getStockMove().getId() != null) {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
     }
-    
+
     boolean _hasWarranty = false, _isPerishable = false;
     if (stockMoveLine.getProduct() != null) {
       _hasWarranty = stockMoveLine.getProduct().getHasWarranty();
