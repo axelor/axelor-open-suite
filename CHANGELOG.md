@@ -8,6 +8,7 @@
 - Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 - JOURNAL : Enable massUpdate feature
 - SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+- Purchase Order Line : Removed field 'salePrice', 'saleMinPrice' and hilite done on it in  grid-view
 
 ## Improvements
 - Show full name for products in Mrp report.
