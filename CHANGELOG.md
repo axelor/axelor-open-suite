@@ -88,7 +88,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
-
+- Base : fix Null Pointer error.
 
 ## [5.0.6] - 2018-10-06
 ## Features
