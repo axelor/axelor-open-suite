@@ -189,6 +189,7 @@
 - Raw Material Requirement : Delete canEdit on field 'company' in raw-material-requirement-form.
 - Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
 - PURCHASE ORDER : Supplier Box field and order date added and Printing on Purchase Order Report.
+- Manufacturing Orders : Improvement in Manufacturing Order Report.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
