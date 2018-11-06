@@ -25,9 +25,11 @@ public class StockMoveLineProductionRepository extends StockMoveLineStockReposit
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {
     StockMoveLine copy = super.copy(entity, deep);
-    copy.setConsumedManufOrder(null);
-    copy.setConsumedOperationOrder(null);
-    copy.setProducedManufOrder(null);
+    if (!deep) {
+      copy.setProducedManufOrder(null);
+      copy.setConsumedManufOrder(null);
+      copy.setConsumedOperationOrder(null);
+    }
     return copy;
   }
 }
