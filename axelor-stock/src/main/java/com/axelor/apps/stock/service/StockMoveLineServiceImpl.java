@@ -612,15 +612,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     List<String> productsWithErrors = new ArrayList<>();
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getProduct() == null) {
+        continue;
+      }
 
       TrackingNumberConfiguration trackingNumberConfig =
           stockMoveLine.getProduct().getTrackingNumberConfiguration();
-
       if (stockMoveLine.getProduct() != null
-          && (trackingNumberConfig != null && trackingNumberConfig.getIsPurchaseTrackingManaged()
-              || trackingNumberConfig.getIsProductionTrackingManaged()
-              || (trackingNumberConfig.getIsSaleTrackingManaged()
-                  && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
+          && (trackingNumberConfig != null
+              && (trackingNumberConfig.getIsPurchaseTrackingManaged()
+                  || trackingNumberConfig.getIsProductionTrackingManaged()
+                  || (trackingNumberConfig.getIsSaleTrackingManaged()
+                      && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)))
           && stockMoveLine.getTrackingNumber() == null) {
 
         productsWithErrors.add(stockMoveLine.getProduct().getName());
