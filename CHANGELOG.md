@@ -90,6 +90,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - ICalendar: Fix Nullpointer Exception
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - Base : fix Null Pointer error.
+- Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
 
 ## [5.0.6] - 2018-10-06
 ## Features
