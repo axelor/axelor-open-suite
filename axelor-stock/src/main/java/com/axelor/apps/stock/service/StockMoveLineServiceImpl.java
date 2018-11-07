@@ -454,9 +454,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-    } else if (fromStatus == StockMoveRepository.STATUS_REALIZED
-        && toStatus == StockMoveRepository.STATUS_CANCELED) {
-      this.cancelAveragePriceLocationLine(stockLocationLine, stockMoveLine);
     }
   }
 
@@ -490,31 +487,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       newAvgPrice = oldAvgPrice;
     }
     stockLocationLine.setAvgPrice(newAvgPrice);
-  }
-
-  protected void cancelAveragePriceLocationLine(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) {
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-    BigDecimal currentAvgPrice = stockLocationLine.getAvgPrice();
-    BigDecimal currentTotalQty = stockLocationLine.getCurrentQty();
-
-    BigDecimal currentLinePrice = stockMoveLine.getUnitPriceUntaxed();
-    BigDecimal currentLineQty = stockMoveLine.getRealQty();
-
-    BigDecimal diff =
-        currentTotalQty
-            .multiply(currentAvgPrice)
-            . // (currentAvgPrice*totalQty -
-            subtract(currentLinePrice.multiply(currentLineQty)); // currentLinePrice*currentLineQty)
-    BigDecimal denominator = currentTotalQty.subtract(currentLineQty);
-    BigDecimal updatedAvgPrice;
-    if (denominator.compareTo(BigDecimal.ZERO) != 0) {
-      updatedAvgPrice = // /  (totalQty - currentLineQty)
-          diff.divide(denominator, scale, RoundingMode.HALF_UP);
-    } else {
-      updatedAvgPrice = BigDecimal.ZERO;
-    }
-    stockLocationLine.setAvgPrice(updatedAvgPrice);
   }
 
   @Override
