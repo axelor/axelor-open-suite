@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -413,15 +414,18 @@ public class MoveService {
     return oDmove;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move) throws AxelorException {
+	  
+	LocalDate todayDate = appAccountService.getTodayDate();
+	  
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
             move.getCompany(),
             move.getCurrency(),
             move.getPartner(),
-            appAccountService.getTodayDate(),
+            todayDate,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
@@ -440,11 +444,11 @@ public class MoveService {
       MoveLine newMoveLine =
           moveLineService.createMoveLine(
               newMove,
-              newMove.getPartner(),
+              moveLine.getPartner(),
               moveLine.getAccount(),
               moveLine.getCurrencyAmount(),
               isDebit,
-              null,
+              todayDate,
               moveLine.getCounter(),
               moveLine.getName(),
               null);
