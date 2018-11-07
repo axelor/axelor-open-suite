@@ -212,6 +212,7 @@
     	canNew="false" canDelete="false">
     	<field name="stockMove.stockMoveSeq"/>
     	<field name="stockMove.realDate"/>
+		<field name="stockMove.typeSelect"/>
         <field name="stockMove.fromStockLocation"/>
         <field name="stockMove.toStockLocation"/>
         <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -222,6 +223,7 @@
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+   		<field name="stockMove.origin"/>
         <field name="stockMove.statusSelect"/>
         <field name="availableStatus" width="150">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -234,6 +236,7 @@
 		canNew="false" canDelete="false">
 		<field name="stockMove.stockMoveSeq" />
 		<field name="stockMove.estimatedDate" />
+		<field name="stockMove.typeSelect"/>
 		<field name="stockMove.fromStockLocation" />
 		<field name="stockMove.toStockLocation" />
 		<field name="product" form-view="product-form" grid-view="product-grid" />
@@ -244,6 +247,7 @@
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
+		<field name="stockMove.origin"/>
 		<field name="stockMove.statusSelect" />
 		<field name="availableStatus" width="150">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -260,6 +264,8 @@
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    	<field name="stockMove.estimatedDate"/>
 	    	<field name="stockMove.realDate"/>
+   			<field name="stockMove.typeSelect"/>
+			<field name="stockMove.origin"/>
 	        <field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         </panel>
