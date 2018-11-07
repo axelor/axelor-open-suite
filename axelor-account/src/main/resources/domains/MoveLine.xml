@@ -65,7 +65,7 @@
     <many-to-one name="reconcileGroup" title="Reconcile Group"
                  ref="com.axelor.apps.account.db.ReconcileGroup"/>
 	
-	<date name="originDate" title="Origin Date" initParam="true"/>
+	<date name="originDate" title="Origin date" initParam="true"/>
 	
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[

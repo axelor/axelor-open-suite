@@ -61,6 +61,7 @@
 		<field name="operationSubTypeSelect"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+        <field name="originDate"/>
         <field name="invoiceDate"/>
         <field name="dueDate"/>
         <field name="exTaxTotal" aggregate="sum"/>
@@ -196,7 +197,8 @@
             <field name="saleOrder"  canEdit="false" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
             <field name="purchaseOrder" domain="self.supplierPartner = :partner AND self.company = :company" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="partnerTaxNbr" readonlyIf="statusSelect != 1" hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"/>
+			<field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
@@ -758,7 +760,8 @@
     </action-record>
 
     <action-record name="action-invoice-record-due-date" model="com.axelor.apps.account.db.Invoice">
-    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate!=null"/>
+    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,originDate)" if="paymentCondition != null &amp;&amp; originDate != null &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2) "/>
+    	<field name="dueDate" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate != null &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
     </action-record>
 
     <action-record name="action-invoice-record-draft" model="com.axelor.apps.account.db.Invoice">

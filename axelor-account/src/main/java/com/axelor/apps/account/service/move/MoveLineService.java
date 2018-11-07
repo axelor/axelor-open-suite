@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -169,6 +170,7 @@ public class MoveLineService {
         isDebit,
         date,
         dueDate,
+        date,
         counter,
         origin,
         description);
@@ -202,6 +204,7 @@ public class MoveLineService {
       boolean isDebit,
       LocalDate date,
       LocalDate dueDate,
+      LocalDate originDate,
       int counter,
       String origin,
       String description)
@@ -242,6 +245,10 @@ public class MoveLineService {
       }
     }
 
+    if (originDate == null) {
+      originDate = date;
+    }
+
     return new MoveLine(
         move,
         partner,
@@ -255,7 +262,7 @@ public class MoveLineService {
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
         amountInSpecificMoveCurrency,
-        date);
+        originDate);
   }
 
   /**
@@ -332,6 +339,12 @@ public class MoveLineService {
           invoice.getInvoiceId());
     }
 
+    String origin = invoice.getInvoiceId();
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+      origin = invoice.getSupplierInvoiceNb();
+    }
+
     // Creation of partner move line
     MoveLine moveLine1 =
         this.createMoveLine(
@@ -344,8 +357,9 @@ public class MoveLineService {
             isDebitCustomer,
             invoice.getInvoiceDate(),
             invoice.getDueDate(),
+            invoice.getOriginDate(),
             moveLineId++,
-            invoice.getInvoiceId(),
+            origin,
             null);
     moveLines.add(moveLine1);
 
@@ -389,8 +403,9 @@ public class MoveLineService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
+                invoice.getOriginDate(),
                 moveLineId++,
-                invoice.getInvoiceId(),
+                origin,
                 invoiceLine.getProductName());
 
         if (invoiceLine.getAnalyticMoveLineList() != null) {
@@ -450,8 +465,9 @@ public class MoveLineService {
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
+                  invoice.getOriginDate(),
                   moveLineId++,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
 
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
@@ -481,8 +497,9 @@ public class MoveLineService {
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
+                  invoice.getOriginDate(),
                   moveLineId++,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());

@@ -599,6 +599,12 @@ public interface IExceptionMessage {
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
 
+  static final String VENTILATE_STATE_FUTURE_ORIGIN_DATE = /*$$(*/
+      "Invoice date of origin can't be in the future." /*)*/;
+
+  static final String VENTILATE_STATE_MISSING_ORIGIN_DATE = /*$$(*/
+      "Origin date is missing on the invoice" /*)*/;
+
   /** Workflow ventilation */
   String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;

@@ -32,6 +32,7 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
+    <date name="originDate" title="Origin date"/>
     
     <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>

@@ -152,12 +152,26 @@ public class VentilateState extends WorkflowInvoice {
 
   protected void setDate() throws AxelorException {
 
+    LocalDate todayDate = appAccountService.getTodayDate();
+
     if (invoice.getInvoiceDate() == null) {
-      invoice.setInvoiceDate(appAccountService.getTodayDate());
-    } else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
+      invoice.setInvoiceDate(todayDate);
+    } else if (invoice.getInvoiceDate().isAfter(todayDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
+    }
+
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    if (isPurchase && invoice.getOriginDate() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+    }
+    if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
 
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
@@ -216,7 +230,12 @@ public class VentilateState extends WorkflowInvoice {
     }
   }
 
-  protected LocalDate getDueDate() {
+  protected LocalDate getDueDate() throws AxelorException {
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+
+      return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getOriginDate());
+    }
 
     return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getInvoiceDate());
   }
