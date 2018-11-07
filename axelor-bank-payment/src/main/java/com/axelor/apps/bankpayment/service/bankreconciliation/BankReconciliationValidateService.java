@@ -101,6 +101,9 @@ public class BankReconciliationValidateService {
 
     String reference = bankReconciliationLine.getReference();
     String name = bankReconciliationLine.getName();
+    if (name != null && name.length() > 255) {
+      name = name.substring(0, 255);
+    }
 
     BigDecimal amount = debit.add(credit);
 
