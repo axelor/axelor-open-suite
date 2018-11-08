@@ -2351,6 +2351,8 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="95">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="4530">
                         <property name="dataSet">LogisticalFormDS</property>
                         <list-property name="boundDataColumns">
@@ -2365,7 +2367,6 @@ order by LogisticalFormLine.sequence]]></xml-property>
                         <property name="resultSetColumn">customer_full_name</property>
                     </data>
                 </cell>
-                <cell id="96"/>
                 <cell id="97"/>
             </row>
         </grid>
@@ -2703,16 +2704,16 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
 ]]></method>
                         <column id="215"/>
                         <column id="219">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="220">
                             <property name="width">25%</property>
                         </column>
                         <column id="223">
-                            <property name="width">9%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="258">
-                            <property name="width">5%</property>
+                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="144">

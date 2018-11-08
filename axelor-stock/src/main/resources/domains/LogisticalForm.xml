@@ -38,7 +38,20 @@
 			public static final int ACCOUNT_CUSTOMER = 2;
 		]]>
 		</extra-code>
-
+		
+		<track>
+	      <field name="deliveryNumber" />
+	      <field name="collectionDate" />
+	      <field name="deliverToCustomerPartner" />
+	      <field name="carrierPartner" />
+	      <field name="forwarderPartner" />
+	      <field name="incoterm" />
+	      <field name="tracking" />
+	      <message if="statusSelect == 1" tag="important">LogisticalForm.Provision</message>
+	      <message if="statusSelect == 2" tag="info">LogisticalForm.Carrier validated</message>
+	      <message if="statusSelect == 3" tag="success">LogisticalForm.Collected</message>
+	    </track>
+		
     </entity>
 
 </domain-models>

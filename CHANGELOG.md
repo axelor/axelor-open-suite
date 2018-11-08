@@ -191,6 +191,7 @@
 - Added french translation for 'usable on sale order','usable on purchase order','usable on production'.
 - PURCHASE ORDER : Supplier Box field and order date added and Printing on Purchase Order Report.
 - Manufacturing Orders : Improvement in Manufacturing Order Report.
+- Logistical form : allow to edit some field on state 'Carrier validated' and enable change tracking feature.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

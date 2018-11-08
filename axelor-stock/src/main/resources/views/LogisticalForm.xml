@@ -31,36 +31,36 @@
                 onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
             <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
-        <panel colSpan="12" readonlyIf="statusSelect > 1">
+        <panel colSpan="12">
             <field name="deliveryNumber" />
-            <field name="collectionDate" />
+            <field name="collectionDate" readonlyIf="statusSelect == 3"/>
             <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
-                grid-view="company-grid" canEdit="false" />
+                grid-view="company-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
             <field name="deliverToCustomerPartner" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
                 onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
-                canEdit="false" />
+                canEdit="false" readonlyIf="statusSelect > 1"/>
         </panel>
-        <panel-tabs colSpan="12" readonlyIf="statusSelect > 1">
+        <panel-tabs colSpan="12">
             <panel title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
                     form-view="partner-form" grid-view="partner-grid" canEdit="false"
-                    onChange="action-logistical-form-set-customer-account-number" />
-                <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" />
-                <field name="customerAccountNumberToCarrier" />
+                    onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1"/>
+                <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1"/>
+                <field name="customerAccountNumberToCarrier" readonlyIf="statusSelect > 1"/>
                 <field name="forwarderPartner" 
                     domain="(self.isCarrier = TRUE OR self.isSupplier = TRUE) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
-                	form-view="partner-form" grid-view="partner-grid" canEdit="false" />
-                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
-                <field name="tracking" />
+                	form-view="partner-form" grid-view="partner-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
+                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
+                <field name="tracking" readonlyIf="statusSelect == 3"/>
                 <field name="totalGrossMass" colSpan="3" />
                 <field name="totalNetMass" colSpan="3" />
                 <field name="totalVolume" colSpan="6" />
-                <field name="internalDeliveryComment" />
-                <field name="externalDeliveryComment" />
+                <field name="internalDeliveryComment" readonlyIf="statusSelect == 3"/>
+                <field name="externalDeliveryComment" readonlyIf="statusSelect > 1"/>
             </panel>
-            <panel title="Lines" showIf="deliverToCustomerPartner">
+            <panel title="Lines" showIf="deliverToCustomerPartner" readonlyIf="statusSelect == 3">
                 <panel colSpan="12" hideIf="$readonly()">
                     <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
@@ -73,6 +73,11 @@
                     height="17" />
             </panel>
         </panel-tabs>
+        
+        <panel-mail>
+	    	<mail-messages limit="4"/>
+	    	<mail-followers/>
+	  	</panel-mail>
     </form>
 
     <action-record name="action-logistical-form-new" model="com.axelor.apps.stock.db.LogisticalForm">
