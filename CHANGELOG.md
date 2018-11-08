@@ -94,6 +94,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
 - Account reconcile : use moveLine partner instead of move partner for mass lettering run from move line list on selected move lines.
 - Account move reverse : use today date
+- Fix NPE on opening sale order line form.
 
 ## [5.0.6] - 2018-10-06
 ## Features
