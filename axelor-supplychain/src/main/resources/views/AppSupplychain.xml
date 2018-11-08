@@ -8,7 +8,7 @@
 			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
 			<field name="customerStockMoveGenerationAuto" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
-			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification"  widget="boolean-switch" colSpan="4"/>
+			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification" colSpan="4"/>
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
 			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
