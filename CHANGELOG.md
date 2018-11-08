@@ -192,6 +192,7 @@
 - PURCHASE ORDER : Supplier Box field and order date added and Printing on Purchase Order Report.
 - Manufacturing Orders : Improvement in Manufacturing Order Report.
 - Logistical form : allow to edit some field on state 'Carrier validated' and enable change tracking feature.
+- Picking stock move : add two option to enable to display the tracking numbers and display the barcode column.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

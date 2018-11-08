@@ -55,6 +55,10 @@
 			<field name="conformityCertificateDescription" widget="html"/>
 			<field name="signatoryUser"/>
 		</panel>
+		<panel title="Stock move printing settings">
+			<field name="displayTrackNbrOnPickingPrinting" widget="boolean-switch"/>
+			<field name="displayBarcodeOnPickingPrinting" widget="boolean-switch"/>
+		</panel>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

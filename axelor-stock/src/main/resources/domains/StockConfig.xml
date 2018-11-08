@@ -30,6 +30,9 @@
     <string name="conformityCertificateTitle" title="Certificate of conformity title" translatable="true"/>
     <string name="conformityCertificateDescription" title="Text in certificate of conformity" large="true" translatable="true"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Default signatory user"/>
+    
+    <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing"/>
+	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing"/>
 
   </entity>
   

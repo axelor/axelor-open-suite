@@ -300,6 +300,18 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">gross_mass</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">display_track_nbr_on_picking_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
+                    <text-property name="heading">display_track_nbr_on_picking_printing</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_barcode_on_picking_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_barcode_on_picking_printing</text-property>
+                    <text-property name="heading">display_barcode_on_picking_printing</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">origin</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">origin</text-property>
@@ -427,11 +439,21 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">24</property>
+                        <property name="name">display_track_nbr_on_picking_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">display_barcode_on_picking_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
                         <property name="name">origin</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">27</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -603,6 +625,20 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">24</property>
+                    <property name="name">display_track_nbr_on_picking_printing</property>
+                    <property name="nativeName">display_track_nbr_on_picking_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">display_barcode_on_picking_printing</property>
+                    <property name="nativeName">display_barcode_on_picking_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
                     <property name="name">origin</property>
                     <property name="nativeName">origin</property>
                     <property name="dataType">string</property>
@@ -633,6 +669,8 @@ StockMove.num_of_packages,
 StockMove.tracking_number,
 StockMove.num_of_palettes,
 StockMove.gross_mass,
+StockConfig.display_track_nbr_on_picking_printing,
+StockConfig.display_barcode_on_picking_printing,
 CASE
 	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.sale_order_seq 
 	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.purchase_order_seq
@@ -640,6 +678,7 @@ END
 as "origin"
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
+left outer join stock_stock_config as StockConfig on (StockConfig.company = Company.id) 
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as Partner on (StockMove.partner = Partner.id)
 left outer join base_address as DeliveryAddress on (StockMove.to_address = DeliveryAddress.id)
@@ -1284,6 +1323,18 @@ order by StockMoveLine.sequence]]></xml-property>
                     <text-property name="displayName">production_note</text-property>
                     <expression name="expression" type="javascript">dataSetRow["production_note"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">display_track_nbr_on_picking_printing</property>
+                    <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_track_nbr_on_picking_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_barcode_on_picking_printing</property>
+                    <text-property name="displayName">display_barcode_on_picking_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_barcode_on_picking_printing"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <list-property name="sort">
@@ -2004,16 +2055,19 @@ row["first_name"]
                                 <property name="width">1.5cm</property>
                             </column>
                             <column id="4109">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["display_barcode_on_picking_printing"] == false</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">3cm</property>
                             </column>
                             <column id="3446">
                                 <property name="width">1in</property>
                             </column>
                             <column id="4182">
-                                <property name="width">2cm</property>
-                            </column>
-                            <column id="4197">
-                                <property name="width">2cm</property>
+                                <property name="width">4cm</property>
                             </column>
                             <column id="3447">
                                 <property name="width">4cm</property>
@@ -2175,7 +2229,7 @@ row["first_name"]
                                         </text>
                                     </cell>
                                     <cell id="4177">
-                                        <property name="colSpan">3</property>
+                                        <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="borderBottomStyle">solid</property>
@@ -2489,7 +2543,7 @@ row["first_name"]
                                             </text>
                                         </cell>
                                         <cell id="4178">
-                                            <property name="colSpan">3</property>
+                                            <property name="colSpan">2</property>
                                             <property name="rowSpan">1</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
@@ -2549,6 +2603,12 @@ row["first_name"]
                                             <text id="3460">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="textAlign">center</property>
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">row._outer._outer["display_track_nbr_on_picking_printing"] == false</expression>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["TrackingNoList"]</VALUE-OF>]]></text-property>
                                             </text>
@@ -2700,7 +2760,7 @@ row["first_name"]
                                             </text>
                                         </cell>
                                         <cell id="4179">
-                                            <property name="colSpan">2</property>
+                                            <property name="colSpan">1</property>
                                             <property name="rowSpan">1</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
@@ -3074,7 +3134,7 @@ row["first_name"]
                                     </row>
                                     <row id="4138">
                                         <property name="verticalAlign">middle</property>
-                                        <property name="height">0.6879166666666666cm</property>
+                                        <property name="height">0.8cm</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -3137,30 +3197,6 @@ row["first_name"]
                                                 <property name="imageName">checkbox.png</property>
                                             </image>
                                         </cell>
-                                        <cell id="4195">
-                                            <property name="fontSize">16pt</property>
-                                            <property name="borderBottomStyle">solid</property>
-                                            <property name="borderBottomWidth">thin</property>
-                                            <property name="borderRightStyle">solid</property>
-                                            <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopStyle">solid</property>
-                                            <property name="borderTopWidth">thin</property>
-                                            <property name="textAlign">right</property>
-                                            <image id="4189">
-                                                <property name="display">inline</property>
-                                                <property name="height">15px</property>
-                                                <property name="width">15px</property>
-                                                <property name="source">embed</property>
-                                                <property name="imageName">checkbox.png</property>
-                                            </image>
-                                            <image id="4188">
-                                                <property name="display">inline</property>
-                                                <property name="height">15px</property>
-                                                <property name="width">15px</property>
-                                                <property name="source">embed</property>
-                                                <property name="imageName">checkbox.png</property>
-                                            </image>
-                                        </cell>
                                         <cell id="4141">
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
@@ -3170,6 +3206,23 @@ row["first_name"]
                                             <property name="borderRightWidth">thin</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
+                                            <property name="textAlign">center</property>
+                                            <image id="4189">
+                                                <property name="marginRight">10pt</property>
+                                                <property name="display">inline</property>
+                                                <property name="height">15px</property>
+                                                <property name="width">15px</property>
+                                                <property name="source">embed</property>
+                                                <property name="imageName">checkbox.png</property>
+                                            </image>
+                                            <image id="4188">
+                                                <property name="marginLeft">10pt</property>
+                                                <property name="display">inline</property>
+                                                <property name="height">15px</property>
+                                                <property name="width">15px</property>
+                                                <property name="source">embed</property>
+                                                <property name="imageName">checkbox.png</property>
+                                            </image>
                                             <text id="4185">
                                                 <property name="backgroundColor">#FFFFFF</property>
                                                 <property name="fontSize">8pt</property>
@@ -3234,14 +3287,19 @@ row["first_name"]
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <property name="textAlign">right</property>
-                                            <image id="4190">
-                                                <property name="height">15px</property>
-                                                <property name="width">15px</property>
-                                                <property name="source">embed</property>
-                                                <property name="imageName">checkbox.png</property>
-                                            </image>
                                         </cell>
                                         <cell id="4145">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">thin</property>
+                                            <property name="textAlign">center</property>
+                                        </cell>
+                                        <cell id="4164">
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
                                             <property name="borderLeftStyle">solid</property>
@@ -3258,16 +3316,6 @@ row["first_name"]
                                                 <property name="imageName">checkbox.png</property>
                                             </image>
                                         </cell>
-                                        <cell id="4164">
-                                            <property name="borderBottomStyle">solid</property>
-                                            <property name="borderBottomWidth">thin</property>
-                                            <property name="borderLeftStyle">solid</property>
-                                            <property name="borderLeftWidth">thin</property>
-                                            <property name="borderRightStyle">solid</property>
-                                            <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopStyle">solid</property>
-                                            <property name="borderTopWidth">thin</property>
-                                        </cell>
                                         <cell id="4170">
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
@@ -3277,6 +3325,13 @@ row["first_name"]
                                             <property name="borderRightWidth">thin</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
+                                            <property name="textAlign">center</property>
+                                            <image id="4190">
+                                                <property name="height">15px</property>
+                                                <property name="width">15px</property>
+                                                <property name="source">embed</property>
+                                                <property name="imageName">checkbox.png</property>
+                                            </image>
                                         </cell>
                                         <cell id="4146">
                                             <property name="borderBottomStyle">solid</property>
@@ -3301,7 +3356,7 @@ row["first_name"]
                                         </structure>
                                     </list-property>
                                     <cell id="4153">
-                                        <property name="colSpan">13</property>
+                                        <property name="colSpan">12</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>

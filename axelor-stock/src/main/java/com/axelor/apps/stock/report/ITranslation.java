@@ -95,6 +95,7 @@ public interface ITranslation {
       "PickingStockMove.weekCode"; /*)*/
   public static final String PICKING_STOCK_MOVE_SIGNALING = /*$$(*/
       "PickingStockMove.signaling"; /*)*/
+  public static final String PICKING_STOCK_MOVE_CODE = /*$$(*/ "PickingStockMove.code"; /*)*/
   public static final String PICKING_STOCK_MOVE_MANUAL = /*$$(*/ "PickingStockMove.manual"; /*)*/
   public static final String PICKING_STOCK_MOVE_ASPECT = /*$$(*/ "PickingStockMove.aspect"; /*)*/
   public static final String PICKING_STOCK_MOVE_MARK = /*$$(*/ "PickingStockMove.mark"; /*)*/
