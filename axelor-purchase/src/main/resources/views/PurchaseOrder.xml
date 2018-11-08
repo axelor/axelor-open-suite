@@ -82,9 +82,8 @@
 			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
-<!-- 			  <item title="New version" showIf="statusSelect == 2" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" action="save,action-purchase-record-newVersion,save"/> -->
-			  <item title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
+			  <item name="sendEmailBtn"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
+			  <item name="cancelReceiptBtn" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>
 		<panel>
@@ -171,7 +170,7 @@
 		<panel sidebar="true" name="actions" hideIf="statusSelect == 4 || supplierPartner == null">
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
-			<button name="newVersion" title="New version" showIf="statusSelect == 2" onClick="save,action-purchase-record-newVersion,save"/>
+			<button name="newVersion" title="New version" showIf="statusSelect == 2" onClick="save,action-purchase-record-newVersion,save" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
 			<button name="completed" title="CompletedButton" showIf="statusSelect == 3" prompt="Are you sure you want complete the order ? Then you can't update it"  onClick="action-purchase-order-record-completed,save" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))"/>
 			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
