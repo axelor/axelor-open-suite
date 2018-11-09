@@ -265,6 +265,7 @@
 - Use real qty instead of planned qty on StockMove report.
 - The current Manuf order are now displayed even if the end date is not filled.
 - Fix reserved quantity field on generated stock move lines.
+- Fix invoice generation from stock move.
 
 ## [Unreleased 5.0.7]
 ## Features

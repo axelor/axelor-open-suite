@@ -48,6 +48,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImpl
@@ -333,5 +334,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     }
     stockMoveLine.setAvailableQty(availableQty);
     stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
+  }
+
+  @Override
+  public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
+      throws AxelorException {
+
+    if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
+      return null;
+    }
+    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
+    StockMoveLine generatedStockMoveLine = super.getMergedStockMoveLine(stockMoveLineList);
+    generatedStockMoveLine.setSaleOrderLine(firstStockMoveLine.getSaleOrderLine());
+    generatedStockMoveLine.setPurchaseOrderLine(firstStockMoveLine.getPurchaseOrderLine());
+    return generatedStockMoveLine;
   }
 }

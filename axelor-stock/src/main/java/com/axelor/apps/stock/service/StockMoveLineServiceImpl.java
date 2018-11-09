@@ -329,6 +329,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMove.addStockMoveLineListItem(stockMoveLine);
       stockMoveLine.setNetMass(
           this.computeNetMass(stockMove, stockMoveLine, stockMove.getCompany()));
+      stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
     } else {
       stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
@@ -338,8 +339,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (product != null) {
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
     }
-
-    stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
 
     return stockMoveLine;
   }
@@ -797,7 +796,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal unitPriceUntaxed = firstStockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = firstStockMoveLine.getUnitPriceTaxed();
     Unit unit = firstStockMoveLine.getUnit();
-    StockMove stockMove = firstStockMoveLine.getStockMove();
     TrackingNumber trackingNumber = firstStockMoveLine.getTrackingNumber();
 
     for (StockMoveLine stockMoveLine : stockMoveLineList.subList(1, stockMoveLineList.size())) {
@@ -812,7 +810,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed,
         unitPriceTaxed,
         unit,
-        stockMove,
+        null,
         trackingNumber);
   }
 
