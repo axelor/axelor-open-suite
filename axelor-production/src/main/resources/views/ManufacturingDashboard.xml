@@ -25,7 +25,7 @@
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
-		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
+  		<domain>self.realStartDateT &lt;= :_today and (self.realEndDateT is null OR self.realEndDateT >= :_today)</domain>
  		<context name="_today" expr="eval: __datetime__" />
 	</action-view>
 	

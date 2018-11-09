@@ -263,6 +263,7 @@
 - MANUF ORDER : NPE when no product is selected on producedStockMoveLineList line
 - Disable average price update on cancelling stock move.
 - Use real qty instead of planned qty on StockMove report.
+- The current Manuf order are now displayed even if the end date is not filled.
 
 ## [Unreleased 5.0.7]
 ## Features
