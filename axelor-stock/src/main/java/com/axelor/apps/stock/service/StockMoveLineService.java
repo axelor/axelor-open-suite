@@ -75,15 +75,18 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   /**
-   * Méthode générique permettant de créer une ligne de mouvement de stock
+   * Allow the creation of a stock move line managing tracking numbers with operation type.
    *
-   * @param product
-   * @param quantity
-   * @param unit
-   * @param price
-   * @param stockMove
-   * @param trackingNumber
-   * @return
+   * @param product the line product
+   * @param productName the line product name
+   * @param description description of the line
+   * @param quantity the line quantity
+   * @param unitPriceUntaxed price untaxed of the line
+   * @param unitPriceTaxed price taxed of the line
+   * @param unit Unit of the line
+   * @param stockMove parent stock move
+   * @param trackingNumber tracking number used in the line
+   * @return the created stock move line
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
@@ -96,6 +99,14 @@ public interface StockMoveLineService {
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
+      throws AxelorException;
+
+  public StockMoveLine assignOrGenerateTrackingNumber(
+      StockMoveLine stockMoveLine,
+      StockMove stockMove,
+      Product product,
+      TrackingNumberConfiguration trackingNumberConfiguration,
+      int type)
       throws AxelorException;
 
   public void checkTrackingNumber(StockMove stockMove) throws AxelorException;

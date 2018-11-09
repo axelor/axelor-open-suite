@@ -33,7 +33,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -140,7 +140,7 @@ public class SaleOrderLineController {
               .fetchOne();
       saleOrderLineServiceSupplyChainImpl.changeReservedQty(saleOrderLine, newReservedQty);
       if (stockMoveLine != null) {
-        Beans.get(StockMoveLineSupplychainServiceImpl.class)
+        Beans.get(StockMoveLineServiceSupplychainImpl.class)
             .updateReservedQty(stockMoveLine, newReservedQty);
       }
     } catch (Exception e) {

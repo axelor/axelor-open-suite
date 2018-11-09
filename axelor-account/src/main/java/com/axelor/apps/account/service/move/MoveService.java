@@ -418,9 +418,9 @@ public class MoveService {
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move) throws AxelorException {
-	  
-	LocalDate todayDate = appAccountService.getTodayDate();
-	  
+
+    LocalDate todayDate = appAccountService.getTodayDate();
+
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),

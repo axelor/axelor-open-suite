@@ -95,7 +95,8 @@ import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
@@ -140,7 +141,7 @@ public class SupplychainModule extends AxelorModule {
     bind(MrpService.class).to(MrpServiceImpl.class);
     bind(MrpLineService.class).to(MrpLineServiceImpl.class);
     bind(AnalyticMoveLineMngtRepository.class).to(AnalyticMoveLineSupplychainRepository.class);
-    bind(StockMoveLineServiceImpl.class).to(StockMoveLineSupplychainServiceImpl.class);
+    bind(StockMoveLineServiceImpl.class).to(StockMoveLineServiceSupplychainImpl.class);
     bind(BudgetService.class).to(BudgetSupplychainService.class);
     bind(InvoiceLineServiceImpl.class).to(InvoiceLineSupplychainService.class);
     bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
@@ -170,6 +171,7 @@ public class SupplychainModule extends AxelorModule {
     bind(TimetableService.class).to(TimetableServiceImpl.class);
     bind(InvoiceServiceSupplychain.class).to(InvoiceServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(StockMoveLineServiceSupplychain.class).to(StockMoveLineServiceSupplychainImpl.class);
     bind(StockLocationServiceImpl.class).to(StockLocationServiceSupplychainImpl.class);
     bind(StockLocationServiceSupplychain.class).to(StockLocationServiceSupplychainImpl.class);
     bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);

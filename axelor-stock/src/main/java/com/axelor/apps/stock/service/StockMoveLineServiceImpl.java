@@ -93,17 +93,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.unitConversionService = unitConversionService;
   }
 
-  /**
-   * Méthode générique permettant de créer une ligne de mouvement de stock en gérant les numéros de
-   * suivi en fonction du type d'opération.
-   *
-   * @param product le produit
-   * @param quantity la quantité
-   * @param parent le StockMove parent
-   * @param type 1 : Sales 2 : Purchases 3 : Productions
-   * @return l'objet StockMoveLine
-   * @throws AxelorException
-   */
   @Override
   public StockMoveLine createStockMoveLine(
       Product product,
@@ -119,108 +108,141 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throws AxelorException {
 
     if (product != null) {
-      BigDecimal unitPriceUntaxed;
-      BigDecimal unitPriceTaxed;
-      if (taxed) {
-        unitPriceTaxed =
-            unitPrice.setScale(
-                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-        unitPriceUntaxed =
-            unitPrice.divide(
-                taxRate.add(BigDecimal.ONE),
-                appBaseService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP);
-      } else {
-        unitPriceUntaxed =
-            unitPrice.setScale(
-                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-        unitPriceTaxed =
-            unitPrice
-                .multiply(taxRate.add(BigDecimal.ONE))
-                .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-      }
+
       StockMoveLine stockMoveLine =
-          this.createStockMoveLine(
+          generateStockMoveLineConvertingUnitPrice(
               product,
               productName,
               description,
               quantity,
-              unitPriceUntaxed,
-              unitPriceTaxed,
+              unitPrice,
               unit,
               stockMove,
-              null);
-
+              taxed,
+              taxRate);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
-      if (trackingNumberConfiguration != null) {
 
-        switch (type) {
-          case StockMoveLineService.TYPE_SALES:
-            if (trackingNumberConfiguration.getIsSaleTrackingManaged()) {
-              if (trackingNumberConfiguration.getGenerateSaleAutoTrackingNbr()) {
-                // Générer numéro de série si case cochée
-                this.generateTrackingNumber(
-                    stockMoveLine,
-                    trackingNumberConfiguration,
-                    product,
-                    trackingNumberConfiguration.getSaleQtyByTracking());
+      return assignOrGenerateTrackingNumber(
+          stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
+    } else {
+      return this.createStockMoveLine(
+          product,
+          productName,
+          description,
+          quantity,
+          BigDecimal.ZERO,
+          BigDecimal.ZERO,
+          unit,
+          stockMove,
+          null);
+    }
+  }
 
-              } else {
-                // Rechercher le numéro de suivi d'apèrs FIFO/LIFO
-                this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
-              }
-            }
-            break;
-          case StockMoveLineService.TYPE_PURCHASES:
-            if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
-                && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
+  protected StockMoveLine generateStockMoveLineConvertingUnitPrice(
+      Product product,
+      String productName,
+      String description,
+      BigDecimal quantity,
+      BigDecimal unitPrice,
+      Unit unit,
+      StockMove stockMove,
+      boolean taxed,
+      BigDecimal taxRate)
+      throws AxelorException {
+    BigDecimal unitPriceUntaxed;
+    BigDecimal unitPriceTaxed;
+    if (taxed) {
+      unitPriceTaxed =
+          unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+      unitPriceUntaxed =
+          unitPrice.divide(
+              taxRate.add(BigDecimal.ONE),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              RoundingMode.HALF_UP);
+    } else {
+      unitPriceUntaxed =
+          unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+      unitPriceTaxed =
+          unitPrice
+              .multiply(taxRate.add(BigDecimal.ONE))
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    }
+    return this.createStockMoveLine(
+        product,
+        productName,
+        description,
+        quantity,
+        unitPriceUntaxed,
+        unitPriceTaxed,
+        unit,
+        stockMove,
+        null);
+  }
+
+  @Override
+  public StockMoveLine assignOrGenerateTrackingNumber(
+      StockMoveLine stockMoveLine,
+      StockMove stockMove,
+      Product product,
+      TrackingNumberConfiguration trackingNumberConfiguration,
+      int type)
+      throws AxelorException {
+
+    if (trackingNumberConfiguration != null) {
+
+      switch (type) {
+        case StockMoveLineService.TYPE_SALES:
+          if (trackingNumberConfiguration.getIsSaleTrackingManaged()) {
+            if (trackingNumberConfiguration.getGenerateSaleAutoTrackingNbr()) {
               // Générer numéro de série si case cochée
               this.generateTrackingNumber(
                   stockMoveLine,
                   trackingNumberConfiguration,
                   product,
-                  trackingNumberConfiguration.getPurchaseQtyByTracking());
-            }
-            break;
-          case StockMoveLineService.TYPE_OUT_PRODUCTIONS:
-            if (trackingNumberConfiguration.getIsProductionTrackingManaged()
-                && trackingNumberConfiguration.getGenerateProductionAutoTrackingNbr()) {
-              // Générer numéro de série si case cochée
-              this.generateTrackingNumber(
-                  stockMoveLine,
-                  trackingNumberConfiguration,
-                  product,
-                  trackingNumberConfiguration.getProductionQtyByTracking());
-            }
-            break;
-          case StockMoveLineService.TYPE_IN_PRODUCTIONS:
-            if (trackingNumberConfiguration.getHasProductAutoSelectTrackingNbr()) {
-              // searching for the tracking number using FIFO or LIFO
+                  trackingNumberConfiguration.getSaleQtyByTracking());
+
+            } else {
+              // Rechercher le numéro de suivi d'apèrs FIFO/LIFO
               this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
             }
-            break;
-          case StockMoveLineService.TYPE_WASTE_PRODUCTIONS:
-            break;
-          default:
-            break;
-        }
+          }
+          break;
+        case StockMoveLineService.TYPE_PURCHASES:
+          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
+              && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
+            // Générer numéro de série si case cochée
+            this.generateTrackingNumber(
+                stockMoveLine,
+                trackingNumberConfiguration,
+                product,
+                trackingNumberConfiguration.getPurchaseQtyByTracking());
+          }
+          break;
+        case StockMoveLineService.TYPE_OUT_PRODUCTIONS:
+          if (trackingNumberConfiguration.getIsProductionTrackingManaged()
+              && trackingNumberConfiguration.getGenerateProductionAutoTrackingNbr()) {
+            // Générer numéro de série si case cochée
+            this.generateTrackingNumber(
+                stockMoveLine,
+                trackingNumberConfiguration,
+                product,
+                trackingNumberConfiguration.getProductionQtyByTracking());
+          }
+          break;
+        case StockMoveLineService.TYPE_IN_PRODUCTIONS:
+          if (trackingNumberConfiguration.getHasProductAutoSelectTrackingNbr()) {
+            // searching for the tracking number using FIFO or LIFO
+            this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
+          }
+          break;
+        case StockMoveLineService.TYPE_WASTE_PRODUCTIONS:
+          break;
+        default:
+          break;
       }
-      return stockMoveLine;
-    } else {
-      StockMoveLine stockMoveLine =
-          this.createStockMoveLine(
-              product,
-              productName,
-              description,
-              quantity,
-              BigDecimal.ZERO,
-              BigDecimal.ZERO,
-              unit,
-              stockMove,
-              null);
-      return stockMoveLine;
     }
+    return stockMoveLine;
   }
 
   @Override

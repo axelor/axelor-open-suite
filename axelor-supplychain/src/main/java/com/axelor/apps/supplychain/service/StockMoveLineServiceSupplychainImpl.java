@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
@@ -49,14 +50,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequestScoped
-public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl {
+public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImpl
+    implements StockMoveLineServiceSupplychain {
 
   protected AccountManagementService accountManagementService;
 
   protected PriceListService priceListService;
 
   @Inject
-  public StockMoveLineSupplychainServiceImpl(
+  public StockMoveLineServiceSupplychainImpl(
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
       AppStockService appStockService,
@@ -76,6 +78,53 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         unitConversionService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
+  }
+
+  @Override
+  public StockMoveLine createStockMoveLine(
+      Product product,
+      String productName,
+      String description,
+      BigDecimal quantity,
+      BigDecimal reservedQty,
+      BigDecimal unitPrice,
+      Unit unit,
+      StockMove stockMove,
+      int type,
+      boolean taxed,
+      BigDecimal taxRate)
+      throws AxelorException {
+    if (product != null) {
+
+      StockMoveLine stockMoveLine =
+          generateStockMoveLineConvertingUnitPrice(
+              product,
+              productName,
+              description,
+              quantity,
+              unitPrice,
+              unit,
+              stockMove,
+              taxed,
+              taxRate);
+      stockMoveLine.setReservedQty(reservedQty);
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          product.getTrackingNumberConfiguration();
+
+      return assignOrGenerateTrackingNumber(
+          stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
+    } else {
+      return this.createStockMoveLine(
+          product,
+          productName,
+          description,
+          quantity,
+          BigDecimal.ZERO,
+          BigDecimal.ZERO,
+          unit,
+          stockMove,
+          null);
+    }
   }
 
   @Override
@@ -216,6 +265,21 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         lastFutureStockMoveDate,
         trackingNumber,
         realReservedQty);
+  }
+
+  @Override
+  public StockMoveLine splitStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber)
+      throws AxelorException {
+
+    StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
+
+    BigDecimal reservedQtyAfterSplit =
+        BigDecimal.ZERO.max(stockMoveLine.getReservedQty().subtract(qty));
+    BigDecimal reservedQtyInNewLine = stockMoveLine.getReservedQty().min(qty);
+    stockMoveLine.setReservedQty(reservedQtyAfterSplit);
+    newStockMoveLine.setReservedQty(reservedQtyInNewLine);
+    return newStockMoveLine;
   }
 
   @Override

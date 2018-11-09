@@ -64,6 +64,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockConfigService stockConfigService;
   protected UnitConversionService unitConversionService;
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
+  protected StockMoveLineServiceSupplychain stockMoveLineSupplychainService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -71,13 +72,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineService stockMoveLineService,
       StockConfigService stockConfigService,
       UnitConversionService unitConversionService,
-      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      StockMoveLineServiceSupplychain stockMoveLineSupplychainService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
     this.unitConversionService = unitConversionService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
+    this.stockMoveLineSupplychainService = stockMoveLineSupplychainService;
   }
 
   @Override
@@ -328,11 +331,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
 
       StockMoveLine stockMoveLine =
-          stockMoveLineService.createStockMoveLine(
+          stockMoveLineSupplychainService.createStockMoveLine(
               saleOrderLine.getProduct(),
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
               qty,
+              saleOrderLine.getReservedQty(),
               priceDiscounted,
               unit,
               stockMove,
@@ -346,10 +350,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       if (stockMoveLine != null) {
         stockMoveLine.setSaleOrderLine(saleOrderLine);
-        stockMoveLine.setReservedQty(saleOrderLine.getReservedQty());
+        updatePackInfo(saleOrderLine, stockMoveLine);
       }
-
-      updatePackInfo(saleOrderLine, stockMoveLine);
 
       return stockMoveLine;
     } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
