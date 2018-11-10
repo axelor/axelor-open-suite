@@ -330,7 +330,7 @@
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
 				icon="fa-file" onClick="action-project-record-status-new,save" />
 		</panel>
-		<panel name="caracteristics" title="Caracteristics" colSpan="12"
+		<panel name="characteristics" title="Characteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
 			<panel colSpan="12">
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"

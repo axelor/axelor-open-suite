@@ -157,7 +157,7 @@
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 		</panel>
 
-		<panel sidebar="true" title="Caracteristics" name="meetingAttributes" canCollapse="true">
+		<panel sidebar="true" title="Characteristics" name="meetingAttributes" canCollapse="true">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" domain="self.typeSelect = :typeSelect" colSpan="6"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>

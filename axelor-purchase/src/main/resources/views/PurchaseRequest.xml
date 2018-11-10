@@ -99,7 +99,7 @@
 			<button name="draft" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
 				onClick="save,action-purchase-request-set-status-draft, save" />
 		</panel>
-		<panel sidebar="true" name="caracteristics" title="Caracteristics"
+		<panel sidebar="true" name="characteristics" title="Characteristics"
 			canCollapse="true">
 			<field name="deliveryAddress"
 				onSelect="action-purchase-request-set-delivery-address-domain" canEdit="false"/>

@@ -215,7 +215,7 @@
       <field name="internalReference"/>
       <field name="externalReference" hideIf="company == null"/>
 		</panel>
-	   <panel name="caracteristics" title="Caracteristics" sidebar="true" hideIf="supplierPartner == null" canCollapse="true" collapseIf="true">
+	   <panel name="characteristics" title="Characteristics" sidebar="true" hideIf="supplierPartner == null" canCollapse="true" collapseIf="true">
 			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 
 			<field name="paymentCondition" canEdit="false" if-module="axelor-account" form-view="payment-condition-form" grid-view="payment-condition-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/>
       <field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management"/>

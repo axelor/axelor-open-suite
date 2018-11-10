@@ -49,7 +49,7 @@
 				<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 				<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
 			</panel>
-			<panel name="caracteristics" title="Caracteristics" colSpan="12">
+			<panel name="characteristics" title="Characteristics" colSpan="12">
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4"/>

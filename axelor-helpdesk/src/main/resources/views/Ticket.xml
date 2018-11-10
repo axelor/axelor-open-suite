@@ -87,7 +87,7 @@
 			<button name="finishTicket" title="Close" icon="fa-power-off" css="btn-danger" hideIf="statusSelect > 2" onClick="save,action-ticket-group-on-close"/>
 		</panel>
 
-		<panel name="caracteristics" title="Caracteristics" sidebar="true" canCollapse="true">
+		<panel name="characteristics" title="Characteristics" sidebar="true" canCollapse="true">
 			<field name="ticketType" colSpan="12"/>
 			<field name="prioritySelect" colSpan="6"/>
 			<field name="deadlineDateT" colSpan="6"/>
