@@ -195,10 +195,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
 
+      invoiceLine.setAnalyticDistributionTemplate(saleOrderLine.getAnalyticDistributionTemplate());
       this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
     } else if (purchaseOrderLine != null) {
 
+      invoiceLine.setAnalyticDistributionTemplate(purchaseOrderLine.getAnalyticDistributionTemplate());
       this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
