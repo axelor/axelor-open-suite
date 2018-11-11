@@ -125,6 +125,7 @@
 - StockMove : Include sub stock location's lines in Report. 
 - Notification : Improve notification management. 
 - Manage origin date on supplier invoice. This date is used for compute due date and is used in account move line to fill the origin date.
+- Fill analytic template on move line when we generate the accounting move from an invoice and use it as a key to consolidate the generated move lines.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

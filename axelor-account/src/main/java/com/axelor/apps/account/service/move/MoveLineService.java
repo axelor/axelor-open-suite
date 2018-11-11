@@ -408,6 +408,7 @@ public class MoveLineService {
                 origin,
                 invoiceLine.getProductName());
 
+        moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
         if (invoiceLine.getAnalyticMoveLineList() != null) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
@@ -592,6 +593,7 @@ public class MoveLineService {
 
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
+      keys.add(moveLine.getAnalyticDistributionTemplate());
 
       consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
       if (consolidateMoveLine != null) {
