@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -52,7 +51,7 @@ public class MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountConfigService accountConfigService;
-  protected SequenceService sequenceService;
+  protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
   protected MoveRepository moveRepository;
   protected AccountRepository accountRepository;
@@ -61,14 +60,14 @@ public class MoveValidateService {
   @Inject
   public MoveValidateService(
       AccountConfigService accountConfigService,
-      SequenceService sequenceService,
+      MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository) {
 
     this.accountConfigService = accountConfigService;
-    this.sequenceService = sequenceService;
+    this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
@@ -113,8 +112,6 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_3));
     }
 
-    Boolean dayBookMode = accountConfigService.getAccountConfig(company).getAccountingDaybook();
-
     if (journal == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_2));
@@ -123,13 +120,6 @@ public class MoveValidateService {
     if (move.getPeriod() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
-    }
-
-    if (journal.getSequence() == null && !dayBookMode) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_5),
-          journal.getName());
     }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
@@ -176,8 +166,8 @@ public class MoveValidateService {
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
 
-    if (!dayBookMode) {
-      move.setReference(sequenceService.getSequenceNumber(move.getJournal().getSequence()));
+    if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+      moveSequenceService.setSequence(move);
     }
 
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
@@ -187,10 +177,10 @@ public class MoveValidateService {
     this.completeMoveLines(move);
 
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
-    moveRepository.save(move);
 
     this.updateValidateStatus(move, dayBookMode);
-    move.setValidationDate(LocalDate.now());
+
+    moveRepository.save(move);
 
     if (updateCustomerAccount) {
       moveCustAccountService.updateCustomerAccount(move);
@@ -241,10 +231,11 @@ public class MoveValidateService {
 
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
 
-    if (daybook && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK) {
+    if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
+      move.setValidationDate(LocalDate.now());
     }
   }
 
