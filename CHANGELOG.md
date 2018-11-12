@@ -197,6 +197,7 @@
 - Picking stock move : add two option to enable to display the tracking numbers and display the barcode column.
 - Enable mass update feature on ProdProcess on stock location fields
 - Allow to edit invoicing and delivery address on sale order being edited
+- Enable mass update feature on Account object
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
