@@ -144,9 +144,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 
-    // Disable confirmation of bank order. In the futur we will add an option.
-    // bankOrderService.confirm(bankOrder);
-
+    if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
+      bankOrderService.confirm(bankOrder);
+    }
     invoicePayment.setBankOrder(bankOrder);
 
     invoicePaymentRepository.save(invoicePayment);
