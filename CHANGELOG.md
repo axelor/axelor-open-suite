@@ -277,6 +277,7 @@
 - Fix reserved quantity field on generated stock move lines.
 - Fix invoice generation from stock move.
 - ACCOUNT : compute balance - id to load is required for loading
+- Reset Bank order sender informations (date, reference, label, signatory user) when we merge some bank orders.
 
 ## [Unreleased 5.0.7]
 ## Features
