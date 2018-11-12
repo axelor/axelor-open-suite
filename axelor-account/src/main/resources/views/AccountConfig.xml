@@ -71,10 +71,10 @@
 			</panel>
 
 			<panel title="Invoicing">
-				<field name="allowCancelVentilatedInvoice"/>
-				<field name="generateMoveForInvoicePayment"/>
+				<field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
+				<field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
 				<field name="invoiceInAtiSelect"/>
-				<field name="invoiceAutomaticMail"/>
+				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 
 				<panel title="Invoices sequences" colSpan="12">
 					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
@@ -89,11 +89,12 @@
 				</panel>
 
 				<panel title="Printing settings" colSpan="12">
-					<field name="displayDelAddrOnPrinting"/>
-					<field name="displayProductCodeOnPrinting"/>
-					<field name="displayTaxDetailOnPrinting"/>
-					<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
-					<field name="displayExpenseOnPrinting" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
+					<field name="displayDelAddrOnPrinting" widget="boolean-switch"/>
+					<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
+					<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
+					<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
+					<field name="displayTimesheetOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
+					<field name="displayExpenseOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
 					<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>

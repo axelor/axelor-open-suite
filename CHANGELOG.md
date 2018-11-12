@@ -198,6 +198,7 @@
 - Enable mass update feature on ProdProcess on stock location fields
 - Allow to edit invoicing and delivery address on sale order being edited
 - Enable mass update feature on Account object
+- Add an option to display customer or supplier partner seq on invoice printing
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

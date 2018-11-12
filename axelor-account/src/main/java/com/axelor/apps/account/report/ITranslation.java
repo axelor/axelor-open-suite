@@ -82,6 +82,12 @@ public interface ITranslation {
 
   public static final String INVOICE_SUBSCRIPTION_PERIOD = /*$$(*/
       "Invoice.subscriptionPeriod"; /*)*/
+  public static final String INVOICE_CUSTOMER_PARTNER_SEQ = /*$$(*/
+      "Invoice.customerPartnerSeq"; /*)*/
+  public static final String INVOICE_SUPPLIER_PARTNER_SEQ = /*$$(*/
+      "Invoice.supplierPartnerSeq"; /*)*/
+  public static final String INVOICE_CUSTOMER_TAX_NUMBER = /*$$(*/
+      "Invoice.customerTaxNumber"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
