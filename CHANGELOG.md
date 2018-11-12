@@ -200,6 +200,7 @@
 - Enable mass update feature on Account object
 - Add an option to display customer or supplier partner seq on invoice printing
 - Allow to select an external stock location on purchase order
+- Display origin and analytic template on move line grid
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
