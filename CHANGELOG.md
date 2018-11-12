@@ -201,6 +201,7 @@
 - Add an option to display customer or supplier partner seq on invoice printing
 - Allow to select an external stock location on purchase order
 - Display origin and analytic template on move line grid
+- Improve Stock move report : add note and partner seq
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
