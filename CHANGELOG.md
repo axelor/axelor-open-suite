@@ -271,6 +271,7 @@
 - The current Manuf order are now displayed even if the end date is not filled.
 - Fix reserved quantity field on generated stock move lines.
 - Fix invoice generation from stock move.
+- ACCOUNT : compute balance - id to load is required for loading
 
 ## [Unreleased 5.0.7]
 ## Features

@@ -39,6 +39,9 @@ public class AccountController {
   public void computeBalance(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
+      if (account.getId() == null) {
+        return;
+      }
       account = accountRepository.find(account.getId());
 
       BigDecimal balance =
