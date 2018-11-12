@@ -29,7 +29,7 @@
     	<panel sidebar="true">
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
-			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2 || $popup()" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
+			<button name="close" title="Close period" onClick="save,action-method-period-close" hideIf="statusSelect == 2 || $popup()" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
 			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()" />
 			<button name="open" title="Open period" onClick="save,action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>
     	</panel>
@@ -51,7 +51,7 @@
     	<panel sidebar="true">
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
-			<button name="close" title="Close period" onClick="action-method-period-close" hideIf="statusSelect == 2 || $popup()" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
+			<button name="close" title="Close period" onClick="save,action-method-period-close" hideIf="statusSelect == 2 || $popup()" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
 			<button name="adjust" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()" />
 			<button name="open" title="Open period" onClick="save,action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>
     	</panel>

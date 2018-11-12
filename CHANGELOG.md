@@ -272,6 +272,7 @@
 - Fix reserved quantity field on generated stock move lines.
 - Fix invoice generation from stock move.
 - ACCOUNT : compute balance - id to load is required for loading
+- Fixed bug where it would not be possible to close periods in the human resource module.
 
 ## [Unreleased 5.0.7]
 ## Features

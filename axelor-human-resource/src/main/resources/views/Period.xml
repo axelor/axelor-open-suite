@@ -26,10 +26,10 @@
 			<panel colSpan="6">
                 <panel itemSpan="12">
                     <button name="close" title="Close period" colSpan="12"
-                        onClick="save,action-method-period-close,save"
+                        onClick="save,action-method-period-close"
                         showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
                     <button name="reopen" title="Reopen period" colSpan="12"
-                        onClick="save,action-period-record-status-open,save"
+                        onClick="save,action-period-record-status-open"
                         showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
                 </panel>
             </panel>
@@ -52,10 +52,10 @@
 			<panel colSpan="6">
                 <panel itemSpan="12">
                     <button name="close" title="Close period" colSpan="12"
-                        onClick="save,action-method-period-close,save"
+                        onClick="save,action-method-period-close"
                         showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
                     <button name="reopen" title="Reopen period" colSpan="12"
-                        onClick="save,action-period-record-status-open,save"
+                        onClick="save,action-period-record-status-open"
                         showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
                 </panel>
             </panel>
