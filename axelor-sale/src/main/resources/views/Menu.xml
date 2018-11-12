@@ -21,6 +21,7 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="_isCustomer" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
+		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="10"
