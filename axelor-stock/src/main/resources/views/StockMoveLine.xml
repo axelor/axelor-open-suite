@@ -485,7 +485,7 @@
     </action-method>
 
 	<action-record name="action-stock-move-line-record-product" model="com.axelor.apps.stock.db.StockMoveLine">
-	    <field name="product" expr="eval: trackingNumber.product" if="trackingNumber"/>
+	    <field name="product" expr="eval: trackingNumber.product" if="trackingNumber &amp;&amp; trackingNumber.product"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-store-product-type" model="com.axelor.apps.stock.db.StockMoveLine">
