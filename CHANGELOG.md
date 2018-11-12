@@ -203,6 +203,7 @@
 - Display origin and analytic template on move line grid
 - Improve Stock move report : add note and partner seq
 - Add an option to automatically confirm the bank orders generated from an invoice payment
+- Use supplier invoice number instead of invoiceId on bank order automatically generated from an invoice payment on supplier invoice.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
