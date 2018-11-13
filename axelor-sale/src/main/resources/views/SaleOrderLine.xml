@@ -135,6 +135,7 @@
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery">
+				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
 				<field name="deliveredQty" readonly="true"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>

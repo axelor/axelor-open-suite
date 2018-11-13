@@ -85,18 +85,26 @@ public class SaleOrderController {
       if (saleOrder.getId() != null) {
 
         SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-        StockMove stockMove =
+        List<Long> stockMoveList =
             saleOrderStockService.createStocksMovesFromSaleOrder(
                 saleOrderRepo.find(saleOrder.getId()));
 
-        if (stockMove != null) {
+        if (stockMoveList != null && stockMoveList.size() == 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(stockMove.getId()))
+                  .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .map());
+        } else if (stockMoveList != null && stockMoveList.size() > 1) {
+          response.setView(
+              ActionView.define(I18n.get("Stock move"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));

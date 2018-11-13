@@ -130,6 +130,7 @@
 - STOCK MOVE : filter on fromStockLocation
 - ManufOrder : Track the Manufacture Order.
 - STOCK MOVE : Report footer Modify
+- SALEORDER : Generate stock move per estimated delivery date 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

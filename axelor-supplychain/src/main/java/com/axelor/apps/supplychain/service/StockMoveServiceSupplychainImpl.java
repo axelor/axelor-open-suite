@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -43,6 +44,7 @@ import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,12 +58,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private AppSupplychainService appSupplyChainService;
+  @Inject protected AppSupplychainService appSupplyChainService;
 
   @Inject protected PurchaseOrderRepository purchaseOrderRepo;
   @Inject protected SaleOrderRepository saleOrderRepo;
 
-  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
+  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
+
+  @Inject protected UnitConversionService unitConversionService;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -138,7 +142,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Transactional
-  public void updateSaleOrderOnCancel(StockMove stockMove) {
+  public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
     List<StockMove> stockMoveList =
@@ -167,16 +171,22 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     updateSaleOrderLines(stockMove, false);
   }
 
-  private void updateSaleOrderLines(StockMove stockMove, boolean realize) {
+  protected void updateSaleOrderLines(StockMove stockMove, boolean realize) throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getSaleOrderLine() != null) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+
+        BigDecimal realQty =
+            unitConversionService.convertWithProduct(
+                stockMoveLine.getUnit(),
+                saleOrderLine.getUnit(),
+                stockMoveLine.getRealQty(),
+                saleOrderLine.getProduct());
+
         if (realize) {
-          saleOrderLine.setDeliveredQty(
-              saleOrderLine.getDeliveredQty().add(stockMoveLine.getRealQty()));
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
         } else {
-          saleOrderLine.setDeliveredQty(
-              saleOrderLine.getDeliveredQty().subtract(stockMoveLine.getRealQty()));
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
         }
         if (saleOrderLine.getDeliveredQty().signum() == 0) {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
