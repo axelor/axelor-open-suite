@@ -491,9 +491,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
 
       totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-      logisticalForm.setTotalNetMass(totalNetMass);
-      logisticalForm.setTotalGrossMass(totalGrossMass);
-      logisticalForm.setTotalVolume(totalVolume);
+      logisticalForm.setTotalNetMass(totalNetMass.setScale(3, RoundingMode.HALF_EVEN));
+      logisticalForm.setTotalGrossMass(totalGrossMass.setScale(3, RoundingMode.HALF_EVEN));
+      logisticalForm.setTotalVolume(totalVolume.setScale(3, RoundingMode.HALF_EVEN));
     }
   }
 

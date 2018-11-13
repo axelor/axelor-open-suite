@@ -208,6 +208,7 @@
 - Add an option to automatically confirm the bank orders generated from an invoice payment
 - Use supplier invoice number instead of invoiceId on bank order automatically generated from an invoice payment on supplier invoice.
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
+- Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

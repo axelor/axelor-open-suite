@@ -15,7 +15,7 @@
         <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" width="100" title="Internal number" if="__config__.app.isApp('supplychain')" />
         <field name="stockMoveLine.stockMove.saleOrder.orderNumber" width="120" title="Order number" if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netMass" title="Unit net mass" /> --> <!-- Should be null when stockMoveLine is null -->
-        <field name="unitNetMass" width="75"/>
+        <field name="unitNetMass" width="75" x-scale="3"/>
         <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
         <field name="parcelPalletNumber" width="75" readonlyIf="typeSelect == 3" onChange="sync" />
         <field name="grossMass" width="75" readonlyIf="typeSelect == 3" />

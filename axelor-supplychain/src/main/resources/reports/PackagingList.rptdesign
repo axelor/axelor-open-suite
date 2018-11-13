@@ -2994,7 +2994,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                         <data id="286">
                                             <structure name="numberFormat">
                                                 <property name="category">Fixed</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                                <property name="pattern">###0.000{RoundingMode=HALF_UP}</property>
                                             </structure>
                                             <property name="resultSetColumn">Aggregation</property>
                                         </data>
@@ -3087,7 +3087,7 @@ default:
                                     <data id="195">
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">net_mass</property>
@@ -3205,7 +3205,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">TotalNetMass</property>

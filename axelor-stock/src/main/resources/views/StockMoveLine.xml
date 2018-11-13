@@ -150,8 +150,9 @@
 	        <field name="unitPriceUntaxed" />
         	<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-    	    <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange" />
-	        <field name="totalNetMass" readonly="true" showIf="totalNetMass"/>
+    	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
+	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
+	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
 	        <field name="trackingNumber"
 				canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
 				onChange="action-stock-move-line-record-product" form-view="tracking-number-stock-move-line-form"
@@ -296,8 +297,9 @@
 	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
-            <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange" />
-	        <field name="totalNetMass"/>
+    	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
+	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
+	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
 	        <field name="trackingNumber"
 				canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
 				onChange="action-stock-move-line-record-product" form-view="tracking-number-form"

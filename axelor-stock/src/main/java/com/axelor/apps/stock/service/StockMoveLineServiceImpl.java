@@ -334,7 +334,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
 
-    stockMoveLine.setTotalNetMass(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetMass()));
+    stockMoveLine.setTotalNetMass(
+        stockMoveLine
+            .getRealQty()
+            .multiply(stockMoveLine.getNetMass())
+            .setScale(2, RoundingMode.HALF_EVEN));
 
     if (product != null) {
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
@@ -947,7 +951,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     netMass =
         Beans.get(UnitConversionService.class)
             .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
-    return netMass;
+    return netMass.setScale(10, RoundingMode.HALF_EVEN);
   }
 
   @Override
