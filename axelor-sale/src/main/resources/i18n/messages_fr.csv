@@ -334,6 +334,7 @@
 "SaleOrder.description","Description",,
 "SaleOrder.discountAmount","Remise",,
 "SaleOrder.duration","Durée de validité",,
+"SaleOrder.estimatedDeliveryDate","Date de liv. estimée",,
 "SaleOrder.invoicingAddrs","Adresse de facturation",,
 "SaleOrder.no","Devis N° ",,
 "SaleOrder.note","Remarques",,
