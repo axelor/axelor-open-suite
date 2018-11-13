@@ -195,4 +195,15 @@ public class StockMoveLineController {
       response.setValue("$availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
     }
   }
+
+  public void setProductDomain(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove =
+        context.getParent() != null
+            ? context.getParent().asType(StockMove.class)
+            : stockMoveLine.getStockMove();
+    String domain = stockMoveLineService.createDomainForProduct(stockMoveLine, stockMove);
+    response.setAttr("product", "domain", domain);
+  }
 }

@@ -1067,4 +1067,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setAvailableQty(availableQty);
     stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
   }
+
+  @Override
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove) {
+    String domain = "self.isModel = false AND self.isShippingCostsProduct = false";
+    if (stockMoveLine.getProductModel() != null) {
+      domain += " AND self.parentProduct.id = " + stockMoveLine.getProductModel().getId();
+    }
+    if (stockMoveLine.getFilterOnAvailableProducts()
+        && stockMove.getFromStockLocation().getTypeSelect() != 3) {
+      domain +=
+          " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+              + stockMove.getFromStockLocation().getId()
+              + " AND sll.currentQty > 0)";
+    }
+    return domain;
+  }
 }
