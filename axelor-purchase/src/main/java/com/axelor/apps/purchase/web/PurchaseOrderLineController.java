@@ -374,6 +374,8 @@ public class PurchaseOrderLineController {
       domain += "self.id = 0";
     }
 
+    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
+
     response.setAttr("supplierPartner", "domain", domain);
   }
 }

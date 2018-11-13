@@ -67,7 +67,7 @@
 	     onNew="action-account-accounting-situation-default-set" >
 		<panel name="main" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>

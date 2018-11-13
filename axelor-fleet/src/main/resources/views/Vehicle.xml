@@ -30,10 +30,10 @@
 	       </panel>
 	       <panel colSpan="12" title="General Properties" >
 	       		<panel itemSpan="12">
-		       		<field name="driverPartner" domain="self.isEmployee = true" />
+	       			<field name="company" />
+		       		<field name="driverPartner" domain="self.isEmployee = true AND :company member of self.companySet" />
 		       		<field name="location" />
 		       		<field name="chasisNo" />
-		       		<field name="company" />
 	       		</panel>
 	       		<panel itemSpan="12">
 		       		<field name="vehicleOdometer" colSpan="8"/>

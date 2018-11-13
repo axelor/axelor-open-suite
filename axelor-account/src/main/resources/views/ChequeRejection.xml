@@ -23,7 +23,7 @@
 			<field name="dateTime" />
 			<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" widget="SuggestBox" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" />
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company member of self.companySet" />
 		</panel>
 		<panel name="rejectInformation" title="Reject Information">
 			<field name="rejectionDate" />
