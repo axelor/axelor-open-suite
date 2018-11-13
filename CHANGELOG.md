@@ -129,6 +129,7 @@
 - Fill analytic template on invoice line when we generate the invoice from a sale or purchase order or stock move linked to a sale or purchase order.
 - STOCK MOVE : filter on fromStockLocation
 - ManufOrder : Track the Manufacture Order.
+- STOCK MOVE : Report footer Modify
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
