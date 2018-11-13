@@ -625,10 +625,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         consumedQty =
             consumedQty.add(
                 Beans.get(UnitConversionService.class)
-                    .convertWithProduct(
+                    .convert(
                         stockMoveLine.getUnit(),
                         prodProduct.getUnit(),
                         stockMoveLine.getQty(),
+                        stockMoveLine.getQty().scale(),
                         product));
       } else {
         consumedQty = consumedQty.add(stockMoveLine.getQty());

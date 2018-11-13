@@ -120,8 +120,8 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       BigDecimal qty = saleOrderLine.getQty();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
       return productionOrderRepo.save(
           productionOrderServiceBusinessImpl.generateProductionOrder(

@@ -57,56 +57,19 @@ public class UnitConversionService {
   @Inject protected UnitConversionRepository unitConversionRepo;
 
   /**
-   * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et
-   * l'unité d'arrivée ne se trouvent pas dans la liste alors on inverse l'unité de départ avec
-   * l'unité d'arrivée. Si il n'y a toujours pas de résultat alors on déclenche une exception.
+   * Convert a value from a unit to another
    *
-   * @param unitConversionList La liste des unités de conversion.
-   * @param startUnit L'unité de départ.
-   * @param endUnit L'unité d'arrivée.
-   * @return Le coefficient de conversion.
-   * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+   * @param startUnit The starting unit
+   * @param endUnit The end unit
+   * @param value The value to convert
+   * @param scale The wanted scale of the result
+   * @param product Optionnal, a product used for complex conversions. Input null if needless.
+   * @return The converted value with the specified scale
+   * @throws AxelorException
    */
-  public BigDecimal getCoefficient(
-      List<? extends UnitConversion> unitConversionList, Unit startUnit, Unit endUnit)
+  public BigDecimal convert(
+      Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
-    BigDecimal coeff;
-    try {
-      coeff = getCoefficient(unitConversionList, startUnit, endUnit, null);
-    } catch (Exception e) {
-      throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
-    }
-    return coeff;
-  }
-
-  /**
-   * Convertir la valeur passée en paramètre en fonction des unités.
-   *
-   * @param startUnit L'unité de départ.
-   * @param endUnit L'unité d'arrivée.
-   * @param value La valeur à convertir.
-   * @return Le coefficient de conversion.
-   * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
-   */
-  public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value, int scale)
-      throws AxelorException {
-
-    if (startUnit == null || endUnit == null)
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
-
-    if (startUnit.equals(endUnit)) return value;
-    else {
-      BigDecimal coefficient =
-          this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit);
-
-      return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
-    }
-  }
-
-  public BigDecimal convertWithProduct(
-      Unit startUnit, Unit endUnit, BigDecimal value, Product product) throws AxelorException {
 
     if (startUnit == null || endUnit == null)
       throw new AxelorException(
@@ -119,9 +82,7 @@ public class UnitConversionService {
         BigDecimal coefficient =
             this.getCoefficient(unitConversionRepo.all().fetch(), startUnit, endUnit, product);
 
-        return value
-            .multiply(coefficient)
-            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
+        return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
       } catch (IOException | ClassNotFoundException e) {
         e.printStackTrace();
       }
@@ -129,6 +90,21 @@ public class UnitConversionService {
     return value;
   }
 
+  /**
+   * Get the conversion coefficient between two units from a conversion list. If the start unit and
+   * the end unit can not be found in the list, then the units are swapped. If there still isn't any
+   * result, an Exception is thrown.
+   *
+   * @param unitConversionList A list of conversions between units
+   * @param startUnit The start unit
+   * @param endUnit The end unit
+   * @param product Optionnal, a product used for complex conversions. INput null if needless.
+   * @return A conversion coefficient to convert from startUnit to endUnit.
+   * @throws AxelorException The required units are not found in the conversion list.
+   * @throws CompilationFailedException
+   * @throws ClassNotFoundException
+   * @throws IOException
+   */
   public BigDecimal getCoefficient(
       List<? extends UnitConversion> unitConversionList,
       Unit startUnit,

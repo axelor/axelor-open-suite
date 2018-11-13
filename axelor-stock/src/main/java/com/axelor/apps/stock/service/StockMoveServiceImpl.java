@@ -666,7 +666,11 @@ public class StockMoveServiceImpl implements StockMoveService {
         if (startUnit != null) {
           netWeight =
               unitConversionService.convert(
-                  startUnit, endUnit, product.getNetWeight(), product.getNetWeight().scale());
+                  startUnit,
+                  endUnit,
+                  product.getNetWeight(),
+                  product.getNetWeight().scale(),
+                  product);
           stockMoveLine.setNetWeight(netWeight);
         }
       }

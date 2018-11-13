@@ -153,7 +153,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     } else {
       qty =
           Beans.get(UnitConversionService.class)
-              .convertWithProduct(product.getUnit(), unit, qty, product);
+              .convert(product.getUnit(), unit, qty, qty.scale(), product);
     }
     purchaseOrder.addPurchaseOrderLineListItem(
         purchaseOrderLineService.createPurchaseOrderLine(

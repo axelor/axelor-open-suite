@@ -308,7 +308,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               hourUnit,
               product.getUnit(),
               product.getCostPrice(),
-              appProductionService.getNbDecimalDigitForUnitPrice());
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
 
     BigDecimal durationHours =
@@ -522,7 +523,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               hourUnit,
               product.getUnit(),
               product.getCostPrice(),
-              appProductionService.getNbDecimalDigitForUnitPrice());
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
     BigDecimal durationHours =
         new BigDecimal(realDuration)
