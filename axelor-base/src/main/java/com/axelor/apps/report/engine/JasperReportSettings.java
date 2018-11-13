@@ -8,6 +8,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.CaseFormat;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -22,12 +27,6 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.Exporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public class JasperReportSettings extends ReportSettings {
   private URL reportURL;
@@ -72,6 +71,7 @@ public class JasperReportSettings extends ReportSettings {
             exporter = new JRXlsxExporter();
             break;
           case FORMAT_DOCX:
+          case FORMAT_DOC:
             exporter = new JRDocxExporter();
             break;
           case FORMAT_ODS:
@@ -86,7 +86,7 @@ public class JasperReportSettings extends ReportSettings {
           default:
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "Unsupported export format: {}",
+                "Unsupported export format: %s",
                 format);
         }
 
