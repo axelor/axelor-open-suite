@@ -24,6 +24,8 @@
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
       	<field name="saleOrder"/>
+      	<field name="saleOrder.company"/>
+      	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
   		<field name="saleOrder.clientPartner"/>
   		<field name="saleOrder.inTaxTotal"/>
   		<field name="product.code"/>
@@ -247,8 +249,10 @@
 	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel name="main" >
-			<field name="saleOrder.clientPartner"></field>
+			<field name="saleOrder.clientPartner"/>
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
+			<field name="saleOrder.company"/>
+			<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
 		</panel>
 		<panel-include view="sale-order-line-form"/>
 	</form>	
