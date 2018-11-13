@@ -128,7 +128,8 @@
 - Fill analytic template on move line when we generate the accounting move from an invoice and use it as a key to consolidate the generated move lines.
 - Fill analytic template on invoice line when we generate the invoice from a sale or purchase order or stock move linked to a sale or purchase order.
 - STOCK MOVE : filter on fromStockLocation
-- STOCK MOVE : Report footer Modify 
+- ManufOrder : Track the Manufacture Order.
+- STOCK MOVE : Report footer Modify
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

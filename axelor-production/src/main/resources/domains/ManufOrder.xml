@@ -75,5 +75,15 @@
 		public static final int STATUS_FINISHED = 6;
 	]]></extra-code>
     
+    <track>
+	  <field name="qty" />
+	  <field name="prioritySelect" />
+	  <field name="plannedStartDateT" />
+	  <field name="plannedEndDateT" />
+	  <field name="clientPartner" />
+	  <field name="saleOrder" />
+	  <field name="statusSelect" />
+	</track>
+    
   </entity>
 </domain-models>
