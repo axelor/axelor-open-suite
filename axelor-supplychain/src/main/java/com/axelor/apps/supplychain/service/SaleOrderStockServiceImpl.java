@@ -115,7 +115,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       StockMove stockMove = createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
 
-      stockMoveList.add(stockMove.getId());
+      if (stockMove != null && stockMove.getId() != null) {
+
+        stockMoveList.add(stockMove.getId());
+      }
     }
 
     return stockMoveList;
