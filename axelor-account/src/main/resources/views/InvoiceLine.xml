@@ -95,7 +95,7 @@
 			<panel name="analyticDistribution" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesButton" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-attrs-account-invoice-line-onnew-onload"/>
 			</panel>
 			<panel name="configuration" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
@@ -168,7 +168,7 @@
 		<attribute name="readonly" for="informations" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="description" expr="eval: __parent__?.statusSelect &gt; 1"/>
 		<attribute name="readonly" for="projectPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
-		<attribute name="readonly" for="analyticDistribution" expr="eval: __parent__?.statusSelect &gt; 1"/>
+		<attribute name="readonly" for="analyticDistribution" expr="eval: __parent__?.statusSelect &gt; 2"/>
 		<attribute name="readonly" for="budgetPanel" expr="eval: __parent__?.statusSelect &gt; 1"/>
 
 		<attribute name="readonly" for="accounting" expr="eval: __parent__?.statusSelect &gt; 2"/>
@@ -328,6 +328,8 @@
 		<!-- Show Price Discounted -->
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !_parent?.inAti"/>
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; _parent?.inAti"/>
+		
+		<attribute name="required" for="analyticDistributionTemplate" expr="__config__.app.getApp('account').getAnalyticDistributionRequiredOnInvoiceLines() &amp;&amp; _parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
 		
 	</action-attrs>
 

@@ -134,6 +134,8 @@ public interface IExceptionMessage {
       "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/;
   static final String MOVE_LINE_6 = /*$$(*/
       "Account missing on the tax line : %s (company : %s)" /*)*/;
+  static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
+      "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
