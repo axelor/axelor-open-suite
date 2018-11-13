@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InventoryLineService {
 
@@ -40,8 +41,10 @@ public class InventoryLineService {
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
+    inventoryLine.setRealQty(BigDecimal.ONE);
     inventoryLine.setTrackingNumber(trackingNumber);
-
+    this.compute(inventoryLine, inventory);
+    
     return inventoryLine;
   }
 
@@ -61,6 +64,32 @@ public class InventoryLineService {
       } else {
         inventoryLine.setCurrentQty(null);
         inventoryLine.setRack(null);
+      }
+    }
+
+    return inventoryLine;
+  }
+
+  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory) {
+
+    StockLocation stockLocation = inventory.getStockLocation();
+    Product product = inventoryLine.getProduct();
+
+    if (product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class)
+              .getStockLocationLine(stockLocation, product);
+
+      BigDecimal gap =
+          inventoryLine
+              .getCurrentQty()
+              .subtract(inventoryLine.getRealQty())
+              .setScale(2, RoundingMode.HALF_EVEN);
+      inventoryLine.setGap(gap);
+
+      if (stockLocationLine != null) {
+        inventoryLine.setGapValue(
+            stockLocationLine.getAvgPrice().multiply(gap).setScale(2, RoundingMode.HALF_EVEN));
       }
     }
 

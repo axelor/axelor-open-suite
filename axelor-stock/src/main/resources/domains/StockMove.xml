@@ -76,6 +76,8 @@
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
+    
+    <string name="note" title="Notes" large="true"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
     

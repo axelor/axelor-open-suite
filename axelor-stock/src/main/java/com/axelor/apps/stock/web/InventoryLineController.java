@@ -43,4 +43,15 @@ public class InventoryLineController {
     response.setValue("rack", inventoryLine.getRack());
     response.setValue("currentQty", inventoryLine.getCurrentQty());
   }
+
+  public void compute(ActionRequest request, ActionResponse response) {
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+    Inventory inventory =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Inventory.class)
+            : inventoryLine.getInventory();
+    inventoryLine = inventoryLineService.compute(inventoryLine, inventory);
+    response.setValue("gap", inventoryLine.getGap());
+    response.setValue("gapValue", inventoryLine.getGapValue());
+  }
 }

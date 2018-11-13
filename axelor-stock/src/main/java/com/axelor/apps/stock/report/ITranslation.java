@@ -82,6 +82,10 @@ public interface ITranslation {
   public static final String STOCK_MOVE_GROSS_MASS = /*$$(*/ "StockMove.grossMass"; /*)*/
   public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
   public static final String STOCK_MOVE_ISPM = /*$$(*/ "StockMove.ispm"; /*)*/
+  public static final String STOCK_MOVE_CUSTOMER_PARTNER_SEQ = /*$$(*/
+      "StockMove.customerPartnerSeq"; /*)*/
+  public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
+      "StockMove.supplierPartnerSeq"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

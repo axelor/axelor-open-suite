@@ -152,8 +152,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -167,140 +166,7 @@ else row["last_modified_by"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">real_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">real_date</text-property>
-                    <text-property name="heading">real_date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type_select</text-property>
-                    <text-property name="heading">type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">stock_move_seq</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">stock_move_seq</text-property>
-                    <text-property name="heading">stock_move_seq</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">title_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">title_select</text-property>
-                    <text-property name="heading">title_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">name</text-property>
-                    <text-property name="heading">name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">first_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">first_name</text-property>
-                    <text-property name="heading">first_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner_type_select</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">partner_type_select</text-property>
-                    <text-property name="heading">partner_type_select</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">from_address_str</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">from_address_str</text-property>
-                    <text-property name="heading">from_address_str</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">to_address_str</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">to_address_str</text-property>
-                    <text-property name="heading">to_address_str</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">is_ispm_required</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">is_ispm_required</text-property>
-                    <text-property name="heading">is_ispm_required</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">countryName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">countryName</text-property>
-                    <text-property name="heading">countryName</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">pdf_header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <text-property name="heading">pdf_header</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">last_modified_by</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">last_modified_by</text-property>
-                    <text-property name="heading">last_modified_by</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">createdBy</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">createdBy</text-property>
-                    <text-property name="heading">createdBy</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">num_of_packages</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">num_of_packages</text-property>
-                    <text-property name="heading">num_of_packages</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">tracking_number</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">tracking_number</text-property>
-                    <text-property name="heading">tracking_number</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">num_of_palettes</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">num_of_palettes</text-property>
-                    <text-property name="heading">num_of_palettes</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">gross_mass</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">gross_mass</text-property>
-                    <text-property name="heading">gross_mass</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">to_stock_location</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">to_stock_location</text-property>
-                    <text-property name="heading">to_stock_location</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">origin</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">origin</text-property>
-                    <text-property name="heading">origin</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
@@ -352,71 +218,96 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">from_address_str</property>
+                        <property name="name">partner_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">to_address_str</property>
+                        <property name="name">from_address_str</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
+                        <property name="name">to_address_str</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">is_ispm_required</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">countryName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">pdf_header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
-                        <property name="name">last_modified_by</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
                         <property name="position">16</property>
-                        <property name="name">createdBy</property>
+                        <property name="name">pdf_footer</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">17</property>
-                        <property name="name">num_of_packages</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">last_modified_by</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">tracking_number</property>
+                        <property name="name">createdBy</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">num_of_palettes</property>
+                        <property name="name">num_of_packages</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
+                        <property name="name">tracking_number</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">num_of_palettes</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
                         <property name="name">gross_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">23</property>
                         <property name="name">to_stock_location</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">24</property>
                         <property name="name">origin</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">25</property>
+                        <property name="name">externalReference</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">display_partner_seq_on_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">note</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -430,154 +321,162 @@ else row["last_modified_by"]</expression>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">real_date</property>
                     <property name="nativeName">real_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">type_select</property>
                     <property name="nativeName">type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">from_address_str</property>
-                    <property name="nativeName">from_address_str</property>
+                    <property name="name">partner_seq</property>
+                    <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">to_address_str</property>
-                    <property name="nativeName">to_address_str</property>
+                    <property name="name">from_address_str</property>
+                    <property name="nativeName">from_address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">is_ispm_required</property>
-                    <property name="nativeName">is_ispm_required</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                    <property name="name">to_address_str</property>
+                    <property name="nativeName">to_address_str</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">countryName</property>
-                    <property name="nativeName">countryName</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">is_ispm_required</property>
+                    <property name="nativeName">is_ispm_required</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">pdf_header</property>
-                    <property name="nativeName">pdf_header</property>
+                    <property name="name">countryName</property>
+                    <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">last_modified_by</property>
-                    <property name="nativeName">last_modified_by</property>
+                    <property name="name">pdf_header</property>
+                    <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">createdBy</property>
-                    <property name="nativeName">createdBy</property>
+                    <property name="name">pdf_footer</property>
+                    <property name="nativeName">pdf_footer</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
-                    <property name="name">num_of_packages</property>
-                    <property name="nativeName">num_of_packages</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="name">last_modified_by</property>
+                    <property name="nativeName">last_modified_by</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">tracking_number</property>
-                    <property name="nativeName">tracking_number</property>
+                    <property name="name">createdBy</property>
+                    <property name="nativeName">createdBy</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
-                    <property name="name">num_of_palettes</property>
-                    <property name="nativeName">num_of_palettes</property>
+                    <property name="name">num_of_packages</property>
+                    <property name="nativeName">num_of_packages</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
-                    <property name="name">gross_mass</property>
-                    <property name="nativeName">gross_mass</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="name">tracking_number</property>
+                    <property name="nativeName">tracking_number</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">to_stock_location</property>
-                    <property name="nativeName">to_stock_location</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">num_of_palettes</property>
+                    <property name="nativeName">num_of_palettes</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
+                    <property name="name">gross_mass</property>
+                    <property name="nativeName">gross_mass</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">to_stock_location</property>
+                    <property name="nativeName">to_stock_location</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
                     <property name="name">origin</property>
                     <property name="nativeName">origin</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">externalReference</property>
+                    <property name="nativeName">externalReference</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">display_partner_seq_on_printing</property>
+                    <property name="nativeName">display_partner_seq_on_printing</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">note</property>
+                    <property name="nativeName">note</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -590,11 +489,13 @@ Partner.title_select,
 Partner.name, 
 Partner.first_name, 
 Partner.partner_type_select,
+Partner.partner_seq,
 StockMove.from_address_str, 
 StockMove.to_address_str, 
 StockMove.is_ispm_required,
 Country.name as "countryName", 
 PrintingSetting.pdf_header,
+PrintingSetting.pdf_footer,
 AuthUser.full_name as last_modified_by,
 AuthUserCreate.full_name as "createdBy",
 StockMove.num_of_packages,
@@ -611,9 +512,13 @@ CASE
 	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.external_reference
 	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.external_reference
 END
-as "externalReference"
+as "externalReference",
+StockConfig.display_partner_seq_on_printing,
+StockMove.note
+
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
+left outer join stock_stock_config as StockConfig on (StockConfig.company = Company.id) 
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as Partner on (StockMove.partner = Partner.id)
 left outer join base_address as DeliveryAddress on (StockMove.to_address = DeliveryAddress.id)
@@ -1183,7 +1088,286 @@ order by StockMoveLine.sequence]]></xml-property>
             <property name="leftMargin">0.3958333333333333in</property>
             <property name="rightMargin">0.15625in</property>
             <property name="headerHeight">0in</property>
-            <property name="footerHeight">0.2in</property>
+            <property name="footerHeight">2.4cm</property>
+            <page-footer>
+                <grid id="4529">
+                    <property name="fontSize">10pt</property>
+                    <property name="height">1.825625cm</property>
+                    <property name="width">19.261666666666667cm</property>
+                    <property name="dataSet">StockMoveDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">id</property>
+                            <text-property name="displayName">id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">real_date</property>
+                            <text-property name="displayName">real_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["real_date"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type_select</property>
+                            <text-property name="displayName">type_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">stock_move_seq</property>
+                            <text-property name="displayName">stock_move_seq</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["stock_move_seq"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">title_select</property>
+                            <text-property name="displayName">title_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">name</property>
+                            <text-property name="displayName">name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">first_name</property>
+                            <text-property name="displayName">first_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">partner_type_select</property>
+                            <text-property name="displayName">partner_type_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">partner_seq</property>
+                            <text-property name="displayName">partner_seq</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">from_address_str</property>
+                            <text-property name="displayName">from_address_str</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["from_address_str"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">to_address_str</property>
+                            <text-property name="displayName">to_address_str</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["to_address_str"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">is_ispm_required</property>
+                            <text-property name="displayName">is_ispm_required</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["is_ispm_required"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">countryName</property>
+                            <text-property name="displayName">countryName</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["countryName"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">pdf_header</property>
+                            <text-property name="displayName">pdf_header</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">pdf_footer</property>
+                            <text-property name="displayName">pdf_footer</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["pdf_footer"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">last_modified_by</property>
+                            <text-property name="displayName">last_modified_by</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["last_modified_by"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">createdBy</property>
+                            <text-property name="displayName">createdBy</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["createdBy"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">num_of_packages</property>
+                            <text-property name="displayName">num_of_packages</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["num_of_packages"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">tracking_number</property>
+                            <text-property name="displayName">tracking_number</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["tracking_number"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">num_of_palettes</property>
+                            <text-property name="displayName">num_of_palettes</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["num_of_palettes"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">gross_mass</property>
+                            <text-property name="displayName">gross_mass</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["gross_mass"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">to_stock_location</property>
+                            <text-property name="displayName">to_stock_location</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["to_stock_location"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">origin</property>
+                            <text-property name="displayName">origin</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["origin"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">externalReference</property>
+                            <text-property name="displayName">externalReference</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["externalReference"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">display_partner_seq_on_printing</property>
+                            <text-property name="displayName">display_partner_seq_on_printing</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["display_partner_seq_on_printing"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">note</property>
+                            <text-property name="displayName">note</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["note"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">user_name</property>
+                            <text-property name="displayName">user_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
+                    <column id="3693"/>
+                    <column id="3816">
+                        <property name="textAlign">right</property>
+                        <property name="width">0.4166666666666667in</property>
+                    </column>
+                    <column id="3714">
+                        <property name="textAlign">right</property>
+                        <property name="width">3.4395833333333337cm</property>
+                    </column>
+                    <row id="3695">
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="height">0.5027083333333333cm</property>
+                        <cell id="3696">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <text id="3729">
+                                <property name="fontSize">xx-small</property>
+                                <property name="textAlign">left</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="html">row["pdf_footer"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3815">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="verticalAlign">top</property>
+                            <text id="3817">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">auto</property>
+                                <text-property name="content"><![CDATA[Page]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3713">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="verticalAlign">top</property>
+                            <grid id="4530">
+                                <property name="height">1.7197916666666668cm</property>
+                                <column id="4531"/>
+                                <column id="4532"/>
+                                <column id="4533"/>
+                                <row id="4534">
+                                    <property name="height">0.6085416666666666cm</property>
+                                    <cell id="3809">
+                                        <auto-text id="4535">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="type">page-number</property>
+                                        </auto-text>
+                                    </cell>
+                                    <cell id="4536">
+                                        <text id="3812">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">plain</property>
+                                            <text-property name="content"><![CDATA[/]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3813">
+                                        <auto-text id="3814">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="type">total-page</property>
+                                        </auto-text>
+                                    </cell>
+                                </row>
+                                <row id="5229">
+                                    <cell id="5230">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
@@ -1337,6 +1521,18 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">partner_seq</property>
+                    <text-property name="displayName">partner_seq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">display_partner_seq_on_printing</property>
+                    <text-property name="displayName">display_partner_seq_on_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_partner_seq_on_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1410,15 +1606,20 @@ order by StockMoveLine.sequence]]></xml-property>
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
-                                    <property name="borderBottomStyle">none</property>
-                                    <property name="borderLeftStyle">none</property>
-                                    <property name="borderRightStyle">none</property>
-                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
                                     <text id="3423">
                                         <property name="backgroundColor">#FFFFFF</property>
+                                        <property name="fontSize">11pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
-                                        <property name="marginLeft">5pt</property>
+                                        <property name="marginLeft">0pt</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1499,16 +1700,24 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <cell id="3371">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">2</property>
-                                    <property name="borderBottomStyle">none</property>
-                                    <property name="borderLeftStyle">none</property>
-                                    <property name="borderRightStyle">none</property>
-                                    <property name="borderTopStyle">none</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
                                     <grid id="3650">
-                                        <column id="3651"/>
+                                        <column id="3651">
+                                            <property name="textAlign">left</property>
+                                        </column>
                                         <row id="3652">
+                                            <property name="textAlign">left</property>
                                             <cell id="3653">
                                                 <text id="3425">
-                                                    <property name="marginLeft">2pt</property>
+                                                    <property name="marginLeft">0pt</property>
+                                                    <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
@@ -1540,9 +1749,11 @@ order by StockMoveLine.sequence]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="3654">
+                                            <property name="textAlign">left</property>
                                             <cell id="3655">
                                                 <text id="3646">
-                                                    <property name="marginLeft">2pt</property>
+                                                    <property name="marginLeft">0pt</property>
+                                                    <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -1586,9 +1797,11 @@ order by StockMoveLine.sequence]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="4521">
+                                            <property name="textAlign">left</property>
                                             <cell id="4522">
                                                 <text id="4523">
-                                                    <property name="marginLeft">2pt</property>
+                                                    <property name="marginLeft">0pt</property>
+                                                    <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -1632,22 +1845,27 @@ order by StockMoveLine.sequence]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="3656">
+                                            <property name="textAlign">left</property>
                                             <cell id="3657">
-                                                <text id="3693">
-                                                    <property name="marginLeft">2pt</property>
+                                                <text id="4524">
+                                                    <property name="marginLeft">0pt</property>
+                                                    <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">!row._outer["display_partner_seq_on_printing"] || row._outer["partner_seq"] == null</expression>
+                                                        </structure>
+                                                    </list-property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">if(row["type_select"] == "1"){
-																	'StockMove.movePreparedBy'
-																	}else if(row["type_select"] == "2"){
-																	'StockMove.stockPreparedBy'
-																	}else if(row["type_select"] == "3"){
-																	'StockMove.receivedBy'
-																	}
-																</value>
+                                                                <value type="javascript">if(row["type_select"] == "2"){
+	'StockMove.customerPartnerSeq'
+}else if(row["type_select"] == "3"){
+	'StockMove.supplierPartnerSeq'
+}</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1668,7 +1886,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["user_name"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["partner_seq"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1864,39 +2082,6 @@ row["first_name"]
                                     <label id="3644">
                                         <property name="fontSize">1pt</property>
                                     </label>
-                                    <text id="3803">
-                                        <property name="fontWeight">normal</property>
-                                        <property name="textUnderline">underline</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'StockMove.deliveryDetails'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                    </text>
-                                    <label id="3823">
-                                        <property name="fontSize">1pt</property>
-                                    </label>
                                 </cell>
                             </row>
                             <row id="3377">
@@ -2053,16 +2238,12 @@ row["first_name"]
                                     <property name="height">0.7672916666666666cm</property>
                                     <cell id="3429">
                                         <property name="backgroundColor">#FFFFFF</property>
-                                        <property name="borderBottomColor">#606062</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">#606062</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#606062</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#606062</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="3452">
@@ -2102,16 +2283,16 @@ row["first_name"]
                                     </cell>
                                     <cell id="3430">
                                         <property name="backgroundColor">#FFFFFF</property>
-                                        <property name="borderBottomColor">#606062</property>
+                                        <property name="borderBottomColor">#000000</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">#606062</property>
+                                        <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#606062</property>
+                                        <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#606062</property>
+                                        <property name="borderTopColor">#000000</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="3453">
@@ -2153,16 +2334,12 @@ row["first_name"]
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
                                         <property name="backgroundColor">#FFFFFF</property>
-                                        <property name="borderBottomColor">#606062</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">#606062</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#606062</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#606062</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="3455">
@@ -2204,16 +2381,12 @@ row["first_name"]
                                         <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
                                         <property name="backgroundColor">#FFFFFF</property>
-                                        <property name="borderBottomColor">#606062</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">#606062</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">#606062</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">#606062</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="3456">
@@ -2268,16 +2441,12 @@ row["first_name"]
                                     <row id="3806">
                                         <property name="height">0.6879166666666666cm</property>
                                         <cell id="3807">
-                                            <property name="borderBottomColor">#606062</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
-                                            <property name="borderLeftColor">#606062</property>
                                             <property name="borderLeftStyle">solid</property>
                                             <property name="borderLeftWidth">thin</property>
-                                            <property name="borderRightColor">#606062</property>
                                             <property name="borderRightStyle">solid</property>
                                             <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopColor">#606062</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <text id="3821">
@@ -2299,16 +2468,12 @@ row["first_name"]
                                             </data>
                                         </cell>
                                         <cell id="3808">
-                                            <property name="borderBottomColor">#606062</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
-                                            <property name="borderLeftColor">#606062</property>
                                             <property name="borderLeftStyle">solid</property>
                                             <property name="borderLeftWidth">thin</property>
-                                            <property name="borderRightColor">#606062</property>
                                             <property name="borderRightStyle">solid</property>
                                             <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopColor">#606062</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <text id="3457">
@@ -2334,13 +2499,10 @@ row["first_name"]
                                             </text>
                                         </cell>
                                         <cell id="3810">
-                                            <property name="borderBottomColor">#606062</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
-                                            <property name="borderLeftColor">#606062</property>
                                             <property name="borderLeftStyle">solid</property>
                                             <property name="borderLeftWidth">thin</property>
-                                            <property name="borderTopColor">#606062</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <text id="4120">
@@ -2366,13 +2528,10 @@ row["qty"]
                                             </text>
                                         </cell>
                                         <cell id="3825">
-                                            <property name="borderBottomColor">#606062</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
-                                            <property name="borderRightColor">#606062</property>
                                             <property name="borderRightStyle">solid</property>
                                             <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopColor">#606062</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <property name="textAlign">left</property>
@@ -2400,16 +2559,12 @@ row["unit_code"]
                                             </text>
                                         </cell>
                                         <cell id="3811">
-                                            <property name="borderBottomColor">#606062</property>
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
-                                            <property name="borderLeftColor">#606062</property>
                                             <property name="borderLeftStyle">solid</property>
                                             <property name="borderLeftWidth">thin</property>
-                                            <property name="borderRightColor">#606062</property>
                                             <property name="borderRightStyle">solid</property>
                                             <property name="borderRightWidth">thin</property>
-                                            <property name="borderTopColor">#606062</property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <text id="3460">
@@ -2438,6 +2593,16 @@ row["TrackingNoList"]
                                 </header>
                             </group>
                         </table>
+                    </cell>
+                </row>
+                <row id="4525">
+                    <property name="pageBreakAfter">always</property>
+                    <cell id="4526">
+                        <text id="4528">
+                            <property name="marginTop">10pt</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["note"] != null) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </detail>

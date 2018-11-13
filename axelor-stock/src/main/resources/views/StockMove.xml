@@ -283,7 +283,9 @@
                 <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
               </panel>
             </panel>
-
+            <panel title="Note" colSpan="12">
+        		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
+            </panel>
             <panel title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
                 <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                 <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
@@ -414,6 +416,7 @@
 	<action-group name="action-stock-move-group-from-location-onchange">
 		<action name="action-stock-move-set-from-address"/>
 		<action name="action-stock-move-method-set-addresses-str"/>
+		<action name="action-stock-move-hide-reserved-qty"/>
 	</action-group>
 
 	<action-group name="action-stock-move-group-partner-onchange">
@@ -449,6 +452,7 @@
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute name="hidden" for="stockMoveLineList.filterOnAvailableProducts" expr="eval: fromStockLocation.typeSelect == 3"/>
 	</action-attrs>
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
