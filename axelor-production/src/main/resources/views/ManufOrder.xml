@@ -189,6 +189,12 @@
 				<field name="note" colSpan="12" showTitle="false"/>
 			</panel> 
 		</panel-tabs>
+		
+		<panel-mail>
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
+		
 	</form>
 	
 	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
