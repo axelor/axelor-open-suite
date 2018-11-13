@@ -127,6 +127,9 @@
 - Manage origin date on supplier invoice. This date is used for compute due date and is used in account move line to fill the origin date.
 - Fill analytic template on move line when we generate the accounting move from an invoice and use it as a key to consolidate the generated move lines.
 - Fill analytic template on invoice line when we generate the invoice from a sale or purchase order or stock move linked to a sale or purchase order.
+- STOCK MOVE : filter on fromStockLocation
+- ManufOrder : Track the Manufacture Order.
+- STOCK MOVE : Report footer Modify
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -204,6 +207,7 @@
 - Improve Stock move report : add note and partner seq
 - Add an option to automatically confirm the bank orders generated from an invoice payment
 - Use supplier invoice number instead of invoiceId on bank order automatically generated from an invoice payment on supplier invoice.
+- Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
