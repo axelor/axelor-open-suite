@@ -221,7 +221,7 @@
                 </panel>
 			</panel>
 		</panel>
-		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-contact-form" grid-view="partner-contact-grid" />
 		<panel-tabs>
 			<panel name="information" title="Information">
 				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
@@ -273,7 +273,7 @@
 						<field name="registrationCode" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 						<field name="taxNbr" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
-						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
+						<field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" colSpan="6" form-view="partner-form"  grid-view="partner-grid"/>
 						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 					</panel>
 				</panel>
@@ -373,7 +373,7 @@
 				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
 				<field name="isContact" hideIf="partnerTypeSelect != 2"/>
 				<spacer/>
-				<field name="mainPartner" hideIf="!isContact" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="mainPartner" hideIf="!isContact" form-view="partner-form" grid-view="partner-grid" domain="self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"/>
 			</panel>
 		</panel>
 		<panel-tabs>
@@ -454,7 +454,7 @@
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				<panel name="company" title="Company" colSpan="12" >
-					<field name="mainPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+					<field name="mainPartner" domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<field name="isContact" hidden="true" colSpan="12"/>
 			</panel>
@@ -626,7 +626,7 @@
 				<field name="firstName" showTitle="false" css="highlight" placeholder="First name"  onChange="action-group-base-partner-contact-name-onchange" colSpan="5" />
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				<panel name="company" title="Company" colSpan="12" >
-					<field name="mainPartner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+					<field name="mainPartner" domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<field name="isContact" hidden="true" colSpan="12"/>
 				<field name="isEmployee" readonly="true" colSpan="12"/>

@@ -618,7 +618,7 @@
 	<action-attrs name="action-attrs-po-domain-on-contact-partner">
 		<attribute for="contactPartner" if="supplierPartner != null &amp;&amp; !supplierPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
  		<attribute for="contactPartner" if="supplierPartner != null &amp;&amp; supplierPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
- 		<attribute for="contactPartner" if="supplierPartner == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+ 		<attribute for="contactPartner" if="supplierPartner == null" name="domain" expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-po-hidden-bank-details">

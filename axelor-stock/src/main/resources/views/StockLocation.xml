@@ -43,7 +43,7 @@
 			<field name="typeSelect" colSpan="3"/>
 			<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
 			<field name="$stockLocationValue" title="Stock location value" readonly="true">
 			<viewer>

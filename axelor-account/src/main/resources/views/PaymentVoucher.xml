@@ -57,7 +57,7 @@
 		</panel>
 		
 		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" domain=":company member of self.companySet" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
 			<field name="companyBankDetails" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
 
@@ -271,8 +271,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-payment-voucher-set-partner-domain">
-		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isSupplier = true'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isSupplier = true AND :company member of self.companySet'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.isCustomer = true AND :company member of self.companySet'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 	</action-attrs>
 
 	<action-method name="action-payment-voucher-method-fill-bank-details">

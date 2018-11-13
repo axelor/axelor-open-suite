@@ -116,7 +116,7 @@
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true"/>
-			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
+			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-atts-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
 			<field name="isConsProOnOperation" />
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />

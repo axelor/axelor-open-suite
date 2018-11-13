@@ -131,6 +131,7 @@
 - ManufOrder : Track the Manufacture Order.
 - STOCK MOVE : Report footer Modify
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
+- Partner : Add filter on partner depending on company.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
