@@ -284,6 +284,7 @@
 - ACCOUNT : compute balance - id to load is required for loading
 - Reset Bank order sender informations (date, reference, label, signatory user) when we merge some bank orders.
 - Fixed issue on stock move printing when the same product and same tracking number is used in some lines. Now, we have removed the aggregation.
+- Fixed issue with computation of undelivered qty on sale order lines.
 
 ## [Unreleased 5.0.7]
 ## Features
