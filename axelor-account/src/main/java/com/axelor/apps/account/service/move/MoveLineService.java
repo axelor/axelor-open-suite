@@ -859,11 +859,11 @@ public class MoveLineService {
 
       Move move = moveLine.getMove();
 
-      if (move.getCompany() == null || move.getPartner() == null) {
+      if (move.getCompany() == null || moveLine.getPartner() == null) {
         continue;
       }
 
-      Pair<Company, Partner> key = Pair.of(move.getCompany(), move.getPartner());
+      Pair<Company, Partner> key = Pair.of(move.getCompany(), moveLine.getPartner());
 
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(key);
 

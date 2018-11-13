@@ -18,43 +18,29 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataBackup;
-import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.service.app.DataBackupService;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 
 public class DataBackupController {
 
   @Inject DataBackupService dataBackupService;
 
-  @Inject private MetaFiles metaFiles;
-
   public void CreateBackUp(ActionRequest req, ActionResponse res) throws IOException {
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
-    File zipFile = dataBackupService.createBackUp(dataBackup.getFetchLimit());
-    MetaFile backupFile = metaFiles.upload(zipFile);
-    res.setValue("backupMetaFile", backupFile);
-    res.setValue("statusSelect", DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
+    dataBackupService.createBackUp(dataBackup);
+    res.setReload(true);
   }
 
   public void RestoreBackUp(ActionRequest req, ActionResponse res) throws IOException {
+    DataBackup dataBackup = req.getContext().asType(DataBackup.class);
     if (dataBackupService.SeuencesExist()) {
       res.setError("Remove all Sequences And MrpLineTypes to restore backup");
     } else {
-      DataBackup obj = req.getContext().asType(DataBackup.class);
-      File logFile = dataBackupService.restoreBackUp(obj.getBackupMetaFile());
-      if (logFile != null) {
-        res.setValue("statusSelect", DataBackupRepository.DATA_BACKUP_STATUS_RESTORE);
-        MetaFile logMetaFile = metaFiles.upload(logFile);
-        res.setValue("logMetaFile", logMetaFile);
-      } else {
-        res.setValue("statusSelect", DataBackupRepository.DATA_BACKUP_STATUS_RESTORE_ERROR);
-      }
+      dataBackupService.restoreBackUp(dataBackup);
     }
+    res.setReload(true);
   }
 }

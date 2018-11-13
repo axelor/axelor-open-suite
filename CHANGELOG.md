@@ -8,6 +8,7 @@
 - Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 - JOURNAL : Enable massUpdate feature
 - SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+- Purchase Order Line : Removed field 'salePrice', 'saleMinPrice' and hilite done on it in  grid-view
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -34,6 +35,7 @@
 - StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
+- Databackup : Include thread in backup & restore task.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -88,7 +90,14 @@ When we update an existing move in daybook mode, we update the partner balances 
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
 - Fixed occasionnal scale rounding anomalies on unit conversions.
-
+- Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
+- Base : fix Null Pointer error.
+- Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
+- Account reconcile : use moveLine partner instead of move partner for mass lettering run from move line list on selected move lines.
+- Account move reverse : use today date
+- Fix NPE on opening sale order line form.
+- ACCOUNTCONFIG : factor partner define form view and grid view
+- INVOICEPAYMENT : company bank details filter
 
 ## [5.0.6] - 2018-10-06
 ## Features

@@ -71,17 +71,20 @@ public class BankStatementCreateService {
       name += bankStatement.getBankStatementFileFormat().getName();
     }
 
-    if (bankStatement.getFromDate() != null) {
-      if (name != "") {
-        name += "-";
+    try {
+      if (bankStatement.getFromDate() != null) {
+        if (name != "") {
+          name += "-";
+        }
+        name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
       }
-      name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
-    }
-    if (bankStatement.getToDate() != null) {
-      if (name != "") {
-        name += "-";
+      if (bankStatement.getToDate() != null) {
+        if (name != "") {
+          name += "-";
+        }
+        name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
       }
-      name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("YYYY/MM/DD"));
+    } catch (Exception e) {
     }
 
     return name;
