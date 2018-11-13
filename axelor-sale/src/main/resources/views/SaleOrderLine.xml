@@ -19,6 +19,7 @@
 		<field name="inTaxPrice" x-scale="2"/>
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="estimatedDelivDate"/>
 	</grid>
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -33,6 +34,7 @@
 		<field name="inTaxPrice" x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
+   		<field name="estimatedDelivDate"/>
 	</grid>
     
     <grid name="sale-order-line-invoice-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">

@@ -289,7 +289,8 @@
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <panel-dashlet title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-view-show-stock-move-line"/>
+	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
+	      <panel-dashlet title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	    </panel>
 	    <panel-dashlet if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="production" title="Production" colSpan="12">
@@ -1095,11 +1096,19 @@
 
 	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-sale-order-grid"/>
-		<view type="form" name="stock-move-line-form"/>
+		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__.id"/>
 	</action-view>
-
+	
+	<action-view name="action-sale-order-view-stock-moves" title="Stock moves" model="com.axelor.apps.stock.db.StockMove">
+  		<view type="grid" name="stock-move-out-availability-req-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = :saleOrder</domain>
+		<context name="saleOrder" expr="eval: __self__.id"/>
+  	</action-view>
+    
+    
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
 		<view type="form" name="sale-order-line-form"/>
