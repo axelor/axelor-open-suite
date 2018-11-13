@@ -392,6 +392,18 @@ public class MoveLineService {
             "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
             new Object[] {account.getName(), companyExTaxTotal});
 
+        if (appAccountService.getAppAccount().getAnalyticDistributionRequiredOnInvoiceLines()
+            && invoiceLine.getAnalyticDistributionTemplate() == null
+            && invoiceLine.getAnalyticMoveLineList().isEmpty()
+            && account.getAnalyticDistributionRequiredOnInvoiceLines()) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
+              invoiceLine.getName(),
+              company.getName());
+        }
+
         MoveLine moveLine =
             this.createMoveLine(
                 move,

@@ -40,8 +40,8 @@
     <grid name="wizard-custom-grid" title="MoveLines content data input" model="com.axelor.apps.base.db.Wizard">
    		<field name="date" type="date" required="true" title="Date" onChange="action-move-template-wizard-check-value"/>
    		<field name="moveBalance" type="decimal" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value" />
-   		<field name="debitPartner" target-name="fullName" title="Partner to Debit"   type="many-to-one" domain="self.isContact = false"  target="com.axelor.apps.base.db.Partner"/>
- 		<field name="creditPartner" target-name="fullName" title="Partner to Credit" type="many-to-one" domain="self.isContact = false" target="com.axelor.apps.base.db.Partner"/>
+   		<field name="debitPartner" target-name="fullName" title="Partner to Debit" type="many-to-one" onSelect="action-account-attrs-move-template-partner-domain" target="com.axelor.apps.base.db.Partner"/>
+ 		<field name="creditPartner" target-name="fullName" title="Partner to Credit" type="many-to-one" onSelect="action-account-attrs-move-template-partner-domain" target="com.axelor.apps.base.db.Partner"/>
    	</grid>
    	
 	<form name="wizard-custom-form" title="MoveLine content data input" model="com.axelor.apps.base.db.Wizard" 
@@ -49,8 +49,8 @@
 		<panel name="main" >
 	 		<field name="date" type="date" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
 	 		<field name="moveBalance" type="decimal" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />
-	 		<field name="debitPartner" target-name="fullName" title="Partner to Debit"   type="many-to-one" domain="self.isContact = false" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 2" target="com.axelor.apps.base.db.Partner"/>
-			<field name="creditPartner" target-name="fullName"  title="Partner to Credit" type="many-to-one" domain="self.isContact = false"  readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 1" target="com.axelor.apps.base.db.Partner"/>
+	 		<field name="debitPartner" target-name="fullName" title="Partner to Debit" onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 2" target="com.axelor.apps.base.db.Partner"/>
+			<field name="creditPartner" target-name="fullName"  title="Partner to Credit" onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 1" target="com.axelor.apps.base.db.Partner"/>
 			<field name="moveTemplate" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
 			<field name="partnerInputSelect" type="integer" hidden="true" />
 		</panel>
@@ -97,6 +97,10 @@
     <action-attrs name="action-move-template-line-set-account-domain">
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
+    </action-attrs>
+    
+    <action-attrs name="action-account-attrs-move-template-partner-domain">
+    	<attribute name="domain" for="debitPartner,creditPartner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;"/>
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">

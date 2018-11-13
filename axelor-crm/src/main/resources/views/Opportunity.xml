@@ -139,7 +139,7 @@
 				<field name="lostReason" readonly="true" showIf="lostReason != null"/>
 			</panel>
 			<panel name="reference" title="Reference" canCollapse="true">
-				<field name="partner" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="partner" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 				<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
 			</panel>
 			<panel name="postit" title="Memo" canCollapse="true">

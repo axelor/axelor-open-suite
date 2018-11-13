@@ -154,7 +154,7 @@
 				</panel>
 			</panel>
 			<panel name="receivablesRecovery" title="Receivables recovery" >
-                <field name="factorPartner" domain="self.isFactor = TRUE" if="__config__.app.getApp('account')?.manageFactors" />
+                <field name="factorPartner" domain="self.isFactor = TRUE AND :company member of self.companySet" if="__config__.app.getApp('account')?.manageFactors" />
 				<field name="mailTransitTime"/>
 				<field name="debtRecoveryConfigLineList" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form"/>
 			</panel>

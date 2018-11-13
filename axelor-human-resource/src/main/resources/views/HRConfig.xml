@@ -72,7 +72,7 @@
 		  		<field name="lunchVoucherEmployersShare"/>
 		  		<field name="minStockLunchVoucher"/>
 		  		<field name="availableStockLunchVoucher"/>
-		  		<field name="supplierLunchVoucher" domain="self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+		  		<field name="supplierLunchVoucher" domain="self.isSupplier = true AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 		  		<field name="lunchVoucherFormatSelect"/>
 		  	</panel>
 		  	<panel title="Exports" >

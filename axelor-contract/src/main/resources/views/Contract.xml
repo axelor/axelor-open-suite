@@ -38,7 +38,7 @@
                     ]]></viewer>
                 </field>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
-                <field name="partner" colSpan="4" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
+                <field name="partner" colSpan="4" domain=":company member of self.companySet" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
                 <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
@@ -251,9 +251,9 @@
     </action-record>
 
     <action-attrs name="action-attrs-contract-partner-domain">
-        <attribute for="partner" name="domain" expr="eval: &quot;self IS NULL&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE&quot;" if="targetTypeSelect == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE&quot;" if="targetTypeSelect == 2"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self IS NULL AND :company member of self.companySet&quot;"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer IS TRUE AND :company member of self.companySet&quot;" if="targetTypeSelect == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier IS TRUE AND :company member of self.companySet&quot;" if="targetTypeSelect == 2"/>
     </action-attrs>
 
     <action-method name="action-contract-method-copy-from-template">
@@ -335,8 +335,8 @@
 
     <action-attrs name="action-contract-attrs-domains-template">
         <attribute for="$contractTemplate" name="domain" expr="eval: &quot;self.targetTypeSelect = ${targetTypeSelect}&quot;"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true&quot;" if="targetTypeSelect == 1"/>
-        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true&quot;" if="targetTypeSelect == 2"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isCustomer = true AND :company member of self.companySet&quot;" if="targetTypeSelect == 1"/>
+        <attribute for="partner" name="domain" expr="eval: &quot;self.isSupplier = true AND :company member of self.companySet&quot;" if="targetTypeSelect == 2"/>
     </action-attrs>
 
     <action-method name="action-contract-method-terminated">

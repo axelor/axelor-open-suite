@@ -2472,7 +2472,7 @@ row["first_name"]
                                 <property name="groupName">ProductGroup</property>
                                 <expression name="keyExpr" type="javascript">row["product_name"]</expression>
                                 <structure name="toc">
-                                    <expression name="expressionValue" type="javascript">row["product_name"]</expression>
+                                    <expression name="expressionValue" type="javascript">row["product_code"]</expression>
                                 </structure>
                                 <property name="hideDetail">false</property>
                                 <list-property name="sort">

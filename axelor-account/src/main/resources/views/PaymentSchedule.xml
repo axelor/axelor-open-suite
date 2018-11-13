@@ -29,12 +29,12 @@
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
 			<panel colSpan="12">
-				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner" domain="self.isContact = false" />
-				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" onChange="action-payment-schedule-method-fill-company-bank-details" />
-			</panel>
-			<panel colSpan="12">
 				<field name="company" canEdit="false" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 				<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-company-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" />
+			</panel>
+			<panel colSpan="12">
+				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner" domain="self.isContact = false AND :company member of self.companySet" />
+				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" onChange="action-payment-schedule-method-fill-company-bank-details" />
 			</panel>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-method-fill-company-bank-details"/>
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
