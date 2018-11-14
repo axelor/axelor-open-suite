@@ -133,6 +133,7 @@
 - SALEORDER : Generate stock move per estimated delivery date 
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
 - Partner : Add filter on partner depending on company.
+- STOCK MOVE : Report mass printing
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
