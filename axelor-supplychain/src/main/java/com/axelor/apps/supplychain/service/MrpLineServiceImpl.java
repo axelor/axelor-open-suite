@@ -50,12 +50,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MrpLineServiceImpl implements MrpLineService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
   protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
@@ -198,6 +203,17 @@ public class MrpLineServiceImpl implements MrpLineService {
     this.updatePartner(mrpLine, model);
 
     this.createMrpLineOrigins(mrpLine, model);
+
+    log.debug(
+        "Create mrp line for the product {}, level {}, mrpLineType {}, qty {}, maturity date {}, cumulative qty {}, stock location {}, related to {}",
+        product.getCode(),
+        maxLevel,
+        mrpLineType.getCode(),
+        qty,
+        maturityDate,
+        cumulativeQty,
+        stockLocation.getName(),
+        mrpLine.getRelatedToSelectName());
 
     return mrpLine;
   }

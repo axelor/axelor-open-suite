@@ -290,6 +290,10 @@
 - Fixed issue on stock move printing when the same product and same tracking number is used in some lines. Now, we have removed the aggregation.
 - Fixed issue with computation of undelivered qty on sale order lines.
 - Added domain on company for saleOrderLineSet on MRP form
+- MRP : Loop appears when we have a purchase proposal whith a supplier delivery duration that generate a propsal in the past, so excludes for new computation.
+Now, In this case, we use the today date.
+- MRP : When we select manually a sale order in filter, that doesn't have a stock location defined, we get a NPE.
+So, now, we check if the saleOrder.stockLocation is the same stock location or one of sub stock location of the MRP stock location.
 
 ## [Unreleased 5.0.7]
 ## Features

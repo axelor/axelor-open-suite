@@ -98,6 +98,7 @@ public class MrpServiceImpl implements MrpService {
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Mrp mrp;
+  protected LocalDate today;
 
   @Inject
   public MrpServiceImpl(
@@ -150,6 +151,8 @@ public class MrpServiceImpl implements MrpService {
     // TODO check that all types exist + override the method on production module
 
     mrp.clearMrpLineList();
+
+    today = appBaseService.getTodayDate();
 
     mrpRepository.save(mrp);
   }
@@ -367,6 +370,10 @@ public class MrpServiceImpl implements MrpService {
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
+    }
+
+    if (maturityDate.isBefore(today)) {
+      maturityDate = today;
     }
 
     MrpLine mrpLine =
@@ -612,6 +619,10 @@ public class MrpServiceImpl implements MrpService {
 
       SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
+      if (!this.stockLocationList.contains(saleOrder.getStockLocation())) {
+        continue;
+      }
+
       LocalDate maturityDate = saleOrderLine.getEstimatedDelivDate();
 
       if (maturityDate == null) {
@@ -659,7 +670,6 @@ public class MrpServiceImpl implements MrpService {
 
     if (mrp.getMrpForecastSet().isEmpty()) {
 
-      LocalDate today = appBaseService.getTodayDate();
       mrpForecastList.addAll(
           mrpForecastRepository
               .all()
@@ -706,7 +716,7 @@ public class MrpServiceImpl implements MrpService {
   public boolean isBeforeEndDate(LocalDate maturityDate) {
 
     if (maturityDate != null
-        && !maturityDate.isBefore(appBaseService.getTodayDate())
+        && !maturityDate.isBefore(today)
         && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()))) {
 
       return true;
@@ -744,13 +754,7 @@ public class MrpServiceImpl implements MrpService {
     }
 
     return this.createMrpLine(
-        product,
-        availableStockMrpLineType,
-        qty,
-        appBaseService.getTodayDate(),
-        qty,
-        stockLocation,
-        null);
+        product, availableStockMrpLineType, qty, today, qty, stockLocation, null);
   }
 
   protected MrpLineType getMrpLineType(int elementSelect) throws AxelorException {
