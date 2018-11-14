@@ -109,6 +109,8 @@ public interface IExceptionMessage {
   String STOCK_MOVES_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following stock moves: %s" /*)*/;
 
+  String STOCK_MOVE_PRINT = /*$$(*/ "Please select the stock move(s) to print" /*)*/;
+
   /** Tracking Number Service */
   static final String TRACKING_NUMBER_1 = /*$$(*/
       "There's no configured sequence for tracking number for the product %s:%s" /*)*/;
