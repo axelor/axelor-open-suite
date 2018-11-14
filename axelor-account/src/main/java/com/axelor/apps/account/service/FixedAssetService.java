@@ -17,12 +17,11 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface FixedAssetService {
 

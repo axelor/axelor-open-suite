@@ -37,9 +37,14 @@
 		<attribute for="updateReservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
 	</action-attrs>
 
-	<action-attrs name="action-supplychain-attrs-sale-order-line-max-reserved-qty">
-		<attribute for="reservedQty" name="value" expr="eval: qty" if="reservedQty &gt; qty"/>
+	<action-attrs name="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty">
+		<attribute for="requestedReservedQty" name="value" expr="eval: qty" if="requestedReservedQty &gt; qty"/>
 	</action-attrs>
+  
+  <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">
+		<attribute for="reservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
+		<attribute for="reservedQty" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
+  </action-attrs>
 
 	<action-view name="action-view-sale-order-line-reserved-qty-wizard" title="Change reserved qty"
 				 model="com.axelor.apps.sale.db.SaleOrderLine">

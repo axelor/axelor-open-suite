@@ -13,7 +13,7 @@
 		<field name="product.code"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
-        <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+		<field name="requestedReservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price" x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
@@ -117,8 +117,9 @@
 				<field name="inTaxTotal" readonly="true" colSpan="3"/>
 				<field name="isSubLine" hideIf="!isSubLine" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 				<field name="parentLine" hideIf="!isSubLine || parentLine == null" />
-				<field name="reservedQty" colSpan="3"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-				<button name="updateReservedQtyBtn" colSpan="4" hidden="true" title="Change reserved qty" onClick="action-view-sale-order-line-reserved-qty-wizard" if-module="axelor-supplychain"/>			
+				<field name="requestedReservedQty" colSpan="3"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="reservedQty" colSpan="3" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<button name="updateReservedQtyBtn" colSpan="4" hidden="true" title="Change reserved qty" onClick="action-view-sale-order-line-reserved-qty-wizard" if-module="axelor-supplychain"/>
 				<spacer name="btnSpacer"/>
 				<field name="$isReadOnly" hidden="true"/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -322,6 +323,7 @@
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    	<action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
 		<action name="action-method-sale-order-line-available-stock"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
     	<action name="action-sale-order-line-attrs-type-select"/>

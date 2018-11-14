@@ -58,6 +58,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected PriceListService priceListService;
 
+  protected StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl;
+
   @Inject
   public StockMoveLineServiceSupplychainImpl(
       TrackingNumberService trackingNumberService,
@@ -68,7 +70,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl) {
     super(
         trackingNumberService,
         appBaseService,
@@ -79,6 +82,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         unitConversionService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
+    this.stockLocationLineServiceSupplychainImpl = stockLocationLineServiceSupplychainImpl;
   }
 
   @Override
@@ -87,7 +91,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       String productName,
       String description,
       BigDecimal quantity,
-      BigDecimal reservedQty,
+      BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       Unit unit,
       StockMove stockMove,
@@ -108,7 +112,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               stockMove,
               taxed,
               taxRate);
-      stockMoveLine.setReservedQty(reservedQty);
+      stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
@@ -221,7 +225,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     return stockMoveLine;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateReservedQty(StockMoveLine stockMoveLine, BigDecimal reservedQty)
       throws AxelorException {
     StockMove stockMove = stockMoveLine.getStockMove();
@@ -252,23 +256,67 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
+      BigDecimal requestedReservedQty,
       BigDecimal reservedQty)
       throws AxelorException {
-    BigDecimal realReservedQty = stockMoveLine.getReservedQty();
+    BigDecimal convertedRequestedReservedQty = stockMoveLine.getRequestedReservedQty();
     Unit productUnit = product.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
     if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
-      realReservedQty =
+      convertedRequestedReservedQty =
           unitConversionService.convert(
               stockMoveLineUnit,
               productUnit,
-              realReservedQty,
-              realReservedQty.scale(),
+              convertedRequestedReservedQty,
+              convertedRequestedReservedQty.scale(),
               stockMoveLine.getProduct());
     }
+
+    // the quantity that will be allocated in stock location line
+    BigDecimal realReservedQty;
+
+    // the quantity that will be allocated in stock move line
+    BigDecimal realReservedStockMoveQty;
+
+    // if the status was planned, the quantity will be subtracted so we use the previous reserved
+    // quantity stored in stock move line.
+    if (fromStatus == StockMoveRepository.STATUS_PLANNED) {
+      realReservedStockMoveQty = stockMoveLine.getReservedQty();
+
+      // convert the quantity for stock location line
+      if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
+        realReservedQty =
+            unitConversionService.convert(
+                stockMoveLineUnit,
+                productUnit,
+                realReservedStockMoveQty,
+                realReservedStockMoveQty.scale(),
+                stockMoveLine.getProduct());
+      } else {
+        realReservedQty = realReservedStockMoveQty;
+      }
+    } else {
+      realReservedQty =
+          stockLocationLineServiceSupplychainImpl.computeRealReservedQty(
+              fromStockLocation, product, convertedRequestedReservedQty);
+      // convert back the quantity for the stock move line
+      if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
+        realReservedStockMoveQty =
+            unitConversionService.convert(
+                productUnit,
+                stockMoveLineUnit,
+                realReservedQty,
+                realReservedQty.scale(),
+                stockMoveLine.getProduct());
+      } else {
+        realReservedStockMoveQty = realReservedQty;
+      }
+    }
+
+    stockMoveLine.setReservedQty(realReservedStockMoveQty);
     super.updateLocations(
         stockMoveLine,
         fromStockLocation,
@@ -279,6 +327,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         toStatus,
         lastFutureStockMoveDate,
         trackingNumber,
+        convertedRequestedReservedQty,
         realReservedQty);
   }
 

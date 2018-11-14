@@ -421,7 +421,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       boolean realQty)
       throws AxelorException {
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     StockLocationServiceImpl stockLocationServiceImpl = Beans.get(StockLocationServiceImpl.class);
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
@@ -461,6 +460,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber(),
+            BigDecimal.ZERO,
             BigDecimal.ZERO);
         stockLocationServiceImpl.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
@@ -647,22 +647,59 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
+      BigDecimal requestedReservedQty,
       BigDecimal reservedQty)
       throws AxelorException {
 
     switch (fromStatus) {
       case StockMoveRepository.STATUS_PLANNED:
         stockLocationLineService.updateLocation(
-            fromStockLocation, product, qty, false, true, true, null, trackingNumber, reservedQty);
+            fromStockLocation,
+            product,
+            qty,
+            false,
+            true,
+            true,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         stockLocationLineService.updateLocation(
-            toStockLocation, product, qty, false, true, false, null, trackingNumber, reservedQty);
+            toStockLocation,
+            product,
+            qty,
+            false,
+            true,
+            false,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
         stockLocationLineService.updateLocation(
-            fromStockLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
+            fromStockLocation,
+            product,
+            qty,
+            true,
+            true,
+            true,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         stockLocationLineService.updateLocation(
-            toStockLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
+            toStockLocation,
+            product,
+            qty,
+            true,
+            true,
+            false,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         break;
 
       default:
@@ -680,6 +717,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             false,
             lastFutureStockMoveDate,
             trackingNumber,
+            requestedReservedQty,
             reservedQty);
         stockLocationLineService.updateLocation(
             toStockLocation,
@@ -690,14 +728,33 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             lastFutureStockMoveDate,
             trackingNumber,
+            requestedReservedQty,
             reservedQty);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
         stockLocationLineService.updateLocation(
-            fromStockLocation, product, qty, true, true, false, null, trackingNumber, reservedQty);
+            fromStockLocation,
+            product,
+            qty,
+            true,
+            true,
+            false,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         stockLocationLineService.updateLocation(
-            toStockLocation, product, qty, true, true, true, null, trackingNumber, reservedQty);
+            toStockLocation,
+            product,
+            qty,
+            true,
+            true,
+            true,
+            null,
+            trackingNumber,
+            requestedReservedQty,
+            reservedQty);
         break;
 
       default:

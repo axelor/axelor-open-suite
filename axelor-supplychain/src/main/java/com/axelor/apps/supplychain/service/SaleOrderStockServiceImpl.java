@@ -43,6 +43,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -94,6 +95,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {
@@ -173,6 +175,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
 
+    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
+      stockMove = updateSOLinesReservedQty(stockMove);
+    }
     return stockMove;
   }
 
@@ -269,11 +274,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
+    stockMove.setReservationDateTime(
+        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
-    return stockMove;
+    return Beans.get(StockMoveRepository.class).save(stockMove);
   }
 
   /**
@@ -390,7 +397,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
               qty,
-              saleOrderLine.getReservedQty(),
+              saleOrderLine.getRequestedReservedQty(),
               priceDiscounted,
               unit,
               stockMove,
@@ -521,5 +528,19 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
+  }
+
+  @Override
+  public StockMove updateSOLinesReservedQty(StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      stockMove
+          .getStockMoveLineList()
+          .stream()
+          .filter(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null)
+          .forEach(
+              stockMoveLine ->
+                  stockMoveLine.getSaleOrderLine().setReservedQty(stockMoveLine.getReservedQty()));
+    }
+    return stockMove;
   }
 }

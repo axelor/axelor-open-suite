@@ -28,14 +28,14 @@ import java.util.List;
 public interface StockMoveLineServiceSupplychain {
 
   /**
-   * Compared to the method in module stock, it adds the reserved qty. Allows to create stock move
-   * from supplychain module with reserved qty.
+   * Compared to the method in module stock, it adds the requested reserved qty. Allows to create
+   * stock move from supplychain module with requested reserved qty.
    *
    * @param product
    * @param productName
    * @param description
    * @param quantity
-   * @param reservedQty
+   * @param requestedReservedQty
    * @param unitPrice
    * @param unit
    * @param stockMove
@@ -50,7 +50,7 @@ public interface StockMoveLineServiceSupplychain {
       String productName,
       String description,
       BigDecimal quantity,
-      BigDecimal reservedQty,
+      BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       Unit unit,
       StockMove stockMove,

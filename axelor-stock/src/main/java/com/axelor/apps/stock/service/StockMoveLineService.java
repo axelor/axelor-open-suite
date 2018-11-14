@@ -142,6 +142,7 @@ public interface StockMoveLineService {
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
+      BigDecimal requestedReservedQty,
       BigDecimal reservedQty)
       throws AxelorException;
 

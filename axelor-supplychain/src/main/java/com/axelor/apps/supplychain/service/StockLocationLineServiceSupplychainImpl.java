@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -31,48 +30,10 @@ import com.axelor.inject.Beans;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
-
-  @Override
-  public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
-      throws AxelorException {
-    super.checkStockMin(stockLocationLine, isDetailLocationLine);
-    if (!isDetailLocationLine
-        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-        && stockLocationLine.getStockLocation().getTypeSelect()
-            != StockLocationRepository.TYPE_VIRTUAL) {
-      throw new AxelorException(
-          stockLocationLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
-          stockLocationLine.getProduct().getName(),
-          stockLocationLine.getProduct().getCode());
-
-    } else if (isDetailLocationLine
-        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-        && ((stockLocationLine.getStockLocation() != null
-                && stockLocationLine.getStockLocation().getTypeSelect()
-                    != StockLocationRepository.TYPE_VIRTUAL)
-            || (stockLocationLine.getDetailsStockLocation() != null
-                && stockLocationLine.getDetailsStockLocation().getTypeSelect()
-                    != StockLocationRepository.TYPE_VIRTUAL))) {
-
-      String trackingNumber = "";
-      if (stockLocationLine.getTrackingNumber() != null) {
-        trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
-      }
-
-      throw new AxelorException(
-          stockLocationLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_2),
-          stockLocationLine.getProduct().getName(),
-          stockLocationLine.getProduct().getCode(),
-          trackingNumber);
-    }
-  }
 
   @Override
   public StockLocationLine updateLocation(
@@ -82,7 +43,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty) {
+      BigDecimal reservedQty,
+      BigDecimal requestedReservedQty) {
 
     stockLocationLine =
         super.updateLocation(
@@ -92,19 +54,28 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
             future,
             isIncrement,
             lastFutureStockMoveDate,
-            reservedQty);
+            reservedQty,
+            requestedReservedQty);
     if (current) {
       if (isIncrement) {
         stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
       } else {
         stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
       }
     }
     if (future) {
       if (isIncrement) {
         stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
       } else {
         stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
       }
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
@@ -143,5 +114,26 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     }
     return availableQty;
+  }
+
+  /**
+   * From the requested reserved quantity, return the quantity that can in fact be reserved.
+   *
+   * @param stockLocation the location of the line.
+   * @param product the product of the line.
+   * @param requestedReservedQty the quantity that can be added to the reserved qty.
+   * @return the quantity really added.
+   */
+  public BigDecimal computeRealReservedQty(
+      StockLocation stockLocation, Product product, BigDecimal requestedReservedQty) {
+
+    Optional<StockLocationLine> stockLocationLine =
+        Optional.ofNullable(getStockLocationLine(stockLocation, product));
+    BigDecimal oldReservedQty =
+        stockLocationLine.map(StockLocationLine::getReservedQty).orElse(BigDecimal.ZERO);
+    BigDecimal currentQty =
+        stockLocationLine.map(StockLocationLine::getCurrentQty).orElse(BigDecimal.ZERO);
+    BigDecimal qtyLeftToBeAllocated = currentQty.subtract(oldReservedQty);
+    return qtyLeftToBeAllocated.min(requestedReservedQty);
   }
 }
