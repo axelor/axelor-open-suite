@@ -385,7 +385,6 @@
     	<action name="action-stock-move-sub-line-record-form-isReadOnly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
         <action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
-        <action name="action-inventory-line-attrs-tracking-number"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
@@ -396,12 +395,10 @@
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
-		<action name="action-inventory-line-attrs-tracking-number"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="stockMove &amp;&amp; stockMove.statusSelect &lt; 3"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
-    	<action name="action-inventory-line-attrs-tracking-number"/>
     	<action name="action-stock-move-line-set-product-info"/>
     	<action name="action-stock-move-line-compute-price"/>
     	<action name="action-stock-move-line-store-product-type"/>

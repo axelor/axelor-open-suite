@@ -5,7 +5,6 @@
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
     	<field name="purchaseOrder.purchaseOrderSeq" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
@@ -31,7 +30,6 @@
     </grid>
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<hilite background="danger" if="$number(saleMinPrice) &lt; $number(salePrice)"/>
     	<hilite color="default" strong="true" if="isTitleLine == true"/>
     	<field name="productName"/>
     	<field name="productCode"/>
@@ -43,13 +41,10 @@
         <field name="inTaxPrice" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
-        <field name="saleMinPrice"  x-scale="2" aggregate="min"/>
-        <field name="salePrice" hidden="true"/>
         <field name="isTitleLine" hidden="true"/>
     </grid>
     
     <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
-       	<hilite background="danger" if="salePrice &lt; saleMinPrice"/>
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>

@@ -501,13 +501,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     Context parentContext = context.getParent();
 
+    if (parentContext == null) {
+      return null;
+    }
+
     if (!parentContext.getContextClass().toString().equals(SaleOrder.class.toString())) {
 
       parentContext = parentContext.getParent();
-    }
-
-    if (parentContext == null) {
-      return null;
     }
 
     SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
