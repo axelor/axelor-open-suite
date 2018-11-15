@@ -58,7 +58,6 @@
         <button name="trackNumberWizard" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
 			readonlyIf="$get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2)" />
-        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 1 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') || (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') != 2))"/>
     </grid>
 
     <grid name="stock-move-line-planned-grid" title="Stock move lines"
