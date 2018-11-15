@@ -213,6 +213,7 @@
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 - Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 - Display estimated delivery dates on sale order printing.
+- MRP : improve runtime for huge database
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

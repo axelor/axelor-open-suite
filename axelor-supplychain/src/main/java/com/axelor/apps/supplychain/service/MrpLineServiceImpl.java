@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
@@ -175,6 +176,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   }
 
   public MrpLine createMrpLine(
+      Mrp mrp,
       Product product,
       int maxLevel,
       MrpLineType mrpLineType,
@@ -186,6 +188,7 @@ public class MrpLineServiceImpl implements MrpLineService {
 
     MrpLine mrpLine = new MrpLine();
 
+    mrpLine.setMrp(mrp);
     mrpLine.setProduct(product);
     mrpLine.setMaxLevel(maxLevel);
     mrpLine.setMrpLineType(mrpLineType);
