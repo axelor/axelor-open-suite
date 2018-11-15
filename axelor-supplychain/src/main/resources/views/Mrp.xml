@@ -69,7 +69,7 @@
 	<action-attrs name="action-attrs-mrp-generate-all-proposals"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="readonly" for="generateAllProposals"
-			expr="eval: __repo__(MrpLine).filter(&quot; self.proposalGenerated is false AND self.mrpLineType.elementSelect in (5,8) &quot;).count() > 0"/>
+			expr="eval: __repo__(MrpLine).all().filter(&quot; self.proposalGenerated is false AND self.mrpLineType.elementSelect in (5,8) &quot;).count() > 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-mrp-attrs-sale-order-domain">

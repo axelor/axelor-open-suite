@@ -161,8 +161,6 @@ public class MrpServiceImpl implements MrpService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void reset(Mrp mrp) {
 
-    JPA.clear();
-
     mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
