@@ -57,6 +57,8 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
+import com.axelor.apps.stock.service.stockmove.print.StockMovePrintServiceImpl;
 
 public class StockModule extends AxelorModule {
 
@@ -82,5 +84,6 @@ public class StockModule extends AxelorModule {
     bind(DeclarationOfExchangesService.class).to(DeclarationOfExchangesServiceImpl.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     bind(TrackingNumberRepository.class).to(TrackingNumberManagementRepository.class);
+    bind(StockMovePrintService.class).to(StockMovePrintServiceImpl.class);
   }
 }

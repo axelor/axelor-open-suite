@@ -58,7 +58,6 @@
         <button name="trackNumberWizard" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
 			readonlyIf="$get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2)" />
-        <button name="trackNumberWizard" title="Split by tracking numbers" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard" readonlyIf="$get('stockMove.statusSelect') > 1 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') || (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; $get('stockMove.typeSelect') != 2))"/>
     </grid>
 
     <grid name="stock-move-line-planned-grid" title="Stock move lines"
@@ -385,7 +384,6 @@
     	<action name="action-stock-move-sub-line-record-form-isReadOnly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
         <action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
-        <action name="action-inventory-line-attrs-tracking-number"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
@@ -396,12 +394,10 @@
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
-		<action name="action-inventory-line-attrs-tracking-number"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="stockMove &amp;&amp; stockMove.statusSelect &lt; 3"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
-    	<action name="action-inventory-line-attrs-tracking-number"/>
     	<action name="action-stock-move-line-set-product-info"/>
     	<action name="action-stock-move-line-compute-price"/>
     	<action name="action-stock-move-line-store-product-type"/>

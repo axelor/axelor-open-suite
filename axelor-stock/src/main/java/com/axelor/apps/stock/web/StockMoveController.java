@@ -20,6 +20,7 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -27,8 +28,12 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,8 +41,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,13 +55,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class StockMoveController {
 
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   @Inject private StockMoveService stockMoveService;
 
   @Inject private StockMoveRepository stockMoveRepo;
+
+  @Inject private StockMovePrintService stockMovePrintService;
 
   public void plan(ActionRequest request, ActionResponse response) {
 
@@ -111,15 +126,39 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printStockMove(ActionRequest request, ActionResponse response) {
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+    Context context = request.getContext();
+    String fileLink;
+    String title;
 
     try {
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.STOCK_MOVE);
-      response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) request.getContext().get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = stockMovePrintService.printStockMoves(ids);
+        title = I18n.get("Stock Moves");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = request.getContext().asType(StockMove.class);
+        title = stockMovePrintService.getFileName(stockMove);
+        fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

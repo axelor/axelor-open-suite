@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
-        <field name="product" canEdit="false" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-method-on-change-product,action-inventory-line-method-compute" grid-view="product-grid" form-view="product-form"/>
+        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute" grid-view="product-grid" form-view="product-form"/>
         <field name="currentQty" readonly="true" aggregate="sum" width="120"/>
         <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum" width="120"/>
         <field name="description"/>
@@ -14,10 +14,9 @@
         <field name="gapValue"/>
     </grid>
     
-    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"
-    	onLoad="action-inventory-line-attrs-tracking-number">
+    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine">
     	<panel name="main">
-	        <field name="product" canEdit="false" onChange="action-inventory-line-attrs-tracking-number,action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
+	        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
 	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty" onChange="action-inventory-line-method-compute"/>
@@ -27,11 +26,6 @@
 	    </panel>
     </form>
     
-    <action-attrs name="action-inventory-line-attrs-tracking-number">
-    	<attribute name="required" for="trackingNumber" expr="eval: product?.trackingNumberConfiguration?.isPurchaseTrackingManaged || product?.trackingNumberConfiguration?.isProductionTrackingManaged || product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
-		<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged || __parent__?.statusSelect >= 5"/>
-    </action-attrs>
-	
 	<action-method name="action-inventory-line-method-on-change-product">
 		<call class="com.axelor.apps.stock.web.InventoryLineController" method="updateInventoryLine"/>
 	</action-method>

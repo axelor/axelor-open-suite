@@ -133,6 +133,7 @@
 - SALEORDER : Generate stock move per estimated delivery date 
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
 - Partner : Add filter on partner depending on company.
+- STOCK MOVE : Report mass printing
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -305,6 +306,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
 - JOURNAL : Enable massUpdate feature
 - SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+- Purchase Order Line : Removed field 'salePrice', 'saleMinPrice' and hilite done on it in  grid-view
 
 ## Improvements
 - Show full name for products in Mrp report.
@@ -331,6 +333,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
+- Databackup : Include thread in backup & restore task.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -390,6 +393,9 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
 - Account reconcile : use moveLine partner instead of move partner for mass lettering run from move line list on selected move lines.
 - Account move reverse : use today date
+- Fix NPE on opening sale order line form.
+- ACCOUNTCONFIG : factor partner define form view and grid view
+- INVOICEPAYMENT : company bank details filter
 
 ## [5.0.6] - 2018-10-06
 ## Features

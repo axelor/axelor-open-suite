@@ -106,7 +106,7 @@ public class DataBackupCreateService {
   List<String> fileNameList;
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public File create(Integer fetchLimit) {
+  public File create(Integer fetchLimit) throws InterruptedException {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
 
@@ -159,7 +159,8 @@ public class DataBackupCreateService {
 
           fileNameList.add(metaModel.getName() + ".csv");
         }
-      } catch (Exception e) {
+      } catch (ClassNotFoundException e) {
+      } catch (IOException e) {
         TraceBackService.trace(e, DataBackupService.class.getName());
       }
     }
@@ -173,8 +174,6 @@ public class DataBackupCreateService {
 
     fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
-    LOG.debug("Data Import Completed");
-
     return zippedFile;
   }
 
@@ -307,7 +306,6 @@ public class DataBackupCreateService {
         csvInput.setSearch("self.code = :code");
       }
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
     }
     return csvInput;
   }
@@ -478,8 +476,7 @@ public class DataBackupCreateService {
       }
       out.close();
     } catch (IOException e) {
-      e.printStackTrace();
-      LOG.debug("Error From DataBackupCreateService - generateZIP() : " + e.getMessage());
+      TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
     return zipFile;
   }
@@ -497,8 +494,7 @@ public class DataBackupCreateService {
 
       fileWriter.close();
     } catch (IOException e) {
-      e.printStackTrace();
-      LOG.debug("Error From DataBackupCreateService - generateConfig() : " + e.getMessage());
+      TraceBackService.trace(e, "Error From DataBackupCreateService - generateConfig()");
     }
   }
 }

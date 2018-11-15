@@ -19,9 +19,10 @@
 	   		<![CDATA[
 				// DATABACKUP STATUS
 				public static final int DATA_BACKUP_STATUS_DRAFT = 0;
-				public static final int DATA_BACKUP_STATUS_CREATED = 1;
-				public static final int DATA_BACKUP_STATUS_RESTORE = 2;
-				public static final int DATA_BACKUP_STATUS_RESTORE_ERROR = 3;
+				public static final int DATA_BACKUP_STATUS_IN_PROGRESS = 1;
+				public static final int DATA_BACKUP_STATUS_CREATED = 2;
+				public static final int DATA_BACKUP_STATUS_RESTORE = 3;
+				public static final int DATA_BACKUP_STATUS_RESTORE_ERROR = 4;
 	   		]]>
 		</extra-code>
 
