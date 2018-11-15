@@ -38,8 +38,7 @@ public interface StockLocationLineService {
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -51,7 +50,6 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty)
       throws AxelorException;
 
@@ -73,7 +71,6 @@ public interface StockLocationLineService {
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty)
       throws AxelorException;
 
@@ -98,7 +95,6 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty);
 
   /**

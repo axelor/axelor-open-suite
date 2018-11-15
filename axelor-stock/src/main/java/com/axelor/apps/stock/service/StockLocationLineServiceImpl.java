@@ -58,8 +58,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException {
 
     this.updateLocation(
@@ -70,7 +69,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         future,
         isIncrement,
         lastFutureStockMoveDate,
-        reservedQty,
         requestedReservedQty);
 
     if (trackingNumber != null) {
@@ -83,7 +81,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           isIncrement,
           lastFutureStockMoveDate,
           trackingNumber,
-          reservedQty,
           requestedReservedQty);
     }
   }
@@ -98,7 +95,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty)
       throws AxelorException {
 
@@ -132,7 +128,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             future,
             isIncrement,
             lastFutureStockMoveDate,
-            reservedQty,
             requestedReservedQty);
 
     this.checkStockMin(stockLocationLine, false);
@@ -223,7 +218,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty)
       throws AxelorException {
 
@@ -249,7 +243,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             future,
             isIncrement,
             lastFutureStockMoveDate,
-            reservedQty,
             BigDecimal.ZERO);
 
     this.checkStockMin(detailLocationLine, true);
@@ -323,7 +316,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty,
       BigDecimal requestedReservedQty) {
 
     if (current) {
