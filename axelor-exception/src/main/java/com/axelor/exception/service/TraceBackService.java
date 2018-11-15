@@ -40,6 +40,10 @@ public class TraceBackService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  // TYPE SELECT
+  protected static final int TYPE_TECHNICAL = 0;
+  protected static final int TYPE_FUNCTIONAL = 1;
+
   /**
    * Créer un log des exceptions en tant qu'anomalie.
    *
@@ -80,12 +84,11 @@ public class TraceBackService {
   }
 
   private static TraceBack _create(Throwable e, String origin, int categorySelect, long batchId) {
-    return _create(e, origin, TraceBackRepository.TYPE_TECHNICAL, categorySelect, batchId);
+    return _create(e, origin, TYPE_TECHNICAL, categorySelect, batchId);
   }
 
   private static TraceBack _create(AxelorException e, String origin, long batchId) {
-    TraceBack traceBack =
-        _create(e, origin, TraceBackRepository.TYPE_FUNCTIONNAL, e.getCategory(), batchId);
+    TraceBack traceBack = _create(e, origin, TYPE_FUNCTIONAL, e.getCategory(), batchId);
 
     if (e.getRefClass() != null) {
       traceBack.setRef(e.getRefClass().getName());
