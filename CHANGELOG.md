@@ -134,6 +134,7 @@
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
 - Partner : Add filter on partner depending on company.
 - STOCK MOVE : Report mass printing
+- PURCHASE ORDER : Manage received qty per line
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

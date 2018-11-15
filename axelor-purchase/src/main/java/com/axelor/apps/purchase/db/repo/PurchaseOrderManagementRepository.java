@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -27,10 +28,20 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
   @Override
   public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
-    entity.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
-    entity.setPurchaseOrderSeq(null);
-    entity.setVersionNumber(1);
-    return super.copy(entity, deep);
+
+    PurchaseOrder copy = super.copy(entity, deep);
+
+    copy.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    copy.setPurchaseOrderSeq(null);
+    copy.setVersionNumber(1);
+    copy.setDeliveryDate(null);
+    copy.setValidatedByUser(null);
+    copy.setValidationDate(null);
+    for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
+      purchaseOrderLine.setDesiredDelivDate(null);
+      purchaseOrderLine.setEstimatedDelivDate(null);
+    }
+    return copy;
   }
 
   @Override

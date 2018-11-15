@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -109,13 +110,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
       Beans.get(SaleOrderRepository.class).save(saleOrder);
     } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      updatePurchaseOrderLines(stockMove, true);
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
         purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
       } else {
-        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
-        if (appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
+        purchaseOrderServiceSupplychain.updateReceiptState(purchaseOrder);
+
+        if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED
+            && appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
           Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
         }
       }
@@ -134,14 +138,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         updateSaleOrderOnCancel(stockMove);
       }
       if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
-        purchaseOrderServiceSupplychain.updatePurchaseOrderOnCancel(stockMove, purchaseOrder);
+        updatePurchaseOrderOnCancel(stockMove);
       }
     }
     super.cancel(stockMove);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
@@ -195,6 +198,65 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
               SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
         } else {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
+        }
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
+    PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
+
+    List<StockMove> stockMoveList =
+        stockMoveRepo
+            .all()
+            .filter(
+                "self.originId = ?1 AND self.originTypeSelect = ?2",
+                po.getId(),
+                StockMoveRepository.ORIGIN_PURCHASE_ORDER)
+            .fetch();
+    po.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+    for (StockMove stock : stockMoveList) {
+      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
+          && !stock.getId().equals(stockMove.getId())) {
+        po.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+        break;
+      }
+    }
+
+    if (po.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED
+        && Beans.get(AppSupplychainService.class)
+            .getAppSupplychain()
+            .getTerminatePurchaseOrderOnReceipt()) {
+      po.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+    }
+    updatePurchaseOrderLines(stockMove, false);
+  }
+
+  protected void updatePurchaseOrderLines(StockMove stockMove, boolean realize)
+      throws AxelorException {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getPurchaseOrderLine() != null) {
+        PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+
+        BigDecimal realQty =
+            unitConversionService.convertWithProduct(
+                stockMoveLine.getUnit(),
+                purchaseOrderLine.getUnit(),
+                stockMoveLine.getRealQty(),
+                purchaseOrderLine.getProduct());
+
+        if (realize) {
+          purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().add(realQty));
+        } else {
+          purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
+        }
+        if (purchaseOrderLine.getReceivedQty().signum() == 0) {
+          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+        } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
+          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+        } else {
+          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
         }
       }
     }

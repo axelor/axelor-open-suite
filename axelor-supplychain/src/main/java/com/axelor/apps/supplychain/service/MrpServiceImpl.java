@@ -555,7 +555,7 @@ public class MrpServiceImpl implements MrpService {
         purchaseOrderLineRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.purchaseOrder.receiptState != ?3 "
+                "self.product.id in (?1) AND self.purchaseOrder.stockLocation in (?2) AND self.receiptState != ?3 "
                     + "AND self.purchaseOrder.statusSelect IN (?4)",
                 this.productMap.keySet(),
                 this.stockLocationList,
@@ -592,8 +592,7 @@ public class MrpServiceImpl implements MrpService {
     if (this.isBeforeEndDate(maturityDate)) {
 
       Unit unit = purchaseOrderLine.getProduct().getUnit();
-      BigDecimal qty =
-          purchaseOrderLine.getQty(); // .subtract(purchaseOrderLine.getDeliveredQty());
+      BigDecimal qty = purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());
       if (!unit.equals(purchaseOrderLine.getUnit())) {
         qty =
             Beans.get(UnitConversionService.class)

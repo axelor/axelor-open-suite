@@ -18,9 +18,12 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
@@ -28,6 +31,28 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
   @Inject private AppService appService;
 
   @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderService;
+
+  @Override
+  public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
+
+    PurchaseOrder copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppService.class).isApp("supplychain")) {
+      return copy;
+    }
+
+    copy.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+    copy.setAmountInvoiced(null);
+
+    for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
+      purchaseOrderLine.setReceiptState(null);
+      purchaseOrderLine.setReceivedQty(null);
+      purchaseOrderLine.setAmountInvoiced(null);
+      purchaseOrderLine.setInvoiced(null);
+    }
+
+    return copy;
+  }
 
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {

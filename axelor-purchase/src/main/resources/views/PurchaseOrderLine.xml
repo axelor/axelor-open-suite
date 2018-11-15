@@ -31,6 +31,10 @@
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite color="default" strong="true" if="isTitleLine == true"/>
+		<hilite color="danger" if="receiptState == 1"/>
+		<hilite color="warning" if="receiptState == 2"/>
+		<hilite color="success" if="receiptState == 3"/>
+		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
     	<field name="productCode"/>
     	<field name="desiredDelivDate"/>
@@ -73,6 +77,16 @@
 
 		<panel-tabs hideIf="isTitleLine">
 			<panel name="informations" title="Information">
+				<field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<viewer><![CDATA[
+	                    <h4>
+	                        <span class="label label-important" ng-show="record.receiptState == 1" x-translate>Not received</span>
+	                        <span class="label label-warning" ng-show="record.receiptState == 2" x-translate>Partially received</span>
+	                        <span class="label label-success" ng-show="record.receiptState == 3" x-translate>Received</span>
+	                    </h4>
+					]]></viewer>
+				</field>
+       			<spacer  if="__config__.app.isApp('supplychain')"/>
 				<field name="product"  canEdit="false" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				  onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form" grid-view="product-grid"/>
 				<field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier" widget="boolean-switch" colSpan="2" if="__config__.app.getApp('purchase').getManageSupplierCatalog()"/>
@@ -122,6 +136,7 @@
 			<panel name="deliveryPanel" title="Delivery" hidden="true">
 				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
+				<field name="receivedQty" readonly="true"/>
 				<field name="supplierComment" colSpan="12"/>
 				<panel-dashlet action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>

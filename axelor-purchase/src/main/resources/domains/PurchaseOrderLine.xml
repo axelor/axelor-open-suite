@@ -32,9 +32,9 @@
   	<decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-      <decimal name="exTaxTotal" title="Total W.T."/>
+    <decimal name="exTaxTotal" title="Total W.T."/>
   	<decimal name="inTaxTotal" title="Total A.T.I."/>
-	  <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
+  	<many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
   	
   	<string name="description" title="Description" large="true"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -46,9 +46,9 @@
   	  	
   	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
   	
-  	
 	<date name="estimatedDelivDate" title="Estim. delivery date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
+	<decimal name="receivedQty" title="Received quantity"/>
 	  
 	<string name="supplierComment" title="Supplier Comment"/>
   	<boolean name="fixedAssets" title="Fixed Assets"/>
