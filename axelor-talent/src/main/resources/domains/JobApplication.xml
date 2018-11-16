@@ -29,6 +29,10 @@
 		<many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage" title="Hiring stage"/>
 		<string name="reasonNotHired" title="Reason not hired" large="true"/>
 		<many-to-many name="skillSet" title="Skills tag" ref="Skill"/>
+		<date name="creationDate" title="Date of application"/>
+		<string name="title" title="Title" selection="job.application.title.select"/>
+		<many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" initParam="true" />
+		<many-to-one name="employeeAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;

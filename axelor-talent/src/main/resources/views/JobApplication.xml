@@ -10,7 +10,7 @@
 		<field name="fixedPhone" />
 		<field name="mobilePhone" />
 		<field name="jobPosition" />
-		<field name="status" />
+		<field name="statusSelect" />
 	</grid>
 	
 	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large"
@@ -20,36 +20,62 @@
 	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
-		<panel name="main">
-			<field name="statusSelect" colSpan="4"/>
-			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect == 0" />
-			<field name="employee" showIf="statusSelect == 1" />
-			<field name="hiringStage" x-order="sequence"/>
-			<panel title="Job info" colSpan="12">
-				<field name="jobPosition" />
-				<field name="jobPosition.companyDepartment" />
-				<field name="responsible" />
+		<panel name="main" readonlyIf="statusSelect == 3">
+			<field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true"/>
+			<field name="hiringStage" x-order="sequence" hidden="true"/><spacer/>
+			<panel colSpan="4">
+				<field name="employee" showIf="statusSelect == 1" />
+				<field name="picture" showTitle="false" colSpan="12" widget="Image">
+					<viewer>
+						<![CDATA[
+				    		<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+	          				<img ng-show="!record.picture" src="img/partner-default.png" />
+						]]>
+					</viewer>
+				</field>
+			</panel>
+			<panel colSpan="8">
+				<field name="title" colSpan="8"/><spacer/>
+				<field name="firstName" onChange="action-talent-method-set-social-network-url" />
+				<field name="lastName" required="true" onChange="action-talent-method-set-social-network-url"/>			
 			</panel>
 		</panel>
-		<panel-tabs>
+		<panel colSpan="12" sidebar="true" hideIf="statusSelect == 1 || statusSelect == 3">
+			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="12" showIf="statusSelect == 0" />
+			<button name="cancel" title="Cancel" onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+		</panel>
+		<panel title="Job Offer Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
+			<field name="jobPosition" colSpan="6"/>
+			<field name="jobPosition.statusSelect" colSpan="6"/>
+			<field name="jobPosition.companyDepartment" colSpan="6"/>
+			<field name="responsible" colSpan="6"/>
+			<field name="jobPosition.publicationDate" colSpan="6"/>
+		</panel>
+		<panel title="Application Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
+			<field name="educationLevel" colSpan="6"/>
+			<field name="referredBy" colSpan="6"/>
+			<field name="talentSource" title="Source" colSpan="6"/>
+			<field name="experienceSelect" colSpan="6"/>
+			<field name="industrySectorSet" widget="TagSelect" colSpan="6"/>
+			<field name="appreciation" widget="SelectProgress" colSpan="6"/>
+			<field name="creationDate" colSpan="6"/>
+			<field name="tagSkillSet" widget="TagSelect" colSpan="6" />
+		</panel>
+		<panel-tabs readonlyIf="statusSelect == 3">
 			<panel title="Description">
 				<field name="description" widget="html" colSpan="12" />
 			</panel>
 			<panel title="Contact" colSpan="12">
-				<field name="lastName" required="true" onChange="action-talent-method-set-social-network-url"/>
-				<field name="firstName" onChange="action-talent-method-set-social-network-url" />
-				<field name="emailAddress" canNew="true"/>
-				<field name="fixedPhone" />
-				<field name="mobilePhone" />
-				<field name="educationLevel" />
-				<field name="experienceSelect" />
-				<field name="industrySectorSet" widget="TagSelect" />
-				<field name="linkedInProfile" colSpan="10" widget="url"/>
-				<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-				<field name="talentSource" title="Source"/>
-				<field name="referredBy" />
-				<field name="appreciation" widget="SelectProgress"/>
-				<field name="tagSkillSet" widget="TagSelect" colSpan="12" />
+				<panel title="Contact information" colSpan="12">
+					<field name="mobilePhone" colSpan="4"/>
+					<field name="emailAddress" canNew="true" colSpan="4"/>
+					<field name="fixedPhone" colSpan="4"/>
+					<field name="linkedInProfile" colSpan="4" widget="url"/>
+					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				</panel>
+				<panel title="Main address" colSpan="12">
+					<field name="employeeAddress" colSpan="12" form-view="address-form" grid-view="address-grid" canNew="true"/>
+				</panel>
 				<field name="fullName" hidden="true" />
 			</panel>
 			<panel title="Contract" colSpan="12">
@@ -84,6 +110,10 @@
     <action-record name="action-job-application-defaults" model="com.axelor.apps.talent.db.JobApplication">
     	<field name="jobPosition" expr="eval:__repo__(JobPosition).find(_jobPositionId)"/>
     	<field name="responsible" expr="eval:__repo__(Employee).find(_responsibleId)" />
+    </action-record>
+    
+    <action-record name="action-job-application-status-cancel" model="com.axelor.apps.talent.db.JobApplication">
+    	<field name="statusSelect" expr="eval: 3"/>
     </action-record>
     
     <action-method name="action-job-application-method-hire">

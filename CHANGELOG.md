@@ -217,6 +217,7 @@
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 - Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 - Display estimated delivery dates on sale order printing.
+- JOB APPLICATION : Major updates in job application form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
