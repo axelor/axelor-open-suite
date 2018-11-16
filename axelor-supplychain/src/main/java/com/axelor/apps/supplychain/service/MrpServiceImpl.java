@@ -215,7 +215,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (Product product : this.getProductList(level)) {
 
-        this.checkInsufficientCumulativeQty(product);
+        this.checkInsufficientCumulativeQty(product, true);
       }
     }
   }
@@ -254,16 +254,19 @@ public class MrpServiceImpl implements MrpService {
     return maxLevel;
   }
 
-  protected void checkInsufficientCumulativeQty(Product product) throws AxelorException {
+  protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
+      throws AxelorException {
 
     boolean doASecondPass = false;
 
-    this.computeCumulativeQty(product);
+    this.computeCumulativeQty(productRepository.find(product.getId()));
+
+    JPA.clear();
 
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1 AND self.product = ?2", mrp.getId(), product)
+            .filter("self.mrp.id = ?1 AND self.product.id = ?2", mrp.getId(), product.getId())
             .order("maturityDate")
             .order("mrpLineType.typeSelect")
             .order("mrpLineType.sequence")
@@ -274,19 +277,24 @@ public class MrpServiceImpl implements MrpService {
 
       doASecondPass =
           this.checkInsufficientCumulativeQty(
-              mrpLineRepository.find(mrpLine.getId()), productRepository.find(product.getId()));
+              mrpLineRepository.find(mrpLine.getId()),
+              productRepository.find(product.getId()),
+              firstPass);
       JPA.clear();
+      if (doASecondPass) {
+        break;
+      }
     }
 
     if (doASecondPass) {
 
-      this.checkInsufficientCumulativeQty(product);
+      this.checkInsufficientCumulativeQty(product, false);
     }
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  protected boolean checkInsufficientCumulativeQty(MrpLine mrpLine, Product product)
-      throws AxelorException {
+  protected boolean checkInsufficientCumulativeQty(
+      MrpLine mrpLine, Product product, boolean firstPass) throws AxelorException {
 
     BigDecimal cumulativeQty = mrpLine.getCumulativeQty();
 
@@ -296,8 +304,13 @@ public class MrpServiceImpl implements MrpService {
 
     BigDecimal minQty = mrpLine.getMinQty();
 
-    if (mrpLine.getMrpLineType().getElementSelect() != MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
-        && (!isProposalElement || mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT)
+    if ((((mrpLine.getMrpLineType().getElementSelect()
+                    != MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK)
+                && (!isProposalElement
+                    || mrpLineType.getTypeSelect() == MrpLineTypeRepository.TYPE_OUT))
+            || (mrpLine.getMrpLineType().getElementSelect()
+                    == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
+                && firstPass))
         && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
 
       log.debug(
@@ -503,12 +516,13 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   protected void computeCumulativeQty(Product product) {
 
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1 AND self.product = ?2", mrp.getId(), product)
+            .filter("self.mrp.id = ?1 AND self.product.id = ?2", mrp.getId(), product.getId())
             .order("maturityDate")
             .order("mrpLineType.typeSelect")
             .order("mrpLineType.sequence")

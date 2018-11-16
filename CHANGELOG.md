@@ -135,6 +135,8 @@
 - Partner : Add filter on partner depending on company.
 - STOCK MOVE : Report mass printing
 - PURCHASE ORDER : Manage received qty per line
+- MRP : improve runtime for huge database
+- MRP : generate proposal for product that stock qty is less than stock rule min qty even if there is no other out movement.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -215,7 +217,6 @@
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 - Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 - Display estimated delivery dates on sale order printing.
-- MRP : improve runtime for huge database
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
