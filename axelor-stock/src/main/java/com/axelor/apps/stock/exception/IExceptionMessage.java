@@ -54,9 +54,6 @@ public interface IExceptionMessage {
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
-  static final String LOCATION_LINE_RESERVED_QTY = /*$$(*/
-      "Not enough quantity are available for reservation for product %s (%s)" /*)*/;
-
   /** Stock Move Service and Controller */
   static final String STOCK_MOVE_1 = /*$$(*/
       "There's no configured sequence for stock's intern moves for the company %s" /*)*/;

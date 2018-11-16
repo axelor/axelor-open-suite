@@ -160,4 +160,12 @@ public interface IExceptionMessage {
 
   /** Interco Service */
   static final String INVOICE_MISSING_TYPE = /*$$(*/ "Invoice %s type is not filled." /*)*/;
+
+  /** Stock location line service supplychain impl */
+  static final String LOCATION_LINE_RESERVED_QTY = /*$$(*/
+      "Not enough quantity are available for reservation for product %s (%s)" /*)*/;
+
+  /** Reserved qty service */
+  static final String LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY = /*$$(*/
+      "You cannot change the stock move status: please lower the allocated quantity" /*)*/;
 }

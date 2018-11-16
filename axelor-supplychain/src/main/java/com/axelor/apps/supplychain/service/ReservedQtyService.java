@@ -100,7 +100,8 @@ public interface ReservedQtyService {
    * @param product
    */
   void allocateReservedQuantityInSaleOrderLines(
-      BigDecimal qtyToAllocate, StockLocation stockLocation, Product product);
+      BigDecimal qtyToAllocate, StockLocation stockLocation, Product product)
+      throws AxelorException;
 
   /**
    * From the requested reserved quantity, return the quantity that can in fact be reserved.
