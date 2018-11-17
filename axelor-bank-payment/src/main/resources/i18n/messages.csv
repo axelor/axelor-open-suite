@@ -260,7 +260,7 @@
 "Computed digest (SHA256) of the bank order file doesn't match with the digest extract from the signature",,,
 "Config. per country",,,
 "Confirm",,,
-"Confirm auto. the bank order",,,
+"Confirm auto. the bank orders",,,
 "Confirmation date",,,
 "Connection error: %s",,,
 "Correct",,,

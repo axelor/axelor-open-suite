@@ -35,6 +35,9 @@
 	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing"/>
 	
 	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+	
+	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>
+
 
   </entity>
   

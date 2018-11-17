@@ -154,17 +154,19 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
+    LocalDate maturityDate = null;
+
+    if (manufOrder.getPlannedEndDateT() != null) {
+      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
+    } else {
+      maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
+    }
+
+    maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
+
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
       Product product = prodProduct.getProduct();
-
-      LocalDate maturityDate = null;
-
-      if (manufOrder.getPlannedEndDateT() != null) {
-        maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-      } else {
-        maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
-      }
 
       if (this.isBeforeEndDate(maturityDate) && this.isMrpProduct(product)) {
         MrpLine mrpLine =
@@ -190,13 +192,24 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           Product product = prodProduct.getProduct();
 
           if (this.isMrpProduct(product)) {
+
+            maturityDate = null;
+
+            if (operationOrder.getPlannedEndDateT() != null) {
+              maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
+            } else {
+              maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
+            }
+
+            maturityDate = this.computeMaturityDate(maturityDate, manufOrderNeedMrpLineType);
+
             MrpLine mrpLine =
                 this.createMrpLine(
                     mrp,
                     prodProduct.getProduct(),
                     manufOrderNeedMrpLineType,
                     prodProduct.getQty(),
-                    operationOrder.getPlannedStartDateT().toLocalDate(),
+                    maturityDate,
                     BigDecimal.ZERO,
                     stockLocation,
                     operationOrder);
@@ -229,7 +242,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                   product,
                   manufOrderNeedMrpLineType,
                   prodProduct.getQty(),
-                  manufOrder.getPlannedStartDateT().toLocalDate(),
+                  maturityDate,
                   BigDecimal.ZERO,
                   stockLocation,
                   manufOrder);

@@ -555,9 +555,9 @@ public class MrpServiceImpl implements MrpService {
 
   protected void createPurchaseMrpLines() throws AxelorException {
 
-    MrpLineType purchaseProposalMrpLineType =
+    MrpLineType purchaseOrderMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
-    String statusSelect = purchaseProposalMrpLineType.getStatusSelect();
+    String statusSelect = purchaseOrderMrpLineType.getStatusSelect();
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
@@ -582,14 +582,14 @@ public class MrpServiceImpl implements MrpService {
       this.createPurchaseMrpLines(
           mrpRepository.find(mrp.getId()),
           purchaseOrderLineRepository.find(purchaseOrderLine.getId()),
-          mrpLineTypeRepository.find(purchaseProposalMrpLineType.getId()));
+          mrpLineTypeRepository.find(purchaseOrderMrpLineType.getId()));
       JPA.clear();
     }
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   protected void createPurchaseMrpLines(
-      Mrp mrp, PurchaseOrderLine purchaseOrderLine, MrpLineType purchaseProposalMrpLineType)
+      Mrp mrp, PurchaseOrderLine purchaseOrderLine, MrpLineType purchaseOrderMrpLineType)
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
@@ -599,9 +599,8 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrder.getDeliveryDate();
     }
-    if (maturityDate == null) {
-      maturityDate = purchaseOrder.getOrderDate();
-    }
+
+    maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
     if (this.isBeforeEndDate(maturityDate)) {
 
@@ -617,7 +616,7 @@ public class MrpServiceImpl implements MrpService {
           this.createMrpLine(
               mrp,
               purchaseOrderLine.getProduct(),
-              purchaseProposalMrpLineType,
+              purchaseOrderMrpLineType,
               qty,
               maturityDate,
               BigDecimal.ZERO,
@@ -673,7 +672,7 @@ public class MrpServiceImpl implements MrpService {
   protected void createSaleOrderMrpLines(
       Mrp mrp,
       SaleOrderLine saleOrderLine,
-      MrpLineType saleForecastMrpLineType,
+      MrpLineType saleOrderMrpLineType,
       List<Integer> statusList)
       throws AxelorException {
 
@@ -694,12 +693,7 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = saleOrder.getDeliveryDate();
     }
-    if (maturityDate == null) {
-      maturityDate = saleOrder.getOrderDate();
-    }
-    if (maturityDate == null) {
-      maturityDate = saleOrder.getCreationDate();
-    }
+    maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 
     if (this.isBeforeEndDate(maturityDate)) {
       Unit unit = saleOrderLine.getProduct().getUnit();
@@ -714,7 +708,7 @@ public class MrpServiceImpl implements MrpService {
           this.createMrpLine(
               mrp,
               saleOrderLine.getProduct(),
-              saleForecastMrpLineType,
+              saleOrderMrpLineType,
               qty,
               maturityDate,
               BigDecimal.ZERO,
@@ -769,7 +763,7 @@ public class MrpServiceImpl implements MrpService {
 
     LocalDate maturityDate = mrpForecast.getForecastDate();
 
-    if (this.isBeforeEndDate(maturityDate)) {
+    if (maturityDate != null && !maturityDate.isBefore(today) && this.isBeforeEndDate(maturityDate)) {
       Unit unit = mrpForecast.getProduct().getUnit();
       BigDecimal qty = mrpForecast.getQty();
       if (!unit.equals(mrpForecast.getUnit())) {
@@ -793,10 +787,17 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
+  protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
+    if ((maturityDate != null && maturityDate.isBefore(today))
+        || (maturityDate == null && mrpLineType.getIncludeElementWithoutDate())) {
+      maturityDate = today;
+    }
+    return maturityDate;
+  }
+
   public boolean isBeforeEndDate(LocalDate maturityDate) {
 
     if (maturityDate != null
-        && !maturityDate.isBefore(today)
         && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()))) {
 
       return true;
