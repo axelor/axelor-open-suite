@@ -3134,7 +3134,7 @@ row["first_name"]
                                     </row>
                                     <row id="4138">
                                         <property name="verticalAlign">middle</property>
-                                        <property name="height">0.8cm</property>
+                                        <property name="height">0.9cm</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>

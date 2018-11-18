@@ -763,7 +763,9 @@ public class MrpServiceImpl implements MrpService {
 
     LocalDate maturityDate = mrpForecast.getForecastDate();
 
-    if (maturityDate != null && !maturityDate.isBefore(today) && this.isBeforeEndDate(maturityDate)) {
+    if (maturityDate != null
+        && !maturityDate.isBefore(today)
+        && this.isBeforeEndDate(maturityDate)) {
       Unit unit = mrpForecast.getProduct().getUnit();
       BigDecimal qty = mrpForecast.getQty();
       if (!unit.equals(mrpForecast.getUnit())) {

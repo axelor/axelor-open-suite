@@ -219,6 +219,8 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 - Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 - Display estimated delivery dates on sale order printing.
+- StockMove report : Add an option in Stock config to display the details of line or consolidate per product code, name and unit.
+Also in case of aggregation, we have to concatenate the tracking number list and the description of lines
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
