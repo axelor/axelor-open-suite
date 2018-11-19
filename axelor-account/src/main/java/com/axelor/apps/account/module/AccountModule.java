@@ -29,6 +29,10 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
+import com.axelor.apps.account.db.repo.FixedAssetBatchManagementRepository;
+import com.axelor.apps.account.db.repo.FixedAssetBatchRepository;
+import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -64,6 +68,10 @@ import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.FiscalPositionAccountServiceImpl;
+import com.axelor.apps.account.service.FixedAssetLineService;
+import com.axelor.apps.account.service.FixedAssetLineServiceImpl;
+import com.axelor.apps.account.service.FixedAssetService;
+import com.axelor.apps.account.service.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
@@ -223,5 +231,13 @@ public class AccountModule extends AxelorModule {
     bind(SubrogationReleaseRepository.class).to(SubrogationReleaseManagementRepository.class);
 
     bind(PeriodServiceImpl.class).to(PeriodServiceAccountImpl.class);
+
+    bind(FixedAssetRepository.class).to(FixedAssetManagementRepository.class);
+
+    bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
+
+    bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(FixedAssetBatchRepository.class).to(FixedAssetBatchManagementRepository.class);
   }
 }

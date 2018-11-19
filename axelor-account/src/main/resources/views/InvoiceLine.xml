@@ -71,8 +71,8 @@
 				<field name="totalPack" readonly="true"/>
 			</panel>
 			<panel name="accounting" title="Accounting">
-				<field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"/>
-				<panel colSpan="3" itemSpan="12">
+				<field name="account" colSpan="8" onSelect="action-invoice-line-method-filter-account"/>
+				<panel colSpan="4" itemSpan="12">
 					<field name="fixedAssets" showTitle="false" showIf="$readonly()">
 						<viewer depends="fixedAssets">
 							<![CDATA[
@@ -82,6 +82,8 @@
 					</field>
 					<field name="fixedAssets"  showTitle="true" hideIf="$readonly() || $contains([3,4], $_operationTypeSelect)" widget="boolean-switch" onChange="action-invoice-line-method-get-account"/>
 					<field name="$_operationTypeSelect" hidden="true"/>
+					<field name="$_company" type="many-to-one" target="com.axelor.apps.base.db.Company" hidden="true"/>
+					<field name="fixedAssetCategory" domain="self.company = :_company" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" showIf="fixedAssets &amp;&amp; $contains([1,2], $_operationTypeSelect)"/>
 				</panel>
 			</panel>
 
@@ -210,6 +212,7 @@
     	<action name="action-invoice-line-method-compute-analytic-distribution"/>
     	<action name="action-budget-validate-exceed-line-amount"/>
     	<action name="action-invoice-line-attrs-compute-total-pack" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+    	<action name="action-invoice-line-method-get-fixed-asset-category" if="__config__.app.isApp('account')"/>
     	<action name="action-attrs-account-invoice-line-onnew-onload"/>
     </action-group>
     
@@ -236,6 +239,7 @@
 
     <action-record name="action-invoice-line-record-operation-type" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="$_operationTypeSelect" expr="eval: __parent__.operationTypeSelect"/>
+    	<field name="$_company" expr="eval:__parent__?.company"/>
     </action-record>
     <action-record name="action-invoice-sub-line-record-form-isReadonly" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="$isReadOnly" expr="eval: true" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; isSubLine"/>
@@ -288,6 +292,10 @@
 
 	<action-method name="action-invoice-line-method-filter-account">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="filterAccount"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-get-fixed-asset-category">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getFixedAssetCategory"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->
