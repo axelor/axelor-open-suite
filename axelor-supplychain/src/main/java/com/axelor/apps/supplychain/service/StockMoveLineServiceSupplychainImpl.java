@@ -44,7 +44,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -223,26 +222,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }
     return stockMoveLine;
-  }
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void updateReservedQty(StockMoveLine stockMoveLine, BigDecimal reservedQty)
-      throws AxelorException {
-    StockMove stockMove = stockMoveLine.getStockMove();
-    int statusSelect = stockMove.getStatusSelect();
-    if (statusSelect == StockMoveRepository.STATUS_PLANNED
-        || statusSelect == StockMoveRepository.STATUS_REALIZED) {
-      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-      stockMoveService.cancel(stockMoveLine.getStockMove());
-      stockMoveLine.setReservedQty(reservedQty);
-      stockMoveService.goBackToDraft(stockMove);
-      stockMoveService.plan(stockMove);
-      if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
-        stockMoveService.realize(stockMove);
-      }
-    } else {
-      stockMoveLine.setReservedQty(stockMoveLine.getReservedQty());
-    }
   }
 
   @Override

@@ -28,12 +28,10 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -133,17 +131,18 @@ public class SaleOrderLineController {
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineRepository.class)
-              .all()
-              .filter("self.saleOrderLine = :saleOrderLine")
-              .bind("saleOrderLine", saleOrderLine)
-              .fetchOne();
-      saleOrderLineServiceSupplyChainImpl.changeReservedQty(saleOrderLine, newReservedQty);
-      if (stockMoveLine != null) {
-        Beans.get(StockMoveLineServiceSupplychainImpl.class)
-            .updateReservedQty(stockMoveLine, newReservedQty);
-      }
+      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void changeRequestedReservedQty(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    BigDecimal newReservedQty = saleOrderLine.getRequestedReservedQty();
+    try {
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

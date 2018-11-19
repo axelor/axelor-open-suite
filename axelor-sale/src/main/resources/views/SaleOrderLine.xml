@@ -62,7 +62,7 @@
         <panel-include view="sale-order-line-form"/>
     </form>
 
-	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" readonlyIf="$isReadOnly"
+	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
 		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
 		  onNew="action-group-sale-saleorderline-onnew" width="large">
 
@@ -73,6 +73,7 @@
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 			<panel name="informationsPanel" title="Information">
+				<panel colSpan="12" readonlyIf="$isReadOnly">
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
@@ -99,7 +100,8 @@
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>
 				<field name="oldQty"/>
-				<panel name="productDetailPanel" colSpan="12">
+			</panel>
+				<panel name="productDetailPanel" colSpan="12" readonlyIf="$isReadOnly">
 					<field name="qty" colSpan="3"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"  validIf="$qtyValid != false"/>
 					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || isSubLine" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
@@ -112,55 +114,60 @@
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
 				</panel>
+			<panel colSpan="12" readonlyIf="$isReadOnly">
 				<field name="taxLine" canEdit="false" colSpan="6" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="exTaxTotal" readonly="true" colSpan="3"/>
 				<field name="inTaxTotal" readonly="true" colSpan="3"/>
 				<field name="isSubLine" hideIf="!isSubLine" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 				<field name="parentLine" hideIf="!isSubLine || parentLine == null" />
-				<field name="requestedReservedQty" colSpan="3"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-				<field name="reservedQty" colSpan="3" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-				<button name="updateReservedQtyBtn" colSpan="4" hidden="true" title="Change reserved qty" onClick="action-view-sale-order-line-reserved-qty-wizard" if-module="axelor-supplychain"/>
-				<spacer name="btnSpacer"/>
+				<field name="requestedReservedQty" colSpan="6"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="reservedQty" colSpan="6" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+			</panel>
+        <panel name="reservedQtyButtons" colSpan="12">
+					<button name="updateRequestedReservedQty" colSpan="6" hidden="true" title="Change requested reserved qty" onClick="action-view-sale-order-line-requested-reserved-qty-wizard" if-module="axelor-supplychain"/>
+					<button name="updateAllocatedQty" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-sale-order-line-allocated-qty-wizard" if-module="axelor-supplychain"/>
+				</panel>
+				<spacer/>
 				<field name="$isReadOnly" hidden="true"/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
-				<panel name="descriptionPanel" title="Description" colSpan="12">
+				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly">
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 			</panel>
-			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
+			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0 || $isReadOnly" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
 				<panel-related field="subLineListPanel" onChange="action-sale-order-line-compute-total-pack" colSpan="12" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" canRemove="false"/>
 				<field name="totalPack" readonly="true"/>
 			</panel>
-			<panel name="marginPanel" title="Margin">
+			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
 				<field name="subTotalGrossMargin" readonly="true"/>
 				<field name="subMarginRate" readonly="true"/>
 				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
-			<panel name="deliveryPanel" title="Delivery">
+			<panel name="deliveryPanel" title="Delivery" readonlyIf="$isReadOnly">
 				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
 				<field name="deliveredQty" readonly="true"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 			</panel>
-			<panel name="invoicingFollowUpPanel" title="Invoicing" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
+			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="invoicingDate"/>
 				<field name="amountInvoiced" />
 				<panel-dashlet name="invoiceLinesFromSOLinePanel" action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 			</panel>
-			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" if-module="axelor-business-project">
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly" if-module="axelor-business-project">
 				<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="toInvoice" colSpan="3" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 			</panel>
-			<panel name="analyticDistributionPanel"  title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<button name="generateDistributionLinesBtn" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticMoveLineListPanel" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
-			<panel name="settingsPanel" title="Configuration" >
+			<panel name="settingsPanel" readonlyIf="$isReadOnly" title="Configuration" >
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="standardDelay" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" hidden="true"  showIf="saleSupplySelect == 2 || saleSupplySelect ==3" />
 				<field name="supplierPartner" showIf="saleSupplySelect == 2" onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
@@ -318,7 +325,7 @@
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
-    	<action name="action-sale-order-sub-line-record-form-isReadOnly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+    	<action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
@@ -425,9 +432,9 @@
 	
     <!-- ACTION RECORD -->
     
-	<action-record name="action-sale-order-sub-line-record-form-isReadOnly" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="$isReadOnly" expr="eval: true" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; isSubLine"/>
-    </action-record>
+	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
+    	<field name="$isReadOnly" expr="eval: isSubLine"/>
+	</action-record>
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>

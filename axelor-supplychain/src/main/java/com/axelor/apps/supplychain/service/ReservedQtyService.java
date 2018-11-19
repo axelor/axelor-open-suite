@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -112,4 +113,24 @@ public interface ReservedQtyService {
    */
   BigDecimal computeRealReservedQty(
       StockLocationLine stockLocationLine, BigDecimal requestedReservedQty);
+
+  /**
+   * Update allocated quantity in sale order line.
+   *
+   * @param saleOrderLine
+   * @param newReservedQty
+   * @throws AxelorException if there is no stock move generated or if we cannot allocate more
+   *     quantity.
+   */
+  void updateReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
+      throws AxelorException;
+
+  /**
+   * Update requested quantity in sale order line.
+   *
+   * @param saleOrderLine
+   * @param newReservedQty
+   */
+  void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
+      throws AxelorException;
 }

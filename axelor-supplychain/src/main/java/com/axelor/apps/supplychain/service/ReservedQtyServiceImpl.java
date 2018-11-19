@@ -33,6 +33,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
@@ -241,6 +242,94 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     BigDecimal qtyLeftToBeAllocated =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     return qtyLeftToBeAllocated.min(requestedReservedQty);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
+      throws AxelorException {
+    StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
+
+    if (stockMoveLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
+    }
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(
+                stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+    BigDecimal availableQtyToBeReserved =
+        stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+    BigDecimal diffReservedQuantity = newReservedQty.subtract(saleOrderLine.getReservedQty());
+    if (availableQtyToBeReserved.compareTo(diffReservedQuantity) < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_QTY_NOT_AVAILABLE));
+    }
+    // update in stock move line and sale order line
+    updateReservedQty(stockMoveLine, stockMoveLine.getProduct(), newReservedQty);
+
+    Product product = stockMoveLine.getProduct();
+    // update in stock location line
+    BigDecimal diffReservedQuantityLocation =
+        convertUnitWithProduct(
+            stockMoveLine.getUnit(), product.getUnit(), diffReservedQuantity, product);
+    stockLocationLine.setReservedQty(
+        stockLocationLine.getReservedQty().add(diffReservedQuantityLocation));
+
+    // update requested reserved qty
+    if (newReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
+      updateRequestedReservedQty(saleOrderLine, newReservedQty);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
+      throws AxelorException {
+    saleOrderLine.setRequestedReservedQty(newReservedQty);
+
+    StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
+
+    if (stockMoveLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
+    }
+    // update in stock move line and sale order line
+    stockMoveLine.setRequestedReservedQty(newReservedQty);
+    saleOrderLine.setRequestedReservedQty(newReservedQty);
+
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(
+                stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+
+    BigDecimal diffReservedQuantity =
+        newReservedQty.subtract(saleOrderLine.getRequestedReservedQty());
+    Product product = stockMoveLine.getProduct();
+    // update in stock location line
+    BigDecimal diffReservedQuantityLocation =
+        convertUnitWithProduct(
+            stockMoveLine.getUnit(), product.getUnit(), diffReservedQuantity, product);
+    stockLocationLine.setRequestedReservedQty(
+        stockLocationLine.getRequestedReservedQty().add(diffReservedQuantityLocation));
+
+    // update requested reserved qty
+    if (newReservedQty.compareTo(saleOrderLine.getReservedQty()) < 0) {
+      updateReservedQty(saleOrderLine, newReservedQty);
+    }
+  }
+
+  protected StockMoveLine getPlannedStockMoveLine(SaleOrderLine saleOrderLine) {
+    return Beans.get(StockMoveLineRepository.class)
+        .all()
+        .filter(
+            "self.saleOrderLine = :saleOrderLine " + "AND self.stockMove.statusSelect = :planned")
+        .bind("saleOrderLine", saleOrderLine)
+        .bind("planned", StockMoveRepository.STATUS_PLANNED)
+        .fetchOne();
   }
 
   /** Convert but with null check. Return start value if one unit is null. */
