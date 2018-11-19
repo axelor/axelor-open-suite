@@ -342,6 +342,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
+- Use the char ';' for subrogation release export
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
