@@ -36,6 +36,7 @@
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
+- Production : Generate Unique Barcode on Duplicate Manufacture order.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

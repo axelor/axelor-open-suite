@@ -52,6 +52,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
         operationOrder.setToConsumeProdProductList(null);
         operationOrder.setConsumedStockMoveLineList(null);
         operationOrder.setDiffConsumeProdProductList(null);
+        operationOrder.setBarCode(null);
       }
     }
     return super.copy(entity, deep);
