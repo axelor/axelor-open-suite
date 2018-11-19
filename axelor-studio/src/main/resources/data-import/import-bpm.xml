@@ -58,6 +58,7 @@
  			<bind node="targetModel" to="targetModel" />
  			<bind node="widget" to="widget" />
  			<bind node="widgetAttrs" to="widgetAttrs" />
+ 			<bind node="valueExpr" to="valueExpr"/>
  			<bind node="jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true" alias="jsonModel" create="false" />
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
@@ -98,6 +99,7 @@
  			<bind node="targetModel" to="targetModel" />
  			<bind node="widget" to="widget" />
  			<bind node="widgetAttrs" to="widgetAttrs" />
+ 			<bind node="valueExpr" to="valueExpr"/>
  			<bind node="jsonModel" to="jsonModel" search="self.name = :jsonModel" update="true" create="false" />
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
@@ -345,7 +347,8 @@
 				<bind node="metaModel" alias="metaModel" />
 				<bind node="jsonModel" alias="jsonModel" />
 				<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.fullName = :metaModel" create="false"/>
-				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :jsonModel" create="false"/>
+				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :jsonModel" create="false" if="jsonModel != null"/>
+				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.model = :model and self.modelField = :modelField" create="false" if="jsonModel == null"/>
 				<bind node="operator" to="operator" />
 				<bind node="targetField" to="targetField"/>
 				<bind node="targetType" to="targetType"/>
