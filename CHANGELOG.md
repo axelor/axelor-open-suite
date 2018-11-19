@@ -221,6 +221,8 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Display estimated delivery dates on sale order printing.
 - StockMove report : Add an option in Stock config to display the details of line or consolidate per product code, name and unit.
 Also in case of aggregation, we have to concatenate the tracking number list and the description of lines
+- StockMove report : Display rack of from and to stock location (for internal and ingoing stock move), display invoicing and delivery address for outgoing stock move.
+Only display line where quantity is greater than 0.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
