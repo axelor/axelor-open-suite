@@ -2052,7 +2052,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">"Packaging list"</value>
+                                            <value type="javascript">"Packing list"</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2177,7 +2177,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Packaging number:"</value>
+                                    <value type="javascript">"Packing number:"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
