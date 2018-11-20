@@ -108,6 +108,7 @@
         <field name="deliverToCustomerPartner" expr="eval: null" />
         <field name="logisticalFormLineList" expr="eval: null" />
         <field name="customerAccountNumberToCarrier" expr="eval: null" />
+        <field name="stockLocation" expr="eval: null"/>
     </action-record>
     
     <action-record name="action-logistical-form-stock-location-change" model="com.axelor.apps.stock.db.LogisticalForm">
