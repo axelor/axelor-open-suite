@@ -37,6 +37,7 @@
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
 - Use the char ';' for subrogation release export
+- Allow to define large text for sale order and purchase order information fields on Partner.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
