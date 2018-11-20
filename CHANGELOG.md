@@ -98,6 +98,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- INVOICE : fix total decimal amount format on report
 
 ## [5.0.6] - 2018-10-06
 ## Features
