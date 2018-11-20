@@ -1177,7 +1177,7 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="name">order_ref</property>
-                    <expression name="expression">row["order_number"] ? row["sale_order_seq"] + " / " + row["order_number"] : row["sale_order_seq"]</expression>
+                    <expression name="expression">row["external_reference"] ? row["sale_order_seq"] + " / " + row["external_reference"] : row["sale_order_seq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>

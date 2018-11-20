@@ -409,6 +409,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- PACKING LIST : Use the external_reference instead of order number
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -638,7 +639,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
-- INVENTORy : fill the actual qty
+- INVENTORY : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
