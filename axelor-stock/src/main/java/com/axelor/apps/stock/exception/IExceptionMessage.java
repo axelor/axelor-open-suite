@@ -140,7 +140,7 @@ public interface IExceptionMessage {
 
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
   static final String MISSING_PRODUCT_WEIGHT_UNIT = /*$$(*/
-      "Please configure weight units for this product packaging : %s" /*)*/;
+      "Please configure weight units for this product packing : %s" /*)*/;
 
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
@@ -152,7 +152,7 @@ public interface IExceptionMessage {
       "Missing logistical form sequence for company %s" /*)*/;
   String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/ "Partner mismatch: %s" /*)*/;
   String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid dimensions on packaging line No. %d" /*)*/;
+      "Invalid dimensions on packing line No. %d" /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/ "Type is required on line %d." /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/
       "Stock move line is required on line %d." /*)*/;
