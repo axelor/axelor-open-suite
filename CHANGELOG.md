@@ -100,6 +100,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
 - PACKING LIST : Use the external_reference instead of order number
 
 ## [5.0.6] - 2018-10-06
