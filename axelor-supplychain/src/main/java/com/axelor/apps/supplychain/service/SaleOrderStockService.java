@@ -64,11 +64,4 @@ public interface SaleOrderStockService {
    * @throws AxelorException
    */
   void fullyUpdateDeliveryState(SaleOrder saleOrder) throws AxelorException;
-
-  /**
-   * Copy the computed reserved quantity field in stock move lines to sale order lines.
-   *
-   * @param stockMove a stockMove with lines linked to sale order lines
-   */
-  StockMove updateSOLinesReservedQty(StockMove stockMove);
 }

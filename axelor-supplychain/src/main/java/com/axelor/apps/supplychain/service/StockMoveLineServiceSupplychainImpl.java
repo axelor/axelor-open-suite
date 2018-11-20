@@ -96,7 +96,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       StockMove stockMove,
       int type,
       boolean taxed,
-      BigDecimal taxRate)
+      BigDecimal taxRate,
+      SaleOrderLine saleOrderLine)
       throws AxelorException {
     if (product != null) {
 
@@ -112,6 +113,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setSaleOrderLine(saleOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
@@ -284,12 +286,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
     BigDecimal reservedQtyAfterSplit =
-        BigDecimal.ZERO.max(stockMoveLine.getReservedQty().subtract(qty));
-    BigDecimal reservedQtyInNewLine = stockMoveLine.getReservedQty().min(qty);
-    stockMoveLine.setReservedQty(reservedQtyAfterSplit);
-    newStockMoveLine.setReservedQty(reservedQtyInNewLine);
-    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
+        BigDecimal.ZERO.max(stockMoveLine.getRequestedReservedQty().subtract(qty));
+    BigDecimal reservedQtyInNewLine = stockMoveLine.getRequestedReservedQty().min(qty);
+    stockMoveLine.setRequestedReservedQty(reservedQtyAfterSplit);
+    newStockMoveLine.setRequestedReservedQty(reservedQtyInNewLine);
     newStockMoveLine.setSaleOrderLine(stockMoveLine.getSaleOrderLine());
+    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
     return newStockMoveLine;
   }
 

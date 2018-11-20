@@ -43,7 +43,6 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -175,9 +174,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
 
-    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
-      stockMove = updateSOLinesReservedQty(stockMove);
-    }
     return stockMove;
   }
 
@@ -403,14 +399,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               stockMove,
               StockMoveLineService.TYPE_SALES,
               saleOrderLine.getSaleOrder().getInAti(),
-              taxRate);
+              taxRate,
+              saleOrderLine);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
       }
 
       if (stockMoveLine != null) {
-        stockMoveLine.setSaleOrderLine(saleOrderLine);
         updatePackInfo(saleOrderLine, stockMoveLine);
       }
 
@@ -528,19 +524,5 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
-  }
-
-  @Override
-  public StockMove updateSOLinesReservedQty(StockMove stockMove) {
-    if (stockMove.getStockMoveLineList() != null) {
-      stockMove
-          .getStockMoveLineList()
-          .stream()
-          .filter(stockMoveLine -> stockMoveLine.getSaleOrderLine() != null)
-          .forEach(
-              stockMoveLine ->
-                  stockMoveLine.getSaleOrderLine().setReservedQty(stockMoveLine.getReservedQty()));
-    }
-    return stockMove;
   }
 }
