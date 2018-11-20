@@ -306,16 +306,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">status_select</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">total_net_weight</property>
+                    <property name="columnName">total_net_mass</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">total_net_weight</text-property>
-                    <text-property name="heading">total_net_weight</text-property>
+                    <text-property name="displayName">total_net_mass</text-property>
+                    <text-property name="heading">total_net_mass</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">total_gross_weight</property>
+                    <property name="columnName">total_gross_mass</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">total_gross_weight</text-property>
-                    <text-property name="heading">total_gross_weight</text-property>
+                    <text-property name="displayName">total_gross_mass</text-property>
+                    <text-property name="heading">total_gross_mass</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">total_volume</property>
@@ -433,12 +433,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">total_net_weight</property>
+                        <property name="name">total_net_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">total_gross_weight</property>
+                        <property name="name">total_gross_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -538,15 +538,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">total_net_weight</property>
-                    <property name="nativeName">total_net_weight</property>
+                    <property name="name">total_net_mass</property>
+                    <property name="nativeName">total_net_mass</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">total_gross_weight</property>
-                    <property name="nativeName">total_gross_weight</property>
+                    <property name="name">total_gross_mass</property>
+                    <property name="nativeName">total_gross_mass</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -653,8 +653,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	delivery_number,
 	collection_date,
 	status_select,
-	total_net_weight,
-	total_gross_weight,
+	total_net_mass,
+	total_gross_mass,
 	total_volume,
 	tracking,
 	internal_delivery_comment,
@@ -667,7 +667,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	CompanyAddress.addressl6 as company_addressl6,
 	CompanyCountry.name as company_country,
 	Customer.partner_seq as customer_seq,
-	Customer.full_name as customer_full_name,
+	CONCAT(Customer.name, ' ', Customer.first_name) as customer_full_name,
 	Unit.label_to_printing as unit_label
 from stock_logistical_form as LogisticalForm
 left join base_company as Company on LogisticalForm.company = Company.id
@@ -679,7 +679,7 @@ left join base_address as CompanyAddress on Company.address = CompanyAddress.id
 left join base_country as CompanyCountry on CompanyAddress.addressl7country = CompanyCountry.id
 left join meta_file as CompanyLogo on Company.logo = CompanyLogo.id
 left join stock_stock_config as StockConfig on Company.id = StockConfig.company
-left join base_unit as Unit on StockConfig.customs_weight_unit = Unit.id
+left join base_unit as Unit on StockConfig.customs_mass_unit = Unit.id
 where LogisticalForm.id = ?
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -922,7 +922,7 @@ where LogisticalForm.id = ?
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>total_gross_weight</design:name>
+              <design:name>total_gross_mass</design:name>
               <design:position>12</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
@@ -930,11 +930,11 @@ where LogisticalForm.id = ?
             <design:scale>2</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>total_gross_weight</design:displayName>
+              <design:displayName>total_gross_mass</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>total_gross_weight</design:label>
+            <design:label>total_gross_mass</design:label>
             <design:formattingHints>
               <design:displaySize>21</design:displaySize>
             </design:formattingHints>
@@ -943,7 +943,7 @@ where LogisticalForm.id = ?
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>total_net_weight</design:name>
+              <design:name>total_net_mass</design:name>
               <design:position>13</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
@@ -951,11 +951,11 @@ where LogisticalForm.id = ?
             <design:scale>2</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>total_net_weight</design:displayName>
+              <design:displayName>total_net_mass</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>total_net_weight</design:label>
+            <design:label>total_net_mass</design:label>
             <design:formattingHints>
               <design:displaySize>21</design:displaySize>
             </design:formattingHints>
@@ -1207,10 +1207,10 @@ pcNumber;</expression>
                     <text-property name="heading">parcel_pallet_number</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">gross_weight</property>
+                    <property name="columnName">gross_mass</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">gross_weight</text-property>
-                    <text-property name="heading">gross_weight</text-property>
+                    <text-property name="displayName">gross_mass</text-property>
+                    <text-property name="heading">gross_mass</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">dimensions</property>
@@ -1255,10 +1255,10 @@ pcNumber;</expression>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">net_weight</property>
+                    <property name="columnName">net_mass</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">net_weight</text-property>
-                    <text-property name="heading">net_weight</text-property>
+                    <text-property name="displayName">net_mass</text-property>
+                    <text-property name="heading">net_mass</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">line_format</property>
@@ -1313,7 +1313,7 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">gross_weight</property>
+                        <property name="name">gross_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -1353,7 +1353,7 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">net_weight</property>
+                        <property name="name">net_mass</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -1405,8 +1405,8 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">gross_weight</property>
-                    <property name="nativeName">gross_weight</property>
+                    <property name="name">gross_mass</property>
+                    <property name="nativeName">gross_mass</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1461,8 +1461,8 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">net_weight</property>
-                    <property name="nativeName">net_weight</property>
+                    <property name="name">net_mass</property>
+                    <property name="nativeName">net_mass</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1479,7 +1479,7 @@ pcNumber;</expression>
 	LogisticalFormLine.type_select,
 	LogisticalFormLine.qty,
 	LogisticalFormLine.parcel_pallet_number,
-	LogisticalFormLine.gross_weight,
+	LogisticalFormLine.gross_mass,
 	LogisticalFormLine.dimensions,
 	StockMove.stock_move_seq,
 	Product.code as product_code,
@@ -1487,18 +1487,18 @@ pcNumber;</expression>
 	SaleOrder.sale_order_seq,
 	SaleOrder.order_number,
 	SaleOrder.external_reference,
-	StockMoveLine.net_weight,
+	StockMoveLine.net_mass,
 	coalesce(nullif(translat.message_value, ''), translat.message_key) as line_format
 
 from stock_logistical_form_line as LogisticalFormLine
 left join stock_stock_move_line as StockMoveLine on LogisticalFormLine.stock_move_line = StockMoveLine.id
 left join stock_stock_move as StockMove on StockMoveLine.stock_move = StockMove.id
 left join base_product as Product on StockMoveLine.product = Product.id
-left join sale_sale_order as SaleOrder on StockMove.sale_order = SaleOrder.id
+left join sale_sale_order as SaleOrder on StockMove.origin_id = SaleOrder.id
 left join meta_translation as translat on translat.language = ?
 and translat.message_key = case LogisticalFormLine.type_select
-when 1 then 'Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>'
-when 2 then 'Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross weight ({2}): <strong>{3}</strong>'
+when 1 then 'Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>'
+when 2 then 'Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>'
 else 'Stock move No. {0} / Ref. No. {1}'
 end
 where LogisticalFormLine.logistical_form = ?
@@ -1659,7 +1659,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>gross_weight</design:name>
+              <design:name>gross_mass</design:name>
               <design:position>8</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>2</design:nativeDataTypeCode>
@@ -1667,11 +1667,11 @@ order by LogisticalFormLine.sequence]]></xml-property>
             <design:scale>2</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>gross_weight</design:displayName>
+              <design:displayName>gross_mass</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>gross_weight</design:label>
+            <design:label>gross_mass</design:label>
             <design:formattingHints>
               <design:displaySize>21</design:displaySize>
             </design:formattingHints>
@@ -1883,15 +1883,15 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
-                            <property name="name">total_net_weight</property>
-                            <text-property name="displayName">total_net_weight</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["total_net_weight"]</expression>
+                            <property name="name">total_net_mass</property>
+                            <text-property name="displayName">total_net_mass</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["total_net_mass"]</expression>
                             <property name="dataType">decimal</property>
                         </structure>
                         <structure>
-                            <property name="name">total_gross_weight</property>
-                            <text-property name="displayName">total_gross_weight</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["total_gross_weight"]</expression>
+                            <property name="name">total_gross_mass</property>
+                            <text-property name="displayName">total_gross_mass</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["total_gross_mass"]</expression>
                             <property name="dataType">decimal</property>
                         </structure>
                         <structure>
@@ -2014,6 +2014,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                         <image id="30">
                                             <property name="height">67px</property>
                                             <property name="width">180px</property>
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value + row["company_logo_file_path"]</expression>
                                         </image>
@@ -2051,7 +2052,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">"Packaging list"</value>
+                                            <value type="javascript">"Packing list"</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2176,7 +2177,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Packaging number:"</value>
+                                    <value type="javascript">"Packing number:"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2350,6 +2351,8 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="95">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="4530">
                         <property name="dataSet">LogisticalFormDS</property>
                         <list-property name="boundDataColumns">
@@ -2364,7 +2367,6 @@ order by LogisticalFormLine.sequence]]></xml-property>
                         <property name="resultSetColumn">customer_full_name</property>
                     </data>
                 </cell>
-                <cell id="96"/>
                 <cell id="97"/>
             </row>
         </grid>
@@ -2391,15 +2393,15 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">total_net_weight</property>
-                    <text-property name="displayName">total_net_weight</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["total_net_weight"]</expression>
+                    <property name="name">total_net_mass</property>
+                    <text-property name="displayName">total_net_mass</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_net_mass"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">total_gross_weight</property>
-                    <text-property name="displayName">total_gross_weight</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["total_gross_weight"]</expression>
+                    <property name="name">total_gross_mass</property>
+                    <text-property name="displayName">total_gross_mass</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_gross_mass"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
@@ -2552,9 +2554,9 @@ if (String.myFormat === undefined) {
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">gross_weight</property>
-                                <text-property name="displayName">gross_weight</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["gross_weight"]</expression>
+                                <property name="name">gross_mass</property>
+                                <text-property name="displayName">gross_mass</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["gross_mass"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -2602,9 +2604,9 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">net_weight</property>
-                                <text-property name="displayName">net_weight</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["net_weight"] &amp;&amp; row["type_select"] == 3 ? dataSetRow["net_weight"] : null</expression>
+                                <property name="name">net_mass</property>
+                                <text-property name="displayName">net_mass</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["net_mass"] &amp;&amp; row["type_select"] == 3 ? dataSetRow["net_mass"] : null</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2633,9 +2635,9 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">net_weight_1</property>
-                                <text-property name="displayName">net_weight</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["net_weight"]</expression>
+                                <property name="name">net_mass_1</property>
+                                <text-property name="displayName">net_mass</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["net_mass"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -2648,15 +2650,15 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["net_weight"] * row["qty"]</expression>
+                                        <expression name="value" type="javascript">row["net_mass"] * row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">row["type_select"] == 3</expression>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">TotalNetWeight</property>
-                                <expression name="expression" type="javascript">row._outer["total_net_weight"]</expression>
+                                <property name="name">TotalNetMass</property>
+                                <expression name="expression" type="javascript">row._outer["total_net_mass"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2702,16 +2704,16 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
 ]]></method>
                         <column id="215"/>
                         <column id="219">
-                            <property name="width">10%</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="220">
                             <property name="width">25%</property>
                         </column>
                         <column id="223">
-                            <property name="width">9%</property>
+                            <property name="width">8%</property>
                         </column>
                         <column id="258">
-                            <property name="width">5%</property>
+                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="144">
@@ -2811,7 +2813,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Net weight"</value>
+                                                    <value type="javascript">"Net mass"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2959,7 +2961,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">"Total net weight"</value>
+                                                        <value type="javascript">"Total net mass"</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -2971,13 +2973,13 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                                     <property name="dataType">string</property>
                                                 </structure>
                                                 <structure>
-                                                    <property name="name">ParcelPalletNetWeight</property>
+                                                    <property name="name">ParcelPalletNetMass</property>
                                                     <expression name="expression" type="javascript">row["translation"]</expression>
                                                     <property name="dataType">string</property>
                                                     <property name="allowExport">true</property>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">ParcelPalletNetWeight</property>
+                                            <property name="resultSetColumn">ParcelPalletNetMass</property>
                                         </data>
                                     </cell>
                                     <cell id="251">
@@ -2992,7 +2994,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                         <data id="286">
                                             <structure name="numberFormat">
                                                 <property name="category">Fixed</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                                <property name="pattern">###0.000{RoundingMode=HALF_UP}</property>
                                             </structure>
                                             <property name="resultSetColumn">Aggregation</property>
                                         </data>
@@ -3019,8 +3021,8 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
 switch (row["type_select"]) {
 case 1:
 case 2:
-  var gross_weight = row["gross_weight"] ? Formatter.format(row["gross_weight"],  "#,##0.00") : "N/A";
-  String.myFormat(row["line_format"], row["parcel_pallet_number"], row["dimensions"] || "N/A", row._outer["unit_label"], gross_weight);
+  var gross_mass = row["gross_mass"] ? Formatter.format(row["gross_mass"],  "#,##0.00") : "N/A";
+  String.myFormat(row["line_format"], row["parcel_pallet_number"], row["dimensions"] || "N/A", row._outer["unit_label"], gross_mass);
   break;
 default:
   "&amp;nbsp;".repeat(8) + String.myFormat(row["line_format"], row["stock_move_seq"], row["order_ref"]);
@@ -3085,10 +3087,10 @@ default:
                                     <data id="195">
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">net_weight</property>
+                                        <property name="resultSetColumn">net_mass</property>
                                     </data>
                                 </cell>
                                 <cell id="255">
@@ -3125,7 +3127,7 @@ default:
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Number of parcels/pallets: {0} - Total gross weight ({1}): {2}"</value>
+                                                    <value type="javascript">"Number of parcels/pallets: {0} - Total gross mass ({1}): {2}"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3139,8 +3141,8 @@ default:
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
-var total_gross_weight = row._outer._outer["total_gross_weight"] ? Formatter.format(row._outer._outer["total_gross_weight"],  "#,##0.00") : "N/A";
-String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer._outer["unit_label"], total_gross_weight);
+var total_gross_mass = row._outer._outer["total_gross_mass"] ? Formatter.format(row._outer._outer["total_gross_mass"],  "#,##0.00") : "N/A";
+String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer._outer["unit_label"], total_gross_mass);
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -3171,7 +3173,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Total net weight"</value>
+                                                    <value type="javascript">"Total net mass"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3183,13 +3185,13 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">ParcelPalletNetWeight</property>
+                                                <property name="name">ParcelPalletNetMass</property>
                                                 <expression name="expression" type="javascript">row["translation"]</expression>
                                                 <property name="dataType">string</property>
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
-                                        <property name="resultSetColumn">ParcelPalletNetWeight</property>
+                                        <property name="resultSetColumn">ParcelPalletNetMass</property>
                                     </data>
                                 </cell>
                                 <cell id="210">
@@ -3203,10 +3205,10 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
-                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">TotalNetWeight</property>
+                                        <property name="resultSetColumn">TotalNetMass</property>
                                     </data>
                                 </cell>
                                 <cell id="257">
