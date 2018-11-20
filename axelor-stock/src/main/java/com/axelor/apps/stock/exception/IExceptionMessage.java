@@ -144,7 +144,7 @@ public interface IExceptionMessage {
       /*$$(*/ "Please fill the tracking number for the product(s) : %s" /*)*/;
 
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
-  
+
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
 

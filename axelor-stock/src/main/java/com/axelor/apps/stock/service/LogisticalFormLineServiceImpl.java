@@ -73,6 +73,10 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
     domainList.add("self.realQty > 0");
     domainList.add("COALESCE(self.stockMove.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
 
+    if (logisticalForm.getStockLocation() != null) {
+      domainList.add("self.stockMove.fromStockLocation = :stockLocation");
+    }
+
     List<StockMoveLine> fullySpreadStockMoveLineList =
         Beans.get(LogisticalFormService.class).getFullySpreadStockMoveLineList(logisticalForm);
 
