@@ -2606,7 +2606,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row._outer._outer["display_track_nbr_on_picking_printing"] == false</expression>
+                                                        <expression name="valueExpr" type="javascript">row._outer["display_track_nbr_on_picking_printing"] == false</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
