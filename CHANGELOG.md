@@ -97,6 +97,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
 
 ## [5.0.6] - 2018-10-06
 ## Features
