@@ -102,6 +102,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - INVOICEPAYMENT : company bank details filter
 - Fixed a button and a field having the same name in user view.
 - PACKING LIST : Use the external_reference instead of order number
+- Event : Fill correct partner when generate event from Customer. 
 
 ## [5.0.6] - 2018-10-06
 ## Features
