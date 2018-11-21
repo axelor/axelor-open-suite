@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -60,6 +61,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockConfigService stockConfigService;
   protected UnitConversionService unitConversionService;
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -67,13 +69,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineService stockMoveLineService,
       StockConfigService stockConfigService,
       UnitConversionService unitConversionService,
-      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      AppBaseService appBaseService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
     this.unitConversionService = unitConversionService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -253,11 +257,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
         priceDiscounted =
-            unitConversionService.convertWithProduct(
-                unit, saleOrderLine.getUnit(), priceDiscounted, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                unit,
+                saleOrderLine.getUnit(),
+                priceDiscounted,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                saleOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;

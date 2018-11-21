@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -81,6 +82,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject private BudgetDistributionRepository budgetDistributionRepo;
 
@@ -90,12 +92,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       StockMoveRepository stockMoveRepo,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AppBaseService appBaseService) {
     this.unitConversionService = unitConversionService;
     this.stockMoveRepo = stockMoveRepo;
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -231,13 +235,18 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
-                unitConversionService.convertWithProduct(
-                    purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+                unitConversionService.convert(
+                    purchaseOrderLine.getUnit(),
+                    unit,
+                    qty,
+                    qty.scale(),
+                    purchaseOrderLine.getProduct());
             priceDiscounted =
-                unitConversionService.convertWithProduct(
+                unitConversionService.convert(
                     unit,
                     purchaseOrderLine.getUnit(),
                     priceDiscounted,
+                    appBaseService.getNbDecimalDigitForUnitPrice(),
                     purchaseOrderLine.getProduct());
           }
 

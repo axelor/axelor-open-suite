@@ -205,11 +205,15 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
     if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
       qty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
       realReservedQty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              productUnit,
+              realReservedQty,
+              realReservedQty.scale(),
+              stockMoveLine.getProduct());
     }
     super.updateLocations(
         stockMoveLine,
