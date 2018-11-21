@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
@@ -102,6 +103,9 @@ When we update an existing move in daybook mode, we update the partner balances 
 - INVOICEPAYMENT : company bank details filter
 - Fixed a button and a field having the same name in user view.
 - PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features
