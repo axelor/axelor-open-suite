@@ -225,6 +225,7 @@ Also in case of aggregation, we have to concatenate the tracking number list and
 Only display line where quantity is greater than 0.
 - Add a specific not for invoice on company bank details
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
+- Sale Invoice & Refund : Add factor viewer.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
