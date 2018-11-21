@@ -345,10 +345,46 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
       return null;
     }
-    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
-    StockMoveLine generatedStockMoveLine = super.getMergedStockMoveLine(stockMoveLineList);
-    generatedStockMoveLine.setSaleOrderLine(firstStockMoveLine.getSaleOrderLine());
-    generatedStockMoveLine.setPurchaseOrderLine(firstStockMoveLine.getPurchaseOrderLine());
+
+    if (stockMoveLineList.size() == 1) {
+      return stockMoveLineList.get(0);
+    }
+
+    SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
+
+    Product product;
+    String productName;
+    String description;
+    BigDecimal quantity = BigDecimal.ZERO;
+    Unit unit;
+
+    if (saleOrderLine != null) {
+      product = saleOrderLine.getProduct();
+      productName = saleOrderLine.getProductName();
+      description = saleOrderLine.getDescription();
+      unit = saleOrderLine.getUnit();
+
+    } else if (purchaseOrderLine != null) {
+      product = purchaseOrderLine.getProduct();
+      productName = purchaseOrderLine.getProductName();
+      description = purchaseOrderLine.getDescription();
+      unit = purchaseOrderLine.getUnit();
+
+    } else {
+      return null; // shouldn't ever happen or you misused this function
+    }
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      quantity = quantity.add(stockMoveLine.getRealQty());
+    }
+
+    StockMoveLine generatedStockMoveLine =
+        createStockMoveLine(
+            product, productName, description, quantity, null, null, unit, null, null);
+
+    generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
+    generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     return generatedStockMoveLine;
   }
 }
