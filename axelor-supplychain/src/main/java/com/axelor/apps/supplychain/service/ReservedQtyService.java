@@ -157,4 +157,17 @@ public interface ReservedQtyService {
   void updateReservedQuantityInStockMoveLineFromSaleOrderLine(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException;
+
+  /**
+   * Update requested reserved quantity in stock move lines from sale order line. Manage the case of
+   * split stock move lines.
+   *
+   * @param saleOrderLine
+   * @param product
+   * @param newReservedQty
+   * @throws AxelorException
+   */
+  void updateRequestedReservedQuantityInStockMoveLines(
+      SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
+      throws AxelorException;
 }

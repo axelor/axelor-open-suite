@@ -367,6 +367,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
 
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
@@ -379,6 +380,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 priceDiscounted,
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 saleOrderLine.getProduct());
+        requestedReservedQty =
+            unitConversionService.convertWithProduct(
+                saleOrderLine.getUnit(), unit, requestedReservedQty, saleOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;
@@ -393,7 +397,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
               qty,
-              saleOrderLine.getRequestedReservedQty(),
+              requestedReservedQty,
               priceDiscounted,
               unit,
               stockMove,
