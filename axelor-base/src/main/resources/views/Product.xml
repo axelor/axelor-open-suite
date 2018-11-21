@@ -260,7 +260,7 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
-            <panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
+            <panel name="packing" title="Packing" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
 	  			<panel name="mass" title="Mass" colSpan="6">
 	  				<field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossMass"/>

@@ -224,6 +224,8 @@ If not date is filled, added an option to choose or not to include it for sale o
 Also in case of aggregation, we have to concatenate the tracking number list and the description of lines
 - StockMove report : Display rack of from and to stock location (for internal and ingoing stock move), display invoicing and delivery address for outgoing stock move.
 Only display line where quantity is greater than 0.
+- Add a specific not for invoice on company bank details
+- LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -305,6 +307,9 @@ Only display line where quantity is greater than 0.
 Now, In this case, we use the today date.
 - MRP : When we select manually a sale order in filter, that doesn't have a stock location defined, we get a NPE.
 So, now, we check if the saleOrder.stockLocation is the same stock location or one of sub stock location of the MRP stock location.
+- Now keep the link to the sale order line or purchase order line when we split a stock move line. 
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -343,6 +348,9 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
+- Use the char ';' for subrogation release export
+- Allow to define large text for sale order and purchase order information fields on Partner.
+- Replace Packaging with Packing in modules base, supplychain and stock.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -405,6 +413,8 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
+- PACKING LIST : Use the external_reference instead of order number
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -634,7 +644,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
-- INVENTORy : fill the actual qty
+- INVENTORY : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22

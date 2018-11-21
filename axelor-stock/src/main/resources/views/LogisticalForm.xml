@@ -27,8 +27,8 @@
                 onClick="action-logistical-form-carrier-validated" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-process-collected" icon="fa-truck" />
-            <button name="packagingListBtn" title="Print packaging list" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
+            <button name="packingListBtn" title="Print packing list" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
             <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
         <panel colSpan="12">
@@ -36,6 +36,9 @@
             <field name="collectionDate" readonlyIf="statusSelect == 3"/>
             <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
                 grid-view="company-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
+            <field name="stockLocation" onChange="action-logistical-form-stock-location-change" form-view="stock-location-form" 
+            	grid-view="stock-location-grid" canEdit="false" readonlyIf="statusSelect > 1"
+            	domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"/>
             <field name="deliverToCustomerPartner" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
                 onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
                 canEdit="false" readonlyIf="statusSelect > 1"/>
@@ -105,6 +108,11 @@
         <field name="deliverToCustomerPartner" expr="eval: null" />
         <field name="logisticalFormLineList" expr="eval: null" />
         <field name="customerAccountNumberToCarrier" expr="eval: null" />
+        <field name="stockLocation" expr="eval: null"/>
+    </action-record>
+    
+    <action-record name="action-logistical-form-stock-location-change" model="com.axelor.apps.stock.db.LogisticalForm">
+        <field name="logisticalFormLineList" expr="eval: null" />
     </action-record>
 
     <action-group name="action-logistical-form-partner-change">

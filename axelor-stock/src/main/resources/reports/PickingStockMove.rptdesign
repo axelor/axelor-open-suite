@@ -1206,8 +1206,8 @@ left join stock_tracking_number as TrackingNumber on (StockMoveLine.tracking_num
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_stock_location)
-left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location)
-where StockMove.id = ? AND StockLocationLine.product = Product.id
+left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location AND StockLocationLine.product = Product.id)
+where StockMove.id = ?
 order by StockMoveLine.sequence]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2684,7 +2684,7 @@ row["first_name"]
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row._outer._outer["display_track_nbr_on_picking_printing"] == false</expression>
+                                                    <expression name="valueExpr" type="javascript">row._outer["display_track_nbr_on_picking_printing"] == false</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
