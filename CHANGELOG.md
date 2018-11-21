@@ -139,6 +139,7 @@
 - MRP : generate proposal for product that stock qty is less than stock rule min qty even if there is no other out movement.
 - MRP : if the sale order or purchase order is not delivered, if the date is in the past, now we take it into account with today date.
 If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
+- STOCK MOVE : mass printing for picking stock move report.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
