@@ -304,6 +304,7 @@ Only display line where quantity is greater than 0.
 - Added domain on company for saleOrderLineSet on MRP form
 - MRP : Loop appears when we have a purchase proposal whith a supplier delivery duration that generate a propsal in the past, so excludes for new computation.
 Now, In this case, we use the today date.
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - MRP : When we select manually a sale order in filter, that doesn't have a stock location defined, we get a NPE.
 So, now, we check if the saleOrder.stockLocation is the same stock location or one of sub stock location of the MRP stock location.
 - Now keep the link to the sale order line or purchase order line when we split a stock move line. 
