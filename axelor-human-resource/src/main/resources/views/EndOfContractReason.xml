@@ -7,7 +7,7 @@
 	</grid>
 	
 	<form name="end-of-contract-reason-form" title="End of contract reason" model="com.axelor.apps.hr.db.EndOfContractReason">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="reason" />
 		</panel>
 	</form>

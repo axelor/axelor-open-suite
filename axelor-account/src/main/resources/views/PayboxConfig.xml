@@ -9,7 +9,7 @@
     </grid>
     
     <form name="paybox-config-form" title="Paybox configuration" model="com.axelor.apps.account.db.PayboxConfig"> 
-        <panel name="main" >
+        <panel name="mainPanel" >
 	        <field name="name"/>
 	       	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	       	<field name="payboxUrl"  />

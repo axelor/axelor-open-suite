@@ -12,7 +12,7 @@
     
 	<form name="template-form" title="Template" model="com.axelor.apps.message.db.Template" 
 		onNew="action-template-record-new" width="large">
-		<panel name="main" colSpan="12">
+		<panel name="mainPanel" colSpan="12">
 			<field name="name" colSpan="4"/>
 			<field name="mediaTypeSelect" colSpan="4"/>
 			<field name="isDefault" colSpan="2"/>
@@ -20,26 +20,26 @@
 			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<field name="target"/>
 		</panel>
-		<panel name="recipientAddress" title="Recipient address" showIf="mediaTypeSelect == 1">
+		<panel name="recipientAddressPanel" title="Recipient address" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false"/>
 		</panel>
-        <panel name="from" title="From" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+        <panel name="fromPanel" title="From" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="fromAdress" height="2" colSpan="12"/>
         </panel>
-        <panel name="replyTo" title="Reply to" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+        <panel name="replyToPanel" title="Reply to" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="replyToRecipients" height="1" colSpan="12"/>
         </panel>
-        <panel name="recipients" title="Recipients" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
+        <panel name="recipientsPanel" title="Recipients" showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
         	<field name="toRecipients" height="2" colSpan="12"/>
         	<field name="ccRecipients" height="2" colSpan="12"/>
         	<field name="bccRecipients" height="2" colSpan="12"/>
         </panel>
-		<panel-tabs>
-			<panel name="subjectContent" title="Content" colSpan="12">
+		<panel-tabs name="mainPanelTab">
+			<panel name="subjectContentPanel" title="Content" colSpan="12">
 				<field name="subject" colSpan="12" height="2"/>
 				<field name="content" showTitle="false" widget="html" colSpan="12"/>
 			</panel>
-			<panel-dashlet action="template.messages.by.template" title="Messages"/>
+			<panel-dashlet name="templateMessagePanel" action="template.messages.by.template" title="Messages"/>
 		</panel-tabs>
 	</form>
 

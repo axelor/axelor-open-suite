@@ -4,23 +4,23 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
  	
     <form name="incl-sales-order-dashelt-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-    	<panel-dashlet colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family" height="350" title="Sales" showIf="id != null" />
+    	<panel-dashlet name="customerSalesLastYearvsYtdByFamilyPanel" colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family" height="350" title="Sales" showIf="id != null" />
 	</form>
 	
      <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	   <panel-dashlet colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
+	   <panel-dashlet name="partnerSOPanel" colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
 	</form>
 	
 	<form name="incl-sales-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
-	   <panel-dashlet colSpan="12" action="action-contact-view-sales-orders" title="Sales orders" showIf="id != null"/>
+	   <panel-dashlet name="contactSOPanel" colSpan="12" action="action-contact-view-sales-orders" title="Sales orders" showIf="id != null"/>
 	</form>
 
     <form name="incl-purchases-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-       <panel-dashlet colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; (isSupplier || isCarrier)"/>
+       <panel-dashlet name="partnerPOPasnel" colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; (isSupplier || isCarrier)"/>
     </form>
 
 	<form name="incl-customer-credit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >	
-	     <panel-related  field="customerCreditLineList" colSpan="12" form-view="customer-credit-line-form" grid-view="customer-credit-line-grid" />
+	     <panel-related name="customerCreditLineListPanel"  field="customerCreditLineList" colSpan="12" form-view="customer-credit-line-form" grid-view="customer-credit-line-grid" />
 	</form>
 	
      <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">

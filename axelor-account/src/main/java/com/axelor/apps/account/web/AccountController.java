@@ -48,13 +48,13 @@ public class AccountController {
           accountService.computeBalance(account, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
 
       if (balance.compareTo(BigDecimal.ZERO) >= 0) {
-        response.setAttr("$balance", "title", I18n.get(ITranslation.ACCOUNT_DEBIT_BALANCE));
+        response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_DEBIT_BALANCE));
       } else {
         balance = balance.multiply(new BigDecimal(-1));
-        response.setAttr("$balance", "title", I18n.get(ITranslation.ACCOUNT_CREDIT_BALANCE));
+        response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_CREDIT_BALANCE));
       }
 
-      response.setValue("$balance", balance);
+      response.setValue("$balanceBtn", balance);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

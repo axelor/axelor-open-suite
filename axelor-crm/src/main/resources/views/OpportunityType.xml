@@ -9,7 +9,7 @@
     </grid>
     
     <form name="opportunity-type-form" title="Opportunity type" model="com.axelor.apps.crm.db.OpportunityType"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         </panel>

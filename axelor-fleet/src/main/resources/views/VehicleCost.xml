@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="vehicle-cost-form" title="Vehicle Cost" model="com.axelor.apps.fleet.db.VehicleCost" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="vehicle" />
 			<field name="serviceType" />
 			<field name="totalPrice" />

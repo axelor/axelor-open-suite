@@ -15,7 +15,7 @@
 
     <form name="debt-recovery-form" title="Debt Recovery"
           model="com.axelor.apps.account.db.DebtRecovery">
-        <panel title="Overview">
+        <panel name="mainPanel" title="Overview">
             <field name="name"/>
             <field name="referenceDate"/>
             <field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid"
@@ -38,18 +38,22 @@
                    onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
                    grid-view="debt-recovery-method-line-grid"
                    form-view="debt-recovery-method-line-form"/>
-            <button name="validateDebtRecovery" title="Validate Debt Recovery"
+            <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
                     onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
         </panel>
-        <panel-tabs>
-            <panel-related field="debtRecoveryHistoryList"
-                           grid-view="debt-recovery-history-grid"
-                           form-view="debt-recovery-history-form"/>
-            <panel-related field="invoiceDebtRecoverySet" grid-view="invoice-grid"
-                           form-view="invoice-form"/>
-            <panel-related field="paymentScheduleLineDebtRecoverySet"
-                           grid-view="payment-schedule-line-grid"
-                           form-view="payment-schedule-line-form"/>
+        <panel-tabs name="mainPanelTab">
+            <panel-related  name="debtRecoveryHistoryListPanel"
+            			   	field="debtRecoveryHistoryList"
+                           	grid-view="debt-recovery-history-grid"
+                           	form-view="debt-recovery-history-form"/>
+            <panel-related 	name="invoiceDebtRecoverySetPanel" 
+            				field="invoiceDebtRecoverySet" 
+            				grid-view="invoice-grid"
+                           	form-view="invoice-form"/>
+            <panel-related 	name="paymentScheduleLineDebtRecoverySetPanel" 
+            				field="paymentScheduleLineDebtRecoverySet"
+                           	grid-view="payment-schedule-line-grid"
+                           	form-view="payment-schedule-line-form"/>
         </panel-tabs>
     </form>
 

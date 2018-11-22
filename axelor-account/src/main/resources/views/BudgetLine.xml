@@ -12,7 +12,7 @@
     </grid>
     
     <form name="budget-line-form" title="Budget Line" model="com.axelor.apps.account.db.BudgetLine" width="large">
-       <panel name="main" >
+       <panel name="mainPanel" >
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
 	       <field name="amountExpected"/>

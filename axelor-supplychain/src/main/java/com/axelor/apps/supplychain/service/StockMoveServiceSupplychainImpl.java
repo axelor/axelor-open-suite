@@ -180,10 +180,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
         BigDecimal realQty =
-            unitConversionService.convertWithProduct(
+            unitConversionService.convert(
                 stockMoveLine.getUnit(),
                 saleOrderLine.getUnit(),
                 stockMoveLine.getRealQty(),
+                stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
         if (realize) {
@@ -240,10 +241,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
         BigDecimal realQty =
-            unitConversionService.convertWithProduct(
+            unitConversionService.convert(
                 stockMoveLine.getUnit(),
                 purchaseOrderLine.getUnit(),
                 stockMoveLine.getRealQty(),
+                stockMoveLine.getRealQty().scale(),
                 purchaseOrderLine.getProduct());
 
         if (realize) {

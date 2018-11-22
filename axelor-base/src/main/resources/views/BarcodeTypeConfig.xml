@@ -10,7 +10,7 @@
     </grid>
     
     <form name="barcode-type-config-form" title="Barcode type configuration" model="com.axelor.apps.base.db.BarcodeTypeConfig">
-    	<panel name="main">
+    	<panel name="mainPanel">
         	<field name="name" colSpan="12"/>
        		<field name="height"/>
        		<field name="width"/>

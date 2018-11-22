@@ -16,7 +16,7 @@
 	</grid>
 
 	<form name="sharing-setting-calendar-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" onNew="action-sharing-setting-record-calendar-origin">
-		<panel colSpan="12" title="Share with">
+		<panel name="shareWithPanel" colSpan="12" title="Share with">
 			<field name="sharedWith" title="User" required="true" />
 			<field name="rightsSelect"/>
 			<field name="calendar" hidden="true"/>
@@ -24,7 +24,7 @@
 	</form>
 
 	<form name="sharing-setting-menu-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings">
-		<panel colSpan="12" title="Sharing settings">
+		<panel name="sharingSettingsPanel" colSpan="12" title="Sharing settings">
 			<field name="calendar" readonlyIf="calendar != null &amp;&amp; calendar.user.code != $user" colSpan="4"/>
 			<field name="calendar.user.fullName" title="calendar.owner" readonly="true" colSpan="4"/>
 			<field name="rightsSelect" readonly="true" colSpan="3"/>

@@ -7,7 +7,7 @@
 	</grid>
 	
 	<form name="quality-tag-form" title="Quality tag" model="com.axelor.apps.quality.db.QualityTag">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name"/>
 		</panel>
 	</form>	

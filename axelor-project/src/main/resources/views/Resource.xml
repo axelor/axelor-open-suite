@@ -10,13 +10,13 @@
 
 	<form name="resource-form" title="Resource"  model="com.axelor.apps.project.db.Resource" width="large">
 		<toolbar>
-			<button name="bookResource" title="Book resource" onClick="save,action-resource-book-resource"/>
+			<button name="bookResourceBtn" title="Book resource" onClick="save,action-resource-book-resource"/>
 		</toolbar>
-		<panel>
-			<panel colSpan="2" itemSpan="12">
+		<panel name="mainPanel">
+			<panel name="imagePanel" colSpan="2" itemSpan="12">
 				<field name="resourceImage" widget="Image"/>
 			</panel>
-			<panel colSpan="6" itemSpan="12">
+			<panel name="detailsPanel" colSpan="6" itemSpan="12">
 				<field name="name"/>
 				<field name="resourceType"/>
 				<field name="batchNo" />

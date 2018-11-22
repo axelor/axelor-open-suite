@@ -13,7 +13,7 @@
         <field name="amountToPay" aggregate="sum"/>  
     </grid>
     <form name="pay-voucher-element-to-pay-form" title="Payment voucher invoices to pay" model="com.axelor.apps.account.db.PayVoucherElementToPay"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="sequence"/>
 	        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>

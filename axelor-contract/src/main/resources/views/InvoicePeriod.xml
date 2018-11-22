@@ -10,17 +10,17 @@
     </grid>
 
     <form name="invoice-period-form" title="Invoice period" model="com.axelor.apps.contract.db.InvoicePeriod">
-        <panel readonlyIf="statusSelect == 2">
+        <panel name="mainPanel" readonlyIf="statusSelect == 2">
             <field name="startDate" colSpan="4"/>
             <field name="endDate" colSpan="4"/>
             <field name="isLastPeriod" colSpan="4"/>
-            <panel showIf="statusSelect == 2">
+            <panel name="invoiceDetailsPanel" showIf="statusSelect == 2">
                 <field name="statusSelect"/>
                 <field name="invoice"/>
             </panel>
         </panel>
-        <panel-related field="consumptionLineList" readonlyIf="statusSelect == 2"/>
-        <panel-related field="additionalBenefitList" readonlyIf="statusSelect == 2"/>
+        <panel-related name="consumptionLineListPanel" field="consumptionLineList" readonlyIf="statusSelect == 2"/>
+        <panel-related name="additionalBenefitListPanel" field="additionalBenefitList" readonlyIf="statusSelect == 2"/>
     </form>
 
 </object-views>

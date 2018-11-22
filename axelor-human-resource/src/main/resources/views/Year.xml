@@ -6,23 +6,23 @@
     <form onSave="action-year-check-date"
           onNew="action-year-record-new,action-year-hr-record-new"
           name="year-hr-form" title="Payroll Year" model="com.axelor.apps.base.db.Year">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="name"/>
             <field name="code" colSpan="3"/>
             <field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
-            <panel name="dates" title="Dates" colSpan="12">
+            <panel name="datesPanel" title="Dates" colSpan="12">
                 <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
                 <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
             </panel>
         </panel>
-        <panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
-        <panel sidebar="true" readonlyIf="statusSelect == 2">
+        <panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+        <panel name="selectPanel" sidebar="true" readonlyIf="statusSelect == 2">
             <field name="typeSelect" readonly="true" colSpan="6"/>
             <field name="statusSelect" colSpan="6"/>
         </panel>
-        <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">
+        <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant">
             <field name="periodDurationSelect"/>
-            <button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
+            <button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
         </panel>
     </form>
 

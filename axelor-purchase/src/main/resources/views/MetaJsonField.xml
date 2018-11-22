@@ -5,7 +5,7 @@
 	
 	
 	<form name="purchase-request-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-purchase-request-creator-set-json-field-default">
-	    <panel title="Overview">
+	    <panel name="overviewPanel" title="Overview">
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 	      <field name="type" />
 	      <field name="title" />

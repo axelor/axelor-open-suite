@@ -9,7 +9,7 @@
     </grid>
 
     <form name="kilometric-allowance-rule-form" title="Kilometric allowance rule" model="com.axelor.apps.hr.db.KilometricAllowanceRule">
-    	<panel name="main">
+    	<panel name="mainPanel">
 			<field name="minimumCondition" />
 			<field name="maximumCondition" />
 	        <field name="rate"/>

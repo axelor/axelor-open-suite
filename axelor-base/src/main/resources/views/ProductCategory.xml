@@ -12,15 +12,15 @@
     
     <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" width="large">
 	    <toolbar>
-			<button name="viewProducts" title="View Products" onClick="action-view-product-by-category"/>
+			<button name="viewProductsBtn" title="View Products" onClick="action-view-product-by-category"/>
 		</toolbar>
-		<panel name="main" >
+		<panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="productFamily"  form-view="product-family-form" grid-view="product-family-grid"/>
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
 		</panel>
-   		<panel-dashlet  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+   		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  
     
     <action-view name="action-view-product-by-category" title="Products (${ name })"

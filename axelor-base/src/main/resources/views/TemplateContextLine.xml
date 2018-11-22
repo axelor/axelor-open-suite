@@ -9,7 +9,7 @@
     </grid>
     
     <form name="template-context-line-form" title="Template Context Line" model="com.axelor.apps.base.db.TemplateContextLine">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="name"/>
 	        <field name="key"/>
 	        <field name="query" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
