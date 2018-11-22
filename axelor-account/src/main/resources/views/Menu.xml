@@ -294,8 +294,38 @@
 		<view type="grid" name="budget-grid"/>
 		<view type="form" name="budget-form"/>
 	</action-view>
+	
+	
+	<menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root" order="30"/>
+	
+	<menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets" parent="account-root-asset-management" 
+		action="account.root.asset.management.fixed.assets"/>
+		
+	<action-view name="account.root.asset.management.fixed.assets" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset">
+		<view type="grid" name="fixed-asset-grid"/>
+		<view type="form" name="fixed-asset-form"/>
+	</action-view>
+	
+	<menuitem title="Configurations" name="account-root-asset-management-conf" parent="account-root-asset-management" icon="fa-cog"/>
+	
+	<menuitem title="Fixed asset categories" name="account-root-asset-management-conf-asset-categories" parent="account-root-asset-management-conf" 
+		action="accont.root.asset.management.conf.asset.categories"/>
+	
+	<action-view name="accont.root.asset.management.conf.asset.categories" title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory">
+		<view type="grid" name="fixed-asset-category-grid"/>
+		<view type="form" name="fixed-asset-category-form"/>
+	</action-view>
+	
+	<menuitem title="Fixed asset types" name="account-root-asset-management-conf-asset-type" parent="account-root-asset-management-conf" 
+		action="accont.root.asset.management.conf.asset.types" order="1"/>
+	
+	<action-view name="accont.root.asset.management.conf.asset.types" title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
+		<view type="grid" name="fixed-asset-type-grid"/>
+		<view type="form" name="fixed-asset-type-form"/>
+	</action-view>
+	
 
-	<menuitem name="account-root-report" parent="account-root" title="Reportings" order="30" icon="fa-bar-chart"/>
+	<menuitem name="account-root-report" parent="account-root" title="Reportings" order="35" icon="fa-bar-chart"/>
 	
 	
 	<menuitem name="account-conf" parent="account-root" title="Configuration" order="50" icon="fa-cog"/>
@@ -513,6 +543,15 @@
 		model="com.axelor.apps.account.db.AccountingBatch" >
 		<view type="grid" name="accounting-batch-grid"/>
 		<view type="form" name="accounting-batch-form"/>
+	</action-view>
+	
+	<menuitem name="admin-root-batch-fixed-asset" parent="admin-root-batch" if="__config__.app.isApp('account')" if-module="axelor-account" 
+		title="Fixed asset batches" action="admin.root.batch.fixed.asset" />
+	
+ 	<action-view name="admin.root.batch.fixed.asset" title="Fixed asset batches"
+		model="com.axelor.apps.account.db.FixedAssetBatch" >
+		<view type="grid" name="fixed-asset-batch-grid" />
+		<view type="form" name="fixed-asset-batch-form" />
 	</action-view>
 	
 	<!-- Top Menus -->

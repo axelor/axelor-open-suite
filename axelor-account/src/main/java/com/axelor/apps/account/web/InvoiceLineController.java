@@ -18,10 +18,12 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -362,5 +364,36 @@ public class InvoiceLineController {
       }
       response.setAttr("account", "domain", domain);
     }
+  }
+
+  public void getFixedAssetCategory(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+
+    if (context.getParent().getContextClass() == InvoiceLine.class) {
+      context = request.getContext().getParent();
+    }
+    Invoice invoice = this.getInvoice(context);
+    Product product = invoiceLine.getProduct();
+
+    if (invoice == null || product == null) {
+      return;
+    }
+    FixedAssetCategory fixedAssetCategory = null;
+    if (!product.getAccountManagementList().isEmpty()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
+
+      fixedAssetCategory =
+          product
+              .getAccountManagementList()
+              .stream()
+              .filter(am -> am.getCompany() == invoice.getCompany())
+              .findFirst()
+              .get()
+              .getFixedAssetCategory();
+    }
+    response.setValue("fixedAssetCategory", fixedAssetCategory);
   }
 }
