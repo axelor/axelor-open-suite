@@ -16,7 +16,7 @@
 
 	<form name="cheque-rejection-form" title="Cheque Rejection"	model="com.axelor.apps.account.db.ChequeRejection"  
 		onNew="default-cheque-rejection-record">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="statusSelect" />
 			<field name="move" form-view="move-form" grid-view="move-grid" readonly="true"/>
 			<field name="name" />
@@ -25,14 +25,14 @@
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" />
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company member of self.companySet" />
 		</panel>
-		<panel name="rejectInformation" title="Reject Information">
+		<panel name="rejectInformationPanel" title="Reject Information">
 			<field name="rejectionDate" />
 			<field name="interbankCodeLine" domain="self.chequeOk = 't'"  form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
 			<field name="description" />
 			<field name="amountRejected" />
 		</panel>
 
-		<panel name="paymentRejected" title="Payment Rejected">
+		<panel name="paymentRejectedPanel" title="Payment Rejected">
 			<!-- TODO:check whether this Editor is working or not -->
 			<field readonlyIf="partner == null" name="paymentVoucher"
 				onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
@@ -47,8 +47,8 @@
   			      <field name="paymentVoucher.currency" readonly="true"/>
    			     <field name="paymentVoucher.generatedMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"  readonlyIf="true"/>
 		</panel>
-		<panel sidebar="true" name="action" title="Action">
-			<button name="validateChequeRejection" title="Validate reject"
+		<panel sidebar="true" name="actionPanel" title="Action">
+			<button name="validateChequeRejectionBtn" title="Validate reject"
 				  onClick="save,action-method-account-cheque-rejection-validate"
 				hideIf="statusSelect == 2" />
 		</panel>

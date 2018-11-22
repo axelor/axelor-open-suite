@@ -14,27 +14,27 @@
     <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
     onLoad="action-base-batch-attrs-action-select" 
     onNew="action-group-base-basebatch-onnew">
-    	<panel name="main">
+    	<panel name="mainPanel">
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents" showIf="actionSelect == 2"/>
 			<field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
 		</panel>
-	  	<panel-tabs>
-	    	<panel name="targetPage" title="Target page" >
+	  	<panel-tabs name="targetPanelTab">
+	    	<panel name="targetPagePanel" title="Target page" >
 <!-- 	      		<panel-related field="targetConfigurationSet" colSpan="12"/> -->
-	      		<button name="targetBatch" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
+	      		<button name="targetBatchBtn" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
 	    	</panel>
-	    	<panel name="information" title="Information">
+	    	<panel name="informationPanel" title="Information">
 		      <field name="createdOn" title="Created on"/>
 		      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 		      <field name="description" showTitle="false" colSpan="12"/>
-		      <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid"/>
+		      <panel-related field="batchListPanel" colSpan="12" form-view="batch-form" grid-view="batch-grid"/>
 		    </panel>
   		</panel-tabs>
-  		<panel sidebar="true">
-  			<button name="synchronize" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="action-base-batch-method-synchronize-calendars"/>
+  		<panel name="synchronizeBtnPanel" sidebar="true">
+  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="action-base-batch-method-synchronize-calendars"/>
   		</panel>
     </form>
     
@@ -63,7 +63,7 @@
 	
     <!-- ACTION ATTRS -->
     <action-attrs name="action-base-batch-attrs-action-select">
-	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPagePanel"/>
 	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
 	</action-attrs>
 

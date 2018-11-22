@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-account-config-form" title="App account" model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="manageAnalyticAccounting"  widget="boolean-switch"/>
 			<field name="analyticDistributionTypeSelect"  showIf="manageAnalyticAccounting"/>
 			<field name="manageCustomerCredit" widget="boolean-switch"/>
@@ -12,20 +12,20 @@
 			<field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
             <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
             <field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" showIf="manageAnalyticAccounting"/>
-			<panel name="rejectsReasonsAndCodesList" title="Rejects reasons and codes list" colSpan="12">
+			<panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list" colSpan="12">
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			</panel>
             <field name="partnerBalConfigSelect"/>
 		</panel>
-		<panel-tabs>
-			<panel name="payerQuality" title="Payer quality" colSpan="12">
-				<button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
+		<panel-tabs name="mainPanelTab">
+			<panel name="payerQualityPanel" title="Payer quality" colSpan="12">
+				<button name="payerQualityProcessBtn" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
 				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
 			</panel>
-			<panel title="Account configurations">
-				<button name="generateAccountConfigurations" title="Generate account configurations" colSpan="4" onClick="save,com.axelor.apps.account.web.AppAccountController:generateAccountConfigurations"/>
-				<panel-dashlet action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
+			<panel name="accountConfigurationsPanel" title="Account configurations">
+				<button name="generateAccountConfigurationsBtn" title="Generate account configurations" colSpan="4" onClick="save,com.axelor.apps.account.web.AppAccountController:generateAccountConfigurations"/>
+				<panel-dashlet name="accountConfigPanel" action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
 			</panel>
 		</panel-tabs>
 	</form>

@@ -11,17 +11,17 @@
    </grid> 
     
    <form name="permission-assistant-form" title="Permission Assistant" model="com.axelor.auth.db.PermissionAssistant">
-    <panel name="main" >
+    <panel name="mainPanel" >
       <field name="typeSelect" selection="permission.assistant.type.select" onChange="action-attr-reset-all-set"/>
-      <panel-related field="roleSet" showIf="typeSelect == 2" colSpan="12"/>
-      <panel-related field="groupSet" showIf="typeSelect == 1" colSpan="12"/>
-      <panel-related field="objectSet" colSpan="12"/>
+      <panel-related name="roleSetPanel" field="roleSet" showIf="typeSelect == 2" colSpan="12"/>
+      <panel-related name="groupSetPanel" field="groupSet" showIf="typeSelect == 1" colSpan="12"/>
+      <panel-related name="objectSetPanel" field="objectSet" colSpan="12"/>
       <field name="metaField" domain="self.metaModel.name = 'User' and self.relationship != null" onChange="action-permission-assistant-method-fill-objects"/>
       <field name="fieldPermission" />
       <field name="metaFile" colSpan="12" widget="binary-link" />
       <field name="language" />
-      <button name="createFile" title="Create file" colSpan="3" onClick="save,action-permission-method-create-file"/>
-      <button name="importPermissions" title="Import permissions" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-permission-method-import-permissions,save"/>
+      <button name="createFileBtn" title="Create file" colSpan="3" onClick="save,action-permission-method-create-file"/>
+      <button name="importPermissionsBtn" title="Import permissions" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-permission-method-import-permissions,save"/>
       <panel name="details" title="Details" readonly="true" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>

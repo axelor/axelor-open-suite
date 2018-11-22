@@ -46,8 +46,8 @@
 		model="com.axelor.apps.account.db.AccountManagement"
 		onNew="action-account-management-record-default, action-account-management-attrs-type"
 		width="large">
-		<panel>
-			<panel name="main" colSpan="12">
+		<panel name="mainAccountManagementPanel">
+			<panel name="mainPanel" colSpan="12">
 				<field name="typeSelect" />
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"

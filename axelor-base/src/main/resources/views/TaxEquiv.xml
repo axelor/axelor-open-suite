@@ -10,7 +10,7 @@
     </grid>
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
             <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
             <field name="reverseCharge" onChange="action-tax-equiv-attrs-hide-to-tax"/>

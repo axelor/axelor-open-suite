@@ -280,6 +280,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal reservedQtyInNewLine = stockMoveLine.getReservedQty().min(qty);
     stockMoveLine.setReservedQty(reservedQtyAfterSplit);
     newStockMoveLine.setReservedQty(reservedQtyInNewLine);
+    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
+    newStockMoveLine.setSaleOrderLine(stockMoveLine.getSaleOrderLine());
     return newStockMoveLine;
   }
 

@@ -12,7 +12,7 @@
     
   <form name="wkf-tracking-line-form" title="Tracking line" model="com.axelor.studio.db.WkfTrackingLine" width="large"
     canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
-      <panel>
+      <panel name="mainPanel">
         <field name="status"/>
         <field name="createdOn" title="Date"/>
         <field name="createdBy" title="User" />

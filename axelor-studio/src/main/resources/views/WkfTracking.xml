@@ -14,16 +14,16 @@
     model="com.axelor.studio.db.WkfTracking" width="large" canEdit="false" canNew="false"
     canDelete="false" canAttach="false" canCopy="false" canSave="false">
     <toolbar>
-      <button name="openWorkflowDashboard" title="Workflow dashboard"
+      <button name="openWorkflowDashboardBtn" title="Workflow dashboard"
         onClick="open.wkf.dashboard" />
     </toolbar>
-    <panel>
+    <panel name="mainPanel">
       <field name="wkf" />
       <field name="recordModel" />
       <field name="recordId" />
-      <panel-related field="wkfTrackingLines" colSpan="12" readonly="true" />
-      <panel-related field="totalLines" colSpan="12" readonly="true" />
-      <panel-related field="totalTimeLines" colSpan="12" />
+      <panel-related name="wkfTrackingLinesPanel" field="wkfTrackingLines" colSpan="12" readonly="true" />
+      <panel-related name="totalLinesPanel" field="totalLines" colSpan="12" readonly="true" />
+      <panel-related name="totalTimeLinesPanel" field="totalTimeLines" colSpan="12" />
     </panel>
   </form>
   

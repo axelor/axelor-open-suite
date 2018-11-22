@@ -10,25 +10,25 @@
 	</grid>
 	
 	<form name="indicator-generator-grouping-form" title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="name" colSpan="12"/>
 		</panel>
 		
-		<panel-related field="indicatorGeneratorSet" colSpan="12" form-view="indicator-generator-form" grid-view="indicator-generator-grid"/>
+		<panel-related name="indicatorGeneratorSetPanel" field="indicatorGeneratorSet" colSpan="12" form-view="indicator-generator-form" grid-view="indicator-generator-grid"/>
 		
-		<panel>
+		<panel name="infoPanel">
 			<field name="result" colSpan="12"/>
 			<field name="log" colSpan="12" />
 		</panel>
 		
-		<panel sidebar="true" name="execution" title="Execution">
-			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run"/>
+		<panel sidebar="true" name="executionPanel" title="Execution">
+			<button name="runBtn" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:run"/>
 		</panel>
 		
-		<panel sidebar="true" name="export" title="Export">
+		<panel sidebar="true" name="exportPanel" title="Export">
 			<field name="path"/>
-			<button name="export" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export"/>
+			<button name="exportBtn" title="Export indicators"  onClick="save,com.axelor.apps.base.web.IndicatorGeneratorGroupingController:export"/>
 		</panel>
 	</form>
 

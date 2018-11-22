@@ -17,12 +17,12 @@
         <field name="relatedToSelectName"/>
         <field name="partner"/>
         <field name="proposalGenerated" hidden="true"/>
-        <button name="generateProposal" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
+        <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
     </grid>
     
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
-	    <panel name="main">
+	    <panel name="mainPanel">
 	        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
         	<field name="qty" readonly="true"/>
@@ -33,7 +33,7 @@
         	<field name="stockLocation" readonly="true"/>
         	<field name="maxLevel" readonly="true"/>
         	<field name="partner" showIf="partner"/>
-   	        <button name="generateProposal" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
+   	        <button name="generateProposalBtn" title="Generate proposal" onClick="action-mrp-line-method-generate-proposal" showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
             <field name="mrpLineType.elementSelect" hidden="true"/>
             <field name="mrpLineOriginList" colSpan="12" readonly="true">
                 <editor x-viewer="true">

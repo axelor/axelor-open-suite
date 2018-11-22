@@ -60,6 +60,7 @@
 				\n\t\t\t<targetModel>${field.targetModel}</targetModel>
 				\n\t\t\t<widget>${field.widget}</widget>
 				\n\t\t\t<widgetAttrs>""" + field.widgetAttrs + """</widgetAttrs>
+				\n\t\t\t<valueExpr>${field.valueExpr != null ? """ + field.valueExpr + """ : ""}</valueExpr>
 				\n\t\t\t<jsonModel>${field.jsonModel?.name}</jsonModel>
 				\n\t\t\t<targetJsonModel>${field.targetJsonModel?.name}</targetJsonModel>
 				\n\t\t\t<appBuilder>${field.appBuilder?.code}</appBuilder>
@@ -303,6 +304,7 @@
 		wkf ->	
 				wkf.nodes.each{
 					node ->
+					node = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.WkfNodeRepository' as Class).find(node.id)
 					incomming = ""
 					node.incomming.each{
 						incom -> incomming += """\n\t\t\t<incomming>${incom.name}</incomming>"""
@@ -347,18 +349,21 @@
 				wkf.transitions.each{
 					transition ->
 					conditions = ""
+					transition = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.WkfTransitionRepository' as Class).find(transition.id)
 					transition.conditions.each{
 						condition-> conditions += """\n\t\t\t<condition>
 						\n\t\t\t\t<metaField>${condition.metaField?.name}</metaField>
-						\n\t\t\t\t<metaModel>${condition.metaField?.metaModel.name}</metaModel>
+						\n\t\t\t\t<metaModel>${condition.metaField?.metaModel?.name}</metaModel>
 						\n\t\t\t\t<metaJsonField>${condition.metaJsonField?.name}</metaJsonField>
-						\n\t\t\t\t<jsonModel>${condition.metaJsonField?.jsonModel.name}</jsonModel>
+						\n\t\t\t\t<jsonModel>${condition.metaJsonField?.jsonModel?.name}</jsonModel>
 						\n\t\t\t\t<operator>${condition.operator}</operator>
 						\n\t\t\t\t<targetField>${condition.targetField}</targetField>
 						\n\t\t\t\t<targetType>${condition.targetType}</targetType>
 						\n\t\t\t\t<value>${condition.value}</value>
 						\n\t\t\t\t<isTargetJson>${condition.isTargetJson}</isTargetJson>
 						\n\t\t\t\t<logicOp>${condition.logicOp}</logicOp>
+						\n\t\t\t\t<model>${condition.metaJsonField?.model}</model>
+						\n\t\t\t\t<modelField>${condition.metaJsonField?.modelField}</modelField>
 						\n\t\t\t</condition>"""
 					}
 					

@@ -155,8 +155,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -660,23 +659,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	internal_delivery_comment,
 	external_delivery_comment,
 	CompanyLogo.file_path as company_logo_file_path,
-	CompanyAddress.addressl2 as company_addressl2,
-	CompanyAddress.addressl3 as company_addressl3,
-	CompanyAddress.addressl4 as company_addressl4,
-	CompanyAddress.addressl5 as company_addressl5,
-	CompanyAddress.addressl6 as company_addressl6,
-	CompanyCountry.name as company_country,
+	StockLocationAddress.addressl2 as company_addressl2,
+	StockLocationAddress.addressl3 as company_addressl3,
+	StockLocationAddress.addressl4 as company_addressl4,
+	StockLocationAddress.addressl5 as company_addressl5,
+	StockLocationAddress.addressl6 as company_addressl6,
+	StockLocationCountry.name as company_country,
 	Customer.partner_seq as customer_seq,
 	CONCAT(Customer.name, ' ', Customer.first_name) as customer_full_name,
 	Unit.label_to_printing as unit_label
 from stock_logistical_form as LogisticalForm
 left join base_company as Company on LogisticalForm.company = Company.id
+left join stock_stock_location as StockLocation on LogisticalForm.stock_location = StockLocation.id 
 left join base_partner as Customer on LogisticalForm.deliver_to_customer_partner = Customer.id
 --left join base_partner as Carrier on LogisticalForm.carrier_partner = Carrier.id
 --left join base_partner as Forwarder on LogisticalForm.forwarder_partner = Forwarder.id
 --left join stock_incoterm as Incoterm on LogisticalForm.incoterm = Incoterm.id
-left join base_address as CompanyAddress on Company.address = CompanyAddress.id
-left join base_country as CompanyCountry on CompanyAddress.addressl7country = CompanyCountry.id
+left join base_address as StockLocationAddress on StockLocation.address = StockLocationAddress.id
+left join base_country as StockLocationCountry on StockLocationAddress.addressl7country = StockLocationCountry.id
 left join meta_file as CompanyLogo on Company.logo = CompanyLogo.id
 left join stock_stock_config as StockConfig on Company.id = StockConfig.company
 left join base_unit as Unit on StockConfig.customs_mass_unit = Unit.id
@@ -1177,7 +1177,7 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="name">order_ref</property>
-                    <expression name="expression">row["order_number"] ? row["sale_order_seq"] + " / " + row["order_number"] : row["sale_order_seq"]</expression>
+                    <expression name="expression">row["external_reference"] ? row["sale_order_seq"] + " / " + row["external_reference"] : row["sale_order_seq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -2052,7 +2052,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">"Packaging list"</value>
+                                            <value type="javascript">"Packing list"</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2177,7 +2177,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Packaging number:"</value>
+                                    <value type="javascript">"Packing number:"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

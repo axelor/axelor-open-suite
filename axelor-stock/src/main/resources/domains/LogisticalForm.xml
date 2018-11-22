@@ -7,6 +7,7 @@
     <entity name="LogisticalForm">
         <string name="deliveryNumber" namecolumn="true" readonly="true" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
             title="Deliver to customer" />
         <date name="collectionDate" required="true" />
@@ -25,7 +26,7 @@
         <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
         <string name="customerAccountNumberToCarrier" />
 
-        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"
+        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
             mappedBy="logisticalForm" />
 
         <extra-code>

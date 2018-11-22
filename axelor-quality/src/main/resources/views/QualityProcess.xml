@@ -9,13 +9,13 @@
 	</grid>
 	
 	<form name="quality-process-form" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">		
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="code"/>
 			<field name="product"/>
 		</panel>
-		<panel name="control-point-model">
-			<panel-related field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+		<panel name="controlPointModelPanel">
+			<panel-related name="controlPointModelListPanel" field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
 		</panel>
 	</form>
 		

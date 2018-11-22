@@ -5,33 +5,33 @@
    
     <grid name="city-grid" title="Cities" model="com.axelor.apps.base.db.City">
        <toolbar>
-       <button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
-       <button name="importCity" title="Import city" onClick="action-base-view-import-city-popup"/>
+       <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+       <button name="importCityBtn" title="Import city" onClick="action-base-view-import-city-popup"/>
        </toolbar> 
         <field name="name"/>
 		<field name="zip"/>
     </grid>
     
     <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
-    	<panel name="main">
+    	<panel name="mainPanel">
 			<field name="name"/>
 			<field name="artmin" colSpan="2"/>
 			<field name="zip" colSpan="4"/>
 			<field name="inseeCode"/>
 			<field name="hasZipOnRight"/>
 		</panel>
-		<panel name="localization" title="Localization">
+		<panel name="localizationPanel" title="Localization">
 			<field name="country" form-view="country-form" grid-view="country-grid" />
 			<field name="department" form-view="department-form" grid-view="department-grid"/>
 			<field name="canton" form-view="canton-form" grid-view="canton-grid"/>
 		</panel>  
-		<panel name="demography" title="Demography">
+		<panel name="demographyPanel" title="Demography">
 			<field name="nbInhCommune"/>
 		</panel> 
     </form>
     
     <form name="wizard-import-city-form" title="Import city" model="com.axelor.apps.base.db.Wizard" >
-    	<panel>
+    	<panel name="wizardPanel">
     		<field name="typeSelect" type="string" title="Type select" selection="iterritory.city.type.select"/>
 			<field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
 			<button name="importBtn" colSpan="4" title="Import" readonlyIf="typeSelect == null || metaFile == null" onClick="action-base-method-import-city"/>

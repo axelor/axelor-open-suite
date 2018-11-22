@@ -8,19 +8,19 @@
     </grid>
     
     <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>
-        <panel-related field="paymentScheduleLineList" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
+        <panel-related name="paymentScheduleLineListPanel" field="paymentScheduleLineList" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
     </form>
     
     <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>
-        <panel-related field="invoiceSet" grid-view="invoice-grid" form-view="invoice-form"/>
+        <panel-related name="invoiceSetPanel" field="invoiceSet" grid-view="invoice-grid" form-view="invoice-form"/>
     </form>
     
     <action-record name="action-direct-debit-managemen-set-default" model="com.axelor.apps.account.db.DirectDebitManagement">

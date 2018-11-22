@@ -51,6 +51,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
+import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -297,6 +298,11 @@ public abstract class InvoiceGenerator {
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);
+
+    if (companyBankDetails != null
+        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
+    }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 

@@ -5,13 +5,13 @@
     
 
    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
-       <panel colSpan="12">
+       <panel name="mainPanel" colSpan="12">
            	<field name="defaultBillOfMaterial" canEdit="false" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<field name="lastProductionPrice" readonly="true"/>
 		   <field name="realOrEstimatedPriceSelect" onChange="action-product-group-cost-type-select-onchange"/>
 		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
-			<button name="createProductionOrder" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
-			<panel-dashlet action="action-product-view-show-bill-of-material" colSpan="12"/>
+			<button name="createProductionOrderBtn" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
+			<panel-dashlet name="showBOMPanel" action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>
 	</form>    
 	
@@ -35,7 +35,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrder" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = true', parentProduct?.id, id).fetch().isEmpty()"/>
+		<attribute name="readonly" for="createProductionOrderBtn" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = true', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">

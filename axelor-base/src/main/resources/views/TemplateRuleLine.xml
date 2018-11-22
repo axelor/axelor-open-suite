@@ -11,9 +11,9 @@
     
     <form name="template-rule-line-form" title="Template rule line" model="com.axelor.apps.base.db.TemplateRuleLine"  
     onNew="action-template-rule-line-attrs-template-domain" onLoad="action-template-rule-line-attrs-template-domain">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="sequence"/>
-	        <spacer/>
+	        <spacer name="sequenceSpacer"/>
 	        <field name="template" form-view="template-form" grid-view="template-grid"/>
 	        <field name="metaAction" domain="self.type = 'action-condition'" form-view="meta-action-form" grid-view="meta-action-grid"/>
         </panel>

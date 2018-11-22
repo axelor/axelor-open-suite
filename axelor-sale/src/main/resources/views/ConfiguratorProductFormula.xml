@@ -12,14 +12,14 @@
 
   <form name="configurator-product-formula-form" title="Calculated fields on configurator"
     model="com.axelor.apps.sale.db.ConfiguratorProductFormula">
-    <panel>
+    <panel name="mainPanel">
       <field name="metaField" title="Product meta field"
         domain="self.metaModel.name = 'Product' AND (self.relationship != 'OneToMany' OR self.relationship IS NULL) AND self.name != 'configurator'"/>
       <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
       <field name="showOnConfigurator"/>
     </panel>
-    <panel>
-      <button name="checkScripts" title="Check the script"
+    <panel name="actionPanel">
+      <button name="checkScriptsBtn" title="Check the script"
         onClick="save,action-configurator-formula-method-check-script"/>
     </panel>
   </form>

@@ -9,10 +9,10 @@
     </grid>
     
    <form name="geographical-area-form" title="Geographical area" model="com.axelor.apps.base.db.GeographicalArea" width="large">	
-   	   <panel name="main" > 
+   	   <panel name="mainPanel" > 
 	   		<field name="name"/>
 	   </panel>
-	   <panel-related colSpan="12" field="departmentSet" grid-view="department-grid" form-view="department-form"/>
+	   <panel-related name="departmentSetPanel" colSpan="12" field="departmentSet" grid-view="department-grid" form-view="department-form"/>
    </form>
    
 </object-views>

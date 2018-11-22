@@ -10,17 +10,17 @@
   </grid>
     
   <form name="wkf-node-form" title="Node" model="com.axelor.studio.db.WkfNode" width="large">
-      <panel title="Overview">
+      <panel name="overviewPanel" title="Overview">
         <field name="name" readonly="true"/>
         <field name="title"/>
         <field name="startNode" readonly="true" onChange="action-wkf-node-set-end-node-attrs"/>
         <field name="endNode" readonly="true" onChange="action-wkf-node-set-start-node-attrs"/>
         <field name="sequence"/>
       </panel>
-      <panel-related field="metaActionSet" colSpan="12" orderBy="sequence" canMove="true"/>
-      <panel-related field="incomming" colSpan="12" readonly="true" />
-      <panel-related field="outgoing" colSpan="12"  readonly="true" />
-      <panel-related field="roleSet" colSpan="12" />
+      <panel-related name="metaActionSetPanel" field="metaActionSet" colSpan="12" orderBy="sequence" canMove="true"/>
+      <panel-related name="incommingPanel" field="incomming" colSpan="12" readonly="true" />
+      <panel-related name="outgoingPanel" field="outgoing" colSpan="12"  readonly="true" />
+      <panel-related name="roleSetPanel" field="roleSet" colSpan="12" />
   </form>
   
   <action-attrs name="action-wkf-node-set-end-node-attrs">

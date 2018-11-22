@@ -15,7 +15,7 @@
     </grid>
     
 	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast">
-	    <panel name="main">
+	    <panel name="mainPanel">
 	        <field name="id" title="Ref"/>
 	        <field name="forecastDate"/>
    	        <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"/>

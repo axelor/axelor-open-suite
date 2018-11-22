@@ -11,12 +11,12 @@
 	</grid>
 	
 	<form name="indicator-generator-form" title="Indicator generator" model="com.axelor.apps.base.db.IndicatorGenerator">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="requestLanguage" />
 			<field name="name" colSpan="12"/>
 			<field name="request" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
-			<button name="run" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
+			<button name="runBtn" title="Execute" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
 			<field name="result" colSpan="12" />
 			<field name="log" colSpan="12" />
 		</panel>
