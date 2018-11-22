@@ -31,7 +31,7 @@
                 onClick="action-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
             <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
-        <panel colSpan="12">
+        <panel colSpan="12" name="mainPanelTab">
             <field name="deliveryNumber" />
             <field name="collectionDate" readonlyIf="statusSelect == 3"/>
             <field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
@@ -43,8 +43,8 @@
                 onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
                 canEdit="false" readonlyIf="statusSelect > 1"/>
         </panel>
-        <panel-tabs colSpan="12">
-            <panel title="General">
+        <panel-tabs colSpan="12" name="mainPanelTab">
+            <panel name="generalInfoPanel" title="General">
                 <field name="statusSelect" colSpan="12" widget="NavSelect" />
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
@@ -63,21 +63,21 @@
                 <field name="internalDeliveryComment" readonlyIf="statusSelect == 3"/>
                 <field name="externalDeliveryComment" readonlyIf="statusSelect > 1"/>
             </panel>
-            <panel title="Lines" showIf="deliverToCustomerPartner" readonlyIf="statusSelect == 3">
-                <panel colSpan="12" hideIf="$readonly()">
+            <panel name="LinesPanel" title="Lines" showIf="deliverToCustomerPartner" readonlyIf="statusSelect == 3">
+                <panel name="stockMovePanel" colSpan="12" hideIf="$readonly()">
                     <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
                         target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid" form-view="stock-move-form"
                         colSpan="4" onSelect="action-logistical-form-stock-move-domain" canEdit="false" />
                     <button name="addStockMoveBtn" title="Add" onClick="action-logistical-form-add-stock-move"
                         colSpan="2" readonlyIf="!$stockMove" />
                 </panel>
-                <panel-related field="logisticalFormLineList" grid-view="logistical-form-line-grid"
+                <panel-related name="logisticalFormLineList" field="logisticalFormLineList" grid-view="logistical-form-line-grid"
                     form-view="logistical-form-line-form" colSpan="12" canMove="true" orderBy="sequence" editable="true"
                     height="17" />
             </panel>
         </panel-tabs>
         
-        <panel-mail>
+        <panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
 	  	</panel-mail>

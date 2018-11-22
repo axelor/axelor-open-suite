@@ -480,11 +480,10 @@ public class EventController {
     User user = AuthUtils.getUser();
     List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
     if (calendarIdlist.isEmpty() || !calendarIdlist.contains(event.getCalendar().getId())) {
-      response.setAttr("calendarConfig", "readonly", "true");
-      response.setAttr("meetingGeneral", "readonly", "true");
-      response.setAttr("addGuests", "readonly", "true");
-      response.setAttr("meetingAttributes", "readonly", "true");
-      response.setAttr("meetingLinked", "readonly", "true");
+      response.setAttr("meetingGeneralPanel", "readonly", "true");
+      response.setAttr("addGuestsPanel", "readonly", "true");
+      response.setAttr("meetingAttributesPanel", "readonly", "true");
+      response.setAttr("meetingLinkedPanel", "readonly", "true");
     }
   }
 

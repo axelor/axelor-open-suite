@@ -142,6 +142,9 @@
 If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
 - STOCK MOVE : mass printing for picking stock move report.
 - CONTRACT : classic contract lines can now be ordered with drag and drop, and generating an invoice from a contract will keep the order in the invoice lines.
+- Add Fixed Asset Management feature.
+- Stock Move : Add grid for sale order. 
+- SALEORDERLINE : stock move line list
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -228,6 +231,7 @@ Also in case of aggregation, we have to concatenate the tracking number list and
 Only display line where quantity is greater than 0.
 - Add a specific not for invoice on company bank details
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
+- Stock Move : Specify views for origin field. 
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -312,6 +316,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - Now keep the link to the sale order line or purchase order line when we split a stock move line. 
 - Now, the mass reconcile from move line list works for moveline without partner.
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- Added name attribute to all panels and buttons and also renamed.
 
 ## [Unreleased 5.0.7]
 ## Features

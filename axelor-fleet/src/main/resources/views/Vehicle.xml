@@ -17,66 +17,66 @@
     
    <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" width="large"
     	onNew="action-fleet-vehicle-set-defaults" >
-       <panel>
-       	   <panel colSpan="2">
+       <panel name="mainPanel">
+       	   <panel name="imagePanel" colSpan="2">
        	   		<field name="image" widget="Image" colSpan="12"/>
        	   </panel>
-       	   <panel colSpan="6" itemSpan="12">
+       	   <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
        	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" />
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
 	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
 	    		<field name="vehicleState" widget="html"/> 
 	       </panel>
-	       <panel colSpan="12" title="General Properties" >
-	       		<panel itemSpan="12">
+	       <panel name="generalPropertiesPanel" colSpan="12" title="General Properties" >
+	       		<panel name="subProperties1Panel" itemSpan="12">
 	       			<field name="company" />
 		       		<field name="driverPartner" domain="self.isEmployee = true AND :company member of self.companySet" />
 		       		<field name="location" />
 		       		<field name="chasisNo" />
 	       		</panel>
-	       		<panel itemSpan="12">
+	       		<panel name="subProperties2Panel" itemSpan="12">
 		       		<field name="vehicleOdometer" colSpan="8"/>
 		       		<field name="acquisitionDate" />
 		       		<field name="carValue" />
 		       		<field name="isArchived"/>
 	       		</panel>
 	       </panel>
-	       <panel colSpan="12" title="Additional Properties">
-	       		<panel itemSpan="12">
+	       <panel name="additionalPropertiesPanel" colSpan="12" title="Additional Properties">
+	       		<panel name="vehiclePartsDetailsPanel" itemSpan="12">
 		       		<field name="seats" />
 		       		<field name="doors" />
 		       		<field name="color" />
 	       		</panel>
-	       		<panel itemSpan="12" title="Engine Options">
+	       		<panel name="engineOptionsPanel" itemSpan="12" title="Engine Options">
 		       		<field name="transmissionSelect"/>
 		       		<field name="fuelTypeSelect"/>
 		       		<field name="co2emission" colSpan="8"/>
-		       		<label title="g/km" colSpan="2"/>
+		       		<label name="g/kmLabel" title="g/km" colSpan="2"/>
 		       		<field name="horsePower" />
 		       		<field name="horsePowerTax" />
 		       		<field name="powerKw" />
 	       		</panel>
 	       </panel>
        </panel>
-       <panel-tabs>
-    			<panel-related field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
+       <panel-tabs name="mainPanelTab">
+    		<panel-related name="vehicleFuelLogListPanel" field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
             	<field name="liter"/>
             	<field name="pericePerLiter" />
-							<field name="date" />
+				<field name="date" />
       		</panel-related>
-    			<panel-related field="vehicleServiceLogList" title="Vehicle service" colSpan="12">
+    		<panel-related name="vehicleServiceLogListPanel" field="vehicleServiceLogList" title="Vehicle service" colSpan="12">
               <field name="date" />
-                <field name="purchasePartner"/>
+              <field name="purchasePartner"/>
               <field name="invoiceRef"/>
               <field name="vendorPartner" />
       		</panel-related>
-      		<panel-related field="vehicleContractList" title="Vehicle Contract" colSpan="12">
+      		<panel-related name="vehicleContractListPanel" field="vehicleContractList" title="Vehicle Contract" colSpan="12">
             	<field name="costFrequencySelect"/>
             	<field name="activationCost"/>
             	<field name="vehicleOdometer" />
       		</panel-related>
-      		<panel-related field="vehicleCostList" title="Vehicle Cost" colSpan="12">
+      		<panel-related name="vehicleCostListPanel" field="vehicleCostList" title="Vehicle Cost" colSpan="12">
             <field name="serviceType" />	
             <field name="totalPrice"/>
             <field name="date" />
@@ -84,7 +84,7 @@
     </panel-tabs>
     
        
-       <panel-mail>
+       <panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	   </panel-mail>

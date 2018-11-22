@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-crm-config-form" title="App Crm" model="com.axelor.apps.base.db.AppCrm" canDelete="false" canNew="false" width="large">
-		<panel>
-			<button name="generateCRMConfigurations" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
-			<panel-dashlet action="admin.root.conf.crm.config" colSpan="12"/>
+		<panel name="mainPanel">
+			<button name="generateCRMConfigurationsBtn" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
+			<panel-dashlet name="confCrmConfigPanel" action="admin.root.conf.crm.config" colSpan="12"/>
 		</panel>
 	</form>
 	

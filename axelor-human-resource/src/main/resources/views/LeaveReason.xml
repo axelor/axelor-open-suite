@@ -10,7 +10,7 @@
 	</grid>
 	
 	<form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="leaveReason" />
 			<field name="manageAccumulation" hideIf="$popup()"/>
 			<field name="allowNegativeValue" showIf="manageAccumulation &amp;&amp; !$popup()"/>
@@ -19,7 +19,7 @@
 			<field name="defaultDayNumberGain" />
 			<field name="selectedByMgtOnly"/>
 		</panel>
-		<panel>
+		<panel name="exportsPanel">
 			<field name="payrollPreprationExport"  />
       		<field name="exportCode" />
 		</panel>

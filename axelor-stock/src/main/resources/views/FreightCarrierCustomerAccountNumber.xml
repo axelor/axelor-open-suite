@@ -10,7 +10,7 @@
 
     <form name="freight-carrier-customer-account-number-form" model="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
         title="Customer account number to carrier">
-        <panel>
+        <panel name="mainPanel">
             <field name="carrierPartner" domain="self.isCarrier = TRUE" />
             <field name="customerAccountNumber" />
         </panel>

@@ -15,7 +15,7 @@
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
 	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>

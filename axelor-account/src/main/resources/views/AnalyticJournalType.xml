@@ -7,7 +7,7 @@
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     <form name="analytic-journal-type-form" title="Analytic Journal Type" model="com.axelor.apps.account.db.AnalyticJournalType"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         </panel>

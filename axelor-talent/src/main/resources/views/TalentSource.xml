@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="talent-source-form" title="Source" model="com.axelor.apps.talent.db.TalentSource" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="name" />
 		</panel>

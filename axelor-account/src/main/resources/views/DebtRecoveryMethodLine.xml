@@ -12,16 +12,16 @@
     </grid>
 
 	<form name="debt-recovery-method-line-form" title="Debt recovery method line" model="com.axelor.apps.account.db.DebtRecoveryMethodLine" width="large">
-		<panel name="debtRecoveryLevel" title="Debt recovery level" colSpan="6">
+		<panel name="debtRecoveryLevelPanel" title="Debt recovery level" colSpan="6">
 			<field name="debtRecoveryLevel" canSelect="true" onChange="action-debt-recovery-level-selected"/>
 			<field name="debtRecoveryLevelLabel" readonly="true"/>
 		</panel>
-		<panel name="conditions" title="Conditions" colSpan="6">
+		<panel name="conditionsPanel" title="Conditions" colSpan="6">
 			<field name="standardDeadline"/>
 			<field name="minThreshold"/>
 			<field name="manualValidationOk"/>
 		</panel>
-		<panel name="actions" title="Actions">
+		<panel name="actionsPanel" title="Actions">
 			<field name="messageTemplateSet" form-view="template-form" grid-view="template-grid" colSpan="12"/>
 			<field name="printingMessage" widget="HTML" colSpan="12"/>
 		</panel>

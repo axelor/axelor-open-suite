@@ -13,16 +13,16 @@
 	
 	<form model="com.axelor.apps.helpdesk.db.Sla" title="SLA" name="sla-form">
 	
-		<panel>
+		<panel name="mainPanel">
 			<field name="name" colSpan="12"/>
 			
-			<panel name="applyOn" title="Apply on" colSpan="12">
+			<panel name="applyOnPanel" title="Apply on" colSpan="12">
 				<field name="team" form-view="team-form" grid-view="team-grid"/>
 				<field name="prioritySelect"/>
 				<field name="ticketType"/>
 			</panel>
 			
-			<panel name="target" title="Target" colSpan="12">
+			<panel name="targetPanel" title="Target" colSpan="12">
 				<field name="reachStageSelect"/>
 				<field name="reachIn" title="Reach in">
 					<viewer>
@@ -40,7 +40,7 @@
 			</panel>
 		</panel>
 		
-		<panel name="description" title="Description">
+		<panel name="descriptionPanel" title="Description">
 			<field name="description" showTitle="false" widget="html" colSpan="12"/>
 		</panel>
 		

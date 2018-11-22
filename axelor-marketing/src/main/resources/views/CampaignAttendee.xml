@@ -8,7 +8,7 @@
     </grid>
     
     <form name="campaign-attendee-form" title="Attendee" model="com.axelor.apps.marketing.db.CampaignAttendee" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 		</panel>
 	</form>

@@ -9,7 +9,7 @@
     </grid>
     
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
-       <panel name="main" >
+       <panel name="mainPanel" >
 	   		<field name="budget" required="true"/>
        		<field name="amount"/>
        </panel>

@@ -14,7 +14,7 @@
 	    onNew="action-group-extra-hours-line-onnew"
 	    onLoad="action-extra-hours-line-attrs-title-project">
 
-		<panel name="head">
+		<panel name="headPanel">
 			<field name="date"/>
 			<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
 			<field name="project"/>

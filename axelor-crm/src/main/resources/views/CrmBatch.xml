@@ -12,24 +12,24 @@
 	</grid>
  
 	<form onLoad="action-crm-batch-attrs-action-select" onNew="action-group-crm-crmbatch-onnew" name="crm-batch-form" title="CRM Batch" model="com.axelor.apps.crm.db.CrmBatch" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 		  <field name="actionSelect" onChange="action-crm-batch-attrs-action-select"/>
 		  <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		  <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		</panel>
-		<panel-tabs>
-		  <panel name="eventReminderPage" title="Event reminder page">
-		    <button name="eventReminderBatch" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
+		<panel-tabs name="mainPanelTab">
+		  <panel name="eventReminderPanel" title="Event reminder page">
+		    <button name="eventReminderBatchBtn" title="Event reminder batch"   onClick="save,action-crm-batch-method-action-event-reminder"/>
 		  </panel>
-		  <panel name="targetPage" title="Target page">
+		  <panel name="targetPanel" title="Target page">
 		    <field name="targetConfigurationSet" colSpan="12" form-view="target-configuration-form" grid-view="target-configuration-grid"/>
-		    <button name="targetBatch" title="Target batch" colSpan="4" onClick="save,action-crm-batch-method-action-target"/>
+		    <button name="targetBatchBtn" title="Target batch" colSpan="4" onClick="save,action-crm-batch-method-action-target"/>
 		  </panel>
-		  <panel name="information" title="Information" >
+		  <panel name="informationPanel" title="Information" >
 		    <field name="createdOn" title="Created on"/>
 		    <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 		    <field name="description" colSpan="12" />
-		    <panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+		    <panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 		  </panel>
 		</panel-tabs>
 	</form>
@@ -60,8 +60,8 @@
 	
     <!-- ACTION ATTRS -->
     <action-attrs name="action-crm-batch-attrs-action-select">
-	    <attribute name="hidden" expr="eval: actionSelect != 21" for="eventReminderPage"/>
-	    <attribute name="hidden" expr="eval: actionSelect != 22" for="targetPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 21" for="eventReminderPanel"/>
+	    <attribute name="hidden" expr="eval: actionSelect != 22" for="targetPanel"/>
 	</action-attrs>
 	
 </object-views>

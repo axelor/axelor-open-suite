@@ -21,13 +21,13 @@
 	</grid>
     
     <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm" width="large">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="date" colSpan="5"/>
 	    <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form" summary-view="alarm-message-form" grid-view="alarm-engine-grid"/>
 	    <field name="acquitOk" colSpan="2"/>
 	    <field name="content" showTitle="false" colSpan="12" widget="html"/>
 	  </panel>
-	  <panel name="details" title="Details">
+	  <panel name="detailsPanel" title="Details">
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
 	      <field name="balanceDueDebtRecovery"/>

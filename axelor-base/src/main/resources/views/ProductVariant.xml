@@ -16,7 +16,7 @@
     
     <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant"
     	onLoad="action-product-variant-attrs-domain" onNew="action-product-variant-record-on-new" width="large">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
         	<field name="productVariantAttr1" showTitle="false" readonly="true" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
         	<field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttr1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 	        <field name="productVariantAttr2" showTitle="false" readonly="true" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>

@@ -9,12 +9,12 @@
 	<form name="weekly-planning-form" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning" 
 		  onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning" 
 		  onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
 			<field name="leaveCoef" if-module="axelor-human-resource" />
 		</panel>
-	    <panel-related field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
+	    <panel-related name="weekDaysPanel" field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>
 	
 	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning" editable="true" orderBy="id">
@@ -26,7 +26,7 @@
 	</grid>
 	
 	<form name="day-planning-form" title="Day" model="com.axelor.apps.base.db.DayPlanning">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name" readonly="true"/>
 			<field name="morningFrom"/>
 		    <field name="morningTo"/>
