@@ -48,6 +48,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -254,7 +255,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-
+      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
@@ -273,7 +274,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (taxLine != null) {
         taxRate = taxLine.getValue();
       }
-
+      if (saleOrderLine.getQty() != BigDecimal.ZERO) {
+        companyUnitPriceUntaxed =
+            saleOrderLine
+                .getCompanyExTaxTotal()
+                .divide(
+                    qty,
+                    Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                    RoundingMode.HALF_EVEN);
+      }
+      
       StockMoveLine stockMoveLine =
           stockMoveLineService.createStockMoveLine(
               saleOrderLine.getProduct(),
@@ -281,6 +291,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getDescription(),
               qty,
               priceDiscounted,
+              companyUnitPriceUntaxed,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
@@ -303,6 +314,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null,
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
+              BigDecimal.ZERO,
               BigDecimal.ZERO,
               BigDecimal.ZERO,
               null,

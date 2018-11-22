@@ -66,6 +66,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -232,6 +233,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
           BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+          BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getProduct().getCostPrice();
+          
+          if (purchaseOrderLine.getQty() != BigDecimal.ZERO) {
+            companyUnitPriceUntaxed =
+                purchaseOrderLine
+                    .getCompanyExTaxTotal()
+                    .divide(
+                        purchaseOrderLine.getQty(),
+                        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                        RoundingMode.HALF_EVEN);
+          }
 
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
@@ -264,6 +276,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       purchaseOrderLine.getDescription(),
                       qty,
                       priceDiscounted,
+                      companyUnitPriceUntaxed,
                       unit,
                       stockMove,
                       StockMoveLineService.TYPE_PURCHASES,
@@ -279,6 +292,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       product,
                       purchaseOrderLine.getProductName(),
                       purchaseOrderLine.getDescription(),
+                      BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       null,
