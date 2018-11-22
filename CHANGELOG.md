@@ -351,6 +351,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Use the char ';' for subrogation release export
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
+- TALENT : View order of fields training and trainingSession altered in object Training Register. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
