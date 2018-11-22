@@ -432,7 +432,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       Unit startUnit, Unit endUnit, BigDecimal qtyToConvert, Product product)
       throws AxelorException {
     if (startUnit != null && !startUnit.equals(endUnit)) {
-      return unitConversionService.convert(startUnit, endUnit, qtyToConvert, qtyToConvert.scale(), product);
+      return unitConversionService.convert(
+          startUnit, endUnit, qtyToConvert, qtyToConvert.scale(), product);
     } else {
       return qtyToConvert;
     }

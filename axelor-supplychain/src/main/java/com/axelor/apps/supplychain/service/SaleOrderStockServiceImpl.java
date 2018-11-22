@@ -381,8 +381,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 saleOrderLine.getProduct());
         requestedReservedQty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, requestedReservedQty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(),
+                unit,
+                requestedReservedQty,
+                requestedReservedQty.scale(),
+                saleOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;
