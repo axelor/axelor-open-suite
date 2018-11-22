@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="FixedAsset" lang="java" cachable="true">
+  
+  	<string name="reference" title="Reference" readonly="true"/>
+  	<string name="name" title="Name" required="true"/>
+  	<integer name="statusSelect" title="Status" selection="account.fixed.asset.status.select"/>
+  	
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	<many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" required="true"/>
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Supplier" required="true"/>
+	<many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice line"/>
+	<many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account" title="Purchase account"/>
+	
+	<many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category" required="true"/>
+	
+	<string name="computationMethodSelect" title="Computation method" selection="account.fixed.type.category.computation.method.select"/>
+	
+	<decimal name="degressiveCoef" title="Degressive coef"/>
+	
+	<integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
+	<integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
+	<integer name="durationInMonth" title="Duration in month"/>
+	
+	<date name="acquisitionDate" title="Date of acquisition"/>
+	<date name="firstDepreciationDate" title="First depreciation date"/>
+	
+	<decimal name="grossValue" title="Gross value"/>
+	<decimal name="residualValue" title="Residual value"/>
+	
+	<date name="disposalDate" title="Disposal date"/>
+	
+	<decimal name="disposalValue" title="Disposal value"/>
+	
+	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board" mappedBy="fixedAsset"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_DEPRECIATED = 3;
+		public static final int STATUS_TRANSFERRED = 4;
+		
+	]]></extra-code>
+    
+  </entity>
+ 
+</domain-models>

@@ -11,18 +11,18 @@
     
   <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
   	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default">
-     <panel>
+     <panel name="mainPanel">
         <field name="name"/>
         <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
-        <panel colSpan="6">
+        <panel name="modelPanel" colSpan="6">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name"/>
 	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" />
 	    </panel>
 	    <field name="jsonField" colSpan="5" requiredIf="model != null &amp;&amp; !isJson" readonlyIf="model == null &amp;&amp; !isJson" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :model and self.json = true"/>
         <field name="statusField" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-method-set-default-nodes" colSpan="4" />
       	<field name="displayTypeSelect" colSpan="4" />
-      	<button name="openDashboard" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
+      	<button name="openDashboardBtn" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
         <field name="description" widget="html" colSpan="12" />
       	<field name="$bpmnDefault" hidden="true" type="string" />

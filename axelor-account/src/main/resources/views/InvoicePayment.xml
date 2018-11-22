@@ -13,13 +13,13 @@
 	    <field name="typeSelect"/>
     	<field name="move" form-view="move-form" grid-view="move-grid"/>
     	<field name="statusSelect"/>
-   		<button name="cancel" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
     <form name="invoice-payment-form" title="Payment"
         model="com.axelor.apps.account.db.InvoicePayment"
         onNew="action-invoice-payment-group-new">
-		<panel name="main" readonlyIf="statusSelect != 0">
+		<panel name="mainPanel" readonlyIf="statusSelect != 0">
             <field name="amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
@@ -39,12 +39,12 @@
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
-		<panel showIf="id">
+		<panel name="otherDetails" showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
-			<button name="cancel" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 		</panel>
 	</form>
 

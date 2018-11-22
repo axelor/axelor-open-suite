@@ -11,7 +11,7 @@
 	</grid>
 	
 	<form name="partner-address-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="address" canNew="true" />
 			<field name="isInvoicingAddr" widget="toggle" x-icon="fa-exclamation-circle" />
 			<field name="isDeliveryAddr" widget="toggle" x-icon="fa-ban" />

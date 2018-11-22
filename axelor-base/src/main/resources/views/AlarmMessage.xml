@@ -10,7 +10,7 @@
     </grid>
     
     <form name="alarm-message-form" title="Alarm Message" model="com.axelor.apps.base.db.AlarmMessage"  >
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="name"/>
 	        <field name="typeSelect"/>
 	        <field name="message" colSpan="12" widget="html"/>

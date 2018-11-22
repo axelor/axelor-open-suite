@@ -16,7 +16,7 @@
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true"/>
 			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 			<field name="name"/>
@@ -28,7 +28,7 @@
 			<field name="testTypeSelect" readonly="true"/>
 			<field name="controlPointDate"/>
 		</panel>
-		<panel name="ControlFrequency" showIf="controlTypeSelect == 2 || controlTypeSelect == 3" title="Control Frequency" readonly="true">
+		<panel name="ControlFrequencyPanel" showIf="controlTypeSelect == 2 || controlTypeSelect == 3" title="Control Frequency" readonly="true">
 			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 2" showTitle="false">
 				<viewer>
 				<![CDATA[
@@ -36,9 +36,9 @@
 		        ]]>
 		        </viewer>
 				<editor x-show-titles="false">
-					<label type="string" title="Every" readonly="true" colSpan="1" />
+					<label name="every1Label" type="string" title="Every" readonly="true" colSpan="1" />
 					<field name="controlFrequency" showTitle="false" colSpan="3" />
-					<label type="string" readonly="true" title="% of the operation" />
+					<label name="operationLabel" type="string" readonly="true" title="% of the operation" />
 				</editor>
 			</field>
             <field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 3" showTitle="false">
@@ -48,29 +48,29 @@
                 ]]>
                 </viewer>
                 <editor x-show-titles="false">
-                	<label type="string" title="Every" readonly="true"  colSpan="1" />
+                	<label name="every2Label" type="string" title="Every" readonly="true"  colSpan="1" />
                     <field name="controlFrequency" showTitle="false"  colSpan="3"/>
                     <field name="period" showTitle="false" colSpan="3"  selection="quality.control.point.model.period"/>
                 </editor>
             </field>
 		</panel>
-		<panel name="instructions">
+		<panel name="instructionsPanel">
 			<field name="instructions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="notes">
+		<panel name="notesPanel">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="messageIfFailure">
+		<panel name="messageIfFailurePanel">
 			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel sidebar="true" showIf="statusSelect == 1">
-			<button name="pass" title="Pass" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-pass,save"/>
-			<button name="fail" title="Fail" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-fail,save"/>
+		<panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
+			<button name="passBtn" title="Pass" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-pass,save"/>
+			<button name="failBtn" title="Fail" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-fail,save"/>
 		</panel>
-		<panel sidebar="true">
-			<button name="createAQualityAlert" title="Create a quality alert" onClick="action-quality-control-point-create-quality-alert"/>
+		<panel name="qualityAlertPanel" sidebar="true">
+			<button name="createAQualityAlertBtn" title="Create a quality alert" onClick="action-quality-control-point-create-quality-alert"/>
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages />
 	  	</panel-mail>	  
 	</form>

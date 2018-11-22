@@ -9,7 +9,7 @@
     </grid>
     
 	<form name="bank-statement-file-format-form" title="Bank Statements file format" model="com.axelor.apps.bankpayment.db.BankStatementFileFormat" canDelete="false"> 
-  		<panel name="main" colSpan="12">
+  		<panel name="mainPanel" colSpan="12">
 	        <field name="statementFileFormatSelect" required="true" onChange="action-bank-statement-file-format-record-compute-name"/>
 	        <field name="name" required="true"/>
   		</panel>

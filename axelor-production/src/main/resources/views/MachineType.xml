@@ -10,7 +10,7 @@
 	</grid>
 	
 	<form name="machine-type-form" title="Machine Type" model="com.axelor.apps.production.db.MachineType">
-		<panel>
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="code"/>
 			<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>

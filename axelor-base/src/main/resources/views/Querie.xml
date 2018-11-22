@@ -11,12 +11,12 @@
     
     <form name="querie-form" title="Querie" model="com.axelor.apps.base.db.Querie" 
     	onNew="action-querie-record-new">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="name"/>
 	        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 	        <field name="type"/>
 	        <field name="query" widget="CodeEditor" x-syntax="sql" hideIf="type == 3" colSpan="12"/>
-	        <button name="checkQuery" title="Check query" onClick="action-querie-check-query"/>
+	        <button name="checkQueryBtn" title="Check query" onClick="action-querie-check-query"/>
         </panel>
     </form>
     

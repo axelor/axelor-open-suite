@@ -46,9 +46,9 @@ public class TeamTaskController {
         hideCancel = timer.getTimerHistoryList().isEmpty();
       }
 
-      response.setAttr("btnStartTimer", HIDDEN_ATTR, hideStart);
-      response.setAttr("btnStopTimer", HIDDEN_ATTR, !hideStart);
-      response.setAttr("btnCancelTimer", HIDDEN_ATTR, hideCancel);
+      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
+      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
+      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

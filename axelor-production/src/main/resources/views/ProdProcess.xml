@@ -19,13 +19,13 @@
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
-			<button name="print" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
-			<button name="newVersion" title="Generate new version"  if="__config__.app.getApp('production').manageProdProcessVersion" onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-production-process-print"/>
+			<button name="newVersionBtn" title="Generate new version"  if="__config__.app.getApp('production').manageProdProcessVersion" onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
 		</toolbar>
 
-		<panel name="main">
+		<panel name="mainPanel">
             <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
-            <panel stacked="true" colSpan="8">
+            <panel name="namePanel" stacked="true" colSpan="8">
                 <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
                 <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
             </panel>
@@ -39,7 +39,7 @@
                 </viewer>
             </field>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <spacer/>
+            <spacer name="codeSpacer"/>
             <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
           <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
 	        <field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
@@ -51,9 +51,9 @@
 	        <field name="isEnabledForAllProducts"/>
         </panel>
 
-        <panel-related field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+        <panel-related name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 
-        <panel name="versionManagement" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
+        <panel name="versionManagementPanel" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
             <field name="versionNumber" colSpan="3" />
             <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
  		</panel>            

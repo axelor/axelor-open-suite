@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form title="Category" name="category-form"  model="com.axelor.apps.project.db.ProjectCategory">
-		<panel>
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="byDefault"/>
 		</panel>

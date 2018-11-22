@@ -10,9 +10,9 @@
   </grid>
   
   <form name="dashlet-builder-form" title="Dashlet builder" model="com.axelor.studio.db.DashletBuilder">
-      <panel>
+      <panel name="mainPanel">
       	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	  <spacer/>
+      	  <spacer name="appBuilderSpacer"/>
           <field name="viewType" selection-in="['chart','grid', 'custom']"/>
 	      <field name="name" />
       	  <field name="metaView" requiredIf="action == null" domain="self.type = :viewType" />

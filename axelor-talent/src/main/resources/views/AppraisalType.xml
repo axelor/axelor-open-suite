@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="appraisal-type-form" title="Appraisal type" model="com.axelor.apps.talent.db.AppraisalType" width="large">
-		<panel>
+		<panel name="namePanel">
 			<field name="name" />
 		</panel>
 	</form>

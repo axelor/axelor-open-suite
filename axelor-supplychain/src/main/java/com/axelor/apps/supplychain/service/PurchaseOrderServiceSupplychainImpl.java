@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -84,6 +85,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppAccountService appAccountService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
+  protected AppBaseService appBaseService;
 
   @Inject private BudgetDistributionRepository budgetDistributionRepo;
 
@@ -95,7 +97,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       StockMoveLineRepository stockMoveLineRepository,
-      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl) {
+      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
+      AppBaseService appBaseService) {
+
     this.unitConversionService = unitConversionService;
     this.stockMoveRepo = stockMoveRepo;
     this.appSupplychainService = appSupplychainService;
@@ -103,6 +107,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.appAccountService = appAccountService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
+    this.appBaseService = appBaseService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -246,7 +251,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       qualityStockMove.setTradingName(purchaseOrder.getTradingName());
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-
         BigDecimal qty =
             purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
@@ -286,11 +290,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
       if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
         qty =
-            unitConversionService.convertWithProduct(
-                purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+            unitConversionService.convert(
+                purchaseOrderLine.getUnit(),
+                unit,
+                qty,
+                qty.scale(),
+                purchaseOrderLine.getProduct());
         priceDiscounted =
-            unitConversionService.convertWithProduct(
-                unit, purchaseOrderLine.getUnit(), priceDiscounted, purchaseOrderLine.getProduct());
+            unitConversionService.convert(
+                unit,
+                purchaseOrderLine.getUnit(),
+                priceDiscounted,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                purchaseOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;

@@ -9,13 +9,13 @@
 	
     <form model="com.axelor.apps.helpdesk.db.TicketType" title="Ticket type"
         name="ticket-type-form" width="large">
-        <panel>
+        <panel name="namePanel">
             <field name="name"/>
         </panel>
 
-        <panel-dashlet action="dashlet.ticket.by.ticket.type" colSpan="12"/>
+        <panel-dashlet name="ticketByTicketTypePanel" action="dashlet.ticket.by.ticket.type" colSpan="12"/>
 
-        <panel-dashlet
+        <panel-dashlet name="repartitionTicketPerStateDashlet"
             action="chart:chart.ticket.type.percentage.repartition.ticket.per.state"
             colSpan="12"/>
     </form>

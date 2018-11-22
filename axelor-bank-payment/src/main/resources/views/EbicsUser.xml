@@ -5,8 +5,8 @@
 	
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
 		<toolbar>
-  			<button name="exportUsers" title="Export" onClick="action-export-ebics-user" />
-    		<button name="importUsers" title="Import" onClick="action-ebics-open-import-ebics-users" />
+  			<button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user" />
+    		<button name="importUsersBtn" title="Import" onClick="action-ebics-open-import-ebics-users" />
   		</toolbar>
 		<hilite if="statusSelect &lt; 3" color="primary"/>
 	    <hilite if="statusSelect == 3" color="success"/>
@@ -21,7 +21,7 @@
 	</grid>
 	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
-		<panel title="General information" colSpan="12">
+		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
 			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
@@ -35,7 +35,7 @@
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="ebicsPartner.ebicsBank"/>
 		</panel>
-		<panel title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
+		<panel name="testConfigPanel" title="Test configuration" colSpan="12" showIf="ebicsPartner.testMode">
 			<field name="ebicsPartner.testMode"/>
 			<field name="testDataFile" widget="binary-link"/>
 			<field name="testSignatureFile" widget="binary-link"/>
@@ -43,47 +43,47 @@
 			<field name="testBankStatementFileFormat"/>
 			<field name="testBankOrderFileFormat"/>
 		</panel>
-		<panel-tabs>
-			<panel title="Certificates">
-				<panel title="DN" colSpan="12" itemSpan="12" showIf="ebicsPartner.ebicsTypeSelect == 0" hidden="true">
-					<button name="generateDn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
+		<panel-tabs name="mainPanelTab">
+			<panel name="certficatesPanel" title="Certificates">
+				<panel name="actionPanel" title="DN" colSpan="12" itemSpan="12" showIf="ebicsPartner.ebicsTypeSelect == 0" hidden="true">
+					<button name="generateDnBtn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
 					<field name="dn" readonly="true" showTitle="false" />
 				</panel>
-				<panel title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+				<panel name="electronicSignatureCertiPanel" title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false" canNew="true"/>
 				</panel>
-				<panel title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+				<panel name="encryptedCertiPanel" title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="e002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
-				<panel title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+				<panel name="authenticationCertiPanel" title="Authentication certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-related name="ebicsRequestLogList" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
 		</panel-tabs>
 		
-		<panel sidebar="true">
-			<button name="generateCertificates" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
-			<button name="sendINI" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" hidden="true" showIf="statusSelect == 1"/>
-			<button name="sendHIA" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" hidden="true" showIf="statusSelect == 2"/>
-			<button name="printCertificates" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
-			<button name="sendHPB" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3" prompt="Are you sure you want get the server certificates ?"/>
-			<button name="sendSPR" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3" prompt="Are you sure you want suspend the user ? The whole initialisation process will have to be done again."/>
-			<button name="sendFUL" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3 &amp;&amp; userTypeSelect == 0" prompt="You will send a file, are you sure the test mode is enabled ?"/>
-			<button name="sendFDL" title="Send file download request (FDL)" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
-			<button name="sendHTD" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
-			<button name="sendPTK" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
-			<button name="sendHPD" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
-			<button name="admin" title="Administration mode" onClick="action-ebics-user-attrs-administration-mode"/>
+		<panel name="actionBtnsPanel" sidebar="true">
+			<button name="generateCertificatesBtn" title="Generate certificates" onClick="save,action-ebics-user-method-generate-certificates" hidden="true" showIf="dn &amp;&amp; (statusSelect == 0 || statusSelect == 4)"/>
+			<button name="sendINIBtn" title="Send certificate of signature A005 (INI)" onClick="save,action-ebics-user-method-send-ini" hidden="true" showIf="statusSelect == 1"/>
+			<button name="sendHIABtn" title="Send authentication X002 and Encryption E002 certificates (HIA)" onClick="save,action-ebics-user-method-send-hia" hidden="true" showIf="statusSelect == 2"/>
+			<button name="printCertificatesBtn" title="Print certificates" onClick="save,action-ebics-user-method-update-edition-date,action-ebics-user-method-print-certificates" showIf="statusSelect >= 3"/>
+			<button name="sendHPBBtn" title="Get the server certificates (HPB)" onClick="save,action-ebics-user-method-send-hpb" showIf="statusSelect >= 3" prompt="Are you sure you want get the server certificates ?"/>
+			<button name="sendSPRBtn" title="Send Suspension of access authorisation (SPR)" onClick="save,action-ebics-user-method-send-spr" showIf="statusSelect == 3" prompt="Are you sure you want suspend the user ? The whole initialisation process will have to be done again."/>
+			<button name="sendFULBtn" title="Send file upload request (FUL)" onClick="save,action-ebics-user-method-send-ful" showIf="statusSelect == 3 &amp;&amp; userTypeSelect == 0" prompt="You will send a file, are you sure the test mode is enabled ?"/>
+			<button name="sendFDLBtn" title="Send file download request (FDL)" onClick="save,action-ebics-user-method-send-fdl" showIf="statusSelect == 3"/>
+			<button name="sendHTDBtn" title="Get the UserID state (HTD)" onClick="save,action-ebics-user-method-send-htd" showIf="statusSelect == 3"/>
+			<button name="sendPTKBtn" title="Get the user log (PTK)" onClick="save,action-ebics-user-method-send-ptk" showIf="statusSelect == 3"/>
+			<button name="sendHPDBtn" title="Get bank parameters (HPD)" onClick="save,action-ebics-user-method-send-hpd" showIf="statusSelect == 3"/>
+			<button name="adminBtn" title="Administration mode" onClick="action-ebics-user-attrs-administration-mode"/>
 		</panel>
 	
 	</form>
 	
 	
 	<form name="import-ebics-user-form" title="Import Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
-		<panel>
+		<panel name="mainPanel">
 			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
-			<button name="importUsers" title="Import Ebics users" onClick="action-ebics-method-import-ebics-users" showIf="dataFile != null" colSpan="4" />
+			<button name="importUsersBtn" title="Import Ebics users" onClick="action-ebics-method-import-ebics-users" showIf="dataFile != null" colSpan="4" />
 			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
 		</panel>	
 	</form>

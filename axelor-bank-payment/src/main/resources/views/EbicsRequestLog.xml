@@ -13,17 +13,17 @@
 	</grid>
 	
 	<form name="ebics-request-log-form" title="Ebics request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
-		<panel>
+		<panel name="mainPanel">
 			<field name="requestType" />
 			<field name="requestTime" />
 			<field name="responseCode" />
 			<field name="responseFile" widget="binary-link" readonly="true" />
 		</panel>
-		<panel-tabs>
-			<panel title="Request trace">
+		<panel-tabs name="mainPanelTab">
+			<panel name="requestTracePanel" title="Request trace">
 				<field name="requestTraceText" colSpan="12" showTitle="false" />
 			</panel>
-			<panel title="Response trace">
+			<panel name="responseTraceTextPanel" title="Response trace">
 				<field name="responseTraceText"  colSpan="12" showTitle="false" />
 			</panel>
 		</panel-tabs>

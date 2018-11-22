@@ -11,18 +11,18 @@
 	    <field name="saleSupplySelect"/>
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="personalExpense" />
-	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
     <toolbar>
-    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
-	    <panel name="main">
+	    <panel name="mainPanel">
 			<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
-			<panel name="productTypology" title="Product typology" colSpan="12">
+			<panel name="productTypologyPanel" title="Product typology" colSpan="12">
 				<field name="productTypeSelect" readonly="true" />
 				<field name="deductLunchVoucher" hideIf="!expense" />
 				<field name="blockExpenseTax" />
@@ -31,34 +31,34 @@
 				<field name="saleSupplySelect" readonly="true" hidden="true"/>
                 <field name="expense" hidden="true"/>
 			</panel>
-			<panel name="categorization" title="Categorization" colSpan="12">
+			<panel name="categorizationPanel" title="Categorization" colSpan="12">
 				<field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
 			</panel>
 	    </panel>
-	    <panel-tabs title="Product specific attributes">
-			<panel name="sale" title="Sale" showTitle="false">
-				<panel colSpan="6" title="Sales">
+	    <panel-tabs name="productSpecificAttrsPanelTab" title="Product specific attributes">
+			<panel name="salePanel" title="Sale" showTitle="false">
+				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
 					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
-				<panel colSpan="12" name="internalDescription" title="Internal description" >
+				<panel colSpan="12" name="internalDescriptionPanel" title="Internal description" >
 					<field name="internalDescription" showTitle="false" colSpan="12"/>
 				</panel>
-				<panel colSpan="12" name="description" title="Description" hidden="true" showIf="sellable">
+				<panel colSpan="12" name="descriptionPanel" title="Description" hidden="true" showIf="sellable">
 					<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
-	        <panel name="trackingNumber" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-        		<panel colSpan="12">
+	        <panel-related name="accountManagementListPanel" title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
+	        <panel name="trackingNumberPanel" title="Tracking number" showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+        		<panel colSpan="12" name="warantyDetailsPanel">
         			<field name="hasWarranty" />
 	            	<field name="warrantyNbrOfMonths"  showIf="hasWarranty"/>
         	 		<field name="isPerishable" />
 	            	<field name="perishableNbrOfMonths" showIf="isPerishable"/>
         	 	</panel>
-        	 	<panel colSpan="12">
+        	 	<panel name="trackingNumberConfigPanel" colSpan="12">
 		            <field name="trackingNumberConfiguration" canNew="true" grid-view="tracking-number-configuration-grid" form-view="tracking-number-configuration-form"/>
 	            </panel>
 	        </panel>
@@ -67,7 +67,7 @@
 	
 	<grid name="product-activity-grid" title="Product Activities" model="com.axelor.apps.base.db.Product" orderBy="name">
    		<toolbar>
-        	<button name="catalog" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+        	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
@@ -76,68 +76,68 @@
 	    <field name="productTypeSelect" width="100"/>
 	    <field name="saleSupplySelect"/>
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
    <form name="product-activity-form" title="Product Activity" model="com.axelor.apps.base.db.Product" 
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
    onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
-	    <panel name="main">
+	    <panel name="mainPanel">
         <field name="productTypeSelect" hidden="true"/>
-          <panel colSpan="12">
-            <panel colSpan="2">
+          <panel name="productDetailsPanel" colSpan="12">
+            <panel name="imagePanel" colSpan="2">
               <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
             </panel>
-            <panel colSpan="10">
+            <panel name="subProductDetailsPanel" colSpan="10">
               <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
                 <editor x-show-titles="false">
                   <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
                   <field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
                 </editor>
               </field>
-              <panel title="Product typology" colSpan="6" colWidths="30%,70%">
+              <panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
                 <field name="inAti"/>
                 <field name="isAnalyticCapture" if-module="axelor-account"  if="__config__.app.isApp('account')" />
                 <field name="deductLunchVoucher" hideIf="!expense" colSpan="12"/>
                 <field name="expense" hidden="true"/>
               </panel>
-              <panel name="categorization" title="Categorization" colSpan="6" colWidths="30%,70%">
+              <panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
                 <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
                 <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
               </panel>
             </panel>
           </panel>
         </panel>
-	    <panel-tabs title="Product specific attributes">
-			<panel name="sale" title="Sale" showTitle="false">
-				<panel colSpan="6" title="Sales">
+	    <panel-tabs name="productSpecificAttrsPanelTab" title="Product specific attributes">
+			<panel name="salePanel" title="Sale" showTitle="false">
+				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
 					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
-				<panel colSpan="6" name="productDates" title="Product dates">
+				<panel colSpan="6" name="productDatesPanel" title="Product dates">
 					<field name="startDate" colSpan="12"/>
 					<field name="endDate" onChange="action-group-base-product-enddate-onchange" colSpan="12"/>
 				</panel>
-				<panel colSpan="6" name="description" title="Description">
+				<panel colSpan="6" name="descriptionPanel" title="Description">
 					<field name="description" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
-				<panel colSpan="6" name="internalDescription" title="Internal description" >
+				<panel colSpan="6" name="internalDescriptionPanel" title="Internal description" >
 					<field name="internalDescription" showTitle="false" colSpan="12" widget="html"/>
 				</panel>
 			</panel>
-			<panel name="costs" title="Costs" showTitle="false">
-				<panel title="Costs" colSpan="6">
+			<panel name="costsPanel" title="Costs" showTitle="false">
+				<panel name="subCostsPanel" title="Costs" colSpan="6">
 					<field name="costPrice" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 					<field name="managPriceCoef" onChange="action-product-record-compute-sale-price" colSpan="12"/>
 				</panel>        
 			</panel>
-	        <panel-related title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
+	        <panel-related name="accountManagementListPanel" title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
 	  	</panel-tabs>
 	</form>    
     

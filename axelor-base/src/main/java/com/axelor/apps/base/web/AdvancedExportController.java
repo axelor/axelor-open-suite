@@ -149,7 +149,7 @@ public class AdvancedExportController {
         response.setValue("metaField", null);
       } else {
         response.setAttr("metaField", "readonly", true);
-        response.setAttr("validateFieldSelection", "readonly", true);
+        response.setAttr("validateFieldSelectionBtn", "readonly", true);
         response.setAttr("$viewerMessage", "hidden", false);
         response.setAttr("$isValidate", "value", true);
       }

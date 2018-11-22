@@ -12,21 +12,21 @@
     </grid>
  
 	<form onLoad="action-group-supplychain-salebatch-onload" onNew="action-group-supplychain-salebatch-onnew" name="sale-batch-form" title="Sale Batch" model="com.axelor.apps.sale.db.SaleBatch" width="large">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="actionSelect" onChange="action-sale-batch-attrs-action-select"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 	    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 	  </panel>
-	  <panel>
+	  <panel name="createdPanel">
 	    <field name="createdOn" title="Created on"/>
 	    <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-	    <button name="invoicingBatch" title="Invoicing batch" onClick="save,action-sale-batch-method-action-invoicing"/>
+	    <button name="invoicingBatchBtn" title="Invoicing batch" onClick="save,action-sale-batch-method-action-invoicing"/>
 	  </panel>
-	  <panel-tabs>    
-	    <panel name="description" title="Description">
+	  <panel-tabs name="mainPanelTab">    
+	    <panel name="descriptionPanel" title="Description">
 	      <field name="description" showTitle="false" colSpan="12"/>      
 	    </panel>
-		<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
+		<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
 	  </panel-tabs>
 	</form>
     

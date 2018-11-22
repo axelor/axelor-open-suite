@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="recurring-cost-form" title="Vehicle Recurring Cost" model="com.axelor.apps.fleet.db.RecurringCost" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="date"/>
 			<field name="amount"/>
 		</panel>

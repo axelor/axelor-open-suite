@@ -18,14 +18,14 @@
     </grid>
     
 	<form name="debt-recovery-history-form" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" width="large">
-		<panel name="debtRecoverySettings" title="Debt recovery settings">
+		<panel name="debtRecoverySettingsPanel" title="Debt recovery settings">
         	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
         	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
         	<field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
         	<field name="unknownAddressOK"/>
         	<field name="setToIrrecoverableOK"/>
     	</panel>
-    	<panel name="partnerInformation" title="Partner information">
+    	<panel name="partnerInformationPanel" title="Partner information">
         	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
         	<field name="balanceDue"/>
         	<field name="balanceDueDebtRecovery"/>
@@ -33,8 +33,8 @@
         	<field name="debtRecoveryMethodLine" readonlyIf="debtRecoveryMethod == null" domain="self.debtRecoveryMethod = :debtRecoveryMethod" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
         	<field name="debtRecoveryDate"/>
     	</panel>
-    	<panel name="debtRecoveryContent" title="Debt recovery content">
-			<panel-dashlet action="action.message.view.messages" colSpan="12"/>
+    	<panel name="debtRecoveryContentPanel" title="Debt recovery content">
+			<panel-dashlet name="viewMessagesPanel" action="action.message.view.messages" colSpan="12"/>
     	</panel>
 	</form>
     
@@ -50,7 +50,7 @@
         <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
     </grid>
     <form name="debt-recovery-history-contract-line-form" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory"  >
-	    <panel name="main" >
+	    <panel name="mainPanel" >
 	    	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
 	        <field name="referenceDate"/>
 	        <field name="balanceDue"/>

@@ -66,8 +66,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
         unit = saleOrderLine.getUnit();
       } else {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
     }
 

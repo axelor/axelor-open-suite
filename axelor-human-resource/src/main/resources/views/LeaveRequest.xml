@@ -18,7 +18,7 @@
 	
 	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
 		 <toolbar>
-			<button name="showSubordinateLeaveToValidate" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
+			<button name="showSubordinateLeaveToValidateBtn" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
@@ -37,21 +37,21 @@
 	    onLoad="action-leave-request-group-on-form-load"
 	    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
 
-	    <panel sidebar="true" name="actions" stacked="true">
-			<button name="sendLeave" onClick="action-leave-request-group-send" colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
-	    	<button name="validateButton" hidden="true" onClick="action-leave-request-group-validate" title="Validate"/>
-	    	<button name="refuseButton" hidden="true" onClick="action-leave-request-group-refuse" title="Refuse"/>
-	    	<button name="cancelButton" onClick="action-leave-request-group-cancel" hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-	    	<button name="draftButton" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+	    <panel sidebar="true" name="actionsPanel" stacked="true">
+			<button name="sendLeaveBtn" onClick="action-leave-request-group-send" colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
+	    	<button name="validateBtn" hidden="true" onClick="action-leave-request-group-validate" title="Validate"/>
+	    	<button name="refuseBtn" hidden="true" onClick="action-leave-request-group-refuse" title="Refuse"/>
+	    	<button name="cancelBtn" onClick="action-leave-request-group-cancel" hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+	    	<button name="draftBtn" onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 	    </panel>
-	    <panel>
+	    <panel name="statusPanel">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 	    </panel>
-	    <panel hidden="true" showIf="leaveLine != null &amp;&amp; leaveLine.leaveReason != null &amp;&amp; leaveLine.leaveReason.instruction != null">
+	    <panel name="instructionPanel" hidden="true" showIf="leaveLine != null &amp;&amp; leaveLine.leaveReason != null &amp;&amp; leaveLine.leaveReason.instruction != null">
 	    	<field name="leaveLine.leaveReason.instruction" widget="html" colSpan="12" showTitle="false"  />
 	    </panel>
-		<panel name="information">
-			<spacer/>
+		<panel name="informationPanel">
+			<spacer name="companySpacer"/>
 			<field name="company" canEdit="false" onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
 			<field name="user" form-view="user-form" grid-view="user-grid"
 				   onSelect="action-hr-attrs-set-user-domain"
@@ -61,7 +61,7 @@
 			<field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid"/>
 			<field name="leaveLine.quantity" title="Available quantity (acquired)" />
 			<field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change"/>
-			<spacer/>
+			<spacer name="injectConsumeSelectSpacer"/>
 			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
 			<field name="toDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
@@ -70,7 +70,7 @@
 			
 			<field name="comments" colSpan="12" />
 		</panel>
-		<panel>
+		<panel name="validationDetailsPanel">
 			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
@@ -78,10 +78,10 @@
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 			<field name="toJustifyLeaveReason" hidden="true"/>
 		</panel>
-		<panel>
+		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	    </panel-mail>
@@ -93,7 +93,7 @@
 	
 	<form name="popup-leave-request-form" title="Select the leave request you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-leave-request-attrs-domain-leave-request-select">
 		<field name="$leaveSelect" title="Select Leave Request" type="many-to-one" target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox" />
-		<button name="editLeaveRequestSelected" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
+		<button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected" onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
 	</form>
 	
 	<action-group name="action-leave-request-group-send">
@@ -159,8 +159,8 @@
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-buttons">
-		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser  || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser  || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
 		<attribute name="readonly" for="company" expr="eval: true" if="!__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2" if="__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="user" expr="eval: true" if="!__user__.employee?.hrManager &amp;&amp; !to_justify_leave_reason"/>
@@ -174,15 +174,15 @@
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-send">
-  		<attribute name="readonly" expr="eval: statusSelect == 2 &amp;&amp; !((__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))" for="information"/>
+  		<attribute name="readonly" expr="eval: statusSelect == 2 &amp;&amp; !((__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))" for="informationPanel"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-valid-refuse">
-  		<attribute name="readonly" expr="eval: true" if="statusSelect == 3 || statusSelect == 4" for="information"/>
+  		<attribute name="readonly" expr="eval: true" if="statusSelect == 3 || statusSelect == 4" for="informationPanel"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-draft-cancel">
-  		<attribute name="readonly" expr="eval: false" for="information" if="statusSelect == 1 || statusSelect == 5"/>
+  		<attribute name="readonly" expr="eval: false" for="informationPanel" if="statusSelect == 1 || statusSelect == 5"/>
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">

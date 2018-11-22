@@ -75,13 +75,13 @@ public class ExpenseLineProjectController {
               .collect(Collectors.toList());
       expenseLineProjectService.setProject(lineIds, project);
       response.setAttr("$expenseLineSet", "hidden", true);
-      response.setAttr("addSelectedExpenseLines", "hidden", true);
-      response.setAttr("unlinkSelectedExpenseLines", "hidden", true);
-      response.setAttr("cancelManageExpenseLines", "hidden", true);
-      response.setAttr("expenseLineDashlet", "refresh", true);
-      response.setAttr("expenseDashlet", "refresh", true);
-      response.setAttr("selectNewExpenseLines", "readonly", false);
-      response.setAttr("manageExpenseLines", "readonly", false);
+      response.setAttr("addSelectedExpenseLinesBtn", "hidden", true);
+      response.setAttr("unlinkSelectedExpenseLinesBtn", "hidden", true);
+      response.setAttr("cancelManageExpenseLinesBtn", "hidden", true);
+      response.setAttr("expenseLinePanel", "refresh", true);
+      response.setAttr("expensePanel", "refresh", true);
+      response.setAttr("selectNewExpenseLinesBtn", "readonly", false);
+      response.setAttr("manageExpenseLinesBtn", "readonly", false);
     }
   }
 

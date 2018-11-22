@@ -15,7 +15,7 @@
         model="com.axelor.apps.base.db.ProductVariantValue"
         onNew="action-product-variant-value-attrs-scale-and-precision"
         onLoad="action-product-variant-value-attrs-scale-and-precision">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="priceExtra"/>
