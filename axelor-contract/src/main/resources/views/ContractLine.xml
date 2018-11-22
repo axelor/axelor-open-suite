@@ -5,7 +5,8 @@
               http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="contract-line-grid" title="Contract Lines"
-          model="com.axelor.apps.contract.db.ContractLine">
+          model="com.axelor.apps.contract.db.ContractLine" canMove="true"
+          orderBy="sequence">
         <hilite if="isConsumptionLine" background="primary"/>
         <field name="productName"/>
         <field name="qty"/>
