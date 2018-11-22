@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -55,6 +56,33 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
+  public void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        BigDecimal qty = stockMoveLine.getRealQty();
+        BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
+        Product product = stockMoveLine.getProduct();
+        if (product == null) {
+          continue;
+        }
+        BigDecimal convertedQty =
+            convertUnitWithProduct(stockMoveLine.getUnit(), product.getUnit(), qty, product);
+        BigDecimal convertedRequestedReservedQty =
+            convertUnitWithProduct(
+                stockMoveLine.getUnit(), product.getUnit(), requestedReservedQty, product);
+        updateRequestedQuantityInLocations(
+            stockMoveLine,
+            stockMove.getFromStockLocation(),
+            stockMove.getToStockLocation(),
+            stockMoveLine.getProduct(),
+            convertedQty,
+            convertedRequestedReservedQty,
+            status);
+      }
+    }
+  }
+
+  @Override
   public void updateRequestedQuantityInLocations(
       StockMoveLine stockMoveLine,
       StockLocation fromStockLocation,
@@ -62,21 +90,15 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       Product product,
       BigDecimal qty,
       BigDecimal convertedRequestedReservedQty,
-      int fromStatus,
       int toStatus)
       throws AxelorException {
     if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       updateRequestedQuantityInFromStockLocation(
-          stockMoveLine,
-          fromStockLocation,
-          product,
-          fromStatus,
-          toStatus,
-          convertedRequestedReservedQty);
+          stockMoveLine, fromStockLocation, product, toStatus, convertedRequestedReservedQty);
     }
     if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       updateRequestedQuantityInToStockLocation(
-          stockMoveLine, toStockLocation, product, fromStatus, toStatus, qty);
+          stockMoveLine, toStockLocation, product, toStatus, qty);
     }
   }
 
@@ -85,7 +107,6 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockMoveLine stockMoveLine,
       StockLocation stockLocation,
       Product product,
-      int fromStatus,
       int toStatus,
       BigDecimal requestedReservedQty)
       throws AxelorException {
@@ -103,7 +124,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     // the quantity that will be allocated in stock move line
     BigDecimal realReservedStockMoveQty;
 
-    // if the status was planned, subtract the quantity using the previously allocated quantity.
+    // if we cancel, subtract the quantity using the previously allocated quantity.
     if (toStatus == StockMoveRepository.STATUS_CANCELED
         || toStatus == StockMoveRepository.STATUS_REALIZED) {
       realReservedStockMoveQty = stockMoveLine.getReservedQty();
@@ -134,7 +155,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(realReservedQty));
     }
 
-    checkReservedQtyStocks(stockLocationLine, fromStatus, toStatus);
+    checkReservedQtyStocks(stockLocationLine, toStatus);
   }
 
   @Override
@@ -142,7 +163,6 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockMoveLine stockMoveLine,
       StockLocation stockLocation,
       Product product,
-      int fromStatus,
       int toStatus,
       BigDecimal qty)
       throws AxelorException {
@@ -154,7 +174,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, qty);
     }
-    checkReservedQtyStocks(stockLocationLine, fromStatus, toStatus);
+    checkReservedQtyStocks(stockLocationLine, toStatus);
   }
 
   protected void reallocateQty(
@@ -299,12 +319,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    * @param stockLocationLine
    * @throws AxelorException
    */
-  protected void checkReservedQtyStocks(
-      StockLocationLine stockLocationLine, int fromStatus, int toStatus) throws AxelorException {
+  protected void checkReservedQtyStocks(StockLocationLine stockLocationLine, int toStatus)
+      throws AxelorException {
 
     if (((toStatus == StockMoveRepository.STATUS_REALIZED)
-            || (fromStatus == StockMoveRepository.STATUS_REALIZED
-                && toStatus == StockMoveRepository.STATUS_CANCELED))
+            || toStatus == StockMoveRepository.STATUS_CANCELED)
         && stockLocationLine.getReservedQty().compareTo(stockLocationLine.getCurrentQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

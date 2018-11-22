@@ -31,7 +31,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -127,6 +126,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
       Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
     }
+    Beans.get(ReservedQtyService.class)
+        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
 
     return newStockSeq;
   }
@@ -143,7 +144,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     super.cancel(stockMove);
-    updateRequestedQuantity(stockMove);
+    Beans.get(ReservedQtyService.class)
+        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void plan(StockMove stockMove) throws AxelorException {
+    super.plan(stockMove);
+    Beans.get(ReservedQtyService.class)
+        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -203,22 +213,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         } else {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
         }
-      }
-    }
-  }
-
-  /**
-   * Update requested quantity on stock move lines and sale order lines linked to the stock move
-   *
-   * @param stockMove a cancelled or realized stock move
-   */
-  protected void updateRequestedQuantity(StockMove stockMove) {
-
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      stockMoveLine.setReservedQty(BigDecimal.ZERO);
-      SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-      if (saleOrderLine != null) {
-        saleOrderLine.setReservedQty(BigDecimal.ZERO);
       }
     }
   }
@@ -341,43 +335,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updateReservedQty(StockMove stockMove) throws AxelorException {
     cancel(stockMove);
     plan(stockMove);
-  }
-
-  /**
-   * Update locations from a planned stock move, by copying stock move lines in the stock move then
-   * updating locations. This method in supplychain also update reserved qty in original stock move
-   * lines.
-   *
-   * @param stockMove
-   * @param fromStockLocation
-   * @param toStockLocation
-   * @throws AxelorException
-   */
-  @Override
-  protected void updateLocations(
-      StockMove stockMove, StockLocation fromStockLocation, StockLocation toStockLocation)
-      throws AxelorException {
-
-    copyPlannedStockMovLines(stockMove);
-    stockMoveLineService.updateLocations(
-        fromStockLocation,
-        toStockLocation,
-        stockMove.getStatusSelect(),
-        StockMoveRepository.STATUS_PLANNED,
-        stockMove.getPlannedStockMoveLineList(),
-        stockMove.getEstimatedDate(),
-        false);
-    for (StockMoveLine plannedStockMoveLine : stockMove.getPlannedStockMoveLineList()) {
-      stockMove
-          .getStockMoveLineList()
-          .stream()
-          .filter(
-              stockMoveLine ->
-                  stockMoveLine.getSequence().equals(plannedStockMoveLine.getSequence()))
-          .findAny()
-          .ifPresent(
-              stockMoveLine -> stockMoveLine.setReservedQty(plannedStockMoveLine.getReservedQty()));
-    }
   }
 
   @Override

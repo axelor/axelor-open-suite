@@ -21,11 +21,20 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface ReservedQtyService {
+
+  /**
+   * Called on stock move cancel, plan and realization to update requested reserved qty and reserved
+   * qty.
+   *
+   * @param stockMove
+   */
+  void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException;
 
   /**
    * Update requested quantity for internal or external location.
@@ -35,7 +44,6 @@ public interface ReservedQtyService {
    * @param toStockLocation
    * @param product
    * @param qty
-   * @param fromStatus
    * @param toStatus
    * @throws AxelorException
    */
@@ -46,7 +54,6 @@ public interface ReservedQtyService {
       Product product,
       BigDecimal qty,
       BigDecimal convertedRequestedReservedQty,
-      int fromStatus,
       int toStatus)
       throws AxelorException;
 
@@ -57,7 +64,6 @@ public interface ReservedQtyService {
    * @param stockMoveLine a stock move line
    * @param stockLocation a stock location
    * @param product the product of the line
-   * @param fromStatus starting status for the stock move
    * @param toStatus target status for the stock move
    * @param requestedReservedQty the requested reserved quantity, converted in product unit.
    * @throws AxelorException
@@ -66,7 +72,6 @@ public interface ReservedQtyService {
       StockMoveLine stockMoveLine,
       StockLocation stockLocation,
       Product product,
-      int fromStatus,
       int toStatus,
       BigDecimal requestedReservedQty)
       throws AxelorException;
@@ -77,7 +82,6 @@ public interface ReservedQtyService {
    * @param stockMoveLine a stock move line
    * @param stockLocation a stock location
    * @param product the product of the line
-   * @param fromStatus starting status for the stock move
    * @param toStatus target status for the stock move
    * @param qty
    * @throws AxelorException
@@ -86,7 +90,6 @@ public interface ReservedQtyService {
       StockMoveLine stockMoveLine,
       StockLocation stockLocation,
       Product product,
-      int fromStatus,
       int toStatus,
       BigDecimal qty)
       throws AxelorException;

@@ -42,7 +42,6 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -265,17 +264,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         lastFutureStockMoveDate,
         trackingNumber,
         convertedRequestedReservedQty);
-
-    Beans.get(ReservedQtyService.class)
-        .updateRequestedQuantityInLocations(
-            stockMoveLine,
-            fromStockLocation,
-            toStockLocation,
-            product,
-            qty,
-            convertedRequestedReservedQty,
-            fromStatus,
-            toStatus);
   }
 
   @Override
