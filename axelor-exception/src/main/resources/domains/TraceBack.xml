@@ -28,7 +28,19 @@
      <extra-code><![CDATA[
 	
 	// TYPE SELECT
+	/**
+	 * @deprecated With current implementation of TraceBackService, all exceptions of type
+	 *     AxelorException are flagged as functional exceptions. However there are many cases of
+	 *     misuses of AxelorException due to confusion between TYPE and CATEGORY.
+	 */
+	@Deprecated
 	public static final int TYPE_TECHNICAL = 0;
+	/**
+	 * @deprecated With current implementation of TraceBackService, all exceptions of type
+	 *     AxelorException are flagged as functional exceptions. However there are many cases of
+	 *     misuses of AxelorException due to confusion between TYPE and CATEGORY.
+	 */
+	@Deprecated
 	public static final int TYPE_FUNCTIONNAL = 1;
 	
 	// CATEGORY SELECT

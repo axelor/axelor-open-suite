@@ -774,7 +774,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     }
 
     if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0 && !isTitleLine) {
-      return null;
+      return new ArrayList<InvoiceLine>();
     }
     if (product == null && !isTitleLine) {
       throw new AxelorException(

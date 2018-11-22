@@ -11,7 +11,7 @@
 
   <form name="timer-history-form" title="Timer history"
     model="com.axelor.apps.base.db.TimerHistory">
-    <panel>
+    <panel name="mainPanel">
       <field name="startDateT"/>
       <field name="endDateT"/>
     </panel>

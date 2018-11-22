@@ -5,13 +5,13 @@
    
 	<form name="object-data-export-wizard-form" title="Object data export" model="com.axelor.apps.base.db.Wizard"
 	onNew="action-object-data-export-wizard-defaults">
-		<panel>
+		<panel name="mainPanel">
 			<field name="modelSelect" title="Model" widget="RefSelect" x-related="modelSelectId" selection="object.data.config.model.select" selection-in="null" type="string" required="true"/>
 			<field name="exportFormatSelect" title="Export format" selection="object.data.export.format.select" type="string"/>
 			<field name="langSelect" title="Language" selection="select.language" type="string" />
-			<spacer/>
-			<button name="export" title="Export" onClick="action-object-data-export-wizard-method-export" readonlyIf="modelSelectId == 0" />
-			<button name="anonymize" title="Anonymize data" onClick="action-object-data-export-wizard-validate-anonymize,action-object-data-export-wizard-method-anonymyize" readonlyIf="modelSelectId == 0" />
+			<spacer name="langSelectSpacer"/>
+			<button name="exportBtn" title="Export" onClick="action-object-data-export-wizard-method-export" readonlyIf="modelSelectId == 0" />
+			<button name="anonymizeBtn" title="Anonymize data" onClick="action-object-data-export-wizard-validate-anonymize,action-object-data-export-wizard-method-anonymyize" readonlyIf="modelSelectId == 0" />
 			<field name="modelSelectId" hidden="true" />
 			<field name="objectDataConfigId" hidden="true"/>
 		</panel>

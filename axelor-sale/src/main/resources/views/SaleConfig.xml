@@ -8,16 +8,16 @@
 	</grid>
 
 	<form name="sale-config-form" title="Sale configuration" model="com.axelor.apps.sale.db.SaleConfig" onNew="action-sale-config-record-default" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 			<field name="saleOrderInAtiSelect"/>
 			<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
 		</panel>
-		<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 			<field name="acceptedCredit"/>
-			<button name="updateCustomerAcceptedCredit" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
+			<button name="updateCustomerAcceptedCreditBtn" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
 		</panel>
-		<panel name="printingSettings" title="Printing settings">
+		<panel name="printingSettingsPanel" title="Printing settings">
 			<field name="displaySalemanOnPrinting" widget="boolean-switch"/>
 			<field name="displayDelCondOnPrinting" widget="boolean-switch"/>
 			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>

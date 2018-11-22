@@ -15,7 +15,7 @@
 
 	<form name="sale-order-schedule-line-form" title="SO schedule line"
 		model="com.axelor.apps.sale.db.SaleOrderScheduleLine" onNew="action-group-sale-saleorder-scheduleline-onnew" width="large">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="sequence"/>
 	    <field name="amountToBeInvoiced"/>
 	    <field name="invoicingPercentage"/>

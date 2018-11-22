@@ -10,6 +10,7 @@
   	<!-- NOT DISPLAY -->
   	<many-to-one name="invoiceBatch" ref="com.axelor.apps.account.db.InvoiceBatch" />
   	<many-to-one name="accountingBatch" ref="com.axelor.apps.account.db.AccountingBatch" />
+  	<many-to-one name="fixedAssetBatch" ref="com.axelor.apps.account.db.FixedAssetBatch"/>
 
   </entity>
 

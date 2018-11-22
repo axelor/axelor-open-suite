@@ -8,7 +8,7 @@
     </grid>
     
     <form name="industry-sector-form" title="Industry sector" model="com.axelor.apps.base.db.IndustrySector">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="name"/>
         </panel>
     </form>

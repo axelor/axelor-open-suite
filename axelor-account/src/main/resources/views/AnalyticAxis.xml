@@ -7,7 +7,7 @@
         <field name="name"/>
     </grid>
     <form name="analytic-axis-form" title="Analytic Axis" model="com.axelor.apps.account.db.AnalyticAxis"  >
-       <panel name="main" >
+       <panel name="mainPanel" >
        		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         	<field name="name"/>
        </panel>

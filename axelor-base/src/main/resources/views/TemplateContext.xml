@@ -9,9 +9,9 @@
     </grid>
     
     <form name="template-context-form" title="Template Context" model="com.axelor.apps.base.db.TemplateContext" width="large">
-    	<panel name="main">
+    	<panel name="mainPanel">
         	<field name="name"/>
-        	<panel-related field="templateContextLineList" colSpan="12" form-view="template-context-line-form" grid-view="template-context-line-grid"/>
+        	<panel-related name="templateContextLineListPanel" field="templateContextLineList" colSpan="12" form-view="template-context-line-form" grid-view="template-context-line-grid"/>
         </panel>
     </form>
     

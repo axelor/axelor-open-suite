@@ -6,7 +6,7 @@
 	<form name="app-expense-config-form" title="App Expense"
 		model="com.axelor.apps.base.db.AppExpense" canDelete="false" canNew="false"
 		width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="computeDistanceWithWebService" />
 		</panel>
 	</form>

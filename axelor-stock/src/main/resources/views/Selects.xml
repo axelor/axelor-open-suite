@@ -120,11 +120,11 @@
 	</selection>
 
 	<selection name="stockmove.origin.select">
-		<option value="com.axelor.apps.stock.db.Inventory">Inventory</option>
-		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
-		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+		<option value="com.axelor.apps.stock.db.Inventory" data-grid="inventory-grid" data-form="inventory-form">Inventory</option>
+		<option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid" data-form="sale-order-form">Sale order</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
+		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
+		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
 	</selection>
 
 </object-views>

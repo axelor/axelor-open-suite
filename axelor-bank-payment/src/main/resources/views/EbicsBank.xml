@@ -9,7 +9,7 @@
 	</grid>
 
 	<form name="ebics-bank-form" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
-		<panel title="General information">
+		<panel name="generalInfoPanel" title="General information">
 			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large" hideIf="!fullName" readonly="true"/>
 			<field name="bank" canNew="true" onChange="action-ebics-bank-record-onchange-bank"/>
 			<field name="hostId"/>
@@ -22,11 +22,11 @@
 			<field name="useX509ExtentionForAutoSignedCert"/>
 		</panel>
 
-		<panel-related field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>
+		<panel-related name="ebicsCertificateListPanel" field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>
 		
-		<panel-dashlet hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
+		<panel-dashlet name="ebicsBankDetailsPanel" hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
 		
-		<panel-dashlet action="action-ebics-bank-view-ebics-users"/>
+		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-bank-view-ebics-users"/>
 	</form>
 
 	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">

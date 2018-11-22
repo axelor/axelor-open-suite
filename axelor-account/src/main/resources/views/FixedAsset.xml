@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="fixed-asset-grid" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset" orderBy="-createdOn,company">
+    	<field name="name"/>
+    	<field name="partner" grid-view="partner-supplier-grid" form-view="partner-form"/>
+    	<field name="company" form-view="company-form" grid-view="company-grid"/>
+    	<field name="fixedAssetCategory" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
+    	<field name="acquisitionDate"/>
+    	<field name="firstDepreciationDate"/>
+    	<field name="statusSelect"/>
+    </grid>
+    
+    <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onNew="action-fixed-asset-record-default" onSave="action-fixed-asset-category-record-compute-duration">
+    	<panel>
+	    	<panel colSpan="12">
+	    		<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>
+	    	</panel>
+	    	<panel name="main" colSpan="12">
+	    		<field name="reference" colSpan="12"/>
+	    		<field name="name"/>
+	    		<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect &gt; 1"/>
+	    		<field name="company.currency" title="Currency" form-view="currency-form" grid-view="currency-grid"/>
+	    		<field name="fixedAssetCategory" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values"/>
+	    	</panel>
+	    </panel>
+    	<panel>
+			<field name="partner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-supplier-grid" readonlyIf="statusSelect &gt; 1"/>
+			<field name="invoiceLine" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+			<field name="purchaseAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid" readonlyIf="statusSelect &gt; 1"/>
+    	</panel>
+    	
+    	<panel-tabs>
+    		<panel-related field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" colSpan="12" canNew="false" readonlyIf="statusSelect &gt; 1"/>
+    		<panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect &gt; 1">
+	    		<field name="computationMethodSelect" required="true" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
+	    		<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
+	        	<field name="numberOfDepreciation" min="1" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"/>
+	    		<field name="periodicityInMonth" min="1" onChange="action-fixed-asset-category-record-compute-duration"/>
+	        	<field name="durationInMonth" readonly="true"/>
+    		</panel>
+    	</panel-tabs>
+		
+    	<panel title="Actions" sidebar="true">
+    		<button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect &gt; 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,save"/>
+    		<button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
+    		<button name="disposalBtn" title="Disposal" showIf="statusSelect == 3" onClick="action-fixed-asset-view-show-disposal-wizard"/>
+    	</panel>
+    	<panel sidebar="true" readonlyIf="statusSelect &gt; 1">
+    		<field name="acquisitionDate" required="true"/>
+    		<field name="firstDepreciationDate" required="true"/>
+    		<field name="disposalDate" showIf="statusSelect == 4" readonly="true"/>
+    	</panel>
+    	<panel sidebar="true">
+    		<field name="grossValue" readonlyIf="statusSelect &gt; 1" onChange="action-fixed-asset-record-set-residual-value"/>
+        	<field name="residualValue" readonly="true"/>
+        	<field name="disposalValue" showIf="statusSelect == 4" readonly="true"/>
+    	</panel>
+    </form>
+    
+    <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
+    	<panel name="main">
+    		<field name="disposalDate" type="date" title="Disposal date"/>
+    		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
+    		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-fixed-asset-disposal-wizard-method-disposal"/>
+    	</panel>
+    </form>
+    
+    <action-record name="action-fixed-asset-disposal-wizard-record-onnew" model="com.axelor.apps.base.db.Wizard">
+    	<field name="disposalDate" expr="eval: __date__"/>
+    	<field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
+    </action-record>
+    
+    <action-record name="action-fixed-asset-record-default" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="statusSelect" expr="1"/>
+    	<field name="company" expr="eval:__user__.activeCompany"/>
+    	<field name="computationMethodSelect" expr="eval: 'linear'"/>
+    	<field name="acquisitionDate" expr="eval: __date__"/>
+    	<field name="firstDepreciationDate" expr="eval: __date__"/>
+    </action-record>
+    
+    <action-record name="action-fixed-asset-record-onchange-set-values" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="journal" expr="eval: fixedAssetCategory?.journal"/>
+    	<field name="computationMethodSelect" expr="eval: fixedAssetCategory?.computationMethodSelect"/>
+    	<field name="degressiveCoef" expr="eval: fixedAssetCategory?.degressiveCoef"/>
+    	<field name="periodicityInMonth" expr="eval: fixedAssetCategory?.periodicityInMonth"/>
+    	<field name="numberOfDepreciation" expr="eval: fixedAssetCategory?.numberOfDepreciation"/>
+    	<field name="durationInMonth" expr="eval: fixedAssetCategory?.durationInMonth"/>
+    </action-record>
+    
+    <action-record name="action-fixed-asset-record-set-residual-value" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="residualValue" expr="eval: grossValue"/>
+    	<field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
+    </action-record>
+    
+    <action-record name="action-fixed-asset-record-status-validated" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="statusSelect" expr="2"/>
+    </action-record>
+    
+    <action-method name="action-fixed-asset-method-compute-depreciation">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="computeDepreciation"/>
+    </action-method>
+    
+    <action-method name="action-fixed-asset-disposal-wizard-method-disposal">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="disposal"/>
+    </action-method>
+    
+    <action-view name="action-fixed-asset-view-show-disposal-wizard" title="Disposal" model="com.axelor.apps.account.db.FixedAsset">
+    	<view type="form" name="fixed-asset-disposal-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_fixedAsset" expr="eval: __this__"/>
+    </action-view>
+    
+</object-views>

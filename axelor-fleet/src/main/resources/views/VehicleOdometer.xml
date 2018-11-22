@@ -11,7 +11,7 @@
     </grid>
     
     <form name="vehicle-odometer-form" title="Odometer" model="com.axelor.apps.fleet.db.VehicleOdometer" width="large">
-       <panel>
+       <panel name="mainPanel">
        	   <field name="name"/>
      	   <field name="date" />
 	       <field name="vehicle"/>

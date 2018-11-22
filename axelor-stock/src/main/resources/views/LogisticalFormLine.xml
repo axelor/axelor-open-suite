@@ -26,7 +26,7 @@
 
     <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing line" name="logistical-form-line-form"
         width="large" canCopy="true">
-        <panel>
+        <panel name="mainPanel">
             <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
             <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
                 hideIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"

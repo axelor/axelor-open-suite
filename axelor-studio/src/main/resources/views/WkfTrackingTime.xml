@@ -11,7 +11,7 @@
     
   <form name="wkf-tracking-time-form" title="Total time per status" model="com.axelor.studio.db.WkfTrackingTime" width="large"
     canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
-      <panel>
+      <panel name="mainPanel">
         <field name="status"/>
         <field name="totalTimeHours"/>
         <field name="totalTimeDays"/>

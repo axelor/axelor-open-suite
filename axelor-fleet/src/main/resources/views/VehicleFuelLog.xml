@@ -13,8 +13,8 @@
     </grid>
 	
 	<form name="vehicle-fuel-log-form" title="Vehicle Fuel" model="com.axelor.apps.fleet.db.VehicleFuelLog" width="large" >
-		 <panel>
-		  	<panel colSpan="12">
+		 <panel name="mainPanel">
+		  	<panel name="vehicleDetailsPanel" colSpan="12">
     			<field name="vehicle" title="Vehicle">
       			<editor>
         			<field name="name" colSpan="12"/>
@@ -22,19 +22,19 @@
       			</editor>
     		</field>
       		</panel>
-    		<panel title="Information">
+    		<panel name="informationPanel" title="Information">
 		  		<field name="purchasePartner"/>
 		  	    <field name="invoiceRef"/>
 		  	    <field name="vendorPartner"/>
 		  	    <field name="date"/>
 		  	</panel>
-		  	<panel title="Refueling details">
+		  	<panel name="refuelingDetailsPanel" title="Refueling details">
 		  		<field name="liter" onChange="action-method-calculate-total-price"/>
 		  	    <field name="pericePerLiter" onChange="action-method-calculate-total-price"/>
 		  	    <field name="totalPrice"/>
 		  	</panel>
      	 </panel>
-     	 <panel>
+     	 <panel name="notesPanel">
       		<field name="notes" colSpan="12"/>
     	</panel>
    </form>

@@ -11,7 +11,7 @@
 	</grid>
 
 	<form name="payroll-leave-form" title="Payroll Leave" model="com.axelor.apps.hr.db.PayrollLeave" cols="12" width="large">
-		<panel name="main" readonly="true">
+		<panel name="mainPanel" readonly="true">
 			<field name="fromDate" colSpan="4"/>
 			<field name="toDate" colSpan="4"/>
 			<field name="duration" colSpan="4"/>

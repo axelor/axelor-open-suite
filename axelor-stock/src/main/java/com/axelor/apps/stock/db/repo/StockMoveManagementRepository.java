@@ -41,6 +41,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     copy.setStockMoveSeq(null);
     copy.setName(null);
     copy.setRealDate(null);
+    copy.setAvailabilityRequest(false);
 
     return copy;
   }

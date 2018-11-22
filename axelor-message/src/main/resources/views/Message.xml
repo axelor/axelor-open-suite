@@ -13,8 +13,8 @@
 		  model="com.axelor.apps.message.db.Message" orderBy="-sentDateT"
 		  canNew="false" canDelete="false" canArchive="false">
 		<toolbar>
-			<button name="regenerateMessage" title="Regenerate messages" onClick="action-message-method-regenerate-messages"/>
-			<button name="resendMessage" title="Resend messages" onClick="action-message-method-send-messages"/>
+			<button name="regenerateMessageBtn" title="Regenerate messages" onClick="action-message-method-regenerate-messages"/>
+			<button name="resendMessageBtn" title="Resend messages" onClick="action-message-method-send-messages"/>
 		</toolbar>
 		<field name="createdOn"/>
 		<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
@@ -24,41 +24,41 @@
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-message-message-onnew">
 		<toolbar>
-	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
-	        <button name="send" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
-        	<button name="trash" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3 "/>
+	        <button name="printBtn" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
+	        <button name="sendBtn" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
+        	<button name="trashBtn" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3 "/>
 		</toolbar>
-    	<panel name="informations" title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
+    	<panel name="informationsPanel" title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
 			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="sentDateT" colSpan="4"/>
-			<panel colSpan="12" showIf="mediaTypeSelect == 2">
+			<panel name="emailAddressPanel" colSpan="12" showIf="mediaTypeSelect == 2">
 			    <field name="fromEmailAddress" widget="SuggestBox" grid-view="email-address-grid" form-view="email-address-form"/>
 				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" requiredIf="mediaTypeSelect == 2" grid-view="mail-account-grid" form-view="mail-account-form" domain="self.isValid = true"/>
         		<field name="replyToEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
 			</panel>
         </panel>
-		<panel name="recipientAddress" title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
+		<panel name="recipientAddressPanel" title="Recipient address" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 1">
 			<field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5" showTitle="false" showIf="mediaTypeSelect == 1" requiredIf="mediaTypeSelect == 1"/>
 		</panel>
-        <panel name="recipients" title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 2">
+        <panel name="recipientsPanel" title="Recipients" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 2">
         	<field name="toEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" requiredIf="mediaTypeSelect == 2" grid-view="email-address-grid" />
         	<field name="ccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid" />
         </panel>
-		<panel name="messageDestinatedTo" title="Message destinated to" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 3">
+		<panel name="messageDestinatedToPanel" title="Message destinated to" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 3">
 			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3" requiredIf="mediaTypeSelect == 3" form-view="user-form" grid-view="user-grid"/>
 		</panel>
-        <panel name="content" title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
+        <panel name="contentPanel" title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" title="Subject" colSpan="12" required="true"/>
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
-        <panel name="relatedTo" title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-			<panel colSpan="12">
+        <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
+			<panel name="relatedTo1SelectPanel" colSpan="12">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
 			</panel>
-			<panel colSpan="12">
+			<panel name="relatedTo2SelectPanel" colSpan="12">
 				<field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="12" showIf="relatedTo1Select != null"/>
 			</panel>
 		</panel>

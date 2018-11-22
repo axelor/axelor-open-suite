@@ -24,7 +24,7 @@
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
-    <button name="trackNumberWizard" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+    <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
@@ -48,7 +48,7 @@
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
-    <button name="trackNumberWizard" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+    <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"
@@ -56,7 +56,7 @@
     canNew="false" canDelete="false"
     onNew="action-group-stock-stockmoveline-production-onnew"
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
-    <panel name="main" readonlyIf="stockMove.statusSelect == 3">
+    <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
       <field name="product" canEdit="false" domain="self.expense = false"
         onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"

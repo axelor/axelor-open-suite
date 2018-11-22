@@ -16,7 +16,7 @@
     <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large"
     	onNew="action-budget-record-on-new"
     	onLoad="action-budget-method-update-lines, save">
-       <panel name="main" >
+       <panel name="mainPanel" >
 	       <field name="name" required="true"/>
 	       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true"/>
 	       <field name="fromDate"/>
@@ -24,13 +24,13 @@
 	       <field name="company" canEdit="false"/>
 	       <field name="inChargeUser" canNew="false" canEdit="false" canView="false"/>
        </panel>
-       <panel-related field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
-       <panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant">
+       <panel-related name="budgetLineList" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
+       <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant">
 			<field name="periodDurationSelect"/>
 			<field name="amountForGeneration"/>
-			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
+			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
 		</panel>
-        <panel sidebar="true" readonly="true"  colSpan="4">
+        <panel name="totalAmountExpectedPanel" sidebar="true" readonly="true"  colSpan="4">
             <field name="totalAmountExpected" css="order-subtotal" showTitle="false" colSpan="12">
                 <viewer>
                     <![CDATA[

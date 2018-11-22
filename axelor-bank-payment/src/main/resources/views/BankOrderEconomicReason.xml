@@ -9,12 +9,12 @@
     </grid>
     
 	<form name="bank-order-economic-reason-form" title="Bank Orders economic reason" model="com.axelor.apps.bankpayment.db.BankOrderEconomicReason"> 
-  		<panel name="main" colSpan="12">
+  		<panel name="mainPanel" colSpan="12">
     		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="label"/>
 	        <field name="name" x-bind="{{label ? code + ' - ' + label : code}}" showIf="false"/>
   		</panel>
-  		<panel name="description" title="Description" colSpan="12">
+  		<panel name="descriptionPanel" title="Description" colSpan="12">
   			<field name="description" colSpan="12" showIf="false"/>
   		</panel>
 	</form>

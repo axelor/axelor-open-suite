@@ -46,9 +46,9 @@
   <form name="payment-schedule-line-reject-wizard-form" model="com.axelor.apps.base.db.Wizard"
     title="Payment schedule lines to reject" onNew="payment-schedule-line-reject-wizard-new"
     width="large">
-    <panel-dashlet action="action-payment-schedule-line-selected-view"
+    <panel-dashlet name="paymentScheduleLineSelectedPanel" action="action-payment-schedule-line-selected-view"
       showTitle="false" readonly="true"/>
-    <panel>
+    <panel name="mainPanel">
       <field name="$interbankCodeLine" x-type="many-to-one"
         x-target="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"
         colSpan="12" canEdit="false" canNew="false" domain="self.interbankCode.typeSelect = 2"/>

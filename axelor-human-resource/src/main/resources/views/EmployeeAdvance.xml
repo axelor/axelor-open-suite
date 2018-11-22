@@ -25,7 +25,7 @@
 	
 	
 	<form name="employee-advance-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="date" />
 			<field name="reason" />
 			<field name="typeSelect" />
@@ -34,15 +34,15 @@
 			<field name="requestedAmount" />
 			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" />
 		</panel>
-		<panel-related field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
-		<panel sidebar="true" >
+		<panel-related name="employeeAdvanceUsageListPanel" field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
+		<panel name="statusPanel" sidebar="true" >
 			<field name="statusSelect" />
-			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
+			<button name="validateBtn" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
 		</panel>
 	</form>
 	
 	<form name="employee-advance-employee-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="date" />
 			<field name="reason" />
 			<field name="typeSelect" readonlyIf="statusSelect == 2"  />
@@ -50,10 +50,10 @@
 			<field name="requestedAmount" readonlyIf="statusSelect == 2"  />
 			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" readonly="true" />
 		</panel>
-		<panel-related field="employeeAdvanceUsageList" readonly="true" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
-		<panel sidebar="true" >
+		<panel-related name="employeeAdvanceUsageListPanel" field="employeeAdvanceUsageList" readonly="true" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
+		<panel name="statusPanel" sidebar="true" >
 			<field name="statusSelect" />
-			<button name="validate" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
+			<button name="validateBtn" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
 		</panel>
 	</form>
 	

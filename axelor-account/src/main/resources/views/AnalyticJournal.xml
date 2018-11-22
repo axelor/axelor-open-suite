@@ -8,7 +8,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default" >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
         	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>

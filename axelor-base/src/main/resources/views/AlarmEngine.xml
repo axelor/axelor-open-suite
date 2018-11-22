@@ -24,22 +24,22 @@
     	onSave="action-alarm-engine-method-validate-query" 
     	onNew="action-alarm-engine-attrs-external" 
     	name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine" width="large">
-	    <panel name="main" >
+	    <panel name="mainPanel" >
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
 		    <field name="alarmMessage" grid-view="alarm-message-grid" form-view="alarm-message-form"/>
 		    <field name="managerTypeSelect"/>
 	  	</panel>
-	  	<panel>
+	  	<panel name="actionsPanel">
 		    <field name="activeOk" colSpan="2"/>
 		    <field name="lockingOk" colSpan="2"/>
 		    <field name="externalOk" onChange="action-alarm-engine-attrs-external" colSpan="2"/>
 	    </panel>
-	    <panel-tabs>
-		    <panel name="queryPage" title="Query">
+	    <panel-tabs name="mainPanelTab">
+		    <panel name="queryPagePanel" title="Query">
 		      <field name="query" showTitle="false" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
 		    </panel>
-		    <panel name="description" title="Description">
+		    <panel name="descriptionPanel" title="Description">
 		      <field name="description" showTitle="false" colSpan="12"/>
 		    </panel>
 	  </panel-tabs>    
@@ -47,7 +47,7 @@
 
     
     <action-attrs name="action-alarm-engine-attrs-external">
-    	<attribute name="hidden" for="queryPage" expr="eval: externalOk"/>
+    	<attribute name="hidden" for="queryPagePanel" expr="eval: externalOk"/>
     </action-attrs>
     
     <action-method name="action-alarm-engine-method-validate-query">

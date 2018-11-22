@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -68,6 +69,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
+  protected FixedAssetService fixedAssetService;
+
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -76,7 +79,8 @@ public class VentilateState extends WorkflowInvoice {
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
-      UserService userService) {
+      UserService userService,
+      FixedAssetService fixedAssetService) {
     this.sequenceService = sequenceService;
     this.moveService = moveService;
     this.accountConfigService = accountConfigService;
@@ -84,6 +88,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
+    this.fixedAssetService = fixedAssetService;
   }
 
   @Override
@@ -102,6 +107,7 @@ public class VentilateState extends WorkflowInvoice {
     setInvoiceId();
     updatePaymentSchedule();
     setMove();
+    generateFixedAsset();
     setStatus();
     setVentilatedLog();
 
@@ -253,6 +259,17 @@ public class VentilateState extends WorkflowInvoice {
 
       moveService.createMoveUseExcessPaymentOrDue(invoice);
     }
+  }
+
+  protected void generateFixedAsset() throws AxelorException {
+
+    if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
+
+    log.debug("Generate fixed asset");
+    // Create fixed asset
+    fixedAssetService.createFixedAsset(invoice);
   }
 
   /**

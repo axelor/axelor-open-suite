@@ -13,7 +13,7 @@
         <field name="totalAmount" aggregate="sum" readonly="true"/>
         <field name="toInvoice"/>
         <field name="invoiced"/>
-        <button name="updateToInvoice" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-expense-line-method-update-to-invoice" />
+        <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-expense-line-method-update-to-invoice" />
         <field name="expense" hidden="true"/>
         <field name="expense.statusSelect" hidden="true"/>
     </grid>
