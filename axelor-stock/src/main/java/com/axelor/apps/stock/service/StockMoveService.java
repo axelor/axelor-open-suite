@@ -271,4 +271,6 @@ public interface StockMoveService {
    * @throws AxelorException
    */
   Address getCompanyAddress(StockMove stockMove) throws AxelorException;
+
+  public void setAvailableStatus(StockMove stockMove);
 }

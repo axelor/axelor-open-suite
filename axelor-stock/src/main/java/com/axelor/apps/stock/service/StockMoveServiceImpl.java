@@ -1351,4 +1351,34 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     return address;
   }
+
+  @Override
+  public void setAvailableStatus(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      if (stockMoveLine.getProduct() != null) {
+        BigDecimal availableQty = stockMoveLine.getAvailableQty();
+        BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
+        BigDecimal realQty = stockMoveLine.getRealQty();
+        if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
+          stockMoveLine.setAvailableStatus(I18n.get("Available"));
+          stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_AVAILABLE);
+        } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
+          stockMoveLine.setAvailableStatus(I18n.get("Av. for product"));
+          stockMoveLine.setAvailableStatusSelect(
+              StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
+        } else if (availableQty.compareTo(realQty) < 0
+            && availableQtyForProduct.compareTo(realQty) < 0) {
+          BigDecimal missingQty = BigDecimal.ZERO;
+          if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+            missingQty = availableQtyForProduct.subtract(realQty);
+          } else {
+            missingQty = availableQty.subtract(realQty);
+          }
+          stockMoveLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
+          stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_MISSING);
+        }
+      }
+    }
+  }
 }

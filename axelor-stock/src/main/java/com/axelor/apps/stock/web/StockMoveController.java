@@ -453,4 +453,9 @@ public class StockMoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    stockMoveService.setAvailableStatus(stockMove);
+  }
 }
