@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.1]
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -404,6 +405,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
+- Fixed occasionnal scale rounding anomalies on unit conversions.
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - PRODUCTION : Update stockMoveLine onclick of splitByTrackingNo validation button. 
 - Base : fix Null Pointer error.
@@ -415,6 +417,9 @@ When we update an existing move in daybook mode, we update the partner balances 
 - INVOICEPAYMENT : company bank details filter
 - Fixed a button and a field having the same name in user view.
 - PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features

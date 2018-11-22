@@ -444,8 +444,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
           qty =
-              unitConversionService.convertWithProduct(
-                  stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+              unitConversionService.convert(
+                  stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -759,7 +759,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       priceFromLocation = stockLocationLine.get().getAvgPrice();
       priceFromLocation =
           unitConversionService.convert(
-              stockMoveLine.getUnit(), getStockUnit(stockMoveLine), priceFromLocation);
+              stockMoveLine.getUnit(),
+              getStockUnit(stockMoveLine),
+              priceFromLocation,
+              priceFromLocation.scale(),
+              null);
     }
     return priceFromLocation;
   }
@@ -950,8 +954,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     netMass =
         Beans.get(UnitConversionService.class)
-            .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
-    return netMass.setScale(10, RoundingMode.HALF_EVEN);
+            .convert(startUnit, endUnit, product.getNetMass(), 10, product);
+    return netMass;
   }
 
   @Override

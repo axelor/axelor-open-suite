@@ -104,7 +104,8 @@ public class SaleOrderLineController {
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             Beans.get(UnitConversionService.class)
-                .convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+                .convert(
+                    saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
       Beans.get(StockLocationLineService.class)
           .checkIfEnoughStock(saleOrder.getStockLocation(), saleOrderLine.getProduct(), qty);
