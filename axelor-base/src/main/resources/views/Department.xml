@@ -10,13 +10,13 @@
     </grid>
     
     <form name="department-form" title="Department" model="com.axelor.apps.base.db.Department" width="large">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="name"/>
 	        <field name="region" grid-view="region-grid" form-view="region-form"/>
         </panel>
-        <panel-related field="cityList" colSpan="12" form-view="city-form" grid-view="city-grid"/>
-        <panel-related field="cantonList" colSpan="12" form-view="canton-form" grid-view="canton-grid"/>
+        <panel-related name="cityListPanel" field="cityList" colSpan="12" form-view="city-form" grid-view="city-grid"/>
+        <panel-related name="cantonListPanel" field="cantonList" colSpan="12" form-view="canton-form" grid-view="canton-grid"/>
     </form>
     
 </object-views>

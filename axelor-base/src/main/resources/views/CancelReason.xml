@@ -9,7 +9,7 @@
 
     <form name="cancel-reason-form" title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason"
           onNew="action-cancel-reason-attrs-fill-application-type">
-        <panel name="main" >
+        <panel name="mainPanel" >
             <field name="name"/>
             <field name="applicationType" hidden="true"/>
         </panel>

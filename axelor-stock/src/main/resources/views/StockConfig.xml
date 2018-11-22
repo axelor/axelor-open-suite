@@ -8,17 +8,17 @@
     </grid>
 
 	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default" width="large">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
-	  <panel name="virtualStockLocationsInformations" title="Virtual stock locations informations">
+	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations informations">
 	    <field name="customerVirtualStockLocation" domain="self.usableOnSaleOrder = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="supplierVirtualStockLocation" domain="self.usableOnPurchaseOrder = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="inventoryVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		  <field name="productionVirtualStockLocation" domain="self.usableOnProduction = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
-	  <panel name="stockMoveInformations" title="Stock move informations">
-		  <panel colSpan="12">
+	  <panel name="stockMoveInfoPanel" title="Stock move informations">
+		  <panel colSpan="12" name="subStockMoveInfoPanel">
 			  <field name="receiptDefaultStockLocation" domain="self.usableOnPurchaseOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="pickupDefaultStockLocation" domain="self.usableOnSaleOrder = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="qualityControlDefaultStockLocation" domain="self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -28,34 +28,34 @@
 			  <field name="directOrderStockLocation" domain="self.directOrderLocation = True and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 		  </panel>
 	  </panel>
-	  <panel name="customsInformation" title="Customs">
+	  <panel name="customsInfoPanel" title="Customs">
 	  	<field name="customsMassUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
-      <panel title="Logistical forms">
+      <panel name="logisticalFormsPanel" title="Logistical forms">
         <field name="realizeStockMovesUponParcelPalletCollection" />
       </panel>
-      <panel-related field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
+      <panel-related name="freightCarrierCustomerAccountNumberListPanel" field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
           grid-view="freight-carrier-customer-account-number-grid" editable="true" />
-		<panel>
+		<panel name="plannedStockMovePanel">
 			<field name="plannedStockMoveAutomaticMail"/>
 			<field name="plannedStockMoveMessageTemplate"
 				requiredIf="plannedStockMoveAutomaticMail"
 				showIf="plannedStockMoveAutomaticMail"
 				form-view="template-form" grid-view="template-grid"/>
 		</panel>
-		<panel>
+		<panel name="realStockMovePanel">
 			<field name="realStockMoveAutomaticMail"/>
 			<field name="realStockMoveMessageTemplate"
 				requiredIf="realStockMoveAutomaticMail"
 				showIf="realStockMoveAutomaticMail"
 				form-view="template-form" grid-view="template-grid"/>
 		</panel>
-		<panel title="Conformity certificate">
+		<panel name="conformityCertiPanel" title="Conformity certificate">
 			<field name="conformityCertificateTitle"/>
 			<field name="conformityCertificateDescription" widget="html"/>
 			<field name="signatoryUser"/>
 		</panel>
-		<panel title="Stock move printing settings">
+		<panel name="stockMovePrintSettingsPanel" title="Stock move printing settings">
 			<field name="displayTrackNbrOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayBarcodeOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>

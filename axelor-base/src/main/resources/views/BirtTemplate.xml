@@ -9,11 +9,11 @@
 	</grid>
 
 	<form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name" colSpan="5" />
 			<field name="templateLink" colSpan="5" />
 			<field name="format" colSpan="2" />
-			<panel name="parameters" title="Parameters" colSpan="12">
+			<panel name="parametersPanel" title="Parameters" colSpan="12">
 				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
 					<viewer depends="name,value">
 						<![CDATA[                                         

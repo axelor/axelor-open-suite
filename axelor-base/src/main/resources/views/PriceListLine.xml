@@ -16,12 +16,12 @@
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
 	onNew="action-group-base-pricelistline-onnew"
 	onLoad="action-price-list-line-attrs-scale-and-precision" width="large">
-		<panel name="application" title="Apply on" colSpan="11">
+		<panel name="applicationPanel" title="Apply on" colSpan="11">
 			<field name="product" canEdit="false" colSpan="5" onChange="action-price-list-line-record-product" form-view="product-form" grid-view="product-grid" requiredIf="productCategory == null" hideIf="productCategory != null"/> 
-			<label name="or" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
+			<label name="orLabel" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
 			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null" onChange="action-price-list-line-attrs-product-category-change"/>
 		</panel>
-		<panel name="calculationMethod" title="Calculation method" colSpan="12" >
+		<panel name="calculationMethodPanel" title="Calculation method" colSpan="12" >
 			<field name="typeSelect" hideIf="productCategory" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="typeSelect" hideIf="!productCategory" selection-in="[1,2]" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>

@@ -12,7 +12,7 @@
     </grid>
 
     <form title="Vehicle" name="employee-vehicle-form" model="com.axelor.apps.hr.db.EmployeeVehicle">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="plateNo" colSpan="4"/>
             <field name="vehicleModel" colSpan="4"/>
             <field name="vehicleMake" colSpan="4"/>

@@ -37,25 +37,25 @@
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
 		onNew="action-account-record-new" onLoad="action-account-method-compute-balance">
-		<panel name="main">
-			<panel colSpan="8">
+		<panel name="mainPanel">
+			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
-			<panel colSpan="4" showIf="id">
-				<button name="$balance" title="Total balance" icon="fa-money" widget="info-button"/>
+			<panel name="balancePanel" colSpan="4" showIf="id">
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"/>
 			</panel>
-			<panel name="settings" title="Settings" colSpan="12">
+			<panel name="settingsPanel" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
 				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
 				<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-				<spacer colSpan="6"/>
+				<spacer name="parentAccountSpacer" colSpan="6"/>
 				<field name="useForPartnerBalance" colSpan="3"/>
 				<field name="reconcileOk" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
 				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" if="__config__.app.getApp('account').getAnalyticDistributionRequiredOnInvoiceLines()"/>
 			</panel>
-			<panel colSpan="12" showIf="id">
+			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
       		</panel>
 		</panel>
@@ -74,13 +74,13 @@
     </form>
 
 	<form name="account-info-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large">
-		<panel title="Account details" readonly="true">
+		<panel name="mainPanel" title="Account details" readonly="true">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
 			<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
 			<field name="company" canEdit="false"  widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
 			<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-			<spacer colSpan="6"/>
+			<spacer name="parentAccountSpacer" colSpan="6"/>
 			<field name="useForPartnerBalance" colSpan="3"/>
 			<field name="reconcileOk" colSpan="3"/>
 			<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>

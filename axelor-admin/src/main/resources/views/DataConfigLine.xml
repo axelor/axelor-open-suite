@@ -10,12 +10,12 @@
     
 	<form name="data-config-line-form" title="Data config line"
 		model="com.axelor.apps.base.db.DataConfigLine" width="large">
-		<panel>
+		<panel name="mainPanel">
 		 	<field name="metaModel" canEdit="false"  />
 		 	<field name="tabName" />
 		 	<field name="typeSelect" onChange="action-data-config-type-select-change" colSpan="4" />
 		 	<field name="path" colSpan="8" />
-		 	<panel-related field="metaFieldSet" canNew="false" canEdit="false" colSpan="12" 
+		 	<panel-related name="metaFieldSetPanel" field="metaFieldSet" canNew="false" canEdit="false" colSpan="12" 
 		 	domain="self.metaModel = :metaModel and (self.relationship is null or self.relationship not in ('ManyToMany','OneToMany'))">
 		 		<field name="name" />
 		 		<field name="label" />
@@ -23,7 +23,7 @@
 		 	</panel-related>
 		 	<field name="resetPathSelect"  showIf="typeSelect == 0" />
 		 	<field name="record" showIf="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
-		 	<panel-related field="toDeleteMetaFieldSet" canNew="false" canEdit="false" colSpan="12" 
+		 	<panel-related name="toDeleteMetaFieldSetsPanel" field="toDeleteMetaFieldSet" canNew="false" canEdit="false" colSpan="12" 
 		 	domain="self in :metaFieldSet">
 		 		<field name="name" />
 		 		<field name="label" />

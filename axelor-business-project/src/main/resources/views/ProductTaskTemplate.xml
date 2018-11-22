@@ -17,7 +17,7 @@
   <form name="product-task-template-form" title="Task template"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate" width="large"
     onNew="action-product-task-template-on-new">
-    <panel>
+    <panel name="mainPanel">
       <field name="name" colSpan="12" css="label-bold bold large"/>
       <field name="delayToStart"/>
       <field name="duration"/>
@@ -50,9 +50,9 @@
       <field name="delayToStart" as="delayToStart"/>
       <field name="duration" as="duration"/>
       <field name="totalPlannedHrs" as="totalPlannedHrs"/>
-      <button name="openTask" title="Open" onClick="action-product-task-template-open-task"/>
-      <button name="editTask" title="Edit" onClick="action-product-task-template-edit-task"/>
-      <button name="removeTask" title="Remove" onClick="action-product-task-template-remove-task"/>
+      <button name="openTaskBtn" title="Open" onClick="action-product-task-template-open-task"/>
+      <button name="editTaskBtn" title="Edit" onClick="action-product-task-template-edit-task"/>
+      <button name="removeTaskBtn" title="Remove" onClick="action-product-task-template-remove-task"/>
     </node>
 
     <node model="com.axelor.apps.businessproject.db.ProductTaskTemplate" parent="parentTaskTemplate"
@@ -63,9 +63,9 @@
       <field name="delayToStart" as="delayToStart"/>
       <field name="duration" as="duration"/>
       <field name="totalPlannedHrs" as="totalPlannedHrs"/>
-      <button name="openTask" title="Open" onClick="action-product-task-template-open-task"/>
-      <button name="editTask" title="Edit" onClick="action-product-task-template-edit-task"/>
-      <button name="removeTask" title="Remove" onClick="action-product-task-template-remove-task"/>
+      <button name="openTaskBtn" title="Open" onClick="action-product-task-template-open-task"/>
+      <button name="editTaskBtn" title="Edit" onClick="action-product-task-template-edit-task"/>
+      <button name="removeTaskBtn" title="Remove" onClick="action-product-task-template-remove-task"/>
     </node>
 
   </tree>

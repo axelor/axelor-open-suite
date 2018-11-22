@@ -8,7 +8,7 @@
     </grid>
     
     <form name="object-description-form" title="Description" model="com.axelor.apps.production.db.ObjectDescription" width="large">
-    	<panel name="main">
+    	<panel name="mainPanel">
     		<field name="image" colSpan="3" canNew="true" widget="Image"/>
     		<field name="description" widget="html" colSpan="12"/>
     	</panel>       

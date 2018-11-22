@@ -45,7 +45,7 @@
 	<form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine"
 		  onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
 		  onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
-		<panel name="overview" title="Overview">
+		<panel name="overviewPanel" title="Overview">
 			<field name="date" onChange="action-timesheet-line-validate-date"/>
 			<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid" canEdit="false" canView="false"/>
 			<field name="operationOrder" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid" canEdit="false" canView="false"/>

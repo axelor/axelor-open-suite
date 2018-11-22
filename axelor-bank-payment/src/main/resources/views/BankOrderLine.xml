@@ -30,7 +30,7 @@
 	<form name="bank-order-line-form" title="Bank Order line"
 		model="com.axelor.apps.bankpayment.db.BankOrderLine" width="large"
 		canNew="false" canEdit="false" canDelete="false">
-		<panel name="bankOrder" title="Bank Order Details" showIf="bankOrder != null">
+		<panel name="bankOrderDetailsPanel" title="Bank Order Details" showIf="bankOrder != null">
 			<field name="bankOrder" readonly="true" colSpan="6" />
 			<field name="bankOrder.orderTypeSelect" readonly="true"
 				colSpan="6" />
@@ -43,7 +43,7 @@
 			<field name="bankOrder.bankOrderTotalAmount" readonly="true"
 				colSpan="6" />
 		</panel>
-		<panel name="receiverInfo" title="Receiver Info.">
+		<panel name="receiverInfoPanel" title="Receiver Info.">
 			<field name="sequence" />
 			<field name="receiverCompany" canEdit="false"
 				showIf="bankOrder.partnerTypeSelect == 4" colSpan="6" form-view="company-form"

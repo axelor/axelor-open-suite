@@ -15,7 +15,7 @@
 
     <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
       onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet" onSave="action-year-check-date" onNew="action-year-account-record-new">
-		<panel name="main" readonlyIf="statusSelect == 2">
+		<panel name="mainPanel" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
@@ -25,23 +25,23 @@
 				<field name="reportedBalanceDate" colSpan="3"/>
 			</panel>
 		</panel>
-		<panel-related field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
-		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMoves"/>
-		<panel sidebar="true" readonlyIf="statusSelect == 2">
+		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel"/>
+		<panel name="actions" sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
-			<button name="close" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
-			<button name="adjust" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
+			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
+			<button name="adjustBtn" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
 		<panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
-			<button name="generatePeriods" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
+			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
 		</panel>
 	</form>
 
 	<action-attrs name="action-attrs-year-hide-linked-adjusting-moves-dashlet">
-		<attribute for="linkedAdjustingMoves" name="hidden" expr="eval: __repo__(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>
+		<attribute for="linkedAdjustingMovesPanel" name="hidden" expr="eval: __repo__(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>
 	</action-attrs>
 
 	<action-view name="action-view-year-linked-adjusting-moves-dashlet" title="Linked Adjusting Moves" model="com.axelor.apps.account.db.Move">

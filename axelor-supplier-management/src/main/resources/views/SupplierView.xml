@@ -12,7 +12,7 @@
 		<panel name="main" hidden="true">
 			<field name="id"/>
 	    </panel>
-	    <panel>
+	    <panel name="actions">
 			<button name="myPurchaseOrder"   title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
 		    <button name="myRFQToComplete"   title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
 			<button name="myRFQ"   title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
@@ -67,8 +67,8 @@
 	  <panel name="main" >
 	    <field name="statusSelect" readonly="true" widget="NavSelect" colSpan="12"/>
 	  </panel>
-	  <panel readonly="true">
-	    <panel title="Stock move reference">
+	  <panel name="generalInfo" readonly="true">
+	    <panel name="details" title="Stock move reference">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
@@ -80,7 +80,7 @@
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
 	    </panel>
 	  </panel>
-	  <panel-related field="stockMoveLineList" colSpan="12" canNew="false" canRemove="false" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid"/>
+	  <panel-related name="stockMoveLineList" field="stockMoveLineList" colSpan="12" canNew="false" canRemove="false" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid"/>
 	</form>
     
     <grid name="stock-move-line-supplier-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">

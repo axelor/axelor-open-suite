@@ -11,24 +11,24 @@
   </grid>
 
   <form name="meta-schedule-form" id="base-meta-schedule-form" title="Schedule" model="com.axelor.meta.db.MetaSchedule">
-    <panel title="Overview">
+    <panel name="overviewPanel" title="Overview">
       <field name="name"/>
       <field name="active"/>
       <field name="description" colSpan="12"/>
       <field name="job" colSpan="12" selection="meta.schedule.job.select"/>
       <field name="cron" colSpan="12"/>
-      <button-group colSpan="4">
-        <button name="btnValidate" title="Validate" onClick="com.axelor.quartz.JobRunner:validate(cron)"/>
-        <button name="btnRestart" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure you want to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
+      <button-group colSpan="4" name="actionsBtnGroup">
+        <button name="validateBtn" title="Validate" onClick="com.axelor.quartz.JobRunner:validate(cron)"/>
+        <button name="restartBtn" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure you want to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
       </button-group>
     </panel>
 
-   	<panel title="Batch" showIf="job == 'com.axelor.apps.base.job.BatchJob'">
+   	<panel name="batchPanel" title="Batch" showIf="job == 'com.axelor.apps.base.job.BatchJob'">
     	<field name="batchServiceSelect" title="Service"/>
     	<field name="batchCode" title="Code"/>
    	</panel>
 
-    <panel-related field="params" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
+    <panel-related name="params" field="paramsPanel" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
 
   </form>
 

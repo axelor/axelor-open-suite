@@ -5,7 +5,7 @@
 	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
-			<button name="projectPlanning" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
@@ -23,7 +23,7 @@
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
-		<button name="openGantt" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
+		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
 	</grid>
@@ -51,8 +51,8 @@
 					action="save,action-project-book-resource" />
 			</menu>
 		</menubar>
-		<panel>
-			<panel colSpan="12">
+		<panel name="mainPanel">
+			<panel name="detailsPanel" colSpan="12">
 				<field name="statusSelect" showTitle="false" readonly="true"
 					colSpan="8" widget="NavSelect" />
 				<field name="$viewerProjectTags" showTitle="false" colSpan="4"
@@ -70,7 +70,7 @@
 						</viewer>
 				</field>
 			</panel>
-			<panel colSpan="12">
+			<panel name="informationPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
@@ -82,8 +82,8 @@
 				</field>
 			</panel>
 		</panel>
-		<panel>
-			<panel colSpan="12">
+		<panel name="detailsPanel">
+			<panel name="generalInfoPanel" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"
 					colSpan="3"  canEdit="false"/>
 				<field name="clientPartner" domain="self.isCustomer = true AND :company member of self.companySet" onChange="action-project-method-get-partner-data"
@@ -109,31 +109,31 @@
 			<field name="description" colSpan="12" widget="html" />
 		</panel>
 
-		<panel-tabs>
-			<panel title="Task Tree" name="taskTree" showIf="isProject">
+		<panel-tabs name="mainPanelTab">
+			<panel title="Task Tree" name="taskTreePanel" showIf="isProject">
 				<panel title="Phases" name="phases"
 					showIf="isProject &amp;&amp; childProjectList.length > 0" colSpan="12" showTitle="false">
-					<button name="addPhase" title="New" colSpan="2"
+					<button name="addPhaseBtn" title="New" colSpan="2"
 						css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-view-phase-new" />
-					<button name="allPhases" title="All phases" colSpan="4"
+					<button name="allPhasesBtn" title="All phases" colSpan="4"
 						css="btn-custom text-left" icon="fa-tasks" onClick="save,action-project-view-phase-all" />
-					<button name="allPhaseTasks" title="All phase tasks" colSpan="6"
+					<button name="allPhaseTasksBtn" title="All phase tasks" colSpan="6"
 						css="btn-custom text-left" icon="fa-tasks"
 						onClick="save,action-project-phase-view-show-phase-task" />
-					<panel-dashlet title="Phases" colSpan="12"
+					<panel-dashlet name="projectPhaseTreeDashlet" title="Phases" colSpan="12"
 						action="tree:project-phase-tree" />
 				</panel>
-				<button name="addTask" title="New" colSpan="2"
+				<button name="addTaskBtn" title="New" colSpan="2"
 					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-task" />
-				<button name="allTask" title="All tasks" colSpan="2"
+				<button name="allTaskBtn" title="All tasks" colSpan="2"
 					css="btn-custom text-left" icon="fa-tasks"
 					onClick="action-project-view-show-related-tasks" />
-				<panel-dashlet title="Task Tree" colSpan="12"
+				<panel-dashlet name="projectTaskTreeDashlet" title="Task Tree" colSpan="12"
 					action="action-view-show-project-task-tree" />
-				<panel-dashlet title="Task Invoicing" colSpan="12" 
+				<panel-dashlet name="taskInvoicingDashlet" title="Task Invoicing" colSpan="12" 
 					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')" canSearch="true"/>
 			</panel>
-			<panel title="Members" name="members">
+			<panel title="Members" name="membersPanel">
 				<field name="team" title="Team"
 					readonlyIf="synchronize || extendsMembersFromParent" colSpan="6"
 					canNew="false" canEdit="false" />
@@ -143,7 +143,7 @@
 					showIf="projectTypeSelect == 2" colSpan="3" widget="boolean-switch" />
 				<field name="membersUserSet" showTitle="false" colSpan="12"
 					widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" />
-				<button name="importMembers" title="Import all members"
+				<button name="importMemberBtn" title="Import all members"
 					showIf="team != null" readonlyIf="extendsMembersFromParent" colSpan="3"
 					onClick="action-project-method-import-members" />
 				<panel title="Planning" name="planning" colSpan="12"
@@ -158,16 +158,16 @@
 		                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
-					<button name="planPlanning" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>
-					<button name="addMultipleLines" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3" hideIf="$popup()"/>
-					<button name="addProjectPlanningTimeLine" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new" />
-					<button name="removeProjectPlanningTimeLine" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-remove" />
+					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>
+					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3" hideIf="$popup()"/>
+					<button name="addProjectPlanningTimeLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new" />
+					<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-remove" />
 					<field name="$projectPlanningTimeSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time"
 					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" 
 					grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
-					<button name="removeSelectedPlanningTime" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
-					<button name="cancelRemovePlanningTime" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
-					<panel-dashlet name="projectPlanningDashlet" title="Project planning time" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
+					<button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
+					<button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
+					<panel-dashlet name="projectPlanningPanel" title="Project planning time" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
 				</panel>
 			</panel>
 			
@@ -175,131 +175,131 @@
 				 if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource">
 				<field name="timeSpent" title="Time Spent" readonly="true"
 					colSpan="3" />
-				<panel-dashlet action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="validatedTimesheetsPanel" action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 			<panel title="Sales" name="sales"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project')
 				&amp;&amp; __config__.app.getApp('business-project').getShowSaleOrderLineRelatedToProject()" 
 				if-module="axelor-business-project">
-				<button name="generateQuotation" title="Generate quotation"
+				<button name="generateQuotationBtn" title="Generate quotation"
 					onClick="action-project-method-generate-quotation" css="btn-custom text-left"  />
-				<button name="showSaleOrderLines" title="Show sale order lines" 
+				<button name="showSaleOrderLinesBtn" title="Show sale order lines" 
 						css="btn-custom" icon="fa-line-chart" onClick="action-project-view-show-sale-order-lines" />
-				<panel-dashlet action="action-project-dashlet-sale-quotation" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="saleOrderDashlet" action="action-project-dashlet-sale-order" colSpan="12" canSearch="true"/>
-				<button name="selectNewSOLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
-				<button name="manageSOLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<panel-dashlet name="saleQuotationPanel" action="action-project-dashlet-sale-quotation" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="saleOrderPanel" action="action-project-dashlet-sale-order" colSpan="12" canSearch="true"/>
+				<button name="selectNewSOLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<button name="manageSOLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$salesOrderLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Sale order lines"
 					colSpan="12" target="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" 
 					grid-view="sale-order-line-project-grid" form-view="sale-order-line-form"/>
 				<button-group colSpan="4">
-					<button name="addSelectedSOLines" hidden="true" title="Add selected lines" onClick="action-sale-order-line-method-set-project"/>
-       				<button name="unlinkSelectedSOLines" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-sale-order-line-method-unset-project"/>
+					<button name="addSelectedSOLinesBtn" hidden="true" title="Add selected lines" onClick="action-sale-order-line-method-set-project"/>
+       				<button name="unlinkSelectedSOLinesBtn" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-sale-order-line-method-unset-project"/>
 				</button-group>
-				<button name="cancelManageSOLines" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-sales-order-line-cancel-manage-lines" />
-				<panel-dashlet name="saleOrderLineDashlet" action="action-project-view-show-confirmed-sale-order-lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-customer-deliveries" colSpan="12"/>
+				<button name="cancelManageSOLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-sales-order-line-cancel-manage-lines" />
+				<panel-dashlet name="saleOrderLinePanel" action="action-project-view-show-confirmed-sale-order-lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="customerDeliveriesPanel" action="action-project-dashlet-customer-deliveries" colSpan="12"/>
 			</panel>
 			<panel title="Purchases" name="purchases"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project')  
 					&amp;&amp; __config__.app.getApp('business-project').getShowPurchaseOrderLineRelatedToProject()" 
 					if-module="axelor-business-project">
-				<button name="generatePurchaseQuotation" title="Generate quotation"
+				<button name="generatePurchaseQuotationBtn" title="Generate quotation"
 					onClick="action-project-method-generate-purchase-quotation" css="btn-custom text-left"  />	
-				<button name="showPurchaseOrderLines" title="Show purchase order lines"
+				<button name="showPurchaseOrderLinesBtn" title="Show purchase order lines"
 						css="btn-custom" icon="fa-shopping-cart"
 						onClick="action-project-view-show-purchase-order-lines" />
-				<panel-dashlet action="action-project-project-purchase-quotation" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="purchaseOrderDashlet" action="action-project-dashlet-purchase-order" colSpan="12" canSearch="true"/>
-				<button name="selectNewPOLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
-				<button name="managePOLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<panel-dashlet name="purchaseQuotationPanel" action="action-project-project-purchase-quotation" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="purchaseOrderPanel" action="action-project-dashlet-purchase-order" colSpan="12" canSearch="true"/>
+				<button name="selectNewPOLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<button name="managePOLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$purchaseOrderLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Purchase order lines"
 					colSpan="12" target="com.axelor.apps.purchase.db.PurchaseOrderLine" canEdit="false" canNew="false" 
 					grid-view="purchase-order-line-project-grid" form-view="purchase-order-line-form"/>
 				<button-group colSpan="4">
-					<button name="addSelectedPOLines" hidden="true" title="Add selected lines" onClick="action-purchase-order-line-method-set-project"/>
-       				<button name="unlinkSelectedPOLines" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-purchase-order-line-method-unset-project"/>
+					<button name="addSelectedPOLinesBtn" hidden="true" title="Add selected lines" onClick="action-purchase-order-line-method-set-project"/>
+       				<button name="unlinkSelectedPOLinesBtn" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-purchase-order-line-method-unset-project"/>
 				</button-group>
-				<button name="cancelManagePOLines" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-purchase-order-line-cancel-manage-lines" />
-				<panel-dashlet name="purchaseOrderLineDashlet" action="action-project-view-show-confirmed-purchase-order-lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
+				<button name="cancelManagePOLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-purchase-order-line-cancel-manage-lines" />
+				<panel-dashlet name="purchaseOrderLinePanel" action="action-project-view-show-confirmed-purchase-order-lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="supplierArrivalsPanel" action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
 			</panel>
-			<panel title="Resource booking" if="__config__.app.getApp('project').resourceManagement">
-				<panel-related field="resourceBookingList" form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project" colSpan="12"/>
+			<panel name="resourceBookingListPanel" title="Resource booking" if="__config__.app.getApp('project').resourceManagement">
+				<panel-related name="resourceBookingListPanel" field="resourceBookingList" form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project" colSpan="12"/>
 			</panel>
 			<panel title="Expenses" name="expenses"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project') 
 				&amp;&amp;  __config__.app.getApp('business-project').getShowExpenseLineRelatedToProject()"
 				if-module="axelor-business-project">
-				<button name="showExpenseLines" title="Show expense lines" css="btn-custom text-left"
+				<button name="showExpenseLinesBtn" title="Show expense lines" css="btn-custom text-left"
 						icon="fa-credit-card" onClick="action-project-view-show-expense-lines" />
-				<panel-dashlet action="action-project-dashlet-expense-waiting" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="expenseDashlet" action="action-project-dashlet-expense-validated" colSpan="12" canSearch="true"/>
-				<button name="selectNewExpenseLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
-				<button name="manageExpenseLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<panel-dashlet name="expenseWaitingPanel" action="action-project-dashlet-expense-waiting" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="expensePanel" action="action-project-dashlet-expense-validated" colSpan="12" canSearch="true"/>
+				<button name="selectNewExpenseLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
+				<button name="manageExpenseLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$expenseLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Expense lines"
 					colSpan="12" target="com.axelor.apps.hr.db.ExpenseLine" canEdit="false" canNew="false" 
 					grid-view="expense-line-project-grid" form-view="expense-line-form"/>
 				<button-group colSpan="4">
-					<button name="addSelectedExpenseLines" hidden="true" title="Add selected lines" onClick="action-expense-line-method-set-project"/>
-       				<button name="unlinkSelectedExpenseLines" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-expense-line-method-unset-project"/>
+					<button name="addSelectedExpenseLinesBtn" hidden="true" title="Add selected lines" onClick="action-expense-line-method-set-project"/>
+       				<button name="unlinkSelectedExpenseLinesBtn" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-expense-line-method-unset-project"/>
 				</button-group>
-				<button name="cancelManageExpenseLines" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-expense-line-cancel-manage-lines" />
-				<panel-dashlet name="expenseLineDashlet" action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
+				<button name="cancelManageExpenseLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-expense-line-cancel-manage-lines" />
+				<panel-dashlet name="expenseLinePanel" action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
 			</panel>
 			<panel title="Production" name="production"  showIf="isBusinessProject"
 				 if-module="axelor-business-production"
 				 if="__config__.app.isApp('business-project') 
 				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
 				<button
-						name="showProductionOrders"
+						name="showProductionOrdersBtn"
 						title="Show production orders" css="btn-custom text-left" icon="fa-cogs"
 						onClick="action-project-view-show-production-orders" />
 				<panel-related
 					colSpan="12" field="productionOrderList"
-					canSelect="true" canNew="false" canEdit="false" canSearch="true"/>
+					canSelect="true" canNew="false" canEdit="false" canSearch="true" name="productionOrderList"/>
 			</panel>
 			<panel title="Invoicing" name="invoicing"  showIf="isBusinessProject"
 				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 				<field name="projInvTypeSelect" />
-				<button name="showInvoicingProjects" title="Create invoicing project"
+				<button name="showInvoicingProjectsBtn" title="Create invoicing project"
 						css="btn-custom" icon="fa-file-text-o"
 						onClick="save,action-project-view-show-invoicing-projects"/>
 				<field name="invoicingComment" colSpan="12" />
-				<panel-related colSpan="12" field="manualElementList" form-view="manual-element-form" grid-view="manual-element-grid"/>
-				<panel-dashlet action="action-dashlet-project-show-all-invoicing-project" colSpan="12" />
-				<panel-dashlet name="customerInvoiceDashlet" action="action-project-dashlet-customer-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
-				<button name="selectNewCustomerInvoiceLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
-				<button name="manageCustomerInvoiceLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
+				<panel-related name="manualElementListPanel" colSpan="12" field="manualElementList" form-view="manual-element-form" grid-view="manual-element-grid"/>
+				<panel-dashlet name="allinvoicingProjectsPanel" action="action-dashlet-project-show-all-invoicing-project" colSpan="12" />
+				<panel-dashlet name="customerInvoicePanel" action="action-project-dashlet-customer-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
+				<button name="selectNewCustomerInvoiceLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
+				<button name="manageCustomerInvoiceLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
 				<field name="$customerInvoiceLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Customer Invoice lines"
 					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false" 
 					grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
 				<button-group colSpan="4">
-					<button name="addSelectedCustomerInvoiceLines" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-customer-invoice-line-project"/>
-       				<button name="unlinkSelectedCustomerInvoiceLines" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-invoice-line-method-unset-customer-invoice-line-project"/>
+					<button name="addSelectedCustomerInvoiceLinesBtn" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-customer-invoice-line-project"/>
+       				<button name="unlinkSelectedCustomerInvoiceLinesBtn" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-invoice-line-method-unset-customer-invoice-line-project"/>
 				</button-group>
-				<button name="cancelManageCustomerInvoiceLines" colSpan="4" hidden="true"  title="Cancel" onClick="action-project-attrs-customer-invoice-line-cancel-manage-lines" />
-				<panel-dashlet name="customerInvoiceLineDashlet" action="action-project-view-show-sale-invoice-lines" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
-				<panel-dashlet name="supplierInvoiceDashlet"  action="action-project-dashlet-supplier-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" canSearch="true"/>
-				<button name="selectNewSupplierInvoiceLines" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
-				<button name="manageSupplierInvoiceLines" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-manage-lines" hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" />
+				<button name="cancelManageCustomerInvoiceLinesBtn" colSpan="4" hidden="true"  title="Cancel" onClick="action-project-attrs-customer-invoice-line-cancel-manage-lines" />
+				<panel-dashlet name="customerInvoiceLinePanel" action="action-project-view-show-sale-invoice-lines" colSpan="12" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
+				<panel-dashlet name="supplierInvoicePanel"  action="action-project-dashlet-supplier-invoices" colSpan="12" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" canSearch="true"/>
+				<button name="selectNewSupplierInvoiceLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
+				<button name="manageSupplierInvoiceLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-manage-lines" hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" />
 				<field name="$supplierInvoiceLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Supplier Invoice lines"
 					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false" 
 					grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
 				<button-group colSpan="4">
-					<button name="addSelectedSupplierInvoiceLines" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-supplier-invoice-line-project"/>
-       				<button name="unlinkSelectedSupplierInvoiceLines" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-invoice-line-method-unset-supplier-invoice-line-project"/>
+					<button name="addSelectedSupplierInvoiceLinesBtn" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-supplier-invoice-line-project"/>
+       				<button name="unlinkSelectedSupplierInvoiceLinesBtn" hidden="true"  title="Unlink selected lines"  onClick="action-validate-unset-project,action-invoice-line-method-unset-supplier-invoice-line-project"/>
 				</button-group>
-				<button name="cancelManageSupplierInvoiceLines" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-supplier-invoice-line-cancel-manage-lines" />
-				<panel-dashlet name="supplierInvoiceLineDashlet" action="action-project-view-show-purchase-invoice-lines" colSpan="12" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" canSearch="true"/>
-				<panel-dashlet action="action-project-dashlet-advance-payment-invoices" colSpan="12" 
+				<button name="cancelManageSupplierInvoiceLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-supplier-invoice-line-cancel-manage-lines" />
+				<panel-dashlet name="supplierInvoiceLinePanel" action="action-project-view-show-purchase-invoice-lines" colSpan="12" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" canSearch="true"/>
+				<panel-dashlet name="advancePaymentInvoicesDashlet" action="action-project-dashlet-advance-payment-invoices" colSpan="12" 
 					if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
 			</panel>
-			<panel title="Wiki"  name="wiki" >
-				<panel-related field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+			<panel title="Wiki"  name="wikiPanel" >
+				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
-			<panel title="Configurations" name="configurations" >
+			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
 					domain="self.isActivity = true" form-view="product-activity-form"
@@ -315,24 +315,24 @@
 					if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 			</panel>
 		</panel-tabs>
-		<panel>
+		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" hidden="true" />
 		</panel>
-		<panel  colSpan="2" sidebar="true">
-			<button name="start" title="Start" hidden="true" showIf="statusSelect == 1"
+		<panel name="actionsPanel"  colSpan="2" sidebar="true">
+			<button name="startBtn" title="Start" hidden="true" showIf="statusSelect == 1"
 				colSpan="12" icon="fa-play" onClick="action-project-record-status-in-progress,save" />
-			<button name="finish" title="Finish" hidden="true" showIf="statusSelect == 2"
+			<button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
 				colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save" />
-			<button name="cancel" title="Cancel" hidden="true"
+			<button name="cancelBtn" title="Cancel" hidden="true"
 				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
-			<button name="newStatus" title="Reset to New" hidden="true"
+			<button name="newStatusBtn" title="Reset to New" hidden="true"
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
 				icon="fa-file" onClick="action-project-record-status-new,save" />
 		</panel>
 		<panel name="characteristics" title="Characteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
-			<panel colSpan="12">
+			<panel name="configPanel" colSpan="12">
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
@@ -351,7 +351,7 @@
 					requiredIf="projectTypeSelect == 2" />
 			</panel>
 		</panel>
-		<panel colSpan="12" title="Follow-up" sidebar="true" canCollapse="true">
+		<panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true" canCollapse="true">
 			<field name="assignedTo" title="Person In Charge" canNew="false"
 				canView="false" canEdit="false" onChange="action-attrs-project-add-member"
 				form-view="user-form" grid-view="user-grid" />
@@ -362,7 +362,7 @@
 			<field name="toDate" colSpan="6" />
 			<field name="dueDate" showIf="isProject" colSpan="6" />
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 			<mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
@@ -370,16 +370,16 @@
 
 
 	 <form name="project-select-wizard-form" title="Select Projects"   model="com.axelor.apps.base.db.Wizard">
-		<panel>
+		<panel name="mainPanel">
 			<field name="projectSet"  title="Projects"  type="many-to-many" colSpan="12" target="com.axelor.apps.project.db.Project" canNew="false"/>
-			<button name="gantt" title="Open gantt" onClick="action-wizard-validate-project-select,action-open-project-gantt,close" colSpan="3" />
+			<button name="ganttBtn" title="Open gantt" onClick="action-wizard-validate-project-select,action-open-project-gantt,close" colSpan="3" />
 		</panel>
 	</form>
 	
 	<form name="user-select-wizard-form" title="Select Users"  model="com.axelor.apps.base.db.Wizard">
-		<panel>
+		<panel name="mainPanel">
 			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false"/>
-			<button name="gantt" title="Open gantt" onClick="action-wizard-validate-user-select,action-open-user-gantt,close" colSpan="3"  />
+			<button name="ganttBtn" title="Open gantt" onClick="action-wizard-validate-user-select,action-open-user-gantt,close" colSpan="3"  />
 		</panel>
 	</form>
 	
@@ -457,7 +457,7 @@
 			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
 
 		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task" orderBy="taskDate">
@@ -465,7 +465,7 @@
 			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
     
 	</tree>
@@ -481,14 +481,14 @@
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progress" as="progress"/>
-			<button name="openTask" title="Open phase" onClick="action-project-view-phase"/>
+			<button name="openTaskBtn" title="Open phase" onClick="action-project-view-phase"/>
 		</node>
 		
 		<node model="com.axelor.team.db.TeamTask" parent="project" draggable="true" onClick="action-team-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTask" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
 		</node>
 		
 	</tree>

@@ -10,7 +10,7 @@
     </grid>
     
     <form name="account-chart-form" title="Account Chart" model="com.axelor.apps.account.db.AccountChart">
-        <panel name="general" title="General">
+        <panel name="generalPanel" title="General">
 	        <field name="name" />
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="countryCode"/>

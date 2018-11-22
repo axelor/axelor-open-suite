@@ -310,6 +310,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - Now keep the link to the sale order line or purchase order line when we split a stock move line. 
 - Now, the mass reconcile from move line list works for moveline without partner.
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- Added name attribute to all panels and buttons and also renamed.
 
 ## [Unreleased 5.0.7]
 ## Features

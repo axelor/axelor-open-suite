@@ -8,13 +8,13 @@
     </grid>
     
     <form name="incoterm-form" title="Incoterm" model="com.axelor.apps.stock.db.Incoterm">
-		<panel>
+		<panel name="mainPanel">
 			<field name="name" required="true" colSpan="4"/>
 			<field name="code" required="true" colSpan="4"/>
 			<field name="fullname" readonly="true" colSpan="4" x-bind="{{code+' - '+name}}"/>
 		</panel>
     	
-    	<panel name="allocationsOfCosts" title="Allocations of costs">
+    	<panel name="allocationsOfCostsPanel" title="Allocations of costs">
     		<field name="exportCustomsDeclaration"/>
     		<field name="carriageToPortOfExport"/>
     		<field name="unloadingOfTruckInPortOfExport"/>

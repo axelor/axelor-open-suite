@@ -8,7 +8,7 @@
     </grid>
 
     <form name="purchase-request-creator-form" title="Purchase request creator" model="com.axelor.apps.purchase.db.PurchaseRequestCreator">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="name" />
 			<field name="attributes" colSpan="12" form-view="purchase-request-json-field-form" grid-view="purchase-request-json-field-grid" />
 		</panel>

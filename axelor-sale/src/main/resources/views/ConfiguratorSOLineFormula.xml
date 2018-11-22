@@ -12,13 +12,13 @@
 
   <form name="configurator-soline-formula-form" title="Calculated fields on configurator"
     model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula">
-    <panel>
+    <panel name="mainPanel">
       <field name="metaField" title="Sale order line field" domain="self.metaModel.name = 'SaleOrderLine' "/>
       <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
       <field name="showOnConfigurator"/>
     </panel>
-    <panel>
-      <button name="checkScripts" title="Check the script"
+    <panel name="actionPanel">
+      <button name="checkScriptsBtn" title="Check the script"
         onClick="save,action-configurator-formula-method-check-script"/>
     </panel>
   </form>

@@ -65,6 +65,6 @@ public class JobApplicationController {
     Map<String, String> urlMap =
         partnerService.getSocialNetworkUrl(
             application.getFirstName(), application.getLastName(), 2);
-    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 }

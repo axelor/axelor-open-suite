@@ -14,7 +14,7 @@
 	</grid>
 
 	<form name="period-hr-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
-		<panel name="main" readonlyIf="statusSelect == 2">
+		<panel name="mainPanel" readonlyIf="statusSelect == 2">
 			<field name="name"/>
 			<field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
@@ -22,10 +22,10 @@
 			<field name="toDate" colSpan="3"/>
 			<field name="year" title="Payroll year" form-view="year-hr-form" grid-view="year-grid" domain="self.typeSelect = 2"/>
 		</panel>
-		<panel>
-			<panel colSpan="6">
-				<button name="close" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
-				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
+		<panel name="detailsPanel">
+			<panel name="actionsPanel" colSpan="6">
+				<button name="closeBtn" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
+				<button name="reopenBtn" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
 			</panel>
 			<field name="statusSelect"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
@@ -33,7 +33,7 @@
 	</form>
 
 	<form name="period-hr-fiscal-form" title="Period" model="com.axelor.apps.base.db.Period" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name" readonly="true"/>
 			<field name="code" x-bind="{{code|uppercase}}" colSpan="3" readonly="true"/>
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
@@ -42,10 +42,10 @@
 			<field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid" readonly="true"/>
 			<field name="allowExpenseCreation" readonlyIf="statusSelect == 2"/>
 		</panel>
-		<panel readonly="true">
-			<panel colSpan="6">
-				<button name="close" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
-				<button name="reopen" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
+		<panel name="detailsPanel" readonly="true">
+			<panel name="actionsPanel" colSpan="6">
+				<button name="closeBtn" title="Close period" colSpan="6" onClick="action-period-record-status-close,save" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
+				<button name="reopenBtn" title="Reopen period" colSpan="6" onClick="action-period-record-status-open,save" showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
 			</panel>
 			<field name="statusSelect"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>
