@@ -143,6 +143,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - STOCK MOVE : mass printing for picking stock move report.
 - Add Fixed Asset Management feature.
 - Stock Move : Add grid for sale order. 
+- SALEORDERLINE : stock move line list
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
