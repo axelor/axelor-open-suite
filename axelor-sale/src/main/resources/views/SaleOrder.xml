@@ -1103,7 +1103,7 @@
 	</action-view>
 	
 	<action-view name="action-sale-order-view-stock-moves" title="Stock moves" model="com.axelor.apps.stock.db.StockMove">
-  		<view type="grid" name="stock-move-out-availability-req-grid"/>
+  		<view type="grid" name="stock-move-sale-order-grid"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__.id"/>
