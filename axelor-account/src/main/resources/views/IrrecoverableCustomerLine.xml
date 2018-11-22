@@ -8,12 +8,12 @@
     </grid>
     
     <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" width="large">
-        <panel name="main">
+        <panel name="mainPanel">
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false" colSpan="12"/>
         </panel>
-        <panel-tabs>
-        	<panel-related field="irrecoverablePaymentScheduleLineLineList" colSpan="12" form-view="irrecoverable-payment-schedule-line-line-form" grid-view="irrecoverable-payment-schedule-line-line-grid"/>
-        	<panel-related field="irrecoverableInvoiceLineList" colSpan="12" form-view="irrecoverable-invoice-line-form" grid-view="irrecoverable-invoice-line-grid"/>
+        <panel-tabs name="mainPanelTab">
+        	<panel-related name="irrecoverablePaymentScheduleLineLineListPanel" field="irrecoverablePaymentScheduleLineLineList" colSpan="12" form-view="irrecoverable-payment-schedule-line-line-form" grid-view="irrecoverable-payment-schedule-line-line-grid"/>
+        	<panel-related name="irrecoverableInvoiceLineListPanel"  field="irrecoverableInvoiceLineList" colSpan="12" form-view="irrecoverable-invoice-line-form" grid-view="irrecoverable-invoice-line-grid"/>
         </panel-tabs>
         
     </form>

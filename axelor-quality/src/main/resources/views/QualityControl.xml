@@ -16,10 +16,10 @@
  	</calendar>
 	
 	<form name="quality-control-form" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl" onNew="action-quality-control-record-default,action-quality-control-attrs-hide-quality-control-on-grid" onLoad="action-quality-control-attrs-hide-quality-control-on-grid">
-		<panel title="Status">
+		<panel name="statusSelectPanel" title="Status">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
 		</panel>
-		<panel>
+		<panel name="detailsPanel">
 			<field name="reference"/>
 			<field name="product"/>
 			<field name="qualityProcess"/>
@@ -29,21 +29,21 @@
 			<field name="endDate"/>
 			<field name="deadLineDate"/>
 		</panel>
-		<panel sidebar="true" hideIf="statusSelect == 6">
-			<button name="plan" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-quality-control-record-status-planned,save"/>
-			<button name="start" title="Start" showIf="statusSelect == 3 || statusSelect == 5" onClick="action-quality-control-record-status-in-progress,save"/>
-			<button name="pause" title="Pause" showIf="statusSelect == 4" onClick="action-quality-control-record-status-pause,save"/>
-			<button name="finish" title="Finish" showIf="statusSelect == 4" onClick="action-quality-control-record-status-finish,save"/>
-			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 3 || statusSelect == 4" onClick="action-quality-control-record-status-canceled,save"/>
+		<panel name="actionsPanel" sidebar="true" hideIf="statusSelect == 6">
+			<button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="action-quality-control-record-status-planned,save"/>
+			<button name="startBtn" title="Start" showIf="statusSelect == 3 || statusSelect == 5" onClick="action-quality-control-record-status-in-progress,save"/>
+			<button name="pauseBtn" title="Pause" showIf="statusSelect == 4" onClick="action-quality-control-record-status-pause,save"/>
+			<button name="finishBtn" title="Finish" showIf="statusSelect == 4" onClick="action-quality-control-record-status-finish,save"/>
+			<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 3 || statusSelect == 4" onClick="action-quality-control-record-status-canceled,save"/>
 		</panel>
-		<panel name="control-point">
-			<panel-related field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onNew="save"/>
+		<panel name="controlPointPanel">
+			<panel-related name="controlPointListPanel" field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onNew="save"/>
 		</panel>
-		<panel sidebar="true">
-			<button name="preFillControlPoints" title="Pre-fill control points" onClick="save,action-quality-control-method-pre-fill-operations" showIf="statusSelect == 1"/>
-			<button name="editControlPoints" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
+		<panel name="controlPointsPanel" sidebar="true">
+			<button name="preFillControlPointsBtn" title="Pre-fill control points" onClick="save,action-quality-control-method-pre-fill-operations" showIf="statusSelect == 1"/>
+			<button name="editControlPointsBtn" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages />
 	   	</panel-mail>
 	</form>	

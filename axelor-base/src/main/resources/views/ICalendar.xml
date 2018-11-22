@@ -16,7 +16,7 @@
 				<item title="Synchronize calendar" action="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
 			</menu>
 		</menubar>
-		<panel name="main" colSpan="12">
+		<panel name="mainPanel" colSpan="12">
 			<field name="name" showTitle="false">
 				<viewer depends="name">
 					<![CDATA[
@@ -30,16 +30,16 @@
 				</editor>
 			</field>
 		</panel>
-		<panel colSpan="6">
+		<panel name="calendarOwnerPanel" colSpan="6">
 			<field name="user" title="calendar.owner" colSpan="3"/>
 			<field name="lastSynchronizationDateT" readonly="true" showIf="lastSynchronizationDateT"/>
 		</panel>
-		<panel-tabs>
-			<panel title ="Events" colSpan="12">
-				<panel-dashlet colSpan="12" height="540" showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
+		<panel-tabs name="mainPanelTab">
+			<panel name="eventsPanel" title ="Events" colSpan="12">
+				<panel-dashlet name="icalendarIeventPanel"  colSpan="12" height="540" showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
 			</panel>
-			<panel name="connectionSettings" title="Connection settings" colSpan="12">
-				<panel colSpan="12">
+			<panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
+				<panel name="details" colSpan="12">
 					<field name="url" required="true"/>
 					<field name="typeSelect" required="true"/>
 					<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>
@@ -48,17 +48,17 @@
 					<field name="synchronizationDuration" widget="selection"/>
 					<field name="keepRemote" widget="boolean-switch"/>
 				</panel>
-				<panel colSpan="12">
+				<panel colSpan="12" name="loginInfoPanel">
 					<field name="login" required="true"/>
 					<field name="change" title="Change password" showIf="id &amp;&amp; !$readonly()" widget="boolean-switch"/>
-					<panel colSpan="12" showIf="change || !id">
+					<panel colSpan="12" showIf="change || !id" name="passwordPanel">
 						<field name="newPassword" title="Password" placeholder="new password" requiredIf="change || password==null" validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password" />
 						<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
 						<field name="password" hidden="true"/>
 					</panel>
 				</panel>
-				<panel colSpan="12">
-					<button colSpan="3" name="connect" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
+				<panel name="connectPanel" colSpan="12" >
+					<button colSpan="3" name="connectBtn" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
 					<field name="isValid" readonly="true" showTitle="false">
 						<viewer depends="isValid">
 							<![CDATA[
@@ -71,7 +71,7 @@
 					</field>
 				</panel>
 			</panel>
-			<panel colSpan="12" name="sharingSettings" title="Sharing settings">
+			<panel colSpan="12" name="sharingSettingsPanel" title="Sharing settings">
 				<field name="sharingSettingList" canNew="true" canEdit="true" canRemove="true" showTitle="false" colSpan="12" grid-view="sharing-setting-calendar-grid" form-view="sharing-setting-calendar-form"/>
 			</panel>
 		</panel-tabs>

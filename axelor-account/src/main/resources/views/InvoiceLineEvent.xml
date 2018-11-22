@@ -17,7 +17,7 @@
     </grid>
     
     <form name="invoice-line-event-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLineEvent"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="articleId"/>
 	        <field name="summaryId"/>
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>

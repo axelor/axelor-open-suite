@@ -20,9 +20,9 @@
 	</form>
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onLoad="action-record-load-dummy-supplier-partner">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
-			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+			<button name="generatePOConfirmBtn" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 		</panel>
     </form>
 
@@ -62,7 +62,7 @@
 			<field name="nextInvoicingEndPeriodDate" />
 			<field name="subscriptionComment" colSpan="12"/>
 			<field name="subscriptionText" colSpan="12"/>
-			<panel-dashlet action="action-sale-order-view-subscription-invoices" colSpan="12"/>
+			<panel-dashlet name="subscriptionIsnvoicesPanel" action="action-sale-order-view-subscription-invoices" colSpan="12"/>
 		</panel>
 	</form>
 	

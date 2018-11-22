@@ -14,7 +14,7 @@
     
     <form name="umr-form" title="Unique Mandate References" model="com.axelor.apps.account.db.Umr"  
     	onNew="action-umr-record-new">
-       <panel name="main" >
+       <panel name="mainPanel" >
 	       	<field name="umrNumber"/>
 	        <field name="debtorName"/>
 	        <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>

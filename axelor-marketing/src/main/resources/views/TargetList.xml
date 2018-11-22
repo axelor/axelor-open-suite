@@ -8,7 +8,7 @@
     </grid>
     
     <form name="target-list-form" title="Target list" model="com.axelor.apps.marketing.db.TargetList" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name"><![CDATA[
 					<h3>
@@ -20,8 +20,8 @@
 				</editor>
 			</field>
 		</panel>
-	  	<panel-tabs>
-		  <panel title="Partners" >
+	  	<panel-tabs name="mainPanelTab">
+		  <panel name="partnersPanel" title="Partners" >
 		  	<field name="partnerQueryTypeSelect"/>
 		  	<field name="partnerTypeSelect" />
 		  	<field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
@@ -35,11 +35,11 @@
 	            <field name="metaField.relationship" hidden="true" />
 	          </editor>
 		  	</field>
-		  	<button name="openFilteredPartners" title="Open filtered partners" colSpan="3" onClick="save,action-target-list-method-open-filtered-partners"/>
-		  	<spacer/>
-		  	<panel-related field="partnerSet" colSpan="12" onSelect="action-target-list-lead-partner-set-domain"/>
+		  	<button name="openFilteredPartnersBtn" title="Open filtered partners" colSpan="3" onClick="save,action-target-list-method-open-filtered-partners"/>
+		  	<spacer name="btnSpacer"/>
+		  	<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" onSelect="action-target-list-lead-partner-set-domain"/>
 		  </panel>
-		  <panel title="Leads" >
+		  <panel name="leadsPanel" title="Leads" >
 		  	<field name="leadQueryTypeSelect"/>
 		  	<field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
       		<field name="leadFilterList" colSpan="12" layout="table" showIf="leadQueryTypeSelect == 0">
@@ -52,8 +52,8 @@
 	            <field name="metaField.relationship" hidden="true" />
 	          </editor>
 		  	 </field>
-		  	 <button name="openFilteredLeads" title="Open filtered leads" colSpan="3" onClick="save,action-target-list-method-open-filtered-leads"/>
-		  	<panel-related field="leadSet" colSpan="12"/>
+		  	 <button name="openFilteredLeadsBtn" title="Open filtered leads" colSpan="3" onClick="save,action-target-list-method-open-filtered-leads"/>
+		  	<panel-related name="leadSetPanel" field="leadSet" colSpan="12"/>
 		  </panel>
 		</panel-tabs>
 	</form>

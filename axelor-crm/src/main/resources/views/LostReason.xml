@@ -8,7 +8,7 @@
     </grid>
     
     <form name="lost-reason-form" title="Lost reason" model="com.axelor.apps.crm.db.LostReason"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
         </panel>
     </form>

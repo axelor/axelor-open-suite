@@ -9,21 +9,21 @@
 	    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	    <field name="paymentMode" if-module="axelor-supplychain" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" /> 
 	    <field name="statusSelect"/>
-   		<button name="cancel" icon="fa-times-circle" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>
     
 	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-record-new">
-		<panel name="main" readonlyIf="id">
+		<panel name="mainPanel" readonlyIf="id">
 			<field name="amount" onChange="action-advance-payment-record-change-amount" required="true"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
 			<field name="advancePaymentDate" required="true"/> 
 			<field name="amountRemainingToUse" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" /> 
 	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" required="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" /> 
 	 	</panel>
-	 	<panel showIf="id">
+	 	<panel showIf="id" name="otherDetailsPanel">
   	    	<field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="statusSelect"/>
-   			<button name="cancel" icon="fa-times-circle" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+   			<button name="cancelBtn" icon="fa-times-circle" onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	 	</panel>
 	</form>
 	

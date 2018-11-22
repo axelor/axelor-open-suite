@@ -13,32 +13,32 @@
 	</grid>
 	
 	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
 	        <field name="typeSelect"/>
 	        <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
 			<field name="dataMetaFile" widget="binary-link" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-			<button name="import" title="Importer" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
+			<button name="import" title="ImporterBtn" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
         </panel>
-        <panel-tabs>
-        	<panel name="description" title="Description"> 
+        <panel-tabs name="mainPanelTab">
+        	<panel name="descriptionPanel" title="Description"> 
         		<field name="description" colSpan="12" showTitle="false" widget="html" />
         	</panel>
-        	<panel-related field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
+        	<panel-related name="importHistoryListPanel" field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
         </panel-tabs>
 	</form>
 	
 	<form name="import-calendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
     		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="import" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+    		<button name="import" title="Import CalendarBtn" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
         </panel>      	
 	</form>
 	
 	<form name="import-icalendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
     		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="import" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+    		<button name="import" title="Import CalendarBtn" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
         </panel>      	
 	</form>
   
