@@ -20,20 +20,20 @@
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
           onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
-        <panel>
+        <panel name="namePanel">
             <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
         </panel>
-        <panel>
+        <panel name="purchaseTrackingPanel">
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
-		    <panel title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
+		    <panel name="purchaseTrackingManagementPanel" title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr"/>
 				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generatePurchaseAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="purchaseQtyByTracking" colSpan="12"/>
 		    </panel>
 	   </panel>
-	   <panel>
+	   <panel name="productionTrackingPanel">
 		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
-		    <panel name="productionTrackingManagement" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
+		    <panel name="productionTrackingManagementPanel" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr"/>
 				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateProductionAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasProductAutoSelectTrackingNbr" showIf="isProductionTrackingManaged" colSpan="12"/>
@@ -41,9 +41,9 @@
 		        <field name="productionQtyByTracking" colSpan="12"/>
 		    </panel>
 		</panel>
-		<panel>
+		<panel name="saleTrackingPanel">
 		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
-		    <panel name="saleTrackingManagement" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
+		    <panel name="saleTrackingManagementPanel" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  readonlyIf="isProductionTrackingManaged || isPurchaseTrackingManaged"/>
 				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateSaleAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>

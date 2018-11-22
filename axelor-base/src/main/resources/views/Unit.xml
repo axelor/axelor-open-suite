@@ -8,7 +8,7 @@
         <field name="unitTypeSelect"/>
     </grid>
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
         	<field name="name"/>
         	<field name="labelToPrinting"/>
         	<field name="unitTypeSelect"/>

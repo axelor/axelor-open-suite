@@ -11,18 +11,18 @@
     </grid>
     
     <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
-    	<panel name="main">
+    	<panel name="mainPanel">
 	        <field name="name" x-bind="{{name|uppercase}}"/>
 	        <field name="alpha3Code" x-bind="{{alpha3Code|uppercase}}"/>
 	        <field name="alpha2Code" x-bind="{{alpha2Code|uppercase}}"/>
 	        <field name="numericCode"/>
             <field name="economicArea" canEdit="false"/>
 	    </panel>
-		<panel title="Attributes">
+		<panel name="attributesPanel" title="Attributes">
 			<field name="cog" />
 		    <field name="phonePrefix" />			
 		</panel>
-		<panel title="Standards" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+		<panel name="standardsPanel" title="Standards" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 			<field name="isIspmRequired"/>
 		</panel>
     </form>

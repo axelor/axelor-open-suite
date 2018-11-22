@@ -13,13 +13,13 @@
 
     <form name="group-form" id="base-group-form" title="Group" model="com.axelor.auth.db.Group">
         <toolbar>
-            <button name="showPermissions" title="Show permissions" onClick="action-group-view-permissions" hideIf="permissions == null || permissions.length == 0" />
+            <button name="showPermissionsBtn" title="Show permissions" onClick="action-group-view-permissions" hideIf="permissions == null || permissions.length == 0" />
         </toolbar>
-        <panel title="Overview">
+        <panel name="overviewPanel" title="Overview">
             <field name="name" onChange="action-condition-group-validName" validIf="name.length >= 2"/>
             <field name="code" onChange="action-condition-group-validCode" validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admins'"/>
             <field name="navigation"/>
-            <panel stacked="true">
+            <panel name="actionsPanel" stacked="true">
                 <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
                 <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false" target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.type = 'action-view' and self.home = true"/>
             </panel>
@@ -27,12 +27,12 @@
             <field name="isClient" colSpan="4"/>
             <field name="isSupplier" colSpan="4"/>
         </panel>
-        <panel-tabs>
-            <panel-related field="roles" form-view="role-form" grid-view="role-grid"/>
-            <panel-related field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
-            <panel-related field="metaPermissions"/>
-            <panel-related field="menus" grid-view="simple-meta-menu-grid" form-view="meta-menu-form"/>
-            <panel-related field="views" grid-view="simple-meta-view-grid" form-view="meta-view-form"/>
+        <panel-tabs name="mainPanelTab">
+            <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid"/>
+            <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
+            <panel-related name="metaPermissionsPanel" field="metaPermissions"/>
+            <panel-related name="menusPanel" field="menus" grid-view="simple-meta-menu-grid" form-view="meta-menu-form"/>
+            <panel-related name="viewsPanel" field="views" grid-view="simple-meta-view-grid" form-view="meta-view-form"/>
         </panel-tabs>
     </form>
 

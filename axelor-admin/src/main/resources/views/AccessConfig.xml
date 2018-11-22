@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="access-config-form" title="Access config" model="com.axelor.apps.base.db.AccessConfig">
-		<panel>
+		<panel name="mainPanel">
 			<field name="name" />
 			<field name="roleSet" colSpan="12"/>
 		</panel>

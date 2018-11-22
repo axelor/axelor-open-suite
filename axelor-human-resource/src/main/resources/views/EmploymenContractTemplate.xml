@@ -10,12 +10,12 @@
     </grid>
 
     <form name="employment-contract-template-form" title="Employment contract templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate" >
-    	<panel name="main">
+    	<panel name="mainPanel">
 			<field name="metaFile" widget="binary-link" onChange="action-employment-contract-template-record-name" canNew="true" />
 			<field name="name" />
 			<field name="description" colSpan="12" showTitle="false" widget="html"/>
     	</panel>
-		<panel-related field="companySet" sidebar="true" form-view="company-form" grid-view="company-grid" canNew="false" canEdit="false" />
+		<panel-related name="companySetPanel" field="companySet" sidebar="true" form-view="company-form" grid-view="company-grid" canNew="false" canEdit="false" />
     </form>
 
     <action-record name="action-employment-contract-template-record-name" model="com.axelor.apps.hr.db.EmploymentContractTemplate">

@@ -8,7 +8,7 @@
         <field name="value"/>
     </grid>
     <form name="irrecoverable-report-form" title="Reporting" model="com.axelor.apps.account.db.IrrecoverableReportLine"  >
-    	<panel name="main">
+    	<panel name="mainPanel">
     		<field name="name"/>
     		<field name="reportLineSeq"/>
         	<field name="label"/>

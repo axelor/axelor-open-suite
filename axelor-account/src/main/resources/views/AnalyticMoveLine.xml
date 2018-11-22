@@ -31,7 +31,7 @@
     
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
     	onLoad="action-analytic-move-line-attrs-title-project" width="large">
-       <panel name="main" >
+       <panel name="mainPanel" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
        		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
@@ -49,7 +49,7 @@
     </form>
     
     <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
    	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>

@@ -13,14 +13,14 @@
   
   <form name="action-builder-line-form" title="Field" model="com.axelor.studio.db.ActionBuilderLine"
   	  onNew="action-builder-line-set-default-attrs" onLoad="action-builder-line-set-default-attrs">
-      <panel>
+      <panel name="mainPanel">
       	<field name="dummy"/>
-      	<spacer/>
-      	<panel colSpan="6" itemSpan="12" hideIf="dummy">
+      	<spacer name="dummySpaer"/>
+      	<panel name="metaFieldsPanel" colSpan="6" itemSpan="12" hideIf="dummy">
       		<field name="metaJsonField" onSelect="action-action-builder-line-meta-json-field-domain" onChange="action-action-builder-line-set-name-json"/>
       		<field name="metaField" onSelect="action-action-builder-line-meta-field-domain" onChange="action-action-builder-line-set-name-meta"/>
       	</panel>
-      	<panel colSpan="6" itemSpan="12" hideIf="dummy">
+      	<panel name="valuePanel" colSpan="6" itemSpan="12" hideIf="dummy">
       		<field name="valueJson" onSelect="action-action-builder-line-value-json-domain" onChange="action-action-builder-line-set-src-field-json" />
       		<field name="valueField" onSelect="action-action-builder-line-value-field-domain" onChange="action-action-builder-line-set-src-field-meta" />
       	</panel>
@@ -37,7 +37,7 @@
       	<field name="valueJson.targetJsonModel" hidden="true" />
       	<field name="valueJson.targetModel" hidden="true"/>
       	<field name="valueField.typeName" hidden="true" />
-      	<panel-related field="subLines" colSpan="12" hideIf="dummy" showIf="!dummy &amp;&amp; (metaField.relationship != null || metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null)" grid-view="action-builder-line-grid" form-view="action-builder-line-form"/>
+      	<panel-related name="subLinesPanel" field="subLines" colSpan="12" hideIf="dummy" showIf="!dummy &amp;&amp; (metaField.relationship != null || metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null)" grid-view="action-builder-line-grid" form-view="action-builder-line-form"/>
 	  </panel>
   </form>
   
@@ -47,7 +47,7 @@
   </grid>
   
   <form name="action-builder-line-simple-form" title="Field" model="com.axelor.studio.db.ActionBuilderLine">
-  	  <panel>
+  	  <panel name="mainPanel">
 	      <field name="name" title="Name" />
 	      <field name="value" />
       </panel>

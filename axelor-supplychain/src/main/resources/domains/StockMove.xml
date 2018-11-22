@@ -11,6 +11,8 @@
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <string name="specificPackage" large="true"/>
 
+    <datetime name="reservationDateTime"/>
+
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>

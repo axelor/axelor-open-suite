@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -69,6 +70,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
   protected StockMoveLineServiceSupplychain stockMoveLineSupplychainService;
   protected StockMoveLineRepository stockMoveLineRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -78,7 +80,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       UnitConversionService unitConversionService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -87,9 +90,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     this.stockMoveLineSupplychainService = stockMoveLineSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {
@@ -265,11 +270,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
+    stockMove.setReservationDateTime(
+        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
 
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
-    return stockMove;
+    return Beans.get(StockMoveRepository.class).save(stockMove);
   }
 
   /**
@@ -360,14 +367,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
 
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
         priceDiscounted =
-            unitConversionService.convertWithProduct(
-                unit, saleOrderLine.getUnit(), priceDiscounted, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                unit,
+                saleOrderLine.getUnit(),
+                priceDiscounted,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                saleOrderLine.getProduct());
+        requestedReservedQty =
+            unitConversionService.convert(
+                saleOrderLine.getUnit(),
+                unit,
+                requestedReservedQty,
+                requestedReservedQty.scale(),
+                saleOrderLine.getProduct());
       }
 
       BigDecimal taxRate = BigDecimal.ZERO;
@@ -382,20 +401,20 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
               qty,
-              saleOrderLine.getReservedQty(),
+              requestedReservedQty,
               priceDiscounted,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
               saleOrderLine.getSaleOrder().getInAti(),
-              taxRate);
+              taxRate,
+              saleOrderLine);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
       }
 
       if (stockMoveLine != null) {
-        stockMoveLine.setSaleOrderLine(saleOrderLine);
         updatePackInfo(saleOrderLine, stockMoveLine);
       }
 

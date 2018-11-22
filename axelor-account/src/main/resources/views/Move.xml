@@ -5,9 +5,9 @@
     
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
-            <button name="validateMove" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
-            <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
-        	<button name="moveLines" title="See Move Lines" onClick="action-move-method-show-move-lines" />
+            <button name="validateMoveBtn" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
+            <button name="deleteMovesBtn" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
+        	<button name="moveLinesBtn" title="See Move Lines" onClick="action-move-method-show-move-lines" />
         </toolbar>
         
         <hilite color="info" if="statusSelect == 1"/>
@@ -28,15 +28,15 @@
           onSave="save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
-            <button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
-            <button name="reverse" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
-            <button name="deleteMove" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
+            <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
+            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+            <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
         </toolbar>
 
-        <panel name="main" readonlyIf="statusSelect == 3" colSpan="12">
-			<panel colSpan="9">
+        <panel name="mainPanel" readonlyIf="statusSelect == 3" colSpan="12">
+			<panel name="moveDetails" colSpan="9">
                 <field name="reference" colSpan="12"/>
-                <panel readonlyIf="moveLineList.length &gt; 0" colSpan="12">
+                <panel name="moveContent" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
                     <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
                     <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
@@ -45,7 +45,7 @@
                 <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" form-view="partner-form" grid-view="partner-grid"/>
             </panel>
 
-            <panel colSpan="3">
+            <panel name="otherDetails" colSpan="3">
                 <field name="$viewerTags" colSpan="12" showTitle="false">
                     <viewer>
                         <![CDATA[
@@ -71,10 +71,10 @@
             </panel>
 		</panel>
 		
-		<panel-related   field="moveLineList" editable="true" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
-		<panel-related   field="moveLineList" editable="false" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		<panel-related name="moveLineListPanel"   field="moveLineList" editable="true" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		<panel-related name="moveLineListPanel"  field="moveLineList" editable="false" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
 
-        <panel-tabs>
+        <panel-tabs name="mainPanelTab">
             <panel name="relatedTo" title="Related to" readonly="true">
                 <field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
                 <field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
@@ -101,7 +101,7 @@
             </panel>
         </panel-tabs>
         
-        <panel-mail>
+        <panel-mail name="mails">
 		    <mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>

@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="user-access-config-form" title="User access config" model="com.axelor.apps.base.db.UserAccessConfig" editable="true">
-		<panel>
+		<panel name="mainPanel">
 			<field name="app" />
 			<field name="accessConfig" domain="self.app = :app" />
 		</panel>

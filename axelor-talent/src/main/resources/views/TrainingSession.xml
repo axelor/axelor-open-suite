@@ -14,18 +14,18 @@
 	</grid>
 	
 	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large" readonlyIf="$popup()">
-		<panel title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" />		
 		</panel>
-		<panel>
+		<panel name="detailPanel">
 			<field name="training" onChange="action-training-session-training-change" />
 			<field name="location" />
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="duration" />
-			<panel-dashlet action="action-dashlet-training-session-employee-registered" colSpan="12"/>
+			<panel-dashlet name="employeeRegisteredPanel" action="action-dashlet-training-session-employee-registered" colSpan="12"/>
 		</panel>
-		<panel itemSpan="12" sidebar="true">
+		<panel name="actionPanel" itemSpan="12" sidebar="true">
 			<button name="registerTraining" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
 			<button name="closeSession" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
 			<field name="nbrRegistered" readonly="true"/>

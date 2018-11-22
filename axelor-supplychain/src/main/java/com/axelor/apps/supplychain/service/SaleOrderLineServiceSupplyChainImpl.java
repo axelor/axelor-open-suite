@@ -37,7 +37,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,12 +119,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       return BigDecimal.ZERO;
     }
     return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-  }
-
-  @Transactional
-  public void changeReservedQty(SaleOrderLine saleOrderLine, BigDecimal reservedQty) {
-    saleOrderLine.setReservedQty(reservedQty);
-    Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
   }
 
   @Override

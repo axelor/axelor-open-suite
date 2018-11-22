@@ -2,6 +2,23 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="stock-move-line-sale-order-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
+    	canNew="false" canDelete="false">
+        <field name="stockMove.stockMoveSeq" />	
+        <field name="stockMove.realDate"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="unitPriceUntaxed" x-scale="2"/>
+        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        <field name="stockMove.statusSelect"/>
+        <field name="availableStatus" width="150">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        </field>
+    </grid>
 
     <action-view name="action-stock-move-line-product-reserved-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine">

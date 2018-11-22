@@ -9,17 +9,17 @@
         <field name="lunchVoucherWageShare"/>
         <field name="lunchVoucherEmployersShare"/>
         <field name="comments"/>
-        <button name="printLunchVoucherAdvance" title="Print" icon="fa-print" onClick="action-lunch-voucher-advance-print"/>
+        <button name="printLunchVoucherAdvanceBtn" title="Print" icon="fa-print" onClick="action-lunch-voucher-advance-print"/>
     </grid>
 
 	<form name="lunch-voucher-advance-form" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="distributionDate"/>
 	        <field name="nbrLunchVouchers"/>
 	        <field name="lunchVoucherWageShare"/>
 	        <field name="lunchVoucherEmployersShare"/>
 		</panel>
-		<panel name="comment" title="Comment">
+		<panel name="commentPanel" title="Comment">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
 	</form>
@@ -42,17 +42,17 @@
 	</action-view>
 	
 	<form name="lunch-voucher-advance-new-form" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-new-record-default" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="distributionDate"/>
 	        <field name="nbrLunchVouchers"/>
 	        <field name="lunchVoucherWageShare"/>
 	        <field name="lunchVoucherEmployersShare"/>
 		</panel>
-		<panel name="comment" title="Comment">
+		<panel name="commentPanel" title="Comment">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
-		<panel>
-			<button name="createNewAdvance" title="Validate the advance" onClick="action-lunch-voucher-advance-group-onNewAdvance"/>
+		<panel name="otherDetailPanel">
+			<button name="createNewAdvanceBtn" title="Validate the advance" onClick="action-lunch-voucher-advance-group-onNewAdvance"/>
 			<field name="employee" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>

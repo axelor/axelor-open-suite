@@ -8,10 +8,10 @@
     </grid>
     
 	<form name="supply-chain-config-form" title="Supply chain configuration" model="com.axelor.apps.supplychain.db.SupplyChainConfig" onNew="action-supply-chain-config-record-default">
-		<panel name="main" >
+		<panel name="mainPanel" >
 	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
-	  	<panel name="main" >
+	  	<panel name="subMainPanel" >
 	  		<field name="hasOutSmForStorableProduct"/>
 			<field name="hasOutSmForNonStorableProduct"/>
 			<field name="hasInSmForStorableProduct"/>

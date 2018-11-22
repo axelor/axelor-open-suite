@@ -15,7 +15,7 @@
 				<item title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
 			</menu>
 		</menubar>
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="stageSelect" widget="NavSelect" colSpan="12" showTitle="false" readonly="true"/>
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name"><![CDATA[
@@ -27,28 +27,28 @@
 					<field name="name" showTitle="true" />
 				</editor>
 			</field>
-			<spacer/>
-			<panel title="Informations" colSpan="12">
+			<spacer name="nameSpacer"/>
+			<panel name="informationPanel" title="Informations" colSpan="12">
 				<field name="campaignType" canEdit="false" />
-				<spacer/>
+				<spacer name="campaignTypeSpacer"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel title="Target List" name="targetList">
-				<panel-related field="targetModelSet" colSpan="12"/>
-				<button name="generateTargets" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
-				<panel-related field="partnerSet" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
-				<panel-related field="leadSet" colSpan="12" grid-view="lead-grid" form-view="lead-form" />
+		<panel-tabs name="mainPanelTab">
+			<panel title="Target List" name="targetListPanel">
+				<panel-related name="targetModelSet" field="targetModelSet" colSpan="12"/>
+				<button name="generateTargetsBtn" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
+				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
+				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" grid-view="lead-grid" form-view="lead-form" />
 			</panel>
-			<panel title="Emailing" showIf="emailing" colSpan="12">
+			<panel name="emailingPanel" title="Emailing" showIf="emailing" colSpan="12">
 				<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="emailAccount" showIf="emailing"/>
 			</panel>
-			<panel title="Events" showIf="manageAnEventPerTarget" colSpan="12">
+			<panel name="eventsPanel" title="Events" showIf="manageAnEventPerTarget" colSpan="12">
 				<field name="generateEventPerPartnerOrLead" widget="inline-checkbox" colSpan="12"/>
 				<field name="team" onChange="action-campaign-attrs-team-value-fill" hideIf="generateEventPerPartnerOrLead" />
 				<field name="eventUser" hideIf="generateEventPerPartnerOrLead" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
@@ -56,30 +56,30 @@
 				<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" />
 				<field name="eventStartDateTime" />
 				<field name="duration" widget="duration" x-big="true" />
-				<button name="generateEvents" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" />
+				<button name="generateEventsBtn" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" />
 			</panel>
-			<panel title="Targets to contact" showIf="manageAnEventPerTarget">
-				<button name="openPlannedEvents" title="Open planned events" colSpan="3" onClick="dashlet.target.to.contact.planned"/>
-				<panel-dashlet name="plannedEvents" action="dashlet.target.to.contact.planned" height="350" colSpan="12"/>
-				<panel-dashlet name="realiazedEvents" action="dashlet.target.to.contact.realized.cancel" height="350" colSpan="12"/>
+			<panel name="targetsToContactPanel" title="Targets to contact" showIf="manageAnEventPerTarget">
+				<button name="openPlannedEventsBtn" title="Open planned events" colSpan="3" onClick="dashlet.target.to.contact.planned"/>
+				<panel-dashlet name="plannedEventsPanel" action="dashlet.target.to.contact.planned" height="350" colSpan="12"/>
+				<panel-dashlet name="realiazedEventsPanel" action="dashlet.target.to.contact.realized.cancel" height="350" colSpan="12"/>
 			</panel>
-			<panel title="Results">
+			<panel name="resultsPanel" title="Results">
 				<field name="report" widget="html" colSpan="12" />
-				<panel title="Participation" showIf="manageAttendees" colSpan="12">
-					<panel-related field="leads" colSpan="12" grid-view="lead-grid" form-view="lead-form"/>
-					<panel-related field="partners" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
+				<panel name="participationPanel" title="Participation" showIf="manageAttendees" colSpan="12">
+					<panel-related name="leadsPanel" field="leads" colSpan="12" grid-view="lead-grid" form-view="lead-form"/>
+					<panel-related name="partnersPanel" field="partners" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
 				</panel>
-				<panel title="Emailing report" colSpan="12">
+				<panel name="emailingReportPanel" title="Emailing report" colSpan="12">
 					<field name="emailLog" widget="binary-link" showIf="emailing"/>
 				</panel>
 			</panel>
 		</panel-tabs>
-		<panel sidebar="true">
-			<button name="plan" showIf="stageSelect == 0" title="Plan" onClick="save,action-campaign-record-plan"/>
-			<button name="start" showIf="stageSelect == 1 || stageSelect == 3" title="Start" onClick="save,action-campaign-record-start"/>
-			<button name="suspend" showIf="stageSelect == 2" title="Suspend" onClick="save,action-campaign-record-suspend"/>
-			<button name="ended" showIf="stageSelect == 2" title="End" onClick="save,action-campaign-record-ended"/>
-			<button name="cancel" showIf="stageSelect != 0" title="Cancel" onClick="save,action-campaign-record-cancel" css="btn-danger" icon="fa-times" />
+		<panel name="actionsPanel" sidebar="true">
+			<button name="planBtn" showIf="stageSelect == 0" title="Plan" onClick="save,action-campaign-record-plan"/>
+			<button name="startBtn" showIf="stageSelect == 1 || stageSelect == 3" title="Start" onClick="save,action-campaign-record-start"/>
+			<button name="suspendBtn" showIf="stageSelect == 2" title="Suspend" onClick="save,action-campaign-record-suspend"/>
+			<button name="endedBtn" showIf="stageSelect == 2" title="End" onClick="save,action-campaign-record-ended"/>
+			<button name="cancelBtn" showIf="stageSelect != 0" title="Cancel" onClick="save,action-campaign-record-cancel" css="btn-danger" icon="fa-times" />
 		</panel>
 	</form>
 

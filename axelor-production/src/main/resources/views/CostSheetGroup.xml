@@ -10,13 +10,13 @@
     </grid>
     
 	<form name="cost-sheet-group-form" title="Cost sheet group" model="com.axelor.apps.production.db.CostSheetGroup" width="large">
-	  <panel name="main">
+	  <panel name="mainPanel">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
   		<field name="name"/>
   		<field name="costTypeSelect"/>
-  		<panel showIf="costTypeSelect == 3" colSpan="12">
+  		<panel name="ratePanel" showIf="costTypeSelect == 3" colSpan="12">
   		    <field name="rateTypeSelect"/>
-  		    <panel>
+  		    <panel name="rateDetailPanel">
   		        <field name="rate" placeholder="5" title="Surcharge" showIf="rateTypeSelect == 1"/>
   		    	<field name="rate" placeholder="105" title="Rate" showIf="rateTypeSelect == 2"/>
   		    </panel>

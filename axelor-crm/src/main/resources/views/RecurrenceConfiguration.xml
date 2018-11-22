@@ -6,11 +6,11 @@
 	<form model="com.axelor.apps.crm.db.RecurrenceConfiguration" title="Recurrence assistant" name="recurrence-assistant-form" 
     	onNew="action-recurrence-assistant-on-new, action-recurrence-assistant-method-compute-recurrence-name"
     	onLoad="action-recurrence-assistant-method-compute-recurrence-name">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
     		<field name="recurrenceType" title="Recurrence" colSpan="12" width="25%" onChange="action-recurrence-assistant-attrs-title-period, action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="periodicity" title="Repeat every" min="1" colSpan="3" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
-    		<label name="period" title="Days" colSpan="9"/>
-    		<label title="Repeat the:" colSpan="2" hidden="true" showIf="recurrenceType == 2"/>
+    		<label name="periodLabel" title="Days" colSpan="9"/>
+    		<label name="repeatLabel" title="Repeat the:" colSpan="2" hidden="true" showIf="recurrenceType == 2"/>
     		<field name="sunday" title="Su" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="monday" title="Mo" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="tuesday" title="Tu" css="small center" hidden="true" showIf="recurrenceType == 2" colSpan="1" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
@@ -21,17 +21,17 @@
     		<field name="monthRepeatType" title="Repeat every:" selection="crm.event.recurrence.month.repeat.type" hidden="true" showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		<field name="startDate" title="Start date" readonly="true" colSpan="12"/>
     		<field name="endType" colSpan="3" title="End" selection="crm.event.recurrence.end.type" widget="RadioSelect" css="small" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
-    		<panel colSpan="6">
+    		<panel name="otherDetailsPanel" colSpan="6">
     			<field name="repetitionsNumber" min="1" title="Repetitions number" hidden="true" showIf="endType == 1" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     			<field name="endDate" title="End date" hidden="true" showIf="endType == 2" colSpan="12" onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
     		</panel>
     		<field name="recurrenceName" showTitle="false" colSpan="12" css="bold" readonly="true"/>
     	</panel>
-    	<panel sidebar="true" hidden="true" showIf="id &gt; 0">
-    		<button name="modifToAll" title="Apply modifications for all" onClick="save, action-recurrence-assistant-method-change-all"/>
-    		<button name="deleteThis" title="Delete only this event" onClick="action-recurrence-assistant-method-delete-this"/>
-    		<button name="deleteNext" title="Delete this and next events" onClick="action-recurrence-assistant-method-delete-next"/>
-    		<button name="deleteAll" title="Delete all events" onClick="action-recurrence-assistant-method-delete-all"/>
+    	<panel name="deletePanel" sidebar="true" hidden="true" showIf="id &gt; 0">
+    		<button name="modifToAllBtn" title="Apply modifications for all" onClick="save, action-recurrence-assistant-method-change-all"/>
+    		<button name="deleteThisBtn" title="Delete only this event" onClick="action-recurrence-assistant-method-delete-this"/>
+    		<button name="deleteNextBtn" title="Delete this and next events" onClick="action-recurrence-assistant-method-delete-next"/>
+    		<button name="deleteAllBtn" title="Delete all events" onClick="action-recurrence-assistant-method-delete-all"/>
     	</panel>
     </form>
 	
@@ -45,10 +45,10 @@
 	</action-record>
 	
 	<action-attrs name="action-recurrence-assistant-attrs-title-period">
-		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Days')" if="recurrenceType == 1"/>
-		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Weeks')" if="recurrenceType == 2"/>
-		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Months')" if="recurrenceType == 3"/>
-		<attribute name="title" for="period" expr="eval: com.axelor.i18n.I18n.get('Years')" if="recurrenceType == 4"/>
+		<attribute name="title" for="periodLabel" expr="eval: com.axelor.i18n.I18n.get('Days')" if="recurrenceType == 1"/>
+		<attribute name="title" for="periodLabel" expr="eval: com.axelor.i18n.I18n.get('Weeks')" if="recurrenceType == 2"/>
+		<attribute name="title" for="periodLabel" expr="eval: com.axelor.i18n.I18n.get('Months')" if="recurrenceType == 3"/>
+		<attribute name="title" for="periodLabel" expr="eval: com.axelor.i18n.I18n.get('Years')" if="recurrenceType == 4"/>
 	</action-attrs>
 	
 	<action-method name="action-recurrence-assistant-method-delete-this">

@@ -19,23 +19,23 @@
     </grid>
     
 	<form name="cost-sheet-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large">
-	  <panel name="main" readonly="true">
+	  <panel name="mainPanel" readonly="true">
 	    <field name="createdOn"/>
   		<field name="createdBy"/>
   		<field name="billOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
   		<field name="billOfMaterial.qty"/>
   		<field name="costPrice"/>
-  		<panel-dashlet action="action-cost-sheet-line-view-tree" colSpan="12" height="600"/>
+  		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12" height="600"/>
 	  </panel>
 	</form>
 	
 	<form name="cost-sheet-bill-of-material-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large">
-	  <panel name="main" readonly="true">
+	  <panel name="mainPanel" readonly="true">
 	    <field name="createdOn"/>
   		<field name="createdBy"/>
  		<field name="costPrice"/>
-  		<panel-dashlet action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
+  		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
 	  </panel>
 	</form>
     

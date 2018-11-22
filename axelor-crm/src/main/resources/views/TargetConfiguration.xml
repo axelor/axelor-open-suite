@@ -12,7 +12,7 @@
 
 	<form name="target-configuration-form" title="Target configuration"
 		model="com.axelor.apps.crm.db.TargetConfiguration" width="large">
-		<panel name="information">
+		<panel name="informationPanel">
 			<field name="$fullName" showTitle="false" colSpan="12">
 				<viewer depends="name,code">
 					<![CDATA[
@@ -36,13 +36,13 @@
 			<static />
 		</panel>
 
-		<panel-tabs>
+		<panel-tabs name="otherDetailsPanel">
 			<panel title="Opportunities">
 				<field name="opportunityAmountWon" colSpan="3"/>
 				<field name="opportunityCreatedNumber" colSpan="3"/>
 				<field name="opportunityCreatedWon" colSpan="3"/>
 			</panel>
-			<panel name="events" title="Events">
+			<panel name="eventsPanel" title="Events">
 				<field name="callEmittedNumber" colSpan="3"/>
 				<field name="meetingNumber" colSpan="3"/>
 			</panel>

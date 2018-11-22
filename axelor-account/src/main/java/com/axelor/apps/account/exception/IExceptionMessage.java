@@ -287,6 +287,9 @@ public interface IExceptionMessage {
   static final String BATCH_STRATEGY_1 = /*$$(*/
       "%s : You must configure a RIB for batch's configurator %s" /*)*/;
 
+  /** Batch realize fixed asset lines */
+  static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
+
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
@@ -546,6 +549,9 @@ public interface IExceptionMessage {
 
   static final String INVOICE_LINE_GENERATOR_2 = /*$$(*/
       "You must select a currency for company %s" /*)*/;
+
+  public static final String INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY = /*$$(*/
+      "Fixed asset category is missing on invoice line for product %s" /*)*/;
 
   /** Batch validation */
   static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :" /*)*/;

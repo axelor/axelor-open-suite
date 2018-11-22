@@ -8,16 +8,16 @@
     </grid>
 
     <form name="production-config-form" title="Production configuration" model="com.axelor.apps.production.db.ProductionConfig" onNew="action-production-config-record-default">
-    	<panel name="main">
+    	<panel name="mainPanel">
 		    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		</panel>
-		<panel>
+		<panel name="realizeOrderPanel">
 			<field name="stockMoveRealizeOrderSelect"/>
 		</panel>
-			<panel title="Manufacturing order sequence">
-        <field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.code = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
-				<field name="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"/>
-			</panel>
+		<panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
+        	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.code = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
+			<field name="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"/>
+		</panel>
     </form>
 	
 	<action-record name="action-production-config-record-default" model="com.axelor.apps.production.db.ProductionConfig">
