@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface StockMoveLineServiceSupplychain {
 
@@ -56,5 +57,15 @@ public interface StockMoveLineServiceSupplychain {
       int type,
       boolean taxed,
       BigDecimal taxRate)
+      throws AxelorException;
+
+  /**
+   * Get a merged stock move line.
+   *
+   * @param stockMoveLineList
+   * @return
+   * @throws AxelorException
+   */
+  StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
 }
