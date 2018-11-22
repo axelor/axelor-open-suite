@@ -140,6 +140,7 @@
 - MRP : if the sale order or purchase order is not delivered, if the date is in the past, now we take it into account with today date.
 If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
 - STOCK MOVE : mass printing for picking stock move report.
+- SALEORDERLINE : stock move line list
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

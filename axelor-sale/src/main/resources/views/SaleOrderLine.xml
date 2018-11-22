@@ -561,7 +561,7 @@
 	
 <!-- 	ACTION VIEW -->
 	<action-view name="action-sale-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
-  		<view type="grid" name="stock-move-line-all-grid"/>
+  		<view type="grid" name="stock-move-line-sale-order-line-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
   		<domain>self.saleOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
