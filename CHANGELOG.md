@@ -107,7 +107,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Now, the mass reconcile from move line list works for moveline without partner.
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
 - PURCHASE ORDER :StockMoveLine add field companyUnitPriceUntaxed and stock location average price update with company currency unit price.
-
+- INVOICE : fix total decimal amount format on report
 
 ## [5.0.6] - 2018-10-06
 ## Features
