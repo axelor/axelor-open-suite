@@ -120,7 +120,7 @@
 		</panel>
 		<panel-tabs hideIf="supplierPartner == null">
 			<panel name="content" title="Content" colSpan="12">
-				<panel-related field="purchaseOrderLineList" readonlyIf="statusSelect == 3 || statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
+				<panel-related field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" readonlyIf="statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 			</panel>
 			<panel name="tax" title="Tax" colSpan="12">
