@@ -11,46 +11,46 @@
     </grid>
    	
     <form onNew="action-move-template-set-default" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
-  		<panel name="main" >
+  		<panel name="mainPanel" >
 		    <field name="name" readonlyIf="isValid"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="isValid" required="true" colSpan="3"/>
 		    <field name="company" canEdit="false" readonlyIf="isValid" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
 		    <field name="moveTemplateType" readonlyIf="isValid" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 		    <field name="journal" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
 	 	</panel>
-    <panel-related field="moveTemplateLineList" colSpan="12" form-view="move-template-line-move-template-form" grid-view="move-template-line-move-template-grid" action="action-move-template-record-is-not-valid,action-move-template-method-set-is-valid"/>
+    <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-move-template-form" grid-view="move-template-line-move-template-grid" action="action-move-template-record-is-not-valid,action-move-template-method-set-is-valid"/>
      	<panel sidebar="true" name="actions" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
-    		<button name="checkValidity" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
+    		<button name="checkValidityBtn" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
  	 	</panel>
 	</form>
     
     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="moveTemplateType" title="Type" target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplateType" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
 	        <field name="moveTemplate" required="true"  target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate" readonlyIf="moveTemplateType == null" title="Template" domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1" form-view="move-template-form" grid-view="move-template-grid"/>
 	        <field name="company"  type="many-to-one" target="com.axelor.apps.base.db.Company" canEdit="false" title="Company" hidden="true" form-view="company-form" grid-view="company-grid" />
-	        <panel-related field="dataInputList"  type="one-to-many" readonlyIf="moveTemplate == null || moveTemplateType == null" target="com.axelor.apps.base.db.Wizard" title="Move Lines data input" form-view="wizard-custom-form" grid-view="wizard-custom-grid" colSpan="12" />
+	        <panel-related name="dataInputListPanel" field="dataInputList"  type="one-to-many" readonlyIf="moveTemplate == null || moveTemplateType == null" target="com.axelor.apps.base.db.Wizard" title="Move Lines data input" form-view="wizard-custom-form" grid-view="wizard-custom-grid" colSpan="12" />
         </panel>
     	<panel sidebar="true" name="actions" title="Actions">
-    		<button name="generateMoves" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
+    		<button name="generateMovesBtn" readonlyIf="dataInputList == null || dataInputList.isEmpty()" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
     	</panel>
     </form>
     
     <grid name="wizard-custom-grid" title="MoveLines content data input" model="com.axelor.apps.base.db.Wizard">
    		<field name="date" type="date" required="true" title="Date" onChange="action-move-template-wizard-check-value"/>
    		<field name="moveBalance" type="decimal" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value" />
-   		<field name="debitPartner" target-name="fullName" title="Partner to Debit"   type="many-to-one" domain="self.isContact = false"  target="com.axelor.apps.base.db.Partner"/>
- 		<field name="creditPartner" target-name="fullName" title="Partner to Credit" type="many-to-one" domain="self.isContact = false" target="com.axelor.apps.base.db.Partner"/>
+   		<field name="debitPartner" target-name="fullName" title="Partner to Debit" type="many-to-one" onSelect="action-account-attrs-move-template-partner-domain" target="com.axelor.apps.base.db.Partner"/>
+ 		<field name="creditPartner" target-name="fullName" title="Partner to Credit" type="many-to-one" onSelect="action-account-attrs-move-template-partner-domain" target="com.axelor.apps.base.db.Partner"/>
    	</grid>
    	
 	<form name="wizard-custom-form" title="MoveLine content data input" model="com.axelor.apps.base.db.Wizard" 
 	onLoad="action-move-template-wizard-line-set-move-template" onNew="action-move-template-wizard-line-set-move-template">
-		<panel name="main" >
+		<panel name="mainPanel" >
 	 		<field name="date" type="date" title="Date" required="true" onChange="action-move-template-wizard-check-value"/>
 	 		<field name="moveBalance" type="decimal" precision="20" scale="2"  min="0" required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"  />
-	 		<field name="debitPartner" target-name="fullName" title="Partner to Debit"   type="many-to-one" domain="self.isContact = false" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 2" target="com.axelor.apps.base.db.Partner"/>
-			<field name="creditPartner" target-name="fullName"  title="Partner to Credit" type="many-to-one" domain="self.isContact = false"  readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 1" target="com.axelor.apps.base.db.Partner"/>
+	 		<field name="debitPartner" target-name="fullName" title="Partner to Debit" onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 2" target="com.axelor.apps.base.db.Partner"/>
+			<field name="creditPartner" target-name="fullName"  title="Partner to Credit" onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one" readonlyIf="partnerInputSelect == 0 || partnerInputSelect == 1" target="com.axelor.apps.base.db.Partner"/>
 			<field name="moveTemplate" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
 			<field name="partnerInputSelect" type="integer" hidden="true" />
 		</panel>
@@ -97,6 +97,10 @@
     <action-attrs name="action-move-template-line-set-account-domain">
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
+    </action-attrs>
+    
+    <action-attrs name="action-account-attrs-move-template-partner-domain">
+    	<attribute name="domain" for="debitPartner,creditPartner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;"/>
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">

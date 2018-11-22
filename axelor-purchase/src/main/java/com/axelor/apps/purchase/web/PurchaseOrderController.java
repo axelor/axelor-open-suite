@@ -476,6 +476,8 @@ public class PurchaseOrderController {
     if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
       domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
     }
+
+    domain += " AND :company member of self.companySet";
     response.setAttr("supplierPartner", "domain", domain);
   }
 }

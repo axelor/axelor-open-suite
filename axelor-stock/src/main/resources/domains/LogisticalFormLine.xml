@@ -13,7 +13,7 @@
         <integer name="parcelPalletNumber" title="Parcel/pallet number" nullable="true" />
         <decimal name="grossMass" nullable="true" precision="19" scale="2" />
         <string name="dimensions" title="Dimensions (cm)" nullable="true" />
-        <decimal name="unitNetMass" readonly="true" nullable="true" /> <!-- Workaround to be nullable in grid -->
+        <decimal name="unitNetMass" readonly="true" nullable="true" precision="20" scale="10"/> <!-- Workaround to be nullable in grid -->
 
         <unique-constraint columns="typeSelect,parcelPalletNumber,logisticalForm" />
 

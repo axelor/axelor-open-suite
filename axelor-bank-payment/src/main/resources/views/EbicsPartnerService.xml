@@ -9,7 +9,7 @@
     </grid>
 
     <form model="com.axelor.apps.bankpayment.db.EbicsPartnerService" title="Ebics partner service" name="ebics-partner-service-form">
-        <panel>
+        <panel name="mainPanel">
             <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-codification"
                 canNew="false" canEdit="false" />
             <field name="ebicsCodification" />

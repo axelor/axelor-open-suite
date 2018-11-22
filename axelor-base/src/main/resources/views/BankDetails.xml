@@ -5,7 +5,7 @@
 
 	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<toolbar>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 		</toolbar>
 		<hilite if="!active" background="warning"/>
 		<field name="ownerName"/>
@@ -17,21 +17,21 @@
 
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
 		  onLoad="action-group-account-bank-details-form-onload" model="com.axelor.apps.base.db.BankDetails" width="large">
-		<panel name="owner" title="Owner">
-			<field name="partner" onChange="action-set-owner-name" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
+		<panel name="ownerPanel" title="Owner">
+			<field name="partner" onChange="action-set-owner-name,action-bank-details-attrs-specific-notes" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
 			<field name="ownerName" />
 		</panel>
-        <panel>
+        <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
-		<panel sidebar="true">
-			<field name="active" widget="Boolean-switch"/>
+		<panel name="activePanel" sidebar="true">
+			<field name="active" widget="boolean-switch"/>
 		</panel>
-		<panel name="iban" title="IBAN / BBAN">
+		<panel name="ibanPanel" title="IBAN / BBAN">
 			<field name="bank.bankDetailsTypeSelect" readonly="true"/>
-			<panel>
+			<panel name="ibanPanel">
 				<field name="iban" readonlyIf="bank==null" onChange="action-group-account-bankdetails-iban-onchange" colSpan="12" />
 				<static name="invalidIbanText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Invalid IBAN</span>]]></static>
 			</panel>
@@ -41,12 +41,15 @@
 				   canNew="true" form-view="bank-address-form"/>
 			<field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
 		</panel>
-		<panel name="bban" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
+		<panel name="bbanPanel" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">
 			<field name="bankCode" colSpan="3" />
 			<field name="sortCode" colSpan="3"/>
 			<field name="accountNbr" colSpan="3"/>
 			<field name="bbanKey" colSpan="3"/>
 			<field name="bank.country.alpha2Code" hidden="true"/>
+		</panel>
+		<panel name="specificNotesPanel" title="Specific notes" colSpan="12" if-module="axelor-account">
+			<field name="specificNoteOnInvoice" widget="html" colSpan="12"/>
 		</panel>
 	</form>
 	
@@ -68,6 +71,7 @@
 	<action-group name="action-group-account-bank-details-form-onload">
 		<action name="action-method_bank-details-validate-iban"/>
         <action name="action-bank-details-attrs-code"/>
+        <action name="action-bank-details-attrs-specific-notes"/>
 	</action-group>
 
 	<action-method name="action-method_bank-details-validate-iban">
@@ -107,5 +111,10 @@
     <action-attrs name="action-bank-details-attrs-code">
         <attribute name="hidden" for="code" expr="eval: ![Company, EbicsPartner].contains(__parent__.getContextClass())" if="__parent__"/>
     </action-attrs>
+    
+     <action-attrs name="action-bank-details-attrs-specific-notes">
+        <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__.getContextClass().equals('Company')"/>
+    </action-attrs>
+    
 
 </object-views>

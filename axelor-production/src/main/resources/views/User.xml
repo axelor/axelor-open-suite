@@ -5,13 +5,13 @@
 
     <form name="manufacturing-dashboard-user" title="User Dashboard" model="com.axelor.auth.db.User"
           canNew="false" canSave="false" width="large">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="$user" title="User" type="many-to-one" target="com.axelor.auth.db.User" required="true"/>
-            <spacer colSpan="6"/>
+            <spacer name="userSpacer" colSpan="6"/>
             <field name="$dateFrom" title="From" widget="date" required="true"/>
             <field name="$dateTo" title="To" widget="date" required="true"/>
         </panel>
-        <panel-dashlet name="durationOnMOs" title="Duration on MOs" showIf="$user &amp;&amp; $dateFrom &amp;&amp; $dateTo" action="action-production-view-duration-on-mos"/>
+        <panel-dashlet name="durationOnMOsPanel" title="Duration on MOs" showIf="$user &amp;&amp; $dateFrom &amp;&amp; $dateTo" action="action-production-view-duration-on-mos"/>
     </form>
 
     <action-view name="action-production-view-duration-on-mos" title="">

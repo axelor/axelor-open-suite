@@ -80,7 +80,7 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use" >
     	<![CDATA[
-    	if (account != null && account.getUseForPartnerBalance()){
+    	if (account != null && account.getReconcileOk()){
 		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
 		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
 		    else return BigDecimal.ZERO;

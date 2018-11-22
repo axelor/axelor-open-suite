@@ -44,7 +44,7 @@ public class InventoryLineService {
     inventoryLine.setRealQty(BigDecimal.ONE);
     inventoryLine.setTrackingNumber(trackingNumber);
     this.compute(inventoryLine, inventory);
-    
+
     return inventoryLine;
   }
 
@@ -77,8 +77,7 @@ public class InventoryLineService {
 
     if (product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class)
-              .getStockLocationLine(stockLocation, product);
+          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
 
       BigDecimal gap =
           inventoryLine

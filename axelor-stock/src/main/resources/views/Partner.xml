@@ -4,7 +4,7 @@
 
     <form name="incl-freight-carrer-customer-account-number-list-partner-form" title="Partner"
         model="com.axelor.apps.base.db.Partner">
-        <panel-related field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
+        <panel-related name="freightCarrierCustomerAccountNumberListPanel" field="freightCarrierCustomerAccountNumberList" form-view="freight-carrier-customer-account-number-form"
             grid-view="freight-carrier-customer-account-number-grid" colSpan="12" editable="true" />
     </form>
     

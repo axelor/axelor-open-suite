@@ -474,16 +474,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     try {
       if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove =
-            copyAndSplitStockMove(stockMove, stockMove.getPlannedStockMoveLineList());
+        Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
         if (newStockMove.isPresent()) {
           newStockSeq = newStockMove.get().getStockMoveSeq();
         }
       }
 
       if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove =
-            copyAndSplitStockMoveReverse(stockMove, stockMove.getPlannedStockMoveLineList(), true);
+        Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
         if (newStockMove.isPresent()) {
           if (newStockSeq != null) {
             newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
@@ -648,7 +646,9 @@ public class StockMoveServiceImpl implements StockMoveService {
         Unit startUnit = product.getMassUnit();
 
         if (startUnit != null && endUnit != null) {
-          netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass());
+          netMass =
+              unitConversionService.convert(
+                  startUnit, endUnit, product.getNetMass(), product.getNetMass().scale(), null);
           stockMoveLine.setNetMass(netMass);
         }
       }

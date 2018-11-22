@@ -10,7 +10,7 @@
     </grid>
 
     <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         <field name="incidentTypeSelect"/>
         <field name="debtRecoveryLevel" form-view="debt-recovery-level-form" grid-view="debt-recovery-level-grid"/>
         <field name="rejectType"/>

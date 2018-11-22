@@ -11,28 +11,28 @@
     </grid>
     
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="name"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 	    <field name="workCenterTypeSelect" required="true"/>
 		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 	  </panel>  
-	  <panel-tabs>
-	    <panel name="defaultMachineSettings" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
-	        <panel title="Capacity settings" colSpan="12">
+	  <panel-tabs name="mainPanelTab">
+	    <panel name="defaultMachineSettingsPanel" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
+	        <panel name="capacitysettings" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel name="costingSettings" title="Costing settings" colSpan="12">
+	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
 	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
 	        </panel>
 	    </panel>
-	    <panel-related field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
-	    <panel-related field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-replacement-machine-form" grid-view="work-center-replacement-machine-grid"/>
+	    <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
+	    <panel-related name="workCenterListPanel" field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-replacement-machine-form" grid-view="work-center-replacement-machine-grid"/>
 	  </panel-tabs>
 	</form>
     
@@ -43,18 +43,18 @@
     </grid>
     
     <form name="work-center-replacement-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="machine" title="Replacement machine"/>
         </panel>
-        <panel name="productionAndCostSettings" title="Production and cost settings">
-	        <panel title="Capacity settings" colSpan="12">
+        <panel name="productionAndCostSettingsPanel" title="Production and cost settings">
+	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel name="costingSettings" title="Costing settings" colSpan="12">
+	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
 	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
@@ -70,18 +70,18 @@
     </grid>
     
     <form name="work-center-machine-form" title="Machine" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="machine"/>
         </panel>
-        <panel name="productionAndCostSettings" title="Production and cost settings">
-	        <panel title="Capacity settings" colSpan="12">
+        <panel name="productionAndCostSettingsPanel" title="Production and cost settings">
+	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-	        <panel name="costingSettings" title="Costing settings" colSpan="12">
+	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
 	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>

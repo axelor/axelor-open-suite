@@ -23,6 +23,7 @@ import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -93,7 +94,7 @@ public class DataBackupRestoreService {
             }
           });
       csvImporter.run();
-      LOG.info("Data Export Completed");
+      LOG.info("Data Restore Completed");
       FileUtils.cleanDirectory(new File(tempDir.getAbsolutePath()));
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
       String logFileName = "DataBackupLog_" + LocalDateTime.now().format(formatter) + ".log";
@@ -104,8 +105,7 @@ public class DataBackupRestoreService {
       pw.close();
       return file;
     } catch (IOException e) {
-      LOG.error(e.getMessage());
-      e.printStackTrace();
+      TraceBackService.trace(e);
       return null;
     }
   }

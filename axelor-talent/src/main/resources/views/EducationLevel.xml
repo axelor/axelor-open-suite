@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="education-level-form" title="Education level" model="com.axelor.apps.talent.db.EducationLevel" width="large">
-		<panel>
+		<panel name="namePanel">
 			<field name="name" />
 		</panel>
 	</form>

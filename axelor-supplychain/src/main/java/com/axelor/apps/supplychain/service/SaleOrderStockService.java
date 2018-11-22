@@ -24,7 +24,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
 public interface SaleOrderStockService {
 
@@ -35,7 +35,7 @@ public interface SaleOrderStockService {
    * @return
    * @throws AxelorException
    */
-  public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
   public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
 
@@ -49,14 +49,6 @@ public interface SaleOrderStockService {
 
   boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
-
-  /**
-   * Find active stock move for sale order.
-   *
-   * @param saleOrder
-   * @return
-   */
-  Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 
   /**
    * Update delivery state by checking delivery states on the sale order lines.

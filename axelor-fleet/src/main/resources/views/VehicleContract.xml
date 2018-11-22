@@ -12,10 +12,10 @@
     </grid>
     
     <form name="vehicle-contract-form" title="Vehicle Contract" model="com.axelor.apps.fleet.db.VehicleContract" width="large" >
-      <panel title="Status">
+      <panel name="statusPanel" title="Status">
 			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>      	
       </panel>
-       <panel>
+       <panel name="mainPanel">
      		<field name="name" hidden="true"/>
      		<field name="vehicle" title="Vehicle" onChange="action-fleet-record-fill-contract-name">
 		      <editor>
@@ -23,29 +23,29 @@
 		        <field name="vehicleOdometer"/>
 		      </editor>
 		    </field>
-    		<panel title="Contract details" itemSpan="12">
+    		<panel name="contractDetailPanel" title="Contract details" itemSpan="12">
 	     		<field name="typeSelect"/>
 	     		<field name="activationCost"/>
 	     		<field name="costFrequencySelect"/>
 	     		<field name="recurringCost" showIf="costFrequencySelect > 0"/>
 	   		</panel>
-	  		<panel itemSpan="12">
+	  		<panel name="datesPanel" itemSpan="12">
 	   			<field name="invoiceDate"/>
 	   			<field name="startDate"/>
 	   			<field name="expiryDate"/>
 	   		</panel>
-	   		<panel itemSpan="12">
+	   		<panel name="partnerPanel" itemSpan="12">
 	   			<field name="insurerPartner"/>
 	   			<field name="purchaserPartner"/>
 	   			<field name="reference"/>
 	   		</panel>
 	   </panel>
-	   <panel-tabs>
-			<panel-related field="vehicleServiceList" title="Included Services" colSpan="12">
+	   <panel-tabs name="mainPanelTab">
+			<panel-related name="vehicleServiceListPanel" field="vehicleServiceList" title="Included Services" colSpan="12">
 				<field name="serviceType"/>
 				<field name="cost"/>
 			</panel-related>
-			<panel title="Terms and Conditions">
+			<panel name="termsAndConditionsPanel" title="Terms and Conditions">
 				<field name="notes" widget="html" colSpan="12" showTitle="false" />
 			</panel>
 	   </panel-tabs>

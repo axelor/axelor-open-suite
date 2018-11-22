@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="FixedAssetCategory" lang="java" cachable="true">
+  
+  	<string name="name" title="Name" required="true"/>
+  	
+	<many-to-one name="fixedAssetType" ref="com.axelor.apps.account.db.FixedAssetType" title="Fixed asset type"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	
+	<string name="computationMethodSelect" title="Computation method" selection="account.fixed.type.category.computation.method.select"/>
+	
+	<decimal name="degressiveCoef" title="Degressive coef"/>
+	
+	<boolean name="isValidateFixedAsset" title="Validate automatically fixed assets generated from invoice"/>
+	
+	<integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
+	<integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
+	<integer name="durationInMonth" title="Duration in month"/>
+	
+	<boolean name="isProrataTemporis" title="Prorata temporis"/>
+	
+	<many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" required="true"/>
+	<many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account" title="Charge account" required="true"/>
+	<many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account" title="Depreciation account" required="true"/>
+	
+  </entity>
+ 
+</domain-models>

@@ -25,6 +25,9 @@
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />
+        
+        <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines"/>
+        
 		<extra-code><![CDATA[
 	
 	   

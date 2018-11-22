@@ -10,13 +10,13 @@
     </grid>
 
     <form name="employee-bonus-type-form" title="Employee bonus type" model="com.axelor.apps.hr.db.EmployeeBonusType">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="label" />
 			<field name="applicationCondition" colSpan="12" />
 			<field name="formula" colSpan="12"/>
         </panel>
-        <panel>
+        <panel name="export">
         	<field name="payrollPreparationExport" />
 	    	<field name="exportCode" />
         </panel>

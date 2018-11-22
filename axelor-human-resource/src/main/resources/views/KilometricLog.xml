@@ -10,11 +10,11 @@
     </grid>
 
 	<form name="kilometric-log-form" title="Kilometrice Allowance Param" model="com.axelor.apps.hr.db.KilometricLog" width="large">
-	  	<panel name="main">
+	  	<panel name="mainPanel">
 	    	<field name="year"/>
 	    	<field name="distanceTravelled"/>
 	  	</panel>
-	  	<panel-related field="expenseLineList" readonly="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
+	  	<panel-related name="expenseLineListPanel" field="expenseLineList" readonly="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" />
 	</form>
 	
 </object-views>

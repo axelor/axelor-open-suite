@@ -21,7 +21,7 @@
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
 	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <decimal name="netMass" title="Net mass"/>
+    <decimal name="netMass" title="Net mass" precision="20" scale="10" />
     <decimal name="totalNetMass" title="Total net mass"/>
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr."/>

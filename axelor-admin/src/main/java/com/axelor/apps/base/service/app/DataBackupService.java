@@ -17,14 +17,13 @@
  */
 package com.axelor.apps.base.service.app;
 
-import com.axelor.meta.db.MetaFile;
-import java.io.File;
+import com.axelor.apps.base.db.DataBackup;
 
 public interface DataBackupService {
 
-  public File createBackUp(Integer fetchLimit);
+  public void createBackUp(DataBackup dataBackup);
 
-  public File restoreBackUp(MetaFile zipedBackupFile);
+  public void restoreBackUp(DataBackup dataBackup);
 
   public boolean SeuencesExist();
 }

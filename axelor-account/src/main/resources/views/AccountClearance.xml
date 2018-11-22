@@ -16,7 +16,7 @@
 	<form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance"
 	onNew="action-account-clearance-record-default">
 		
-		<panel name="general" title="General">
+		<panel name="generalPanel" title="General">
 			<field name="name"/>
 			<field name="dateTime"/>
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
@@ -24,17 +24,17 @@
 			<field name="statusSelect"/>
 		</panel>
 		
-		<panel name="clearanceSettings" title="Clearance settings" >
+		<panel name="clearanceSettingsPanel" title="Clearance settings" >
 			<field name="amountThreshold"/>
 			<field name="dateThreshold"/>
 		</panel>
 		
-		<panel-related field="moveLineSet" form-view="move-line-form" grid-view="move-line-grid"/>  
+		<panel-related name="moveLineSetPanel" field="moveLineSet" form-view="move-line-form" grid-view="move-line-grid"/>  
 		
-		<panel sidebar="true" name="actions" title="Actions"> 
-			<button name="getExcessPayment" title="Get overdue payments" onClick="save,action-method-account-clearance-get-excesspayment,save" hideIf="statusSelect == 2" colSpan="12"/>
-			<button name="validateAccountClearance" title="Validate account clearances" onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2" colSpan="12"/>
-			<button name="showAccountClearanceMoveLines" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2" colSpan="12"/> 
+		<panel sidebar="true" name="actionsPanel" title="Actions"> 
+			<button name="getExcessPaymentBtn" title="Get overdue payments" onClick="save,action-method-account-clearance-get-excesspayment,save" hideIf="statusSelect == 2" colSpan="12"/>
+			<button name="validateAccountClearanceBtn" title="Validate account clearances" onClick="save,action-method-account-clearance-validate,save" hideIf="statusSelect == 2" colSpan="12"/>
+			<button name="showAccountClearanceMoveLinesBtn" title="Move lines generated"  onClick="action-method-account-clearance-show-move-lines" showIf="statusSelect == 2" colSpan="12"/> 
 		</panel>
 	
 	</form>

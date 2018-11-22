@@ -13,7 +13,7 @@
 
 	<form name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target"
 		width="large" onLoad="action-target-method-update,save" onSave="action-target-validate">
-		<panel name="information">
+		<panel name="informationPanel">
 			<field name="$fullName" showTitle="false" colSpan="12">
 				<viewer depends="name,code">
 					<![CDATA[
@@ -36,8 +36,8 @@
 				form-view="team-form" grid-view="team-grid" />
 			<static />
 		</panel>
-		<panel-tabs>
-			<panel name="opportunity" title="Opportunity">
+		<panel-tabs name="mainPanelTab">
+			<panel name="opportunityPanel" title="Opportunity">
 				<panel name="target" title="Target vs Real" colSpan="12">
 					<field name="opportunityAmountWonTarget" colSpan="5" />
 					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
@@ -52,8 +52,8 @@
 						colSpan="5" />
 				</panel>
 			</panel>
-			<panel name="events" title="Events">
-				<panel title="Target vs Real" colSpan="12">
+			<panel name="eventsPanel" title="Events">
+				<panel name="targetVsRealPanel" title="Target vs Real" colSpan="12">
 					<field name="callEmittedNumberTarget" colSpan="5" />
 					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
 					<field name="callEmittedNumber" showTitle="false" colSpan="5" />

@@ -6,9 +6,9 @@
     <form name="configurator-bom-form" title="Configurator BOM"
     		onNew="action-configurator-bom-method-set-parent"
     		model="com.axelor.apps.production.db.ConfiguratorBOM">
-        <panel>
+        <panel name="mainPanel">
             <field name="company"/>
-            <panel title="Label">
+            <panel name="labelPanel" title="Label">
                 <field name="defNameAsFormula" colSpan="6"/>
                 <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
                 <field name="nameFormula" colSpan="12" height="120"
@@ -17,7 +17,7 @@
             </panel>
             <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
                    x-code-syntax="groovy"/>
-            <panel title="Product">
+            <panel name="productPanel" title="Product">
                 <field name="defProductFromConfigurator" colSpan="6"
                        showIf="!defProductAsFormula"/>
                 <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
@@ -28,19 +28,19 @@
                 <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                        x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
             </panel>
-            <panel title="Qty">
+            <panel name="qtyPanel" title="Qty">
                 <field name="defQtyAsFormula" colSpan="6"/>
                 <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
                 <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
                        showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
             </panel>
-            <panel title="Unit">
+            <panel name="unitPanel" title="Unit">
                 <field name="defUnitAsFormula" colSpan="6"/>
                 <field name="unit" colSpan="12" showIf="!defUnitAsFormula"/>
                 <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
                        showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
             </panel>
-            <panel title="Production process">
+            <panel name="productionProcessPanel" title="Production process">
                 <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6"/>
                 <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6"/>
                 <field name="prodProcess" colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
@@ -49,9 +49,9 @@
                 <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
             </panel>
         </panel>
-      <panel-tabs>
-        <panel-related field="configuratorBomList" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
-        <panel-dashlet title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
+      <panel-tabs name="mainPanelTab">
+        <panel-related name="configuratorBomListPanel" field="configuratorBomList" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
+        <panel-dashlet name="configuratorBomTreePanel" title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
       </panel-tabs>
     </form>
 

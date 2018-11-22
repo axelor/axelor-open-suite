@@ -104,7 +104,8 @@ public class SaleOrderLineController {
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             Beans.get(UnitConversionService.class)
-                .convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+                .convert(
+                    saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
       Beans.get(StockLocationLineService.class)
           .checkIfEnoughStock(saleOrder.getStockLocation(), saleOrderLine.getProduct(), qty);
@@ -194,6 +195,11 @@ public class SaleOrderLineController {
     if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
       domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
     }
+
+    if (saleOrder.getCompany() != null) {
+      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+    }
+
     response.setAttr("supplierPartner", "domain", domain);
   }
 

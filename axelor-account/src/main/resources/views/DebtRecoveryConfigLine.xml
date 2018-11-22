@@ -9,7 +9,7 @@
     </grid>
     
     <form name="debt-recovery-config-line-form" title="Debt recovery method configuration line" model="com.axelor.apps.account.db.DebtRecoveryConfigLine"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
         	<field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
         </panel>

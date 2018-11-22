@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <form name="configurator-prod-process-form" title="Configurator Prod Process"
           model="com.axelor.apps.production.db.ConfiguratorProdProcess">
-        <panel>
+        <panel name="mainPanel">
             <field name="name"/>
             <field name="company"/>
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>

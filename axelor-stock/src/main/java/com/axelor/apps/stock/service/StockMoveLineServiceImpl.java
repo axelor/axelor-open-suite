@@ -334,7 +334,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
 
-    stockMoveLine.setTotalNetMass(stockMoveLine.getRealQty().multiply(stockMoveLine.getNetMass()));
+    stockMoveLine.setTotalNetMass(
+        stockMoveLine
+            .getRealQty()
+            .multiply(stockMoveLine.getNetMass())
+            .setScale(2, RoundingMode.HALF_EVEN));
 
     if (product != null) {
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
@@ -440,8 +444,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
           qty =
-              unitConversionService.convertWithProduct(
-                  stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+              unitConversionService.convert(
+                  stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -755,7 +759,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       priceFromLocation = stockLocationLine.get().getAvgPrice();
       priceFromLocation =
           unitConversionService.convert(
-              stockMoveLine.getUnit(), getStockUnit(stockMoveLine), priceFromLocation);
+              stockMoveLine.getUnit(),
+              getStockUnit(stockMoveLine),
+              priceFromLocation,
+              priceFromLocation.scale(),
+              null);
     }
     return priceFromLocation;
   }
@@ -774,44 +782,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setCustomsCode(
           customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);
     }
-  }
-
-  @Override
-  public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
-      throws AxelorException {
-    if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
-      return null;
-    }
-
-    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
-
-    if (stockMoveLineList.size() == 1) {
-      return firstStockMoveLine;
-    }
-
-    Product product = firstStockMoveLine.getProduct();
-    String productName = firstStockMoveLine.getProductName();
-    String description = firstStockMoveLine.getDescription();
-    BigDecimal quantity = firstStockMoveLine.getQty();
-    BigDecimal unitPriceUntaxed = firstStockMoveLine.getUnitPriceUntaxed();
-    BigDecimal unitPriceTaxed = firstStockMoveLine.getUnitPriceTaxed();
-    Unit unit = firstStockMoveLine.getUnit();
-    TrackingNumber trackingNumber = firstStockMoveLine.getTrackingNumber();
-
-    for (StockMoveLine stockMoveLine : stockMoveLineList.subList(1, stockMoveLineList.size())) {
-      quantity = quantity.add(stockMoveLine.getQty());
-    }
-
-    return createStockMoveLine(
-        product,
-        productName,
-        description,
-        quantity,
-        unitPriceUntaxed,
-        unitPriceTaxed,
-        unit,
-        null,
-        trackingNumber);
   }
 
   @Override
@@ -946,7 +916,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     netMass =
         Beans.get(UnitConversionService.class)
-            .convertWithProduct(startUnit, endUnit, product.getNetMass(), product);
+            .convert(startUnit, endUnit, product.getNetMass(), 10, product);
     return netMass;
   }
 

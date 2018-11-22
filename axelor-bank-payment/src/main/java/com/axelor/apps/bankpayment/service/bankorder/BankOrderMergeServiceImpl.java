@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -44,6 +35,13 @@ import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
@@ -84,7 +82,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     bankOrder.setBankOrderDate(Beans.get(AppBaseService.class).getTodayDate());
     bankOrder.setSignatoryUser(null);
     bankOrder.setSignatoryEbicsUser(null);
-    
+
     for (BankOrderLine bankOrderLine : this.getAllBankOrderLineList(bankOrders)) {
 
       bankOrder.addBankOrderLineListItem(bankOrderLine);

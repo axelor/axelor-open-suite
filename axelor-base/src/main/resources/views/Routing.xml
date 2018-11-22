@@ -11,15 +11,15 @@
 	</grid>
 	
 	<form name="routing-form" title="Routing rule" model="com.axelor.apps.base.db.Routing" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="priority"/>
 			<field name="isActive"/>
 		</panel>
-		<panel-tabs >
-			<panel-related title="Filters" field="routingRuleList" grid-view="routing-rule-grid" form-view="routing-rule-form" />
-			<panel-related title="Actions" field="routingActionList" grid-view="routing-action-grid" form-view="routing-action-form" />
+		<panel-tabs name="mainPanelTab" >
+			<panel-related name="routingRuleListPanel" title="Filters" field="routingRuleList" grid-view="routing-rule-grid" form-view="routing-rule-form" />
+			<panel-related name="routingActionListPanel" title="Actions" field="routingActionList" grid-view="routing-action-grid" form-view="routing-action-form" />
 		</panel-tabs>
 	</form>
 

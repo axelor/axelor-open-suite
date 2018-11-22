@@ -121,15 +121,16 @@ class WkfTransitionService {
           "Processing transition : {}, isButton: {}",
           transition.getName(),
           transition.getIsButton());
-      if (transition.getIsButton()) {
-        buttonSeq++;
-        addButton(transition, condition, buttonSeq);
-        continue;
-      }
 
       String filters = getFilters(transition.getConditions());
       if (filters != null) {
         condition += " && (" + filters + ")";
+      }
+
+      if (transition.getIsButton()) {
+        buttonSeq++;
+        addButton(transition, condition, buttonSeq);
+        continue;
       }
 
       log.debug("Conditions : {}", transition.getConditions());
@@ -150,6 +151,9 @@ class WkfTransitionService {
 
     String jsonField =
         wkfService.workflow.getIsJson() ? null : "$" + wkfService.workflow.getJsonField();
+    if (jsonField != null && jsonField.equals("$attrs")) {
+      jsonField = null;
+    }
     String filters = filterGroovyService.getGroovyFilters(filterList, jsonField);
     log.debug("Filters : {}", filters);
 
@@ -177,9 +181,11 @@ class WkfTransitionService {
    */
   private void addButton(WkfTransition transition, String condition, Integer sequence) {
 
-    String source = transition.getSource().getName();
+    //    String source = transition.getSource().getName();
     String title = transition.getButtonTitle();
-    String name = wkfService.inflector.camelize(source + "-" + title, true);
+    //    String name = wkfService.inflector.camelize(source + "-" + title, true);
+    // FIXME:Have to check if its working with import export of workflow.
+    String name = "transition" + transition.getId();
     if (name.equals("save") || name.equals("cancel") || name.equals("back")) {
       name = "wkf" + name;
     }

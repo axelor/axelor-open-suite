@@ -134,6 +134,8 @@ public interface IExceptionMessage {
       "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/;
   static final String MOVE_LINE_6 = /*$$(*/
       "Account missing on the tax line : %s (company : %s)" /*)*/;
+  static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
+      "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -284,6 +286,9 @@ public interface IExceptionMessage {
   /** Batch strategy */
   static final String BATCH_STRATEGY_1 = /*$$(*/
       "%s : You must configure a RIB for batch's configurator %s" /*)*/;
+
+  /** Batch realize fixed asset lines */
+  static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
 
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
@@ -544,6 +549,9 @@ public interface IExceptionMessage {
 
   static final String INVOICE_LINE_GENERATOR_2 = /*$$(*/
       "You must select a currency for company %s" /*)*/;
+
+  public static final String INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY = /*$$(*/
+      "Fixed asset category is missing on invoice line for product %s" /*)*/;
 
   /** Batch validation */
   static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :" /*)*/;

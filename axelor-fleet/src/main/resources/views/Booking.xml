@@ -9,7 +9,7 @@
   	</grid>
   	
   	  <form name="booking-form" title="Booking" model="com.axelor.apps.fleet.db.Booking" width="large">
-  	  		<panel>
+  	  		<panel name="mainPanel">
 	  	  		<field name="name"/>
 		 		<field name="bookingDate"/>
 		 		<field name="contactSet"/>

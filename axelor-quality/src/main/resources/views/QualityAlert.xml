@@ -20,10 +20,10 @@
  	</calendar>
 	
 	<form name="quality-alert-form" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert" onNew="action-quality-alert-record-default">
-		<panel title="Status">
+		<panel name="statusSelectPanel" title="Status">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
 		</panel>
-		<panel>
+		<panel name="detailsPanel">
 			<field name="reference"/>
 			<field name="product"/>
 			<field name="workCenter"/>
@@ -36,21 +36,21 @@
 			<field name="deadLineDate"/>
 			<field name="qualityTagSet" widget="TagSelect" colSpan="12"/>
 		</panel>
-		<panel name="description">
+		<panel name="descriptionPanel">
 			<field name="description" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="correctiveActions">
+		<panel name="correctiveActionsPanel">
 			<field name="correctiveActions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="preventiveActions">
+		<panel name="preventiveActionsPanel">
 			<field name="preventiveActions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel sidebar="true" name="actions" title="Actions" hideIf="statusSelect == 4">
-			<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-quality-alert-record-status-confirm,save"/>
-			<button name="proposeAction" title="Propose action" showIf="statusSelect == 2" onClick="action-quality-alert-record-status-proposed,save"/>
-			<button name="solve" title="Solve" showIf="statusSelect == 3" onClick="action-quality-alert-record-status-solved,save"/>
+		<panel sidebar="true" name="actionsPanel" title="Actions" hideIf="statusSelect == 4">
+			<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-quality-alert-record-status-confirm,save"/>
+			<button name="proposeActionBtn" title="Propose action" showIf="statusSelect == 2" onClick="action-quality-alert-record-status-proposed,save"/>
+			<button name="solveBtn" title="Solve" showIf="statusSelect == 3" onClick="action-quality-alert-record-status-solved,save"/>
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages />
 	    </panel-mail>
 	</form>	

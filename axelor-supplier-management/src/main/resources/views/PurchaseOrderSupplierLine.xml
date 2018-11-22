@@ -26,7 +26,7 @@
 			</menu>		
 		</menubar>
 				
-		<panel title="Status">
+		<panel name="status" title="Status">
 			<field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>	
 		</panel>
 	   <panel name="main" >
@@ -43,7 +43,7 @@
     	 <field name="purchaseOrderLine.price"/>
     	 <field name="purchaseOrderLine.desiredDelivDate"/>
   	  </panel>
-	  <panel>
+	  <panel name="commentsPanel">
 	     <field name="comments" colSpan="12"/>
 	  </panel>  
 	  <panel sidebar="true" name="actions" title="Actions">
@@ -79,7 +79,7 @@
 	    <field name="estimatedDelivDate" readonlyIf="stateSelect != 1"/>
 	    <button name="submit" title="Submit" showIf="stateSelect == 1" onClick="save,action-purchase-order-supplier-line-record-submit,save"/>
 	  </panel>
-	  <panel>
+	  <panel name="commentsPanel">
 	    <field name="comments" colSpan="12"/>
 	  </panel>  
 	</form>	

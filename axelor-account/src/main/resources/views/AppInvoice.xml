@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-invoice-config-form" title="App invoice" model="com.axelor.apps.base.db.AppInvoice" canDelete="false" canNew="false" width="large">
-		<panel>
+		<panel name="appInvoiceConfigFormPanel">
 			<field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
             <field name="isVentilationSkipped" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopyForCustomers" widget="boolean-switch"/>

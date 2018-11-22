@@ -202,9 +202,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     // convert units
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceUntaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceUntaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       BigDecimal unitPriceTaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceTaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceTaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }
@@ -249,11 +259,15 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
     if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
       qty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
       realReservedQty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              productUnit,
+              realReservedQty,
+              realReservedQty.scale(),
+              stockMoveLine.getProduct());
     }
     super.updateLocations(
         stockMoveLine,
@@ -280,6 +294,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal reservedQtyInNewLine = stockMoveLine.getReservedQty().min(qty);
     stockMoveLine.setReservedQty(reservedQtyAfterSplit);
     newStockMoveLine.setReservedQty(reservedQtyInNewLine);
+    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
+    newStockMoveLine.setSaleOrderLine(stockMoveLine.getSaleOrderLine());
     return newStockMoveLine;
   }
 
@@ -343,10 +359,46 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
       return null;
     }
-    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
-    StockMoveLine generatedStockMoveLine = super.getMergedStockMoveLine(stockMoveLineList);
-    generatedStockMoveLine.setSaleOrderLine(firstStockMoveLine.getSaleOrderLine());
-    generatedStockMoveLine.setPurchaseOrderLine(firstStockMoveLine.getPurchaseOrderLine());
+
+    if (stockMoveLineList.size() == 1) {
+      return stockMoveLineList.get(0);
+    }
+
+    SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
+
+    Product product;
+    String productName;
+    String description;
+    BigDecimal quantity = BigDecimal.ZERO;
+    Unit unit;
+
+    if (saleOrderLine != null) {
+      product = saleOrderLine.getProduct();
+      productName = saleOrderLine.getProductName();
+      description = saleOrderLine.getDescription();
+      unit = saleOrderLine.getUnit();
+
+    } else if (purchaseOrderLine != null) {
+      product = purchaseOrderLine.getProduct();
+      productName = purchaseOrderLine.getProductName();
+      description = purchaseOrderLine.getDescription();
+      unit = purchaseOrderLine.getUnit();
+
+    } else {
+      return null; // shouldn't ever happen or you misused this function
+    }
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      quantity = quantity.add(stockMoveLine.getRealQty());
+    }
+
+    StockMoveLine generatedStockMoveLine =
+        createStockMoveLine(
+            product, productName, description, quantity, null, null, unit, null, null);
+
+    generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
+    generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     return generatedStockMoveLine;
   }
 }

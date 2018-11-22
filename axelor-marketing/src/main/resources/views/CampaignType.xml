@@ -8,7 +8,7 @@
     </grid>
     
     <form name="campaign-type-form" title="Campaign type" model="com.axelor.apps.marketing.db.CampaignType" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="name" />
 		</panel>
 	</form>

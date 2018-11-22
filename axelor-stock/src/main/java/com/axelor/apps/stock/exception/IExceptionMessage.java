@@ -109,6 +109,8 @@ public interface IExceptionMessage {
   String STOCK_MOVES_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following stock moves: %s" /*)*/;
 
+  String STOCK_MOVE_PRINT = /*$$(*/ "Please select the stock move(s) to print" /*)*/;
+
   /** Tracking Number Service */
   static final String TRACKING_NUMBER_1 = /*$$(*/
       "There's no configured sequence for tracking number for the product %s:%s" /*)*/;
@@ -142,8 +144,9 @@ public interface IExceptionMessage {
       /*$$(*/ "Please fill the tracking number for the product(s) : %s" /*)*/;
 
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
+
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
-      "Please configure mass units for this product packaging : %s" /*)*/;
+      "Please configure mass units for this product packing : %s" /*)*/;
 
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
@@ -155,7 +158,7 @@ public interface IExceptionMessage {
       "Missing logistical form sequence for company %s" /*)*/;
   String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/ "Partner mismatch: %s" /*)*/;
   String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid dimensions on packaging line No. %d" /*)*/;
+      "Invalid dimensions on packing line No. %d" /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/ "Type is required on line %d." /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/
       "Stock move line is required on line %d." /*)*/;

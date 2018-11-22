@@ -8,11 +8,11 @@
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" onNew="action-purchase-config-record-default">
-		<panel name="main" >
+		<panel name="mainPanel" >
 		  <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAtiSelect"/>
 		</panel>
-		<panel name="printingSettings" title="Printing settings">
+		<panel name="printingSettingsPanel" title="Printing settings">
 			<field name="displayBuyerOnPrinting" widget="boolean-switch"/>
 			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
 			<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
