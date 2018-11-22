@@ -4,7 +4,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
   
   <entity name="Partner" lang="java">
-  	<string name="purchaseOrderInformation" multiline="true"/>
+  	<string name="purchaseOrderInformation" multiline="true" large="true"/>
     <one-to-many name="supplierCatalogList" ref="com.axelor.apps.purchase.db.SupplierCatalog" mappedBy="supplierPartner" title="Supplier Catalog Lines" />  	
   </entity>
   

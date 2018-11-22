@@ -1177,7 +1177,7 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="name">order_ref</property>
-                    <expression name="expression">row["order_number"] ? row["sale_order_seq"] + " / " + row["order_number"] : row["sale_order_seq"]</expression>
+                    <expression name="expression">row["external_reference"] ? row["sale_order_seq"] + " / " + row["external_reference"] : row["sale_order_seq"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -2051,7 +2051,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">"Packaging list"</value>
+                                            <value type="javascript">"Packing list"</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2176,7 +2176,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Packaging number:"</value>
+                                    <value type="javascript">"Packing number:"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.0.7]
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
@@ -37,6 +38,8 @@
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
 - Use the char ';' for subrogation release export
+- Allow to define large text for sale order and purchase order information fields on Partner.
+- Replace Packaging with Packing in modules base, supplychain and stock.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -90,6 +93,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
+- Fixed occasionnal scale rounding anomalies on unit conversions.
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - Base : fix Null Pointer error.
 - Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
@@ -98,6 +102,11 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
+- PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- PURCHASE ORDER :StockMoveLine add field companyUnitPriceUntaxed and stock location average price update with company currency unit price.
 - INVOICE : fix total decimal amount format on report
 
 ## [5.0.6] - 2018-10-06
@@ -328,7 +337,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
-- INVENTORy : fill the actual qty
+- INVENTORY : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
