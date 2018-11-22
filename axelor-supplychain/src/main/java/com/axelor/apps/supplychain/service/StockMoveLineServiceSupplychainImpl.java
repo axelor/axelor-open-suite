@@ -202,9 +202,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     // convert units
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceUntaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceUntaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       BigDecimal unitPriceTaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceTaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceTaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }
@@ -249,11 +259,15 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
     if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
       qty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
       realReservedQty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              productUnit,
+              realReservedQty,
+              realReservedQty.scale(),
+              stockMoveLine.getProduct());
     }
     super.updateLocations(
         stockMoveLine,
