@@ -462,7 +462,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     String newStockSeq = null;
     stockMoveLineService.checkConformitySelection(stockMove);
-    stockMoveLineService.checkExpirationDates(stockMove);
+    checkExpirationDates(stockMove);
 
     stockMoveLineService.updateLocations(
         stockMove.getFromStockLocation(),
@@ -1326,5 +1326,12 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
     }
     stockMove.setCancelReason(cancelReason);
+  }
+
+  @Override
+  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+    if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMoveLineService.checkExpirationDates(stockMove);
+    }
   }
 }

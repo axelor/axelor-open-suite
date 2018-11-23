@@ -234,7 +234,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           BigDecimal qty = purchaseOrderLine.getQty();
           BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
           BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getProduct().getCostPrice();
-          
+
           if (purchaseOrderLine.getQty() != BigDecimal.ZERO) {
             companyUnitPriceUntaxed =
                 purchaseOrderLine
