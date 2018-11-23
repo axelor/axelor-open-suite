@@ -10,7 +10,7 @@
         <field name="plannedHours" />
         <field name="realHours"/>
         <field name="isIncludeInTurnoverForecast"/>
-        <button name="updateIsIncludeInTurnoverForecast" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
+        <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
     
     <grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanningTime">
@@ -21,7 +21,7 @@
     </grid>
     
     <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default">
-		<panel>
+		<panel name="mainPanel">
 			<field name="date" />
 			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>		
 			<field name="project" readonly="true"/>
@@ -35,7 +35,7 @@
 	</form>
 	
 	<form name="project-planning-time-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Project planning time" onNew="action-project-planning-time-attrs-default">
-		<panel>
+		<panel name="mainPanel">
 			<field name="fromDate" required="true" type="datetime" title="From" />
 			<field name="toDate" required="true" type="datetime" title="To" />
 			<field name="task" canEdit="false" type="many-to-one" title="Task" target="com.axelor.team.db.TeamTask" target-name="name" domain="self.project = :project"/>
@@ -43,16 +43,16 @@
 			<field name="product" canEdit="false" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"  onSelect="action-project-planning-time-attrs-domain-product" required="true" />
 			<field name="timepercent" title="Time%" widget="SelectProgress" type="integer" selection="project.task.progress.select"/>
 			<field name="isIncludeInTurnoverForecast" title="Include in turnover forecast" type="boolean" />
-			<button name="addMultipleProjectPlanningTime" title="Add lines" onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3" readonlyIf="fromDate == null || toDate == null || user == null"/>
+			<button name="addMultipleProjectPlanningTimeBtn" title="Add lines" onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3" readonlyIf="fromDate == null || toDate == null || user == null"/>
 			<field name="project" type="many-to-one" target="com.axelor.apps.project.db.Project" hidden="true"/>
 		</panel>
 	</form>
 
 	<form name="project-planning-user-select-wizard-form" title="Select users"  model="com.axelor.apps.base.db.Wizard"
 		onNew="action-project-planning-time-attrs-default">
-		<panel>
+		<panel name="mainPanel">
 			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-planning-time-attrs-project-domain"/>
-			<button name="showPlanning" title="Project Planning" onClick="action-project-planning-time-method-show-planning" colSpan="3" />
+			<button name="showPlanningBtn" title="Project Planning" onClick="action-project-planning-time-method-show-planning" colSpan="3" />
 		</panel>
 	</form>	
 	
@@ -111,9 +111,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">
-		<attribute name="readonly" for="removeProjectPlanningTimeLine" expr="eval:true"/>
-		<attribute name="hidden" for="cancelRemovePlanningTime" expr="eval:false"/>
-		<attribute name="hidden" for="removeSelectedPlanningTime" expr="eval:false"/>
+		<attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:false"/>
+		<attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
 		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
@@ -122,9 +122,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-cancel-remove">
-		<attribute name="readonly" for="removeProjectPlanningTimeLine" expr="eval:false"/>
-		<attribute name="hidden" for="cancelRemovePlanningTime" expr="eval:true"/>
-		<attribute name="hidden" for="removeSelectedPlanningTime" expr="eval:true"/>
+		<attribute name="readonly" for="removeProjectPlanningTimeLineBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:true"/>
+		<attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:true"/>
 	</action-attrs>
 	

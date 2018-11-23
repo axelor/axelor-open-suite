@@ -11,16 +11,16 @@
     </grid>
 
     <form name="interbank-code-line-form" title="Interbank codes list" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
             <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="name"/>
         	<field name="interbankCode" form-view="interbank-code-form" grid-view="interbank-code-grid"/>
         </panel>
-        <panel name="description" title="Description">
+        <panel name="descriptionPanel" title="Description">
             <field name="description" showTitle="false" colSpan="12" height="6"/>
             <field name="technicalRejectOk"/>
         </panel>
-        <panel name="domainOfUse" title="Domain of use" >
+        <panel name="domainOfUsePanel" title="Domain of use" >
             <field name="transferCfonbOk"/>
             <field name="directDebitAndTipCfonbOk"/>
             <field name="directDebitSepaOk"/>
@@ -30,15 +30,15 @@
     </form>
 	
 	<form name="interbank-code-line-custom-form" title="Interbank codes list" model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="technicalRejectOk" colSpan="3"/>
 		</panel>
-		<panel name="description" title="Description">
+		<panel name="descriptionPanel" title="Description">
 			<field name="description" showTitle="false" colSpan="12" height="6"/>
 		</panel>
-		<panel name="domainOfUse" title="Domain of use">
+		<panel name="domainOfUsePanel" title="Domain of use">
 			<field name="transferCfonbOk"/>
 			<field name="directDebitAndTipCfonbOk"/>
 			<field name="directDebitSepaOk"/>

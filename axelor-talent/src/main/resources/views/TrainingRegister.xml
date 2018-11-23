@@ -15,18 +15,18 @@
 	
 	<form name="training-register-form" title="Training register" model="com.axelor.apps.talent.db.TrainingRegister" width="large" 
 		onNew="action-training-register-default" onSave="action-training-register-update-old-rating">
-		<panel title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
 		</panel>
-		<panel>
+		<panel name="detailPanel">
 			<field name="training" />
 			<field name="trainingSession" onChange="action-training-session-change" onSelect="action-training-register-training-session-domain"/>
 			<field name="employee" />
-			<spacer/>
+			<spacer name="employeeSpacer"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 		</panel>
-		<panel itemSpan="12" sidebar="true">
+		<panel name="actionPanel" itemSpan="12" sidebar="true">
 			<button name="plan" title="Accept/plan" showIf="statusSelect == 0" onClick="save,action-training-register-method-plan"/>
 			<button name="complete" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
 			<button name="cancel" title="Cancel" onClick="save,action-training-register-method-cancel"/>

@@ -11,12 +11,12 @@
   </grid>
   
   <form name="action-builder-form" title="Action builder" model="com.axelor.studio.db.ActionBuilder"  width="large">
-      <panel>
+      <panel name="mainPanel">
       	  <field name="isJson" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change" colSpan="2"/>
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	      <field name="name" colSpan="9" required="true"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
-	      <panel colSpan="6" itemSpan="12">
+	      <panel name="modelPanel" colSpan="6" itemSpan="12">
 		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
 		      		requiredIf="(typeSelect &lt; 2 || typeSelect == 4) &amp;&amp; isJson" 
 		      		hideIf="typeSelect == 2 || !isJson"
@@ -26,10 +26,10 @@
 		      		widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
 		      		onChange="action-action-builder-method-set-views,action-action-builder-attrs-model-change" />
 	      </panel>
-	      <panel colSpan="6" showIf="typeSelect == 4">
+	      <panel name="emailSendOptionSelectPanel" colSpan="6" showIf="typeSelect == 4">
 	      	<field name="emailSendOptionSelect" requiredIf="typeSelect == 4"/>
 	      </panel>
-	      <panel colSpan="6" itemSpan="12">
+	      <panel name="targetModelPanel" colSpan="6" itemSpan="12">
 		      <field name="targetModel" requiredIf="typeSelect == 0 &amp;&amp; isJson" showIf="typeSelect == 0 &amp;&amp; isJson" widget="ref-text" 
 		      		x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel"/>
 		      <field name="targetModel"  requiredIf="typeSelect == 0 &amp;&amp; !isJson" showIf="typeSelect == 0 &amp;&amp; !isJson" widget="ref-text" 
@@ -57,13 +57,13 @@
       	  	</editor>
       	  </field>
 	      <field name="domainCondition" showIf="typeSelect == 3" colSpan="12" />
-	      <panel-related field="lines" colSpan="12"  hideIf="typeSelect &gt; 1" grid-view="action-builder-line-grid" form-view="action-builder-line-form" />
-	      <panel showIf="typeSelect == 2" colSpan="12" >
+	      <panel-related name="linesPanel" field="lines" colSpan="12"  hideIf="typeSelect &gt; 1" grid-view="action-builder-line-grid" form-view="action-builder-line-form" />
+	      <panel name="scriptPanel" showIf="typeSelect == 2" colSpan="12" >
 	      	<field name="scriptType" />
 	      	<field name="transactional" />
 	      	<field name="scriptText" colSpan="12" />
 	      </panel>
-	      <panel colSpan="12">
+	      <panel name="emailTemplatePanel" colSpan="12">
 	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>
 	      	<field name="emailTemplate" onSelect="action-action-builder-attrs-template-domain" requiredIf="typeSelect == 4" grid-view="template-grid" form-view="template-form" showIf="typeSelect == 4"/>
 	      </panel>

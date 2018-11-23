@@ -7,10 +7,10 @@
 	</grid>
 	
 	<form name="events-planning-form" title="Public holidays planning" model="com.axelor.apps.base.db.EventsPlanning">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="name"/>
 		</panel>
-        <panel-related field="eventsPlanningLineList" editable="true" grid-view="events-planning-line-grid" form-view="events-planning-line-form"/>
+        <panel-related name="eventsPlanningLineListPanel" field="eventsPlanningLineList" editable="true" grid-view="events-planning-line-grid" form-view="events-planning-line-form"/>
 	</form>
 
 </object-views>

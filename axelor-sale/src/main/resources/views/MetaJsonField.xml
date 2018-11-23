@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="sale-json-field-form" onLoad="action-configurator-json-field-onload" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-configurator-set-json-field-default">
-	    <panel title="Overview">
+	    <panel name="overviewPanel" title="Overview">
 	      <field name="$simpleName" onChange="action-configurator-json-field-record-name" title="Name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 		  <field readonly="true" name="name" title="Name to use in scripts"/>
 	      <field name="type" selection-in="['string', 'integer', 'decimal', 'boolean', 'datetime', 'date', 'time', 'panel', 'enum', 'button', 'separator', 'many-to-one', 'many-to-many', 'json-many-to-one', 'json-many-to-many']"/>
@@ -15,9 +15,9 @@
 	      <field name="model" hidden="true" />
 	      <field name="modelField" hidden="true" />
 	    </panel>
-		<panel-tabs>
-			<panel title="Options">
-				<panel itemSpan="12">
+		<panel-tabs name="mainPanelTab">
+			<panel name="optionsPanel" title="Options">
+				<panel name="selectTypePanel" itemSpan="12">
 					<field name="enumType" showIf="type === 'enum'" widget="ref-text"
 						   x-target="com.axelor.meta.db.MetaEnum"
 						   x-target-name="name"/>
@@ -34,7 +34,7 @@
 				<field name="precision" showIf="type === 'decimal'" />
 				<field name="scale" showIf="type === 'decimal'" />
 				<field name="regex" showIf="type === 'string'" colSpan="12" />
-				<panel itemSpan="12">
+				<panel name="targetModelPanel" itemSpan="12">
 					<field name="targetModel" showIf="type.match('^(one|many)-to-')" widget="ref-text"
 						   x-target="com.axelor.meta.db.MetaModel"
 						   x-target-name="fullName" />
@@ -52,7 +52,7 @@
 					   x-target-name="name"
 					   x-domain="self.model = :targetModel AND self.type = 'form'"/>
 			</panel>
-			<panel title="Conditions" itemSpan="12">
+			<panel name="conditionsPanel" title="Conditions" itemSpan="12">
 				<field name="contextField" hidden="true" title="Only if" colSpan="6"
 					   widget="ref-text"
 					   x-target-name="name"
@@ -73,13 +73,13 @@
 				<field name="requiredIf" />
 			</panel>
 		</panel-tabs>
-		<panel title="Options" sidebar="true" itemSpan="6">
+		<panel name="attrOptionsPanel" title="Options" sidebar="true" itemSpan="6">
 			<field name="required" widget="inline-checkbox" />
 			<field name="nameField" widget="inline-checkbox" showIf="type === 'string'" />
 			<field name="hidden" widget="inline-checkbox" />
 			<field name="visibleInGrid" widget="inline-checkbox" />
 		</panel>
-		<panel title="Widget Attributes" sidebar="true">
+		<panel name="widgetAttributesPanel" title="Widget Attributes" sidebar="true">
 			<field name="widgetAttrs" widget="json-raw" />
 		</panel>
     </form>

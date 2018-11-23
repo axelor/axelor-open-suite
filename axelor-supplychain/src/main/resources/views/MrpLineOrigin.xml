@@ -9,7 +9,7 @@
     </grid>
     
 	<form name="mrp-line-origin-form" model="com.axelor.apps.supplychain.db.MrpLineOrigin" title="Origin">
-	    <panel name="main">
+	    <panel name="mainPanel">
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12"/>
 	    </panel>
 	 </form>

@@ -11,14 +11,14 @@
 	    
   <form name="dashboard-builder-form" title="Dashboard builder" model="com.axelor.studio.db.DashboardBuilder" width="large"
       onNew="action-view-builder-record-default">
-      <panel>
+      <panel name="mainPanel">
       	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	<spacer/>
+      	<spacer name="appBuilderSpacer"/>
         <field name="name"/>
         <field name="title"/>
         <field name="viewType" hidden="true" />
         <field name="edited" hidden="true" />
-	    <panel-related field="dashletBuilderList" colSpan="12"/>
+	    <panel-related name="dashletBuilderListPanel" field="dashletBuilderList" colSpan="12"/>
 	  </panel>
   </form>
   

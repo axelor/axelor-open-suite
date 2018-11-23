@@ -13,38 +13,38 @@
   
   <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ChartBuilder" width="large"
       onLoad="action-chart-builder-on-load">
-      <panel>
+      <panel name="mainPanel">
       	<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	<spacer/>
+      	<spacer name="appBuilderSpacer"/>
         <field name="name"/>
         <field name="title"/>
         <field name="chartType" required="true"/>
         <field name="isJson" onChange="action-chart-builder-json-change,action-chart-builder-clear-fields" colSpan="2"/>
-        <panel colSpan="4" itemSpan="12">
+        <panel name="modelPanel" colSpan="4" itemSpan="12">
         	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" showIf="isJson" requiredIf="isJson" onChange="action-chart-builder-clear-fields"/> 
         	<field name="model" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" showIf="!isJson" requiredIf="!isJson" onChange="action-chart-builder-clear-fields"/> 
         </panel> 
-        <panel colSpan="6" itemSpan="12" title="Aggregate" hideIf="model == null">
+        <panel name="aggregatePanel" colSpan="6" itemSpan="12" title="Aggregate" hideIf="model == null">
         	<field name="isJsonAggregateOn" colSpan="2" />
-        	<panel itemSpan="12" colSpan="10">
+        	<panel name="subAggregatePanel" itemSpan="12" colSpan="10">
         		<field name="aggregateOnJson" domain="self.jsonModel.name = :model AND self.type IN ('string','integer','datetime','date','many-to-one','json-many-to-one')" onChange="action-chart-builder-aggregate-on-change,action-chart-builder-update-aggregate-on-target-type" widget="SuggestBox" showIf="isJsonAggregateOn" />
         		<field name="aggregateOn" domain="self.metaModel.fullName = :model AND (self.typeName IN ('String','Integer','LocalDate','ZonedDateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')"  onChange="action-chart-builder-aggregate-on-change,action-chart-builder-update-aggregate-on-target-type" widget="SuggestBox"  showIf="!isJsonAggregateOn" />
 	        </panel>
 	        <field name="aggregateOnTarget" title="Target" onChange="action-chart-builder-update-aggregate-on-target-type" showIf="!isJsonAggregateOn &amp;&amp; aggregateOn.relationship != null || isJsonAggregateOn &amp;&amp; (aggregateOnJson.targetModel != null || aggregateOnJson.targetJsonModel != null)" requiredIf="!isJsonAggregateOn &amp;&amp; aggregateOn.relationship != null || isJsonAggregateOn &amp;&amp; (aggregateOnJson.targetModel != null || aggregateOnJson.targetJsonModel != null)" />
 	        <field name="aggregateDateType" showIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(aggregateOnTargetType) > -1" requiredIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(aggregateOnTargetType) > -1" />
         </panel>
-        <panel colSpan="6" itemSpan="12" title="ChartBuilder.Group" hideIf="model == null">
+        <panel name="groupPanel" colSpan="6" itemSpan="12" title="ChartBuilder.Group" hideIf="model == null">
         	<field name="isJsonGroupOn" colSpan="2" />
-        	<panel itemSpan="12" colSpan="10">
+        	<panel name="subGroupPanel" itemSpan="12" colSpan="10">
         		<field name="groupOnJson" requiredIf="isJsonGroupOn" domain="self.jsonModel.name = :model AND self.type IN ('string', 'datetime','date','many-to-one','json-many-to-one')"  widget="SuggestBox" onChange="action-chart-builder-group-on-change,action-chart-builder-update-group-on-target-type" showIf="isJsonGroupOn" />
         		<field name="groupOn" requiredIf="!isJsonGroupOn" domain="self.metaModel.fullName = :model AND (self.typeName IN ('String','Integer','LocalDate','ZonedDateTime', 'LocalDateTime')  OR self.relationship = 'ManyToOne')" onChange="action-chart-builder-group-on-change,action-chart-builder-update-group-on-target-type" widget="SuggestBox" showIf="!isJsonGroupOn" />
         	</panel>
         	<field name="groupOnTarget" title="Target" onChange="action-chart-builder-update-group-on-target-type" showIf="!isJsonGroupOn &amp;&amp; groupOn.relationship != null || isJsonGroupOn &amp;&amp; (groupOnJson.targetModel != null || groupOnJson.targetJsonModel != null)" requiredIf="!isJsonGroupOn &amp;&amp; groupOn.relationship != null || isJsonGroupOn &amp;&amp; (groupOnJson.targetModel != null || groupOnJson.targetJsonModel != null)" />
         	<field name="groupDateType" showIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(groupOnTargetType) > -1" requiredIf="['LocalDateTime','LocalDate','ZonedDateTime','Date','Datetime'].indexOf(groupOnTargetType) > -1" />
         </panel>
-        <panel colSpan="6" title="Display" itemSpan="12" hideIf="model == null">
+        <panel name="displayPanel" colSpan="6" title="Display" itemSpan="12" hideIf="model == null">
 	        <field name="isJsonDisplayField" colSpan="2"/>
-	        <panel itemSpan="12" colSpan="10">
+	        <panel name="displayFieldPanel" itemSpan="12" colSpan="10">
 	          <field name="displayFieldJson" requiredIf="isJsonDisplayField" domain="self.jsonModel.name = :model AND self.type IN ('integer','decimal')" widget="SuggestBox"  showIf="isJsonDisplayField"/>
 	       	  <field name="displayField" requiredIf="!isJsonDisplayField" domain="self.metaModel.fullName = :model AND self.typeName IN ('Integer','BigDecimal')" widget="SuggestBox" showIf="!isJsonDisplayField"/>
         	</panel>
@@ -59,9 +59,9 @@
         <field name="groupOnJson.targetModel" hidden="true" />
         <field name="groupOnJson.targetJsonModel" hidden="true" />
        </panel>
-      <panel hideIf="model == null">
-      	  <label title="&lt;b&gt;Tags:&lt;/b&gt; $user: Current user, $date: Today's date, $time: Current time" colSpan="12" />
-      	  <panel-related field="filterList" colSpan="12" editable="true" edit-window="self" grid-view="chart-builder-filter-grid" />
+      <panel hideIf="model == null" name="filterListPanel">
+      	  <label name="userDetailLabel" title="&lt;b&gt;Tags:&lt;/b&gt; $user: Current user, $date: Today's date, $time: Current time" colSpan="12" />
+      	  <panel-related name="filterListPanel" field="filterList" colSpan="12" editable="true" edit-window="self" grid-view="chart-builder-filter-grid" />
       </panel>
   </form>
   

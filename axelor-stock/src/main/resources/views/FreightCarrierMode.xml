@@ -10,7 +10,7 @@
     </grid>
     
     <form name="freight-carrier-mode-form" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
-    	<panel>
+    	<panel name="mainPanel">
     		<field name="name" required="true"/>
     		<field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid" onChange="action-freight-carrier-mode-record-empty-shipment-mode"/>
     		<field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-freight-carrier-mode-grid"/>
@@ -23,7 +23,7 @@
     </grid>
     
     <form name="freight-carrier-mode-shipment-mode-form" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
-    	<panel>
+    	<panel name="mainPanel">
     		<field name="name" required="true"/>
     		<field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form" grid-view="partner-grid"/>
     	</panel>
@@ -35,7 +35,7 @@
     </grid>
     
     <form name="freight-carrier-mode-freight-carrier-form" model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
-    	<panel>
+    	<panel name="mainPanel">
     		<field name="name" required="true"/>
     		<field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>
     	</panel>

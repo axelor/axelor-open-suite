@@ -17,16 +17,16 @@
 	</grid>
 	
     <form name="interbank-code-form" title="Interbank codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="typeSelect"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 			<field name="name"/>
 			<field name="endDate"/>
 		</panel>
-		<panel name="description" title="Description" >
+		<panel name="descriptionPanel" title="Description" >
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel> 
-		<panel-related field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>
+		<panel-related name="interbankCodeLineListPanel" field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>
 </form>
     
 </object-views>

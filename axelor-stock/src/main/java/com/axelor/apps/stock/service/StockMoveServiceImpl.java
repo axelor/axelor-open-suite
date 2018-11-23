@@ -339,11 +339,10 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void plan(StockMove stockMove) throws AxelorException {
 
-    LOG.debug(
-        "Planification du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    LOG.debug("Planification du mouvement de stock : {} ", stockMove.getStockMoveSeq());
 
     if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
       stockMove.setExTaxTotal(compute(stockMove));
@@ -392,16 +391,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
 
-    copyPlannedStockMovLines(stockMove);
-
-    stockMoveLineService.updateLocations(
-        fromStockLocation,
-        toStockLocation,
-        stockMove.getStatusSelect(),
-        StockMoveRepository.STATUS_PLANNED,
-        stockMove.getPlannedStockMoveLineList(),
-        stockMove.getEstimatedDate(),
-        false);
+    updateLocations(stockMove, fromStockLocation, toStockLocation);
 
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 
@@ -410,6 +400,30 @@ public class StockMoveServiceImpl implements StockMoveService {
         && stockMove.getPlannedStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
     }
+  }
+
+  /**
+   * Update locations from a planned stock move, by copying stock move lines in the stock move then
+   * updating locations.
+   *
+   * @param stockMove
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @throws AxelorException
+   */
+  protected void updateLocations(
+      StockMove stockMove, StockLocation fromStockLocation, StockLocation toStockLocation)
+      throws AxelorException {
+
+    copyPlannedStockMovLines(stockMove);
+    stockMoveLineService.updateLocations(
+        fromStockLocation,
+        toStockLocation,
+        stockMove.getStatusSelect(),
+        StockMoveRepository.STATUS_PLANNED,
+        stockMove.getPlannedStockMoveLineList(),
+        stockMove.getEstimatedDate(),
+        false);
   }
 
   protected void copyPlannedStockMovLines(StockMove stockMove) {
@@ -646,7 +660,9 @@ public class StockMoveServiceImpl implements StockMoveService {
         Unit startUnit = product.getMassUnit();
 
         if (startUnit != null && endUnit != null) {
-          netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass());
+          netMass =
+              unitConversionService.convert(
+                  startUnit, endUnit, product.getNetMass(), product.getNetMass().scale(), null);
           stockMoveLine.setNetMass(netMass);
         }
       }

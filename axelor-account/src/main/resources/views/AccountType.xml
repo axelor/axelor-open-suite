@@ -10,12 +10,12 @@
    
    
     <form name="account-type-form" title="Account type" model="com.axelor.apps.account.db.AccountType">
-        <panel name="overView" title="Overview">
+        <panel name="overviewPanel" title="Overview">
         	<field name="name"/>
         	<field name="technicalTypeSelect"/>
-        	<panel-dashlet action="action-dashlet-account-list" colSpan="12"/>
+        	<panel-dashlet name="accountListPanel" action="action-dashlet-account-list" colSpan="12"/>
         </panel>
-        <panel-dashlet title="Accounting.Accounts" action="action-account-type-view-account" colSpan="12"/>
+        <panel-dashlet name="accountTypePanel" title="Accounting.Accounts" action="action-account-type-view-account" colSpan="12"/>
     </form>
     
     <action-view name="action-account-type-view-account" title="Accounting.Accounts">

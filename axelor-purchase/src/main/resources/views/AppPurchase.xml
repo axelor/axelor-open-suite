@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-purchase-config-form" title="App purchase" model="com.axelor.apps.base.db.AppPurchase" canDelete="false" canNew="false" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="managePurchasesUnits" widget="boolean-switch"/>
 			<field name="managePurchaseOrderVersion"  widget="boolean-switch"/>
 			<field name="supplierRequestMgt"  widget="boolean-switch" if-module="axelor-supplier-management"/>
@@ -12,9 +12,9 @@
 			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
 			<field name="manageSupplierCatalog" widget="boolean-switch"/>
 		</panel>
-		<panel>
-			<button name="generatePurchaseConfigurations" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />
-			<panel-dashlet action="admin.root.conf.purchase.config" colSpan="12"/> 
+		<panel name="actionsPanel">
+			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />
+			<panel-dashlet name="confPurchaseConfigPanel" action="admin.root.conf.purchase.config" colSpan="12"/> 
 		</panel>
 	</form>
 	

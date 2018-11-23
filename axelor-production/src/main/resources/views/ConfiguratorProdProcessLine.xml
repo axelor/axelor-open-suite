@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     <form name="configurator-prod-process-line-form" title="Configurator Phases"
           model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
-        <panel>
+        <panel name="mainPanel">
             <field name="name"/>
             <field name="priority"/>
             <field name="workCenter"/>
@@ -12,22 +12,22 @@
             <field name="stockLocation"/>
             <field name="description"/>
         </panel>
-        <panel title="Capacity settings" colSpan="12">
-            <panel>
+        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+            <panel name="minCapacityPanel">
                 <field name="defMinCapacityFormula" colSpan="12"/>
                 <field name="minCapacityPerCycle" showIf="!defMinCapacityFormula" colSpan="6"/>
                 <field name="minCapacityPerCycleFormula" widget="CodeEditor"
                        showIf="defMinCapacityFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
-            <panel>
+            <panel name="maxCapacityPanel">
                 <field name="defMaxCapacityFormula" colSpan="12"/>
                 <field name="maxCapacityPerCycle" showIf="!defMaxCapacityFormula" colSpan="6"/>
                 <field name="maxCapacityPerCycleFormula" widget="CodeEditor"
                        showIf="defMaxCapacityFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
-            <panel>
+            <panel name="otherDetailsPanel">
                 <field name="defDurationFormula" colSpan="12"/>
                 <field name="durationPerCycle" colSpan="6" widget="duration"
                        x-big="true" x-seconds="true" showIf="!defDurationFormula"/>

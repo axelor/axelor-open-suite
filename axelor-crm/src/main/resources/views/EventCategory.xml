@@ -14,7 +14,7 @@
     </grid>
     
     <form name="event-category-form" title="Event category" model="com.axelor.apps.crm.db.EventCategory"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="typeSelect"/>

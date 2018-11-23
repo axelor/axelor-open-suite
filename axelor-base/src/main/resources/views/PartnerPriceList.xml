@@ -15,7 +15,7 @@
           model="com.axelor.apps.base.db.PartnerPriceList"
           onNew="action-record-partner-price-list-record-sale-type"
           width="large">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="label"/>
             <field name="typeSelect" readonly="true" colSpan="4"/>
             <field name="isExclusive"/>
@@ -32,7 +32,7 @@
           model="com.axelor.apps.base.db.PartnerPriceList"
           onNew="action-record-partner-price-list-record-purchase-type"
           width="large">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="label"/>
             <field name="typeSelect" readonly="true" colSpan="4"/>
             <field name="isExclusive"/>

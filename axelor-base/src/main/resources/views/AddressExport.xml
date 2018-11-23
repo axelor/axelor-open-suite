@@ -9,11 +9,11 @@
 	</grid>
 
 	<form name="address-export-form" title="Export Address" model="com.axelor.apps.base.db.AddressExport" onNew="action-default-address-export-record">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="date" colSpan="4" />
 			<field name="path" colSpan="8" />
-			<button name="export" title="Export" onClick="com.axelor.apps.base.web.AddressController:export" />
-			<spacer />
+			<button name="exportBtn" title="Export" onClick="com.axelor.apps.base.web.AddressController:export" />
+			<spacer name="exportBtnSpacer" />
 			<field name="log" />
 		</panel>
 	</form>

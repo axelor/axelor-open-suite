@@ -5,9 +5,9 @@
   
   <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
     <toolbar>
-    	<button name="openWorkflow" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
+    	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
-    <panel>
+    <panel name="appBuilderPanel">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel>
     <panel-include view="json-model-form" from="axelor-core"/>

@@ -81,7 +81,7 @@ public class AppBaseController {
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
-      response.setAttr("main", "hidden", false);
+      response.setAttr("mainPanel", "hidden", false);
     }
   }
 

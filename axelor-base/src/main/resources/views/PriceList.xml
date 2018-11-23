@@ -24,7 +24,7 @@
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
 	   width="large">
-   		<panel name="main" >
+   		<panel name="mainPanel" >
 		    <field name="title"/>
 			<field name="typeSelect" colSpan="4"/>
 			<field name="isActive" colSpan="2"/>
@@ -32,17 +32,17 @@
 			<field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
 			<field name="hideDiscount"/>
     	</panel>
-		<panel name="priceListLine" title="Price list lines" >
+		<panel name="priceListLinePanel" title="Price list lines" >
 			<field name="generalDiscount"/>
-			<label name="or" title="Or" colSpan="12"/>
-			<panel-related field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+			<label name="orLabel" title="Or" colSpan="12"/>
+			<panel-related name="historizedPriceListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
 		 </panel>
-		<panel name="comments" title="Comments">
+		<panel name="commentsPanel" title="Comments">
 			<field name="comments" colSpan="12" height="3"/>    					
 		</panel>
-		<panel colSpan="12">
-			<panel-related field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
-			<button name="historizePriceList" hideIf="!id || $popup()" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
+		<panel colSpan="12" name="historizedPriceListPanel">
+			<panel-related field="historizedPriceListPanel" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
+			<button name="historizePriceListBtn" hideIf="!id || $popup()" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
    </form>
    
