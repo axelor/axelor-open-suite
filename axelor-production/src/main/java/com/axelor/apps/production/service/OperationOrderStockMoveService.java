@@ -130,6 +130,7 @@ public class OperationOrderStockMoveService {
         prodProduct.getProduct().getDescription(),
         prodProduct.getQty(),
         prodProduct.getProduct().getCostPrice(),
+        prodProduct.getProduct().getCostPrice(),
         prodProduct.getUnit(),
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,

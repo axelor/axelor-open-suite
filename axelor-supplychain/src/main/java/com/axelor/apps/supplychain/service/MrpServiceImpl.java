@@ -549,8 +549,12 @@ public class MrpServiceImpl implements MrpService {
         if (!unit.equals(purchaseOrderLine.getUnit())) {
           qty =
               Beans.get(UnitConversionService.class)
-                  .convertWithProduct(
-                      purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+                  .convert(
+                      purchaseOrderLine.getUnit(),
+                      unit,
+                      qty,
+                      qty.scale(),
+                      purchaseOrderLine.getProduct());
         }
         mrp.addMrpLineListItem(
             this.createMrpLine(
@@ -619,8 +623,12 @@ public class MrpServiceImpl implements MrpService {
         if (!unit.equals(saleOrderLine.getUnit())) {
           qty =
               Beans.get(UnitConversionService.class)
-                  .convertWithProduct(
-                      saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+                  .convert(
+                      saleOrderLine.getUnit(),
+                      unit,
+                      qty,
+                      saleOrderLine.getQty().scale(),
+                      saleOrderLine.getProduct());
         }
         mrp.addMrpLineListItem(
             this.createMrpLine(
@@ -670,7 +678,7 @@ public class MrpServiceImpl implements MrpService {
         if (!unit.equals(mrpForecast.getUnit())) {
           qty =
               Beans.get(UnitConversionService.class)
-                  .convertWithProduct(mrpForecast.getUnit(), unit, qty, mrpForecast.getProduct());
+                  .convert(mrpForecast.getUnit(), unit, qty, qty.scale(), mrpForecast.getProduct());
         }
         mrp.addMrpLineListItem(
             this.createMrpLine(

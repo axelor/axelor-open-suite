@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -4023,7 +4023,7 @@ row["partnerFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3664">
@@ -4058,7 +4058,7 @@ row["partnerFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5246">
@@ -5081,7 +5081,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5309">
@@ -5193,7 +5193,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5310">
@@ -5309,7 +5309,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5311">
@@ -5581,7 +5581,7 @@ row["partnerFirstName"]
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5313">

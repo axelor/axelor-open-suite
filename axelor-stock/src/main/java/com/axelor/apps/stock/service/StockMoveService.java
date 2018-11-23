@@ -261,4 +261,6 @@ public interface StockMoveService {
    * @return
    */
   boolean checkWeightsRequired(StockMove stockMove);
+
+  void checkExpirationDates(StockMove stockMove) throws AxelorException;
 }

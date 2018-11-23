@@ -40,6 +40,10 @@ public class TraceBackService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  // TYPE SELECT
+  protected static final int TYPE_TECHNICAL = 0;
+  protected static final int TYPE_FUNCTIONAL = 1;
+
   /**
    * Créer un log des exceptions en tant qu'anomalie.
    *
@@ -80,12 +84,11 @@ public class TraceBackService {
   }
 
   private static TraceBack _create(Throwable e, String origin, int categorySelect, long batchId) {
-    return _create(e, origin, TraceBackRepository.TYPE_TECHNICAL, categorySelect, batchId);
+    return _create(e, origin, TYPE_TECHNICAL, categorySelect, batchId);
   }
 
   private static TraceBack _create(AxelorException e, String origin, long batchId) {
-    TraceBack traceBack =
-        _create(e, origin, TraceBackRepository.TYPE_FUNCTIONNAL, e.getCategory(), batchId);
+    TraceBack traceBack = _create(e, origin, TYPE_FUNCTIONAL, e.getCategory(), batchId);
 
     if (e.getRefClass() != null) {
       traceBack.setRef(e.getRefClass().getName());
@@ -116,19 +119,14 @@ public class TraceBackService {
   public static void trace(final Throwable e, final String origin) {
 
     JPA.runInTransaction(
-        new Runnable() {
+        () -> {
+          if (e instanceof AxelorException) {
 
-          @Override
-          public void run() {
+            LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
 
-            if (e instanceof AxelorException) {
+          } else {
 
-              LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
-
-            } else {
-
-              LOG.error(_create(e, origin, 0, 0).getTrace());
-            }
+            LOG.error(_create(e, origin, 0, 0).getTrace());
           }
         });
   }
@@ -140,15 +138,7 @@ public class TraceBackService {
    */
   public static void trace(final AxelorException e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(
-        new Runnable() {
-
-          @Override
-          public void run() {
-
-            LOG.trace(_create(e, origin, batchId).getTrace());
-          }
-        });
+    JPA.runInTransaction(() -> LOG.trace(_create(e, origin, batchId).getTrace()));
   }
 
   /**
@@ -158,15 +148,7 @@ public class TraceBackService {
    */
   public static void trace(final Throwable e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(
-        new Runnable() {
-
-          @Override
-          public void run() {
-
-            LOG.error(_create(e, origin, 0, batchId).getTrace());
-          }
-        });
+    JPA.runInTransaction(() -> LOG.error(_create(e, origin, 0, batchId).getTrace()));
   }
 
   /**

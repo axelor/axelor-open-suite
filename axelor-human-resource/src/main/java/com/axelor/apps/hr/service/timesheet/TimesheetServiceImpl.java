@@ -538,7 +538,9 @@ public class TimesheetServiceImpl implements TimesheetService {
             .convert(
                 appHumanResourceService.getAppBase().getUnitHours(),
                 product.getUnit(),
-                hoursDuration);
+                hoursDuration,
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                product);
 
     PriceList priceList =
         Beans.get(PartnerPriceListService.class)
