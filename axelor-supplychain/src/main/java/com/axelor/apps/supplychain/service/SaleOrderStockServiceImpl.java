@@ -283,7 +283,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                     Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_EVEN);
       }
-      
+
       StockMoveLine stockMoveLine =
           stockMoveLineService.createStockMoveLine(
               saleOrderLine.getProduct(),
