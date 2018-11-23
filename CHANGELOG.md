@@ -40,6 +40,7 @@
 - Use the char ';' for subrogation release export
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
+- Production : Generate Unique Barcode on Duplicate Manufacture order.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
