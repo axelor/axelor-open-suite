@@ -233,6 +233,7 @@ Only display line where quantity is greater than 0.
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
+- STOCK MOVE : Set avilableStatus in stockMoveLineList.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

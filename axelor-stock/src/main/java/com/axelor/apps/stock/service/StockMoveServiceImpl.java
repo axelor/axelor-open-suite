@@ -1367,4 +1367,12 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     return address;
   }
+
+  @Override
+  public void setAvailableStatus(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      stockMoveLineService.setAvailableStatus(stockMoveLine);
+    }
+  }
 }

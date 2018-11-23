@@ -352,6 +352,10 @@
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="compute"/>
     </action-method>
     
+    <action-method name="action-stock-move-method-set-available-status">
+    	<call class="com.axelor.apps.stock.web.StockMoveController" method="setAvailableStatus"/>
+    </action-method>
+    
     <action-view title="Split into 2" model="com.axelor.apps.stock.db.StockMove" name="action-stock-move-split-into-2">
 	    <view type="form" name="stock-move-split-into-2-form"/>
 	    <view-param name="popup" value="reload"/>
@@ -387,6 +391,7 @@
     	<action name="action-stock-move-method-compute"/>
       <action name="action-method-supplychain-stock-move-check-reserved-qty-change" if="__config__.app.isApp('supplychain')"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
+    	<action name="action-stock-move-method-set-available-status"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
