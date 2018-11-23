@@ -123,9 +123,9 @@
 				<field name="requestedReservedQty" colSpan="6"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="reservedQty" colSpan="6" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 			</panel>
-        <panel name="reservedQtyButtons" colSpan="12">
-					<button name="updateRequestedReservedQty" colSpan="6" hidden="true" title="Change requested reserved qty" onClick="action-view-sale-order-line-requested-reserved-qty-wizard" if-module="axelor-supplychain"/>
-					<button name="updateAllocatedQty" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-sale-order-line-allocated-qty-wizard" if-module="axelor-supplychain"/>
+        <panel name="reservedQtyButtons" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+					<button name="updateRequestedReservedQty" colSpan="6" hidden="true" title="Change requested reserved qty" onClick="action-view-sale-order-line-requested-reserved-qty-wizard"/>
+					<button name="updateAllocatedQty" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-sale-order-line-allocated-qty-wizard"/>
 				</panel>
 				<spacer/>
 				<field name="$isReadOnly" hidden="true"/>

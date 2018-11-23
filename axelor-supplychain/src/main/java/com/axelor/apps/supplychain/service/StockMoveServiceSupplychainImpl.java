@@ -126,8 +126,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
       Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
     }
-    Beans.get(ReservedQtyService.class)
-        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
+    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+      Beans.get(ReservedQtyService.class)
+          .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
+    }
 
     return newStockSeq;
   }
@@ -144,16 +146,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     super.cancel(stockMove);
-    Beans.get(ReservedQtyService.class)
-        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
+    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+      Beans.get(ReservedQtyService.class)
+          .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
+    }
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
-    Beans.get(ReservedQtyService.class)
-        .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
+    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+      Beans.get(ReservedQtyService.class)
+          .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
+    }
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
