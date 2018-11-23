@@ -308,6 +308,7 @@
 		<field name="move.journal" title="Journal"/>
 		<field name="move.statusSelect" title="Status"/>
 		<field name="move.company" title="Company"/>
+		<field name="account.reconcileOk" title="Reconcilable"/>
 		<filter title="Sale Entries">
 			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>

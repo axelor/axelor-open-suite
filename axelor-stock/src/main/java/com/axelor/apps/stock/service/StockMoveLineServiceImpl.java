@@ -88,6 +88,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -124,6 +125,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               quantity,
               unitPriceUntaxed,
               unitPriceTaxed,
+              companyUnitPriceUntaxed,
               unit,
               stockMove,
               null);
@@ -191,6 +193,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               productName,
               description,
               quantity,
+              BigDecimal.ZERO,
               BigDecimal.ZERO,
               BigDecimal.ZERO,
               unit,
@@ -263,6 +266,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
@@ -278,6 +282,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
+    stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -350,6 +355,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             qty,
             stockMoveLine.getUnitPriceUntaxed(),
             stockMoveLine.getUnitPriceTaxed(),
+            stockMoveLine.getCompanyUnitPriceUntaxed(),
             stockMoveLine.getUnit(),
             stockMoveLine.getStockMove(),
             trackingNumber);
@@ -393,8 +399,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
           qty =
-              unitConversionService.convertWithProduct(
-                  stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+              unitConversionService.convert(
+                  stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -434,7 +440,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     BigDecimal oldQty = stockLocationLine.getCurrentQty();
-    BigDecimal newPrice = stockMoveLine.getUnitPriceUntaxed();
+    BigDecimal newPrice = stockMoveLine.getCompanyUnitPriceUntaxed();
     BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
@@ -651,6 +657,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
+    stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
     return stockMoveLine;
   }
 
@@ -689,6 +696,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal quantity = firstStockMoveLine.getQty();
     BigDecimal unitPriceUntaxed = firstStockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = firstStockMoveLine.getUnitPriceTaxed();
+    BigDecimal companyUnitPriceUntaxed = firstStockMoveLine.getCompanyUnitPriceUntaxed();
     Unit unit = firstStockMoveLine.getUnit();
     StockMove stockMove = firstStockMoveLine.getStockMove();
     TrackingNumber trackingNumber = firstStockMoveLine.getTrackingNumber();
@@ -704,6 +712,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         quantity,
         unitPriceUntaxed,
         unitPriceTaxed,
+        companyUnitPriceUntaxed,
         unit,
         stockMove,
         trackingNumber);
@@ -834,7 +843,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     netWeight =
         Beans.get(UnitConversionService.class)
-            .convertWithProduct(startUnit, endUnit, product.getNetWeight(), product);
+            .convert(
+                startUnit,
+                endUnit,
+                product.getNetWeight(),
+                product.getNetWeight().scale(),
+                product);
     return netWeight;
   }
 }

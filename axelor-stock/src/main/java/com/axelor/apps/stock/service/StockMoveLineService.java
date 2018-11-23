@@ -58,6 +58,7 @@ public interface StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -91,6 +92,7 @@ public interface StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
