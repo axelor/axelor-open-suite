@@ -145,6 +145,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Stock Move : Add grid for sale order. 
 - SALEORDERLINE : stock move line list
 - Add requested and allocated quantity in stock. This feature allows to reserve stocks that are currently not available, but will allocate the quantity when the stock is available.
+- Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
