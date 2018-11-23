@@ -38,6 +38,7 @@
 				 title="Create sale counterpart on this status"
 				 selection="sale.order.status.select"/>
 		<boolean name="manageStockReservation" title="Manage stock reservation"/>
+		<boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
 		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>
 	</entity>
 

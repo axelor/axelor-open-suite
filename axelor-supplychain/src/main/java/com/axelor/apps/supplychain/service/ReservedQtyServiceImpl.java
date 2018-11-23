@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -44,15 +45,18 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   protected StockLocationLineService stockLocationLineService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected UnitConversionService unitConversionService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public ReservedQtyServiceImpl(
       StockLocationLineService stockLocationLineService,
       StockMoveLineRepository stockMoveLineRepository,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      AppSupplychainService appSupplychainService) {
     this.stockLocationLineService = stockLocationLineService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.unitConversionService = unitConversionService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -171,7 +175,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockLocationLine == null) {
       return;
     }
-    if (toStatus == StockMoveRepository.STATUS_REALIZED) {
+    if (toStatus == StockMoveRepository.STATUS_REALIZED
+        && appSupplychainService.getAppSupplychain().getAutoAllocateOnReceipt()) {
       reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, qty);
     }
     checkReservedQtyStocks(stockLocationLine, toStatus);

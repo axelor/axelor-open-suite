@@ -145,6 +145,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Stock Move : Add grid for sale order. 
 - SALEORDERLINE : stock move line list
 - Add requested and allocated quantity in stock. This feature allows to reserve stocks that are currently not available, but will allocate the quantity when the stock is available.
+- Add configuration to allocate the quantity in stock automatically on in stock move realization.
 - Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
