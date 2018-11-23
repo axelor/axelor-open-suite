@@ -152,7 +152,7 @@
 	</action-attrs>
 
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
-    <attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true&quot;"/>
+    <attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
     <attribute name="domain" for="stockLocation" if="directOrderLocation"
       expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
   </action-attrs>

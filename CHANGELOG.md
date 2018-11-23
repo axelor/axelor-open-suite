@@ -326,6 +326,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Added name attribute to all panels and buttons and also renamed.
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
+- Filter out direct order stock location in sale order with the boolean direct order false.
 
 ## [Unreleased 5.0.7]
 ## Features
