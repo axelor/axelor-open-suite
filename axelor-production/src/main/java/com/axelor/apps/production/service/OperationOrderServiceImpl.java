@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -27,6 +28,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -34,7 +36,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -48,10 +55,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
+
+  @Inject private MetaFiles metaFiles;
+
+  @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject protected AppProductionService appProductionService;
 
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final DateTimeFormatter DATE_TIME_FORMAT =
@@ -427,5 +441,26 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     Beans.get(ManufOrderService.class)
         .updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
+  }
+
+  @Override
+  public void createBarcode(OperationOrder operationOrder) {
+    try {
+      String stringId = operationOrder.getId().toString();
+      boolean addPadding = true;
+      InputStream inStream =
+          barcodeGeneratorService.createBarCode(
+              stringId, appProductionService.getAppProduction().getBarcodeTypeConfig(), addPadding);
+      if (inStream != null) {
+        MetaFile barcodeFile =
+            metaFiles.upload(
+                inStream, String.format("OppOrderBarcode%d.png", operationOrder.getId()));
+        operationOrder.setBarCode(barcodeFile);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (AxelorException e) {
+      throw new ValidationException(e.getMessage());
+    }
   }
 }

@@ -42,6 +42,7 @@
 - Replace Packaging with Packing in modules base, supplychain and stock.
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
+- Production : Generate Unique Barcode on Duplicate Manufacture order.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

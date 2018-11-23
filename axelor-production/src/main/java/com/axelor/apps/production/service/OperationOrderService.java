@@ -91,4 +91,6 @@ public interface OperationOrderService {
    */
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;
+
+  public void createBarcode(OperationOrder operationOrder);
 }
