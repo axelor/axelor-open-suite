@@ -110,6 +110,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - PURCHASE ORDER :StockMoveLine add field companyUnitPriceUntaxed and stock location average price update with company currency unit price.
 - INVOICE : fix total decimal amount format on report
 - Event : Fill correct partner when generate event from Customer. 
+- Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
 
 ## [5.0.6] - 2018-10-06
 ## Features
