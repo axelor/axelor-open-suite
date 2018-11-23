@@ -34,7 +34,7 @@
     	</panel>
     	
     	<panel-tabs>
-    		<panel-related field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" colSpan="12" canNew="false" readonlyIf="statusSelect &gt; 1"/>
+    		<panel-related name="fixedAssetLineListPanel" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" colSpan="12" canNew="false" readonlyIf="statusSelect &gt; 1"/>
     		<panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect &gt; 1">
 	    		<field name="computationMethodSelect" required="true" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
 	    		<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>

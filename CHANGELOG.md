@@ -322,6 +322,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
 - Added name attribute to all panels and buttons and also renamed.
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
+- Panel rename issue
 
 ## [Unreleased 5.0.7]
 ## Features

@@ -126,7 +126,7 @@
 						<field name="allowToForceSaleQty"/>
 						<panel-related name="saleProductMultipleQtyListPanel"  field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
-		      		<panel-related name="customerCatalogList" field="customerCatalogList" form-view="customer-catalog-form" grid-view="customer-catalog-grid" title="Customer catalog" showIf="sellable" colSpan="12"
+		      		<panel-related name="customerCatalogListPanel" field="customerCatalogList" form-view="customer-catalog-form" grid-view="customer-catalog-grid" title="Customer catalog" showIf="sellable" colSpan="12"
 	      		if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
 				</panel>
 	      		<panel name="descriptionPanel" title="Description" colSpan="12">
@@ -155,13 +155,13 @@
 					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner &amp;&amp; purchasable" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	      		</panel>
-	      		<panel-related name="supplierCatalogList" field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Supplier catalog" showIf="purchasable" colSpan="12"
+	      		<panel-related name="supplierCatalogListPanel" field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Supplier catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 	    	</panel>
             <panel name="accountingPanel" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
 							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
-                <panel-related name="accountManagementList" field="accountManagementListPanel" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+                <panel-related name="accountManagementListPanel" field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
 	    		<panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettingsPanel" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >

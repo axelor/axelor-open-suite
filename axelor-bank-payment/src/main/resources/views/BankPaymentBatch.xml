@@ -33,7 +33,7 @@
       			<field name="createdOn" title="Created on"/>
       			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       			<field name="description" colSpan="12" />
-      			<panel-related name="batchList" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      			<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     		</panel>
   		</panel-tabs>
 

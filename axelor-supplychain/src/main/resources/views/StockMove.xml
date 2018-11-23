@@ -48,7 +48,7 @@
     </form>
     
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
-		<panel-related field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3 AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-in-grid" form-view="stock-move-form"/>
+		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3 AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-in-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
 			<button name="generateMultiInvoice" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>

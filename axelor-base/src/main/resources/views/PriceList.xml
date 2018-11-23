@@ -41,7 +41,7 @@
 			<field name="comments" colSpan="12" height="3"/>    					
 		</panel>
 		<panel colSpan="12" name="historizedPriceListPanel">
-			<panel-related field="historizedPriceListPanel" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
+			<panel-related name="historizedPriceListPanel" field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
 			<button name="historizePriceListBtn" hideIf="!id || $popup()" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
    </form>
