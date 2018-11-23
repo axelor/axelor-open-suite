@@ -319,6 +319,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
 - Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
 - Added name attribute to all panels and buttons and also renamed.
+- DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 
 ## [Unreleased 5.0.7]
 ## Features
