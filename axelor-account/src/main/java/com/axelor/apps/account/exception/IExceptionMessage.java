@@ -741,4 +741,7 @@ public interface IExceptionMessage {
    */
   static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
       "Missing subrogation release sequence for company %s" /*)*/;
+
+  /** MoveLine */
+  static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 }
