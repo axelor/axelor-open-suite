@@ -6,6 +6,7 @@
     <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
     	<toolbar>
     		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
+            <button name="calculateBtn" title="Calculation" onClick="action-account-move-line-method-calculate-balance"/>
     	</toolbar>
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -258,6 +259,15 @@
 			<mail-followers />
 		</panel-mail>
 	</form>
+
+  <form name="account-move-line-calculation-wizard-form" title="Calculation"
+    model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance">
+    <panel colSpan="12" title="Total of the selected lines : ">
+      <field name="$credit" title="Credit : " readonly="true" colSpan="4" />
+      <field name="$debit" title="Debit : " readonly="true" colSpan="4" />
+      <field name="$balance" title="Balance : " readonly="true" colSpan="4" />
+    </panel>
+  </form>
     
     <action-method name="action-method-accounting-reconcile">
     	<call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
@@ -298,6 +308,10 @@
     	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
     </action-method>
     
+    <action-method name="action-account-move-line-method-calculate-balance">
+      <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
+    </action-method>
+    
     <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
 	</action-attrs>
@@ -317,6 +331,12 @@
 		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;" if="_parent == null || _parent._model != 'com.axelor.apps.account.db.Move'"/>
 	</action-attrs>
 	
+    <action-record name="action-account-move-line-record-calculate-balance" model="com.axelor.apps.base.db.Wizard">
+      <field name="$credit" expr="eval: _credit" if="_credit != null"/>
+      <field name="$debit" expr="eval: _debit" if="_debit != null"/>
+      <field name="$balance" expr="eval: _balance" if="_balance != null"/>
+    </action-record>
+  
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
 		<field name="date" expr="eval: _parent?.date"/>
