@@ -13,18 +13,18 @@
 	<form name="meta-schedule-param-form" id="base-meta-schedule-param-form"
 		title="Parameter" model="com.axelor.meta.db.MetaScheduleParam" css="mini-form"
 		onLoad="action-record-meta-schedule-param-job">
-		<panel title="Overview"
+		<panel name="overview1" title="Overview"
 			showIf="$scheduleJob != 'com.axelor.apps.base.job.BatchJob'">
 			<field name="name" />
 			<field name="value" />
 		</panel>
-		<panel title="Overview"
+		<panel name="overview2" title="Overview"
 			showIf="$scheduleJob == 'com.axelor.apps.base.job.BatchJob'">
 			<field name="name" colSpan="12" />
 			<field name="value" widget="CodeEditor" x-code-syntax="groovy"
 				colSpan="12" />
 		</panel>
-		<panel hidden="true">
+		<panel name="scheduleJobPanel" hidden="true">
 			<field name="$scheduleJob" />
 		</panel>
 	</form>

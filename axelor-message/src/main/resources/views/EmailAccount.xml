@@ -12,7 +12,7 @@
     
     <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount"
     	onSave="action-mail-account-method-check-default-mail-account">
-    	<panel name="informations" title="Informations">
+    	<panel name="informationsPanel" title="Informations">
             <field name="name"/>
 			<field name="isDefault" onChange="action-mail-account-method-check-default-mail-account"/>
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>
@@ -27,11 +27,11 @@
        	 	<field name="login"/>
         	<field name="password" widget="password"/>
         </panel>
-		<panel sidebar="true">
+		<panel name="actionsPanel" sidebar="true">
 			<field name="isValid" readonly="true"/>
-			<button name="testConnection" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
-			<spacer/>
-			<button name="fetchEmails" onClick="save,action-mail-account-metho-fetch-emails" title="Fetch emails" showIf="isValid &amp;&amp; serverTypeSelect != null &amp;&amp; serverTypeSelect &gt; 1"/>
+			<button name="testConnectionBtn" onClick="save,action-method-mail-account-validate,save" title="Test connection"/>
+			<spacer name="btnSpacer"/>
+			<button name="fetchEmailsBtn" onClick="save,action-mail-account-metho-fetch-emails" title="Fetch emails" showIf="isValid &amp;&amp; serverTypeSelect != null &amp;&amp; serverTypeSelect &gt; 1"/>
 		</panel>
     </form>
     

@@ -33,9 +33,9 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLead" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
-		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="grabLeadBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
@@ -53,10 +53,10 @@
 			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 5" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
-		<panel name="main" >
-			<panel colSpan="12">
+		<panel name="mainPanel" >
+			<panel name="statusPanel" colSpan="12">
 				<field name="statusSelect" colSpan="8" widget="NavSelect" showTitle="false" readonly="true"/>
-				<panel colSpan="4">
+				<panel name="isRecycledPanel" colSpan="4">
 					<field name="isRecycled" showTitle="false" widget="boolean-switch" readonly="true">
 						<viewer>
 							<![CDATA[
@@ -69,18 +69,18 @@
 				</panel>
 			</panel>
 
-			<panel colSpan="3">
+			<panel name="imagePanel" colSpan="3">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-				<panel colSpan="12" showIf="fullName != null">
-					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
+					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
 
-			<panel colSpan="9" >
+			<panel colSpan="9" name="generalInfoPanel" >
 				<field name="$firstNameAndName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5" css="label-bold bold large">
                     <viewer depends="firstName,name">
                         <![CDATA[
@@ -105,9 +105,9 @@
 			</panel>
 		</panel>
 
-		<panel-tabs>
-			<panel name="contact" title="Contact" colSpan="12">
-				<panel title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
+		<panel-tabs name="mainPanelTab">
+			<panel name="contactPanel" title="Contact" colSpan="12">
+				<panel name="contactDetailPanel" title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 					<field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
 					<field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
 					<field name="$viewerCallAndEmail" showIf="$readonly" colSpan="12" showTitle="false">
@@ -120,7 +120,7 @@
 							]]>
 						</viewer>
 					</field>
-					<spacer colSpan="6"/>
+					<spacer name="viewerCallAndEmailSpacer" colSpan="6"/>
 					<field name="mobilePhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="emailAddress" colSpan="3" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
@@ -137,47 +137,47 @@
 					<field name="primaryCity" colSpan="4"/>
 					<field name="primaryState" colSpan="4"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<spacer colSpan="8"/>
+					<spacer name="primaryPostalCodeSpacer" colSpan="8"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
-				<panel title="Description" colSpan="12">
+				<panel name="descriptionPanel" title="Description" colSpan="12">
 					<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
 				</panel>
 			</panel>
 
-			<panel name="activities" title="Activities" itemSpan="12">
-				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
-				<panel-related colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-				<panel-related colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-				<panel-dashlet action="action-lead-view-emails"/>
-				<panel-dashlet if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
+			<panel name="activitiesPanel" title="Activities" itemSpan="12">
+				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
+				<panel-related name="eventListPanel" colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+				<panel-related name="opportunitiesListPanel" colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+				<panel-dashlet name="leadEmailsPanel" action="action-lead-view-emails"/>
+				<panel-dashlet name="leadMarketingCampaignPanel" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
 			</panel>
 		</panel-tabs>
 
-		<panel sidebar="true">
-			<button name="grabLead" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<button name="start" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
-			<button name="convert" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
-			<button name="recycle" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
-			<button name="lose" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
-			<button name="showPartner" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
+		<panel name="actionsPanel" sidebar="true">
+			<button name="grabLeadBtn" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+			<button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
+			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
+			<button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
+			<button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
+			<button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
-		<panel sidebar="true" name="followUp" title="Follow-up" colSpan="12">
+		<panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
 			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 5" requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
 		</panel>
 		
-		<panel sidebar="true" name="marketing" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
+		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
 		</panel>
  		
- 		<panel-mail>
+ 		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	  	</panel-mail>
@@ -185,9 +185,9 @@
 	</form>
 
     <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead" title="Loss confirmation" >
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
-			<button name="lostReasonConfirm" title="Confirm lost reason" onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4" colSpan="4"/>
+			<button name="lostReasonConfirmBtn" title="Confirm lost reason" onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4" colSpan="4"/>
 		</panel>
     </form>
 
@@ -200,7 +200,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
+		<button name="addBtn" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
 	<grid name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
@@ -217,8 +217,8 @@
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address"/>
 		<field name="statusSelect"/>
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
-		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
 	<action-condition name="action-lead-lost-reason-check">

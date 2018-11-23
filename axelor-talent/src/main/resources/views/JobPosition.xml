@@ -17,10 +17,10 @@
 			<button name="createJobApplication" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
 		</toolbar>
 		
-		<panel title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" widget="NavSelect" colSpan="6" showTitle="false"/>			
 		</panel>		
-		<panel>
+		<panel name="detailPanel">
 			<field name="jobTitle" colSpan="8" />
 			<field name="jobReference" colSpan="4"/>
 			<field name="companyDepartment" />
@@ -32,7 +32,7 @@
 			<field name="jobDescription" widget="html" colSpan="12" />
 			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
 			<field name="publicationDate"/>
-			<panel-dashlet action="action-job-position-all-applications" colSpan="12" title="All applications"/>
+			<panel-dashlet name="allApplicationsPanel" action="action-job-position-all-applications" colSpan="12" title="All applications"/>
 			<field name="nbOpenJob" />
 			<field name="nbPeopleHired" />
 		</panel>

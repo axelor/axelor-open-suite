@@ -21,17 +21,17 @@
 			<button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2" onClick="action-lunch-voucher-method-print"/>
 			<button name="exportBtn" title="Export CSV" icon="fa-file-text-o" showIf="statusSelect == 3 &amp;&amp; csvFile == null" onClick="action-lunch-voucher-method-export"/>
 		</toolbar>
-  		<panel name="main" readonlyIf="statusSelect == 4">
-  			<panel colSpan="12">
-  				<panel colSpan="9" readonlyIf="statusSelect != 1">
-  					<panel colSpan="12">
+  		<panel name="mainPanel" readonlyIf="statusSelect == 4">
+  			<panel name="subMainPanel" colSpan="12">
+  				<panel name="detailsPanel" colSpan="9" readonlyIf="statusSelect != 1">
+  					<panel name="statusPanel" colSpan="12">
 	  					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
   					</panel>
 		    		<field name="company" canEdit="false" colSpan="4" onChange="action-lunch-voucher-record-company-onchange" />
 					<field name="payPeriod" colSpan="4" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
 					<field name="leavePeriod" colSpan="4" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
   				</panel>
-	        	<panel colSpan="3">
+	        	<panel name="actionsPanel" colSpan="3">
 	        		<button name="calculateBtn" title="Calculate" colSpan="12"
 							onClick="save,action-lunch-voucher-method-calculate" showIf="statusSelect &lt; 3" hidden="true"/>
 		    		<button name="validateBtn" title="Validate" colSpan="12" onClick="action-lunch-voucher-group-validate" showIf="statusSelect == 2" hidden="true"/>
@@ -39,18 +39,18 @@
 							onClick="action-lunch-voucher-group-close"
 							showIf="statusSelect == 3" hidden="true"/>
 	        	</panel>
-	        	<panel title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">
+	        	<panel name="exportsPanel" title="Export" colSpan="12" readonly="true" hidden="true" showIf="csvFile != null">
 	        		<field name="exportDate"/>
    					<field name="csvFile" widget="binary-link" showTitle="false"/>
 	        	</panel>
   			</panel>
   		</panel>
-    	<panel title="Quantities" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
-			<panel colSpan="12">
+    	<panel name="quantitiesPanel" title="Quantities" readonlyIf="statusSelect &gt;= 3" canCollapse="true" collapseIf="true">
+			<panel name="stockQtyDetailsPanel" colSpan="12">
 				<field name="stockQuantityStatus" css="label-bold bold" colSpan="3"/>
 				<field name="stockLineQuantity" title="Quantity to stock" colSpan="3" css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
 			</panel>
-			<panel colSpan="12">
+			<panel name="vouchersPanel" colSpan="12">
 				<field name="requestedLunchVouchers" css="label-bold bold" colSpan="3"/>
 				<field name="totalLunchVouchers" css="label-bold bold" colSpan="3"/>
 				<field name="givenLunchVouchers" css="label-bold bold"
@@ -58,12 +58,12 @@
 			</panel>
 			<field name="stockLineComment" colSpan="12"/>
    		</panel>
-   		<panel-tabs>
-   			<panel title="Content">
-   				<panel-related colSpan="12" field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total"/>
+   		<panel-tabs name="mainPanelTab">
+   			<panel title="Content" name="contentPanel">
+   				<panel-related name="lunchVoucherMgtLineListPanel" colSpan="12" field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form" grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false" onChange="action-lunch-voucher-method-update-total"/>
    			</panel>
-			<panel title="Configuration">
-	   			<panel name="charges" title="Charges and Contributions" colSpan="12">
+			<panel title="Configuration" name="configurationPanel">
+	   			<panel name="chargesPanel" title="Charges and Contributions" colSpan="12">
 					<field name="lunchVoucherWageShare" colSpan="3"/>
 					<field name="lunchVoucherEmployersShare" colSpan="3"/>
 				</panel>

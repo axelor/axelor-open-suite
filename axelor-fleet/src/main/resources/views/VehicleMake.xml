@@ -8,11 +8,11 @@
     </grid>
     
     <form name="vehicle-make-form" title="Make" model="com.axelor.apps.fleet.db.VehicleMake" width="large">
-       <panel>
-       	   <panel colSpan="2">
+       <panel name="mainPanel">
+       	   <panel colSpan="2" name="imagePanel">
        	   		<field name="image" widget="Image" colSpan="12"/>
        	   </panel>
-       	   <panel colSpan="6" itemSpan="12">
+       	   <panel colSpan="6" itemSpan="12" name="namePanel">
 	     		<field name="name" />
 	       </panel>
 	   </panel>

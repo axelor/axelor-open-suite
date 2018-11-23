@@ -142,7 +142,7 @@ public interface StockMoveLineService {
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
@@ -190,16 +190,6 @@ public interface StockMoveLineService {
    * @param stockMoveLineList List of StockMoveLines on which to operate
    */
   public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
-
-  /**
-   * Get a merged stock move line.
-   *
-   * @param stockMoveLineList
-   * @return
-   * @throws AxelorException
-   */
-  StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
 
   /**
    * Check whether a stock move line is fully spread over logistical form lines.
@@ -261,4 +251,6 @@ public interface StockMoveLineService {
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
+
+  public void setAvailableStatus(StockMoveLine stockMoveLine);
 }

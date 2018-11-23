@@ -5,7 +5,8 @@
     <module name="stock" package="com.axelor.apps.stock.db"/>
 
     <entity name="StockLocationLine" lang="java">
-        <decimal name="reservedQty" title="Reserved Qty"/>
+        <decimal name="reservedQty" title="Allocated qty"/>
+        <decimal name="requestedReservedQty" title="Requested reserved qty"/>
     </entity>
 
 </domain-models>

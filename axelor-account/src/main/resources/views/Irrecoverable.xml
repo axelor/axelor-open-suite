@@ -12,7 +12,7 @@
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable"   
     onNew="action-record-irrecoverable-default-record">
   
-		<panel name="main" itemSpan="12">
+		<panel name="mainPanel" itemSpan="12">
 			 <field name="statusSelect" widget="NavSelect"></field>
 			 <field name="name"/>
 			 <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
@@ -20,26 +20,26 @@
 			 <field name="company" canEdit="false"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			 <field name="statusSelect" hidden="true"/>
 		</panel>
-		<panel showIf="statusSelect == 1">
-	 		<button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
+		<panel name="irrecoverable" showIf="statusSelect == 1">
+	 		<button name="getIrrecoverableBtn" title="Get invoices and schedule lines to set as irrecoverable" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
 		</panel>
-		<panel-tabs showIf="statusSelect == 1">
-			<panel-related field="invoiceSet"  form-view="invoice-form" grid-view="invoice-grid" colSpan="12"/>
-			<panel-related field="paymentScheduleLineSet" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
+		<panel-tabs name="mainPanelTab" showIf="statusSelect == 1">
+			<panel-related name="invoiceSetPanel" field="invoiceSet"  form-view="invoice-form" grid-view="invoice-grid" colSpan="12"/>
+			<panel-related name="paymentScheduleLineSetPanel" field="paymentScheduleLineSet" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
 		</panel-tabs>
 		
-		<panel sidebar="true" showIf="invoiceSet != null || paymentScheduleLineSet != null">
-			<button name="createIrrecoverableReport" title="Generate irrecoverable report"  onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport" showIf="statusSelect == 1"/>
+		<panel name="report" sidebar="true" showIf="invoiceSet != null || paymentScheduleLineSet != null">
+			<button name="createIrrecoverableReportBtn" title="Generate irrecoverable report"  onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport" showIf="statusSelect == 1"/>
 			<field name="exportTypeSelect" colSpan="4"/>
-			<button name="printReport" title="Print" icon="fa-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>  		
+			<button name="printReportBtn" title="Print" icon="fa-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>  		
 		</panel>
-		<panel-related sidebar="true" field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>  
+		<panel-related sidebar="true" name="irrecoverableCustomerLineListPanel" field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>  
 		
-		<panel showIf="invoiceSet != null || paymentScheduleLineSet != null">
-  			<button name="passInIrrecoverable" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
-	 		<button name="showTraceBack" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
+		<panel name="actions" showIf="invoiceSet != null || paymentScheduleLineSet != null">
+  			<button name="passInIrrecoverableBtn" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
+	 		<button name="showTraceBackBtn" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
 	 	</panel>
-		<panel-related field="moveSet" showIf="statusSelect == 2" colSpan="12" form-view="move-form" grid-view="move-grid"/>
+		<panel-related name="moveSetPanel" field="moveSet" showIf="statusSelect == 2" colSpan="12" form-view="move-form" grid-view="move-grid"/>
 	</form>
 
     <action-method name="action-method-account-irrecoverable-pass-in">

@@ -6,9 +6,9 @@
 	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<field name="id" hidden="true"/>
 	    <break/>
-		<button name="mySaleOrder"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
-	    <button name="myInvoices"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-	    <button name="myTickets"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
+		<button name="mySaleOrderBtn"   title="My sale orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg" if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
+	    <button name="myInvoicesBtn"   title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+	    <button name="myTicketsBtn"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
 	</form>
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"

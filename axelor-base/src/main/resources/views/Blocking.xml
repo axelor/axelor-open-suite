@@ -14,7 +14,7 @@
     
     <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" width="large"
           onNew="action-blocking-record-realized-by">
-     	<panel name="main">
+     	<panel name="mainPanel">
             <field name="companySet" colSpan="12" widget="TagSelect" onSelect="action-blocking-attrs-domain-companySet" onNew="action-blocking-record-default-companies"/>
             <field name="blockingSelect" colSpan="12" selection="base.blocking.select" widget="RadioSelect" required="true"/>
             <field name="blockingToDate" colSpan="4" required="true"/>

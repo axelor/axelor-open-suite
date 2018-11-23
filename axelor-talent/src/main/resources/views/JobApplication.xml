@@ -20,10 +20,10 @@
 	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
-		<panel name="main" readonlyIf="statusSelect == 3">
+		<panel name="mainPanel" readonlyIf="statusSelect == 3">
 			<field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true"/>
 			<field name="hiringStage" x-order="sequence" hidden="true"/><spacer/>
-			<panel colSpan="4">
+			<panel colSpan="4" name="picturePanel">
 				<field name="employee" showIf="statusSelect == 1" />
 				<field name="picture" showTitle="false" colSpan="12" widget="Image">
 					<viewer>
@@ -34,24 +34,24 @@
 					</viewer>
 				</field>
 			</panel>
-			<panel colSpan="8">
+			<panel colSpan="8" name="titlePanel">
 				<field name="title" colSpan="8"/><spacer/>
 				<field name="firstName" onChange="action-talent-method-set-social-network-url" />
 				<field name="lastName" required="true" onChange="action-talent-method-set-social-network-url"/>			
 			</panel>
 		</panel>
-		<panel colSpan="12" sidebar="true" hideIf="statusSelect == 1 || statusSelect == 3">
+		<panel colSpan="12" name="sideBarButtonPanel" sidebar="true" hideIf="statusSelect == 1 || statusSelect == 3">
 			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="12" showIf="statusSelect == 0" />
 			<button name="cancel" title="Cancel" onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
 		</panel>
-		<panel title="Job Offer Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
+		<panel name="jobOfferPanel" title="Job Offer Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
 			<field name="jobPosition" colSpan="6"/>
 			<field name="jobPosition.statusSelect" colSpan="6"/>
 			<field name="jobPosition.companyDepartment" colSpan="6"/>
 			<field name="responsible" colSpan="6"/>
 			<field name="jobPosition.publicationDate" colSpan="6"/>
 		</panel>
-		<panel title="Application Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
+		<panel name="applicationInfoPanel" title="Application Information" colSpan="12" sidebar="true" readonlyIf="statusSelect == 3">
 			<field name="educationLevel" colSpan="6"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="talentSource" title="Source" colSpan="6"/>
@@ -61,35 +61,35 @@
 			<field name="creationDate" colSpan="6"/>
 			<field name="tagSkillSet" widget="TagSelect" colSpan="6" />
 		</panel>
-		<panel-tabs readonlyIf="statusSelect == 3">
-			<panel title="Description">
+		<panel-tabs name="mainPanelTab" readonlyIf="statusSelect == 3">
+			<panel name="descriptionPanel" title="Description">
 				<field name="description" widget="html" colSpan="12" />
 			</panel>
-			<panel title="Contact" colSpan="12">
-				<panel title="Contact information" colSpan="12">
+			<panel name="contactPanel" title="Contact" colSpan="12">
+				<panel name="contactInfoPanel" title="Contact information" colSpan="12">
 					<field name="mobilePhone" colSpan="4"/>
 					<field name="emailAddress" canNew="true" colSpan="4"/>
 					<field name="fixedPhone" colSpan="4"/>
 					<field name="linkedInProfile" colSpan="4" widget="url"/>
 					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
-				<panel title="Main address" colSpan="12">
+				<panel name="mainAddressPanel" title="Main address" colSpan="12">
 					<field name="employeeAddress" colSpan="12" form-view="address-form" grid-view="address-grid" canNew="true"/>
 				</panel>
 				<field name="fullName" hidden="true" />
 			</panel>
-			<panel title="Contract" colSpan="12">
+			<panel name="contractPanel" title="Contract" colSpan="12">
 				<field name="jobPosition.contractType" />
 				<field name="expectedSalary" />
 				<field name="proposedSalary" />
 				<field name="availabilityFrom" />
 			</panel>
-			<panel-dashlet name="events" title="Events" action="action-job-application-events" colSpan="12" />
-			<panel title="Reason not hired">
+			<panel-dashlet name="eventsPanel" title="Events" action="action-job-application-events" colSpan="12" />
+			<panel name="reasonNotHiredPanel" title="Reason not hired">
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 		</panel-tabs>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	    </panel-mail>

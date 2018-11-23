@@ -382,6 +382,8 @@ public class AppServiceImpl implements AppService {
       app = importDataInit(app);
     }
 
+    app = appRepo.find(app.getId());
+
     app.setActive(true);
 
     return saveApp(app);

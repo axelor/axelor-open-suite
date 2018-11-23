@@ -4,46 +4,46 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
-		<panel name="productionConfiguration" colSpan="12">
-			<panel title="Sale order">
+		<panel name="productionConfigurationPanel" colSpan="12">
+			<panel name="saleOrder" title="Sale order">
 				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
 			</panel>
-			<panel title="Configurator">
+			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
-			<panel name="billOfMaterial" title="Bill of material">
+			<panel name="billOfMaterialPanel" title="Bill of material">
 				<field name="manageBillOfMaterialVersion" colSpan="4" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
-			<panel name="manufacturingProcess" title="Manufacturing process">
+			<panel name="manufacturingProcessPanel" title="Manufacturing process">
    				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false"/>
 			</panel>
-			<panel name="prodProcess" title="Production process">
+			<panel name="prodProcessPanel" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>
 				<field name="manageBusinessProduction" onChange="action-app-production-manage-business-production-record-onchange" title="Manage business production" if-module="axelor-business-production" widget="boolean-switch" />
 				<field name="enableTimesheetOnManufOrder" widget="boolean-switch" if-module="axelor-business-production" showIf="manageBusinessProduction" />
 			</panel>
-			<panel name="barcodeTypeConfig">
+			<panel name="barcodeTypeConfigPanel">
 				<field name="barcodeTypeConfig" title="Barcode Type"/>
 			</panel>
-			<panel name="costSheet" title="Cost sheet">
+			<panel name="costSheetPanel" title="Cost sheet">
 			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
   				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
   				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
-			<panel name="printing" title="Printings">
+			<panel name="printingPanel" title="Printings">
 				<field name="printPlannedDateOnManufOrder"/>
 			</panel>
-			<panel name="stockLocation" title="Stock Location">
+			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
 			</panel>
 		</panel>
-		<panel>
-			<button name="generateProductionConfigurations" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
-			<panel-dashlet action="admin.root.conf.production.config" colSpan="12"/>
+		<panel name="actionsPanel">
+			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+			<panel-dashlet name="confProductionConfigDashlet" action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
 	</form>
 	

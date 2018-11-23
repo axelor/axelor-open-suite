@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -47,6 +48,8 @@ import java.util.Map;
 public class StockMoveLineController {
 
   @Inject protected StockMoveLineService stockMoveLineService;
+
+  @Inject private StockMoveService stockMoveService;
 
   @Inject protected StockMoveLineRepository stockMoveLineRepo;
 
@@ -205,5 +208,12 @@ public class StockMoveLineController {
             : stockMoveLine.getStockMove();
     String domain = stockMoveLineService.createDomainForProduct(stockMoveLine, stockMove);
     response.setAttr("product", "domain", domain);
+  }
+
+  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
+    response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
   }
 }

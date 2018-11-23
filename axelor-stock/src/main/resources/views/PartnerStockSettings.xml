@@ -27,20 +27,20 @@
     <form name="partner-stock-settings-form"
           title="Partner stock settings"
           model="com.axelor.apps.stock.db.PartnerStockSettings">
-        <panel>
+        <panel name="mainPanel">
             <field name="company" form-view="company-form"
                    grid-view="company-grid"/>
             <field name="defaultStockLocation" form-view="stock-location-form"
                    grid-view="stock-location-grid"
                    onSelect="action-partner-default-stock-location-form-domain"/>
-            <panel colSpan="12">
+            <panel name="plannedStockMovePanel" colSpan="12">
                 <field name="plannedStockMoveAutomaticMail"/>
                 <field name="plannedStockMoveMessageTemplate"
                   requiredIf="plannedStockMoveAutomaticMail"
                   showIf="plannedStockMoveAutomaticMail"
                   form-view="template-form" grid-view="template-grid"/>
             </panel>
-            <panel colSpan="12">
+            <panel name="realStockMovePanel" colSpan="12">
                 <field name="realStockMoveAutomaticMail"/>
                 <field name="realStockMoveMessageTemplate"
                   requiredIf="realStockMoveAutomaticMail"

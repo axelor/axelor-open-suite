@@ -18,7 +18,7 @@
 	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
 		  onLoad="action-accounting-situation-group-form-onload"
 		  onNew="action-accounting-situation-group-form-onnew" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
 			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -26,27 +26,27 @@
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
 		</panel>
-		<panel name="customerBalance" title="Customer balance" itemSpan="4">
+		<panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-		<panel title="Automatic mail">
+		<panel name="automaticMailPanel" title="Automatic mail">
 			<field name="invoiceAutomaticMail"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
-		<panel name="debtRecoveryProcess" title="Debt recovery process">
+		<panel name="debtRecoveryProcessPanel" title="Debt recovery process">
 			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 		</panel>
 
-		<panel-related field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
+		<panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 
-		<panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain">
+		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
 			<field name="acceptedCredit"/>
 			<field name="usedCredit"/>
 		</panel>
 
-		<panel-dashlet action="action-accounting-situation-view-move-lines"/>
+		<panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
 	</form>
 
 
@@ -65,7 +65,7 @@
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
 	     onNew="action-account-accounting-situation-default-set" >
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
@@ -75,23 +75,23 @@
 			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 	    	
-		<panel name="customerBalance" title="Customer balance"  itemSpan="4" >
+		<panel name="customerBalancePanel" title="Customer balance"  itemSpan="4" >
 			<field name="balanceCustAccount"/>
 			<field name="balanceDueCustAccount"/>
 			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
-	    <panel name="debtRecoveryProcess" title="Debt recovery process"  >
+	    <panel name="debtRecoveryProcessPanel" title="Debt recovery process"  >
 	    	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
 	    </panel>
 
-		 <panel-related field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
+		 <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 
-		 <panel name="customerCredit" title="Customer Credit" if-module="axelor-supplychain">
+		 <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
 			 <field name="acceptedCredit"/>
 			 <field name="usedCredit"/>
 		 </panel>
 
-		 <panel-dashlet action="action-accounting-situation-view-move-lines"/>
+		 <panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
 	</form>
 
 	<action-group name="action-accounting-situation-group-form-onnew">

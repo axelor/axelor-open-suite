@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.1]
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -137,6 +138,14 @@
 - PURCHASE ORDER : Manage received qty per line
 - MRP : improve runtime for huge database
 - MRP : generate proposal for product that stock qty is less than stock rule min qty even if there is no other out movement.
+- MRP : if the sale order or purchase order is not delivered, if the date is in the past, now we take it into account with today date.
+If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
+- STOCK MOVE : mass printing for picking stock move report.
+- Add Fixed Asset Management feature.
+- Stock Move : Add grid for sale order. 
+- SALEORDERLINE : stock move line list
+- Add requested and allocated quantity in stock. This feature allows to reserve stocks that are currently not available, but will allocate the quantity when the stock is available.
+- Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -217,6 +226,15 @@
 - Inventory:InventoryLine add Fields gap and gapValue and change default real quantity.
 - Managed mass fields on 3 decimal digits at least, and improve mass conversion.
 - Display estimated delivery dates on sale order printing.
+- StockMove report : Add an option in Stock config to display the details of line or consolidate per product code, name and unit.
+Also in case of aggregation, we have to concatenate the tracking number list and the description of lines
+- StockMove report : Display rack of from and to stock location (for internal and ingoing stock move), display invoicing and delivery address for outgoing stock move.
+Only display line where quantity is greater than 0.
+- Add a specific not for invoice on company bank details
+- LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
+- PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
+- Stock Move : Specify views for origin field. 
+- STOCK MOVE : Set avilableStatus in stockMoveLineList.
 - JOB APPLICATION : Major updates in job application form view.
 
 ## Bug Fixes
@@ -299,6 +317,12 @@
 Now, In this case, we use the today date.
 - MRP : When we select manually a sale order in filter, that doesn't have a stock location defined, we get a NPE.
 So, now, we check if the saleOrder.stockLocation is the same stock location or one of sub stock location of the MRP stock location.
+- Now keep the link to the sale order line or purchase order line when we split a stock move line. 
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
+- Added name attribute to all panels and buttons and also renamed.
+- DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -337,6 +361,10 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - GROUP : Enable massUpdate feature.
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
+- Use the char ';' for subrogation release export
+- Allow to define large text for sale order and purchase order information fields on Partner.
+- Replace Packaging with Packing in modules base, supplychain and stock.
+- TALENT : View order of fields training and trainingSession altered in object Training Register. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -390,6 +418,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
+- Fixed occasionnal scale rounding anomalies on unit conversions.
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - PRODUCTION : Update stockMoveLine onclick of splitByTrackingNo validation button. 
 - Base : fix Null Pointer error.
@@ -399,6 +428,11 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
+- PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -628,7 +662,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
-- INVENTORy : fill the actual qty
+- INVENTORY : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
