@@ -18,6 +18,9 @@
   
 	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" 
 	onNew="action-bank-reconciliation-onnew-group" >
+        <toolbar>
+          <button title="Print the bank reconciliation" name="print" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation"/>
+        </toolbar>
 		<panel name="mainPanel" colSpan="12">
 			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
 				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
@@ -105,6 +108,10 @@
      <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate"/>
    </action-method>
 	
+   <action-method name="action-bank-reconciliation-method-print-bank-reconciliation">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printBankReconciliation"/>
+   </action-method>
+  
    <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">
      <view type="grid" name="move-line-bank-reconciliation-grid"/>
      <view type="form" name="move-line-form"/>

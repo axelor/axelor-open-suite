@@ -145,6 +145,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Stock Move : Add grid for sale order. 
 - SALEORDERLINE : stock move line list
 - Add requested and allocated quantity in stock. This feature allows to reserve stocks that are currently not available, but will allocate the quantity when the stock is available.
+- Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 
 ## Improvements
@@ -234,6 +235,7 @@ Only display line where quantity is greater than 0.
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
+- STOCK MOVE : Set avilableStatus in stockMoveLineList.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -320,6 +322,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
 - Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
 - Added name attribute to all panels and buttons and also renamed.
+- DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -361,6 +364,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Use the char ';' for subrogation release export
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
+- TALENT : View order of fields training and trainingSession altered in object Training Register. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

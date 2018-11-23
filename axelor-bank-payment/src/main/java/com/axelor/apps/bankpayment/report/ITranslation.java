@@ -79,4 +79,38 @@ public interface ITranslation {
   public static final String BANK_STATEMENT_IBAN = /*$$(*/ "BankStatement.iban"; /*)*/;
   public static final String BANK_STATEMENT_ACCOUNT_CURRENCY = /*$$(*/
       "BankStatement.accountCurrency"; /*)*/;
+
+  public static final String BANK_RECONCILIATION_REPORT_EDITION_DATE = /*$$(*/
+      "BankReconciliation.report_edition_date"; /*)*/;
+  public static final String BANK_RECONCILIATION_PAGE1_TITLE = /*$$(*/
+      "BankReconciliation.page1Title"; /*)*/;
+  public static final String BANK_RECONCILIATION_PAGE2_TITLE = /*$$(*/
+      "BankReconciliation.page2Title"; /*)*/;
+  public static final String BANK_RECONCILIATION_ACOUNT = /*$$(*/
+      "BankReconciliation.account"; /*)*/;
+  public static final String BANK_RECONCILIATION_JOURNAL = /*$$(*/
+      "BankReconciliation.journal"; /*)*/;
+  public static final String BANK_RECONCILIATION_CURRENCY = /*$$(*/
+      "BankReconciliation.currency"; /*)*/;
+  public static final String BANK_RECONCILIATION_COMPANY = /*$$(*/
+      "BankReconciliation.company"; /*)*/;
+  public static final String BANK_RECONCILIATION_REPORT_DATE = /*$$(*/
+      "BankReconciliation.report_date"; /*)*/;
+
+  public static final String BANK_RECONCILIATION_TYPE = /*$$(*/ "BankReconciliation.type"; /*)*/;
+  public static final String BANK_RECONCILIATION_CODE = /*$$(*/ "BankReconciliation.code"; /*)*/;
+  public static final String BANK_RECONCILIATION_TO_DATE = /*$$(*/
+      "BankReconciliation.to_date"; /*)*/;
+  public static final String BANK_RECONCILIATION_REFERENCE = /*$$(*/
+      "BankReconciliation.reference"; /*)*/;
+  public static final String BANK_RECONCILIATION_NAME = /*$$(*/ "BankReconciliation.name"; /*)*/;
+  public static final String BANK_RECONCILIATION_DEBIT = /*$$(*/ "BankReconciliation.debit"; /*)*/;
+  public static final String BANK_RECONCILIATION_CREDIT = /*$$(*/
+      "BankReconciliation.credit"; /*)*/;
+  public static final String BANK_RECONCILIATION_AMOUNT = /*$$(*/
+      "BankReconciliation.amount"; /*)*/;
+  public static final String BANK_RECONCILIATION_UNRECONCILED_MOVE_LINES = /*$$(*/
+      "BankReconciliation.unreconciled_move_lines"; /*)*/;
+  public static final String BANK_RECONCILIATION_MOVES_UNACCOUNTED = /*$$(*/
+      "BankReconciliation.moves_unaccounted"; /*)*/;
 }
