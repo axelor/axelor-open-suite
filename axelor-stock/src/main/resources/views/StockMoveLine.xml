@@ -412,6 +412,7 @@
     	<action name="action-stock-move-line-store-product-type"/>
     	<action name="action-stock-move-line-method-get-product-price" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
     	<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
+    	<action name="action-stock-move-line-method-set-available-status"/>
     </action-group>
 
     <action-group name="action-group-stock-move-line-on-new">
@@ -474,6 +475,7 @@
         <action name="action-stock-move-line-compute-price"/>
         <action name="action-stock-move-line-record-total-net-mass"/>
         <action name="action-stock-move-subline-method-update-real-qty" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()) &amp;&amp; lineTypeSelect == 2"/>
+    	<action name="action-stock-move-line-method-set-available-status"/>
     </action-group>
 
     <action-group name="action-stock-move-line-group-net-mass-onchange">
@@ -623,6 +625,10 @@
 
 	<action-method name="action-stock-move-subline-method-reset-data-on-select-pack-line">
 		<call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="resetSubLines"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-line-method-set-available-status">
+		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="setAvailableStatus"/>
 	</action-method>
 
 </object-views>

@@ -251,4 +251,6 @@ public interface StockMoveLineService {
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
+
+  public void setAvailableStatus(StockMoveLine stockMoveLine);
 }
