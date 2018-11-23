@@ -10,7 +10,7 @@
     </grid>
     
     <form name="invoice-line-tax-form" title="Tax Line" model="com.axelor.apps.account.db.InvoiceLineTax"  >
-    	<panel name="main" >
+    	<panel name="mainPanel" >
     		<field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="taxLine.tax.name"/>
 			<field name="taxLine.value"/>

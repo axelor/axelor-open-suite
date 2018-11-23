@@ -63,7 +63,7 @@ public class UserController {
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
-      response.setAttr("testing", "hidden", false);
+      response.setAttr("testingPanel", "hidden", false);
     }
   }
 
@@ -108,7 +108,7 @@ public class UserController {
           MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
       boolean valid = userService.matchPasswordPattern(newPassword);
 
-      response.setAttr("passwordPatternDescription", "hidden", valid);
+      response.setAttr("passwordPatternDescriptionLabel", "hidden", valid);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

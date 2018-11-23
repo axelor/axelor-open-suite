@@ -4,7 +4,7 @@
 
     <form name="bank-address-form" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress"
           onNew="action-attrs-bank-address-form-bank" onLoad="action-attrs-bank-address-form-bank">
-        <panel>
+        <panel name="mainPanel">
             <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="address"/>
             <field name="label"/>

@@ -7,7 +7,7 @@
 		<field name="date" />
     </grid>
     <form name="vehicle-service-log-form" title="Vehicle Service Log" model="com.axelor.apps.fleet.db.VehicleServiceLog" width="large" >
-    	<panel title="Information">
+    	<panel name="mainPanel" title="Information">
     		<field name="vehicle" title="Vehicle">
       			<editor>
         			<field name="name" colSpan="12"/>
@@ -20,7 +20,7 @@
     		<field name="vendorPartner" />
     		<field name="notes" colSpan="12" />
     	</panel>
-    		<panel-related field="vehicleServiceList" title="Services" colSpan="12">
+    		<panel-related name="vehicleServiceListPanel" field="vehicleServiceList" title="Services" colSpan="12">
 				<field name="serviceType"/>
 				<field name="cost"/>
 			</panel-related>

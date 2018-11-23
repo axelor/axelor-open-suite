@@ -12,7 +12,7 @@
 	</grid>
 
 	<form name="manual-element-form" title="Manual element" model="com.axelor.apps.businessproject.db.ManualElement" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="title"/>
 			<field name="date"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
@@ -21,7 +21,7 @@
 			<field name="cost"/>
 		</panel>
 		
-		<panel>
+		<panel name="commentsPanel">
 			<field name="comments" colSpan="12"/>
 		</panel>
 	</form>

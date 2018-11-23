@@ -16,7 +16,7 @@
 	</grid>
     
     <form name="customer-catalog-form" title="Customer Catalog" model="com.axelor.apps.sale.db.CustomerCatalog">
-    	<panel name="main" colSpan="12">
+    	<panel name="mainPanel" colSpan="12">
 			<field name="customerPartner" domain="self.isContact = false AND self.isCustomer = true" form-view="partner-form" grid-view="partner-grid"/>
         	<field name="productCustomerCode"/>
         	<field name="productCustomerName"/>
@@ -24,7 +24,7 @@
     </form>
 
 	<form name="customer-catalog-partner-form" title="Customer Catalog" model="com.axelor.apps.sale.db.CustomerCatalog">
-		<panel name="main" colSpan="12">
+		<panel name="mainPanel" colSpan="12">
 			<field name="product" form-view="product-form" grid-view="product-grid"/>
 			<field name="productCustomerCode"/>
 			<field name="productCustomerName"/>

@@ -48,11 +48,11 @@
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
-		<panel name="overview" title="Overview">
+		<panel name="overviewPanel" title="Overview">
 			<field name="employee" colSpan="6" form-view="employee-form" grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
 		</panel>
-		<panel name="details" title="Details">
+		<panel name="detailsPanel" title="Details">
 			<field name="canteenEntries" colSpan="6"
                    onChange="action-lunch-voucher-mgt-line-compute"
                    readonlyIf="lunchVoucherMgt.statusSelect == 4"/>
@@ -67,7 +67,7 @@
             <field name="daysWorkedNbr" hidden="true"/>
             <field name="lunchVoucherMgt.statusSelect" hidden="true"/>
 		</panel>
-		<panel name="comment" title="Comments">
+		<panel name="commentPanel" title="Comments">
 			<field name="comments" colSpan="12" showTitle="false" widget="Text"/>
 		</panel>
 	</form>

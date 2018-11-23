@@ -10,13 +10,13 @@
     
     <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig" width="large" >
 	    
-	   <panel name="main" >
+	   <panel name="mainPanel" >
 	     <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	   </panel> 
       
         
-      	<panel name="cfonbExport" title="CFONB Export">
+      	<panel name="cfonbExportPanel" title="CFONB Export">
 	       	<field name="senderRecordCodeExportCFONB"/>
 	       	<field name="senderNumExportCFONB"/>
 	       	<field name="senderNameCodeExportCFONB"/>
@@ -26,7 +26,7 @@
 	       	<field name="directDebitOperationCodeExportCFONB"/>
 	     </panel>
         
-        <panel name="cfonbImport" title="CFONB Import">
+        <panel name="cfonbImportPanel" title="CFONB Import">
 	       	<field name="headerRecordCodeImportCFONB"/>
 	       	<field name="detailRecordCodeImportCFONB"/>
 	       	<field name="endingRecordCodeImportCFONB"/>

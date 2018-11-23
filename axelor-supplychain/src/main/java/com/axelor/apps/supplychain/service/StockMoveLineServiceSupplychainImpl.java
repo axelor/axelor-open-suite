@@ -42,9 +42,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -58,6 +56,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected PriceListService priceListService;
 
+  protected StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl;
+
   @Inject
   public StockMoveLineServiceSupplychainImpl(
       TrackingNumberService trackingNumberService,
@@ -68,7 +68,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl) {
     super(
         trackingNumberService,
         appBaseService,
@@ -79,6 +80,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         unitConversionService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
+    this.stockLocationLineServiceSupplychainImpl = stockLocationLineServiceSupplychainImpl;
   }
 
   @Override
@@ -87,13 +89,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       String productName,
       String description,
       BigDecimal quantity,
-      BigDecimal reservedQty,
+      BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       Unit unit,
       StockMove stockMove,
       int type,
       boolean taxed,
-      BigDecimal taxRate)
+      BigDecimal taxRate,
+      SaleOrderLine saleOrderLine)
       throws AxelorException {
     if (product != null) {
 
@@ -108,7 +111,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               stockMove,
               taxed,
               taxRate);
-      stockMoveLine.setReservedQty(reservedQty);
+      stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setSaleOrderLine(saleOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
@@ -202,33 +206,23 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     // convert units
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceUntaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceUntaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       BigDecimal unitPriceTaxed =
-          unitConversionService.convert(fromUnit, toUnit, stockMoveLine.getUnitPriceTaxed());
+          unitConversionService.convert(
+              fromUnit,
+              toUnit,
+              stockMoveLine.getUnitPriceTaxed(),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              null);
       stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }
     return stockMoveLine;
-  }
-
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void updateReservedQty(StockMoveLine stockMoveLine, BigDecimal reservedQty)
-      throws AxelorException {
-    StockMove stockMove = stockMoveLine.getStockMove();
-    int statusSelect = stockMove.getStatusSelect();
-    if (statusSelect == StockMoveRepository.STATUS_PLANNED
-        || statusSelect == StockMoveRepository.STATUS_REALIZED) {
-      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-      stockMoveService.cancel(stockMoveLine.getStockMove());
-      stockMoveLine.setReservedQty(reservedQty);
-      stockMoveService.goBackToDraft(stockMove);
-      stockMoveService.plan(stockMove);
-      if (statusSelect == StockMoveRepository.STATUS_REALIZED) {
-        stockMoveService.realize(stockMove);
-      }
-    } else {
-      stockMoveLine.setReservedQty(stockMoveLine.getReservedQty());
-    }
   }
 
   @Override
@@ -242,18 +236,22 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException {
-    BigDecimal realReservedQty = stockMoveLine.getReservedQty();
+    BigDecimal convertedRequestedReservedQty = stockMoveLine.getRequestedReservedQty();
     Unit productUnit = product.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
+    if (stockMoveLineUnit != null && !stockMoveLineUnit.equals(productUnit)) {
       qty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
-      realReservedQty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
+      convertedRequestedReservedQty =
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              productUnit,
+              convertedRequestedReservedQty,
+              convertedRequestedReservedQty.scale(),
+              stockMoveLine.getProduct());
     }
     super.updateLocations(
         stockMoveLine,
@@ -265,7 +263,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         toStatus,
         lastFutureStockMoveDate,
         trackingNumber,
-        realReservedQty);
+        convertedRequestedReservedQty);
   }
 
   @Override
@@ -276,12 +274,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
     BigDecimal reservedQtyAfterSplit =
-        BigDecimal.ZERO.max(stockMoveLine.getReservedQty().subtract(qty));
-    BigDecimal reservedQtyInNewLine = stockMoveLine.getReservedQty().min(qty);
-    stockMoveLine.setReservedQty(reservedQtyAfterSplit);
-    newStockMoveLine.setReservedQty(reservedQtyInNewLine);
-    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
+        BigDecimal.ZERO.max(stockMoveLine.getRequestedReservedQty().subtract(qty));
+    BigDecimal reservedQtyInNewLine = stockMoveLine.getRequestedReservedQty().min(qty);
+    stockMoveLine.setRequestedReservedQty(reservedQtyAfterSplit);
+    newStockMoveLine.setRequestedReservedQty(reservedQtyInNewLine);
     newStockMoveLine.setSaleOrderLine(stockMoveLine.getSaleOrderLine());
+    newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
     return newStockMoveLine;
   }
 
@@ -345,10 +343,46 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
       return null;
     }
-    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
-    StockMoveLine generatedStockMoveLine = super.getMergedStockMoveLine(stockMoveLineList);
-    generatedStockMoveLine.setSaleOrderLine(firstStockMoveLine.getSaleOrderLine());
-    generatedStockMoveLine.setPurchaseOrderLine(firstStockMoveLine.getPurchaseOrderLine());
+
+    if (stockMoveLineList.size() == 1) {
+      return stockMoveLineList.get(0);
+    }
+
+    SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
+
+    Product product;
+    String productName;
+    String description;
+    BigDecimal quantity = BigDecimal.ZERO;
+    Unit unit;
+
+    if (saleOrderLine != null) {
+      product = saleOrderLine.getProduct();
+      productName = saleOrderLine.getProductName();
+      description = saleOrderLine.getDescription();
+      unit = saleOrderLine.getUnit();
+
+    } else if (purchaseOrderLine != null) {
+      product = purchaseOrderLine.getProduct();
+      productName = purchaseOrderLine.getProductName();
+      description = purchaseOrderLine.getDescription();
+      unit = purchaseOrderLine.getUnit();
+
+    } else {
+      return null; // shouldn't ever happen or you misused this function
+    }
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      quantity = quantity.add(stockMoveLine.getRealQty());
+    }
+
+    StockMoveLine generatedStockMoveLine =
+        createStockMoveLine(
+            product, productName, description, quantity, null, null, unit, null, null);
+
+    generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
+    generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     return generatedStockMoveLine;
   }
 }

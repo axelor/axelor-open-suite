@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="training-category-form" title="Training Category" model="com.axelor.apps.talent.db.TrainingCategory" width="large">
-		<panel>
+		<panel name="namePanel">
 			<field name="name" />
 		</panel>
 	</form>

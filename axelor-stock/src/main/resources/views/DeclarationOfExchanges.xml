@@ -27,7 +27,7 @@
       <button name="printBtn" title="Print" icon="fa-print" onClick="action-declaration-of-exchanges-export"/>
     </toolbar>
 
-    <panel>
+    <panel name="mainPanel">
       <field name="company" canEdit="false"/>
       <field name="country"
         domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
@@ -46,7 +46,7 @@
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
     </panel>
-    <panel-dashlet action="action-stock-move-line-declaration-of-exchanges" readonly="true"/>
+    <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true"/>
   </form>
 
   <action-record name="action-declaration-of-exchanges-onnew" model="com.axelor.apps.stock.db.DeclarationOfExchanges">

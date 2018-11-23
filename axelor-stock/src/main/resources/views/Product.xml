@@ -54,13 +54,13 @@
     
     <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
     	onLoad="action-stock-product-method-set-stock-per-day">
-    	<panel name="main">
-	   		<panel colSpan="2">
+    	<panel name="mainPanel">
+	   		<panel colSpan="2" name="imagePanel">
 	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
 				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
-			<panel colSpan="10">
+			<panel name="namePanel" colSpan="10">
 	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 	       			<editor x-show-titles="false">
 	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
@@ -68,7 +68,7 @@
 	       			</editor>
 	     			</field>
 	   		</panel>
-	   		<panel colSpan="12">
+	   		<panel name="stockPerDayPanel" colSpan="12">
 	   			<field name="$stockPerDayList" title="Stock per day" type="one-to-many" target="com.axelor.apps.base.db.Wizard"  grid-view="wizard-stock-perday-grid" form-view="wizard-stock-perday-form" readonly="true" colSpan="12" />
    			</panel>
    		</panel>
@@ -80,10 +80,10 @@
 	</grid>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
-			<button name="showStockMoveLines" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
+			<button name="showStockMoveLinesBtn" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
 		</panel>
 	</form>
 	

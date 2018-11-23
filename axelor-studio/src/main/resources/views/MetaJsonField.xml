@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults">
-	    <panel title="Overview">
+	    <panel name="overviewPanel" title="Overview">
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-	      <spacer/>
+	      <spacer name="appBuilderSpacer"/>
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 	      <field name="type" />
 	      <field name="title" />
@@ -34,7 +34,7 @@
     
     <form id="studio-json-field-form" name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onLoad="action-studio-attr-json-field-read-only-model">
 		<panel-include view="json-field-form" from="axelor-core"/>
-    	<panel>
+    	<panel name="mainPanel">
     		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     		<field name="jsonCreator" hidden="true"/>
     	</panel>

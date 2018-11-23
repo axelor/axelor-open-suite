@@ -20,22 +20,22 @@
 	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="statusSelect" colSpan="4"/>
 			<button name="hire" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="2" showIf="statusSelect == 0" />
 			<field name="employee" showIf="statusSelect == 1" />
 			<field name="hiringStage" x-order="sequence"/>
-			<panel title="Job info" colSpan="12">
+			<panel name="jobInfoPanel" title="Job info" colSpan="12">
 				<field name="jobPosition" />
 				<field name="jobPosition.companyDepartment" />
 				<field name="responsible" />
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel title="Description">
+		<panel-tabs name="mainPanelTab">
+			<panel name="descriptionPanel" title="Description">
 				<field name="description" widget="html" colSpan="12" />
 			</panel>
-			<panel title="Contact" colSpan="12">
+			<panel name="contactPanel" title="Contact" colSpan="12">
 				<field name="lastName" required="true" onChange="action-talent-method-set-social-network-url"/>
 				<field name="firstName" onChange="action-talent-method-set-social-network-url" />
 				<field name="emailAddress" canNew="true"/>
@@ -45,25 +45,25 @@
 				<field name="experienceSelect" />
 				<field name="industrySectorSet" widget="TagSelect" />
 				<field name="linkedInProfile" colSpan="10" widget="url"/>
-				<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+				<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
 				<field name="talentSource" title="Source"/>
 				<field name="referredBy" />
 				<field name="appreciation" widget="SelectProgress"/>
 				<field name="tagSkillSet" widget="TagSelect" colSpan="12" />
 				<field name="fullName" hidden="true" />
 			</panel>
-			<panel title="Contract" colSpan="12">
+			<panel name="contractPanel" title="Contract" colSpan="12">
 				<field name="jobPosition.contractType" />
 				<field name="expectedSalary" />
 				<field name="proposedSalary" />
 				<field name="availabilityFrom" />
 			</panel>
-			<panel-dashlet name="events" title="Events" action="action-job-application-events" colSpan="12" />
-			<panel title="Reason not hired">
+			<panel-dashlet name="eventsPanel" title="Events" action="action-job-application-events" colSpan="12" />
+			<panel name="reasonNotHiredPanel" title="Reason not hired">
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 		</panel-tabs>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	    </panel-mail>

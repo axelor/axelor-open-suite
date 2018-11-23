@@ -10,9 +10,9 @@
   </grid>
     
   <form name="wkf-transition-form" title="Transition" model="com.axelor.studio.db.WkfTransition" width="large">
-      <panel>
+      <panel name="mainPanel">
         <field name="name" readonly="true"/>
-        <spacer />
+        <spacer name="nameSpacer" />
         <field name="source" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
         <field name="target" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
         <field name="isButton"/>
@@ -23,7 +23,7 @@
         <field name="wkf" hidden="true"/>
         <field name="wkf.model" hidden="true"/>
       </panel>
-      <panel-related field="conditions" colSpan="12" editable="true" onNew="action-wkf-transition-filter-set-defaults">
+      <panel-related name="conditionsPanel" field="conditions" colSpan="12" editable="true" onNew="action-wkf-transition-filter-set-defaults">
       	  <field name="metaJsonField" required="true" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
 	      <field name="targetField" readonlyIf="metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null"  />
 	      <field name="operator"/>
@@ -34,7 +34,7 @@
 	      <field name="isJson" hidden="true" />
 	      <field name="targetType" hidden="true" />
       </panel-related>
-      <panel-related field="roleSet" colSpan="12" showIf="isButton"/>
+      <panel-related name="roleSetPanel" field="roleSet" colSpan="12" showIf="isButton"/>
   </form>
   
   <action-attrs name="action-wkf-transition-filter-meta-json-field-domain">

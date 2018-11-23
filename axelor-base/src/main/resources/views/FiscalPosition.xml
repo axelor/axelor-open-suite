@@ -9,12 +9,12 @@
     </grid>
 
     <form name="fiscal-position-form" title="Fiscal position" model="com.axelor.apps.account.db.FiscalPosition"  width="large">
-        <panel name="main" >
+        <panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="customerSpecificNote" colSpan="4" if-module="axelor-account" />
-	        <panel-related field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12" if-module="axelor-account" />
-	        <panel-related field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12" />
+	        <panel-related name="accountEquivListPanel" field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12" if-module="axelor-account" />
+	        <panel-related name="taxEquivListPanel" field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12" />
         </panel>
     </form>
 

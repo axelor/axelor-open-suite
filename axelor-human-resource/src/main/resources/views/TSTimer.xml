@@ -15,7 +15,7 @@
 
 	<form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
 	width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
-		<panel name="startAndStop" title="Start&amp;Stop Timer">
+		<panel name="startAndStopPanel" title="Start&amp;Stop Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
@@ -27,12 +27,12 @@
 			<field name="timerStartDateT" hidden="true"/>
 			<field name="statusSelect" hidden="true"/>
 		</panel>
-		<panel sidebar="true" name="actions" title="Actions" stacked="true">
-			<button name="start" title="Start" onClick="action-ts-timer-record-start,save" hideIf="statusSelect == 1 || statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
-			<button name="resume" title="Resume" onClick="action-ts-timer-record-start,save" showIf="statusSelect == 2" hidden="true" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
-			<button name="pause" title="Pause" onClick="save,action-ts-timer-method-pause,save" hideIf="statusSelect != 1" hidden="true" icon="fa-pause" css="btn-warning"/>
-			<button name="stop" title="Stop" onClick="save,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save" hideIf="statusSelect != 1" hidden="true" icon="fa-stop" css="btn-danger"/>
-			<button name="new" title="New" onClick="action-hr-ts-timer-record-new" hideIf="statusSelect != 3" hidden="true" icon="fa-plus" css="btn-primary"/>
+		<panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
+			<button name="startBtn" title="Start" onClick="action-ts-timer-record-start,save" hideIf="statusSelect == 1 || statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
+			<button name="resumeBtn" title="Resume" onClick="action-ts-timer-record-start,save" showIf="statusSelect == 2" hidden="true" readonlyIf="product == null" icon="fa-play" css="btn-success"/>
+			<button name="pauseBtn" title="Pause" onClick="save,action-ts-timer-method-pause,save" hideIf="statusSelect != 1" hidden="true" icon="fa-pause" css="btn-warning"/>
+			<button name="stopBtn" title="Stop" onClick="save,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save" hideIf="statusSelect != 1" hidden="true" icon="fa-stop" css="btn-danger"/>
+			<button name="newBtn" title="New" onClick="action-hr-ts-timer-record-new" hideIf="statusSelect != 3" hidden="true" icon="fa-plus" css="btn-primary"/>
 		</panel>
 	</form>
 	
