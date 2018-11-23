@@ -29,11 +29,11 @@
 	        <field name="endDate" colSpan="6"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3"/>
 	        <field name="stockLocation.company"/>
-	        <panel-related field="productSetPanel" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
-	        <panel-related field="productCategorySetPanel" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
-	        <panel-related field="productFamilySetPanel" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
-	        <panel-related field="saleOrderLineSetPanel" canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
-	        <panel-related field="mrpForecastSetPanel" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
+	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
+	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
+	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
+	        <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet" canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
+	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
 	    </panel>
 	    <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
 	        <field name="statusSelect" hidden="true"/>

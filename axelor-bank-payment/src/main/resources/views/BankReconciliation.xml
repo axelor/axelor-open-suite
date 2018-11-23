@@ -54,7 +54,7 @@
 				<label name="balanceEqualLabel" colSpan="12" css="label-danger" title="Computed balance and Ending Balance should be equal" showIf="computedBalance = endingBalance"/>
 				<button name="computeBtn" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click" colSpan="3"/>
 			</panel>
-			<panel-related name="bankReconciliationLineList" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click"/>
+			<panel-related name="bankReconciliationLineListPanel" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click"/>
 			<panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12"/>
 		</panel>
 		

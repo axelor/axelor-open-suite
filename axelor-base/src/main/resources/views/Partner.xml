@@ -221,7 +221,7 @@
                 </panel>
 			</panel>
 		</panel>
-		<panel-related field="contactPartnerSetPanel" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-contact-form" grid-view="partner-contact-grid" />
 		<panel-tabs name="mainPanelTab">
 			<panel name="informationPanel" title="Information">
 				<panel name="employeeAddressPanel" title="Contact address" colSpan="12" showIf="isEmployee">

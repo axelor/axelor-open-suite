@@ -59,7 +59,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="ebicsRequestLogList" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-related name="ebicsRequestLogListPanel" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">

@@ -28,7 +28,7 @@
     	<field name="batchCode" title="Code"/>
    	</panel>
 
-    <panel-related name="params" field="paramsPanel" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
+    <panel-related name="paramsPanel" field="params" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
 
   </form>
 

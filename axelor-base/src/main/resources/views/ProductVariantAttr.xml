@@ -14,7 +14,7 @@
         	<field name="name" />
         	<field name="code" x-bind="{{code|unaccent|uppercase}}"  />
         </panel>
-        <panel-related field="productVariantValueListPanel" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <panel-related name="productVariantValueListPanel" field="productVariantValueList" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </form>   
 
 </object-views>
