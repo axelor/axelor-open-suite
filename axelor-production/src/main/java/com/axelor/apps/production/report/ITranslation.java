@@ -146,4 +146,26 @@ public interface ITranslation {
   String RAW_MATERIAL_REQUIREMENT_MISSING_QUANTITY = /*$$(*/
       "RawMaterialRequirement.missingQuantity"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_AVAILABLE = /*$$(*/ "RawMaterialRequirement.available"; /*)*/
+
+  public static final String COST_SHEET_TITLE = /*$$(*/ "CostSheet.title"; /*)*/
+  public static final String COST_SHEET_COST_PRICE = /*$$(*/ "CostSheet.costPrice"; /*)*/
+  public static final String COST_SHEET_COMPANY = /*$$(*/ "CostSheet.company"; /*)*/
+  public static final String COST_SHEET_MANUF_ORDER = /*$$(*/ "CostSheet.manufOrder"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINES = /*$$(*/ "CostSheet.costSheetLines"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_CODE = /*$$(*/
+      "CostSheet.costSheetLineCode"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_NAME = /*$$(*/
+      "CostSheet.costSheetLineName"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_BOM_LEVEL = /*$$(*/
+      "CostSheet.costSheetLineBomLevel"; /*)*/
+  public static final String COST_SHEET_GROUP = /*$$(*/
+      "CostSheet.costSheetLineCostSheetGroup"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_CONSUMPTION_QTY = /*$$(*/
+      "CostSheet.costSheetLineConsumptionQty"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_UNIT = /*$$(*/
+      "CostSheet.costSheetLineUnit"; /*)*/
+  public static final String COST_SHEET_CREATED_ON = /*$$(*/ "CostSheet.createdOn"; /*)*/
+  public static final String COST_SHEET_CREATED_BY = /*$$(*/ "CostSheet.createdBy"; /*)*/
+  public static final String COST_SHEET_DATE_OF_EDITION = /*$$(*/ "CostSheet.dateOfEdition"; /*)*/
+  public static final String COST_SHEET_MO_NUMBER = /*$$(*/ "CostSheet.ManufOrderNumber"; /*)*/
 }
