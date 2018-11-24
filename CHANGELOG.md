@@ -149,6 +149,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
+- MRP: set timeout for Calculation Process from App SupplyChain.when the process take more time that allowed, stop it and update MRP status to "Time limit exceeded"
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

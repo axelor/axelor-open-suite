@@ -40,6 +40,8 @@
 		<boolean name="manageStockReservation" title="Manage stock reservation"/>
 		<boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
 		<many-to-one name="cancelReasonOnChangingSaleOrder" ref="com.axelor.apps.base.db.CancelReason"/>
+		<long name="timeoutManualRun" title="Timeout for manual run"/>
+		<long name="timeoutScheduleRun" title="Timeout for scheduled run"/>
 	</entity>
 
 </domain-models>
