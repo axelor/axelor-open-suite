@@ -183,6 +183,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Rework Lunch voucher management view.
 - Improve Expense form view.
 - Rework CRM events view.
+- Change purchase requests menu.
 - Rework Purchase request view.
 - Rework Target and Target configuration views in CRM.
 - Improve CRM menu entries.
