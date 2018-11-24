@@ -22,7 +22,7 @@
 	</grid>
 
 	<form name="bank-statement-line-afb-120-form" title="Bank Statement line" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" readonlyIf="true">
-		<panel name="main" colSpan="12">
+		<panel name="mainPanel" colSpan="12">
 			<field name="sequence"/>
 			<field name="lineTypeSelect"/>
 			<field name="operationDate"/>

@@ -20,9 +20,7 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
 import java.util.Map;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
@@ -51,35 +49,10 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
       return super.populate(json, context);
     }
 
-    Beans.get(StockMoveLineService.class)
-        .updateAvailableQty(stockMoveLine, stockMoveLine.getStockMove().getFromStockLocation());
+    Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+    json.put("availableStatus", stockMoveLine.getAvailableStatus());
+    json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
 
-    if (stockMoveLine.getProduct() != null) {
-      BigDecimal availableQty = stockMoveLine.getAvailableQty();
-      BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
-      BigDecimal realQty = stockMoveLine.getRealQty();
-
-      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
-
-        json.put("availableStatus", I18n.get("Available"));
-        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_AVAILABLE);
-      } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
-
-        json.put("availableStatus", I18n.get("Av. for product"));
-        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
-      } else if (availableQty.compareTo(realQty) < 0
-          && availableQtyForProduct.compareTo(realQty) < 0) {
-
-        BigDecimal missingQty = BigDecimal.ZERO;
-        if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
-          missingQty = availableQtyForProduct.subtract(realQty);
-        } else {
-          missingQty = availableQty.subtract(realQty);
-        }
-        json.put("availableStatus", I18n.get("Missing") + " (" + missingQty + ")");
-        json.put("availableStatusSelect", StockMoveLineRepository.STATUS_MISSING);
-      }
-    }
     return super.populate(json, context);
   }
 }

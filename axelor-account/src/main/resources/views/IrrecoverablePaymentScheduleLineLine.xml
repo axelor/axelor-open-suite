@@ -9,12 +9,12 @@
     </grid>
    
     <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedule line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" width="large">
-        <panel name="main">
+        <panel name="mainPanel">
 	       	<field name="name"/>
 	        <field name="paymentScheduleLine" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
         </panel>
-        <panel-tabs>
-        	<panel-related field="irrecoverableReportLineList" colSpan="12" grid-view="irrecoverable-report-grid" form-view="irrecoverable-report-form"/>
+        <panel-tabs name="mainPanelTab">
+        	<panel-related name="irrecoverableReportLineListPanel" field="irrecoverableReportLineList" colSpan="12" grid-view="irrecoverable-report-grid" form-view="irrecoverable-report-form"/>
         </panel-tabs>
     </form>
     

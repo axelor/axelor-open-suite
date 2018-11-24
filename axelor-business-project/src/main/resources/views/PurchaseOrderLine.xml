@@ -16,7 +16,7 @@
         <field name="purchaseOrder.currency" />
         <field name="toInvoice"/>
         <field name="invoiced"/>
-        <button name="updateToInvoice" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-purchase-order-line-method-update-to-invoice" />
+        <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-purchase-order-line-method-update-to-invoice" />
         <field name="purchaseOrder.statusSelect" hidden="true"/>
     </grid>
 	

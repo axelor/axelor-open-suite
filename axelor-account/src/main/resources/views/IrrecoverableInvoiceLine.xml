@@ -7,13 +7,13 @@
         <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
     </grid>
     <form name="irrecoverable-invoice-line-form" title="Invoice" model="com.axelor.apps.account.db.IrrecoverableInvoiceLine" width="large">
-       <panel name="main">
+       <panel name="mainPanel">
 			<field name="name"/>
 			<field name="invoiceLineSeq"/>
 			<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/> 
        </panel>
-       <panel-tabs>
-       		<panel-related field="irrecoverableReportLineList" colSpan="12" form-view="irrecoverable-report-form" grid-view="irrecoverable-report-grid"/>
+       <panel-tabs name="mainPanelTab">
+       		<panel-related name="irrecoverableReportLineListPanel" field="irrecoverableReportLineList" colSpan="12" form-view="irrecoverable-report-form" grid-view="irrecoverable-report-grid"/>
        </panel-tabs>
         
     </form>

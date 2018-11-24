@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
-        <field name="$realQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="$futureQty" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="$reservedQty" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
+        <field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
+        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
 
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
@@ -43,24 +43,24 @@
     <grid name="stock-move-line-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
 	    <field name="name" width="300"/>
+  	    <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
 	    <field name="productTypeSelect" width="100"/>
 	   	<field name="salePrice" x-scale="2" />
 	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="internalDescription" widget="html" width="400" />
-	    <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
 	</grid>
     
     <form name="stock-product-form" title="Product" model="com.axelor.apps.base.db.Product" width="large"
     	onLoad="action-stock-product-method-set-stock-per-day">
-    	<panel name="main">
-	   		<panel colSpan="2">
+    	<panel name="mainPanel">
+	   		<panel colSpan="2" name="imagePanel">
 	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
 				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
-			<panel colSpan="10">
+			<panel name="namePanel" colSpan="10">
 	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 	       			<editor x-show-titles="false">
 	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
@@ -68,7 +68,7 @@
 	       			</editor>
 	     			</field>
 	   		</panel>
-	   		<panel colSpan="12">
+	   		<panel name="stockPerDayPanel" colSpan="12">
 	   			<field name="$stockPerDayList" title="Stock per day" type="one-to-many" target="com.axelor.apps.base.db.Wizard"  grid-view="wizard-stock-perday-grid" form-view="wizard-stock-perday-form" readonly="true" colSpan="12" />
    			</panel>
    		</panel>
@@ -80,10 +80,10 @@
 	</grid>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
-			<button name="showStockMoveLines" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
+			<button name="showStockMoveLinesBtn" title="Show stock move lines" onClick="action-stock-product-method-display-stock-move-line" />
 		</panel>
 	</form>
 	

@@ -24,10 +24,10 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
@@ -38,13 +38,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
   public ProjectStockMoveInvoiceServiceImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
-      StockMoveLineService stockMoveLineService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
       StockMoveRepository stockMoveRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
-        stockMoveLineService,
+        stockMoveLineServiceSupplychain,
         invoiceRepository,
         stockMoveRepo);
   }

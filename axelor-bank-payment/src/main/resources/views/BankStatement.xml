@@ -5,7 +5,7 @@
   
      <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.bankpayment.db.BankStatement"  orderBy="-toDate,name">
 			<toolbar>
-				<button name="showBankStatementLines" title="See bank statement lines" onClick="account-bank-statement-view-bank-statement-lines" />
+				<button name="showBankStatementLinesBtn" title="See bank statement lines" onClick="account-bank-statement-view-bank-statement-lines" />
 			</toolbar>
 		  	<field name="ebicsPartner.ebicsBank" width="250" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="ebicsPartner" width="150" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
@@ -24,9 +24,9 @@
                 onClick="action-bank-statement-method-run-bank-reconciliation" />    
         </toolbar>
 
-        <panel colSpan="12" readonlyIf="statusSelect == 2">
-            <panel colSpan="12">
-                <panel name="main" colSpan="8">
+        <panel name="bankStatementPanel" colSpan="12" readonlyIf="statusSelect == 2">
+            <panel name="detailPanel" colSpan="12">
+                <panel name="mainPanel" colSpan="8">
                     <field name="name"/>
                     <field name="bankStatementFile" widget="binary-link" canNew="true"/>
                     <field name="fromDate"/>
@@ -36,14 +36,14 @@
                     <field name="bankStatementFileFormat"/>
                     <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
                 </panel>
-                <panel colSpan="4">
+                <panel colSpan="4" name="actionsPanel">
                     <field name="createdBy"/>
                     <field name="statusSelect" title="Status"/>
-                    <button name="runImport" title="BankStatement.Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
+                    <button name="runImportBtn" title="BankStatement.Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
                 </panel>
             </panel>
-            <panel-dashlet action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
-            <panel-dashlet action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
+            <panel-dashlet name="bankStatementLinesPanel" action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
+            <panel-dashlet name="bankStatementLinesAfb120Panel" action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
         </panel>
 	</form>
 	

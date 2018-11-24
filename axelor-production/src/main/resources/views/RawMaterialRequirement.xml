@@ -15,7 +15,7 @@
   <form name="raw-material-requirement-form" title="Raw material requirement"
     model="com.axelor.apps.production.db.RawMaterialRequirement"
     onNew="action-raw-material-requirement-record-default">
-    <panel>
+    <panel name="mainPanel">
       <field name="code" readonly="true"/>
       <field name="name"/>
       <field name="company" required="true" canEdit="false"/>
@@ -24,8 +24,8 @@
       <field name="stockLocationSet" colSpan="12"
         domain="self.company = :company AND self.typeSelect = 1"/>
     </panel>
-    <panel sidebar="true">
-      <button name="export" title="Print" icon="fa-print"
+    <panel name="actionsPanel" sidebar="true">
+      <button name="exportBtn" title="Print" icon="fa-print"
         onClick="save,action-product-need-report-method-print"/>
     </panel>
   </form>

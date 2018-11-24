@@ -21,14 +21,14 @@
     </grid>
     
     <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-        <panel name="main" readonlyIf="isValid">
+        <panel name="mainPanel" readonlyIf="isValid">
 	        <field name="moveTemplate" onChange="action-move-template-line-get-account" required="true" form-view="move-template-form" grid-view="move-template-grid"/>
         </panel>
         <panel-include view="move-template-line-move-template-form"/>
     </form>
     
 	<form name="move-template-line-move-template-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-		<panel name="main" readonlyIf="isValid">
+		<panel name="mainPanel" readonlyIf="isValid">
 			<field name="name"/>
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
 			<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>

@@ -5,11 +5,11 @@
 
 	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
-			<button name="printPhoneBook" title="Contact PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
-			<button name="printCompanyPhoneBook" title="Company PhoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
-			<button name="advancedExport" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
+			<button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+			<button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
     	<field name="partnerSeq"/>
 		<field name="simpleFullName"/>
@@ -20,8 +20,8 @@
 		<field name="registrationCode" />
 		<field name="address.fullName" title="Address"/>
 		<field name="companyStr" />
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
@@ -45,8 +45,8 @@
 		<field name="registrationCode" />
 		<field name="address.fullName" title="Address"/>
 		<field name="companyStr" />
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmailBtn" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
@@ -70,14 +70,14 @@
 		<field name="registrationCode" />
 		<field name="address.fullName" title="Address"/>
 		<field name="companyStr" />
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
 		<toolbar>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-			<button name="replaceDuplicate" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
     	<field name="partnerSeq"/>
 		<field name="simpleFullName"/>
@@ -86,8 +86,8 @@
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
 		<field name="jobTitle"/>
-		<button name="scheduleEvent" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
-		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
@@ -133,8 +133,8 @@
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
-		<panel name="main" >
-			<panel colSpan="2">
+		<panel name="mainPanel" >
+			<panel name="imagePanel" colSpan="2">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12">
 					<viewer>
 						<![CDATA[
@@ -148,24 +148,24 @@
 					]]>
 					</viewer>
 				</field>
-				<panel colSpan="12" showIf="fullName != null">
-					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
+					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-			<panel colSpan="10">
-				<panel colSpan="12">
+			<panel name="generalInfoPanel" colSpan="10">
+				<panel name="partnerInfoPanel" colSpan="12">
 					<field name="simpleFullName" colSpan="7" showTitle="false" css="label-bold bold large">
 						<hilite strong="true" if="true" color="primary"/>
 						<editor x-show-titles="false">
 						  <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee" colSpan="12" placeholder="Partner Type"/>
-			              <panel showIf="partnerTypeSelect == 1" colSpan="12">
+			              <panel name="companyPartnerNamePanel" showIf="partnerTypeSelect == 1" colSpan="12">
 							<field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange" colSpan="12"/>
 						  </panel>
-			              <panel showIf="partnerTypeSelect == 2" colSpan="12">
+			              <panel name="individualPartnerNamePanel" showIf="partnerTypeSelect == 2" colSpan="12">
 			                <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
 			                <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
 			                <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
@@ -173,7 +173,7 @@
 						</editor>
 					</field>
           			<field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
-					<button if="__config__.app.isApp('account')" name="$positiveBalance" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+					<button if="__config__.app.isApp('account')" name="$positiveBalanceBtn" title="Balance" colSpan="3" icon="fa-balance-scale" onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
 					<field name="$balance" hidden="true"/>
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
@@ -198,7 +198,7 @@
 					</viewer>
 				</field>
 				<field name="isContact" hidden="true" colSpan="12" />
-                <panel hideIf="!$readonly()" colOffset="9" colSpan="3">
+                <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
                     <field name="$activeBlockings" showTitle="false" colSpan="12">
                         <viewer><![CDATA[
                             <h4 style="text-align: right;">
@@ -221,10 +221,10 @@
                 </panel>
 			</panel>
 		</panel>
-		<panel-related field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-contact-form" grid-view="partner-contact-grid" />
-		<panel-tabs>
-			<panel name="information" title="Information">
-				<panel name="employeeAddress" title="Contact address" colSpan="12" showIf="isEmployee">
+		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet" hideIf="!id || isContact || partnerTypeSelect == 2" domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-contact-form" grid-view="partner-contact-grid" />
+		<panel-tabs name="mainPanelTab">
+			<panel name="informationPanel" title="Information">
+				<panel name="employeeAddressPanel" title="Contact address" colSpan="12" showIf="isEmployee">
 					<field name="contactAddress" form-view="address-form" grid-view="address-grid">
 						<editor x-show-titles="false">
 							<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
@@ -237,10 +237,10 @@
 						</editor>
 					</field>
 				</panel>
-				<panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
+				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
 						<editor layout="table" x-show-titles="false" >
-							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelper" hidden="true" showIf="address == null || address.addressL4 == null" />
+							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
 							<field name="address.addressL4" hidden="true" colSpan="12"/>
 							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
@@ -249,7 +249,7 @@
 						</editor>
 					</field>
 				</panel>
-				<panel name="generalContactDetails" title="General contact details" colSpan="12">
+				<panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 					<field name="fax" colSpan="3" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
@@ -261,13 +261,13 @@
 					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 				<panel name="partnerDetails" title="Partner Details" hideIf="isEmployee" colSpan="12" >
-					<panel colSpan="6">
+					<panel colSpan="6" name="partnerCategoryPanel">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
 						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 					</panel>
-					<panel  colSpan="6">
+					<panel  colSpan="6" name="otherPartnerDetailsPanel">
 						<field name="saleTurnover" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 						<field name="nbrEmployees" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 						<field name="registrationCode" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -277,59 +277,59 @@
 						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 					</panel>
 				</panel>
-				<panel name="settings" title="Settings" colSpan="12">
+				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
-					<panel title="Assigned to" colSpan="12">
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
-				<panel name="notes" title="Notes" colSpan="12">
+				<panel name="notesPanel" title="Notes" colSpan="12">
 					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
 				</panel>
 			</panel>
-			<panel name="payment" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
+			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 			</panel>
-			<panel-related if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
-				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
+			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
 				<panel-include view="incl-activities-partner-form" from="axelor-crm" />
                 <panel-include if-module="axelor-sale" view="incl-sales-partner-form" if="__config__.app.isApp('sale')" />
                 <panel-include if-module="axelor-purchase" view="incl-purchases-partner-form" if="__config__.app.isApp('purchase')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
-				<panel-dashlet action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
+				<panel-dashlet name="marketingCampaignsPanel" action="action-partner-view-marketing-campaigns" if-module="axelor-marketing" if="__config__.app.isApp('marketing')" colSpan="12"/>
 			</panel>
-			<panel name="customer" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
+			<panel name="customerPanel" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
 				<field name="saleOrderInformation"/>
 				<field name="payerQuality" if-module="axelor-account"  if="__config__.app.isApp('account')" hideIf="isEmployee"/>
 				<field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1" form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
-				<panel name="clientPortalAccess" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
+				<panel name="clientPortalAccessPanel" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
 					<field name="password" widget="password"/>
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
 			</panel>
-			<panel name="supplier" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
+			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
-				<spacer/>
+				<spacer name="supplierSpacer"/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
 			</panel>
-			<panel name="carrier" title="Carrier" showIf="isCarrier">
+			<panel name="carrierPanel" title="Carrier" showIf="isCarrier">
 				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
 			</panel>
-            <panel name="delivery" title="Delivery" showIf="isSupplier || isCustomer" if="__config__.app.isApp('stock')" if-module="axelor-stock">
+            <panel name="deliveryPanel" title="Delivery" showIf="isSupplier || isCustomer" if="__config__.app.isApp('stock')" if-module="axelor-stock">
                 <field name="deliveryDelay" showIf="isSupplier"/>
-                <spacer/>
+                <spacer name="deliveryDelaySpacer"/>
                 <field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode" title="Shipment Mode"/>
                 <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null" title="Freight Carrier Mode"/>
                 <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid" title="Freight Carrier" readonly="true"/>
@@ -340,10 +340,10 @@
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
             </panel>
         </panel-tabs>
-        <panel>
+        <panel name="partnerAttrsPanel">
             <field name="partnerAttrs" colSpan="12" />
         </panel>
-        <panel-mail>
+        <panel-mail name="mailsPanel">
             <mail-messages limit="4" />
             <mail-followers />
         </panel-mail>
@@ -360,29 +360,29 @@
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload" width="large">
 		<toolbar>
-			<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
+			<button name="sendByEmailBtn" title="Send email" onClick="save,action-send-by-email-with-template"   readonlyIf="id == null"/>
 		</toolbar>
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="picture" widget="Image" colSpan="4"/>
-			<panel colSpan="8">
+			<panel name="generalInfoPanel" colSpan="8">
 				<field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
-				<spacer/>
+				<spacer name="titleSelectSpacer"/>
 				<field name="name" css="highlight" onChange="action-partner-record-simple-and-full-name"/>
 				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-simple-and-full-name"/>
 				<field name="partnerCategory" widget="SuggestBox"/>
 				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change"/>
 				<field name="isContact" hideIf="partnerTypeSelect != 2"/>
-				<spacer/>
+				<spacer name="isContactSpacer"/>
 				<field name="mainPartner" hideIf="!isContact" form-view="partner-form" grid-view="partner-grid" domain="self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"/>
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel name="information" title="Informations">
-				<panel title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
+		<panel-tabs name="mainPanelTab">
+			<panel name="informationPanel" title="Informations">
+				<panel name="departmentPanel" title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form" grid-view="department-grid"/>
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 				</panel>
-				<panel colSpan="12" name="postalAddresses" title="Postal addresses" hideIf="isContact">
+				<panel colSpan="12" name="postalAddressesPanel" title="Postal addresses" hideIf="isContact">
 					<field name="partnerAddressList" colSpan="12">
 						<editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true"/>
@@ -392,7 +392,7 @@
 						</editor>
 					</field>
 				</panel>
-				<panel name="contact" title="Contact" colSpan="12">
+				<panel name="contactPanel" title="Contact" colSpan="12">
 					<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$">
 						<editor x-show-titles="false">
 							<field name="address"/>
@@ -413,7 +413,7 @@
 		  onLoad="action-group-partner-contact-onload"
 		  onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
 		<toolbar>
-			<button name="convertToIndividualPartner" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
+			<button name="convertToIndividualPartnerBtn" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
 		</toolbar>
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -422,8 +422,8 @@
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
-		<panel name="main" >
-			<panel colSpan="3">
+		<panel name="mainPanel" >
+			<panel name="imagePanel" colSpan="3">
 				<field name="picture" widget="Image" showTitle="false" colSpan="12">
 					<viewer>
 						<![CDATA[
@@ -436,15 +436,15 @@
 					]]>
 					</viewer>
 				</field>
-				<panel colSpan="12">
-					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+				<panel name="socialNetworkPanel" colSpan="12">
+					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-			<panel colSpan="9">
+			<panel name="namePanel" colSpan="9">
 				<field name="fullName" css="bold" showTitle="false" colSpan="12">
 					<editor x-show-titles="false">
 						<field name="titleSelect" placeholder="Civility" colSpan="2"/>
@@ -453,14 +453,14 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<panel name="company" title="Company" colSpan="12" >
+				<panel name="companyPanel" title="Company" colSpan="12" >
 					<field name="mainPartner" domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<field name="isContact" hidden="true" colSpan="12"/>
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel name="contactDetails" title="Contact details">
+		<panel-tabs name="mainPanelTab">
+			<panel name="contactDetailsPanel" title="Contact details">
 				<field name="jobTitle"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
@@ -474,37 +474,37 @@
 				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid" colSpan="12"/>
 				<field name="timeSlot" colSpan="12"/>
 			</panel>
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')" >
-				<button name="showAllEvents" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
+			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')" >
+				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
 				<panel-include view="incl-activities-contact-form" from="axelor-crm" />
 				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel-dashlet action="action-contact-partner-dashlet" title="Partners"/>
+			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
-		<panel name="settings" sidebar="true" title="Settings">
+		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
-			<panel title="Assigned to" canCollapse="true" colSpan="12">
+			<panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
 		</panel>
-		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
+		<panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
 			<field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
 		</panel>
-		<panel>
+		<panel name="contactAttrsPanel">
 			<field name="contactAttrs" colSpan="12" />
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailsPanel">
 			<mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
 	</form>
 	
 	<form name="partner-contact-summary-form" title="Contact" model="com.axelor.apps.base.db.Partner">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 				<editor>
 					<field name="address" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
@@ -559,7 +559,7 @@
 
 	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts" css="rect-image">
 		<toolbar>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
@@ -609,31 +609,31 @@
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
-		<panel name="main" >
-			<panel colSpan="3">
+		<panel name="mainPanel" >
+			<panel name="imagePanel" colSpan="3">
 				<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
-				<panel colSpan="12">
-					<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+				<panel colSpan="12" name="socialNetworkPanel">
+					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 			</panel>
-			<panel colSpan="9">
+			<panel name="namePanel" colSpan="9">
 				<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2" />
 				<field name="name" showTitle="false" css="highlight" placeholder="Name"   onChange="action-group-base-partner-contact-name-onchange" colSpan="5" />
 				<field name="firstName" showTitle="false" css="highlight" placeholder="First name"  onChange="action-group-base-partner-contact-name-onchange" colSpan="5" />
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<panel name="company" title="Company" colSpan="12" >
+				<panel name="companyPanel" title="Company" colSpan="12" >
 					<field name="mainPartner" domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
 				<field name="isContact" hidden="true" colSpan="12"/>
 				<field name="isEmployee" readonly="true" colSpan="12"/>
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel name="contactDetails" title="Contact details">
+		<panel-tabs name="mainPanelTab">
+			<panel name="contactDetailsPanel" title="Contact details">
 				<field name="jobTitle"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
@@ -646,23 +646,23 @@
 				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>
 			</panel>
-			<panel name="activities" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')">
+			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')">
 				<panel-include view="incl-activities-contact-form" from="axelor-crm" />
 				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form" from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many" target="com.axelor.apps.message.db.Message" title="Emails" canNew="false" canSelect="false" canRemove="false"/>
 			</panel>
-			<panel-dashlet action="action-contact-partner-dashlet" title="Partners"/>
+			<panel-dashlet name="contactPartnerDetailsPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
-		<panel name="settings" sidebar="true" title="Settings">
+		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
-			<panel title="Assigned to" canCollapse="true" colSpan="12">
+			<panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
 		</panel>
-		<panel name="notes" title="Notes" colSpan="12" sidebar="true">
+		<panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
 			<field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
 		</panel>
 	</form>
@@ -755,9 +755,9 @@
 	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-name-balance">
-		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
-		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
-		<attribute name="title" for="$positiveBalance" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalance == 0"/>
+		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
+		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
+		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalance == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-set-default">
@@ -779,8 +779,8 @@
     </action-record>
 	
 	<action-record name="action-partner-record-set-positive-balance" model="com.axelor.apps.base.db.Partner">
-		<field name="$positiveBalance" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance" if="$balance != null"/>
-		<field name="$positiveBalance" expr="eval: 0" if="$balance == null"/>
+		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance" if="$balance != null"/>
+		<field name="$positiveBalanceBtn" expr="eval: 0" if="$balance == null"/>
 	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">

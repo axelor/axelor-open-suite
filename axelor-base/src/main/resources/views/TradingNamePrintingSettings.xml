@@ -8,7 +8,7 @@
     </grid>
 
     <form model="com.axelor.apps.base.db.TradingNamePrintingSettings" title="Printing settings for trading name" name="trading-name-printing-settings-company-form">
-        <panel>
+        <panel name="mainPanel">
             <field name="tradingName"/>
             <field name="printingSettings"/>
         </panel>

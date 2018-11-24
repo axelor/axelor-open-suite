@@ -5,7 +5,8 @@
               http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="contract-line-grid" title="Contract Lines"
-          model="com.axelor.apps.contract.db.ContractLine">
+          model="com.axelor.apps.contract.db.ContractLine" canMove="true"
+          orderBy="sequence">
         <hilite if="isConsumptionLine" background="primary"/>
         <field name="productName"/>
         <field name="qty"/>
@@ -17,7 +18,7 @@
 
     <form name="contract-line-form" title="Contract Line"
           model="com.axelor.apps.contract.db.ContractLine">
-        <panel>
+        <panel name="mainPanel">
             <field name="product" canEdit="false"
                    onChange="action-method-contract-version-change-product,
                    action-method-contract-line-compute-total"/>
@@ -64,7 +65,7 @@
     <form name="additional-contract-line-form" title="Additional benefit"
           model="com.axelor.apps.contract.db.ContractLine"
           readonlyIf="isInvoiced">
-        <panel>
+        <panel name="mainPanel">
             <field name="product" canEdit="false"
                    onChange="action-method-contract-change-product,
                    action-method-contract-line-compute-total"/>
@@ -94,7 +95,7 @@
 
     <form name="contract-line-form-for-template" title="Contract Line"
       model="com.axelor.apps.contract.db.ContractLine">
-        <panel>
+        <panel name="mainPanel">
             <field name="product" canEdit="false"
               onChange="action-contract-template-method-change-product"/>
             <field name="productName"/>
@@ -117,7 +118,7 @@
 
     <form name="additional-contract-line-form-for-template" title="Additional benefit"
       model="com.axelor.apps.contract.db.ContractLine">
-        <panel>
+        <panel name="mainPanel">
             <field name="product" canEdit="false"
               onChange="action-contract-template-method-change-product"/>
             <field name="productName"/>

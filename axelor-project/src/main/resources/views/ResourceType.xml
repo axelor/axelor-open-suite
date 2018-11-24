@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="resource-type-form" title="Resource type"  model="com.axelor.apps.project.db.ResourceType">
-		<panel>
+		<panel name="namePanel">
 			<field name="name"/>
 		</panel>
 	</form>

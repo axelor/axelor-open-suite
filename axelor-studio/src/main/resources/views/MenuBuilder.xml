@@ -12,7 +12,7 @@
   </grid>
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
-      <panel>
+      <panel name="mainPanel">
       	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
       	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
 	      <field name="title" />
@@ -40,11 +40,11 @@
 				<field name="typeSelect" hidden="true" />
 	      	</editor>
 	      </field> 
-		  <panel colSpan="12" title="Permissions">
+		  <panel name="permissionsPanel" colSpan="12" title="Permissions">
 		  	<field name="groups" colSpan="12" widget="TagSelect"/>
 		  	<field name="roles" colSpan="12" widget="TagSelect"/>
 		  </panel>
-	      <panel colSpan="12" title="Extra" canCollapse="true">
+	      <panel name="detailPanel" colSpan="12" title="Extra" canCollapse="true">
 	      	<field name="conditionToCheck" />
 	      	<field name="moduleToCheck" />
 	      	<field name="top" />

@@ -12,27 +12,27 @@
     </grid>
  
 	<form  onNew="action-mail-batch-record-on-new" name="mail-batch-form" title="Mail Batch" model="com.axelor.apps.base.db.MailBatch">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="actionSelect"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="template" widget="SuggestBox" form-view="template-form" grid-view="template-grid"/>
 			<field name="archived" title="Archived"/>
 		</panel>
-		<panel-tabs>
-			<panel name="information" title="Information"  >
+		<panel-tabs name="mainPanelTab">
+			<panel name="informationPanel" title="Information"  >
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 				<field name="description" showTitle="false"  />
-		      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+		      	<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 			</panel>
-			<panel name="emailPage" title="Email Page" hideIf="template != null &amp;&amp; actionSelect == 1">
+			<panel name="emailPagePanel" title="Email Page" hideIf="template != null &amp;&amp; actionSelect == 1">
 				<field name="subject" colSpan="12"/>
 				<field name="content" widget="html" colSpan="12"/>
 			</panel>
 		</panel-tabs>
-		<panel sidebar="true" name="actions" title="Actions">
-		    <button name="timesheetRemindBatch" title="Remind Timesheet Validation Batch" showIf="actionSelect == 1"  onClick="save,action-mail-batch-method-action-remind-timesheet" colSpan="12"/>
+		<panel sidebar="true" name="actionsPanel" title="Actions">
+		    <button name="timesheetRemindBatchBtn" title="Remind Timesheet Validation Batch" showIf="actionSelect == 1"  onClick="save,action-mail-batch-method-action-remind-timesheet" colSpan="12"/>
 		</panel>
 	</form>
 

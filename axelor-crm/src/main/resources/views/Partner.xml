@@ -4,18 +4,18 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
  	
     <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet colSpan="12" action="action-partner-view-upcoming-events"/>
-	    <panel-dashlet colSpan="12" action="action-partner-view-historical-events-completed"/>
-	    <panel-dashlet colSpan="12" action="action-partner-view-opportunities"/>
+	    <panel-dashlet name="partnerUpcomingEventsPanel" colSpan="12" action="action-partner-view-upcoming-events"/>
+	    <panel-dashlet name="partnerHistoricalEventsPanel" colSpan="12" action="action-partner-view-historical-events-completed"/>
+	    <panel-dashlet name="partnerOpportunitiesPanel" colSpan="12" action="action-partner-view-opportunities"/>
 	</form>
 	
 	<form name="incl-activities-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet colSpan="12" action="action-contact-view-upcoming-events"/>
-	    <panel-dashlet colSpan="12" action="action-contact-view-historical-events-completed"/>
+	    <panel-dashlet name="contactUpcomingEventsPanel" colSpan="12" action="action-contact-view-upcoming-events"/>
+	    <panel-dashlet name="contactHistoricalEventsPanel" colSpan="12" action="action-contact-view-historical-events-completed"/>
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet colSpan="12" title="Events" showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
+	    <panel-dashlet name="customerCrmActivitiesPanel" colSpan="12" title="Events" showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
 	</form>
 	
     <form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form" >

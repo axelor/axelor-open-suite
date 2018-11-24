@@ -7,6 +7,7 @@
     <entity name="LogisticalForm">
         <string name="deliveryNumber" namecolumn="true" readonly="true" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
             title="Deliver to customer" />
         <date name="collectionDate" required="true" />

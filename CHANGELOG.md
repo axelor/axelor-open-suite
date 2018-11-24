@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.1]
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -139,6 +140,16 @@
 - MRP : generate proposal for product that stock qty is less than stock rule min qty even if there is no other out movement.
 - MRP : if the sale order or purchase order is not delivered, if the date is in the past, now we take it into account with today date.
 If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
+- STOCK MOVE : mass printing for picking stock move report.
+- CONTRACT : classic contract lines can now be ordered with drag and drop, and generating an invoice from a contract will keep the order in the invoice lines.
+- Add Fixed Asset Management feature.
+- Stock Move : Add grid for sale order. 
+- SALEORDERLINE : stock move line list
+- Add requested and allocated quantity in stock. This feature allows to reserve stocks that are currently not available, but will allocate the quantity when the stock is available.
+- Add configuration to allocate the quantity in stock automatically on in stock move realization.
+- Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
+- Supplier Invoice : Alert when invoice is already created for supplier invoice number.
+- Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -225,6 +236,10 @@ Also in case of aggregation, we have to concatenate the tracking number list and
 Only display line where quantity is greater than 0.
 - Add a specific not for invoice on company bank details
 - Code improvements on creating a new purchase order.
+- LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
+- PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
+- Stock Move : Specify views for origin field. 
+- STOCK MOVE : Set avilableStatus in stockMoveLineList.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -269,6 +284,7 @@ Only display line where quantity is greater than 0.
 - Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
+- Added missing translations for advanced exports in french version.
 - Stock Rules : Fix enable change tracking on all fields.
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
@@ -307,6 +323,13 @@ Now, In this case, we use the today date.
 - MRP : When we select manually a sale order in filter, that doesn't have a stock location defined, we get a NPE.
 So, now, we check if the saleOrder.stockLocation is the same stock location or one of sub stock location of the MRP stock location.
 - Now keep the link to the sale order line or purchase order line when we split a stock move line. 
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
+- Added name attribute to all panels and buttons and also renamed.
+- DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
+- Panel rename issue
+- Filter out direct order stock location in sale order with the boolean direct order false.
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -348,6 +371,7 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 - Use the char ';' for subrogation release export
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
+- TALENT : View order of fields training and trainingSession altered in object Training Register. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -401,6 +425,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
 - ICalendar: Fix Nullpointer Exception
+- Fixed occasionnal scale rounding anomalies on unit conversions.
 - Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
 - PRODUCTION : Update stockMoveLine onclick of splitByTrackingNo validation button. 
 - Base : fix Null Pointer error.
@@ -410,7 +435,11 @@ When we update an existing move in daybook mode, we update the partner balances 
 - Fix NPE on opening sale order line form.
 - ACCOUNTCONFIG : factor partner define form view and grid view
 - INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
 - PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features

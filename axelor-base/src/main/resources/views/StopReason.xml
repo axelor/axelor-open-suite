@@ -7,7 +7,7 @@
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     <form name="stop-reason-form" title="Blocking reason" model="com.axelor.apps.base.db.StopReason">
-    	<panel name="main">
+    	<panel name="mainPanel">
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
         </panel>

@@ -162,9 +162,9 @@ public class TicketController {
                 || timer.getStatusSelect().equals(TicketRepository.STATUS_CLOSED);
       }
 
-      response.setAttr("btnStartTimer", HIDDEN_ATTR, hideStart);
-      response.setAttr("btnStopTimer", HIDDEN_ATTR, !hideStart);
-      response.setAttr("btnCancelTimer", HIDDEN_ATTR, hideCancel);
+      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
+      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
+      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

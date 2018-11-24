@@ -10,11 +10,11 @@
    </grid>
   
    <form name="vehicle-model-form" title="Vehicle Model" model="com.axelor.apps.fleet.db.VehicleModel"  width="large">
-   		<panel>
+   		<panel name="mainPanel">
    				<field name="vehicleMake"  colSpan="5" />
    				<field name="model" colSpan="5" />
    		</panel>
-   		<panel-related field="vehicleVendorsSet" form-view="partner-form" grid-view="partner-grid"/>
+   		<panel-related name="vehicleVendorsSetPanel" field="vehicleVendorsSet" form-view="partner-form" grid-view="partner-grid"/>
    </form>
 
 </object-views>

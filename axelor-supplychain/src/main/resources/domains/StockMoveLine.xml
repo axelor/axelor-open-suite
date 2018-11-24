@@ -12,7 +12,8 @@
 		<many-to-one name="purchaseOrderLine"
 			ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line" />
 
-		<decimal name="reservedQty" title="Reserved Qty" />
+		<decimal name="reservedQty" title="Allocated Qty" />
+		<decimal name="requestedReservedQty" title="Requested reserved qty"/>
 
 		<many-to-one name="parentLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
 		<one-to-many name="subLineList" ref="com.axelor.apps.stock.db.StockMoveLine"

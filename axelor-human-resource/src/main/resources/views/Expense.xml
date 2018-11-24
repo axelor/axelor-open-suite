@@ -23,7 +23,7 @@
 	
 	<grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<toolbar>
-			<button name="showSubordinateExpenseToValidate" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
+			<button name="showSubordinateExpenseToValidateBtn" title="Show expenses to be validated by my subordinates" onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
 		</toolbar>
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
@@ -44,8 +44,8 @@
 				<item name="printExpense" title="Print" action="save,action-print-expense"/>
 			</menu>
 		</menubar>
-		<panel>
-			<panel colSpan="9">
+		<panel name="mainPanel">
+			<panel colSpan="9" name="statusPanel">
 				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 				<field name="expenseSeq" showTitle="false" colSpan="8">
 				<viewer depends="expenseSeq">
@@ -66,7 +66,7 @@
 						]]>
 					</viewer>
 				</field>
-				<panel colSpan="12">
+				<panel name="generalInfoPanel" colSpan="12">
 					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
 					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
@@ -79,20 +79,20 @@
 					<field name="advanceAmount" hidden="true" />
 				</panel>
 			</panel>
-			<panel name="side" itemSpan="12" colSpan="3">
-				<panel name="actions" itemSpan="12">
-					<button name="sendExpenses" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
-					<button name="ventilate" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
-					<button name="validateButton" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
-					<button name="refuseButton" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
-					<button name="cancelButton" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-					<button name="draftButton" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
-					<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
-					<button name="cancelPaymentButton" title="Cancel payment"
+			<panel name="sidePanel" itemSpan="12" colSpan="3">
+				<panel name="actionsPanel" itemSpan="12">
+					<button name="sendExpensesBtn" title="Send Expenses" onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
+					<button name="ventilateBtn" title="Ventilate" onClick="save,action-expense-method-ventilate" hidden="true"/>
+					<button name="validateBtn" onClick="action-expense-group-validate" title="Validate" hidden="true"/>
+					<button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse" hidden="true"/>
+					<button name="cancelBtn" onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field" hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+					<button name="draftBtn" onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field" title="Return to draft status" showIf="statusSelect &gt; 4 "/>
+					<button name="addPaymentBtn" title="Register payment" onClick="save,action-expense-add-payment-form" showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+					<button name="cancelPaymentBtn" title="Cancel payment"
 							showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
 							onClick="save,action-expense-method-cancel-payment"/>
 				</panel>
-				<panel readonly="true" >
+				<panel name="inTaxTotalPanel" readonly="true" >
 		            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
 		                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect">
 		                    <![CDATA[
@@ -121,7 +121,7 @@
 			</panel>
 	    </panel>
 
-		<panel name="followup" title="Follow-up" showIf="sentDate" colSpan="12" canCollapse="true">
+		<panel name="followupPanel" title="Follow-up" showIf="sentDate" colSpan="12" canCollapse="true">
 			<field name="sentDate" colSpan="4"/>
 			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
 			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
@@ -129,18 +129,18 @@
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
 		</panel>
-		<panel-tabs>
-			<panel-related field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
+		<panel-tabs name="mainPanelTab">
+			<panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
 				editable="true" form-view="general-expense-line-form" grid-view="general-expense-line-grid" onChange="action-expense-method-compute" />
-			<panel-related field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
+			<panel-related name="kilometricExpenseLineListPanel" field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
 				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute"/>
-			<panel-related showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
-			<panel title="Account information" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="statusSelect == 4">
-				<panel title="Account information" showIf="move">
+			<panel-related name="employeeAdvanceUsageListPanel" showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
+			<panel name="accountInfoPanel" title="Account information" showIf="statusSelect == 3 || statusSelect == 4" readonlyIf="statusSelect == 4">
+				<panel name="moveInfoPanel" title="Account information" showIf="move">
 					<field name="moveDate" hidden="true" readonly="true" showIf="moveDate" colSpan="4"/>
 					<field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form" grid-view="move-grid"/>
 				</panel>
-				<panel colSpan="12" title="Payment information">
+				<panel name="paymentInfoPanel" colSpan="12" title="Payment information">
 					<field name="paymentStatusSelect" colSpan="4"/>
 					<field name="paymentMode" showIf="paymentMode" readonly="true" colSpan="4"/>
 					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
@@ -148,10 +148,10 @@
 				</panel>
 			</panel>
 		</panel-tabs>
-		<panel>
+		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
 		</panel>
-      <panel-mail>
+      <panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	  </panel-mail>
@@ -163,13 +163,13 @@
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
 		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
-		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
+		<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
 	</form>
 
 	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
-        <panel>
+        <panel name="mainPanel">
 			<field name="paymentMode" domain="self.inOutSelect = 2"/>
-			<button name="addPaymentButton" title="Register payment" onClick="save,action-expense-method-add-payment,close"/>
+			<button name="addPaymentBtn" title="Register payment" onClick="save,action-expense-method-add-payment,close"/>
 		</panel>
 	</form>
 
@@ -259,10 +259,10 @@
 	</action-method>
 	
 	<action-attrs name="action-expense-attrs-hide-button-readonly-field">
-		<attribute name="hidden" for="ventilate" expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
-		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="cancelButton" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6 || move"/>
+		<attribute name="hidden" for="ventilateBtn" expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
+		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6 || move"/>
 		<attribute name="readonly" for="period" expr="eval: true" if="!__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="period" expr="eval: ventilated" if="__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="bankDetails" expr="eval: true" if="!__user__.employee?.hrManager"/>

@@ -28,6 +28,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -69,6 +70,8 @@ public class StockMoveController {
   @Inject private StockMoveRepository stockMoveRepo;
 
   @Inject private StockMovePrintService stockMovePrintService;
+
+  @Inject private PickingStockMovePrintService pickingstockMovePrintService;
 
   public void plan(ActionRequest request, ActionResponse response) {
 
@@ -170,15 +173,40 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printPickingStockMove(ActionRequest request, ActionResponse response) {
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+    Context context = request.getContext();
+    String fileLink;
+    String title;
 
     try {
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.PICKING_STOCK_MOVE);
-      response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = pickingstockMovePrintService.printStockMoves(ids);
+        title = I18n.get("Stock Moves");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = context.asType(StockMove.class);
+        title = pickingstockMovePrintService.getFileName(stockMove);
+        fileLink =
+            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -424,5 +452,11 @@ public class StockMoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    stockMoveService.setAvailableStatus(stockMove);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 }
