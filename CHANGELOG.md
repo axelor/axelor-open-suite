@@ -314,6 +314,7 @@ Only display line where quantity is greater than 0.
 - Fix reserved quantity field on generated stock move lines.
 - Fix invoice generation from stock move.
 - ACCOUNT : compute balance - id to load is required for loading
+- Fixed bug where it would not be possible to close periods in the human resource module.
 - Reset Bank order sender informations (date, reference, label, signatory user) when we merge some bank orders.
 - Fixed issue on stock move printing when the same product and same tracking number is used in some lines. Now, we have removed the aggregation.
 - Fixed issue with computation of undelivered qty on sale order lines.
@@ -861,7 +862,7 @@ Also, improve the sale order line grid and form views.
 - All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
-- Improve multiple invoices printing.
+- Improve multiple invoices printing. 
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 
