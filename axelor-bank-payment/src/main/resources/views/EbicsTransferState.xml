@@ -13,7 +13,7 @@
 	
 	<form name="ebics-transfer-state-form" title="Ebics transfer state" model="com.axelor.apps.bankpayment.db.EbicsTransferState">
 	
-		<panel>
+		<panel name="mainPanel">
 			<field name="transactionId" />
 			<field name="segmentNumber" />
 			<field name="numSegments" />

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -184,7 +185,7 @@ public class DoubtfulCustomerService {
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validateMove(newMove);
+    moveService.getMoveValidateService().validate(newMove);
     moveRepo.save(newMove);
 
     Reconcile reconcile =
@@ -276,7 +277,7 @@ public class DoubtfulCustomerService {
     debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
     debitMoveLine.setPassageReason(debtPassReason);
 
-    moveService.getMoveValidateService().validateMove(newMove);
+    moveService.getMoveValidateService().validate(newMove);
     moveRepo.save(newMove);
 
     this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
@@ -327,6 +328,11 @@ public class DoubtfulCustomerService {
 
       invoice.setOldMove(invoice.getMove());
       invoice.setMove(move);
+      if (invoice.getPartner() != null) {
+        doubtfulCustomerAccount =
+            Beans.get(FiscalPositionAccountService.class)
+                .getAccount(invoice.getPartner().getFiscalPosition(), doubtfulCustomerAccount);
+      }
       invoice.setPartnerAccount(doubtfulCustomerAccount);
       invoice.setDoubtfulCustomerOk(true);
       // Recalcule du restant à payer de la facture

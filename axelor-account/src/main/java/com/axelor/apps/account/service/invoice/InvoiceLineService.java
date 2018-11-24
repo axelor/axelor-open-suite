@@ -58,13 +58,17 @@ public interface InvoiceLineService {
 
   BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
-  Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
+  Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
+      throws AxelorException;
+
+  Map<String, Object> getDiscountsFromPriceLists(
+      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
   int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
 
   Unit getUnit(Product product, boolean isPurchase);
 
-  Map<String, Object> resetProductInformation();
+  Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
   boolean isAccountRequired(InvoiceLine invoiceLine);
 

@@ -510,7 +510,7 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
     irrecoverable.getMoveSet().add(move);
   }
 
@@ -531,7 +531,7 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveService.getMoveValidateService().validateMove(move);
+    moveService.getMoveValidateService().validate(move);
     irrecoverable.getMoveSet().add(move);
 
     invoice.setIrrecoverableStatusSelect(

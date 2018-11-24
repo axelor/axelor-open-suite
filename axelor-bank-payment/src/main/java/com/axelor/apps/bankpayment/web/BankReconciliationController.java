@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.service.BankReconciliationService;
+import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -31,7 +36,21 @@ public class BankReconciliationController {
 
   @Inject BankReconciliationService bankReconciliationService;
 
+  @Inject BankReconciliationValidateService bankReconciliationValidateService;
+
   @Inject BankReconciliationRepository bankReconciliationRepo;
+
+  public void loadBankStatement(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.loadBankStatement(
+          bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -48,8 +67,39 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.validate(bankReconciliationRepo.find(bankReconciliation.getId()));
+      bankReconciliationValidateService.validate(
+          bankReconciliationRepo.find(bankReconciliation.getId()));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    String domain = bankReconciliationService.createDomainForBankDetails(bankReconciliation);
+    // if nothing was found for the domain, we set it at a default value.
+    if (domain.equals("")) {
+      response.setAttr("bankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetails", "domain", domain);
+    }
+  }
+
+  public void printBankReconciliation(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    try {
+      String fileLink =
+          ReportFactory.createReport(
+                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+              .addParam("BankReconciliationId", bankReconciliation.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addFormat("pdf")
+              .toAttach(bankReconciliation)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

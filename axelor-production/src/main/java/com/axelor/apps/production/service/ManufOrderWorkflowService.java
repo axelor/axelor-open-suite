@@ -95,6 +95,10 @@ public class ManufOrderWorkflowService {
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 
+    if (manufOrder.getBillOfMaterial() != null) {
+      manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
+    }
+
     if (!manufOrder.getIsConsProOnOperation()) {
       manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
     }

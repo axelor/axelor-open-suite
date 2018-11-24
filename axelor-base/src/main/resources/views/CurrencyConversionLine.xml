@@ -14,16 +14,16 @@
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" width="large">
-        <panel name="main">
+        <panel name="mainPanel">
 		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
 		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
-		  <button name="getRate" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null || id == null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
+		  <button name="getRateBtn" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
 		</panel> 
-		<panel name="applicableDates" title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
+		<panel name="applicableDatesPanel" title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
 		    <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
 		    <field name="toDate" readonlyIf="fromDate == null" onChange="action-currency-conversion-line-method-check-date"/>
 		</panel>
-		<panel name="rate" title="Rate">
+		<panel name="ratePanel" title="Rate">
 		    <field name="exchangeRate"/>
 		    <field name="variations"/>
 		</panel>

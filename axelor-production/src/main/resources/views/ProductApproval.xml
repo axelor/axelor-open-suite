@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="product-approval-grid" title="Product approvals" model="com.axelor.apps.production.db.ProductApproval">
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="name"/>
+  		<field name="controlOnReceipt"/>
+    </grid>
+    
+	<form name="product-approval-form" title="Product approval" model="com.axelor.apps.production.db.ProductApproval">
+	  <panel name="mainPanel">
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+  		<field name="name"/>
+  		<field name="controlOnReceipt"/>
+  		<field name="description" widget="html" colSpan="12"/>
+	  </panel>
+	</form>
+	
+</object-views>

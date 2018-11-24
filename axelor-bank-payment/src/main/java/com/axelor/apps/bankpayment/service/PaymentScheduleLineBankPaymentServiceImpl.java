@@ -170,7 +170,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     Move advanceOrPaymentMove = paymentScheduleLine.getAdvanceOrPaymentMove();
     Move rejectionMove = moveService.generateReverse(advanceOrPaymentMove);
     rejectionMove.setRejectOk(true);
-    moveValidateService.validateMove(rejectionMove);
+    moveValidateService.validate(rejectionMove);
 
     List<MoveLine> moveLineList = new ArrayList<>();
     moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());

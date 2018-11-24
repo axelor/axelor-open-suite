@@ -10,7 +10,7 @@
     <form name="configurator-form" title="Configurator" model="com.axelor.apps.sale.db.Configurator"
           onNew="action-configurator-group-on-new"
           onLoad="action-configurator-update-indicators,save">
-        <panel readonlyIf="product">
+        <panel name="mainPanel" readonlyIf="product">
             <field name="product" readonly="true" showTitle="false"
                    showIf="product" colSpan="12">
                 <viewer>
@@ -26,33 +26,33 @@
           <field name="configuratorCreatorName"/>
           <field name="attributes" colSpan="12"/>
         </panel>
-        <panel readonly="true">
+        <panel name="indicatorsPanel" readonly="true">
             <field name="indicators" colSpan="12"/>
         </panel>
-        <panel showIf="configuratorCreator.generateProduct" readonlyIf="product" >
-            <button name="generateProduct" title="Generate Product"
+        <panel name="actionPanel" showIf="configuratorCreator.generateProduct" readonlyIf="product" >
+            <button name="generateProductBtn" title="Generate Product"
                     onClick="save,action-configurator-generate-product"/>
             <field name="configuratorCreator.generateProduct" hidden="true"/>
         </panel>
     </form>
 
     <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator" title="Generate configurator">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
                    onSelect="action-configurator-method-creator-domain" onChange="action-configurator-record-fill-creator-name"/>
-            <button name="generate" title="Generate"
+            <button name="generateBtn" title="Generate"
             		onClick="action-configurator-group-create-configurator"/>
           <field name="configuratorCreatorName"/>
         </panel>
-        <panel name="configurator" hidden="true" colSpan="12">
+        <panel name="configuratorPanel" hidden="true" colSpan="12">
        		<field name="configuratorCreator" readonly="true" showTitle="false" css="bold large" canView="false"/>
-       		<button name="validate" title="Validate and generate the line" colSpan="4" colOffset="2"
+       		<button name="validateBtn" title="Validate and generate the line" colSpan="4" colOffset="2"
             onClick="save,action-configurator-method-generate"/>
        	</panel>
-       	<panel name="attributes" hidden="true">
+       	<panel name="attributesPanel" hidden="true">
             <field name="attributes" colSpan="12"/>
         </panel>
-       	<panel name="indicators" hidden="true">
+       	<panel name="indicatorsPanel" hidden="true">
             <field name="indicators" colSpan="12" readonly="true"/>
         </panel>
     </form>
@@ -106,11 +106,11 @@
     </action-method>
 
     <action-attrs name="action-configurator-attrs-create-configurator">
-    	<attribute name="hidden" for="configurator" expr="false"/>
-    	<attribute name="hidden" for="attributes" expr="false"/>
-    	<attribute name="hidden" for="indicators" expr="false"/>
-    	<attribute name="hidden" for="validate" expr="false"/>
-    	<attribute name="hidden" for="main" expr="true"/>
+    	<attribute name="hidden" for="configuratorPanel" expr="false"/>
+    	<attribute name="hidden" for="attributesPanel" expr="false"/>
+    	<attribute name="hidden" for="indicatorsPanel" expr="false"/>
+    	<attribute name="hidden" for="validateBtn" expr="false"/>
+    	<attribute name="hidden" for="mainPanel" expr="true"/>
     	<attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
     </action-attrs>
 

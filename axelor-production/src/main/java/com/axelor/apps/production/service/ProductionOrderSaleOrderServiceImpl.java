@@ -92,8 +92,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       BigDecimal qty = saleOrderLine.getQty();
       if (!unit.equals(saleOrderLine.getUnit())) {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
       return productionOrderRepo.save(
           productionOrderService.generateProductionOrder(

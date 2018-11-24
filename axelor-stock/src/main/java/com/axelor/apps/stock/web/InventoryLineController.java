@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.exception.AxelorException;
@@ -34,8 +35,23 @@ public class InventoryLineController {
       throws AxelorException {
 
     InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
-    inventoryLine = inventoryLineService.updateInventoryLine(inventoryLine);
+    Inventory inventory =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Inventory.class)
+            : inventoryLine.getInventory();
+    inventoryLine = inventoryLineService.updateInventoryLine(inventoryLine, inventory);
     response.setValue("rack", inventoryLine.getRack());
     response.setValue("currentQty", inventoryLine.getCurrentQty());
+  }
+
+  public void compute(ActionRequest request, ActionResponse response) {
+    InventoryLine inventoryLine = request.getContext().asType(InventoryLine.class);
+    Inventory inventory =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Inventory.class)
+            : inventoryLine.getInventory();
+    inventoryLine = inventoryLineService.compute(inventoryLine, inventory);
+    response.setValue("gap", inventoryLine.getGap());
+    response.setValue("gapValue", inventoryLine.getGapValue());
   }
 }

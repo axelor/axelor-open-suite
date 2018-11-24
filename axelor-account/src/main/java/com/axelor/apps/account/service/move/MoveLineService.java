@@ -33,9 +33,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
-import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -70,24 +71,27 @@ public class MoveLineService {
 
   protected AccountManagementAccountService accountManagementService;
   protected TaxAccountService taxAccountService;
-  protected FiscalPositionServiceAccountImpl fiscalPositionService;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
 
+  public static final boolean IS_CREDIT = false;
+  public static final boolean IS_DEBIT = true;
+
   @Inject
   public MoveLineService(
       AccountManagementAccountService accountManagementService,
       TaxAccountService taxAccountService,
-      FiscalPositionServiceAccountImpl fiscalPositionService,
+      FiscalPositionAccountService fiscalPositionAccountService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
       CompanyConfigService companyConfigService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
-    this.fiscalPositionService = fiscalPositionService;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
@@ -102,6 +106,8 @@ public class MoveLineService {
             != AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
         analyticDistributionLine.setMoveLine(moveLine);
+        analyticDistributionLine.setAccount(moveLine.getAccount());
+        analyticDistributionLine.setAccountType(moveLine.getAccount().getAccountType());
         analyticDistributionLine.setAmount(
             analyticMoveLineService.computeAmount(analyticDistributionLine));
         analyticDistributionLine.setDate(appAccountService.getTodayDate());
@@ -154,10 +160,6 @@ public class MoveLineService {
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
             amountInSpecificMoveCurrency, currencyRate);
 
-    if (partner != null) {
-      account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
-    }
-
     return this.createMoveLine(
         move,
         partner,
@@ -168,6 +170,7 @@ public class MoveLineService {
         isDebit,
         date,
         dueDate,
+        date,
         counter,
         origin,
         description);
@@ -201,6 +204,7 @@ public class MoveLineService {
       boolean isDebit,
       LocalDate date,
       LocalDate dueDate,
+      LocalDate originDate,
       int counter,
       String origin,
       String description)
@@ -215,7 +219,7 @@ public class MoveLineService {
         });
 
     if (partner != null) {
-      account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
+      account = fiscalPositionAccountService.getAccount(partner.getFiscalPosition(), account);
     }
 
     BigDecimal debit = BigDecimal.ZERO;
@@ -241,6 +245,10 @@ public class MoveLineService {
       }
     }
 
+    if (originDate == null) {
+      originDate = date;
+    }
+
     return new MoveLine(
         move,
         partner,
@@ -253,7 +261,8 @@ public class MoveLineService {
         this.determineDescriptionMoveLine(move.getJournal(), origin, description),
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
-        amountInSpecificMoveCurrency);
+        amountInSpecificMoveCurrency,
+        originDate);
   }
 
   /**
@@ -330,6 +339,12 @@ public class MoveLineService {
           invoice.getInvoiceId());
     }
 
+    String origin = invoice.getInvoiceId();
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+      origin = invoice.getSupplierInvoiceNb();
+    }
+
     // Creation of partner move line
     MoveLine moveLine1 =
         this.createMoveLine(
@@ -342,8 +357,9 @@ public class MoveLineService {
             isDebitCustomer,
             invoice.getInvoiceDate(),
             invoice.getDueDate(),
+            invoice.getOriginDate(),
             moveLineId++,
-            invoice.getInvoiceId(),
+            origin,
             null);
     moveLines.add(moveLine1);
 
@@ -376,6 +392,18 @@ public class MoveLineService {
             "Traitement de la ligne de facture : compte comptable = {}, montant = {}",
             new Object[] {account.getName(), companyExTaxTotal});
 
+        if (appAccountService.getAppAccount().getAnalyticDistributionRequiredOnInvoiceLines()
+            && invoiceLine.getAnalyticDistributionTemplate() == null
+            && invoiceLine.getAnalyticMoveLineList().isEmpty()
+            && account.getAnalyticDistributionRequiredOnInvoiceLines()) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_MISSING),
+              invoiceLine.getName(),
+              company.getName());
+        }
+
         MoveLine moveLine =
             this.createMoveLine(
                 move,
@@ -387,10 +415,12 @@ public class MoveLineService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
+                invoice.getOriginDate(),
                 moveLineId++,
-                invoice.getInvoiceId(),
+                origin,
                 invoiceLine.getProductName());
 
+        moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
         if (invoiceLine.getAnalyticMoveLineList() != null) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
@@ -448,8 +478,9 @@ public class MoveLineService {
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
+                  invoice.getOriginDate(),
                   moveLineId++,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
 
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
@@ -479,8 +510,9 @@ public class MoveLineService {
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
+                  invoice.getOriginDate(),
                   moveLineId++,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
           moveLine.setTaxLine(invoiceLineTax.getTaxLine());
           moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
@@ -573,6 +605,7 @@ public class MoveLineService {
 
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
+      keys.add(moveLine.getAnalyticDistributionTemplate());
 
       consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
       if (consolidateMoveLine != null) {
@@ -847,7 +880,7 @@ public class MoveLineService {
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
     List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
 
-    Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
 
     populateCredit(moveLineMap, reconciliableCreditMoveLineList);
 
@@ -868,36 +901,36 @@ public class MoveLineService {
   }
 
   private void populateCredit(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
   }
 
   private void populateDebit(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
   }
 
   private void populateMoveLineMap(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
     for (MoveLine moveLine : reconciliableMoveLineList) {
 
       Move move = moveLine.getMove();
 
-      if (move.getCompany() == null || move.getPartner() == null) {
-        continue;
-      }
+      List<Object> keys = new ArrayList<Object>();
 
-      Pair<Company, Partner> key = Pair.of(move.getCompany(), move.getPartner());
+      keys.add(move.getCompany());
+      keys.add(moveLine.getAccount());
+      keys.add(moveLine.getPartner());
 
-      Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(key);
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(keys);
 
       if (moveLineLists == null) {
         moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
-        moveLineMap.put(key, moveLineLists);
+        moveLineMap.put(keys, moveLineLists);
       }
 
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();

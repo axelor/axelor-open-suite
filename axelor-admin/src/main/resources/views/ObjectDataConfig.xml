@@ -9,10 +9,10 @@
     
 	<form name="object-data-config-form" title="Object data config" model="com.axelor.apps.base.db.ObjectDataConfig"
 		width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="modelSelect"/>
-			<button name="export" title="Export" onClick="save,action-open-object-data-export-wizard" colSpan="3"/>
-			<panel-related field="dataConfigLineList" colSpan="12" />
+			<button name="exportBtn" title="Export" onClick="save,action-open-object-data-export-wizard" colSpan="3"/>
+			<panel-related name="dataConfigLineListPanel" field="dataConfigLineList" colSpan="12" />
 		</panel>
 	</form>
    

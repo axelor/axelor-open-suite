@@ -63,6 +63,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -561,50 +562,50 @@ public class TimesheetServiceImpl implements TimesheetService {
       PriceList priceList)
       throws AxelorException {
 
-    int discountTypeSelect = 1;
+    int discountMethodTypeSelect = PriceListLineRepository.TYPE_DISCOUNT;
+    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
     if (product == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
     BigDecimal price = product.getSalePrice();
-    BigDecimal discountAmount = product.getCostPrice();
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    BigDecimal priceDiscounted = price;
 
     BigDecimal qtyConverted =
         Beans.get(UnitConversionService.class)
             .convert(
                 appHumanResourceService.getAppBase().getUnitHours(),
                 product.getUnit(),
-                hoursDuration);
+                hoursDuration,
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                product);
 
     if (priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList);
       if (priceListLine != null) {
-        discountTypeSelect = priceListLine.getTypeSelect();
+        discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
+
+      Map<String, Object> discounts =
+          priceListService.getDiscounts(priceList, priceListLine, price);
+      if (discounts != null) {
+        discountAmount = (BigDecimal) discounts.get("discountAmount");
+        discountTypeSelect = (int) discounts.get("discountTypeSelect");
+        priceDiscounted =
+            priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+      }
+
       if ((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
                   == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
-              && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
+              && discountMethodTypeSelect == PriceListLineRepository.TYPE_REPLACE)
           || appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()
               == AppBaseRepository.INCLUDE_DISCOUNT) {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          price =
-              priceListService.computeDiscount(
-                  price, (int) discounts.get("discountTypeSelect"), discountAmount);
-        }
-      } else {
-        Map<String, Object> discounts =
-            priceListService.getDiscounts(priceList, priceListLine, price);
-        if (discounts != null) {
-          discountAmount = (BigDecimal) discounts.get("discountAmount");
-          if (discounts.get("price") != null) {
-            price = (BigDecimal) discounts.get("price");
-          }
-        }
+
+        discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
+        price = priceDiscounted;
       }
     }
 
@@ -618,7 +619,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             productName,
             price,
             price,
-            price,
+            priceDiscounted,
             description,
             qtyConverted,
             product.getUnit(),
@@ -834,6 +835,31 @@ public class TimesheetServiceImpl implements TimesheetService {
         return I18n.get("Minutes");
       default:
         return I18n.get("Hours");
+    }
+  }
+
+  @Override
+  public void createDomainAllTimesheetLine(
+      User user, Employee employee, ActionViewBuilder actionView) {
+
+    actionView
+        .domain("self.timesheet.company = :_activeCompany")
+        .context("_activeCompany", user.getActiveCompany());
+
+    if (employee == null || !employee.getHrManager()) {
+      if (employee == null || employee.getManagerUser() == null) {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND (self.timesheet.user = :_user OR self.timesheet.user.employee.managerUser = :_user)")
+            .context("_user", user);
+      } else {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND self.timesheet.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
     }
   }
 

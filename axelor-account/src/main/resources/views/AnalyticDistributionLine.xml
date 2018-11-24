@@ -11,7 +11,7 @@
     </grid>
     
     <form name="analytic-distribution-line-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	        <field name="percentage"/>

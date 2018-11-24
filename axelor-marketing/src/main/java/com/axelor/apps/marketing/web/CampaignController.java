@@ -69,7 +69,7 @@ public class CampaignController {
     try {
       campaign = campaignRepo.find(campaign.getId());
       campaignService.generateEvents(campaign);
-      response.setAttr("plannedEvents", "refresh", true);
+      response.setAttr("plannedEventsPanel", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

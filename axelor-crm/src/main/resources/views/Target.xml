@@ -10,115 +10,67 @@
         <field name="fromDate"/>
         <field name="toDate"/>
     </grid>
-    
-<!--     <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target"     -->
-<!--     onLoad="action-target-method-update,save"  -->
-<!--     onSave="action-target-validate"> -->
-<!-- 	    <group title="Information"   colWidths="15%,35%,15%,35%"> -->
-<!-- 	        <field name="name"/> -->
-<!-- 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/> -->
-<!-- 	        <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null"/> -->
-<!-- 	        <field name="team" showIf="user == null"/> -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Period"   colWidths="15%,35%,15%,35%"> -->
-<!-- 	        <field name="periodTypeSelect"/> -->
-<!-- 	        <field name="fromDate"/> -->
-<!-- 	        <field name="toDate"/> -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Opportunity"     colWidths="15%,35%,15%,35%"> -->
-<!-- 	        <spacer/> -->
-<!-- 	        <separator title="Target"/> -->
-<!-- 	        <spacer/> -->
-<!-- 	        <separator title="Real"/> -->
-<!-- 	        <field name="opportunityAmountWonTarget"/> -->
-<!-- 	        <label title="Vs"/> -->
-<!-- 	        <field name="opportunityAmountWon" showTitle="false" /> -->
-<!-- 	        <field name="opportunityCreatedNumberTarget"/> -->
-<!-- 	        <label title="Vs"/> -->
-<!-- 	        <field name="opportunityCreatedNumber" showTitle="false"/> -->
-<!-- 	        <field name="opportunityCreatedWonTarget"/> -->
-<!-- 	        <label title="Vs"/> -->
-<!-- 	        <field name="opportunityCreatedWon" showTitle="false"/>   -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Events"     colWidths="15%,35%,15%,35%"> -->
-<!-- 	        <spacer/> -->
-<!-- 	        <separator title="Target"/> -->
-<!-- 	        <spacer/> -->
-<!-- 	        <separator title="Real"/> -->
-<!-- 	        <field name="callEmittedNumberTarget"/> -->
-<!-- 	        <label title="Vs"/> -->
-<!-- 	        <field name="callEmittedNumber" showTitle="false"/> -->
-<!-- 	        <field name="meetingNumberTarget"/> -->
-<!-- 	        <label title="Vs"/> -->
-<!-- 	        <field name="meetingNumber" showTitle="false"/> -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Sales order"  > -->
-<!--         	<group    > -->
-<!-- 	        	<separator title="Target"  /> -->
-<!-- 		        <field name="saleOrderAmountWonTarget"/> -->
-<!-- 		       	<field name="saleOrderCreatedNumberTarget"/> -->
-<!-- 		       	<field name="saleOrderCreatedWonTarget"/> -->
-<!-- 	        </group> -->
-<!-- 	        <group    > -->
-<!-- 	        	<separator title="Real"  /> -->
-<!-- 	        	<field name="saleOrderAmountWon"/> -->
-<!-- 	        	<field name="saleOrderCreatedNumber"/> -->
-<!-- 	        	<field name="saleOrderCreatedWon"/> -->
-<!--         	</group> -->
-<!--         </group> -->
-<!-- 	</form> -->
-	
-<form onLoad="action-target-method-update,save" onSave="action-target-validate" name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target" width="large">
-  <panel name="information" title="Information">
-    <field name="name"/>
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null" form-view="user-form" grid-view="user-grid"/>
-    <field name="team" canEdit="false" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-  </panel>
-  <panel name="period" title="Period">
-    <field name="periodTypeSelect"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
-  </panel>
-  <panel-tabs>
-    <panel name="opportunity" title="Opportunity">
-    <panel name="target" title="Target" colSpan="6">
-     <field name="opportunityAmountWonTarget" colSpan="10"/>
-     <label title="Vs" colSpan="2"/>
-     <field name="opportunityCreatedNumberTarget" colSpan="10"/>
-     <label title="Vs" colSpan="2"/>
-    <field name="opportunityCreatedWonTarget" colSpan="10"/>
-      <label title="Vs" colSpan="2"/>
-    </panel>
-    
-    <panel name="real" title="Real" colSpan="6">
-   		<label/>
-        <field name="opportunityAmountWon" showTitle="false" colSpan="12"/>
-        <label/>
-        <field name="opportunityCreatedNumber" showTitle="false" colSpan="12"/>
-        <label/>
-      	<field name="opportunityCreatedWon" showTitle="false" colSpan="12"/>
-    </panel>
-  </panel>  
-  
-  <panel name="events" title="Events">
-    <panel title="Target" colSpan="6">
-        <field name="callEmittedNumberTarget" colSpan="10"/>
-        <label title="Vs" colSpan="2"/>
-    	<field name="meetingNumberTarget" colSpan="10"/>
-      <label title="Vs" colSpan="2"/>
-    </panel>
-    <panel name="real" title="Real" colSpan="6">
-    	<label/>
-        <field name="callEmittedNumber" showTitle="false" colSpan="12"/>
-        <label/>
-       	<field name="meetingNumber" showTitle="false" colSpan="12"/>
-    </panel>
-    
-   </panel>
-    </panel-tabs>
 
-</form>
+	<form name="target-form" title="Objective" model="com.axelor.apps.crm.db.Target"
+		width="large" onLoad="action-target-method-update,save" onSave="action-target-validate">
+		<panel name="informationPanel">
+			<field name="$fullName" showTitle="false" colSpan="12">
+				<viewer depends="name,code">
+					<![CDATA[
+						<h3>
+							{{record.code}} - {{record.name}}
+						</h3>
+					]]>
+				</viewer>
+				<editor x-show-titles="true">
+					<field name="code" x-bind="{{code|unaccent|uppercase}}"
+						colSpan="4" css="label-bold bold large" required="true" />
+					<field name="name" colSpan="8" css="label-bold bold large"
+						required="true" />
+				</editor>
+			</field>
+			<field name="user" colSpan="6" showIf="team == null" canNew="false"
+				canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" />
+			<field if="__config__.app.getApp('base').getTeamManagement()"
+				colSpan="6" name="team" showIf="user == null" canEdit="false"
+				form-view="team-form" grid-view="team-grid" />
+			<static />
+		</panel>
+		<panel-tabs name="mainPanelTab">
+			<panel name="opportunityPanel" title="Opportunity">
+				<panel name="target" title="Target vs Real" colSpan="12">
+					<field name="opportunityAmountWonTarget" colSpan="5" />
+					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
+					<field name="opportunityAmountWon" showTitle="false" colSpan="5" />
+					<field name="opportunityCreatedNumberTarget" colSpan="5" />
+					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
+					<field name="opportunityCreatedNumber" showTitle="false"
+						colSpan="5" />
+					<field name="opportunityCreatedWonTarget" colSpan="5" />
+					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
+					<field name="opportunityCreatedWon" showTitle="false"
+						colSpan="5" />
+				</panel>
+			</panel>
+			<panel name="eventsPanel" title="Events">
+				<panel name="targetVsRealPanel" title="Target vs Real" colSpan="12">
+					<field name="callEmittedNumberTarget" colSpan="5" />
+					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
+					<field name="callEmittedNumber" showTitle="false" colSpan="5" />
+					<field name="meetingNumberTarget" colSpan="5" />
+					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
+					<field name="meetingNumber" showTitle="false" colSpan="5" />
+				</panel>
+			</panel>
+		</panel-tabs>
+
+		<panel sidebar="true" name="characteristics" title="Characteristics"
+			canCollapse="true">
+			<field name="periodTypeSelect" />
+			<field name="fromDate" colSpan="6" required="true" />
+			<field name="toDate" colSpan="6" required="true" />
+		</panel>
+	</form>
 
     
     <action-method name="action-target-method-update">

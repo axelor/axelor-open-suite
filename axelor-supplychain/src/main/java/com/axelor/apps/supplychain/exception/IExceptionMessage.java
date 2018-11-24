@@ -79,6 +79,13 @@ public interface IExceptionMessage {
   static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
 
+  /** Stock move line service */
+  static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
+      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
+
+  static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
+      "Missing purchase order with id %s for stock move line %s" /*)*/;
+
   /** Batch Invoicing */
   static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 
@@ -120,6 +127,10 @@ public interface IExceptionMessage {
   static final String SO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the sale order %s." /*)*/;
 
+  /** Sale order Stock Service Implement */
+  static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
+      "No delivery stock move to generate for this purchase order" /*)*/;
+
   /** Timetable Controller */
   static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/
       "The invoice has already been generated." /*)*/;
@@ -149,4 +160,18 @@ public interface IExceptionMessage {
 
   /** Interco Service */
   static final String INVOICE_MISSING_TYPE = /*$$(*/ "Invoice %s type is not filled." /*)*/;
+
+  /** Stock location line service supplychain impl */
+  static final String LOCATION_LINE_RESERVED_QTY = /*$$(*/
+      "Not enough quantity are available for reservation for product %s (%s)" /*)*/;
+
+  /** Reserved qty service */
+  static final String LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY = /*$$(*/
+      "You cannot change the stock move status: please lower the allocated quantity" /*)*/;
+
+  static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
+      "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
+
+  static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
+      "This amount is not available in stock." /*)*/;
 }

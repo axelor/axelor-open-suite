@@ -59,13 +59,15 @@ public class ValidateState extends WorkflowInvoice {
   @Override
   public void process() throws AxelorException {
 
-    if ((InvoiceToolService.isOutPayment(invoice)
-            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
-        || (!InvoiceToolService.isOutPayment(invoice)
-            && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+    if (invoice.getPaymentMode() != null) {
+      if ((InvoiceToolService.isOutPayment(invoice)
+              && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.IN))
+          || (!InvoiceToolService.isOutPayment(invoice)
+              && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+      }
     }
 
     if (blockingService.getBlocking(

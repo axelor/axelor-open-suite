@@ -12,7 +12,7 @@
   
   	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"
   		onLoad="action-advanced-export-line-attrs-validate">
-  		<panel>
+  		<panel name="mainPanel">
   			<field name="metaField" title="Select target field" required="true" onSelect="action-advanced-export-line-attr-change-domain" onChange="action-advanced-export-line-method-fill-title"/>
      		<field name="title" required="true"/>
      		<field name="targetField"/>
@@ -26,9 +26,9 @@
 	              </h4>
 				]]></viewer>
 		    </field>
-	        <panel colSpan="12">
-	    		<button name="validateFieldSelection" title="Validate" colSpan="4" onClick="action-advanced-export-line-method-validate-field"/>
-	    		<button name="clearFieldSelection" title="Clear selection" colSpan="4" onClick="action-advanced-export-line-attr-reset"/>
+	        <panel name="actionsPanel" colSpan="12">
+	    		<button name="validateFieldSelectionBtn" title="Validate" colSpan="4" onClick="action-advanced-export-line-method-validate-field"/>
+	    		<button name="clearFieldSelectionBtn" title="Clear selection" colSpan="4" onClick="action-advanced-export-line-attr-reset"/>
     		</panel>
     	</panel>
   	</form>
@@ -57,14 +57,14 @@
   		<attribute name="value" for="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel"/>
   		<attribute name="hidden" for="$viewerMessage" expr="eval: true"/>
   		<attribute name="value" for="$isValidate" expr="eval: null"/>
-  		<attribute name="readonly" for="validateFieldSelection" expr="eval: false"/>
+  		<attribute name="readonly" for="validateFieldSelectionBtn" expr="eval: false"/>
   		<attribute name="readonly" for="metaField" expr="eval: false"/>
   	</action-attrs>
   	
   	<action-attrs name="action-advanced-export-line-attrs-validate">
   		<attribute name="value" for="$isValidate" expr="eval:true"/>
   		<attribute name="hidden" for="$viewerMessage" expr="false"/>
-  		<attribute name="readonly" for="validateFieldSelection" expr="true"/>
+  		<attribute name="readonly" for="validateFieldSelectionBtn" expr="true"/>
   	</action-attrs>
   	
 </object-views>

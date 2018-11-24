@@ -10,7 +10,7 @@
 	</grid>
 	
 	<form name="routing-rule-form" title="Routing rule" model="com.axelor.apps.base.db.RoutingRule">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="metaField" domain="self.metaModel.name = 'Message'" widget="SuggestBox" form-view="meta-field-form" grid-view="meta-field-grid"/>
 			<field name="ruleTypeSelect"/>
 			<field name="value"/>

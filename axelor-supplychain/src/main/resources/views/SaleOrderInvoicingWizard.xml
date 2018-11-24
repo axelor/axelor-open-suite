@@ -6,7 +6,7 @@
 	<form name="sale-order-invoicing-wizard-form" title="Invoicing"
 		  model="com.axelor.apps.sale.db.SaleOrder"
 		  onLoad="action-group-sale-order-invoicing-wizard-onload">
-		<panel>
+		<panel name="operationSelectPanel">
             <field name="operationSelect" title="Operation choice"
 				   type="selection"
 				   selection="supplychain.sale.order.invoicing.wizard.select"
@@ -19,21 +19,21 @@
 				   required="true" if="__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
 
 		</panel>
-        <panel showIf="[2,3,4].includes($number(operationSelect))">
+        <panel name="amountPanel" showIf="[2,3,4].includes($number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"
 				   />
 			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
 				   showIf="[2,4].includes($number(operationSelect))"/>
 		</panel>
-		<panel-related field="saleOrderLineList" hideIf="operationSelect != 3" canNew="false"
+		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 3" canNew="false"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
 
-		<panel showIf="operationSelect &lt; 5">
-			<button name="createInvoice" title="Generate the invoice"
+		<panel name="actionPanel" showIf="operationSelect &lt; 5">
+			<button name="createInvoiceBtn" title="Generate the invoice"
 					onClick="action-method-sale-order-invoicing-wizard-generate"/>
 		</panel>
-        <panel hidden="true">
+        <panel name="taxAmountPanel" hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
 			<field name="exTaxTotal" hidden="true"/>
 		</panel>
@@ -41,6 +41,7 @@
 
 	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice" edit-icon="false"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="product.code"/>
 		<field name="productName" readonly="true"/>
 		<field name="qty" readonly="true" aggregate="sum"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>

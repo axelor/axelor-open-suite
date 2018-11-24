@@ -18,7 +18,7 @@
     
     <grid name="operation-order-group-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority" canNew="false">
     	<toolbar>
-    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
+    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
     	<field name="manufOrder" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
@@ -31,16 +31,16 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
 		<field name="manufOrder.statusSelect" hidden="true"/>
-		<button name="plan" icon="fa-calendar"
+		<button name="planBtn" icon="fa-calendar"
 				onClick="action-operation-order-method-plan"
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-        <button name="start" icon="fa-play" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="fa-pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle"
+        <button name="startBtn" icon="fa-play" onClick="action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pauseBtn" icon="fa-pause" onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+   		<button name="finishBtn" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancelBtn" icon="fa-times-circle"
 				onClick="action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-   		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
+   		<button name="printBtn" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
     
@@ -54,25 +54,25 @@
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
 		<field name="manufOrder.statusSelect" hidden="true"/>
-        <button name="plan" icon="fa-calendar"
+        <button name="planBtn" icon="fa-calendar"
 				onClick="save,action-operation-order-method-plan"
 				readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-        <button name="start" icon="fa-play" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="fa-pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle"
+        <button name="startBtn" icon="fa-play" onClick="save,action-operation-order-group-start" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pauseBtn" icon="fa-pause" onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+   		<button name="finishBtn" icon="fa-power-off" onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancelBtn" icon="fa-times-circle"
 				onClick="save,action-operation-order-method-cancel,save"
 				readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-   		<button name="print" title="Print" icon="fa-print" onClick="save,action-operation-order-method-print"/>
+   		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-operation-order-method-print"/>
     </grid>
     
      
     
 	<form name="operation-order-form" title="Operation" model="com.axelor.apps.production.db.OperationOrder" onLoad="action-operation-order-attrs-is-cons-pro-on-operation" onSave="action-operation-order-name" onNew="action-operation-order-attrs-is-cons-pro-on-operation,action-operation-order-default-record">
 		<toolbar>
-			<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
 		</toolbar>
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
 			<field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
 			<field name="manufOrder" colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
@@ -91,49 +91,49 @@
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 			<field name="manufOrder.statusSelect" hidden="true"/>
 		</panel>
-		<panel name="dates" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
+		<panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
 			<panel name="plannedDates" title="Planned dates" colSpan="6">
 				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
 			</panel>
-			<panel name="realDates" title="Real dates" colSpan="6">
+			<panel name="realDatesPanel" title="Real dates" colSpan="6">
 				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="realEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="realDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
 			</panel>
 		</panel>
-		<panel name="resources" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
+		<panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form"/>
 			<field name="machineWorkCenter" hidden="true" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form"/>
-			<panel-related field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
+			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 
-		<panel name="stockMoves" hidden="true" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">
+		<panel name="stockMovesPanel" hidden="true" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="12"/>
-			<panel hidden="true" name="consumedProductPage" title="Consumed products" colSpan="12" readonlyIf="statusSelect == 6">
-				<panel-related field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-				<panel-related field="consumedStockMoveLineList" onChange="save,action-operation-order-method-update-consumed-stock-move" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
-				<panel-related field="diffConsumeProdProductList" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+			<panel hidden="true" name="consumedProductPanel" title="Consumed products" colSpan="12" readonlyIf="statusSelect == 6">
+				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-operation-order-method-update-consumed-stock-move" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
+				<panel-related name="diffConsumeProdProductListPanel" field="diffConsumeProdProductList" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 			</panel>
 		</panel>
-		<panel name="actions" title="Actions" sidebar="true" colSpan="12" showIf="id" readonlyIf="statusSelect == 6">
-			<button name="plan" title="Plan" icon="fa-calendar" colSpan="12"
+		<panel name="actionsPanel" title="Actions" sidebar="true" colSpan="12" showIf="id" readonlyIf="statusSelect == 6">
+			<button name="planBtn" title="Plan" icon="fa-calendar" colSpan="12"
 					hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
 					onClick="save,action-operation-order-method-plan"/>
-			<button name="start" title="Start" icon="fa-play" showIf="statusSelect == 3" colSpan="12" onClick="save,action-operation-order-group-start,save"/>
-			<button name="cancel" title="Cancel" icon="fa-times-circle"
+			<button name="startBtn" title="Start" icon="fa-play" showIf="statusSelect == 3" colSpan="12" onClick="save,action-operation-order-group-start,save"/>
+			<button name="cancelBtn" title="Cancel" icon="fa-times-circle"
 					showIf="statusSelect != 2 &amp;&amp; statusSelect != 6"
 					colSpan="12" onClick="save,action-operation-order-method-cancel,save"/>
-			<button name="finish" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-group-finish"/>
+			<button name="finishBtn" title="Finish" icon="fa-power-off"  showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-group-finish"/>
 			<button name="finishPart" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-operation-order-method-part-finish"/>
-			<button name="pause" title="Pause" icon="fa-pause" showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-pause,save"/>
-			<button name="resume" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-method-resume,save"/>
+			<button name="pauseBtn" title="Pause" icon="fa-pause" showIf="statusSelect == 4" colSpan="12" onClick="save,action-operation-order-method-pause,save"/>
+			<button name="resumeBtn" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-method-resume,save"/>
 		</panel>
 		
-		<panel-related field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false" sidebar="true" showIf="id" if="!__config__.app.getApp('production') || !__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+		<panel-related name="operationOrderDurationListPanel" field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false" sidebar="true" showIf="id" if="!__config__.app.getApp('production') || !__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
 
-		<panel-related field="timesheetLineList" grid-view="timesheet-line-timesheet-operation-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false" canEdit="false" canRemove="false" if-module="axelor-business-production" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
+		<panel-related name="operationOrderDurationListPanel" field="timesheetLineList" grid-view="timesheet-line-timesheet-operation-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false" canEdit="false" canRemove="false" if-module="axelor-business-production" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 	</form>
 	
 	<action-attrs name="action-operation-order-attrs-domain-machine">
@@ -223,10 +223,10 @@
 	</action-method>
 
 	<action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
-    	<attribute name="hidden" for="consumedProductPage" expr="eval: !manufOrder?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="stockMoves" expr="eval: !manufOrder?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="consumedProductPage" expr="eval: !_parent?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="stockMoves" expr="eval: !_parent?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductPanel" expr="eval: !manufOrder?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMovesPanel" expr="eval: !manufOrder?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductPanel" expr="eval: !_parent?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMovesPanel" expr="eval: !_parent?.isConsProOnOperation"/>
     	<attribute name="hidden" for="machineWorkCenter" expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
     

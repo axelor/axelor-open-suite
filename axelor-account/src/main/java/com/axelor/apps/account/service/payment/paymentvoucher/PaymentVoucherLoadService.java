@@ -84,7 +84,7 @@ public class PaymentVoucherLoadService {
         "self.partner = ?1 "
             + "and self.account.useForPartnerBalance = 't' "
             + "and self.amountRemaining > 0 "
-            + "and self.move.statusSelect = ?3 "
+            + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 ";
 
@@ -101,7 +101,8 @@ public class PaymentVoucherLoadService {
                 query,
                 paymentVoucher.getPartner(),
                 paymentVoucher.getCompany(),
-                MoveRepository.STATUS_VALIDATED)
+                MoveRepository.STATUS_VALIDATED,
+                MoveRepository.STATUS_DAYBOOK)
             .fetch();
 
     return moveLines;
@@ -356,7 +357,7 @@ public class PaymentVoucherLoadService {
       companyBankDetails =
           Beans.get(BankDetailsService.class)
               .getDefaultCompanyBankDetails(
-                  invoice.getCompany(), invoice.getPaymentMode(), invoice.getPartner());
+                  invoice.getCompany(), invoice.getPaymentMode(), invoice.getPartner(), null);
     }
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);

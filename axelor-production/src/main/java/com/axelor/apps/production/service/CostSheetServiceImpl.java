@@ -304,7 +304,12 @@ public class CostSheetServiceImpl implements CostSheetService {
       Product product = prodHumanResource.getProduct();
 
       costPerHour =
-          unitConversionService.convert(hourUnit, product.getUnit(), product.getCostPrice());
+          unitConversionService.convert(
+              hourUnit,
+              product.getUnit(),
+              product.getCostPrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
 
     BigDecimal durationHours =
@@ -393,7 +398,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
     for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-      if (!stockMoveLine.getProduct().equals(manufOrder.getProduct())) {
+      if (stockMoveLine.getProduct() != null
+          && manufOrder.getProduct() != null
+          && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
                 stockMoveLine.getProduct(), stockMoveLine.getUnit(), stockMoveLine.getRealQty());
@@ -514,7 +521,12 @@ public class CostSheetServiceImpl implements CostSheetService {
     if (prodHumanResource.getProduct() != null) {
       Product product = prodHumanResource.getProduct();
       costPerHour =
-          unitConversionService.convert(hourUnit, product.getUnit(), product.getCostPrice());
+          unitConversionService.convert(
+              hourUnit,
+              product.getUnit(),
+              product.getCostPrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
     BigDecimal durationHours =
         new BigDecimal(realDuration)

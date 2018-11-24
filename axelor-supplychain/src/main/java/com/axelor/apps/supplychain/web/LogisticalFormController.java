@@ -36,10 +36,10 @@ public class LogisticalFormController {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 
       String name =
-          String.format("%s %s", I18n.get("Packaging list"), logisticalForm.getDeliveryNumber());
+          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumber());
 
       String fileLink =
-          ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
+          ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
               .addParam("LogisticalFormId", logisticalForm.getId())
               .addParam(
                   "Locale",

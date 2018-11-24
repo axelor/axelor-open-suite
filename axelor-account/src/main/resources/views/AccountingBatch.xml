@@ -12,20 +12,20 @@
     </grid>
  
 <form  onNew="action-accounting-batch-record-on-new" name="accounting-batch-form" title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
-	<panel name="main" >
+	<panel name="mainPanel" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,20].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived"/>
 	</panel>
-	<panel-tabs>
-		<panel name="reimbursementPage" title="Reimbursement configuration" hideIf="actionSelect != 11">
+	<panel-tabs name="mainPanelTab">
+		<panel name="reimbursementPagePanel" title="Reimbursement configuration" hideIf="actionSelect != 11">
 			<field name="reimbursementTypeSelect"/>
 			<field name="reimbursementExportTypeSelect" hideIf="reimbursementTypeSelect != 1"/>
 			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
-		<panel name="directDebitPage" title="Direct debit configuration" hideIf="actionSelect != 12">
+		<panel name="directDebitPagePanel" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitDataTypeSelect" />
 			<field name="paymentMode"
 				domain="self.typeSelect = 2 AND self.inOutSelect = 1 AND self.generateBankOrder = TRUE"
@@ -34,7 +34,7 @@
 			<field name="currency" />
 			<field name="includeOtherBankAccounts" if="__config__.app.getApp('base').getManageMultiBanks()" />
 		</panel>
-		<panel name="creditTransferPage" title="Credit Transfer configuration" hideIf="actionSelect != 19">
+		<panel name="creditTransferPagePanel" title="Credit Transfer configuration" hideIf="actionSelect != 19">
 			<field name="creditTransferTypeSelect"/>
 			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -44,43 +44,38 @@
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.app.getApp('base').getManageMultiBanks()" />
 		</panel>
 
-		<panel name="debtRecoveryPage" title="Debt recovery configuration" hideIf="actionSelect != 14"  >
+		<panel name="debtRecoveryPagePanel" title="Debt recovery configuration" hideIf="actionSelect != 14"  >
 			<field name="debtRecoveryTypeSelect"/>
 		</panel>
 
 		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
-		<panel name="accountCustomerPage" title="Account calculation configuration" hideIf="actionSelect != 17">
+		<panel name="accountCustomerPagePanel" title="Account calculation configuration" hideIf="actionSelect != 17">
 			<!--<group title="Update"    >-->
 			  <field name="updateCustAccountOk"/>
 			  <field name="updateDueCustAccountOk"/>
 			  <field name="updateDueDebtRecoveryCustAccountOk"/>
 			<!--</group>-->
 		</panel>
-		<panel name="moveLineExportPage" title="Move Lines Export Config" hideIf="actionSelect != 18">
+		<panel name="moveLineExportPagePanel" title="Move Lines Export Config" hideIf="actionSelect != 18">
 			<field name="moveLineExportTypeSelect"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
 		</panel>
-		<panel name="bankStatementPage" title="Bank statement retrieval configuration" hideIf="actionSelect != 20">
-			<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
-            <field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
-		</panel>
-		<panel name="information" title="Information"  >
+		<panel name="informationPanel" title="Information"  >
 			<field name="createdOn" title="Created on"/>
 			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 			<field name="description" showTitle="false"  />
-	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+	      	<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 		</panel>
 	</panel-tabs>
-	<panel name="actions" sidebar="true" title="Actions">
-	    <button name="reimbursementBatch" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
-	    <button name="directDebitBatch" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
-	    <button name="debtRecoveryBatch" title="Debt recovery Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-debt-recovery" colSpan="12"/>
-	    <button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
-	    <button name="accountCustomerBatch" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
-	    <button name="moveLineExportBatch" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
-	    <button name="creditTransferBatch" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
-	    <button name="bankStatementBatch" title="Bank Statement Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-bank-statement" colSpan="12"/>
+	<panel name="actionsPanel" sidebar="true" title="Actions">
+	    <button name="reimbursementBatchBtn" title="Reimbursement Batch" showIf="actionSelect == 11"  onClick="save,action-accounting-batch-method-action-reimbursement" colSpan="12"/>
+	    <button name="directDebitBatchBtn" title="Direct Debit Batch" showIf="actionSelect == 12"  onClick="save,action-accounting-batch-method-action-direct-debit" colSpan="12"/>
+	    <button name="debtRecoveryBatchBtn" title="Debt recovery Batch" showIf="actionSelect == 14" onClick="save,action-accounting-batch-method-action-debt-recovery" colSpan="12"/>
+	    <button name="doubtfulCustomerBatchBtn" title="Doubtful Customer Batch" showIf="actionSelect == 16" onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
+	    <button name="accountCustomerBatchBtn" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
+	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
+	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	</panel>
 </form>
 

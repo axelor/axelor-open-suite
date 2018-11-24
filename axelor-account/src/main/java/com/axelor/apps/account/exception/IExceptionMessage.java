@@ -134,6 +134,8 @@ public interface IExceptionMessage {
       "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/;
   static final String MOVE_LINE_6 = /*$$(*/
       "Account missing on the tax line : %s (company : %s)" /*)*/;
+  static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
+      "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -285,6 +287,9 @@ public interface IExceptionMessage {
   static final String BATCH_STRATEGY_1 = /*$$(*/
       "%s : You must configure a RIB for batch's configurator %s" /*)*/;
 
+  /** Batch realize fixed asset lines */
+  static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
+
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
@@ -333,12 +338,6 @@ public interface IExceptionMessage {
   static final String COMPANY_CURRENCY = /*$$(*/
       "%s : Please, configure a currency for the company %s" /*)*/;
 
-  /** Account config service */
-  static final String ACCOUNT_CONFIG_39 = /*$$(*/
-      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
-
-  static final String ACCOUNT_CONFIG_40 = /*$$(*/
-      "%s : You must configure an employee account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_1 = /*$$(*/
       "%s : You must configure account's informations for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_2 = /*$$(*/
@@ -403,8 +402,6 @@ public interface IExceptionMessage {
       "%s : You must configure a payment mode after reject for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_32 = /*$$(*/
       "%s : You must configure a shift to irrecoverable's reason for the company %s" /*)*/;
-  static final String ACCOUNT_CONFIG_33 = /*$$(*/
-      "%s : You must configure a exported file path (if -> AGRESSO) for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_34 = /*$$(*/
       "%s : You must configure a reject import letter template for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_35 = /*$$(*/
@@ -415,6 +412,14 @@ public interface IExceptionMessage {
       "%s : You must configure a debt recovery tab for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_38 = /*$$(*/
       "%s : You must configure an advance payment account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_39 = /*$$(*/
+      "%s : You must configure a file name for the export of move file for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_40 = /*$$(*/
+      "%s : You must configure an employee account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_41 = /*$$(*/
+      "%s : You must configure a factor credit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_42 = /*$$(*/
+      "%s : You must configure a factor debit account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -545,6 +550,9 @@ public interface IExceptionMessage {
   static final String INVOICE_LINE_GENERATOR_2 = /*$$(*/
       "You must select a currency for company %s" /*)*/;
 
+  public static final String INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY = /*$$(*/
+      "Fixed asset category is missing on invoice line for product %s" /*)*/;
+
   /** Batch validation */
   static final String BATCH_VALIDATION_1 = /*$$(*/ "Invoice validation's reporting :" /*)*/;
 
@@ -598,6 +606,12 @@ public interface IExceptionMessage {
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
+
+  static final String VENTILATE_STATE_FUTURE_ORIGIN_DATE = /*$$(*/
+      "Invoice date of origin can't be in the future." /*)*/;
+
+  static final String VENTILATE_STATE_MISSING_ORIGIN_DATE = /*$$(*/
+      "Origin date is missing on the invoice" /*)*/;
 
   /** Workflow ventilation */
   String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
@@ -721,4 +735,13 @@ public interface IExceptionMessage {
       "There is no configured sequence for temporary reconcile group" /*)*/;
   String RECONCILE_GROUP_NO_FINAL_SEQUENCE = /*$$(*/
       "There is no configured sequence for final reconcile group" /*)*/;
+
+  /*
+   * Subrogation Release
+   */
+  static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
+      "Missing subrogation release sequence for company %s" /*)*/;
+
+  /** MoveLine */
+  static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 }

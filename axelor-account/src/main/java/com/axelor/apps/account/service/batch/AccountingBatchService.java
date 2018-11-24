@@ -28,13 +28,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
-/**
- * InvoiceBatchService est une classe implémentant l'ensemble des batchs de comptabilité et
- * assimilé.
- *
- * @author Geoffrey DUBAUX
- * @version 0.1
- */
 public class AccountingBatchService extends AbstractBatchService {
 
   @Override

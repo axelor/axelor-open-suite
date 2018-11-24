@@ -5,8 +5,8 @@
     
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     	<toolbar>
-    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-    		<button name="plan" title="Plan" onClick="action-manuf-order-method-plan"/>
+    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    		<button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
     	</toolbar>
     	<hilite color="danger" if="prioritySelect == 4"/>
   		<hilite color="warning" if="prioritySelect == 3"/>
@@ -15,6 +15,7 @@
   		<field name="prioritySelect" hidden="true"/>
         <field name="manufOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -24,17 +25,17 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pause" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+        <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
      <grid name="manuf-order-business-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
     	<toolbar>
-    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
     	<field name="productionOrder"/>
         <field name="manufOrderSeq"/>
@@ -48,12 +49,12 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pause" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+        <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+   		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
     <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
@@ -92,12 +93,12 @@
 	            <item title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
 		</menubar>
-		<panel name="main">
-		<panel colSpan="8">
+		<panel name="mainPanel">
+		<panel name="detailsPanel" colSpan="8">
 			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="3"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="3"/>
-			<field name="company" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" domain="self.company = :company and self.typeSelect = 1"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation" colSpan="3" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsPermanent" showTitle="false" colSpan="3" showIf="isPermanent &amp;&amp; $readonly()">
 				<viewer depends="isPermanent">
 					<![CDATA[
@@ -112,90 +113,101 @@
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
-			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0"/>
-			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
+			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
+			<field name="product.economicManufOrderQty" colSpan="3"/>
+			<field name="unit" readonly="true"/>
+			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-atts-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
 			<field name="isConsProOnOperation" />
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
-			<button name="preFillOperations" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
+			<button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
 			<field name="product.isModel" hidden="true"/>
 		</panel>
-		<panel name="actions" title="Actions" colSpan="4">
-			<button name="plan" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan" />
-			<button name="start" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
-			<button name="pause" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
-			<button name="resume" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
-			<button name="finish" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
-			<button name="finishPart" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
-			<button name="cancel" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
+		<panel name="actionsPanel" title="Actions" colSpan="4">
+			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan" />
+			<button name="startBtn" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
+			<button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
+			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
+			<button name="finishBtn" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
+			<button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
+			<button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
 		</panel>
 		</panel>
-		<panel-tabs colSpan="4" >
-			<panel-related field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
+		<panel-tabs name="mainPanelTab" colSpan="4" >
+			<panel-related name="operationOrderListPanel" field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="dates" title="Dates" readonlyIf="statusSelect == 6">
-				<panel name="plannedDates" title="Planned dates">
+				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
 				</panel>
-				<panel name="realDates" title="Real dates" showIf="statusSelect &gt; 3">
+				<panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
 					<field name="realEndDateT" title="End date"/>
 				</panel>
 			</panel>
-			<panel name="stockMoves" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
-				<panel title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
+			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
+				<panel name="stockMoveListPanel" title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
 					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
 					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" colSpan="12"/>
 				</panel>
-				<panel name="productionWaste" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
-					<button name="generateWasteStockMove" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
+				<panel name="productionWastePanel" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
+					<button name="generateWasteStockMoveBtn" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
 					<field name="wasteStockMove" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" readonly="true"/>
 				</panel>
 			</panel>
-			<panel name="consumedProducts" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">
-				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-				<panel-related field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="id"/>
-				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-related field="consumedStockMoveLineList" onChange="save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
-				<panel-related field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
+			<panel name="consumedProductsPanel" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="id"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
+				<panel-related name="consumedStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
 			</panel>
-   			<panel name="consumedProducts" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
-				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
-				<panel-dashlet readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+   			<panel name="consumedProductsPanel" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<panel-dashlet name="operationOrderToConsumeProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<panel-dashlet name="operationOrderConsumedProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+				<panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
-			<panel name="finishedProducts" title="Finished products" showIf="statusSelect &gt;= 3">
-				<button name="updatePlannedQty" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-				<panel-related field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<button name="updateRealQty" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-related field="producedStockMoveLineList" onChange="save,action-manuf-order-method-update-produced-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
-				<panel-related field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<panel name="description" title="Waste description" colSpan="12">
+			<panel name="finishedProductsPanel" title="Finished products" showIf="statusSelect &gt;= 3">
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<panel-related name="toProduceProdProductListPanel" field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<panel-related name="producedStockMoveLineListPanel" field="producedStockMoveLineList" onChange="save,action-manuf-order-method-update-produced-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
+				<panel-related name="wasteProdProductListPanel" field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
+				<panel name="descriptionPanel" title="Waste description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
 				</panel>
 			</panel>
-			<panel name="cost" title="Cost" showIf="statusSelect &gt; 3">
-                <button name="computeCostPrice" title="Compute cost price" onClick="save,action-manuf-order-method-compute-cost-price"/>
+			<panel name="costPanel" title="Cost" showIf="statusSelect &gt; 3">
+                <button name="computeCostPriceBtn" title="Compute cost price" onClick="save,action-manuf-order-method-compute-cost-price"/>
                 <field name="costPrice" readonly="true"/>
                 <field name="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
+			<panel name="notePanel" title="Note">
+				<field name="note" colSpan="12" showTitle="false"/>
+			</panel> 
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
+		
 	</form>
 	
 	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
-		<panel>
-			<field name="qty" colSpan="8"/>
-			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
+		<panel name="mainPanel">
+			<field name="qty" min="1" colSpan="8"/>
+			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
 		</panel>
 	</form>
 
 	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder">
-		<panel>
+		<panel name="mainPanel">
 			<field name="$qtyToUpdate" title="Qty" min="0" type="decimal" colSpan="8"/>
-			<button name="ok" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
+			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
 		</panel>
 	</form>
 
@@ -246,6 +258,10 @@
     <action-attrs name="action-manuf-order-atts-sale-order-onselect">
 	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
 	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
+	</action-attrs>
+	
+	<action-attrs name="action-manuf-order-attrs-set-unit">
+		<attribute name="value" for="unit" expr="eval: billOfMaterial.unit"/>
 	</action-attrs>
 	
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
@@ -309,6 +325,7 @@
         <action name="action-manuf-order-attrs-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
         <action name="action-manuf-order-reset"/>
+        <action name="action-manuf-order-attrs-set-unit"  if="billOfMaterial != null"/>
 	</action-group>
 
     <action-method name="action-manuf-order-method-print">

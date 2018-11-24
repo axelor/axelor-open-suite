@@ -14,7 +14,7 @@
     </grid>
     
     <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine">
-        <panel name="main">
+        <panel name="mainPanel">
         	<field name="tax" form-view="tax-form" grid-view="tax-grid"/>
 	        <field name="value"/>
 	        <field name="startDate"/>
@@ -30,7 +30,7 @@
     </grid>
     
     <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine" onNew="action-base-record-new-tax-line-tax">
-        <panel name="main">
+        <panel name="mainPanel">
 	        <field name="value"/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>

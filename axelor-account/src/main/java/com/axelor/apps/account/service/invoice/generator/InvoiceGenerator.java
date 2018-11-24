@@ -51,6 +51,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
+import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -210,22 +211,10 @@ public abstract class InvoiceGenerator {
     if (paymentCondition == null) {
       paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
     }
-    if (paymentCondition == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
-    }
     invoice.setPaymentCondition(paymentCondition);
 
     if (paymentMode == null) {
       paymentMode = InvoiceToolService.getPaymentMode(invoice);
-    }
-    if (paymentMode == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     invoice.setPaymentMode(paymentMode);
 
@@ -285,14 +274,19 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    // Set Company bank details
-    if (companyBankDetails == null) {
-      if (accountingSituation != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
+    if (partner.getFactorizedCustomer()) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList
+              .stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode.equals(partner.getOutPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+      } else if (paymentMode.equals(partner.getInPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyInBankDetails();
       }
       if (companyBankDetails == null) {
         companyBankDetails = company.getDefaultBankDetails();
@@ -304,6 +298,11 @@ public abstract class InvoiceGenerator {
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);
+
+    if (companyBankDetails != null
+        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
+    }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 

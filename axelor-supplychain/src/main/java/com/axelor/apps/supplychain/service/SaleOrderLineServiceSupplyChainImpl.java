@@ -25,18 +25,18 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,51 +110,35 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
-    QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
-    queryBuilder.add("self.stockLocation = :stockLocation");
-    queryBuilder.add("self.product = :product");
-    queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
-    queryBuilder.bind("product", saleOrderLine.getProduct());
-    StockLocationLine stockLocationLine = queryBuilder.build().fetchOne();
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
     }
-
     return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-  }
-
-  @Transactional
-  public void changeReservedQty(SaleOrderLine saleOrderLine, BigDecimal reservedQty) {
-    saleOrderLine.setReservedQty(reservedQty);
-    Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
   }
 
   @Override
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    Preconditions.checkNotNull(saleOrder);
-    Product product = saleOrderLine.getProduct();
-    BigDecimal deliveredQty =
-        product != null
-            ? saleOrder
-                .getSaleOrderLineList()
-                .stream()
-                .filter(line -> product.equals(line.getProduct()))
-                .reduce(
-                    BigDecimal.ZERO,
-                    (qty, line) -> qty.add(line.getDeliveredQty()),
-                    BigDecimal::add)
-            : BigDecimal.ZERO;
 
-    return saleOrderLine.getQty().subtract(deliveredQty);
+    BigDecimal undeliveryQty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
+
+    if (undeliveryQty.signum() > 0) {
+      return undeliveryQty;
+    }
+    return BigDecimal.ZERO;
   }
 
   @Override
   public List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine) {
     Product product = saleOrderLine.getProduct();
-    if (product == null || product.getSupplierCatalogList() == null) {
+    if (!Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        || product == null
+        || product.getSupplierCatalogList() == null) {
       return new ArrayList<>();
     }
     return product

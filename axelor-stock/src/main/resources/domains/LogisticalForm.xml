@@ -7,6 +7,7 @@
     <entity name="LogisticalForm">
         <string name="deliveryNumber" namecolumn="true" readonly="true" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
             title="Deliver to customer" />
         <date name="collectionDate" required="true" />
@@ -15,9 +16,9 @@
         <many-to-one name="forwarderPartner" ref="com.axelor.apps.base.db.Partner" title="Forwarder" />
         <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
         <string name="tracking" />
-        <decimal name="totalGrossMass" readonly="true" precision="19" scale="2" />
-        <decimal name="totalNetMass" readonly="true" precision="19" scale="2" />
-        <decimal name="totalVolume" title="Total volume (m³)" readonly="true" precision="19" scale="3" />
+        <decimal name="totalGrossMass" readonly="true" precision="20" scale="3" />
+        <decimal name="totalNetMass" readonly="true" precision="20" scale="3" />
+        <decimal name="totalVolume" title="Total volume (m³)" readonly="true" precision="20" scale="3" />
         <integer name="statusSelect" selection="logistical.form.status.select" title="Status" default="1"
             readonly="true" />
         <string name="internalDeliveryComment" large="true" />
@@ -25,7 +26,7 @@
         <integer name="accountSelectionToCarrierSelect" selection="logistical.form.account.to.carrier.select" title="Account selection to carrier" default="1" />
         <string name="customerAccountNumberToCarrier" />
 
-        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines"
+        <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
             mappedBy="logisticalForm" />
 
         <extra-code>
@@ -38,7 +39,20 @@
 			public static final int ACCOUNT_CUSTOMER = 2;
 		]]>
 		</extra-code>
-
+		
+		<track>
+	      <field name="deliveryNumber" />
+	      <field name="collectionDate" />
+	      <field name="deliverToCustomerPartner" />
+	      <field name="carrierPartner" />
+	      <field name="forwarderPartner" />
+	      <field name="incoterm" />
+	      <field name="tracking" />
+	      <message if="statusSelect == 1" tag="important">LogisticalForm.Provision</message>
+	      <message if="statusSelect == 2" tag="info">LogisticalForm.Carrier validated</message>
+	      <message if="statusSelect == 3" tag="success">LogisticalForm.Collected</message>
+	    </track>
+		
     </entity>
 
 </domain-models>

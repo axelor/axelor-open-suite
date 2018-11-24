@@ -37,9 +37,13 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,8 +51,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -56,6 +63,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +76,8 @@ public class PurchaseOrderController {
   @Inject private PurchaseOrderService purchaseOrderService;
 
   @Inject private PurchaseOrderRepository purchaseOrderRepo;
+
+  @Inject private PurchaseOrderPrintService purchaseOrderPrintService;
 
   public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -110,15 +120,43 @@ public class PurchaseOrderController {
    * @throws BirtException
    * @throws IOException
    */
+  @SuppressWarnings("unchecked")
   public void showPurchaseOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Context context = request.getContext();
+    String fileLink;
+    String title;
 
-    List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
-    String fileLink = purchaseOrderService.printPurchaseOrder(purchaseOrder, lstSelectedMove);
-
-    response.setView(ActionView.define(I18n.get("Purchase order")).add("html", fileLink).map());
+    try {
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) request.getContext().get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = purchaseOrderPrintService.printPurchaseOrders(ids);
+        title = I18n.get("Purchase orders");
+      } else if (context.get("id") != null) {
+        PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+        title = Beans.get(PurchaseOrderPrintService.class).getFileName(purchaseOrder);
+        fileLink =
+            purchaseOrderPrintService.printPurchaseOrder(purchaseOrder, ReportSettings.FORMAT_PDF);
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void requestPurchaseOrder(ActionRequest request, ActionResponse response) {
@@ -316,8 +354,11 @@ public class PurchaseOrderController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
     Company company = purchaseOrder.getCompany();
@@ -330,7 +371,7 @@ public class PurchaseOrderController {
     }
     BankDetails defaultBankDetails =
         Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner);
+            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
 
@@ -435,6 +476,8 @@ public class PurchaseOrderController {
     if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
       domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
     }
+
+    domain += " AND :company member of self.companySet";
     response.setAttr("supplierPartner", "domain", domain);
   }
 }

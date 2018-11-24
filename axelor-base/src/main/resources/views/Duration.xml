@@ -9,7 +9,7 @@
     </grid>
     
     <form name="duration-form" title="Duration" model="com.axelor.apps.base.db.Duration">
-    	<panel name="main">
+    	<panel name="mainPanel">
         	<field name="typeSelect"/>
         	<field name="value"/>
         </panel>

@@ -76,6 +76,35 @@
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
 	</action-view>
 
+	<menuitem name="stock-root-custshipprep" parent="stock-root-stock-moves"
+		title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="31" 
+		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
+
+	<action-view name="stock.root.custshipprep" title="Cust. Shipment to prepare"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect = :_statusSelect AND self.availabilityRequest = TRUE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+	</action-view>
+
+	<menuitem name="stock-root-availabilityreq" parent="stock-root-stock-moves"
+		title="Availability requests" action="stock.root.availabilityreq" order="32" 
+		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
+
+	<action-view name="stock.root.availabilityreq" title="Availability requests"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-availability-req-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+	</action-view>
+		
 	<menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search" action="stock.root.search" order="17"/>
 
 	<action-view name="stock.root.search" title="Search">
@@ -194,6 +223,24 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromStock" expr="eval:true" />
+	</action-view>
+	
+	<menuitem name="stock-root-stock-location" parent="stock-root"
+		title="Stock Locations" action="stock.root.stock.location" order="41"/>
+	
+	<action-view name="stock.root.stock.location" title="Stock Locations"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="grid" name="stock-location-grid"/>
+		<view type="form" name="stock-location-form"/>
+	</action-view>
+	
+	<menuitem name="stock-root-stock-location-tree" parent="stock-root"
+		title="Stock Location Tree" action="stock.root.stock.location.tree" order="42"/>
+	
+	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
+		model="com.axelor.apps.stock.db.StockLocation" >
+		<view type="tree" name="stock-location-tree"/>
 	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
@@ -207,23 +254,6 @@
 		model="com.axelor.apps.stock.db.Incoterm" >
 		<view type="grid" name="incoterm-grid"/>
 		<view type="form" name="incoterm-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location" parent="stock-root-conf"
-		title="Stock Locations" action="stock.root.stock.location" />
-	
-	<action-view name="stock.root.stock.location" title="Stock Locations"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="grid" name="stock-location-grid"/>
-		<view type="form" name="stock-location-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location-tree" parent="stock-root-conf"
-		title="Stock Location Tree" action="stock.root.stock.location.tree" />
-	
-	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="tree" name="stock-location-tree"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"

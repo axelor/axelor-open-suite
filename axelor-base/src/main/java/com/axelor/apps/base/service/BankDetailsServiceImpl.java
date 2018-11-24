@@ -21,8 +21,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -99,9 +101,12 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param company
    * @param paymentMode
    * @return
+   * @throws AxelorException
    */
   @Override
-  public String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode) {
+  public String createCompanyBankDetailsDomain(
+      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      throws AxelorException {
     if (company == null) {
       return "self.id IN (0)";
     }
@@ -113,13 +118,66 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
   @Override
   public BankDetails getDefaultCompanyBankDetails(
-      Company company, PaymentMode paymentMode, Partner partner) {
+      Company company, PaymentMode paymentMode, Partner partner, Integer operationTypeSelect)
+      throws AxelorException {
+
     BankDetails bankDetails = company.getDefaultBankDetails();
     if (bankDetails != null && bankDetails.getActive()) {
       return company.getDefaultBankDetails();
     } else {
       return null;
     }
+  }
+
+  /**
+   * Get active company bank details filtered on a currency
+   *
+   * @param company
+   * @param currency
+   * @return A string field that can used as domain (Jpql WHERE clause)
+   */
+  public String getActiveCompanyBankDetails(Company company, Currency currency) {
+    String domain = getActiveCompanyBankDetails(company);
+
+    // filter on the currency if it is set in file format and in the bankdetails
+    if (currency != null) {
+      String fileFormatCurrencyId = currency.getId().toString();
+      domain += " AND (self.currency IS NULL OR self.currency.id = " + fileFormatCurrencyId + ")";
+    }
+    return domain;
+  }
+
+  /**
+   * Get active company bank details
+   *
+   * @param company
+   * @return A string field that can used as domain (Jpql WHERE clause)
+   */
+  public String getActiveCompanyBankDetails(Company company) {
+    String domain = "";
+
+    if (company != null) {
+
+      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsSet());
+
+      if (company.getDefaultBankDetails() != null) {
+        bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
+        bankDetailsIds += company.getDefaultBankDetails().getId().toString();
+      }
+      if (bankDetailsIds.equals("")) {
+        return "";
+      }
+      domain = "self.id IN(" + bankDetailsIds + ")";
+    }
+
+    if (domain.equals("")) {
+      return domain;
+    }
+
+    // filter the result on active bank details
+    domain += " AND self.active = true";
+
+    return domain;
   }
 
   public void validateIban(String iban)

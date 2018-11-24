@@ -15,25 +15,34 @@
     <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
     onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
     onLoad="action-prod-process-line-attrs-default" width="large">
-    	<panel name="main"> 
+    	<panel name="mainPanel"> 
 			<field name="name"/>
 			<field name="priority" colSpan="3"/>
 			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 			<field name="outsourcing"/>
 			<field name="optional"/>
 			<field name="stockLocation"/>
-			<panel name="capacitySettings" title="Capacity settings" colSpan="12">
+			<panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 				<field name="minCapacityPerCycle" colSpan="3"/>
 				<field name="maxCapacityPerCycle" colSpan="3"/>
 				<field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
-			<panel name="description" title="Description" colSpan="12">
+			<panel name="descriptionPanel" title="Description" colSpan="12">
     			<field name="description" showTitle="false" height="5" colSpan="12"/>
     		</panel>
     	</panel>
-    	<panel-tabs>
-			<panel-related name="toConsumeProdProductList" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-    		<panel-related  field="objectDescriptionList" colSpan="12"/>
+    	<panel-tabs name="mainPanelTab">
+			<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
+				<panel name="descriptionPanel" title="Descriptions">
+					<field name="objectDescriptionList" colSpan="12">
+						<editor x-layout="table" x-show-on-new="false" x-viewer="true">
+							<panel name="mainPanel" colSpan="12">
+								<field name="image" colSpan="3" canNew="true" widget="Image"/>
+								<field name="description" widget="html" colSpan="12"/>
+							</panel>
+						</editor>
+					</field>
+				</panel>
     	</panel-tabs>
     	        
     </form>

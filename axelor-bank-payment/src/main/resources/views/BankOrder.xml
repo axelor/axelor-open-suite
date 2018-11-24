@@ -3,9 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
-    		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="mergeBtn" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="bankOrderLinesBtn" title="See Bank Order Lines" onClick="action-bank-order-method-display-bank-order-lines-bank-to-bank" />
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -22,9 +23,10 @@
         <field name="statusSelect"/>
     </grid>
     
-    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
     	<toolbar>
-    		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="mergeBtn" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="bankOrderLinesBtn" title="See Bank Order Lines" onClick="action-bank-order-method-display-bank-order-lines" />
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -41,9 +43,9 @@
         <field name="statusSelect"/>
     </grid>
 
-    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canNew="false">
     	<toolbar>
-    		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="mergeBtn" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -61,9 +63,9 @@
         <field name="statusSelect"/>
     </grid>
 
-    <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false">
+    <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
     	<toolbar>
-    		<button name="merge" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
+    		<button name="mergeBtn" title="Merge bank orders" onClick="action-bank-order-method-merge" prompt="Are you sure you want merge the selected bank orders ?"/>
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
@@ -79,29 +81,29 @@
         <field name="statusSelect"/>
     </grid>
     
-	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" canDelete="false"
+	<form name="bank-order-form" title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder"
 		  onNew="action-bank-order-group-onnew"
 		  onLoad="action-bank-order-group-on-load">
 		<toolbar>
-			<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 		</toolbar>
-		<panel title="Status">
+		<panel title="Status" name="statusPanel">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
 	    	<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
 		</panel>
-  		<panel name="main" colSpan="12">
-  			<panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+  		<panel name="mainPanel" colSpan="12">
+  			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
 	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
 	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
 	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-attrs-show-partner-or-receiver-company" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
+	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
-	        <panel name="main" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
+	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 		        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
 		        	<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
@@ -127,15 +129,15 @@
 	  		</panel>
         </panel>
 	   
-		<panel name="senderInfo" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
+		<panel name="senderInfoPanel" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
 			<field name="senderCompany" canEdit="false" canView="false" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
-			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			
-			<panel hidden="true" hideIf="isMultiCurrency" >
+			<panel name="bankOrderDetailPanel" hidden="true" hideIf="isMultiCurrency" >
 				<field name="bankOrderTotalAmount" colSpan="6" readonly="true"/>
 				<field name="bankOrderCurrency" onChange="action-bank-order-record-currency-onchange" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6" readonlyIf="orderTypeSelect == 1 || orderTypeSelect == 2 || orderTypeSelect == 5 || bankOrderLineList.length > 0"/>
 			</panel>
-			<panel readonly="true">
+			<panel name="companyCurrencyPanel" readonly="true">
 				<field name="companyCurrencyTotalAmount" colSpan="6"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="6"/>
 			</panel>
@@ -144,21 +146,24 @@
 			<field name="senderLabel"/>
 		</panel>
 		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
-			<field name="bankOrderLineList" colSpan="12" showTitle="false">
+    		<field name="bankOrderLineList" showTitle="false" colSpan="12" canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10">
 				<editor x-layout="table" x-show-on-new="false" x-viewer="true" onNew="action-bank-order-line-onnew">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
 					<field name="bankOrderDate" hidden="true"/>
-					<panel colSpan="6" itemSpan="12">
-						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange"/>
-						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange"/>
+					<panel name="receiverCompanyPanel" colSpan="6" itemSpan="12">
+						<field name="receiverCompany" canEdit="false" form-view="company-form" grid-view="company-grid" css="label-bold bold" onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+						<field name="partner" canView="false" form-view="partner-form" grid-view="partner-grid" css="label-bold bold" onSelect="action-bank-order-line-attrs-partner-domain" onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
 					</panel>
-					<field name="receiverBankDetails" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange"/>
+                    <panel name="receiverBankDetailsPanel" colSpan="6" itemSpan="12">
+                        <field name="receiverBankDetails" showIf="receiverCompany" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange" form-view="bank-details-form" grid-view="bank-details-bank-order-company-grid"/>
+    					<field name="receiverBankDetails" showIf="!receiverCompany" canView="false" onSelect="action-bank-order-line-method-set-bank-details-domain" required="true" onChange="action-bank-order-line-record-receiver-bank-details-onchange" form-view="bank-details-form" grid-view="bank-details-bank-order-grid"/>
+                    </panel>
 					<field name="bankOrderAmount" colSpan="4" min="0.00" required="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
-					<panel stacked="true" colSpan="2" itemSpan="12">
+					<panel name="bankOrderCurrencyPanel" stacked="true" colSpan="2" itemSpan="12">
 						<field name="bankOrder.bankOrderCurrency" canView="false" hidden="true"/>
 						<field name="bankOrderCurrency" canView="false" hidden="true" onChange="action-bank-order-line-method-compute-company-currency-amount"/>
 					</panel>
-					<panel colSpan="6">
+					<panel name="companyCurrencyPanel" colSpan="6">
 						<field name="companyCurrencyAmount" canView="false" colSpan="8" readonly="true"/>
 						<field name="bankOrder.companyCurrency" canView="false" colSpan="4"/>
 					</panel>
@@ -171,6 +176,7 @@
 						<field name="receiverCountry.alpha2Code" colSpan="2" showTitle="false"/>
 						<field name="paymentModeSelect"/>
 						<field name="feesImputationModeSelect"/>
+						<field name="receiverAddressStr" colSpan="12" max="105"/>
 					</panel>
 					
 					<panel name="furtherInformationPanel" title="Further information" colSpan="12" canCollapse="true" collapseIf="true" hidden="true">
@@ -186,12 +192,12 @@
 							<field name="specialInstructionsLine3" showTitle="false"/>
 						</panel>
 					</panel>
-					<panel name="accountingInformation" title="Accounting information" colSpan="12" hidden="true" showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)">
+					<panel name="accountingInfoPanel" title="Accounting information" colSpan="12" hidden="true" showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)">
 						<field name="senderMove" form-view="move-form" grid-view="move-grid" />
 						<field name="receiverMove" showIf="receiverMove" form-view="move-form" grid-view="move-grid" />
 					</panel>
 					
-					<panel title="Reject information" colSpan="12" hidden="true" showIf="isRejected">
+					<panel name="rejectInfoPanel" title="Reject information" colSpan="12" hidden="true" showIf="isRejected">
 						<field name="rejectDate"/>
 						<field name="rejectMove" hidden="true" showIf="isRejected == true" form-view="move-form" grid-view="move-grid"/>
 						<field name="interbankCodeLine" onSelect="action-bank-order-attrs-interbank-code-line-domain" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
@@ -204,36 +210,40 @@
 				</editor>
 			</field>
 		</panel>
-  		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
-    		<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
-    		<button name="sign" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
-    		<button name="carry out" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
+  		<panel name="actionPanel" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
+    		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
+    		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
+    		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
 <!-- 			<button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
-    		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
+  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
   			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
   			<field name="sendingDateTime" showIf="statusSelect == 4"/>
   		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
 			<mail-followers/>
 		</panel-mail>
 	</form>
 	
+	<form title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder" name="bank-order-awaiting-signature-form" canNew="false">
+		<panel-include view="bank-order-form"/>
+	</form>
+
 	<form name="bank-order-send-form" title="Send a bank order" model="com.axelor.apps.bankpayment.db.BankOrder"
 	onNew="action-bank-order-group-onnew">
 		<toolbar>
-			<button name="print" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 		</toolbar>
-		<panel title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
 		</panel>
-  		<panel name="main" colSpan="12">
-			<panel colSpan="12" readonlyIf="statusSelect &gt;= 2">
+  		<panel name="mainPanel" colSpan="12">
+			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
 				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
 				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
 				<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
@@ -241,11 +251,11 @@
 				<field name="bankOrderTotalAmount" colSpan="4"/>
 				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="2"/>
 				<field name="senderCompany" canEdit="false" grid-view="company-grid" form-view="company-form" colSpan="6" onChange="action-bank-order-group-sender-company-change"/>
-				<field name="senderBankDetails" canView="false" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
+				<field name="senderBankDetails" canView="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
-	        <panel colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
-				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
+				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 				<field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
@@ -269,14 +279,14 @@
 				</field>
 			</panel>
 		</panel>
-		<panel name="action" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
-    		<button name="confirm" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
-    		<button name="sign" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
-    		<button name="carry out" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
-    		<button name="cancel" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correct" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+		<panel name="actionPanel" title="Action" itemSpan="12" sidebar="true" hideIf="statusSelect == 4 || statusSelect == 5">
+    		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
+    		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
+    		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
+  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
   			<field name="sendingDateTime" showIf="statusSelect == 4"/>
@@ -284,18 +294,18 @@
     </form>
 	
 	<form name="bank-order-sign-wizard-form" title="Sign bank order" model="com.axelor.apps.bankpayment.db.BankOrder">
-  		<panel colSpan="6">
-    		<panel hidden="true" hideIf="isMultiCurrency" readonly="true">
+  		<panel name="detailPanel" colSpan="6">
+    		<panel name="bankOrderDetailPanel" hidden="true" hideIf="isMultiCurrency" readonly="true">
 				<field name="bankOrderTotalAmount" colSpan="8"/>
 				<field name="bankOrderCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-			<panel readonly="true">
+			<panel name="companyCurrencyPanel" readonly="true">
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet"/>
+    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
-    		<button name="validate" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
+    		<button name="validateBtn" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
     		<field name="isMultiCurrency" hidden="true"/>
   		</panel>
 	</form>
@@ -332,7 +342,12 @@
 		<action name="action-bank-order-record-update-bankorder-currency"/>
 		<action name="action-bank-order-method-fill-bankdetails"/>
 	</action-group>
-	
+
+    <action-group name="action-bank-order-group-partner-type-select-change">
+        <action name="action-bank-order-attrs-show-partner-or-receiver-company"/>
+        <action name="action-bank-order-method-reset-receivers"/>
+    </action-group>
+
 		<!-- Actions Attributes -->
 
 	<action-attrs name="action-bank-order-attrs-on-load">
@@ -346,6 +361,7 @@
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.receiverAddressStr" expr="eval: !bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-attrs-bank-order-file-format-change">
@@ -365,6 +381,7 @@
 		<attribute name="hidden" for="bankOrderLineList.bankOrderDate" expr="eval: !bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrderCurrency" expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency" expr="eval: bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="bankOrderLineList.receiverAddressStr" expr="eval: !bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 	
 	<action-attrs name="action-bank-order-line-attrs-on-new-from-bank-order-file-format">
@@ -373,7 +390,7 @@
 		<attribute name="value" for="paymentModeSelect" expr="eval: __parent__.bankOrderFileFormat?.paymentModeSelect"/>
 		<attribute name="value" for="feesImputationModeSelect" expr="eval: __parent__.bankOrderFileFormat?.feesImputationModeSelect"/>
 		<attribute name="value" for="bankOrder.companyCurrency" expr="__parent__.companyCurrency"/>
-		
+	
 		<attribute name="hidden" for="additionnalInformationPanel" expr="eval: !__parent__.bankOrderFileFormat?.displayAdditionnalInformations"/>
 		<attribute name="hidden" for="bankOrderEconomicReason" expr="eval: !__parent__.bankOrderFileFormat?.displayBankOrderEconomicReason"/>
 		<attribute name="hidden" for="receiverCountry" expr="eval: !__parent__.bankOrderFileFormat?.displayReceiverCountry"/>
@@ -384,6 +401,7 @@
 		<attribute name="hidden" for="bankOrderDate" expr="eval: !__parent__.bankOrderFileFormat?.isMultiDate"/>
 		<attribute name="hidden" for="bankOrderCurrency" expr="eval: !__parent__.bankOrderFileFormat?.isMultiCurrency"/>
 		<attribute name="hidden" for="bankOrder.bankOrderCurrency" expr="eval: __parent__.bankOrderFileFormat?.isMultiCurrency"/>
+		<attribute name="hidden" for="receiverAddressStr" expr="eval: !__parent__.bankOrderFileFormat?.displayReceiverAddress"/>
 	</action-attrs>
 
 	<action-attrs name="action-bank-order-attrs-show-partner-or-receiver-company">
@@ -484,6 +502,10 @@
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="fillBankDetails"/>
 	</action-method>
 
+    <action-method name="action-bank-order-method-reset-receivers">
+        <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="resetReceivers"/>
+    </action-method>
+
 	<!-- BANK ORDER LINES ACTIONS -->
 
         <!-- Actions Groups -->
@@ -535,6 +557,10 @@
 		<field name="bankOrderCurrency" expr="eval: receiverBankDetails?.currency" if="__parent__?.isMultiCurrency"/>
 		<field name="receiverCountry" expr="eval: receiverBankDetails?.bank?.country" if="__parent__?.bankOrderFileFormat?.orderFileFormatSelect?.equals('pain.xxx.cfonb320.xct')"/>
 	</action-record>
+	
+ 	<action-record name="action-bank-order-line-method-fill-receiver-address" model="com.axelor.apps.bankpayment.db.BankOrderLine">
+		<field name="receiverAddressStr" expr="call:com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService:getReceiverAddress(partner)"  if="__parent__?.bankOrderFileFormat?.orderFileFormatSelect?.equals('pain.xxx.cfonb320.xct')"/>	
+	</action-record>
 
 	<!-- Actions Methods -->
 
@@ -550,4 +576,12 @@
         <call class="com.axelor.apps.bankpayment.web.BankOrderLineController" method="computeCompanyCurrencyAmount"/>
     </action-method>
     
+	<action-method name="action-bank-order-method-display-bank-order-lines">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLines"/>
+	</action-method>
+
+	<action-method name="action-bank-order-method-display-bank-order-lines-bank-to-bank">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLinesBankToBank"/>
+	</action-method>
+
 </object-views>

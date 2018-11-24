@@ -16,6 +16,7 @@
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory">
 		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.INVENTORY)" />
 	    <bind to="statusSelect" eval="3" />
+	    <bind to="company" search="self.id = 1" update="false" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	

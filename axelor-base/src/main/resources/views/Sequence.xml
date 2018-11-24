@@ -13,25 +13,25 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     </grid>
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
-		<panel name="main">
+		<panel name="mainPanel">
             <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
                 <editor>
                     <field name="name" showTitle="false" colSpan="6" css="label-bold bold large" placeholder="Name" onChange="action-sequence-method-compute-fullname"/>
                 </editor>
             </field>
 			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
-			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" readonlyIf="$popup() &amp;&amp; company"/>
 		</panel>
-		<panel name="tips" title="Tips" sidebar="true" itemSpan="12">
-			<label title="The tags below can be used as a prefix or a suffix" />
-			<label title="%YYYY : Full Year (2017)" />
-			<label title="%YY : Year (17)" />
-			<label title="%M : Month (1, 2, 3, ...)" />
-			<label title="%FM : Full Month (01, 02, 03, ...)" />
-			<label title="%D : Day" />
-			<label title="%WY : Week number" />
+		<panel name="tipsPanel" title="Tips" sidebar="true" itemSpan="12">
+			<label name="prefixOrSuffixLabel" title="The tags below can be used as a prefix or a suffix" />
+			<label name="fullYearLabel" title="%YYYY : Full Year (2017)" />
+			<label name="%YYLabel" title="%YY : Year (17)" />
+			<label name="%MLabel" title="%M : Month (1, 2, 3, ...)" />
+			<label name="%FMLabel" title="%FM : Full Month (01, 02, 03, ...)" />
+			<label name="%DLabel" title="%D : Day" />
+			<label name="%WYLabel" title="%WY : Week number" />
 		</panel>
-		<panel name="sequenceDefinition" title="Sequence Definition" colSpan="12">
+		<panel name="sequenceDefinitionPanel" title="Sequence Definition" colSpan="12">
 			<field name="sequenceTypeSelect"/>
 			<field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'" requiredIf="sequenceTypeSelect == 'LETTERS'"/>
 			<field name="padding" onChange="action-sequence-method-compute-fullname" showIf="sequenceTypeSelect == 'NUMBERS'"/>
@@ -41,7 +41,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="yearlyResetOk" readonlyIf="monthlyResetOk" />
 			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
 		</panel>
-		<panel-related field="sequenceVersionList" grid-view="sequence-version-grid" form-view="sequence-version-form"  />
+		<panel-related name="sequenceVersionListPanel" field="sequenceVersionList" grid-view="sequence-version-grid" form-view="sequence-version-form"  />
 	</form>
 	
     <grid editable="true" name="sequence-version-grid" title="Versions" model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">
@@ -51,7 +51,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     </grid>
 	
     <form name="sequence-version-form" title="Version" model="com.axelor.apps.base.db.SequenceVersion" >
-    	<panel name="main" itemSpan="4">
+    	<panel name="mainPanel" itemSpan="4">
 	    	<field name="startDate" />
 	    	<field name="endDate" />
 	    	<field name="nextNum" />
@@ -68,8 +68,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
     	<field name="toBeAdded" expr="1"/>
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="company" expr="eval: _parent?.company"/>
+    	<field name="company" expr="eval:__user__.activeCompany" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany != null"/>
+    	<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     </action-record>
     
 	<action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">

@@ -8,14 +8,21 @@
     </grid>
 
     <form name="purchase-config-form" title="Purchase configuration" model="com.axelor.apps.purchase.db.PurchaseConfig" onNew="action-purchase-config-record-default">
-		<panel name="main" >
+		<panel name="mainPanel" >
 		  <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAtiSelect"/>
-		  <field name="priceDisplay"/>
-		  <field name="priceRequest" colSpan="12"/>
+		</panel>
+		<panel name="printingSettingsPanel" title="Printing settings">
+			<field name="displayBuyerOnPrinting" widget="boolean-switch"/>
+			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
+			<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
+			<field name="displayProductDetailOnPrinting" widget="boolean-switch"/>
+			<field name="purchaseOrderSupplierBox" widget="html" colSpan="12"/>
+			<field name="priceDisplay" widget="boolean-switch"/>
+		  	<field name="priceRequest" colSpan="12"/>
 		</panel>
     </form>
-	
+    
 	<action-record name="action-purchase-config-record-default" model="com.axelor.apps.purchase.db.PurchaseConfig">
 		<field name="company" expr="eval: _company" if="_company != null"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>

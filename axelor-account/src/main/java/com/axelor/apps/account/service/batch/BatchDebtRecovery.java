@@ -29,7 +29,9 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -39,6 +41,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.persistence.Table;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,16 +113,17 @@ public class BatchDebtRecovery extends BatchStrategy {
                     + "AND :_company MEMBER OF self.companySet "
                     + "AND self.accountingSituationList IS NOT EMPTY "
                     + "AND self.isCustomer = true "
-                    + "AND :_batch NOT MEMBER OF self.batchSet "
                     + "AND self.id NOT IN ("
                     + Beans.get(BlockingService.class)
                         .listOfBlockedPartner(company, BlockingRepository.REMINDER_BLOCKING)
                     + ")")
             .bind("_company", company)
-            .bind("_batch", batch);
+            .order("id");
 
+    int offset = 0;
     List<Partner> partnerList;
-    while (!(partnerList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+
+    while (!(partnerList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
 
       for (Partner partner : partnerList) {
@@ -127,7 +131,7 @@ public class BatchDebtRecovery extends BatchStrategy {
           boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
           if (remindedOk) {
             DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
-            debtRecovery.addBatchSetItem(batch);
+            addBatchToModel(debtRecovery);
           }
           incrementDone(partner);
         } catch (AxelorException e) {
@@ -148,20 +152,37 @@ public class BatchDebtRecovery extends BatchStrategy {
         }
       }
 
+      offset += partnerList.size();
       JPA.clear();
     }
   }
 
   protected void incrementDone(Partner partner) {
-    partner.addBatchSetItem(batch);
+    addBatchToModel(partner);
     _incrementDone();
   }
 
   protected void incrementAnomaly(Partner partner) {
     findBatch();
     partner = partnerRepository.find(partner.getId());
-    partner.addBatchSetItem(batch);
+    addBatchToModel(partner);
     _incrementAnomaly();
+  }
+
+  protected void addBatchToModel(Model model) {
+    String tableName = getBatchSetTableName(model);
+
+    // Insert using native query for performance reasons in case of big batch set.
+    String sqlString = String.format("INSERT INTO %s VALUES (:modelId, :batchId)", tableName);
+    javax.persistence.Query query = JPA.em().createNativeQuery(sqlString);
+    query.setParameter("modelId", model.getId());
+    query.setParameter("batchId", batch.getId());
+    JPA.runInTransaction(query::executeUpdate);
+  }
+
+  private String getBatchSetTableName(Model model) {
+    String modelTableName = EntityHelper.getEntityClass(model).getAnnotation(Table.class).name();
+    return modelTableName + "_BATCH_SET";
   }
 
   protected void generateMail() {

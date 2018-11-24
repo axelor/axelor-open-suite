@@ -21,26 +21,26 @@
 	<form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
 		onNew="action-employee-record-default" onLoad="action-employee-method-set-social-network-url" width="large">
 		<toolbar>
-			<button name="annualReport" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
+			<button name="annualReportBtn" title="Show expenses annual report" readonlyIf="!id" onClick="action-employee-view-annual-report-wizard"/>
 		</toolbar>
-	    <panel name="contact" title="Contact">
+	    <panel name="contactPanel" title="Contact">
             <field name="contactPartner" domain="self.partnerTypeSelect = 2 OR self.isContact = true" grid-view="partner-contact-grid" form-view="partner-contact-form" colSpan="12" showTitle="false">
 	            <editor x-viewer="true">
-		            <panel colSpan="3">
+		            <panel name="imagePanel" colSpan="3">
 						<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-						<panel colSpan="8" showIf="fullName != null">
-							<label name="google" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-							<label name="facebook" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-							<label name="twitter" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-							<label name="linkedin" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-							<label name="youtube" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+						<panel name="socialNetworkPanel" colSpan="8" showIf="fullName != null">
+							<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+							<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
 						</panel>
 					</panel>
-					<panel colSpan="9">
-						<panel colSpan="12">
+					<panel name="contactDetailsPanel" colSpan="9">
+						<panel name="subContactDetailsPanel" colSpan="12">
 							<field name="titleSelect" css="bold" colSpan="2"/>
-							<field name="name" title="Name"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
-							<field name="firstName"  css="bold" onChange="action-partner-record-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="name" title="Name"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
+							<field name="firstName"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
 				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
 							<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
@@ -51,23 +51,23 @@
 	            </editor>
             </field>
         </panel>
-        <panel-tabs>
-        	<panel name="information" title="Information">
-	        	<panel name="phonePro" title="Work phones" colSpan="12">
+        <panel-tabs name="mainPanelTab">
+        	<panel name="informationPanel" title="Information">
+	        	<panel name="phoneProPanel" title="Work phones" colSpan="12">
 	        		<field name="fixedProPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-fixedProPhone" colSpan="4"/>
 	        		<field name="mobileProPhone" placeholder="+33600000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-mobileProPhone" colSpan="4"/>
 					<field name="phoneAtCustomer" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-phoneAtCustomer" colSpan="4"/>
 	        	</panel>
-      			<panel name="personalInfo" title="Personal Info." colSpan="12">
+      			<panel name="personalInfoPanel" title="Personal Info." colSpan="12">
         			<field name="birthDate" colSpan="4"/>
         			<field name="maritalStatus" colSpan="4"/>
         			<field name="socialSecurityNumber" colSpan="4" min="12" max="15"/>
       			</panel>
-	        	<panel name="emergencyContact" title="Contact in case of emergency" colSpan="12">
+	        	<panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
 	        		<field name="emergencyContact" colSpan="4"/>
 	        		<field name="emergencyNumber" colSpan="4" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-employee-method-normalize-emergencyNumber"/>
 	        	</panel>
-      			<panel name="rhInfo" title="HR Info." colSpan="12">
+      			<panel name="rhInfoPanel" title="HR Info." colSpan="12">
         			<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" colSpan="4" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
         			<field name="managerUser" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
         			<field name="timesheetReminder" colSpan="4"/>
@@ -79,8 +79,8 @@
         			<field name="exportCode" colSpan="4"/>
       			</panel>
 	       	</panel>
-            <panel title="Employment contracts">
-              <panel name="contractualInfo" title="Contractual Info." colSpan="12">
+            <panel name="employmentContractsPanel" title="Employment contracts">
+              <panel name="contractualInfoPanel" title="Contractual Info." colSpan="12">
                 <field name="dateOfHire" colSpan="4"/>
                 <field name="seniorityDate" colSpan="4"/>
                 <field name="profitSharingBeneficiary" colSpan="4"/>
@@ -102,7 +102,7 @@
 				<field name="employmentContractList" colSpan="12"
 				   grid-view="employment-contract-employee-grid" form-view="employment-contract-form"/>
 			</panel>
-      <panel title="Leave List" if="__config__.app.isApp('leave')">
+      <panel name="leaveListPanel" title="Leave List" if="__config__.app.isApp('leave')">
         <field name="leaveLineList" grid-view="leave-line-grid"
         form-view="leave-line-form" colSpan="12"/>
         <field name="negativeValueLeave" colSpan="4"/>
@@ -113,29 +113,29 @@
 				<field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
 				<field name="timesheetReminder" colSpan="3"/>
                 <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
-				<panel-dashlet action="action-employee-view-user-timesheets" colSpan="12"/>
+				<panel-dashlet name="employeeUserTimesheetsPanel" action="action-employee-view-user-timesheets" colSpan="12"/>
 			</panel>
-	       	<panel name="lunchVoucher" title="Lunch Vouchers"
+	       	<panel name="lunchVoucherPanel" title="Lunch Vouchers"
 				   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
-	       		<button name="addLunchVoucherAdvance" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
-	       		<panel-dashlet title="Lunch Vouchers" colSpan="12"
+	       		<button name="addLunchVoucherAdvanceBtn" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
+	       		<panel-dashlet name="lunchVouchers" title="Lunch Vouchers" colSpan="12"
 							   action="action-employee-view-show-lunch-voucher"/>
-	       		<panel-related field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
+	       		<panel-related name="lunchVoucherAdvanceListPanel" field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 
-            <panel title="Expenses">
+            <panel name="expenses" title="Expenses">
                 <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"/>
                 <field name="companyCbDetails" hidden="true" showIf="companyCbSelect > 1"/>
-                <panel-related field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
+                <panel-related name="employeeAdvanceListPanel" field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
             </panel>
 
-	       	<panel name="Vehicle" title="Vehicle" if="__config__.app.isApp('expense')">
-		       	<panel-related field="kilometricLogList" title="Kilometric log"
+	       	<panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')">
+		       	<panel-related name="kilometricLogListPanel" field="kilometricLogList" title="Kilometric log"
 							   grid-view="kilometric-log-grid"
 							   form-view="kilometric-log-form" readonly="true" colSpan="12"
 							   if="__config__.app.isApp('timesheet')"/>
-				<panel name="vehicles" title="Vehicles" colSpan="12">
+				<panel name="vehicleListPanel" title="Vehicles" colSpan="12">
 					<field name="employeeVehicleList" colSpan="12" showTitle="false">
 						<editor x-show-on-new="true" x-viewer="true" x-layout="table" colSpan="12" itemSpan="4">
 							<field name="plateNo"/>
@@ -152,15 +152,16 @@
 	       	<panel-dashlet action="employee.dashlet.employee.bonus"
 						   title="Bonuses"
 						   colSpan="12" readonly="true"
-						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"/>
+						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"
+						   name="employeeBonusDashlet"/>
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
         </panel-tabs>
 	</form>
 	
 	<form title="Annual report" name="employee-annual-report-form" model="com.axelor.apps.hr.db.Employee">
-		<panel>
+		<panel name="mainPanel">
 			<field name="year" title="Year" type="many-to-one" target="com.axelor.apps.base.db.Year" domain="self.typeSelect = 1" />
-			<button name="showAnnualReport" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
+			<button name="showAnnualReportBtn" title="Show expenses annual report" readonlyIf="year == null" onClick="action-employee-method-show-annual-report" />
 		</panel>
 	</form>
 	

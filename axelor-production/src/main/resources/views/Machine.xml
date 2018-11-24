@@ -12,8 +12,8 @@
 
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large"
 		  onLoad="action-record-machine-set-operating-duration">
-		<panel name="main">
-			<panel colSpan="9">
+		<panel name="mainPanel">
+			<panel name="informationsPanel" colSpan="9">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
 				<field name="$fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 					<editor x-show-titles="false" x-viewer="true">
@@ -22,8 +22,8 @@
 					</editor>
 				</field>
 			</panel>
-			<panel colSpan="3">
-				<button name="$operatingDuration" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
+			<panel name="actionPanel" colSpan="3">
+				<button name="$operatingDurationBtn" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
 			</panel>
 			<field name="brand"/>
 			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>

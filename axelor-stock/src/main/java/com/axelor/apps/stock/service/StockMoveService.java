@@ -255,14 +255,6 @@ public interface StockMoveService {
   Address getToAddress(StockMove stockMove);
 
   /**
-   * Check whether mass information is required.
-   *
-   * @param stockMove
-   * @return
-   */
-  boolean checkMassesRequired(StockMove stockMove);
-
-  /**
    * Get partner address.
    *
    * @param stockMove
@@ -279,4 +271,6 @@ public interface StockMoveService {
    * @throws AxelorException
    */
   Address getCompanyAddress(StockMove stockMove) throws AxelorException;
+
+  void setAvailableStatus(StockMove stockMove);
 }

@@ -41,21 +41,6 @@ public interface SaleOrderLineService {
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException;
 
-  /**
-   * Compute product information.
-   *
-   * @param saleOrderLine
-   * @param saleOrder
-   * @param taxLineIsOptional
-   * @throws AxelorException
-   */
-  void computeProductInformation(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      boolean taxLineIsOptional,
-      Integer packPriceSelect)
-      throws AxelorException;
-
   SaleOrderLine resetProductInformation(SaleOrderLine line);
 
   /**
@@ -125,7 +110,7 @@ public interface SaleOrderLineService {
    */
   public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
 
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
@@ -139,7 +124,7 @@ public interface SaleOrderLineService {
   public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 

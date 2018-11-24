@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -34,6 +33,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -51,6 +51,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -338,11 +339,10 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void plan(StockMove stockMove) throws AxelorException {
 
-    LOG.debug(
-        "Planification du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    LOG.debug("Planification du mouvement de stock : {} ", stockMove.getStockMoveSeq());
 
     if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
       stockMove.setExTaxTotal(compute(stockMove));
@@ -391,16 +391,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
 
-    copyPlannedStockMovLines(stockMove);
-
-    stockMoveLineService.updateLocations(
-        fromStockLocation,
-        toStockLocation,
-        stockMove.getStatusSelect(),
-        StockMoveRepository.STATUS_PLANNED,
-        stockMove.getPlannedStockMoveLineList(),
-        stockMove.getEstimatedDate(),
-        false);
+    updateLocations(stockMove, fromStockLocation, toStockLocation);
 
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 
@@ -411,18 +402,41 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
+  /**
+   * Update locations from a planned stock move, by copying stock move lines in the stock move then
+   * updating locations.
+   *
+   * @param stockMove
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @throws AxelorException
+   */
+  protected void updateLocations(
+      StockMove stockMove, StockLocation fromStockLocation, StockLocation toStockLocation)
+      throws AxelorException {
+
+    copyPlannedStockMovLines(stockMove);
+    stockMoveLineService.updateLocations(
+        fromStockLocation,
+        toStockLocation,
+        stockMove.getStatusSelect(),
+        StockMoveRepository.STATUS_PLANNED,
+        stockMove.getPlannedStockMoveLineList(),
+        stockMove.getEstimatedDate(),
+        false);
+  }
+
   protected void copyPlannedStockMovLines(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList =
         MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
     stockMove.clearPlannedStockMoveLineList();
 
-    stockMoveLineList
-        .stream()
-        .forEach(
-            stockMoveLine -> {
-              StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
-              stockMove.addPlannedStockMoveLineListItem(copy);
-            });
+    stockMoveLineList.forEach(
+        stockMoveLine -> {
+          StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
+          copy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(copy);
+        });
   }
 
   @Override
@@ -442,6 +456,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     String newStockSeq = null;
+    stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     stockMoveLineService.checkExpirationDates(stockMove);
 
@@ -472,18 +487,15 @@ public class StockMoveServiceImpl implements StockMoveService {
     resetMasses(stockMove);
 
     try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
-        Optional<StockMove> newStockMove =
-            copyAndSplitStockMove(stockMove, stockMove.getPlannedStockMoveLineList());
+      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
+        Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
         if (newStockMove.isPresent()) {
           newStockSeq = newStockMove.get().getStockMoveSeq();
         }
       }
 
-      if (stockMove.getIsWithReturnSurplus()
-          && mustBeSplit(stockMove.getPlannedStockMoveLineList())) {
-        Optional<StockMove> newStockMove =
-            copyAndSplitStockMoveReverse(stockMove, stockMove.getPlannedStockMoveLineList(), true);
+      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
+        Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
         if (newStockMove.isPresent()) {
           if (newStockSeq != null) {
             newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
@@ -620,16 +632,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   private void computeMasses(StockMove stockMove) throws AxelorException {
-    boolean massesRequired = checkMassesRequired(stockMove);
     StockConfig stockConfig = stockMove.getCompany().getStockConfig();
     Unit endUnit = stockConfig != null ? stockConfig.getCustomsMassUnit() : null;
-
-    if (massesRequired && endUnit == null) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.STOCK_MOVE_17));
-    }
+    boolean massesRequiredForStockMove = false;
 
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
@@ -641,6 +646,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
+      boolean massesRequiredForStockMoveLine =
+          stockMoveLineService.checkMassesRequired(stockMove, stockMoveLine);
 
       if (product == null
           || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
@@ -652,8 +659,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (netMass.signum() == 0) {
         Unit startUnit = product.getMassUnit();
 
-        if (startUnit != null) {
-          netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass());
+        if (startUnit != null && endUnit != null) {
+          netMass =
+              unitConversionService.convert(
+                  startUnit, endUnit, product.getNetMass(), product.getNetMass().scale(), null);
           stockMoveLine.setNetMass(netMass);
         }
       }
@@ -661,27 +670,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (netMass.signum() != 0) {
         BigDecimal totalNetMass = netMass.multiply(stockMoveLine.getRealQty());
         stockMoveLine.setTotalNetMass(totalNetMass);
-      } else if (massesRequired) {
+      } else if (massesRequiredForStockMoveLine) {
         throw new AxelorException(
             stockMove,
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(IExceptionMessage.STOCK_MOVE_18));
       }
+
+      if (!massesRequiredForStockMove && massesRequiredForStockMoveLine) {
+        massesRequiredForStockMove = true;
+      }
     }
-  }
 
-  @Override
-  public boolean checkMassesRequired(StockMove stockMove) {
-    Address fromAddress = getFromAddress(stockMove);
-    Address toAddress = getToAddress(stockMove);
-
-    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
-    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
-
-    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-        && fromCountry != null
-        && toCountry != null
-        && !fromCountry.equals(toCountry);
+    if (massesRequiredForStockMove && endUnit == null) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.STOCK_MOVE_17));
+    }
   }
 
   @Override
@@ -1231,11 +1237,21 @@ public class StockMoveServiceImpl implements StockMoveService {
               : I18n.get("StockMove(s)");
     }
 
-    return ReportFactory.createReport(reportType, title + "-${date}")
-        .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
-        .generate()
-        .getFileLink();
+    String locale =
+        reportType.equals(IReport.PICKING_STOCK_MOVE)
+            ? Beans.get(UserService.class).getLanguage()
+            : ReportSettings.getPrintingLocale(stockMove.getPartner());
+
+    ReportSettings reportSettings =
+        ReportFactory.createReport(reportType, title + "-${date}")
+            .addParam("StockMoveId", stockMoveIds)
+            .addParam("Locale", locale);
+
+    if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
+      reportSettings.toAttach(stockMove);
+    }
+
+    return reportSettings.generate().getFileLink();
   }
 
   @Override
@@ -1350,5 +1366,13 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     return address;
+  }
+
+  @Override
+  public void setAvailableStatus(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      stockMoveLineService.setAvailableStatus(stockMoveLine);
+    }
   }
 }

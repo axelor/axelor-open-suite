@@ -27,9 +27,11 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -60,7 +62,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     this.bankOrderService = bankOrderService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
 
     if (bankOrders == null || bankOrders.size() <= 1) {
@@ -74,6 +76,12 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     BankOrder bankOrder = bankOrders.iterator().next();
 
     bankOrders.remove(bankOrder);
+
+    bankOrder.setSenderLabel(null);
+    bankOrder.setSenderReference(null);
+    bankOrder.setBankOrderDate(Beans.get(AppBaseService.class).getTodayDate());
+    bankOrder.setSignatoryUser(null);
+    bankOrder.setSignatoryEbicsUser(null);
 
     for (BankOrderLine bankOrderLine : this.getAllBankOrderLineList(bankOrders)) {
 

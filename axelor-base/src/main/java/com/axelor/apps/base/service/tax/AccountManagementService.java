@@ -23,52 +23,12 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface AccountManagementService {
 
-  /**
-   * Obtenir la bonne configuration comptable en fonction du produit et de la société.
-   *
-   * @param product
-   * @param company
-   * @return
-   * @throws AxelorException
-   */
-  public AccountManagement getAccountManagement(Product product, Company company)
-      throws AxelorException;
-
-  /**
-   * Generate an exception if account management is missing
-   *
-   * @param product
-   * @param company
-   * @throws AxelorException
-   */
-  public void generateAccountManagementException(Product product, Company company)
-      throws AxelorException;
-
-  /**
-   * Obtenir la bonne configuration comptable en fonction de la famille de produit et de la société
-   *
-   * @param productFamily
-   * @param company
-   * @return
-   * @throws AxelorException
-   */
-  public AccountManagement getAccountManagement(ProductFamily productFamily, Company company)
-      throws AxelorException;
-
-  /**
-   * Obtenir la bonne configuration comptable en fonction de la société.
-   *
-   * @param accountManagements
-   * @param company
-   * @return
-   */
   public AccountManagement getAccountManagement(
       List<AccountManagement> accountManagements, Company company);
 
@@ -84,16 +44,6 @@ public interface AccountManagementService {
   public Tax getProductTax(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException;
-
-  /**
-   * Obtenir le compte comptable d'une taxe.
-   *
-   * @param product
-   * @param company
-   * @param isPurchase
-   * @return
-   */
-  public Tax getProductTax(AccountManagement accountManagement, boolean isPurchase);
 
   /**
    * Obtenir la version de taxe d'un produit.

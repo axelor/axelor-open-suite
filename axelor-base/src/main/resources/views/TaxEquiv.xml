@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="tax-equiv-grid" title="Taxes equivalences" model="com.axelor.apps.account.db.TaxEquiv">
+    <grid name="tax-equiv-grid" title="Taxes equivalences" model="com.axelor.apps.account.db.TaxEquiv" orderBy="fromTax">
         <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
         <field name="reverseCharge" width="125px"/>
     </grid>
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
             <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
             <field name="reverseCharge" onChange="action-tax-equiv-attrs-hide-to-tax"/>

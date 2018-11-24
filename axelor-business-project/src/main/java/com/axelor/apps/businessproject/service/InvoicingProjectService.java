@@ -395,8 +395,6 @@ public class InvoicingProjectService {
                 .filter(taskQueryBuilder.toString())
                 .bind(taskQueryMap)
                 .fetch());
-
-    if (!project.getInvoiced()) invoicingProject.addProjectSetItem(project);
   }
 
   public void clearLines(InvoicingProject invoicingProject) {

@@ -18,11 +18,16 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.RawMaterialRequirement;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 
 public class RawMaterialRequirementServiceImpl implements RawMaterialRequirementService {
 
@@ -41,5 +46,22 @@ public class RawMaterialRequirementServiceImpl implements RawMaterialRequirement
         .addParam("Locale", locale)
         .generate()
         .getFileLink();
+  }
+
+  @Override
+  public String getSequence(RawMaterialRequirement rawMaterialRequirement) throws AxelorException {
+
+    String seq =
+        Beans.get(SequenceService.class)
+            .getSequenceNumber(
+                SequenceRepository.RAW_MATERIAL_REQUIREMENT, rawMaterialRequirement.getCompany());
+    if (seq == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE),
+          rawMaterialRequirement.getCompany().getName());
+    }
+
+    return seq;
   }
 }

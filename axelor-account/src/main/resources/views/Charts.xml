@@ -470,7 +470,7 @@
 	      meta.name = 'account.account.type.select'
 	      AND item.select = meta
 	      AND self.account.accountType.technicalTypeSelect = item.value  
-	      AND self.move.statusSelect = 3
+	      AND (self.move.statusSelect = 2 OR self.move.statusSelect = 3) 
 	      AND self.move.period.year = :year
 	      AND (self.move.period = :period OR :period IS NULL)
 	      AND self.move.company = :active_company

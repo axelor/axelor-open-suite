@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -25,7 +26,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Notification;
 import com.axelor.apps.account.db.NotificationItem;
 import com.axelor.apps.account.db.SubrogationRelease;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
@@ -38,6 +38,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -54,14 +55,16 @@ public class NotificationServiceImpl implements NotificationService {
     Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
     Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
-    List<Invoice> invoiceList =
-        notification
-            .getSubrogationRelease()
-            .getInvoiceSet()
-            .stream()
-            .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
-            .collect(Collectors.toList());
-
+    List<Invoice> invoiceList = new ArrayList<Invoice>();
+    if (notification.getSubrogationRelease() != null) {
+      invoiceList =
+          notification
+              .getSubrogationRelease()
+              .getInvoiceSet()
+              .stream()
+              .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
+              .collect(Collectors.toList());
+    }
     for (Invoice invoice : invoiceList) {
       if (invoice.getAmountRemaining().signum() > 0) {
         notification.addNotificationItemListItem(createNotificationItem(invoice));
@@ -74,17 +77,16 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validate(Notification notification) throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);
-    MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
     InvoicePaymentCreateService invoicePaymentCreateService =
         Beans.get(InvoicePaymentCreateService.class);
     ReconcileService reconcileService = Beans.get(ReconcileService.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
     SubrogationRelease subrogationRelease = notification.getSubrogationRelease();
-    Company company = subrogationRelease.getCompany();
+    Company company = notification.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
     boolean allCleared = true;
@@ -114,7 +116,13 @@ public class NotificationServiceImpl implements NotificationService {
         MoveLine creditMoveLine, debitMoveLine;
         boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
 
-        if (isOutPayment) {
+        if (!isOutPayment) {
+          Account account = accountConfig.getFactorCreditAccount();
+          if (notificationItem.getTypeSelect()
+              == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE_AFTER_FACTORE_RETURN) {
+            account = accountConfig.getFactorDebitAccount();
+          }
+
           creditMoveLine =
               moveService
                   .getMoveLineService()
@@ -135,7 +143,7 @@ public class NotificationServiceImpl implements NotificationService {
                   .createMoveLine(
                       paymentMove,
                       invoice.getPartner(),
-                      accountConfig.getFactorCreditAccount(),
+                      account,
                       amountPaid,
                       true,
                       notification.getPaymentDate(),
@@ -174,12 +182,13 @@ public class NotificationServiceImpl implements NotificationService {
                       invoice.getInvoiceId());
         }
 
-        moveLineRepo.save(creditMoveLine);
-        moveLineRepo.save(debitMoveLine);
-        invoicePaymentCreateService.createInvoicePayment(invoice, amountPaid, paymentMove);
-        moveService.getMoveValidateService().validateMove(paymentMove);
+        paymentMove.addMoveLineListItem(debitMoveLine);
+        paymentMove.addMoveLineListItem(creditMoveLine);
+        paymentMove = Beans.get(MoveRepository.class).save(paymentMove);
 
-        if (isOutPayment) {
+        moveService.getMoveValidateService().validate(paymentMove);
+
+        if (!isOutPayment) {
           reconcileService.reconcile(
               findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
         } else {

@@ -771,9 +771,9 @@
 			</attribute>
 		</attributes>
 		
-		<configuratorFormulaList>
-			<configuratorFormula>
-				<productMetaField>1441</productMetaField>
+		<configuratorProductFormulaList>
+			<configuratorProductFormula>
+				<metaField>1441</metaField>
 				<formula>description = ""
 if (carteMere_1?.description){
   description += "Carte mère : " + carteMere_1.description + "\n"
@@ -793,10 +793,10 @@ if (memoire_1?.description){
 return description;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1400</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1400</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -810,10 +810,10 @@ cp+=2*60
 return cp*nbOrdi_1*1.5</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1401</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1401</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -827,43 +827,43 @@ cp+=2*60
 return cp*nbOrdi_1</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1438</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1438</metaField>
 				<formula>"ORD"+"-"+ (__repo__(Product).all().filter("self.name = 'Ordinateur personnalisé'").count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1434</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1434</metaField>
 				<formula>"Ordinateur personnalisé"</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1445</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1445</metaField>
 				<formula>__repo__(ProductCategory).all().filter("self.code = 'SER'").fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1397</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1397</metaField>
 				<formula>'storable'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1436</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1436</metaField>
 				<formula>__repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
-			</configuratorFormula>
-		</configuratorFormulaList>
+			</configuratorProductFormula>
+		</configuratorProductFormulaList>
 		
 		<authorizedUserSet>
 			<authorizedUser>admin</authorizedUser>
@@ -1259,43 +1259,43 @@ return cp*nbOrdi_1</formula>
 			</attribute>
 		</attributes>
 		
-		<configuratorFormulaList>
-			<configuratorFormula>
-				<productMetaField>1401</productMetaField>
+		<configuratorProductFormulaList>
+			<configuratorProductFormula>
+				<metaField>1401</metaField>
 				<formula>((longueurA_2?:0)*(largeurA_2?:0)*(quantiteAffiches_2?:0))/6+0.30*(quantiteFlyers_2?:0)
 </formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1397</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1397</metaField>
 				<formula>'storable'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1434</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1434</metaField>
 				<formula>'Campagne publicitaire'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1438</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1438</metaField>
 				<formula>"PUB"+"-"+ (__repo__(Product).all().filter("self.name = 'Campagne publicitaire'").count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
-			</configuratorFormula>
+			</configuratorProductFormula>
 		
-			<configuratorFormula>
-				<productMetaField>1445</productMetaField>
+			<configuratorProductFormula>
+				<metaField>1445</metaField>
 				<formula>'forfait'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
-			</configuratorFormula>
-		</configuratorFormulaList>
+			</configuratorProductFormula>
+		</configuratorProductFormulaList>
 		
 		<authorizedUserSet>
 			<authorizedUser>admin</authorizedUser>

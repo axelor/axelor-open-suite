@@ -31,6 +31,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -65,8 +66,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
         unit = saleOrderLine.getUnit();
       } else {
         qty =
-            unitConversionService.convertWithProduct(
-                saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+            unitConversionService.convert(
+                saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
     }
 
@@ -154,5 +155,17 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     }
     purchaseOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return purchaseOrderLine;
+  }
+
+  public BigDecimal computeUndeliveredQty(PurchaseOrderLine purchaseOrderLine) {
+    Preconditions.checkNotNull(purchaseOrderLine);
+
+    BigDecimal undeliveryQty =
+        purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());
+
+    if (undeliveryQty.signum() > 0) {
+      return undeliveryQty;
+    }
+    return BigDecimal.ZERO;
   }
 }

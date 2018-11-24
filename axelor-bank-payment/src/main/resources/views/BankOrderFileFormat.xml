@@ -10,35 +10,35 @@
     </grid>
     
 	<form name="bank-order-file-format-form" title="Bank Orders file format" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat" canDelete="false"> 
-  		<panel name="main" colSpan="12">
+  		<panel name="mainPanel" colSpan="12">
 	        <field name="orderFileFormatSelect" required="true" onChange="action-bank-order-file-format-record-compute-name,action-bank-order-file-format-reset-order-debit-type"/>
 	        <field name="name" required="true"/>
   		</panel>
-  		<panel name="description" colSpan="12">
+  		<panel name="descriptionPanel" colSpan="12">
   			<field name="description" colSpan="12"/>
   		</panel>
-		<panel name="globalAttributes" title="Global attributes">
+		<panel name="globalAttributesPanel" title="Global attributes">
 			<field name="orderTypeSelect" onChange="action-bank-order-file-format-record-order-type-select-onchange" required="true"/>
 			<field name="fileGenerationSupported"/>
 			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
 			<field name="ibanOnly" showIf="bankDetailsTypeSelect == '1' &amp;&amp; (orderTypeSelect == '1' || orderTypeSelect == '2')"/>
             <field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
-            <panel showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
+            <panel name="qualifyingAmountSelectPanel" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
                 <field name="qualifyingOfAmountSelect" hidden="true" showIf="!allowOrderCurrDiffFromBankDetails" selection-in="['T']" colSpan="12"/>
                 <field name="qualifyingOfAmountSelect" hidden="true" showIf="allowOrderCurrDiffFromBankDetails" colSpan="12"/>
             </panel>
 		</panel>
-		<panel name="specificAttributes" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
+		<panel name="specificAttributesPanel" title="Specific attributes" hidden="true" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
 			<field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 			<field name="isMultiDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'" onChange="action-bank-order-file-format-reset-order-debit-type" />
 			<field name="isMultiCurrency" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'" onChange="action-bank-order-file-format-reset-order-debit-type" />
-            <panel showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' &amp;&amp; !isMultiDate">
+            <panel name="orderDebitTypeSelectPanel" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' &amp;&amp; !isMultiDate">
                 <field name="orderDebitTypeSelect" selection-in="[1, 2, 3]" showIf="!isMultiCurrency" colSpan="12" />
                 <field name="orderDebitTypeSelect" selection-in="[2, 3]" showIf="isMultiCurrency" colSpan="12" />
             </panel>
 			<field name="displayAdditionnalInformations" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'"/>
-			<panel title="Default additional information" colSpan="12" canCollapse="true" hidden="true" showIf="displayAdditionnalInformations">
+			<panel name="defaultAdditionalInfoPanel" title="Default additional information" colSpan="12" canCollapse="true" hidden="true" showIf="displayAdditionnalInformations">
 				<field name="displayBankOrderEconomicReason" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="bankOrderEconomicReason" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="displayReceiverCountry" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
@@ -47,6 +47,8 @@
 				<field name="paymentModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="displayFeesImputationModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
 				<field name="feesImputationModeSelect" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
+				<field name="displayReceiverAddress" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
+				<panel-related name="bankOrderFileFormatCountryListPanel" field="bankOrderFileFormatCountryList" grid-view="bank-order-file-format-country-grid" form-view="bank-order-file-format-country-form"/>
 			</panel>
 			<field name="displayFurtherInformations" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'"/>
 		</panel>

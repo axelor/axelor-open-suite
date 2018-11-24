@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
@@ -40,6 +41,7 @@ public interface MrpLineService {
       throws AxelorException;
 
   MrpLine createMrpLine(
+      Mrp mrp,
       Product product,
       int maxLevel,
       MrpLineType mrpLineType,
@@ -47,7 +49,7 @@ public interface MrpLineService {
       LocalDate maturityDate,
       BigDecimal cumulativeQty,
       StockLocation stockLocation,
-      Model... models);
+      Model model);
 
   MrpLineOrigin createMrpLineOrigin(Model model);
 

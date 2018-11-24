@@ -19,6 +19,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -162,33 +163,53 @@ public class SaleOrderLineController {
       Map<String, Object> discounts;
       if (saleOrderLine.getProduct().getInAti()) {
         discounts =
-            saleOrderLineService.getDiscount(
-                saleOrder, saleOrderLine, saleOrderLine.getInTaxPrice());
+            saleOrderLineService.getDiscountsFromPriceLists(
+                saleOrder,
+                saleOrderLine,
+                saleOrderLineService.getInTaxUnitPrice(
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
       } else {
         discounts =
-            saleOrderLineService.getDiscount(saleOrder, saleOrderLine, saleOrderLine.getPrice());
+            saleOrderLineService.getDiscountsFromPriceLists(
+                saleOrder,
+                saleOrderLine,
+                saleOrderLineService.getExTaxUnitPrice(
+                    saleOrder, saleOrderLine, saleOrderLine.getTaxLine()));
       }
 
-      if (discounts == null) {
-        return;
-      }
-
-      response.setValue("discountAmount", discounts.get("discountAmount"));
-      response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-      if (discounts.get("price") != null) {
-        if (saleOrderLine.getProduct().getInAti()) {
-          response.setValue("inTaxPrice", discounts.get("price"));
-          response.setValue(
-              "price",
-              saleOrderLineService.convertUnitPrice(
-                  true, saleOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-        } else {
-          response.setValue("price", discounts.get("price"));
-          response.setValue(
-              "inTaxPrice",
-              saleOrderLineService.convertUnitPrice(
-                  false, saleOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
+      if (discounts != null) {
+        BigDecimal price = (BigDecimal) discounts.get("price");
+        if (price != null
+            && price
+                != (saleOrderLine.getProduct().getInAti()
+                    ? saleOrderLine.getInTaxPrice()
+                    : saleOrderLine.getPrice())) {
+          if (saleOrderLine.getProduct().getInAti()) {
+            response.setValue("inTaxPrice", price);
+            response.setValue(
+                "price",
+                saleOrderLineService.convertUnitPrice(true, saleOrderLine.getTaxLine(), price));
+          } else {
+            response.setValue("price", price);
+            response.setValue(
+                "inTaxPrice",
+                saleOrderLineService.convertUnitPrice(false, saleOrderLine.getTaxLine(), price));
+          }
         }
+
+        if (saleOrderLine.getProduct().getInAti() != saleOrder.getInAti()
+            && (Integer) discounts.get("discountTypeSelect")
+                != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+          response.setValue(
+              "discountAmount",
+              saleOrderLineService.convertUnitPrice(
+                  saleOrderLine.getProduct().getInAti(),
+                  saleOrderLine.getTaxLine(),
+                  (BigDecimal) discounts.get("discountAmount")));
+        } else {
+          response.setValue("discountAmount", discounts.get("discountAmount"));
+        }
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
       }
 
     } catch (Exception e) {

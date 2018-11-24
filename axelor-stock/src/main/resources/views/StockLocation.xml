@@ -5,7 +5,7 @@
     
     <grid name="stock-location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
         <toolbar>
-    		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
+    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
     	</toolbar>
         <field name="name"/>
         <field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -35,15 +35,15 @@
     
 	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new" width="large" onLoad="action-stock-location-method-set-stock-location-value">
 		<toolbar>
-			<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory"/>
-			<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
+			<button name="createInventoryBtn" title="Create inventory" onClick="action-location-view-create-inventory"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
 		</toolbar>
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="typeSelect" colSpan="3"/>
 			<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="partner" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="address" form-view="address-form" grid-view="address-grid"/>
 			<field name="$stockLocationValue" title="Stock location value" readonly="true">
 			<viewer>
@@ -52,13 +52,21 @@
 					]]>
 				</viewer>
 			</field>
+            <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
 		</panel>    
-		<panel-tabs>
-			<panel name="locationContent" title="Location Content">
-				<panel-dashlet title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true" height="600"/>
+		<panel-tabs name="mainPanelTab">
+			<panel name="locationContentPanel" title="Location Content">
+				<panel-dashlet name="stockLocationLinesPanel" title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true" height="600"/>
 			</panel> 
-			<panel-dashlet title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true" height="600"/>
-		</panel-tabs>   
+			<panel-dashlet name="detailsStockLocationLinesPanel" title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true" height="600"/>
+			<panel name="configPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<field name="usableOnSaleOrder" colSpan="3"/>
+				<field name="usableOnPurchaseOrder" colSpan="3"/>
+				<field name="usableOnProduction" colSpan="3"/>
+				<field name="directOrderLocation" colSpan="3"/>
+				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
+			</panel>
+		</panel-tabs>
 		
 	</form>
     
@@ -81,14 +89,14 @@
     <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-grid" />
 		<view type="form" name="stock-location-line-form" />
-		<domain>self.stockLocation.id IN :contentLocationIds</domain>
+		<domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
 
     <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-details-grid" />
 		<view type="form" name="stock-location-line-details-form" />
-		<domain>self.detailsStockLocation.id IN :contentLocationIds</domain>
+		<domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
     

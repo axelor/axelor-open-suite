@@ -9,75 +9,50 @@
         <field name="user" form-view="user-form" grid-view="user-grid" />
        	<field name="team" form-view="team-form" grid-view="team-grid"/>
     </grid>
-    
-<!--     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration"  > -->
-<!-- 	    <group  > -->
-<!-- 	        <field name="name"/> -->
-<!-- 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>     -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Concerns"  > -->
-<!-- 	        <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null"/> -->
-<!-- 	        <field name="team" showIf="user == null"/>     -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Period"  > -->
-<!-- 	        <field name="periodTypeSelect"/> -->
-<!-- 	        <break/> -->
-<!-- 	        <field name="fromDate"/> -->
-<!-- 	        <field name="toDate"/> -->
-<!-- 	    </group> -->
-<!-- 	    <group title="Targets"     > -->
-<!-- 	        <group  > -->
-<!-- 	            <separator title="Opportunities"  /> -->
-<!-- 	            <break/> -->
-<!-- 	            <field name="opportunityAmountWon"/> -->
-<!-- 	            <break/> -->
-<!-- 	            <field name="opportunityCreatedNumber"/> -->
-<!-- 	            <break/> -->
-<!-- 	            <field name="opportunityCreatedWon"/> -->
-<!-- 	        </group> -->
-<!-- 	        <group  > -->
-<!-- 	            <separator title="Calls"  /> -->
-<!-- 	            <break/> -->
-<!-- 	            <field name="callEmittedNumber"/> -->
-<!-- 	        </group> -->
-<!-- 	        <group  > -->
-<!-- 	            <separator title="Meetings"  /> -->
-<!-- 	            <break/> -->
-<!-- 	            <field name="meetingNumber"/> -->
-<!-- 	        </group> -->
-	        <!--         <group title="Sales order"  > -->
-<!--         	<field name="saleOrderAmountWon"/> -->
-<!--         	<field name="saleOrderCreatedNumber"/> -->
-<!--         	<field name="saleOrderCreatedWon"/> -->
-<!--         </group> -->
-<!-- 	    </group> -->
-<!-- 	</form> -->
-    <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" width="large">
-	  <panel name="main" >
-	    <field name="name"/>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-	  </panel>
-	  <panel name="concerns" title="Concerns">
-	    <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null" form-view="user-form" grid-view="user-grid" />
-	    <field name="team" canEdit="false" showIf="user == null" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
-	  </panel>
-	  <panel name="period" title="Period">
-	    <field name="periodTypeSelect"/>
-	    <field name="fromDate"/>
-	    <field name="toDate"/>
-	  </panel>
-	  <panel name="targets" title="Targets">
-	      <panel title="Opportunities" colSpan="4">
-	        <field name="opportunityAmountWon" colSpan="12"/>
-	        <field name="opportunityCreatedNumber" colSpan="12"/>
-	        <field name="opportunityCreatedWon" colSpan="12"/>
-	      </panel>
-	      <panel name="calls" title="Calls" colSpan="4">
-	        <field name="callEmittedNumber"/>
-	     </panel>
-	     <panel name="meetings" title="Meetings" colSpan="4">
-	      <field name="meetingNumber"/>
-	    </panel>
-	  </panel>
+
+	<form name="target-configuration-form" title="Target configuration"
+		model="com.axelor.apps.crm.db.TargetConfiguration" width="large">
+		<panel name="informationPanel">
+			<field name="$fullName" showTitle="false" colSpan="12">
+				<viewer depends="name,code">
+					<![CDATA[
+						<h3>
+							{{record.code}} - {{record.name}}
+						</h3>
+					]]>
+				</viewer>
+				<editor x-show-titles="true">
+					<field name="code" x-bind="{{code|unaccent|uppercase}}"
+						colSpan="4" css="label-bold bold large" required="true" />
+					<field name="name" colSpan="8" css="label-bold bold large"
+						required="true" />
+				</editor>
+			</field>
+			<field name="user" colSpan="6" showIf="team == null" canNew="false"
+				canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" />
+			<field if="__config__.app.getApp('base').getTeamManagement()"
+				colSpan="6" name="team" showIf="user == null" canEdit="false"
+				form-view="team-form" grid-view="team-grid" />
+			<static />
+		</panel>
+
+		<panel-tabs name="otherDetailsPanel">
+			<panel title="Opportunities">
+				<field name="opportunityAmountWon" colSpan="3"/>
+				<field name="opportunityCreatedNumber" colSpan="3"/>
+				<field name="opportunityCreatedWon" colSpan="3"/>
+			</panel>
+			<panel name="eventsPanel" title="Events">
+				<field name="callEmittedNumber" colSpan="3"/>
+				<field name="meetingNumber" colSpan="3"/>
+			</panel>
+		</panel-tabs>
+
+		<panel sidebar="true" name="characteristics" title="Characteristics"
+			canCollapse="true">
+			<field name="periodTypeSelect" />
+			<field name="fromDate" colSpan="6" required="true" />
+			<field name="toDate" colSpan="6" required="true" />
+		</panel>
 	</form>
 </object-views>

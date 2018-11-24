@@ -12,23 +12,24 @@
 
 	<form model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
 		name="data-create-backup-form" onNew="data.create.backup.load.today.date"
-		width="mid">
-		<panel>
+		width="large">
+		<panel name="mainPanel">
 			<field name="statusSelect" readonly="true" widget="NavSelect"
-				selection-in="[0,1]" colSpan="3" />
-			<button name="backToDraft" title="Back To Draft"
-				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
-				colSpan="3" onClick="data.create.backup.set.draft.status" />
-			<spacer />
+				selection-in="[0,1,2]" colSpan="12" />
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
-				colSpan="3" />
-			<button name="create" title="Create"
+				colSpan="4" />
+			<button-group colSpan="3">
+			<button name="backToDraftBtn" title="Back To Draft"
+				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
+				colSpan="4" onClick="data.create.backup.set.draft.status" />
+			<button name="createBtn" title="Create"
 				showIf="backupMetaFile == null &amp;&amp; statusSelect != 1"
-				colSpan="3" onClick="save,action.data.backup.call.createbackup,save" />
-			<spacer />
+				colSpan="4" onClick="save,action.data.backup.call.createbackup,save" />
+			</button-group>
+			<spacer name="btnGrpSpacer" colSpan="12"/>
 			<field name="backupMetaFile" readonly="true" widget="binary-link"
-				colSpan="3" />
-			<field name="backupDate" readonly="true" colSpan="3" />
+				colSpan="4" />
+			<field name="backupDate" readonly="true" colSpan="4" />
 		</panel>
 	</form>
 
@@ -43,15 +44,14 @@
 		name="data-restore-backup-form" width="mid"
 		onNew="data.restore.backup.load.today.date">
 		<panel>
-			<field name="statusSelect" selection-in="[0,2,3]" readonly="true"
-				widget="NavSelect" />
-			<spacer />
+			<field name="statusSelect" selection-in="[0,1,3,4]" readonly="true"
+				widget="NavSelect" colSpan="12" />
 			<field name="backupMetaFile" required="true"
 				domain="self.fileName LIKE '%.zip'" colSpan="3" widget="binary-link"/>
-			<button name="restore" title="Restore"
+			<button name="restoreBtn" title="Restore"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect != 2"
 				onClick="save,action.data.backup.call.restorebackup,save" colSpan="3" />
-			<spacer />
+			<spacer name="restoreBtnSpacer" />
 			<field name="restoreDate" readonly="true" colSpan="3" />
 			<field name="logMetaFile" readonly="true" widget="binary-link"
 				colSpan="3" />

@@ -5,16 +5,31 @@
 
 	<grid model="com.axelor.apps.account.db.NotificationItem" title="Notification items"
 		name="notification-item-grid">
-		<field name="invoice" readonly="true" />
+		<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange"/>
 		<field name="amountPaid" />
+		<field name="typeSelect"/>
 	</grid>
 
 	<form model="com.axelor.apps.account.db.NotificationItem" title="Notification item"
-		name="notification-item-form">
-		<panel>
-			<field name="invoice" readonly="true" />
+		name="notification-item-form" onNew="action-account-record-notification-item-type-select">
+		<panel name="mainPanel">
+			<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange"/>
 			<field name="amountPaid" />
+			<field name="typeSelect"/>
 		</panel>
 	</form>
+
+	<action-record name="action-account-record-notification-item-type-select" model="com.axelor.apps.account.db.NotificationItem">
+		<field name="typeSelect" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-account-record-notification-item-invoice-onchange" model="com.axelor.apps.account.db.NotificationItem">
+		<field name="amountPaid" expr="eval: invoice?.amountRemaining"/>
+	</action-record>
+	
+	<action-attrs name="action-account-attrs-notification-item-invoice-domain">
+		<attribute if="_parent?.subrogationRelease != null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.id = ${__parent__?.subrogationRelease?.id}) &quot;" for="invoice"/>
+		<attribute if="_parent?.subrogationRelease == null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.statusSelect = 3 AND sr.company.id =  ${__parent__?.company?.id}) &quot;" for="invoice"/>
+	</action-attrs>
 
 </object-views>

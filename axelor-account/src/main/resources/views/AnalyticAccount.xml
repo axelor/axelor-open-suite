@@ -25,7 +25,7 @@
     </tree>
     
     <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount"  >
-        <panel name="main" >
+        <panel name="mainPanel">
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -34,7 +34,7 @@
     </form>
     
     <form name="analytic-account-info-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" width="large">
-		<panel title="Analytic Account details" readonly="true">
+		<panel name="mainPanel" title="Analytic Account details" readonly="true">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="6" css="bold"/>
 			<field name="name" colSpan="6" css="bold"/>
 			<field name="analyticAxis" title="Account Type" colSpan="6"/> 

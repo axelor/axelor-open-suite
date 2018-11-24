@@ -33,12 +33,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -140,11 +142,25 @@ public class ManufOrderController {
   public void plan(ActionRequest request, ActionResponse response) {
 
     try {
-      Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
-
-      manufOrderWorkflowService.plan(manufOrder);
-
+      Context context = request.getContext();
+      List<ManufOrder> manufOrders = new ArrayList<>();
+      if (context.get("id") != null) {
+        Long manufOrderId = (Long) request.getContext().get("id");
+        manufOrders.add(manufOrderRepo.find(manufOrderId));
+      } else if (context.get("_ids") != null) {
+        manufOrders =
+            manufOrderRepo
+                .all()
+                .filter(
+                    "self.id in ?1 and self.statusSelect in (?2,?3)",
+                    context.get("_ids"),
+                    ManufOrderRepository.STATUS_DRAFT,
+                    ManufOrderRepository.STATUS_CANCELED)
+                .fetch();
+      }
+      for (ManufOrder manufOrder : manufOrders) {
+        manufOrderWorkflowService.plan(manufOrder);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

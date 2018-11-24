@@ -177,7 +177,6 @@
 
 	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
 		<option value="12">Direct debit</option>
-		<option value="20">Bank statement</option>
 	</selection>
 
 	<selection name="iaccount.account.batch.direct.debit.data.type.select">
@@ -215,10 +214,15 @@
     
     <selection name="bank.payment.batch.action.select">
 		<option value="1">Check the ebics certificate validation date</option>
+		<option value="2">Bank statement</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select" id="bankpayment.sequence.generic.code.select">
 		<option value="bankOrder">Bank order</option>
+	</selection>
+	
+	<selection name="meta.schedule.batch.service.select" id="bank.payment.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService">com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService</option>
 	</selection>
 
 </object-views>

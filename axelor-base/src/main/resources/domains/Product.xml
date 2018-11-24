@@ -103,8 +103,8 @@
 
 		<many-to-one name="massUnit" ref="com.axelor.apps.base.db.Unit"
 			title="Unit of mass" />
-		<decimal name="grossMass" title="Gross mass" />
-		<decimal name="netMass" title="Net mass" />
+		<decimal name="grossMass" title="Gross mass" precision="20" scale="3" />
+		<decimal name="netMass" title="Net mass" precision="20" scale="3" />
 
 		<many-to-one name="lengthUnit" ref="com.axelor.apps.base.db.Unit"
 			title="Unit of length" />
@@ -113,7 +113,8 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-
+		<decimal name="economicManufOrderQty" title="Economic manuf. qty"/>
+		
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
 		<one-to-many name="saleProductMultipleQtyList"
@@ -127,8 +128,7 @@
 			title="Multiple quantities" orderBy="multipleQty" />
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
-			
-
+		
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

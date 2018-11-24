@@ -29,4 +29,13 @@ public interface RawMaterialRequirementService {
    * @return URL to the printed report.
    */
   String print(RawMaterialRequirement rawMaterialRequirement) throws AxelorException;
+
+  /**
+   * Fetch next value for the sequence linked to the given raw material requirement.
+   *
+   * @param rawMaterialRequirement the report needing a sequence.
+   * @return a string containing the value from the sequence.
+   * @throws AxelorException if there is no sequence found.
+   */
+  String getSequence(RawMaterialRequirement rawMaterialRequirement) throws AxelorException;
 }

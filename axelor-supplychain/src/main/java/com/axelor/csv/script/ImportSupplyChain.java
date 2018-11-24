@@ -166,7 +166,8 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove = stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
+        StockMove stockMove =
+            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
         if (stockMove != null
             && stockMove.getStockMoveLineList() != null
             && !stockMove.getStockMoveLineList().isEmpty()) {

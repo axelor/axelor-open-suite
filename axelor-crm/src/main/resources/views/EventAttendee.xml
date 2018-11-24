@@ -9,7 +9,7 @@
     </grid>
     
     <form name="event-attendee-contact-form" title="Contact" model="com.axelor.apps.crm.db.EventAttendee" >
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	    	<field name="statusSelect"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showIf="contactPartner"/>
 	        <field name="lead" showIf="lead" form-view="lead-form" grid-view="lead-grid"/>

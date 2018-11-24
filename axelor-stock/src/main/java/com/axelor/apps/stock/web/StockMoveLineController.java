@@ -23,8 +23,10 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -46,6 +48,8 @@ import java.util.Map;
 public class StockMoveLineController {
 
   @Inject protected StockMoveLineService stockMoveLineService;
+
+  @Inject private StockMoveService stockMoveService;
 
   @Inject protected StockMoveLineRepository stockMoveLineRepo;
 
@@ -126,7 +130,17 @@ public class StockMoveLineController {
   }
 
   public void openTrackNumberWizard(ActionRequest request, ActionResponse response) {
-    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove = null;
+    if (context.getParent() != null
+        && context.getParent().get("_model").equals("com.axelor.apps.stock.db.StockMove")) {
+      stockMove = context.getParent().asType(StockMove.class);
+    } else if (stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getId() != null) {
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
+    }
+
     boolean _hasWarranty = false, _isPerishable = false;
     if (stockMoveLine.getProduct() != null) {
       _hasWarranty = stockMoveLine.getProduct().getHasWarranty();
@@ -141,6 +155,7 @@ public class StockMoveLineController {
             .param("show-confirm", "false")
             .param("width", "500")
             .param("popup-save", "false")
+            .context("_stockMove", stockMove)
             .context("_stockMoveLine", stockMoveLine)
             .context("_hasWarranty", _hasWarranty)
             .context("_isPerishable", _isPerishable)
@@ -182,5 +197,23 @@ public class StockMoveLineController {
       response.setValue("$availableQty", stockMoveLine.getAvailableQty());
       response.setValue("$availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
     }
+  }
+
+  public void setProductDomain(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove =
+        context.getParent() != null
+            ? context.getParent().asType(StockMove.class)
+            : stockMoveLine.getStockMove();
+    String domain = stockMoveLineService.createDomainForProduct(stockMoveLine, stockMove);
+    response.setAttr("product", "domain", domain);
+  }
+
+  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
+    response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
   }
 }

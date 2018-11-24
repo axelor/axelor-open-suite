@@ -18,6 +18,7 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+		<context name="_fromProduction" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
@@ -225,6 +226,14 @@
 				 model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" >
 	<view type="grid" name="configurator-prod-process-line-grid" />
 	<view type="form" name="configurator-prod-process-line-form" />
+	</action-view>
+	
+	<menuitem title="Product approvals" name="manufacturing-conf-product-approvals" parent="manufacturing-conf" 
+				action="manufacturing.conf.product.approvals"/>
+				
+	<action-view name="manufacturing.conf.product.approvals" title="Product approvals" model="com.axelor.apps.production.db.ProductApproval">
+		<view type="grid" name="product-approval-grid"/>
+		<view type="form" name="product-approval-form"/>
 	</action-view>
 
 	<!-- TOP MENU -->

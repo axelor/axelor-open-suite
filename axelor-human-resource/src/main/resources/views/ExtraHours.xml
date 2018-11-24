@@ -14,7 +14,7 @@
 	
 	<grid name="extra-hours-validate-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
 		<toolbar>
-			<button name="showSubordinateExtraHoursToValidate" title="Show extra hours to be validated by my subordinates" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:showSubordinateExtraHours"/>
+			<button name="showSubordinateExtraHoursToValidateBtn" title="Show extra hours to be validated by my subordinates" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:showSubordinateExtraHours"/>
 		</toolbar>
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
@@ -27,32 +27,33 @@
 	<form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours" cols="12" width="large"
 	    onNew="action-group-extra-hours-onnew"
 	    onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project" canNew="false" canCopy="false">
-		<panel>
-			<panel colSpan="9">
+		<panel name="mainPanel">
+			<panel colSpan="9" name="statusPanel">
 				<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
 			</panel>
-			<panel name="actions" itemSpan="12" colSpan="3">
-				<button name="confirmButton" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
-				<button name="validateButton" hidden="true" onClick="action-extra-hours-group-validate" title="Validate"/>
-				<button name="refuseButton" hidden="true" onClick="action-extra-hours-group-refuse" title="Refuse"/>
-				<button name="cancelButton" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-				<button name="draftButton" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
+			<panel name="actionsPanel" itemSpan="12" colSpan="3">
+				<button name="confirmBtn" onClick="action-extra-hours-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
+				<button name="validateBtn" hidden="true" onClick="action-extra-hours-group-validate" title="Validate"/>
+				<button name="refuseBtn" hidden="true" onClick="action-extra-hours-group-refuse" title="Refuse"/>
+				<button name="cancelBtn" onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons" hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+				<button name="draftBtn" onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
 			</panel>
 		</panel>
-		<panel name="head">
-			<field name="sentDate" colSpan="4"/>
-			<field name="company" canEdit="false" colSpan="4" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+		<panel name="headPanel">
+			<field name="sentDate" colSpan="3"/>
+			<field name="totalQty" colSpan="3"/>
+			<field name="company" canEdit="false" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" colSpan="3" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
-		<panel-related field="extraHoursLineList"/>
-		<panel>
+		<panel-related name="extraHoursLineListPanel" field="extraHoursLineList" onChange="action-extra-hours-method-compute"/>
+		<panel name="validationPanel">
 			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	    </panel-mail>
@@ -64,7 +65,7 @@
 	
 	<form name="popup-extra-hours-form" title="Select the extra hours you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
 		<field name="$extraHoursSelect" title="Select extra hours" type="many-to-one" target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox" />
-		<button name="editExtraHoursSelected" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
+		<button name="editExtraHoursSelectedBtn" title="Edit extra hours selected" onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
 	</form>
 	
 	<action-group name="action-group-extra-hours-onnew">
@@ -104,9 +105,9 @@
 	</action-record>
 	
 	<action-attrs name="action-extra-hours-attrs-buttons">
-		<attribute name="hidden" for="validateButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="refuseButton" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
-		<attribute name="readonly" for="head" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
+		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+		<attribute name="readonly" for="headPanel" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-extra-hours-attrs-title-project">
@@ -131,6 +132,10 @@
 	
 	<action-method name="action-extra-hours-method-cancel">
 	    <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="cancel"/>
+	</action-method>
+
+	<action-method name="action-extra-hours-method-compute">
+		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="compute"/>
 	</action-method>
 
 	<action-view name="action-extra-hours-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.ExtraHours">

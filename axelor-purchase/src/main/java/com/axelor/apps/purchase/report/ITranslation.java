@@ -83,4 +83,12 @@ public interface ITranslation {
       "PurchaseOrder.statusFinished"; /*)*/
   public static final String PURCHASE_ORDER_STATUS_CANCELED = /*$$(*/
       "PurchaseOrder.statusCanceled"; /*)*/
+  public static final String PURCHASE_ORDER_DESIRED_DELIV_DATE = /*$$(*/
+      "PurchaseOrder.desiredDelivDate"; /*)*/
+  public static final String PURCHASE_ORDER_BUYER = /*$$(*/ "PurchaseOrder.buyer"; /*)*/
+  public static final String PURCHASE_ORDER_INVOICING_ADDRESS = /*$$(*/
+      "PurchaseOrder.invoicingAddress"; /*)*/
+  public static final String PURCHASE_ORDER_DELIVERY_ADDRESS = /*$$(*/
+      "PurchaseOrder.deliveryAddress"; /*)*/
+  public static final String PURCHASE_ORDER_ORDER_DATE = /*$$(*/ "PurchaseOrder.orderDate"; /*)*/
 }

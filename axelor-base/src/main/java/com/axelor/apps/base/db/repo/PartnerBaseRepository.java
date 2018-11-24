@@ -69,7 +69,8 @@ public class PartnerBaseRepository extends PartnerRepository {
               I18n.get(IExceptionMessage.PARTNER_EMAIL_EXIST));
         }
       }
-      partner.setFullName(partnerService.computeFullName(partner));
+      partnerService.setPartnerFullName(partner);
+      partnerService.setCompanyStr(partner);
       return super.save(partner);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

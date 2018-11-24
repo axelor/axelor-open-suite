@@ -26,14 +26,15 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -59,27 +60,36 @@ public class PurchaseOrderController {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    if (purchaseOrder.getId() != null) {
-      if (purchaseOrderServiceSupplychain.existActiveStockMoveForPurchaseOrder(
-          purchaseOrder.getId())) {
-        if (!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()) {
-          response.setFlash(I18n.get("An active stockMove already exists for this purchaseOrder"));
-        }
-      } else {
-        Long stockMoveId =
+    try {
+      if (purchaseOrder.getId() != null) {
+
+        List<Long> stockMoveList =
             purchaseOrderServiceSupplychain.createStocksMove(
                 Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-        if (!appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()) {
+
+        if (stockMoveList != null && stockMoveList.size() == 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(stockMoveId))
+                  .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());
+        } else if (stockMoveList != null && stockMoveList.size() > 1) {
+          response.setView(
+              ActionView.define(I18n.get("Stock move"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
+                  .map());
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -204,22 +214,34 @@ public class PurchaseOrderController {
 
     StringBuilder fieldErrors = new StringBuilder();
     if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.purchase.exception.IExceptionMessage
+                  .PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (commonSupplierPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.purchase.exception.IExceptionMessage
+                  .PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.purchase.exception.IExceptionMessage
+                  .PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
     if (commonTradingName == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+      fieldErrors.append(
+          I18n.get(
+              com.axelor.apps.purchase.exception.IExceptionMessage
+                  .PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
     if (fieldErrors.length() > 0) {

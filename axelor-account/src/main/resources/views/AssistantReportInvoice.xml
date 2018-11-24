@@ -17,20 +17,20 @@
     
      <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-form"
     	onNew="action-print-invoices-details-record-on-new-sales">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
-    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true"/>
+    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
     		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
-    		<label title="OR"/>
+    		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
-    	<panel name="options" title="Options" sidebar="true">
+    	<panel name="optionsPanel" title="Options" sidebar="true">
     		<field name="graphTypeSelect" widget="RadioSelect"/>
     		<field name="formatSelect" widget="RadioSelect"/>
 			<field name="turnoverTypeSelect" widget="RadioSelect"/>
-    		<button name="printReport" title="Print" onClick="action-print-invoices-details-group-print-sales"/>
+    		<button name="printReportBtn" title="Print" onClick="action-print-invoices-details-group-print-sales"/>
             <field name="publicationDateTime"/>
     		<field name="type" hidden="true"/>
     	</panel>
@@ -38,20 +38,20 @@
     
     <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-form"
     	onNew="action-print-invoices-details-record-on-new-purchases">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
-    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true"/>
+    		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
     		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
-    		<label title="OR"/>
+    		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
-    	<panel name="options" title="Options" sidebar="true">
+    	<panel name="optionsPanel" title="Options" sidebar="true">
             <field name="graphTypeSelect" widget="RadioSelect"/>
             <field name="formatSelect" widget="RadioSelect"/>
 			<field name="turnoverTypeSelect" widget="RadioSelect"/>
-    		<button name="printReport" title="Print" onClick="action-print-invoices-details-group-print-purchases"/>
+    		<button name="printReportBtn" title="Print" onClick="action-print-invoices-details-group-print-purchases"/>
 			<field name="publicationDateTime"/>
     		<field name="type" hidden="true"/>
     	</panel>

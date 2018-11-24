@@ -27,6 +27,8 @@ public interface ITranslation {
       "StockLocation.totalSaleValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.totalAccountingValue"; /*)*/
+  public static final String STOCK_LOCATION_TOTAL_WAP_VALUE = /*$$(*/
+      "StockLocation.totalWapValue"; /*)*/
   public static final String STOCK_LOCATION_LOCATION_TOTAL_CONTENT = /*$$(*/
       "StockLocation.locationTotalContent"; /*)*/
   public static final String STOCK_LOCATION_PRODUCT_NAME = /*$$(*/
@@ -36,6 +38,7 @@ public interface ITranslation {
   public static final String STOCK_LOCATION_SALE_VALUE = /*$$(*/ "StockLocation.saleValue"; /*)*/
   public static final String STOCK_LOCATION_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.accountingValue"; /*)*/
+  public static final String STOCK_LOCATION_WAP_VALUE = /*$$(*/ "StockLocation.wapValue"; /*)*/
   public static final String STOCK_LOCATION_UNIT_VALUE = /*$$(*/ "StockLocation.unitValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL = /*$$(*/ "StockLocation.total"; /*)*/
   public static final String STOCK_LOCATION_DETAILS_BY_STOCK_LOCATION = /*$$(*/
@@ -79,12 +82,31 @@ public interface ITranslation {
   public static final String STOCK_MOVE_GROSS_MASS = /*$$(*/ "StockMove.grossMass"; /*)*/
   public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
   public static final String STOCK_MOVE_ISPM = /*$$(*/ "StockMove.ispm"; /*)*/
+  public static final String STOCK_MOVE_CUSTOMER_PARTNER_SEQ = /*$$(*/
+      "StockMove.customerPartnerSeq"; /*)*/
+  public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
+      "StockMove.supplierPartnerSeq"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/
   public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
+  public static final String STOCK_MOVE_PRODUCTION_NOTE = /*$$(*/ "StockMove.productionNote"; /*)*/
+  public static final String PICKING_STOCK_MOVE_LINE_NUMBER = /*$$(*/
+      "PickingStockMove.lineNumber"; /*)*/
+  public static final String PICKING_STOCK_MOVE_WEEK_CODE = /*$$(*/
+      "PickingStockMove.weekCode"; /*)*/
+  public static final String PICKING_STOCK_MOVE_SIGNALING = /*$$(*/
+      "PickingStockMove.signaling"; /*)*/
+  public static final String PICKING_STOCK_MOVE_CODE = /*$$(*/ "PickingStockMove.code"; /*)*/
+  public static final String PICKING_STOCK_MOVE_MANUAL = /*$$(*/ "PickingStockMove.manual"; /*)*/
+  public static final String PICKING_STOCK_MOVE_ASPECT = /*$$(*/ "PickingStockMove.aspect"; /*)*/
+  public static final String PICKING_STOCK_MOVE_MARK = /*$$(*/ "PickingStockMove.mark"; /*)*/
+  public static final String PICKING_STOCK_MOVE_VISA = /*$$(*/ "PickingStockMove.visa"; /*)*/
+  public static final String PICKING_STOCK_MOVE_QTY = /*$$(*/ "PickingStockMove.qty"; /*)*/
+  public static final String PICKING_STOCK_MOVE_WITH_WITHOUT = /*$$(*/
+      "PickingStockMove.withWithout"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/

@@ -71,4 +71,6 @@ public interface ITranslation {
 
   public static final String SALES_ORDER_DURATION = /*$$(*/ "SaleOrder.duration"; /*)*/;
   public static final String SALES_ORDER_VALIDITY_DATE = /*$$(*/ "SaleOrder.validityDate"; /*)*/;
+  public static final String SALES_ORDER_ESTIMATED_DELIVERY_DATE = /*$$(*/
+      "SaleOrder.estimatedDeliveryDate"; /*)*/;
 }

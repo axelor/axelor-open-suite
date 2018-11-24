@@ -8,7 +8,7 @@
     </grid>
     
     <form name="vehicle-tag-form" title="Vehicle tag" model="com.axelor.apps.fleet.db.VehicleTag" width="large">
-       <panel>
+       <panel name="mainPanel">
      		<field name="name"/>
 	   </panel>
     </form>
