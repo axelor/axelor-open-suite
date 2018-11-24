@@ -235,6 +235,7 @@ Also in case of aggregation, we have to concatenate the tracking number list and
 - StockMove report : Display rack of from and to stock location (for internal and ingoing stock move), display invoicing and delivery address for outgoing stock move.
 Only display line where quantity is greater than 0.
 - Add a specific not for invoice on company bank details
+- Code improvements on creating a new purchase order.
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
