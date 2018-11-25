@@ -18,7 +18,7 @@
 	        <field name="typeSelect"/>
 	        <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
 			<field name="dataMetaFile" widget="binary-link" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-			<button name="import" title="ImporterBtn" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
+			<button name="importBtn" title="Importer" colSpan="4" onClick="save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
         </panel>
         <panel-tabs name="mainPanelTab">
         	<panel name="descriptionPanel" title="Description"> 
@@ -31,14 +31,14 @@
 	<form name="import-calendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
         <panel name="mainPanel" >
     		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="import" title="Import CalendarBtn" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+    		<button name="importBtn" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.crm.web.CalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
         </panel>      	
 	</form>
 	
 	<form name="import-icalendar-form" title="Import calendar" model="com.axelor.apps.base.db.ImportConfiguration" width="large">
         <panel name="mainPanel" >
     		<field name="dataMetaFile" onSelect="action-attrs-calendar-type-file" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
-    		<button name="import" title="Import CalendarBtn" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
+    		<button name="importBtn" title="Import Calendar" colSpan="5" onClick="com.axelor.apps.base.web.ICalendarController:importCalendarFile" prompt="Are you sure you want to start the import?" />
         </panel>      	
 	</form>
   

@@ -321,7 +321,7 @@
         </panel>
     </form>
     
-    <action-view title="Special splitBtn" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
+    <action-view title="Special split" model="com.axelor.apps.base.db.Wizard" name="action-stock-move-wizard-special-split">
 	    <view type="form" name="stock-move-wizard-special-split-form"/>
 	    <view-param name="popup" value="reload"/>
         <view-param name="forceEdit" value="true"/>

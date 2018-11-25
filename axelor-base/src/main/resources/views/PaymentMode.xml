@@ -17,7 +17,7 @@
   			<field name="validatePaymentByDepositSlipPublication" showIf="inOutSelect == 1 &amp;&amp; [5, 7].indexOf(typeSelect) >= 0" if="__config__.app.getApp('account')?.paymentVouchersOnInvoice" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
-	        <panel-related field="accountManagementListPanel" grid-view="account-management-payment-mode-grid" form-view="account-management-form"
+	        <panel-related name="accountManagementListPanel" field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-form"
 		        domain="self.typeSelect = 3" colSpan="12" if-module="axelor-account" if="__config__.app.isApp('account')" />
 	        <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')">
 				<field name="generateBankOrder" showIf="typeSelect == 2 || typeSelect == 9" />

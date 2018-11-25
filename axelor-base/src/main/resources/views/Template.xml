@@ -60,7 +60,7 @@
 						form-view="birt-template-form" grid-view="birt-template-grid" />
 				</panel>
 			</panel>
-			<panel title="ConfigurationPanel">
+			<panel title="Configuration" name="configurationPanel">
 				<field name="isDefault" widget="boolean-switch" />
 				<field name="isSystem" widget="boolean-switch" />
 			</panel>

@@ -81,7 +81,7 @@
                 </panel>
                 <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                        <panel title="EngagementPanel" name="engagement">
+                        <panel title="Engagement" name="engagementPanel">
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
                             <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
                             <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement"/>

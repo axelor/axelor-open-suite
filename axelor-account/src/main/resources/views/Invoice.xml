@@ -285,7 +285,7 @@ InvoiceSet.length > 0))"
 				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 				<button name="messageBtn" title="Show mail" showIf="statusSelect == 3" onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
 			</panel>
-			<panel title="PrintingPanel" name="printing" colSpan="12">
+			<panel title="Printing" name="printingPanel" colSpan="12">
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
@@ -315,7 +315,7 @@ InvoiceSet.length > 0))"
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
         </panel>
 
-        <panel-stack name="OtherDetails" sidebar="true" hideIf="partner == null">
+        <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
 			<panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
 				<field name="internalReference"/>
 				<field name="externalReference"/>
@@ -395,7 +395,7 @@ InvoiceSet.length > 0))"
 			</field>
 		</panel>
 
-		<panel-mail name="mails">
+		<panel-mail name="mailPanel">
 			<mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
@@ -465,7 +465,7 @@ InvoiceSet.length > 0))"
 			</panel>
 		</panel-tabs>
 
-		<panel-stack name="OtherDetails" sidebar="true">
+		<panel-stack name="otherDetailsPanel" sidebar="true">
 			<panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6">
 				<field name="internalReference"/>
 				<field name="externalReference"/>
