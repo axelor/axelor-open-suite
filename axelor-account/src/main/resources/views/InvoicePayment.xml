@@ -39,7 +39,7 @@
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
-		<panel name="otherDetails" showIf="id">
+		<panel name="otherDetailsPanel" showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>

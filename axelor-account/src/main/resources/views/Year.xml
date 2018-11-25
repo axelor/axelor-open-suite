@@ -27,7 +27,7 @@
 		</panel>
 		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
 		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel"/>
-		<panel name="actions" sidebar="true" readonlyIf="statusSelect == 2">
+		<panel name="actionsPanel" sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" showIf="statusSelect == 2"/>

@@ -479,7 +479,7 @@
     </action-record>
     
     <action-record name="action-product-set-total-variants" model="com.axelor.apps.base.db.Product">
-    	<field name="$totalVariants" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>
+    	<field name="$totalVariantsBtn" expr="eval:__repo__(Product).all().filter('self.parentProduct.id = ?',id).fetch().size"/>
     </action-record>
 	
 	<action-record name="action-product-record-calculate-volume-diameter" model="com.axelor.apps.base.db.Product">

@@ -87,7 +87,7 @@
 							   name="teamTaskSetPanel"/>
 			</panel>
 
-			<panel title="ConfigurationsPanel" readonlyIf="invoice">
+			<panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">
                 <field name="saleOrderLineSetPrioritySelect"/>
                 <field name="purchaseOrderLineSetPrioritySelect"/>
                 <field name="logTimesSetPrioritySelect"/>

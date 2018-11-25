@@ -96,7 +96,7 @@
 				<button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse" title="Refuse" icon="fa-times" css="btn-danger" />
 				<button name="cancelBtn" hidden="true" onClick="save,action-timesheet-method-cancel,action-timesheet-attrs-buttons" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
 				<button name="draftBtn" onClick="save,action-timesheet-method-draft,action-timesheet-attrs-buttons" title="Return to draft status" showIf="statusSelect &gt; 3 "/>
-				<button name="startStopForm" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
+				<button name="startStopFormBtn" title="Start&amp;Stop Timer" onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
 						if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
 			</panel>
 		</panel>
