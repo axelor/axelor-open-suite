@@ -688,6 +688,8 @@ public interface IExceptionMessage {
   static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
   static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
+  static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
+
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
 

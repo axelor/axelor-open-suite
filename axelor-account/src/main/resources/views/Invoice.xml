@@ -47,7 +47,8 @@
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
 	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+	            <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+   	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
@@ -55,8 +56,8 @@
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
         <field name="invoiceId"/>
+   		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
-        <field name="externalReference"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -998,6 +999,11 @@ InvoiceSet.length > 0))"
 	<action-method name="action-invoice-method-domain-priceList">
 		<call class="com.axelor.apps.account.web.InvoiceController"
 			  method="changePriceListDomain"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-register-mass-payment-on-supplier-invoices">
+		<call class="com.axelor.apps.account.web.InvoiceController"
+			  method="massPaymentOnSupplierInvoices"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

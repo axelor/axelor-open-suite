@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface InvoicePaymentCreateService {
 
@@ -48,4 +49,21 @@ public interface InvoicePaymentCreateService {
    * @return
    */
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails);
+
+  /**
+   * Create an invoice payment for each invoice
+   *
+   * @param invoiceList
+   * @param paymentMode
+   * @param companyBankDetails
+   * @return
+   */
+  public List<InvoicePayment> createMassInvoicePayment(
+      List<Long> invoiceList,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber)
+      throws AxelorException;
 }

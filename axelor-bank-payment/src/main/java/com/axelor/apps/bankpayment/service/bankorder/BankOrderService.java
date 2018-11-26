@@ -62,13 +62,13 @@ public interface BankOrderService {
   public void checkLines(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePayment(BankOrder bankOrder);
+  public void validatePayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelPayment(BankOrder bankOrder);
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelBankOrder(BankOrder bankOrder);
+  public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;
 
   @Transactional
   public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);

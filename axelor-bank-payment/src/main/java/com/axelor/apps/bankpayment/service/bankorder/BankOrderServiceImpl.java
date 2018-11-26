@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -41,6 +41,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -84,7 +85,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
   protected EbicsService ebicsService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
 
@@ -94,7 +95,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
       EbicsService ebicsService,
-      InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService) {
 
@@ -102,7 +103,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderLineService = bankOrderLineService;
     this.ebicsService = ebicsService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
   }
@@ -255,22 +256,32 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePayment(BankOrder bankOrder) {
+  public void validatePayment(BankOrder bankOrder) throws AxelorException {
 
-    InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
-    if (invoicePayment != null) {
-      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-      invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
+    List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
+
+    InvoicePaymentValidateServiceBankPayImpl invoicePaymentValidateServiceBankPayImpl =
+        Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
+
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (invoicePayment != null
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED) {
+        invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+      }
     }
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelPayment(BankOrder bankOrder) {
-    InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
-    if (invoicePayment != null) {
-      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-      invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
+
+    List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
+
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (invoicePayment != null
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+        invoicePaymentCancelService.cancel(invoicePayment);
+      }
     }
   }
 
@@ -317,6 +328,12 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+
+    if (bankPaymentConfigService
+        .getBankPaymentConfig(bankOrder.getSenderCompany())
+        .getGenerateMoveOnBankOrderValidation()) {
+      validatePayment(bankOrder);
+    }
 
     bankOrderRepo.save(bankOrder);
   }
@@ -428,8 +445,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelBankOrder(BankOrder bankOrder) {
+  public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
+
+    this.cancelPayment(bankOrder);
+
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
+
     bankOrderRepo.save(bankOrder);
   }
 

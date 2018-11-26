@@ -98,7 +98,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if ((typeSelect == PaymentModeRepository.TYPE_DD
             || typeSelect == PaymentModeRepository.TYPE_TRANSFER)
-        && inOutSelect == PaymentModeRepository.OUT) {
+        && inOutSelect == PaymentModeRepository.OUT
+        && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
@@ -126,6 +127,25 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
+    invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
+      throws AxelorException {
+
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+
+    Company company = invoicePayment.getInvoice().getCompany();
+
+    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class)
+          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+    }
+
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     invoicePaymentRepository.save(invoicePayment);
   }
 

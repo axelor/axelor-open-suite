@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -60,6 +61,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -437,7 +439,7 @@ public class InvoiceController {
     Invoice invoiceTemp;
     int count = 1;
     for (Long invoiceId : invoiceIdList) {
-      invoiceTemp = JPA.em().find(Invoice.class, invoiceId);
+      invoiceTemp = invoiceRepo.find(invoiceId);
       invoiceList.add(invoiceTemp);
       if (count == 1) {
         commonCompany = invoiceTemp.getCompany();
@@ -768,6 +770,86 @@ public class InvoiceController {
           Beans.get(PartnerPriceListService.class)
               .getPriceListDomain(invoice.getPartner(), priceListTypeSelect);
       response.setAttr("priceList", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void massPaymentOnSupplierInvoices(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> invoiceIdList =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+
+        Company company = null;
+        Currency currency = null;
+
+        List<Long> invoiceToPay = new ArrayList<>();
+
+        for (Long invoiceId : invoiceIdList) {
+          Invoice invoice = invoiceRepo.find(invoiceId);
+
+          if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+              && (invoice.getOperationSubTypeSelect()
+                      == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                  && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
+
+            continue;
+          }
+          if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) == 0) {
+
+            continue;
+          }
+
+          if (company == null) {
+            company = invoice.getCompany();
+          }
+          if (currency == null) {
+            currency = invoice.getCurrency();
+          }
+
+          if (invoice.getCompany() == null
+              || company == null
+              || !invoice.getCompany().equals(company)) {
+            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY);
+            return;
+          }
+          if (invoice.getCurrency() == null
+              || currency == null
+              || !invoice.getCurrency().equals(currency)) {
+            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY);
+            return;
+          }
+
+          invoiceToPay.add(invoiceId);
+        }
+
+        if (invoiceToPay.isEmpty()) {
+          response.setError(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY);
+        }
+
+        response.setView(
+            ActionView.define(I18n.get("Register a mass payment"))
+                .model(InvoicePayment.class.getName())
+                .add("form", "invoice-payment-mass-form")
+                .param("popup", "reload")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "false")
+                .param("forceEdit", "true")
+                .context("_invoices", invoiceToPay)
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

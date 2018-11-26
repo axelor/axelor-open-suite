@@ -149,6 +149,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
+- Added mass payment on supplier invoices and generate account move on bank order validation.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

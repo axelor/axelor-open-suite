@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -30,15 +31,19 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 @Singleton
 public class InvoicePaymentController {
@@ -132,5 +137,37 @@ public class InvoicePaymentController {
         Beans.get(BankDetailsService.class)
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("bankDetails", defaultBankDetails);
+  }
+
+  public void validateMassPayment(ActionRequest request, ActionResponse response) {
+    try {
+
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+      if (!ObjectUtils.isEmpty(request.getContext().get("_selectedInvoices"))) {
+        List<Long> invoiceIdList =
+            Lists.transform(
+                (List) request.getContext().get("_selectedInvoices"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+
+        Beans.get(InvoicePaymentCreateService.class)
+            .createMassInvoicePayment(
+                invoiceIdList,
+                invoicePayment.getPaymentMode(),
+                invoicePayment.getCompanyBankDetails(),
+                invoicePayment.getPaymentDate(),
+                invoicePayment.getBankDepositDate(),
+                invoicePayment.getChequeNumber());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
   }
 }
