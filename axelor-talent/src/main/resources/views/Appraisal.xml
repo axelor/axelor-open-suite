@@ -23,10 +23,10 @@
 		<panel name="actionPanel">
 			<field name="statusSelect" colSpan="8"  widget="NavSelect" showTitle="false" />
 			<panel name="subActionPanel" colSpan="4" stacked="true">
-				<button name="sendAppraisal" title="Send" showIf="statusSelect == 0" onClick="save,action-appraisal-method-send-appraisal"/>
-				<button name="realizeAppraisal" title="Realize" showIf="statusSelect == 1" css="btn-success" onClick="save,action-appraisal-method-realize-appraisal"/>
-				<button name="cancelAppraisal" title="Cancel" showIf="statusSelect &lt; 2" css="btn-danger" onClick="save,action-appraisal-method-cancel-appraisal"/>
-				<button name="draftAppraisal" title="Draft" showIf="statusSelect == 3" onClick="save,action-appraisal-method-draft-appraisal"/>
+				<button name="sendAppraisalBtn" title="Send" showIf="statusSelect == 0" onClick="save,action-appraisal-method-send-appraisal"/>
+				<button name="realizeAppraisalBtn" title="Realize" showIf="statusSelect == 1" css="btn-success" onClick="save,action-appraisal-method-realize-appraisal"/>
+				<button name="cancelAppraisalBtn" title="Cancel" showIf="statusSelect &lt; 2" css="btn-danger" onClick="save,action-appraisal-method-cancel-appraisal"/>
+				<button name="draftAppraisalBtn" title="Draft" showIf="statusSelect == 3" onClick="save,action-appraisal-method-draft-appraisal"/>
 			</panel>
 		</panel>
 		<panel name="detailPanel">
@@ -52,7 +52,7 @@
 			<field name="reviewerEmployee" />
 			<field name="description" colSpan="12" widget="html"/>
 			<field name="attrs" colSpan="12"/>
-			<button name="openEmployeeSelect" title="Create Appraisals" onClick="save,action-appraisal-template-open-employee-selection" colSpan="3" />
+			<button name="openEmployeeSelectBtn" title="Create Appraisals" onClick="save,action-appraisal-template-open-employee-selection" colSpan="3" />
 			<field name="isTemplate" hidden="true" />
 		</panel>
 	</form>
@@ -62,7 +62,7 @@
 		<panel name="mainPanel">
 			<field name="$employeeSet" type="many-to-many" colSpan="12" target="com.axelor.apps.hr.db.Employee" title="Employees"/>
 			<field name="sendAppraisals" type="boolean" title="Send" colSpan="2"/>
-			<button name="createAppraisals" title="Create" onClick="action-appraisal-template-method-create-appraisals" showIf="$employeeSet.length > 0" colSpan="3"/>
+			<button name="createAppraisalsBtn" title="Create" onClick="action-appraisal-template-method-create-appraisals" showIf="$employeeSet.length > 0" colSpan="3"/>
 			<field name="templateId" type="long" hidden="true" />
 		</panel>
 	</form>

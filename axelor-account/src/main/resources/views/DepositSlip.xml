@@ -28,7 +28,7 @@
             <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
         </panel>
 
-        <panel title="PeriodPanel" readonlyIf="publicationDate">
+        <panel name="periodPanel" title="Period" readonlyIf="publicationDate">
             <field name="fromDate" />
             <field name="toDate" />
         </panel>
@@ -40,7 +40,7 @@
             <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
                 <field name="companyBankDetails" canEdit="false" canNew="false"
                     onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4" />
-                <panel name="companyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
+                <panel name="subCompanyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
                     <field name="companyBankDetails.bank.bankName" title="Bank name" />
                     <field name="companyBankDetails.accountNbr" />
                 </panel>
@@ -123,7 +123,7 @@
             <field name="paidAmount" />
 	        <field name="currency" />
         </panel>
-        <panel name="chequeDetails" title="Cheque" colSpan="12">
+        <panel name="chequeDetailsPanel" title="Cheque" colSpan="12">
             <field name="chequeNumber" />
             <field name="chequeBank" />
             <field name="chequeOwner" />

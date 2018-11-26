@@ -31,12 +31,16 @@
 	</form>
 	
 	<form name="cost-sheet-bill-of-material-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large">
-	  <panel name="mainPanel" readonly="true">
-	    <field name="createdOn"/>
-  		<field name="createdBy"/>
- 		<field name="costPrice"/>
+	  <panel name="mainPanel">
+	    <field name="createdOn" readonly="true"/>
+  		<field name="createdBy" readonly="true"/>
+ 		<field name="costPrice" readonly="true"/>
+ 		<button name="printTheCostSheetLineDetail" title="Print the cost sheet line detail" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
 	  </panel>
 	</form>
     
+    <action-method name="action-cost-sheet-method-print-cost-sheet-line-detail">
+    	<call class="com.axelor.apps.production.web.CostSheetController" method="printCostSheetLineDetail"/>
+    </action-method>
 </object-views>

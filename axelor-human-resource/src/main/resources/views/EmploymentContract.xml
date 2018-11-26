@@ -26,7 +26,7 @@
         <toolbar>
             <button name="createAmendmentBtn" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment" hidden="true"/>
             <button name="editContractWordMLBtn" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
-        	<button name="generatePayrollPreparation" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
+        	<button name="generatePayrollPreparationBtn" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
 					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
         </toolbar>
         <panel name="statusPanel" title="Status">

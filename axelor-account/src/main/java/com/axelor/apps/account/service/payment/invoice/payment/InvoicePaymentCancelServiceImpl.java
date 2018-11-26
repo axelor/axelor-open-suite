@@ -78,10 +78,11 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
     if (reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
       reconcileService.unreconcile(reconcile);
-      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK 
-    		  || (paymentMove.getStatusSelect() == MoveRepository.STATUS_VALIDATED && accountConfigService
-          .getAccountConfig(invoicePayment.getInvoice().getCompany())
-          .getAllowRemovalValidatedMove())) {
+      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || (paymentMove.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+              && accountConfigService
+                  .getAccountConfig(invoicePayment.getInvoice().getCompany())
+                  .getAllowRemovalValidatedMove())) {
         invoicePayment.setReconcile(null);
         Beans.get(ReconcileRepository.class).remove(reconcile);
       }

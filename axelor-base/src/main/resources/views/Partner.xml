@@ -757,7 +757,7 @@
 	<action-attrs name="action-partner-attrs-name-balance">
 		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0"/>
 		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0"/>
-		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalance == 0"/>
+		<attribute name="title" for="$positiveBalanceBtn" expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalanceBtn == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-partner-attrs-set-default">
