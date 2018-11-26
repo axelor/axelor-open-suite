@@ -338,6 +338,7 @@
 		<option value="reconcile">Reconcile</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
+		<option value="partnerAccount">Partner account</option>
 	</selection>
 
 </object-views>

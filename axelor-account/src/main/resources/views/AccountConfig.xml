@@ -41,7 +41,7 @@
                         <field name="customerAccountPrefix" help="Prefix to be prepended on customer accounts' codes, the code will be [prefix]PARTNERNAME"
                                showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
                         <field name="customerAccountSequence" help="Sequence to be used to generate customer accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
                     </panel>
                     <panel title="AccountConfig.Suppliers" colSpan="12">
                         <field name="supplierAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
@@ -49,7 +49,7 @@
                         <field name="supplierAccountPrefix" help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
                                showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
                         <field name="supplierAccountSequence" help="Sequence to be used to generate supplier accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
                     </panel>
                     <panel title="AccountConfig.Employees" colSpan="12">
                         <field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
@@ -57,7 +57,7 @@
                         <field name="employeeAccountPrefix" help="Prefix to be prepended on employee accounts' codes, the code will be [prefix]PARTNERNAME"
                                showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
                         <field name="employeeAccountSequence" help="Sequence to be used to generate employee accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
                     </panel>
                     <panel if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
                         <field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
