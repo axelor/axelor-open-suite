@@ -95,6 +95,10 @@
 		<call class="com.axelor.apps.stock.web.ProductStockController" method="displayStockMoveLine"/>
 	</action-method>
 	
+	<action-method name="action-product-method-update-stock-location">
+		<call class="com.axelor.apps.stock.web.ProductStockController" method="updateStockLocation"/>
+	</action-method>
+	
 	<action-record name="action-stock-product-record-stock-managed-onchange" model="com.axelor.apps.base.db.Product">
 		<field name="excludeFromMrp" expr="eval: !stockManaged"/>
 	</action-record>

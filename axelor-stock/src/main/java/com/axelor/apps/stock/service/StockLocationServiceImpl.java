@@ -19,8 +19,10 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -31,8 +33,10 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -91,8 +95,12 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException {
     if (productId != null) {
+      Product product = productRepo.find(productId);
+      Unit productUnit = product.getUnit();
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       if (locationId == null) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
@@ -103,11 +111,18 @@ public class StockLocationServiceImpl implements StockLocationService {
                     stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 
             if (stockLocationLine != null) {
+              Unit stockLocationLineUnit = stockLocationLine.getUnit();
               qty =
                   qty.add(
                       qtyType.equals("real")
                           ? stockLocationLine.getCurrentQty()
                           : stockLocationLine.getFutureQty());
+
+              if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+                qty =
+                    unitConversionService.convert(
+                        stockLocationLineUnit, productUnit, qty, qty.scale(), product);
+              }
             }
           }
           return qty;
@@ -118,9 +133,20 @@ public class StockLocationServiceImpl implements StockLocationService {
                 stockLocationRepo.find(locationId), productRepo.find(productId));
 
         if (stockLocationLine != null) {
-          return qtyType.equals("real")
-              ? stockLocationLine.getCurrentQty()
-              : stockLocationLine.getFutureQty();
+          Unit stockLocationLineUnit = stockLocationLine.getUnit();
+          BigDecimal qty = BigDecimal.ZERO;
+
+          qty =
+              qtyType.equals("real")
+                  ? stockLocationLine.getCurrentQty()
+                  : stockLocationLine.getFutureQty();
+
+          if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+            qty =
+                unitConversionService.convert(
+                    stockLocationLineUnit, productUnit, qty, qty.scale(), product);
+          }
+          return qty;
         }
       }
     }
@@ -129,16 +155,17 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getRealQty(Long productId, Long locationId) {
+  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException {
     return getQty(productId, locationId, "real");
   }
 
   @Override
-  public BigDecimal getFutureQty(Long productId, Long locationId) {
+  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException {
     return getQty(productId, locationId, "future");
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void computeAvgPriceForProduct(Product product) {
     Long productId = product.getId();
     String query =

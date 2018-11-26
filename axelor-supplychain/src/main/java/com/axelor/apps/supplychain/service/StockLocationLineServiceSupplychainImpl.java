@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
@@ -37,22 +39,40 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   @Override
   public StockLocationLine updateLocation(
       StockLocationLine stockLocationLine,
+      Unit stockMoveLineUnit,
+      Product product,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty) {
+      BigDecimal requestedReservedQty)
+      throws AxelorException {
 
     stockLocationLine =
         super.updateLocation(
             stockLocationLine,
+            stockMoveLineUnit,
+            product,
             qty,
             current,
             future,
             isIncrement,
             lastFutureStockMoveDate,
             requestedReservedQty);
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Unit stockLocationLineUnit = stockLocationLine.getUnit();
+    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
+      requestedReservedQty =
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              stockLocationLineUnit,
+              requestedReservedQty,
+              requestedReservedQty.scale(),
+              product);
+    }
+
     if (current) {
       if (isIncrement) {
         stockLocationLine.setRequestedReservedQty(
@@ -107,5 +127,26 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     }
     return availableQty;
+  }
+
+  @Override
+  public StockLocationLine updateLocationFromProduct(
+      StockLocationLine stockLocationLine, Product product) throws AxelorException {
+    Unit productUnit = product.getUnit();
+    Unit stockLocationUnit = stockLocationLine.getUnit();
+
+    if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+      BigDecimal reservedQty =
+          unitConversionService.convert(
+              stockLocationUnit,
+              productUnit,
+              stockLocationLine.getReservedQty(),
+              stockLocationLine.getReservedQty().scale(),
+              product);
+      stockLocationLine.setReservedQty(reservedQty);
+    }
+
+    return super.updateLocationFromProduct(stockLocationLine, product);
   }
 }

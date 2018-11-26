@@ -17,10 +17,18 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,6 +43,10 @@ import java.util.Map;
 public class ProductStockController {
 
   @Inject private StockMoveService stockMoveService;
+
+  @Inject private ProductRepository productRepo;
+
+  @Inject private StockLocationLineService stockLocationLineService;
 
   public void setStockPerDay(ActionRequest request, ActionResponse response) {
 
@@ -71,6 +83,27 @@ public class ProductStockController {
                 .context("stockDate", stockDate)
                 .map());
       response.setCanClose(true);
+    }
+  }
+
+  public void updateStockLocation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Product product = request.getContext().asType(Product.class);
+      if (product.getId() == null) {
+        return;
+      }
+      product = productRepo.find(product.getId());
+      List<StockLocationLine> stockLocationLineList =
+          stockLocationLineService.getStockLocationLines(product);
+
+      for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+      }
+      Beans.get(StockLocationService.class).computeAvgPriceForProduct(product);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -244,6 +244,7 @@ Only display line where quantity is greater than 0.
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
 - STOCK MOVE : Set avilableStatus in stockMoveLineList.
+- Add 'stock unit' field on stock location line and add unit conversion.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
