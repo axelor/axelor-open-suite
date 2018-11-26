@@ -87,7 +87,8 @@ public class MoveTemplateController {
       List<HashMap<String, Object>> dataList =
           (List<HashMap<String, Object>>) context.get("dataInputList");
 
-      List<MoveTemplate> moveTemplateSet = (List<MoveTemplate>) context.get("moveTemplateSet");
+      List<HashMap<String, Object>> moveTemplateList =
+          (List<HashMap<String, Object>>) context.get("moveTemplateSet");
 
       LocalDate moveDate = null;
       if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
@@ -98,11 +99,13 @@ public class MoveTemplateController {
 
       LOG.debug("MoveTemplate : {}", moveTemplate);
       LOG.debug("Data inputlist : {}", dataList);
+      LOG.debug("Data inputlist : {}", moveTemplateList);
+
       if ((dataList != null && !dataList.isEmpty())
-          || (moveTemplateSet != null && !moveTemplateSet.isEmpty())) {
+          || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
         List<Long> moveList =
             moveTemplateService.generateMove(
-                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateSet);
+                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
         if (moveList != null && !moveList.isEmpty()) {
           response.setView(
               ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))

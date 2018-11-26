@@ -86,13 +86,13 @@ public class MoveTemplateService {
       MoveTemplate moveTemplate,
       List<HashMap<String, Object>> dataList,
       LocalDate date,
-      List<MoveTemplate> moveTemplateSet)
+      List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
 
     if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
       return this.generateMove(moveTemplate, dataList);
     } else if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
-      return this.generateMove(date, moveTemplateSet);
+      return this.generateMove(date, moveTemplateList);
     }
     return new ArrayList<>();
   }
@@ -187,11 +187,14 @@ public class MoveTemplateService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public List<Long> generateMove(LocalDate moveDate, List<MoveTemplate> moveTemplateSet)
+  public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<Long>();
 
-    for (MoveTemplate moveTemplate : moveTemplateSet) {
+    for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
+
+      MoveTemplate moveTemplate =
+          moveTemplateRepo.find(Long.valueOf((Integer) moveTemplateMap.get("id")));
       Move move =
           moveService
               .getMoveCreateService()
