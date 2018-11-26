@@ -75,6 +75,7 @@
 				<field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
 				<field name="invoiceInAtiSelect"/>
 				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
+				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
 
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
 					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
