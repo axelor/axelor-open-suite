@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProductionBatch" lang="java">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="production.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="productionBatch" title="Batchs" />
+  
+	 <extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_COMPUTE_WORK_IN_PROGRESS_VALUATION = 1;
+	
+	]]></extra-code>
+	
+  </entity>
+
+</domain-models>

@@ -152,6 +152,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 - Added mass payment on supplier invoices and generate account move on bank order validation.
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
+- Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
