@@ -622,7 +622,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
           if (sumCredit.compareTo(BigDecimal.ZERO) == 1) {
 
-            String exportNumber = this.getSaleExportNumber(company);
+            String exportNumber = this.getRefundExportNumber(company);
 
             Move firstMove = moveList.get(0);
             String periodCode =
@@ -1122,7 +1122,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     Company company = accountingReport.getCompany();
 
     LocalDate interfaceDate = accountingReport.getDate();
-    String exportNumber = this.getSaleExportNumber(company);
 
     String moveLineQueryStr = "";
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
@@ -1245,6 +1244,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       if (!administration) {
+        String exportNumber = this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
     }
