@@ -115,6 +115,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Event : Fill correct partner when generate event from Customer. 
 - Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
 - ACCOUNTING EXPORT : sequence issue fix
+- Accounting Export : Fix NPE.
 
 ## [5.0.6] - 2018-10-06
 ## Features

@@ -1196,13 +1196,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[7] = partner.getFullName();
         }
         items[8] = moveLine.getOrigin();
-        items[9] =
-            moveLine
-                .getDate()
-                .format(
-                    DateTimeFormatter.ofPattern(
-                        DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des lignes
-        // d'écriture.
+        if (moveLine.getDate() != null) {
+          items[9] =
+              moveLine
+                  .getDate()
+                  .format(
+                      DateTimeFormatter.ofPattern(
+                          DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des
+          // lignes
+          // d'écriture.
+        }
         items[10] = moveLine.getDescription();
         items[11] = moveLine.getDebit().toString();
         items[12] = moveLine.getCredit().toString();
@@ -1234,8 +1237,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[13] = StringUtils.join(reconcileSeqList, "; ");
           items[14] = StringUtils.join(reconcileDateList, "; ");
         }
-        items[15] =
-            move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        if (move.getValidationDate() != null) {
+          items[15] =
+              move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        }
         items[16] = moveLine.getCurrencyAmount().toString();
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
