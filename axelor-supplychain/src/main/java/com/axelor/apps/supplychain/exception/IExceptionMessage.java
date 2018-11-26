@@ -173,5 +173,5 @@ public interface IExceptionMessage {
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
-      "This amount is not available in stock." /*)*/;
+      "This quantity is not available in stock." /*)*/;
 }

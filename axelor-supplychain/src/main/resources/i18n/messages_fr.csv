@@ -365,7 +365,7 @@
 "The trading name must be the same for all purchase orders.","L’enseigne doit être identique pour toutes les cmdes d’achat.",,
 "The trading name must be the same for all sale orders.","L’enseigne doit être identique pour toutes les cmdes clients.",,
 "There are no lines to invoice","Il n'y a pas de lignes à facturer",,
-"This amount is not available in stock.","Ce montant n'est pas disponible en stock.",,
+"This quantity is not available in stock.","Ce montant n'est pas disponible en stock.",,
 "Timetable","Echéancier",,
 "Timetables","Echéanciers",,
 "To Date","Date de fin",,

@@ -431,20 +431,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (product != null
           && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-        Unit productUnit = stockMoveLine.getProduct().getUnit();
-        Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
         BigDecimal qty;
         if (realQty) {
           qty = stockMoveLine.getRealQty();
         } else {
           qty = stockMoveLine.getQty();
-        }
-
-        if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
-          qty =
-              unitConversionService.convert(
-                  stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
         }
 
         if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -468,7 +460,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus) {
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
@@ -482,7 +475,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   protected void computeNewAveragePriceLocationLine(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) {
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     BigDecimal oldQty = stockLocationLine.getCurrentQty();
@@ -496,6 +489,29 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       oldAvgPrice = BigDecimal.ZERO;
       oldQty = BigDecimal.ZERO;
     }
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Unit stockLocationLineUnit = stockLocationLine.getUnit();
+    Unit stockMoveLineUnit = stockMoveLine.getUnit();
+
+    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
+      newQty =
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              stockLocationLineUnit,
+              newQty,
+              newQty.scale(),
+              stockMoveLine.getProduct());
+
+      newPrice =
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              stockLocationLineUnit,
+              newPrice,
+              newPrice.scale(),
+              stockMoveLine.getProduct());
+    }
+
     log.debug(
         "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
         oldAvgPrice,
@@ -648,12 +664,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       TrackingNumber trackingNumber,
       BigDecimal requestedReservedQty)
       throws AxelorException {
+    Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
     switch (fromStatus) {
       case StockMoveRepository.STATUS_PLANNED:
         stockLocationLineService.updateLocation(
             fromStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             false,
             true,
@@ -664,6 +682,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             false,
             true,
@@ -677,6 +696,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             fromStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             true,
             true,
@@ -687,6 +707,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             true,
             true,
@@ -705,6 +726,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             fromStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             false,
             true,
@@ -715,6 +737,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             false,
             true,
@@ -728,6 +751,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             fromStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             true,
             true,
@@ -738,6 +762,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
+            stockMoveLineUnit,
             qty,
             true,
             true,

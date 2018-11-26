@@ -20,4 +20,6 @@ package com.axelor.apps.production.translation;
 public interface ITranslation {
 
   public static final String MANUFACTURING_APP_NAME = /*$$(*/ "value:Manufacturing"; /*)*/
+  public static final String WORK_IN_PROGRESS_VALUATION = /*$$(*/
+      "Work in progress valuation"; /*)*/
 }
