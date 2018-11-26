@@ -349,6 +349,7 @@
 		<option value="reconcileGroupFinal">Reconcile Group (Final)</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
+		<option value="partnerAccount">Partner account</option>
 	</selection>
 
 	<selection name="account.notification.item.type.select">
