@@ -57,9 +57,15 @@ public interface ITranslation {
       "OperationOrder.trackingNumber"; /*)*/
   public static final String OPERATION_ORDER_NUM = /*$$(*/ "OperationOrder.num"; /*)*/
 
+  public static final String WORK_IN_PROGRESS_VALUATION_TITLE = /*$$(*/
+      "WorkInProgressValuation.title"; /*)*/
+
+  public static final String MANUF_ORDER_COMPANY = /*$$(*/ "ManufOrder.company"; /*)*/
   public static final String MANUF_ORDER_TITLE = /*$$(*/ "ManufOrder.title"; /*)*/
   public static final String MANUF_ORDER_PLANNED_START_DATE = /*$$(*/
       "ManufOrder.plannedStartDate"; /*)*/
+  public static final String MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+      "ManufOrder.plannedEndDate"; /*)*/
   public static final String MANUF_ORDER_PRODUCT = /*$$(*/ "ManufOrder.product"; /*)*/
   public static final String MANUF_ORDER_QUANTITY = /*$$(*/ "ManufOrder.quantity"; /*)*/
   public static final String MANUF_ORDER_ORIGIN = /*$$(*/ "ManufOrder.origin"; /*)*/
@@ -73,10 +79,12 @@ public interface ITranslation {
   public static final String MANUF_ORDER_FORECAST = /*$$(*/ "ManufOrder.forecast"; /*)*/
   public static final String MANUF_ORDER_EFFECTIVE = /*$$(*/ "ManufOrder.effective"; /*)*/
   public static final String MANUF_ORDER_NUM = /*$$(*/ "ManufOrder.num"; /*)*/
+  public static final String MANUF_ORDER_SEQ = /*$$(*/ "ManufOrder.seq"; /*)*/
   public static final String MANUF_ORDER_MACHINE = /*$$(*/ "ManufOrder.machine"; /*)*/
   public static final String MANUF_ORDER_OPERATION = /*$$(*/ "ManufOrder.operation"; /*)*/
   public static final String MANUF_ORDER_START_DATE = /*$$(*/ "ManufOrder.startDate"; /*)*/
   public static final String MANUF_ORDER_END_DATE = /*$$(*/ "ManufOrder.endDate"; /*)*/
+  public static final String MANUF_ORDER_EDITION_DATE = /*$$(*/ "ManufOrder.editionDate"; /*)*/
   public static final String MANUF_ORDER_STATUS = /*$$(*/ "ManufOrder.status"; /*)*/
   public static final String MANUF_ORDER_PRODUCTS_TO_PREPARE = /*$$(*/
       "ManufOrder.productsToPrepare"; /*)*/
@@ -90,8 +98,13 @@ public interface ITranslation {
   public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
   public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
   public static final String MANUF_ORDER_STOCK_LOCATION = /*$$(*/ "ManufOrder.stockLocation"; /*)*/
+  public static final String MANUF_ORDER_NO_LOCATION = /*$$(*/ "ManufOrder.noLocation"; /*)*/
   public static final String MANUF_ORDER_RACK = /*$$(*/ "ManufOrder.rack"; /*)*/
   public static final String MANUF_ORDER_WORK_CENTER = /*$$(*/ "ManufOrder.workCenter"; /*)*/
+  public static final String MANUF_COST_PRICE = /*$$(*/ "ManufOrder.costPrice"; /*)*/
+  public static final String MANUF_ORDER_IN_PROGRESS = /*$$(*/ "ManufOrder.inProgress"; /*)*/
+  public static final String MANUF_ORDER_STANDBY = /*$$(*/ "ManufOrder.standBy"; /*)*/
+  public static final String MANUF_ORDER_COMPANY_TOTAL = /*$$(*/ "ManufOrder.total"; /*)*/
 
   public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
   public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
