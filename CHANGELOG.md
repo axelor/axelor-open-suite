@@ -116,6 +116,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
 - ACCOUNTING EXPORT : sequence issue fix
 - Accounting Export : Fix NPE.
+- Configurator: add missing field in configurator sale order line formula form.
 
 ## [5.0.6] - 2018-10-06
 ## Features
