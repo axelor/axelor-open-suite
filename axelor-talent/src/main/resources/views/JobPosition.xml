@@ -14,7 +14,7 @@
 	
 	<form name="job-position-form" title="Job position" model="com.axelor.apps.talent.db.JobPosition" width="large">
 		<toolbar>
-			<button name="createJobApplication" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
+			<button name="createJobApplicationBtn" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
 		</toolbar>
 		
 		<panel name="statusPanel" title="Status">

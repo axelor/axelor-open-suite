@@ -20,17 +20,6 @@
     	<context name="_paymentCondition" expr="eval:paymentCondition"/>
     </action-view>
     
-    <action-group id="contract-action-group-purchase-order-on-new-actions" name="action-group-purchase-order-on-new-actions">
-    	<action name="action-purchase-order-record-new"/>
-    	<action name="action-purchase-order-record-company-configuration"/>
-    	<action name="action-purchase-order-method-get-stock-location"/>
-    	<action name="action-purchase-order-record-in-ati"/>
-    	<action name="action-purchase-order-attrs-in-ati"/>
-    	<action name="action-purchase-order-dispaly-price"/>
-    	<action name="action-contract-purchase-order-record-new" if="__config__.app.isApp('contract')"/>
-		<action name="action-purchase-order-attrs-interco"/>
-    </action-group>
-    
     <action-record name="action-contract-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="supplierPartner" expr="eval:_supplier" if="_supplier != null"/>
     	<field name="contract" expr="eval: __repo__(Contract).find(_contractId)" if="_contractId != null"/>

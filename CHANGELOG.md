@@ -141,6 +141,7 @@
 - MRP : if the sale order or purchase order is not delivered, if the date is in the past, now we take it into account with today date.
 If not date is filled, added an option to choose or not to include it for sale order, purchase order and manuf order.
 - STOCK MOVE : mass printing for picking stock move report.
+- CONTRACT : classic contract lines can now be ordered with drag and drop, and generating an invoice from a contract will keep the order in the invoice lines.
 - Add Fixed Asset Management feature.
 - Stock Move : Add grid for sale order. 
 - SALEORDERLINE : stock move line list
@@ -149,6 +150,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Bank Reconciliation : Add Report for Unreconciled Move Lines & Bank Statement.
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
+- Added mass payment on supplier invoices and generate account move on bank order validation.
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 
 ## Improvements
@@ -183,6 +185,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Rework Lunch voucher management view.
 - Improve Expense form view.
 - Rework CRM events view.
+- Change purchase requests menu.
 - Rework Purchase request view.
 - Rework Target and Target configuration views in CRM.
 - Improve CRM menu entries.
@@ -235,6 +238,7 @@ Also in case of aggregation, we have to concatenate the tracking number list and
 - StockMove report : Display rack of from and to stock location (for internal and ingoing stock move), display invoicing and delivery address for outgoing stock move.
 Only display line where quantity is greater than 0.
 - Add a specific not for invoice on company bank details
+- Code improvements on creating a new purchase order.
 - LOGISTICAL FORM : Add the stock location and filter elements on it. Also, use the stock location address in report header instead of company address
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
@@ -283,6 +287,7 @@ Only display line where quantity is greater than 0.
 - Studio: Custom model editor: Fix some UI issues and forbid saving of model having relational fields without target model.
 - SaleOrder : Add new selection field 'salemanSelect' to fill value of salemanUser.
 - Manuf order: Fix sequence of operation details on report.
+- Added missing translations for advanced exports in french version.
 - Stock Rules : Fix enable change tracking on all fields.
 - Supplychain App : Fix 'supplStockMoveMgtOnSO' field to 'supplStockMoveMgtOnPO'.
 - StockMoveLine : specify Sequence while generating from Sale , Purchase , Manufacturing and Inventory.
@@ -312,6 +317,7 @@ Only display line where quantity is greater than 0.
 - Fix reserved quantity field on generated stock move lines.
 - Fix invoice generation from stock move.
 - ACCOUNT : compute balance - id to load is required for loading
+- Fixed bug where it would not be possible to close periods in the human resource module.
 - Reset Bank order sender informations (date, reference, label, signatory user) when we merge some bank orders.
 - Fixed issue on stock move printing when the same product and same tracking number is used in some lines. Now, we have removed the aggregation.
 - Fixed issue with computation of undelivered qty on sale order lines.
@@ -859,7 +865,7 @@ Also, improve the sale order line grid and form views.
 - All duration fields which are in 'integer', convert it to 'long' and calculation of duration.
 - Barcode generator code formatting.
 - Split sequences per module and remove unwanted sequences
-- Improve multiple invoices printing.
+- Improve multiple invoices printing. 
 - timesheet: Hide create button on if timsheet editor is disabled from configuration.
 - Add en to fr translation in Barcode type configuration
 - Mail Account: If the boolean "isValid" is true, allow user to disabled it 

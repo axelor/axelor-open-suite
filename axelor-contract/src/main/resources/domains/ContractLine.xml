@@ -5,6 +5,8 @@
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
 	<entity name="ContractLine">
+	
+		<integer name="sequence"/>
 
 		<string name="fullName" namecolumn="true">
 			<![CDATA[

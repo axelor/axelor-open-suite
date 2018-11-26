@@ -36,6 +36,7 @@ import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -219,7 +220,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     }
 
     if (bankOrders.size() > 1) {
+      LocalDate bankOrderDate = bankOrders.iterator().next().getBankOrderDate();
       BankOrder mergedBankOrder = mergeBankOrders(bankOrders);
+      mergedBankOrder.setBankOrderDate(bankOrderDate);
 
       for (InvoicePayment invoicePayment : invoicePaymentsWithBankOrders) {
         invoicePayment.setBankOrder(mergedBankOrder);

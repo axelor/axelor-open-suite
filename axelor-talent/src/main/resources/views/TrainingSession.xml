@@ -26,8 +26,8 @@
 			<panel-dashlet name="employeeRegisteredPanel" action="action-dashlet-training-session-employee-registered" colSpan="12"/>
 		</panel>
 		<panel name="actionPanel" itemSpan="12" sidebar="true">
-			<button name="registerTraining" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
-			<button name="closeSession" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
+			<button name="registerTrainingBtn" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
+			<button name="closeSessionBtn" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
 			<field name="nbrRegistered" readonly="true"/>
 			<field name="rating" widget="progress" readonly="true" />
 		</panel>

@@ -504,7 +504,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getQty(),
             line.getUnit(),
             line.getTaxLine(),
-            InvoiceLineGenerator.DEFAULT_SEQUENCE,
+            line.getSequence(),
             BigDecimal.ZERO,
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             line.getExTaxTotal(),

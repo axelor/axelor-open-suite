@@ -19,7 +19,7 @@
 	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" 
 	onNew="action-bank-reconciliation-onnew-group" >
         <toolbar>
-          <button title="Print the bank reconciliation" name="print" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation"/>
+          <button title="Print the bank reconciliation" name="printBtn" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation"/>
         </toolbar>
 		<panel name="mainPanel" colSpan="12">
 			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">

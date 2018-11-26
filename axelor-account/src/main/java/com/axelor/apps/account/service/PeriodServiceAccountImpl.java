@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -50,7 +51,9 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void close(Period period) {
 
-    moveValidateService.validateMultiple(getMoveListToValidate(period));
+    if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
+      moveValidateService.validateMultiple(getMoveListToValidate(period));
+    }
 
     super.close(period);
   }

@@ -39,12 +39,34 @@
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
-		<panel name="otherDetails" showIf="id">
+		<panel name="otherDetailsPanel" showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
 			<field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+		</panel>
+	</form>
+
+	<form name="invoice-payment-mass-form" title="Mass payment"
+        model="com.axelor.apps.account.db.InvoicePayment"
+        onNew="action-invoice-payment-record-mass-payment-new">
+		<panel name="mainPanel">
+            <field name="amount" readonly="true" title="Total amount"/>
+            <field name="currency" canEdit="false"
+                form-view="currency-form" grid-view="currency-grid" readonly="true"/>
+            <field name="paymentMode" canEdit="false"
+                onChange="action-invoice-payment-method-fill-bank-details"
+                form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+            <field name="companyBankDetails" canEdit="false"
+                onSelect="action-invoice-payment-method-bank-details-domain"
+                form-view="bank-details-form" grid-view="bank-details-grid"/>
+            <field name="paymentDate"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            <field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="invoicesSelected" hidden="true"/>
+       		<button name="validateBtn" title="Validate" onClick="action-invoice-payment-method-validate-mass-payment,close"/>
 		</panel>
 	</form>
 
@@ -64,6 +86,18 @@
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>
     </action-record>
+    
+	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
+	  <field name="currency" expr="eval: __repo__(Invoice).find(_invoices[0])?.currency"/>
+	  <field name="paymentDate" expr="eval: __date__"/>
+	  <field name="amount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) &quot;,_invoices).fetch()?.sum{it.amountRemaining}"/>
+	  <field name="paymentMode" expr="eval: __repo__(Invoice).find(_invoices[0])?.paymentMode"/>
+	  <field name="companyBankDetails" expr="eval: __repo__(Invoice).find(_invoices[0])?.companyBankDetails"/>
+	  <field name="typeSelect" expr="2"/>
+	  <field name="_selectedInvoices" expr="eval: _invoices"/>
+   	  <field name="_invoice" expr="eval: __repo__(Invoice).find(_invoices[0])"/>
+	</action-record>
+
 
 	<action-attrs name="action-invoice-payment-attrs-new">
 		<attribute for="amount" name="readonly"
@@ -87,5 +121,10 @@
 	<action-method name="action-invoice-payment-method-bank-details-domain">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterBankDetails"/>
 	</action-method>
+	
+	<action-method name="action-invoice-payment-method-validate-mass-payment">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
+	</action-method>
+	
 </object-views>
 	

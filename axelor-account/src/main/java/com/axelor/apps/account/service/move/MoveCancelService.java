@@ -77,7 +77,11 @@ public class MoveCancelService {
 
     try {
 
-      if (accountConfigService.getAccountConfig(move.getCompany()).getAllowRemovalValidatedMove()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+              && accountConfigService
+                  .getAccountConfig(move.getCompany())
+                  .getAllowRemovalValidatedMove())) {
         moveRepository.remove(move);
       } else {
         move.setStatusSelect(MoveRepository.STATUS_CANCELED);
