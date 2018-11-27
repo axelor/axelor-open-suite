@@ -32,6 +32,8 @@
 			<field name="jobDescription" widget="html" colSpan="12" />
 			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
 			<spacer name="mailAccountSpacer"/>
+			<field name="publicationDate"/>
+			<spacer name="publicationDateSpacer"/>
 			<panel-dashlet name="allApplicationsPanel" action="action-job-position-all-applications" colSpan="12" title="All applications"/>
 			<field name="nbOpenJob" />
 			<field name="nbPeopleHired" />
