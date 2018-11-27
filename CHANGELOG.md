@@ -339,6 +339,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
+- Stock Move Line : Hide Available stock display for virtual stock Location.
 
 ## [Unreleased 5.0.7]
 ## Features
