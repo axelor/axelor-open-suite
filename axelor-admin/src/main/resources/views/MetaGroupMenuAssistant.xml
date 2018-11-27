@@ -19,7 +19,7 @@
       <field name="language" readonlyIf="metaFile"/>
       <button name="createFileBtn" title="Create file" colSpan="3" onClick="save,action-meta-method-create-group-menu-file"/>
       <button name="importFileBtn" title="Import" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-meta-method-import-group-menu,save"/>
-      <panel name="details" title="Details" colSpan="12">
+      <panel name="detailsPanel" title="Details" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>
         <field name="updatedBy" colSpan="4"/>

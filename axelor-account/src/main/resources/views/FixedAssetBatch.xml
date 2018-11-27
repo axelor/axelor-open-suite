@@ -12,7 +12,7 @@
     </grid>
  
 	<form name="fixed-asset-batch-form" title="Fixed asset Batch" model="com.axelor.apps.account.db.FixedAssetBatch" onNew="action-fixed-asset-batch-record-on-new" width="large">
-		<panel name="main" >
+		<panel name="mainPanel" >
 		  <field name="actionSelect"/>
 		  <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
@@ -23,7 +23,7 @@
 		  <button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-batch-method-realize"/>
 		</panel>
 		<panel-tabs>    
-		  <panel name="description" title="Description">
+		  <panel name="descriptionPanel" title="Description">
 		    <field name="description" showTitle="false" colSpan="12"/>      
 		  </panel>
 		  <panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />

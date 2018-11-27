@@ -34,7 +34,7 @@
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
 
-		<panel name="actions" sidebar="true" title="Actions" hideIf="id == null">
+		<panel name="actionsPanel" sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activateBtn" title="Activate" onClick="action-configurator-creator-group-activate"
 				readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
 			<button name="testBtn" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>

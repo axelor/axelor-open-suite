@@ -19,7 +19,7 @@
 	  </panel>  
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="defaultMachineSettingsPanel" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
-	        <panel name="capacitysettings" title="Capacity settings" colSpan="12">
+	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>

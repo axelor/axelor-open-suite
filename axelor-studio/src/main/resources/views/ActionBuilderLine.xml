@@ -15,7 +15,7 @@
   	  onNew="action-builder-line-set-default-attrs" onLoad="action-builder-line-set-default-attrs">
       <panel name="mainPanel">
       	<field name="dummy"/>
-      	<spacer name="dummySpaer"/>
+      	<spacer name="dummySpacer"/>
       	<panel name="metaFieldsPanel" colSpan="6" itemSpan="12" hideIf="dummy">
       		<field name="metaJsonField" onSelect="action-action-builder-line-meta-json-field-domain" onChange="action-action-builder-line-set-name-json"/>
       		<field name="metaField" onSelect="action-action-builder-line-meta-field-domain" onChange="action-action-builder-line-set-name-meta"/>

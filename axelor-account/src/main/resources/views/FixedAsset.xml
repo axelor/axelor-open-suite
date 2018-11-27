@@ -15,10 +15,10 @@
     
     <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onNew="action-fixed-asset-record-default" onSave="action-fixed-asset-category-record-compute-duration">
     	<panel>
-	    	<panel colSpan="12">
+	    	<panel name="statusSelectPanel" colSpan="12">
 	    		<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>
 	    	</panel>
-	    	<panel name="main" colSpan="12">
+	    	<panel name="mainPanel" colSpan="12">
 	    		<field name="reference" colSpan="12"/>
 	    		<field name="name"/>
 	    		<field name="company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect &gt; 1"/>
@@ -26,14 +26,14 @@
 	    		<field name="fixedAssetCategory" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values"/>
 	    	</panel>
 	    </panel>
-    	<panel>
+    	<panel name="otherDetailsPanel">
 			<field name="partner" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-supplier-grid" readonlyIf="statusSelect &gt; 1"/>
 			<field name="invoiceLine" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 			<field name="purchaseAccount" form-view="account-form" grid-view="account-grid"/>
 			<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid" readonlyIf="statusSelect &gt; 1"/>
     	</panel>
     	
-    	<panel-tabs>
+    	<panel-tabs name="mainPanelTab">
     		<panel-related name="fixedAssetLineListPanel" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" colSpan="12" canNew="false" readonlyIf="statusSelect &gt; 1"/>
     		<panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect &gt; 1">
 	    		<field name="computationMethodSelect" required="true" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
@@ -44,17 +44,17 @@
     		</panel>
     	</panel-tabs>
 		
-    	<panel title="Actions" sidebar="true">
+    	<panel name="actionsPanel" title="Actions" sidebar="true">
     		<button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect &gt; 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,save"/>
     		<button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
     		<button name="disposalBtn" title="Disposal" showIf="statusSelect == 3" onClick="action-fixed-asset-view-show-disposal-wizard"/>
     	</panel>
-    	<panel sidebar="true" readonlyIf="statusSelect &gt; 1">
+    	<panel name="datesPanel" sidebar="true" readonlyIf="statusSelect &gt; 1">
     		<field name="acquisitionDate" required="true"/>
     		<field name="firstDepreciationDate" required="true"/>
     		<field name="disposalDate" showIf="statusSelect == 4" readonly="true"/>
     	</panel>
-    	<panel sidebar="true">
+    	<panel name="allValuesPanel" sidebar="true">
     		<field name="grossValue" readonlyIf="statusSelect &gt; 1" onChange="action-fixed-asset-record-set-residual-value"/>
         	<field name="residualValue" readonly="true"/>
         	<field name="disposalValue" showIf="statusSelect == 4" readonly="true"/>
@@ -62,7 +62,7 @@
     </form>
     
     <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
-    	<panel name="main">
+    	<panel name="mainPanel">
     		<field name="disposalDate" type="date" title="Disposal date"/>
     		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-fixed-asset-disposal-wizard-method-disposal"/>

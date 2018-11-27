@@ -12,7 +12,7 @@
 
   <form name="reconcile-group-form" title="Reconcile group" readonlyIf="true"
     model="com.axelor.apps.account.db.ReconcileGroup">
-    <panel itemSpan="12" name="info">
+    <panel itemSpan="12" name="infoPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false"/>
       <field name="code" showTitle="false">
         <viewer depends="code">
@@ -24,7 +24,7 @@
         </viewer>
       </field>
     </panel>
-    <panel name="company" showTitle="false">
+    <panel name="companyPanel" showTitle="false">
       <field name="company"/>
     </panel>
     <panel name="mainPanel" showIf="company">

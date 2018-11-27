@@ -47,7 +47,7 @@
 				<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid" readonlyIf="typeSelect == 2 || isSubLine"/>
 				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
-				<panel name="discount" colSpan="12">
+				<panel name="discountPanel" colSpan="12">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
 					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
@@ -66,13 +66,13 @@
 					<field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
 				</panel>
 			</panel>
-			<panel name="pack" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0">
+			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0">
 				<panel-related name="subLineListPanel" field="subLineList" onChange="action-invoice-line-attrs-compute-total-pack" colSpan="12" canNew="false" canRemove="false" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<field name="totalPack" readonly="true"/>
 			</panel>
 			<panel name="accountingPanel" title="Accounting">
 				<field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"/>
-				<panel name="assets"  colSpan="3" itemSpan="12">
+				<panel name="assetsPanel"  colSpan="3" itemSpan="12">
 					<field name="fixedAssets" showTitle="false" showIf="$readonly()">
 						<viewer depends="fixedAssets">
 							<![CDATA[
@@ -100,7 +100,7 @@
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-attrs-account-invoice-line-onnew-onload"/>
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
-			<panel name="configuration" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
 				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
 				<field name="saleOrderLine" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
@@ -129,7 +129,7 @@
 				<field name="exTaxTotal" readonly="true"/>
 				<field name="inTaxTotal" readonly="true"/>
 				<field name="invoice" hidden="true" />
-				<panel name="discount" title="Discount" colSpan="12">
+				<panel name="discountPanel" title="Discount" colSpan="12">
 					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
 					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 				</panel>

@@ -12,7 +12,7 @@
       <field name="code" x-bind="{{code|uppercase}}"/>
       <field name="name"/>
     </panel>
-    <panel-related name="countryList" field="countryList" grid-view="country-grid" form-view="country-form"
+    <panel-related name="countryListPanel" field="countryList" grid-view="country-grid" form-view="country-form"
       canNew="false" canEdit="false" canSelect="true" height="30"/>
   </form>
 

@@ -22,7 +22,7 @@
       <field name="language" />
       <button name="createFileBtn" title="Create file" colSpan="3" onClick="save,action-permission-method-create-file"/>
       <button name="importPermissionsBtn" title="Import permissions" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-permission-method-import-permissions,save"/>
-      <panel name="details" title="Details" readonly="true" colSpan="12">
+      <panel name="detailsPanel" title="Details" readonly="true" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>
         <field name="updatedBy" colSpan="4"/>
