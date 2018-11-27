@@ -246,6 +246,7 @@ Only display line where quantity is greater than 0.
 - Stock Move : Specify views for origin field. 
 - STOCK MOVE : Set avilableStatus in stockMoveLineList.
 - Add 'stock unit' field on stock location line and add unit conversion.
+- STOCK LOCATION : allow report to export in XLS
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

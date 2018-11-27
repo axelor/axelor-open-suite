@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -27,15 +28,18 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Query;
@@ -70,11 +74,22 @@ public class StockLocationController {
    */
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    StockLocation stockLocation = request.getContext().asType(StockLocation.class);
+    Context context = request.getContext();
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> stockLocationMap =
+        (LinkedHashMap<String, Object>) context.get("_stockLocation");
+    Integer stockLocationId = (Integer) stockLocationMap.get("id");
+
+    StockLocation stockLocation =
+        stockLocationId != null
+            ? Beans.get(StockLocationRepository.class).find(new Long(stockLocationId))
+            : null;
     String locationIds = "";
 
+    String exportType = (String) context.get("exportTypeSelect");
+
     @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
+    List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
     if (lstSelectedLocations != null) {
       for (Integer it : lstSelectedLocations) {
         Set<Long> idSet =
@@ -88,7 +103,7 @@ public class StockLocationController {
     if (!locationIds.equals("")) {
       locationIds = locationIds.substring(0, locationIds.length() - 1);
       stockLocation = stockLocationRepo.find(new Long(lstSelectedLocations.get(0)));
-    } else if (stockLocation.getId() != null) {
+    } else if (stockLocation != null && stockLocation.getId() != null) {
       Set<Long> idSet =
           stockLocationService.getContentStockLocationIds(
               stockLocationRepo.find(stockLocation.getId()));
@@ -112,6 +127,7 @@ public class StockLocationController {
           ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
               .addParam("StockLocationId", locationIds)
               .addParam("Locale", language)
+              .addFormat(exportType)
               .generate()
               .getFileLink();
 
@@ -122,6 +138,7 @@ public class StockLocationController {
     } else {
       response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
     }
+    response.setCanClose(true);
   }
 
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
@@ -143,5 +160,24 @@ public class StockLocationController {
         "$stockLocationValue",
         (result.get(0) == null ? BigDecimal.ZERO : (BigDecimal) result.get(0))
             .setScale(2, BigDecimal.ROUND_HALF_EVEN));
+  }
+
+  public void openPrintWizard(ActionRequest request, ActionResponse response) {
+    StockLocation stockLocation = request.getContext().asType(StockLocation.class);
+
+    @SuppressWarnings("unchecked")
+    List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
+
+    response.setView(
+        ActionView.define(I18n.get(IExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
+            .model(Wizard.class.getName())
+            .add("form", "stock-location-print-wizard-form")
+            .param("popup", "true")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .context("_ids", lstSelectedLocations)
+            .context("_stockLocation", stockLocation)
+            .map());
   }
 }
