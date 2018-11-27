@@ -337,6 +337,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
+- Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 
 ## [Unreleased 5.0.7]
 ## Features

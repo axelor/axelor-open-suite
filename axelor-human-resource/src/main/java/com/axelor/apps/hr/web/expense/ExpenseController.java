@@ -88,18 +88,9 @@ public class ExpenseController {
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    Expense expense = expenseLine.getExpense();
-    if (expense == null) {
-      setExpense(request, expenseLine);
-    }
-    if (expenseLine.getAnalyticDistributionTemplate() != null) {
-      expenseLine =
-          expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
-      response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
-    }
+
+    expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
+    response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
   }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)

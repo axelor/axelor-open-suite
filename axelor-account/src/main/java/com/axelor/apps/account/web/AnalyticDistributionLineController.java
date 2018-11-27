@@ -31,9 +31,8 @@ public class AnalyticDistributionLineController {
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
   public void computeAmount(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine AnalyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-    response.setValue(
-        "amount", analyticMoveLineService.chooseComputeWay(request.getContext(), AnalyticMoveLine));
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    response.setValue("amount", analyticMoveLineService.computeAmount(analyticMoveLine));
   }
 
   public void validateLines(ActionRequest request, ActionResponse response) {

@@ -83,7 +83,7 @@ public class PurchaseOrderLineController {
       }
 
       purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-      service.fill(purchaseOrderLine, product);
+      service.fill(purchaseOrderLine, purchaseOrder);
       response.setValues(purchaseOrderLine);
 
     } catch (Exception e) {
