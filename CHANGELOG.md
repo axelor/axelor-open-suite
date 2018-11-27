@@ -39,6 +39,7 @@
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
 - Use the char ';' for subrogation release export
+- Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
