@@ -35,17 +35,17 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contentPanel" title="Contenu">
-				<panel name="recipientAddress" title="Recipient address"
+				<panel name="recipientAddressPanel" title="Recipient address"
 					showIf="mediaTypeSelect == 1">
 					<field name="addressBlock" showTitle="false" colSpan="12"
 						height="5" widget="html" x-lite="false" />
 				</panel>
-				<panel name="sender" title="Sender" colSpan="12"
+				<panel name="senderPanel" title="Sender" colSpan="12"
 					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
 					<field name="fromAdress" height="2" />
 					<field name="replyToRecipients" height="2" />
 				</panel>
-				<panel name="recipients" title="Recipients"
+				<panel name="recipientsPanel" title="Recipients"
 					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
 					<field name="toRecipients" colSpan="12" height="2" />
 					<field name="ccRecipients" colSpan="12" height="2" />

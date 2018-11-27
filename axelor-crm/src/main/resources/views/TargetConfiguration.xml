@@ -48,7 +48,7 @@
 			</panel>
 		</panel-tabs>
 
-		<panel sidebar="true" name="characteristics" title="Characteristics"
+		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
 			canCollapse="true">
 			<field name="periodTypeSelect" />
 			<field name="fromDate" colSpan="6" required="true" />

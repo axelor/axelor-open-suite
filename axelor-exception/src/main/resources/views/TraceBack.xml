@@ -47,29 +47,29 @@
 			<field name="batchId" colSpan="4" />
      		<button name="showBatchBtn" title="Show the batch" icon="fa-share" css="btn-primary" onClick="action-batch-show-batch" colSpan="8" />
 		</panel>
-        <panel name="exceptionGroup" title="Anomaly" canCollapse="true">
+        <panel name="exceptionGroupPanel" title="Anomaly" canCollapse="true">
         	<field name="exception" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="errorGroup" title="Error" canCollapse="true">
+        <panel name="errorGroupPanel" title="Error" canCollapse="true">
             <field name="error" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="causeGroup" title="Cause" canCollapse="true">
+        <panel name="causeGroupPanel" title="Cause" canCollapse="true">
             <field name="cause" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="messageGroup" title="Message" canCollapse="true">
+        <panel name="messageGroupPanel" title="Message" canCollapse="true">
             <field name="message" showTitle="false" colSpan="12"/>
         </panel>
-        <panel name="traceGroup" title="Trace" canCollapse="true">
+        <panel name="traceGroupPanel" title="Trace" canCollapse="true">
             <field name="trace" showTitle="false" colSpan="12"/>
         </panel>
     </form>
     
     <action-attrs name="action-trace-back-load">
     	<attribute name="hidden" for="categorySelect" expr="eval: !categorySelect"/>
-    	<attribute name="hidden" for="errorGroup" expr="eval: !error"/>
-    	<attribute name="hidden" for="causeGroup" expr="eval: !cause"/>
-    	<attribute name="hidden" for="messageGroup" expr="eval: !message"/>
-    	<attribute name="hidden" for="traceGroup" expr="eval: !trace"/>
+    	<attribute name="hidden" for="errorGroupPanel" expr="eval: !error"/>
+    	<attribute name="hidden" for="causeGroupPanel" expr="eval: !cause"/>
+    	<attribute name="hidden" for="messageGroupPanel" expr="eval: !message"/>
+    	<attribute name="hidden" for="traceGroupPanel" expr="eval: !trace"/>
     </action-attrs>
 
 	<action-method name="action-traceback-show-reference">

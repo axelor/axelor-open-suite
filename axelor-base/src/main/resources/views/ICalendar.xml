@@ -39,7 +39,7 @@
 				<panel-dashlet name="icalendarIeventPanel"  colSpan="12" height="540" showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
 			</panel>
 			<panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
-				<panel name="details" colSpan="12">
+				<panel name="detailsPanel" colSpan="12">
 					<field name="url" required="true"/>
 					<field name="typeSelect" required="true"/>
 					<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>

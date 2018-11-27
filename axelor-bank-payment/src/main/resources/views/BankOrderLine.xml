@@ -59,7 +59,7 @@
 			<field name="receiverCountry.alpha2Code" colSpan="2"/>
 			<field name="receiverAddressStr" colSpan="12" max="105"/>
 		</panel>
-		<panel name="action" showIf="bankOrder != null" itemSpan="12"
+		<panel name="actionPanel" showIf="bankOrder != null" itemSpan="12"
 			sidebar="true">
 			<field name="bankOrder.statusSelect" title="Bank Order Status"
 				readonly="true" />

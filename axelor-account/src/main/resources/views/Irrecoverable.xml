@@ -20,7 +20,7 @@
 			 <field name="company" canEdit="false"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			 <field name="statusSelect" hidden="true"/>
 		</panel>
-		<panel name="irrecoverable" showIf="statusSelect == 1">
+		<panel name="irrecoverablePanel" showIf="statusSelect == 1">
 	 		<button name="getIrrecoverableBtn" title="Get invoices and schedule lines to set as irrecoverable" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
 		</panel>
 		<panel-tabs name="mainPanelTab" showIf="statusSelect == 1">
@@ -28,14 +28,14 @@
 			<panel-related name="paymentScheduleLineSetPanel" field="paymentScheduleLineSet" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
 		</panel-tabs>
 		
-		<panel name="report" sidebar="true" showIf="invoiceSet != null || paymentScheduleLineSet != null">
+		<panel name="reportPanel" sidebar="true" showIf="invoiceSet != null || paymentScheduleLineSet != null">
 			<button name="createIrrecoverableReportBtn" title="Generate irrecoverable report"  onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport" showIf="statusSelect == 1"/>
 			<field name="exportTypeSelect" colSpan="4"/>
 			<button name="printReportBtn" title="Print" icon="fa-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>  		
 		</panel>
 		<panel-related sidebar="true" name="irrecoverableCustomerLineListPanel" field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>  
 		
-		<panel name="actions" showIf="invoiceSet != null || paymentScheduleLineSet != null">
+		<panel name="actionsPanel" showIf="invoiceSet != null || paymentScheduleLineSet != null">
   			<button name="passInIrrecoverableBtn" title="Shift to irrecoverable"   onClick="save,action-method-account-irrecoverable-pass-in" showIf="statusSelect == 1"/>
 	 		<button name="showTraceBackBtn" title="Anomalies"   onClick="save,action-irrecoverable-show-trace-back" showIf="statusSelect == 2"/>
 	 	</panel>

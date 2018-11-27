@@ -24,7 +24,7 @@
 	       <field name="company" canEdit="false"/>
 	       <field name="inChargeUser" canNew="false" canEdit="false" canView="false"/>
        </panel>
-       <panel-related name="budgetLineList" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
+       <panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
        <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant">
 			<field name="periodDurationSelect"/>
 			<field name="amountForGeneration"/>

@@ -38,7 +38,7 @@
 		</panel>
 		<panel name="actionPanel">
 			<button name="generateSupplychainConfigurationsBtn" colSpan="4" title="Generate supply chain configurations" onClick="save,com.axelor.apps.supplychain.web.AppSupplychainController:generateSupplychainConfigurations"/>
-			<panel-dashlet action="admin.root.conf.supply.chain.config" colSpan="12"/>
+			<panel-dashlet name="confSupplyChainConfigDashletPanel" action="admin.root.conf.supply.chain.config" colSpan="12"/>
 		</panel>
 	</form>
 
