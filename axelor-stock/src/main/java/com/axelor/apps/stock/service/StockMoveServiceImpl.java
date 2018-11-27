@@ -395,6 +395,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
 
+    stockMove.setCancelReason(null);
+
     stockMoveRepo.save(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getPlannedStockMoveAutomaticMail()) {
