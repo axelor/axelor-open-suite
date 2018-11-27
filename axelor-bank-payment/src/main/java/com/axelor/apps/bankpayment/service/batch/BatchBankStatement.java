@@ -88,7 +88,7 @@ public class BatchBankStatement extends AbstractBatch {
 
       } catch (AxelorException e) {
         processError(e, e.getCategory(), ebicsPartner);
-      } catch (IOException e) {
+      } catch (Exception e) {
         processError(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner);
       }
     }
