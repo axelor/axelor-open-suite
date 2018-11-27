@@ -24,8 +24,12 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +40,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   @Inject protected AppBaseService appBaseService;
 
   @Inject protected PartnerService partnerService;
+
+  @Inject private MetaFiles metaFiles;
 
   @Transactional
   @Override
@@ -84,6 +90,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     contact.setFixedPhone(jobApplication.getFixedPhone());
     contact.setMobilePhone(jobApplication.getMobilePhone());
     contact.setEmailAddress(jobApplication.getEmailAddress());
+    if (jobApplication.getPicture() != null) {
+      File file = MetaFiles.getPath(jobApplication.getPicture()).toFile();
+      try {
+        contact.setPicture(metaFiles.upload(file));
+      } catch (IOException e) {
+        TraceBackService.trace(e);
+      }
+    }
     partnerService.setPartnerFullName(contact);
 
     return contact;
