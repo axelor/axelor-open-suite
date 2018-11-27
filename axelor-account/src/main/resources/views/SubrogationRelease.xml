@@ -35,7 +35,7 @@
                     AND self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE" />
 		</panel>
 
-		<panel name="actions" title="Actions" sidebar="true">
+		<panel name="actionsPanel" title="Actions" sidebar="true">
 			<button name="retrieveInvoicesBtn" title="Retrieve invoices from factorized customers"
 				onClick="action-subrogation-release-retrieve-invoices" readonlyIf="company == null"
 				showIf="statusSelect == 1" />

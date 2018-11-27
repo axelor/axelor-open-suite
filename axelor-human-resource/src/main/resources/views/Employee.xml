@@ -107,7 +107,7 @@
         form-view="leave-line-form" colSpan="12"/>
         <field name="negativeValueLeave" colSpan="4"/>
       </panel>
-			<panel name="timesheets" title="Timesheets"
+			<panel name="timesheetsPanel" title="Timesheets"
 				   if="__config__.app.isApp('timesheet')">
 				<field name="timeLoggingPreferenceSelect" colSpan="3"/>
 				<field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
@@ -119,12 +119,12 @@
 				   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
 	       		<field name="lunchVoucherFormatSelect" colSpan="6"/>
 	       		<button name="addLunchVoucherAdvanceBtn" colSpan="6" title="Add an advance" onClick="save,action-lunch-voucher-advance-new" icon="fa-ticket"/>
-	       		<panel-dashlet name="lunchVouchers" title="Lunch Vouchers" colSpan="12"
+	       		<panel-dashlet name="lunchVouchersDashletPanel" title="Lunch Vouchers" colSpan="12"
 							   action="action-employee-view-show-lunch-voucher"/>
 	       		<panel-related name="lunchVoucherAdvanceListPanel" field="lunchVoucherAdvanceList" colSpan="12" grid-view="lunch-voucher-advance-grid" form-view="lunch-voucher-advance-form" canNew="false" canEdit="false" canRemove="true"/>
 	       	</panel>
 
-            <panel name="expenses" title="Expenses">
+            <panel name="expensesPanel" title="Expenses">
                 <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"/>
                 <field name="companyCbDetails" hidden="true" showIf="companyCbSelect > 1"/>
                 <panel-related name="employeeAdvanceListPanel" field="employeeAdvanceList" title="Employee advances" colSpan="12" grid-view="employee-advance-employee-grid" form-view="employee-advance-employee-form" readonly="false" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()" />
@@ -153,7 +153,7 @@
 						   title="Bonuses"
 						   colSpan="12" readonly="true"
 						   if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"
-						   name="employeeBonusDashlet"/>
+						   name="employeeBonusDashletPanel"/>
 	       	<panel-include view="talent-employee-form" if-module="axelor-talent"/>
         </panel-tabs>
 	</form>

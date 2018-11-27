@@ -61,7 +61,7 @@
 
 	<form name="purchase-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge purchase orders" width="large">
 		<panel-related name="purchaseOrderToMergePanel" field="$purchaseOrderToMerge" form-view="purchase-order-form" title="Purchase orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.purchase.db.PurchaseOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="purchase-order-grid"/>
-		<panel name="actions" sidebar="true" title="Actions">
+		<panel name="actionsPanel" sidebar="true" title="Actions">
 			<button name="generateMergedPurchaseOrderBtn" title="Merge into single purchase order" onClick="action-validate-purchase-order-check-selection,action-group-purchase-order-merge-action"/>
 	  	</panel>
     </form>
@@ -123,7 +123,7 @@
 				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" readonlyIf="statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 			</panel>
-			<panel name="tax" title="Tax" colSpan="12">
+			<panel name="taxPanel" title="Tax" colSpan="12">
 				<panel-related name="purchaseOrderLineTaxListPanel" field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" colSpan="12">

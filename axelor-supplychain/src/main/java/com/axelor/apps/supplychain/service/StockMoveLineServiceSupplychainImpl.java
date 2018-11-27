@@ -225,6 +225,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     return stockMoveLine;
   }
 
+  /**
+   * This method is overridden to fill requested reserved quantity and avoid to override every
+   * method using reserved quantity.
+   */
   @Override
   public void updateLocations(
       StockMoveLine stockMoveLine,
@@ -249,7 +253,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         toStatus,
         lastFutureStockMoveDate,
         trackingNumber,
-        requestedReservedQty);
+        stockMoveLine.getRequestedReservedQty());
   }
 
   @Override

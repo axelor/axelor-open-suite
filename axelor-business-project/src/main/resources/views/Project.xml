@@ -112,10 +112,10 @@
 	</action-view>
 	
 	<action-attrs name="action-project-attrs-sales-order-line-select-lines">
-		<attribute name="readonly" for="selectNewSOLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageSOLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedSOLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewSOLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageSOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>

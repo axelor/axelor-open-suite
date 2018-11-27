@@ -154,6 +154,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
+- Stock move: add tracking for cancel reason.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -246,6 +247,8 @@ Only display line where quantity is greater than 0.
 - Stock Move : Specify views for origin field. 
 - STOCK MOVE : Set avilableStatus in stockMoveLineList.
 - Add 'stock unit' field on stock location line and add unit conversion.
+- STOCK LOCATION : allow report to export in XLS
+- JOB APPLICATION : Major updates in job application form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

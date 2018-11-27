@@ -115,6 +115,7 @@
       <field name="fromStockLocation" />
       <field name="toStockLocation" />
       <field name="estimatedDate" />
+      <field name="cancelReason" />
       <field name="realDate" if="statusSelect == 3" />
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">Draft move</message>

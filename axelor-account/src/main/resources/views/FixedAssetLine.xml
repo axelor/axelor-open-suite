@@ -16,17 +16,17 @@
     <form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" 
     	onNew="action-fixed-asset-line-record-default,action-fixed-asset-line-attrs-onnew-onload" onLoad="action-fixed-asset-line-attrs-onnew-onload">
     	<panel>
-    		<panel colSpan="12">
+    		<panel name="statusSelectPanel" colSpan="12">
 				<field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false" colSpan="12"/>
 			</panel>
-	        <panel name="main" colSpan="12">
+	        <panel name="mainPanel" colSpan="12">
 	        	<field name="depreciationDate"/>
 	        	<field name="depreciation"/>
 	        	<field name="cumulativeDepreciation"/>
 	        	<field name="residualValue"/>
 	        	<field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
 	        </panel>
-	        <panel name="actions" hideIf="statusSelect == 2">
+	        <panel name="actionsPanel" hideIf="statusSelect == 2">
 		    	<button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>	
 		    </panel>
         </panel>

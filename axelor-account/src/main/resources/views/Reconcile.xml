@@ -25,7 +25,7 @@
     </grid>
 
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
-		<panel name="company" showTitle="false">
+		<panel name="companyPanel" showTitle="false">
 			<field name="company" canEdit="false"/>
 		</panel>
 		<panel name="mainPanel">
@@ -34,11 +34,11 @@
 			<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
 			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>
-		<panel sidebar="true" name="actions" title="Actions">
+		<panel sidebar="true" name="actionsPanel" title="Actions">
     		<button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1 || statusSelect == 3 " onClick="save,action-reconcile-method-reconcile"/>
 			<button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
 		</panel>
-		<panel sidebar="true" name="info" title="Info">
+		<panel sidebar="true" name="infoPanel" title="Info">
 			<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
 			<field name="reconciliationDate"/>
