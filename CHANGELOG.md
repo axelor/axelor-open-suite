@@ -344,6 +344,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Filter out direct order stock location in sale order with the boolean direct order false.
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 - Stock Move Line : Hide Available stock display for virtual stock Location.
+- STOCK MOVES : delete available status for supplier arrivals and customer returns
 
 ## [Unreleased 5.0.7]
 ## Features
