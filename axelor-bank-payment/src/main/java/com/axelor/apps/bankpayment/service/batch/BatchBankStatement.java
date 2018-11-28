@@ -34,7 +34,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.List;
@@ -87,22 +86,23 @@ public class BatchBankStatement extends AbstractBatch {
 
       } catch (AxelorException e) {
         processError(e, e.getCategory(), ebicsPartner);
-      } catch (IOException e) {
+      } catch (Exception e) {
         processError(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner);
       }
     }
   }
 
   protected void processError(Exception cause, int category, EbicsPartner ebicsPartner) {
+    log.error(cause.getMessage(), cause);
     incrementAnomaly();
-    log.error(cause.getMessage());
-    // TODO in v5: link Axelor exception to ebicsPartner instead of custom message.
-    String message =
-        String.format(
+    AxelorException exception =
+        new AxelorException(
+            cause,
+            ebicsPartner,
+            category,
             IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
-    AxelorException exception = new AxelorException(message, cause, category);
     TraceBackService.trace(exception, IException.BANK_STATEMENT, batch.getId());
   }
 
