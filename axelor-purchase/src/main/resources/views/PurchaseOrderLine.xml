@@ -5,19 +5,8 @@
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<field name="purchaseOrder.purchaseOrderSeq" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
+    	<field name="purchaseOrder.purchaseOrderSeq"/>
     	<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-    	<field name="productName"/>
-        <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
-        <field name="inTaxPrice" x-scale="2"/>
-        <field name="purchaseOrder.buyerUser"/>
-    </grid>
-    
-    <grid name="purchase-order-line-menu-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    	<field name="purchaseOrder.contactPartner"></field>
-    	<field name="purchaseOrder.purchaseOrderSeq"></field>
-    	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
     	<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
@@ -25,8 +14,8 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
+        <field name="purchaseOrder.currency"/>
+        <field name="purchaseOrder.buyerUser"/>
     </grid>
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -58,6 +47,7 @@
         <field name="inTaxPrice" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
+        <field name="purchaseOrder.currency"/>
 		<field name="toInvoice"/>
         <field name="invoiced"/>
     </grid>
