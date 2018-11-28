@@ -94,16 +94,16 @@ public class BatchBankStatement extends AbstractBatch {
   }
 
   protected void processError(Exception cause, int category, EbicsPartner ebicsPartner) {
-    log.error(cause.getMessage());
-
+    log.error(cause.getMessage(), cause);
     incrementAnomaly();
-    // TODO in v5: link Axelor exception to ebicsPartner instead of custom message.
-    String message =
-        String.format(
+    AxelorException exception =
+        new AxelorException(
+            cause,
+            ebicsPartner,
+            category,
             IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
-    AxelorException exception = new AxelorException(message, cause, category);
     TraceBackService.trace(exception, IException.BANK_STATEMENT, batch.getId());
   }
 

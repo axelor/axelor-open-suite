@@ -52,7 +52,7 @@
 			<field name="inStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
 			<field name="inStockMoveList[].stockMoveLineList[].stockMove.origin" as="origin"/>
 			<where>
-				<input name="trackingNumber" field="inStockMove.stockMoveLineList[].trackingNumber"/>
+				<input name="trackingNumber" field="inStockMoveList[].stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
 		<select model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing Order (StockMove Out)">
@@ -64,7 +64,7 @@
 			<field name="outStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
 			<field name="outStockMoveList[].stockMoveLineList[].stockMove.origin" as="origin"/>
 			<where>
-				<input name="trackingNumber" field="outStockMove.stockMoveLineList[].trackingNumber"/>
+				<input name="trackingNumber" field="outStockMoveList[].stockMoveLineList[].trackingNumber"/>
 			</where>
 		</select>
 	</search>
