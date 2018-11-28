@@ -62,5 +62,10 @@
 		<option value="2">Completed</option>
 		<option value="3">Canceled</option>
 	</selection>
+	
+	<selection name="job.position.position.status">
+		<option value="0">Cadre</option>
+		<option value="1">Technicien</option>
+	</selection>
 
 </object-views>
