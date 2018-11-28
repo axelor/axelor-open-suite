@@ -20,7 +20,10 @@ package com.axelor.apps.base.job;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoper;
+import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -40,7 +43,7 @@ public abstract class ThreadedJob implements Job {
     }
 
     String name = context.getJobDetail().getKey().getName();
-    Thread thread = new Thread(() -> executeInThread(context));
+    Thread thread = new Thread(() -> executeInThreadedRequestScope(context));
     thread.setUncaughtExceptionHandler(
         (t, e) -> {
           final Throwable cause =
@@ -66,6 +69,13 @@ public abstract class ThreadedJob implements Job {
   }
 
   public abstract void executeInThread(JobExecutionContext context);
+
+  private void executeInThreadedRequestScope(JobExecutionContext context) {
+    RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+    try (RequestScoper.CloseableScope ignored = scope.open()) {
+      executeInThread(context);
+    }
+  }
 
   private boolean isRunning(JobExecutionContext context) {
     try {
