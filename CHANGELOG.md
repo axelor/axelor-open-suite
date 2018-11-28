@@ -341,6 +341,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
+- Stock Move Line : Hide Available stock display for virtual stock Location.
 
 ## [Unreleased 5.0.7]
 ## Features
