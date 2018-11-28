@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.base.job;
 
+import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -31,6 +33,7 @@ public abstract class ThreadedJob implements Job {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
+  @Transactional
   public void execute(JobExecutionContext context) throws JobExecutionException {
     if (isRunning(context)) {
       return;
@@ -38,20 +41,27 @@ public abstract class ThreadedJob implements Job {
 
     String name = context.getJobDetail().getKey().getName();
     Thread thread = new Thread(() -> executeInThread(context));
+    thread.setUncaughtExceptionHandler(
+        (t, e) -> {
+          final Throwable cause =
+              e instanceof UncheckedJobExecutionException && e.getCause() != null
+                  ? e.getCause()
+                  : e;
+          logger.error(cause.getMessage(), cause);
+          TraceBackService.trace(cause);
+        });
+    long startTime = System.currentTimeMillis();
 
     try {
-      long startTime = System.currentTimeMillis();
       thread.start();
       thread.join();
-      float duration = (System.currentTimeMillis() - startTime) / 1000f;
-      logger.debug("Job {} duration: {}s", name, duration);
-    } catch (UncheckedJobExecutionException e) {
-      Throwable cause = e.getCause();
-      TraceBackService.trace(cause);
-      throw new JobExecutionException(cause);
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       Thread.currentThread().interrupt();
+    } finally {
+      float duration = (System.currentTimeMillis() - startTime) / 1000f;
+      logger.info("Job {} duration: {} s", name, duration);
+      JPA.clear();
     }
   }
 
