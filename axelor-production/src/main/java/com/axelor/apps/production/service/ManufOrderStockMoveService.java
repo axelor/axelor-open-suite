@@ -277,6 +277,7 @@ public class ManufOrderStockMoveService {
         prodProduct.getProduct().getDescription(),
         qty,
         costPrice,
+        costPrice,
         prodProduct.getUnit(),
         stockMove,
         inOrOutType,

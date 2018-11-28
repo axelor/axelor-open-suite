@@ -28,6 +28,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +41,17 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
   protected static final int CONFIG_OBJECT_PRODUCT = 1;
   protected static final int CONFIG_OBJECT_PRODUCT_FAMILY = 2;
+
+  private FiscalPositionService fiscalPositionService;
+
+  private TaxService taxService;
+
+  @Inject
+  public AccountManagementServiceImpl(
+      FiscalPositionService fiscalPositionService, TaxService taxService) {
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
+  }
 
   /**
    * Get the right Account management according to the product and company and configObject
@@ -144,7 +156,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 
     Tax generalTax = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
 
-    Tax tax = new FiscalPositionServiceImpl().getTax(fiscalPosition, generalTax);
+    Tax tax = fiscalPositionService.getTax(fiscalPosition, generalTax);
 
     if (tax != null) {
       return tax;
@@ -209,8 +221,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
       throws AxelorException {
 
     TaxLine taxLine =
-        new TaxService()
-            .getTaxLine(this.getProductTax(product, company, fiscalPosition, isPurchase), date);
+        taxService.getTaxLine(
+            this.getProductTax(product, company, fiscalPosition, isPurchase), date);
     if (taxLine != null) {
       return taxLine;
     }

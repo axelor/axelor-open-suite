@@ -19,8 +19,13 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.service.OperationOrderService;
+import com.google.inject.Inject;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
+
+  @Inject OperationOrderService operationOrderService;
+
   @Override
   public ManufOrder copy(ManufOrder entity, boolean deep) {
     entity.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
@@ -52,8 +57,21 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
         operationOrder.setToConsumeProdProductList(null);
         operationOrder.setConsumedStockMoveLineList(null);
         operationOrder.setDiffConsumeProdProductList(null);
+        operationOrder.setBarCode(null);
       }
     }
     return super.copy(entity, deep);
+  }
+
+  @Override
+  public ManufOrder save(ManufOrder entity) {
+    entity = super.save(entity);
+
+    for (OperationOrder operationOrder : entity.getOperationOrderList()) {
+      if (operationOrder.getBarCode() == null) {
+        operationOrderService.createBarcode(operationOrder);
+      }
+    }
+    return super.save(entity);
   }
 }

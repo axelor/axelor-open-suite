@@ -54,6 +54,7 @@ public interface StockMoveLineServiceSupplychain {
       BigDecimal quantity,
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,

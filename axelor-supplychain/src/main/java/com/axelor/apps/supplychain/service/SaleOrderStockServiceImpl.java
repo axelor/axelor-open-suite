@@ -52,6 +52,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -369,6 +370,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
       BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
 
+      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
@@ -394,6 +396,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (taxLine != null) {
         taxRate = taxLine.getValue();
       }
+      if (saleOrderLine.getQty() != BigDecimal.ZERO) {
+        companyUnitPriceUntaxed =
+            saleOrderLine
+                .getCompanyExTaxTotal()
+                .divide(
+                    qty,
+                    Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                    RoundingMode.HALF_EVEN);
+      }
 
       StockMoveLine stockMoveLine =
           stockMoveLineSupplychainService.createStockMoveLine(
@@ -403,6 +414,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               qty,
               requestedReservedQty,
               priceDiscounted,
+              companyUnitPriceUntaxed,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
@@ -425,6 +437,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null,
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
+              BigDecimal.ZERO,
               BigDecimal.ZERO,
               BigDecimal.ZERO,
               null,
