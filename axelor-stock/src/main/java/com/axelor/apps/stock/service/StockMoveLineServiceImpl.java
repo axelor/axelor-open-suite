@@ -75,6 +75,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected UnitConversionService unitConversionService;
   private TrackingNumberService trackingNumberService;
 
+  @Inject protected TrackingNumberRepository trackingNumberRepo;
+
   @Inject
   public StockMoveLineServiceImpl(
       TrackingNumberService trackingNumberService,
@@ -1021,6 +1023,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal totalSplitQty = BigDecimal.ZERO;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
+      if (counter.compareTo(BigDecimal.ZERO) == 0) {
+        continue;
+      }
       totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
@@ -1154,5 +1159,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_MISSING);
       }
     }
+  }
+
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove) {
+    List<TrackingNumber> trackingNumbers = null;
+    String domain =
+        "self.product.id = "
+            + stockMoveLine.getProduct().getId()
+            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
+            + stockMove.getFromStockLocation().getId()
+            + " )";
+    trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
+    return trackingNumbers;
   }
 }

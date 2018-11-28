@@ -155,6 +155,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
 - Stock move: add tracking for cancel reason.
+- STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

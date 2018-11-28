@@ -330,13 +330,19 @@
 	    	<panel-related name="$trackingNumbersPanel" field="$trackingNumbers" canSelect="false" editable="true" type="one-to-many" colSpan="12" title="Enter tracking numbers" target="com.axelor.apps.stock.db.TrackingNumber">
 	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain"/>
 	   			<field name="trackingNumberSeq" title="Tracking Nbr." onChange="action-stock-move-line-wizard-record-set-dates,action-track-number-atts-readonly-dates"/>
-				<field name="counter" title="Quantity" min="1"/>
+				<field name="counter" title="Quantity"/>
+				<field name="$availableQty" title="Available qty" type="decimal" width="120" readonly="true" />
 				<field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
 				<field name="perishableExpirationDate" title="Perishable expiration date" readonly="false"/>
 			</panel-related>
     		<button name="validateBtn" title="Validate" onClick="action-stock-move-line-method-update-lines"/>
+    		<button name="availableTranckingNumberBtn" title="Display available tracking numbers" onClick="action-stock-move-line-method-display-available-tracking-number" />
     	</panel>
     </form>
+    
+    <action-method name="action-stock-move-line-method-display-available-tracking-number">
+    	<call class="com.axelor.apps.stock.web.StockMoveLineController" method="displayAvailableTrackingNumber"/>
+    </action-method>
 
     <action-method name="action-stock-move-line-compute-price">
     	<call class="com.axelor.apps.stock.web.StockMoveLineController" method="compute"/>
@@ -371,6 +377,8 @@
 			expr="eval: _hasWarranty &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)" />
 		<attribute name="readonly" for="perishableExpirationDate"
 			expr="eval: _isPerishable &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)" />
+		<attribute name="hidden" for="availableTranckingNumberBtn" expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 3)"/>
+		<attribute name="hidden" for="$trackingNumbers.$availableQty" expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 3)"/>
     </action-attrs>
     
     <action-attrs name="action-track-number-atts-readonly-dates">

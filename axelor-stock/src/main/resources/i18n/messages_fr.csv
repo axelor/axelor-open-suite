@@ -159,6 +159,7 @@
 "Detailed stock",,,
 "Details stock location lines","Produits présents dans l'emplacement (vue non-consolidée)",,
 "Dimensions (cm)","Dimensions (cm)",,
+"Display available tracking numbers","Afficher les lots disponibles",,
 "Display barcode on Picking printing","Afficher les codes barres sur l'impression des bon de préparation",,
 "Display line details on printing",,,
 "Display partner sequence on printing",,,
