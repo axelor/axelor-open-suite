@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -75,7 +76,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -122,22 +122,44 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;
     }
 
-    Expense expense = expenseLine.getExpense();
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            expenseLine.getUser().getPartner(),
+            expenseLine.getExpenseProduct(),
+            expense.getCompany());
+
+    expenseLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (expenseLine.getAnalyticMoveLineList() != null) {
+      expenseLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(expenseLine);
+
+    return expenseLine;
+  }
+
+  @Override
+  public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
+
+    if (expenseLine.getAnalyticDistributionTemplate() == null) {
+      return expenseLine;
+    }
+
     List<AnalyticMoveLine> analyticMoveLineList = expenseLine.getAnalyticMoveLineList();
+
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       analyticMoveLineList =
           analyticMoveLineService.generateLines(
-              expenseLine.getUser().getPartner(),
-              expenseLine.getExpenseProduct(),
-              expense.getCompany(),
-              expenseLine.getUntaxedAmount());
+              expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
       expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     if (analyticMoveLineList != null) {
@@ -150,15 +172,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, ExpenseLine expenseLine) {
 
-    analyticMoveLine.setExpenseLine(expenseLine);
-    analyticMoveLine.setAmount(
-        analyticMoveLine
-            .getPercentage()
-            .multiply(
-                analyticMoveLine
-                    .getExpenseLine()
-                    .getUntaxedAmount()
-                    .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP)));
+    analyticMoveLine.setOriginalPieceAmount(expenseLine.getUntaxedAmount());
+    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
     analyticMoveLine.setDate(appAccountService.getTodayDate());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
   }
@@ -168,13 +183,9 @@ public class ExpenseServiceImpl implements ExpenseService {
       throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList = null;
     analyticMoveLineList =
-        analyticMoveLineService.generateLinesWithTemplate(
+        analyticMoveLineService.generateLines(
             expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
-    if (analyticMoveLineList != null) {
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLine.setExpenseLine(expenseLine);
-      }
-    }
+
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;
   }

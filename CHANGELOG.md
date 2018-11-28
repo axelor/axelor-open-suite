@@ -154,6 +154,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
+- Stock move: add tracking for cancel reason.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -339,6 +340,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
+- Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 
 ## [Unreleased 5.0.7]

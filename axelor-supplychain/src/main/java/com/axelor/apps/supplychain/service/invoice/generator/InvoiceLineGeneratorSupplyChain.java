@@ -198,6 +198,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = super.createInvoiceLine();
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     this.assignOriginElements(invoiceLine);
 
@@ -205,12 +206,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       invoiceLine.setAnalyticDistributionTemplate(saleOrderLine.getAnalyticDistributionTemplate());
       this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
+      invoiceLineService.computeAnalyticDistribution(invoiceLine);
 
     } else if (purchaseOrderLine != null) {
 
       invoiceLine.setAnalyticDistributionTemplate(
           purchaseOrderLine.getAnalyticDistributionTemplate());
       this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
+      invoiceLineService.computeAnalyticDistribution(invoiceLine);
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
@@ -218,7 +221,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (stockMoveLine != null) {
 
-      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
       this.price =
@@ -245,6 +247,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
+
+      invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine);
     }
 
     return invoiceLine;

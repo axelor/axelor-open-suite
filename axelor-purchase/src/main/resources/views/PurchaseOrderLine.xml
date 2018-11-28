@@ -157,8 +157,7 @@
                 </field>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-				<button name="generateDistributionLinesBtn" onClick="action-purchase-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
+				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-purchase-order-line-method-create-distribution"/>
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
 		</panel-tabs>
@@ -227,7 +226,6 @@
 		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 		<action name="action-purchase-order-line-method-get-product-information"/>
 		<action name="action-purchase-order-line-method-compute" if="price != 0"/>
-		<action name="action-purchase-order-line-method-compute-analytic-distribution" if="price != 0 &amp;&amp; __config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
 		<action name="action-budget-validate-exceed-line-amount"/>
 	</action-group>

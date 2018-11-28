@@ -41,6 +41,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,6 +245,17 @@ class WkfTransitionService {
     attr.setName("value");
     attr.setFieldName(wkfField.getName());
     attr.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
+    if (transition.getRoleSet() != null && !transition.getRoleSet().isEmpty()) {
+      String roles =
+          Joiner.on(",")
+              .join(
+                  (transition
+                      .getRoleSet()
+                      .stream()
+                      .map(it -> "\"" + it.getName() + "\"")
+                      .collect(Collectors.toList())));
+      attr.setCondition("!com.axelor.auth.AuthUtils.hasRole(__user__, " + roles + ")");
+    }
     attrs.add(attr);
     actions.add(actionName);
     xml = getActionXML(actionName, attrs);

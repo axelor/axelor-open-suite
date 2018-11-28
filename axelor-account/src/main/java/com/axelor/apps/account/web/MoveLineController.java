@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -42,12 +41,6 @@ public class MoveLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    Move move = moveLine.getMove();
-
-    if (move == null) {
-      move = request.getContext().getParent().asType(Move.class);
-      moveLine.setMove(move);
-    }
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {

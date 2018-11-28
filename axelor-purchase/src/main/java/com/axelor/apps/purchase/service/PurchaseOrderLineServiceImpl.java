@@ -251,29 +251,30 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
-  public PurchaseOrderLine fill(PurchaseOrderLine line, Product product) throws AxelorException {
+  public PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
+      throws AxelorException {
     Preconditions.checkNotNull(line, I18n.get("The line cannot be null."));
     Preconditions.checkNotNull(
-        line.getPurchaseOrder(), I18n.get("You need a purchase order associated to line."));
-    PurchaseOrder order = line.getPurchaseOrder();
-    Partner supplierPartner = order.getSupplierPartner();
+        purchaseOrder, I18n.get("You need a purchase order associated to line."));
+    Partner supplierPartner = purchaseOrder.getSupplierPartner();
+    Product product = line.getProduct();
 
-    String productName = getProductSupplierInfos(order, line)[0];
-    String productCode = getProductSupplierInfos(order, line)[1];
+    String productName = getProductSupplierInfos(purchaseOrder, line)[0];
+    String productCode = getProductSupplierInfos(purchaseOrder, line)[1];
     line.setProductName(productName);
     line.setProductCode(productCode);
     line.setUnit(getPurchaseUnit(line));
-    line.setQty(getQty(order, line));
+    line.setQty(getQty(purchaseOrder, line));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(product.getDescription());
     }
 
-    TaxLine taxLine = getTaxLine(order, line);
+    TaxLine taxLine = getTaxLine(purchaseOrder, line);
     line.setTaxLine(taxLine);
 
-    BigDecimal price = getExTaxUnitPrice(order, line, taxLine);
-    BigDecimal inTaxPrice = getInTaxUnitPrice(order, line, taxLine);
+    BigDecimal price = getExTaxUnitPrice(purchaseOrder, line, taxLine);
+    BigDecimal inTaxPrice = getInTaxUnitPrice(purchaseOrder, line, taxLine);
 
     if (price == null || inTaxPrice == null || (productName == null && productCode == null)) {
       throw new AxelorException(
@@ -283,7 +284,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Tax tax =
         accountManagementService.getProductTax(
-            product, order.getCompany(), supplierPartner.getFiscalPosition(), true);
+            product, purchaseOrder.getCompany(), supplierPartner.getFiscalPosition(), true);
 
     TaxEquiv taxEquiv =
         Beans.get(FiscalPositionService.class)
@@ -291,7 +292,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setTaxEquiv(taxEquiv);
 
     Map<String, Object> discounts =
-        getDiscountsFromPriceLists(order, line, order.getInAti() ? inTaxPrice : price);
+        getDiscountsFromPriceLists(
+            purchaseOrder, line, purchaseOrder.getInAti() ? inTaxPrice : price);
 
     if (discounts != null) {
       if (discounts.get("price") != null) {
@@ -304,7 +306,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           inTaxPrice = this.convertUnitPrice(false, line.getTaxLine(), discountPrice);
         }
       }
-      if (product.getInAti() != order.getInAti()
+      if (product.getInAti() != purchaseOrder.getInAti()
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         line.setDiscountAmount(
@@ -321,9 +323,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setPrice(price);
     line.setInTaxPrice(inTaxPrice);
 
-    line.setSaleMinPrice(getMinSalePrice(order, line));
+    line.setSaleMinPrice(getMinSalePrice(purchaseOrder, line));
     line.setSalePrice(
-        getSalePrice(order, line.getProduct(), order.getInAti() ? inTaxPrice : price));
+        getSalePrice(
+            purchaseOrder, line.getProduct(), purchaseOrder.getInAti() ? inTaxPrice : price));
 
     return line;
   }
