@@ -250,6 +250,7 @@ Only display line where quantity is greater than 0.
 - Add 'stock unit' field on stock location line and add unit conversion.
 - STOCK LOCATION : allow report to export in XLS
 - JOB APPLICATION : Major updates in job application form view.
+- JOB POSITION : Major updates in job position form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
