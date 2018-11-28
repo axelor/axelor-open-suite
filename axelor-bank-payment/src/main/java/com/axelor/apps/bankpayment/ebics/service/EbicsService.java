@@ -458,7 +458,10 @@ public class EbicsService {
 
       userService.getNextOrderId(user);
 
-    } catch (IOException | AxelorException e) {
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      throw e;
+    } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
     }
