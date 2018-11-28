@@ -94,8 +94,9 @@ public class BatchBankStatement extends AbstractBatch {
   }
 
   protected void processError(Exception cause, int category, EbicsPartner ebicsPartner) {
-    incrementAnomaly();
     log.error(cause.getMessage());
+
+    incrementAnomaly();
     // TODO in v5: link Axelor exception to ebicsPartner instead of custom message.
     String message =
         String.format(
