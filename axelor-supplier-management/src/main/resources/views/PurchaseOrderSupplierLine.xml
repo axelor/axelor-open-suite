@@ -26,17 +26,17 @@
 			</menu>		
 		</menubar>
 				
-		<panel name="status" title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>	
 		</panel>
-	   <panel name="main" >
+	   <panel name="mainPanel" >
     	 <field name="supplierPartner" onSelect="action-purchase-order-supplier-line-method-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
     	 <field name="availableQty"/>
     	 <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
     	 <field name="price"/>
     	 <field name="estimatedDelivDate"/>
   	   </panel>
-  	   <panel name="purchaseOrderDetails" title="Purchase order Details" readOnly="true">
+  	   <panel name="purchaseOrderDetailsPanel" title="Purchase order Details" readOnly="true">
   	   	 <field name="purchaseOrderLine"/>
   		 <field name="purchaseOrderLine.product"/>
     	 <field name="purchaseOrderLine.qty" title="Ordered quantity"/>
@@ -46,11 +46,11 @@
 	  <panel name="commentsPanel">
 	     <field name="comments" colSpan="12"/>
 	  </panel>  
-	  <panel sidebar="true" name="actions" title="Actions">
-	    <button name="accept" title="Accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
-	    <button name="notAccept" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
-	    <button name="cancel" title="Cancel" hideIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
-	    <button name="request" title="Request" showIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-request,save"/>
+	  <panel sidebar="true" name="actionsPanel" title="Actions">
+	    <button name="acceptBtn" title="Accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-method-accept,save"/>
+	    <button name="notAcceptBtn" title="Not accept" showIf="stateSelect == 1 || stateSelect == 2"   onClick="save,action-purchase-order-supplier-line-record-not-accept,save"/>
+	    <button name="cancelBtn" title="Cancel" hideIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
+	    <button name="requestBtn" title="Request" showIf="stateSelect == 5"   onClick="save,action-purchase-order-supplier-line-record-request,save"/>
 	  </panel>
 	</form>
 	
@@ -67,7 +67,7 @@
 	</grid>
 	
 	<form name="purchase-order-supplier-line-supplier-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" width="large">
-	  <panel name="main" >
+	  <panel name="mainPanel" >
 	    <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	    <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
 	    <field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>

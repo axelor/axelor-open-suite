@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -39,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class ReservedQtyServiceImpl implements ReservedQtyService {
 
@@ -144,7 +146,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           stockLocationLine.getReservedQty().subtract(realReservedQty));
 
       // reallocate quantity in other stock move lines
-      // reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, realReservedQty);
+      if (isReallocatingQtyOnCancel(stockMoveLine)) {
+        reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, realReservedQty);
+      }
 
       // no more reserved qty in stock move and sale order lines
       updateReservedQuantityFromStockMoveLine(
@@ -160,6 +164,20 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
 
     checkReservedQtyStocks(stockLocationLine, toStatus);
+  }
+
+  /**
+   * Check in the stock move for cancel reason and return the config in cancel reason.
+   *
+   * @param stockMoveLine
+   * @return the value of the boolean field on cancel reason if found else false.
+   */
+  protected boolean isReallocatingQtyOnCancel(StockMoveLine stockMoveLine) {
+    return Optional.of(stockMoveLine)
+        .map(StockMoveLine::getStockMove)
+        .map(StockMove::getCancelReason)
+        .map(CancelReason::getCancelQuantityAllocation)
+        .orElse(false);
   }
 
   @Override

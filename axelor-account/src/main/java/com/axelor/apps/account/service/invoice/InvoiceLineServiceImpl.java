@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -74,8 +75,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.analyticMoveLineService = analyticMoveLineService;
   }
 
-  @Override
-  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException {
+  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine)
+      throws AxelorException {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
@@ -83,14 +84,35 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     Invoice invoice = invoiceLine.getInvoice();
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            invoice.getPartner(), invoiceLine.getProduct(), invoice.getCompany());
+
+    invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (invoiceLine.getAnalyticMoveLineList() != null) {
+      invoiceLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(invoiceLine);
+
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException {
+
+    if (invoiceLine.getAnalyticDistributionTemplate() == null) {
+      return invoiceLine;
+    }
+
     List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
+
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       analyticMoveLineList =
           analyticMoveLineService.generateLines(
-              invoice.getPartner(),
-              invoiceLine.getProduct(),
-              invoice.getCompany(),
-              invoiceLine.getExTaxTotal());
+              invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getCompanyExTaxTotal());
       invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     if (analyticMoveLineList != null) {
@@ -104,9 +126,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine) {
 
-    analyticMoveLine.setInvoiceLine(invoiceLine);
+    analyticMoveLine.setOriginalPieceAmount(invoiceLine.getCompanyExTaxTotal());
     analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-    analyticMoveLine.setInvoiceLine(null);
     analyticMoveLine.setDate(appAccountService.getTodayDate());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
   }
@@ -116,13 +137,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList = null;
     analyticMoveLineList =
-        analyticMoveLineService.generateLinesWithTemplate(
-            invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getExTaxTotal());
-    if (analyticMoveLineList != null) {
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLine.setInvoiceLine(invoiceLine);
-      }
-    }
+        analyticMoveLineService.generateLines(
+            invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getCompanyExTaxTotal());
+
     invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
     return invoiceLine;
   }

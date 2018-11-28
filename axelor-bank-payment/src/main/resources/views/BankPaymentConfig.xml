@@ -9,6 +9,9 @@
 
     <form name="bank-payment-config-form" title="Bank payment configuration" model="com.axelor.apps.bankpayment.db.BankPaymentConfig" onNew="action-bank-payment-config-record-default" width="large">
         <panel name="bankOrderDetailsPanel" title="Bank Order">
+            <panel name="mainPanel">
+				<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+            </panel>
             <panel colSpan="12" name="detailsPanel">
                 <field name="generateMoveOnBankOrderValidation"/>
                 <field name="icsNumber" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>

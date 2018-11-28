@@ -99,13 +99,13 @@
 			<button name="draftBtn" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
 				onClick="save,action-purchase-request-set-status-draft, save" />
 		</panel>
-		<panel sidebar="true" name="characteristics" title="Characteristics"
+		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
 			canCollapse="true">
 			<field name="deliveryAddress"
 				onSelect="action-purchase-request-set-delivery-address-domain" canEdit="false"/>
 			<field name="supplier" search="self.isSupplier = true" colSpan="6" canEdit="false"/>
 		</panel>
-		<panel sidebar="true" name="follow-up" title="Follow-up"
+		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true">
 			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
 		</panel>

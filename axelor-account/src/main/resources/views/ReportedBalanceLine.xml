@@ -23,7 +23,7 @@
 	</grid>
 
 	<form name="reported-balance-line-custom-form" model="com.axelor.apps.account.db.ReportedBalanceLine" title="Reported balance line">
-		<panel name="overview" title="Overview">
+		<panel name="overviewPanel" title="Overview">
 			<field name="year"/>
 			<field name="amount"/>
 		</panel>

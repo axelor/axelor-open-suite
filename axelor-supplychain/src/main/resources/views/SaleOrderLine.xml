@@ -14,7 +14,7 @@
 	<form name="allocated-qty-sale-order-line-form" title="Change allocated qty"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
         <panel name="mainPanel">
-			<field name="reservedQty"/>
+			<field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
 			<button name="confirmNewReservationBtn" title="OK"
 					onClick="action-method-sale-order-line-change-reserved-qty,close"/>
 			<field name="qty" hidden="true"/>
@@ -24,7 +24,7 @@
 	<form name="requested-reserved-qty-sale-order-line-form" title="Change reserved qty"
 		model="com.axelor.apps.sale.db.SaleOrderLine">
 		<panel>
-			<field name="requestedReservedQty"/>
+			<field name="requestedReservedQty" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"/>
 			<button name="confirmNewReservationBtn" title="OK"
 				onClick="action-method-sale-order-line-change-requested-reserved-qty,close"/>
 			<field name="qty" hidden="true"/>
@@ -58,6 +58,10 @@
 
 	<action-attrs name="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty">
 		<attribute for="requestedReservedQty" name="value" expr="eval: qty" if="requestedReservedQty &gt; qty"/>
+	</action-attrs>
+
+	<action-attrs name="action-supplychain-attrs-sale-order-line-max-reserved-qty">
+		<attribute for="reservedQty" name="value" expr="eval: qty" if="reservedQty &gt; qty"/>
 	</action-attrs>
   
   <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">

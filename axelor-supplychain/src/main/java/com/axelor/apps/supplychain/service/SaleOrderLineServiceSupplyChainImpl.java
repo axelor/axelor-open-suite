@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -56,25 +57,47 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       throws AxelorException {
     super.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
+
+    this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
   }
 
-  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public SaleOrderLine getAndComputeAnalyticDistribution(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+
+    saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (saleOrderLine.getAnalyticMoveLineList() != null) {
+      saleOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(saleOrderLine);
+
+    return saleOrderLine;
+  }
+
+  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
+      return saleOrderLine;
+    }
+
     List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
+
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       analyticMoveLineList =
           analyticMoveLineService.generateLines(
-              saleOrder.getClientPartner(),
-              saleOrderLine.getProduct(),
-              saleOrder.getCompany(),
-              saleOrderLine.getExTaxTotal());
+              saleOrderLine.getAnalyticDistributionTemplate(),
+              saleOrderLine.getCompanyExTaxTotal());
       saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     if (analyticMoveLineList != null) {
@@ -88,7 +111,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, SaleOrderLine saleOrderLine) {
 
-    analyticMoveLine.setSaleOrderLine(saleOrderLine);
+    analyticMoveLine.setOriginalPieceAmount(saleOrderLine.getCompanyExTaxTotal());
     analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
     analyticMoveLine.setDate(appAccountService.getTodayDate());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
@@ -98,13 +121,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList = null;
     analyticMoveLineList =
-        analyticMoveLineService.generateLinesWithTemplate(
-            saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getExTaxTotal());
-    if (analyticMoveLineList != null) {
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLine.setSaleOrderLine(saleOrderLine);
-      }
-    }
+        analyticMoveLineService.generateLines(
+            saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getCompanyExTaxTotal());
+
     saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return saleOrderLine;
   }

@@ -5,7 +5,7 @@
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfigurationPanel" colSpan="12">
-			<panel name="saleOrder" title="Sale order">
+			<panel name="saleOrderPanel" title="Sale order">
 				<field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto" colSpan="4" widget="boolean-switch"/>
 				<field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO" colSpan="4" widget="boolean-switch"/>
 			</panel>
@@ -43,7 +43,7 @@
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
-			<panel-dashlet name="confProductionConfigDashlet" action="admin.root.conf.production.config" colSpan="12"/>
+			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
 	</form>
 	

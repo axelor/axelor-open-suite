@@ -244,7 +244,7 @@
 					</panel>
 				</panel>
 			</panel>
-			<panel name="blockings" title="Blockings" showIf="statusSelect == 3"
+			<panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
 				showTitle="false">
 				<field name="debitBlockingOk"/>
 				<field name="debtRecoveryBlockingOk"/>

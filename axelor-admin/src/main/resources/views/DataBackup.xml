@@ -18,7 +18,7 @@
 				selection-in="[0,1,2]" colSpan="12" />
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
 				colSpan="4" />
-			<button-group colSpan="3">
+			<button-group name="mainBtnGroup" colSpan="3">
 			<button name="backToDraftBtn" title="Back To Draft"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
 				colSpan="4" onClick="data.create.backup.set.draft.status" />

@@ -19,7 +19,7 @@
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" required="true" colSpan="3" grid-view="company-grid"/>
-			<panel name="dates" title="Dates" colSpan="12">
+			<panel name="datesPanel" title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
 				<field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
 				<field name="reportedBalanceDate" colSpan="3"/>
@@ -34,7 +34,7 @@
 			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
 			<button name="adjustBtn" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
-		<panel sidebar="true" name="periodsGenerationAssistant" title="Periods generation assistant" hideIf="statusSelect == 2">
+		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
 		</panel>

@@ -30,39 +30,39 @@
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
-		<panel sidebar="true" name="actions" title="Actions" stacked="true" >
+		<panel sidebar="true" name="actionsPanel" title="Actions" stacked="true" >
 			<button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="printPaymentVoucherBtn" title="Print receipt" hidden="true" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
 		</panel>
 
 		<panel sidebar="true" hidden="true" name="payboxGroupPanel" title="Paybox" readonlyIf="statusSelect == 3">
-			<panel name="payboxEmail" title="Add an email for payment through Paybox" hidden="true">
+			<panel name="payboxEmailPanel" title="Add an email for payment through Paybox" hidden="true">
 				<label name="emailLabel" title="The payer doesn't have email attached. Please input/provide the email to use."/>
 				<field name="email" widget="Email"/>
 				<field name="toSaveEmailOk"/>
 				<button name="validateEmailBtn" title="Validate"   onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save"/>
 				<field name="defaultEmailOk"/>
 			</panel>
-			<panel name="payboxDetails">
+			<panel name="payboxDetailsPanel">
 				<button name="payboxBtn" title="Paybox"   onClick="action-group-account-payment-voucher-paybox-onclick"/>
 				<field name="bankCardTransactionNumber"/>
 				<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status"/>
 			</panel>
 		</panel>
 		
-		<panel sidebar="true" name="info" title="Info" itemSpan="6" readonly="true">
+		<panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
 			<field name="generatedMove" showIf="statusSelect == 3" form-view="move-form" grid-view="move-grid"/>
 			<field name="receiptNo" showIf="statusSelect == 3"/>
 		</panel>
 		
-		<panel name="payer" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
+		<panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4" domain=":company member of self.companySet" onChange="action-pv-record-default-partner-inf" onSelect="action-payment-voucher-set-partner-domain" />
 			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" colSpan="4" widget="SuggestBox" onChange="action-group-account-payment-voucher-paymentmode-onchange" onSelect="action-set-payment-mode-domain"/>
 			<field name="companyBankDetails" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
 
             <field name="paymentMode.typeSelect" colSpan="12" hidden="true" />
-            <panel name="cheque" colSpan="12" title="Cheque" showIf="paymentMode.typeSelect == 7">
+            <panel name="chequePanel" colSpan="12" title="Cheque" showIf="paymentMode.typeSelect == 7">
                 <field name="chequeNumber" />
                 <field name="chequeBank" />
                 <field name="chequeOwner" />
@@ -72,11 +72,11 @@
             <field name="depositSlip" showIf="depositSlip" colSpan="12" />
 		</panel>
 		
-		<panel name="loadMoveLinesInfo" colSpan="12" showIf="statusSelect == 1">
+		<panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
 			<button name="loadMoveLinesBtn" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
-		<panel name="paymentInfo" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
+		<panel name="paymentInfoPanel" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="4" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
@@ -85,9 +85,9 @@
                 form-view="move-line-form" grid-view="move-line-grid" />
 		</panel>
 		
-		<panel-stack name="otherDetails" readonlyIf="statusSelect >= 2">
+		<panel-stack name="otherDetailsPanel" readonlyIf="statusSelect >= 2">
 			<panel-related name="payVoucherDueElementListPanel" colSpan="12" field="payVoucherDueElementList"  form-view="pay-voucher-due-element-form" grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"/>
-			<panel name="loadLines" colSpan="12" showIf="statusSelect == 1" >
+			<panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1" >
 				<button name="loadSelectedLinesBtn" title="Load selected lines" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" colSpan="6"/>
 				<button name="resetImputationBtn" title="Reset imputation" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:resetImputation,save" colSpan="6"/>
 			</panel>
@@ -219,7 +219,7 @@
    	</action-record>
    	
 	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
-		<attribute name="hidden" for="payboxEmail" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.emailAddress != null &amp;&amp; !partner.emailAddress.isEmpty())"/>
+		<attribute name="hidden" for="payboxEmailPanel" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.emailAddress != null &amp;&amp; !partner.emailAddress.isEmpty())"/>
 	</action-attrs>
 	
 	<action-attrs name="action-payment-voucher-hidden-fields-if-purchase">

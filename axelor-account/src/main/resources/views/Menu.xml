@@ -678,14 +678,6 @@
 		<context name="_activeCompanyId" expr="eval:__user__.activeCompany?.id" />
 	</action-view>
 
-	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line"  top="true" />
-	
-	<action-view name="move.template.line"
-		title="Move Templates Lines" model="com.axelor.apps.account.db.MoveTemplateLine">
-		<view type="grid" name="move-template-line-grid" />
-		<view type="form" name="move-template-line-form"  />
-	</action-view>
-	
 	<menuitem name="move-template-type" title="Move Template Types" parent="move-template-root" action="move.template.type"  top="true" />
 	
 	<action-view name="move.template.type"

@@ -72,6 +72,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
                     + "AND self.statusSelect = :statusSelect "
                     + "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE")
+            // TODO
             .order("invoiceDate")
             .order("dueDate")
             .order("invoiceId");

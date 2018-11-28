@@ -75,13 +75,13 @@ public class PurchaseOrderLineProjectController {
               .collect(Collectors.toList());
       purchaseOrderLineProjectService.setProject(lineIds, project);
       response.setAttr("$purchaseOrderLineSet", "hidden", true);
-      response.setAttr("addSelectedPOLines", "hidden", true);
-      response.setAttr("unlinkSelectedPOLines", "hidden", true);
-      response.setAttr("cancelManagePOLines", "hidden", true);
-      response.setAttr("purchaseOrderLineDashlet", "refresh", true);
-      response.setAttr("purchaseOrderDashlet", "refresh", true);
-      response.setAttr("selectNewPOLines", "readonly", false);
-      response.setAttr("managePOLines", "readonly", false);
+      response.setAttr("addSelectedPOLinesBtn", "hidden", true);
+      response.setAttr("unlinkSelectedPOLinesBtn", "hidden", true);
+      response.setAttr("cancelManagePOLinesBtn", "hidden", true);
+      response.setAttr("purchaseOrderLinePanel", "refresh", true);
+      response.setAttr("purchaseOrderPanel", "refresh", true);
+      response.setAttr("selectNewPOLinesBtn", "readonly", false);
+      response.setAttr("managePOLinesBtn", "readonly", false);
     }
   }
 
