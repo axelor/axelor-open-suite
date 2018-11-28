@@ -13,6 +13,7 @@
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="accountType" />
         <field name="date"/>
+        <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount" aggregate="sum"/>
         <field name="typeSelect"/>
     </grid>
@@ -23,6 +24,7 @@
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
          <field name="accountType" />
         <field name="percentage"/>
+        <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount"/>
         <field name="date"/>
         <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
@@ -37,6 +39,7 @@
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 	        <field name="date"/>
 	        <field name="percentage"/>
+            <field name="originalPieceAmount" aggregate="sum"/>
 	        <field name="amount"/>
 	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
 	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
@@ -55,6 +58,7 @@
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	        <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
 	        <field name="percentage" colSpan="4" onChange="action-analytic-move-line-method-compute-amount"/>
+            <field name="originalPieceAmount" aggregate="sum"/>
 	        <field name="amount" colSpan="4" readonly="true"/>
 	        <field name="date" colSpan="4"/>
 	        <field name="project" grid-view="project-grid" form-view="project-form" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>

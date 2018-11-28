@@ -105,9 +105,10 @@ public class MoveLineService {
         && appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
             != AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
-        analyticDistributionLine.setMoveLine(moveLine);
         analyticDistributionLine.setAccount(moveLine.getAccount());
         analyticDistributionLine.setAccountType(moveLine.getAccount().getAccountType());
+        analyticDistributionLine.setOriginalPieceAmount(
+            moveLine.getDebit().add(moveLine.getCredit()));
         analyticDistributionLine.setAmount(
             analyticMoveLineService.computeAmount(analyticDistributionLine));
         analyticDistributionLine.setDate(appAccountService.getTodayDate());

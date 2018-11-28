@@ -33,9 +33,7 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -55,14 +53,11 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    if (saleOrder == null) {
-      saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-      saleOrderLine.setSaleOrder(saleOrder);
-    }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
           saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
+      response.setValue(
+          "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
     }
   }
@@ -70,19 +65,9 @@ public class SaleOrderLineController {
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    if (saleOrder == null) {
-      saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-      saleOrderLine.setSaleOrder(saleOrder);
-    }
-    if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
-      saleOrderLine =
-          saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
-    }
+    saleOrderLine =
+        saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
+    response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 
   public void checkStocks(ActionRequest request, ActionResponse response) {

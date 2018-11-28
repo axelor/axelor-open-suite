@@ -95,9 +95,7 @@
 				<field name="project" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
-				<button name="generateDistributionLinesBtn" onClick="action-invoice-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-attrs-account-invoice-line-onnew-onload"/>
+				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution"/>
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -210,7 +208,7 @@
     	<action name="action-invoice-line-method-get-product-information"/>
     	<action name="action-invoice-line-method-get-product-price" if="__config__.app.isApp('supplychain') &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
     	<action name="action-invoice-line-method-compute"/>
-    	<action name="action-invoice-line-method-compute-analytic-distribution"/>
+    	<action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
     	<action name="action-budget-validate-exceed-line-amount"/>
     	<action name="action-invoice-line-attrs-compute-total-pack" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
     	<action name="action-invoice-line-method-get-fixed-asset-category" if="__config__.app.isApp('account')"/>
@@ -247,6 +245,11 @@
     </action-record>
 
 	<!-- ACTION METHOD -->
+	
+	<action-method name="action-invoice-line-method-get-and-compute-analytic-distribution">
+ 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getAndComputeAnalyticDistribution"/>
+	</action-method>
+	
 	<action-method name="action-invoice-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="computeAnalyticDistribution"/>
 	</action-method>

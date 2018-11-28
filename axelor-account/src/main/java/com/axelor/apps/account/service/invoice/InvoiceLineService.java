@@ -30,6 +30,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface InvoiceLineService {
+
+  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine)
+      throws AxelorException;
+
   InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException;
 
   void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine);

@@ -24,25 +24,18 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface AnalyticMoveLineService {
-  public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine);
-
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
   public List<AnalyticMoveLine> generateLines(
-      Partner partner, Product product, Company company, BigDecimal total) throws AxelorException;
+      AnalyticDistributionTemplate analyticDistributionTemplate, BigDecimal total)
+      throws AxelorException;
 
-  public List<AnalyticMoveLine> generateLinesFromPartner(Partner partner, BigDecimal total);
-
-  public List<AnalyticMoveLine> generateLinesFromProduct(
-      Product product, Company company, BigDecimal total) throws AxelorException;
-
-  public List<AnalyticMoveLine> generateLinesWithTemplate(
-      AnalyticDistributionTemplate template, BigDecimal total);
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Partner partner, Product product, Company company) throws AxelorException;
 
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
 }

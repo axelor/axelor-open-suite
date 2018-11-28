@@ -175,7 +175,7 @@ public class MoveTemplateService {
             moveTemplateLine.getAnalyticDistributionTemplate());
 
         moveLine.setAnalyticMoveLineList(
-            analyticMoveLineService.generateLinesWithTemplate(
+            analyticMoveLineService.generateLines(
                 moveTemplateLine.getAnalyticDistributionTemplate(), amount));
 
         counter++;
@@ -230,7 +230,7 @@ public class MoveTemplateService {
             moveTemplateLine.getAnalyticDistributionTemplate());
 
         moveLine.setAnalyticMoveLineList(
-            analyticMoveLineService.generateLinesWithTemplate(
+            analyticMoveLineService.generateLines(
                 moveTemplateLine.getAnalyticDistributionTemplate(), amount));
 
         counter++;

@@ -154,6 +154,8 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
+- Stock move: add tracking for cancel reason.
+- STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -248,6 +250,7 @@ Only display line where quantity is greater than 0.
 - Add 'stock unit' field on stock location line and add unit conversion.
 - STOCK LOCATION : allow report to export in XLS
 - JOB APPLICATION : Major updates in job application form view.
+- JOB POSITION : Major updates in job position form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -339,6 +342,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
+- Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
+- Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
 
 ## [Unreleased 5.0.7]

@@ -254,4 +254,7 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
 
   public void setAvailableStatus(StockMoveLine stockMoveLine);
+
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove);
 }

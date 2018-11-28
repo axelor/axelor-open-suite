@@ -274,7 +274,7 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    if (partner.getFactorizedCustomer()) {
+    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
           bankDetailsList

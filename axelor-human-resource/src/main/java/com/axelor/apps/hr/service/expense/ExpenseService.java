@@ -36,6 +36,9 @@ import javax.mail.MessagingException;
 
 public interface ExpenseService {
 
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException;
+
   public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine)
       throws AxelorException;
 
