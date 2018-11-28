@@ -153,6 +153,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Added mass payment on supplier invoices and generate account move on bank order validation.
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
+- STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
