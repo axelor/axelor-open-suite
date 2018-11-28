@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.service.batch.BatchBankStatement;
 import com.axelor.apps.bankpayment.service.batch.BatchEbicsCertificate;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,12 +44,17 @@ public class BankPaymentBatchController {
   }
 
   public void actionBankStatement(ActionRequest request, ActionResponse response) {
-    BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
-    bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
+    try {
+      BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
+      bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
 
-    Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
+      Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
 
-    if (batch != null) response.setFlash(batch.getComments());
-    response.setReload(true);
+      if (batch != null) response.setFlash(batch.getComments());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 }
