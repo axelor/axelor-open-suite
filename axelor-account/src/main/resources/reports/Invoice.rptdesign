@@ -1004,7 +1004,7 @@
 	Partner.name as "partnerName", 
 	Partner.first_name as "partnerFirstName",
 	Partner.partner_seq as "partnerSeq",
-	Partner.title_select, 
+	Partner.title_select,
 	ContactPartner.name as "contactName", 
 	ContactPartner.first_name as "contactFirstName",
 	Invoice.address_str,
@@ -1021,8 +1021,8 @@
 	Invoice.note,
 	Invoice.specific_notes, 
 	Invoice.internal_reference, 
-	Invoice.partner_tax_nbr, 
-	Invoice.external_reference, 
+	Invoice.partner_tax_nbr,
+	Invoice.external_reference,
 	PrintingSettings.pdf_header as "header", 
 	PrintingSettings.pdf_footer as "footer",
 	PrintingSettings.logo_position_select as "logoPosition",
@@ -1030,8 +1030,8 @@
 	Accountconfig.sale_invoice_legal_note as "SaleLegalNote",
 	AccountConfig.display_del_addr_on_printing as "DisplayDelAddr",
 	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
-	AccountConfig.terms_and_conditions as "termsAndConditions", 
-	AccountConfig.display_partner_seq_on_printing as "displayPartnerSeqOnPrinting", 
+	AccountConfig.terms_and_conditions as "termsAndConditions",
+	AccountConfig.display_partner_seq_on_printing as "displayPartnerSeqOnPrinting",
 	Invoice.hide_discount as "hideDiscount", 
 	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting",
 	Invoice.subscription_from_date,
@@ -2012,7 +2012,7 @@ qty numeric, unitName varchar,
 unitPrice numeric, price numeric, totalDiscountAmount numeric, ex_tax_total numeric,
 in_tax_total numeric, currencyCode varchar, sequence int,
 is_title_line boolean, in_ati boolean, parent_pack_price_select int,
-pack_price_select int, is_pack_line boolean, is_sub_line boolean, 
+pack_price_select int, is_pack_line boolean, is_sub_line boolean,
 total_pack numeric, productCode varchar, CustomerProductCode varchar,
 CustomerProductName varchar) as
 $func$
@@ -2031,11 +2031,11 @@ Unit.label_to_printing as "unitName",
 	ELSE InvoiceLine.price END)
 	as "unitPrice",
 InvoiceLine.price,
-(InvoiceLine.price_discounted 
-	- (CASE WHEN Invoice.in_ati 
-		THEN InvoiceLine.in_tax_price 
+(InvoiceLine.price_discounted
+	- (CASE WHEN Invoice.in_ati
+		THEN InvoiceLine.in_tax_price
 		ELSE InvoiceLine.price END))
-	* InvoiceLine.qty 
+	* InvoiceLine.qty
 	as "totalDiscountAmount",
 InvoiceLine.ex_tax_total,
 InvoiceLine.in_tax_total,
@@ -2075,11 +2075,11 @@ Unit.label_to_printing as "unitName",
 	ELSE InvoiceLine.price END)
 	as "unitPrice",
 InvoiceLine.price,
-(InvoiceLine.price_discounted 
-	- (CASE WHEN Invoice.in_ati 
-		THEN InvoiceLine.in_tax_price 
+(InvoiceLine.price_discounted
+	- (CASE WHEN Invoice.in_ati
+		THEN InvoiceLine.in_tax_price
 		ELSE InvoiceLine.price END))
-	* InvoiceLine.qty 
+	* InvoiceLine.qty
 	as "totalDiscountAmount",
 InvoiceLine.ex_tax_total,
 InvoiceLine.in_tax_total,
@@ -4639,7 +4639,7 @@ row["partnerFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF>
 <I><VALUE-OF format="#,###.00">if(row["is_sub_line"] &amp;&amp; row["parent_pack_price_select"] == 1 &amp;&amp; row["ex_tax_total"] != 0)  {row["ex_tax_total"]}</VALUE-OF></I>
 <B><VALUE-OF format="#,###.00">if(row["is_pack_line"] &amp;&amp; row["pack_price_select"] == 1 &amp;&amp; row["total_pack"] != 0) {row["total_pack"]}</VALUE-OF></B>
 <B><VALUE-OF format="#,###.00">if(row["is_pack_line"] &amp;&amp; row["pack_price_select"] == 0 &amp;&amp; row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF></B>]]></text-property>
@@ -4683,7 +4683,7 @@ row["partnerFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5246">
@@ -5707,7 +5707,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5309">
@@ -5819,7 +5819,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5310">
@@ -5935,7 +5935,7 @@ row["partnerFirstName"]
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5311">
@@ -6207,7 +6207,7 @@ row["partnerFirstName"]
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="5313">

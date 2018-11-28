@@ -60,6 +60,7 @@ public interface StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -96,6 +97,7 @@ public interface StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
@@ -254,4 +256,7 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
 
   public void setAvailableStatus(StockMoveLine stockMoveLine);
+
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove);
 }

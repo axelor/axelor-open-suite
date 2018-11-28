@@ -622,7 +622,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
           if (sumCredit.compareTo(BigDecimal.ZERO) == 1) {
 
-            String exportNumber = this.getSaleExportNumber(company);
+            String exportNumber = this.getRefundExportNumber(company);
 
             Move firstMove = moveList.get(0);
             String periodCode =
@@ -1122,7 +1122,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     Company company = accountingReport.getCompany();
 
     LocalDate interfaceDate = accountingReport.getDate();
-    String exportNumber = this.getSaleExportNumber(company);
 
     String moveLineQueryStr = "";
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
@@ -1197,13 +1196,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[7] = partner.getFullName();
         }
         items[8] = moveLine.getOrigin();
-        items[9] =
-            moveLine
-                .getOriginDate()
-                .format(
-                    DateTimeFormatter.ofPattern(
-                        DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des lignes
-        // d'écriture.
+        if (moveLine.getDate() != null) {
+          items[9] =
+              moveLine
+                  .getOriginDate()
+                  .format(
+                      DateTimeFormatter.ofPattern(
+                          DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des
+          // lignes
+          // d'écriture.
+        }
         items[10] = moveLine.getDescription();
         items[11] = moveLine.getDebit().toString();
         items[12] = moveLine.getCredit().toString();
@@ -1235,8 +1237,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[13] = StringUtils.join(reconcileSeqList, "; ");
           items[14] = StringUtils.join(reconcileDateList, "; ");
         }
-        items[15] =
-            move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        if (move.getValidationDate() != null) {
+          items[15] =
+              move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        }
         items[16] = moveLine.getCurrencyAmount().toString();
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
@@ -1245,6 +1249,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       if (!administration) {
+        String exportNumber = this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
     }

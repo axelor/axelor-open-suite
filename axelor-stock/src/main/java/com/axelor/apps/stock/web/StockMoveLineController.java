@@ -19,12 +19,15 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.db.mapper.Mapper;
@@ -41,8 +44,13 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Singleton
 public class StockMoveLineController {
@@ -54,6 +62,8 @@ public class StockMoveLineController {
   @Inject protected StockMoveLineRepository stockMoveLineRepo;
 
   @Inject protected StockLocationRepository stockLocationRepo;
+
+  @Inject protected StockLocationLineService stocklocationLineService;
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
@@ -72,6 +82,7 @@ public class StockMoveLineController {
     stockMoveLine = stockMoveLineService.compute(stockMoveLine, stockMove);
     response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
     response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
+    response.setValue("companyUnitPriceUntaxed", stockMoveLine.getCompanyUnitPriceUntaxed());
   }
 
   public void setProductInfo(ActionRequest request, ActionResponse response) {
@@ -153,7 +164,7 @@ public class StockMoveLineController {
             .param("popup", "reload")
             .param("show-toolbar", "false")
             .param("show-confirm", "false")
-            .param("width", "500")
+            .param("width", "large")
             .param("popup-save", "false")
             .context("_stockMove", stockMove)
             .context("_stockMoveLine", stockMoveLine)
@@ -216,5 +227,56 @@ public class StockMoveLineController {
     stockMoveLineService.setAvailableStatus(stockMoveLine);
     response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
     response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+  }
+
+  public void displayAvailableTrackingNumber(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> stockMoveLineMap =
+        (LinkedHashMap<String, Object>) context.get("_stockMoveLine");
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> stockMoveMap =
+        (LinkedHashMap<String, Object>) context.get("_stockMove");
+    Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
+    Integer stockMoveId = (Integer) stockMoveMap.get("id");
+    StockMoveLine stockMoveLine =
+        Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
+    StockMove stockMove = Beans.get(StockMoveRepository.class).find(new Long(stockMoveId));
+
+    if (stockMoveLine == null
+        || stockMoveLine.getProduct() == null
+        || stockMove == null
+        || stockMove.getFromStockLocation() == null) {
+      return;
+    }
+
+    List<TrackingNumber> trackingNumberList =
+        stockMoveLineService.getAvailableTrackingNumbers(stockMoveLine, stockMove);
+    if (trackingNumberList == null || trackingNumberList.isEmpty()) {
+      return;
+    }
+
+    SortedSet<Map<String, Object>> trackingNumbers =
+        new TreeSet<Map<String, Object>>(
+            Comparator.comparing(m -> (String) m.get("trackingNumberSeq")));
+    for (TrackingNumber trackingNumber : trackingNumberList) {
+      StockLocationLine detailStockLocationLine =
+          stocklocationLineService.getDetailLocationLine(
+              stockMove.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
+      BigDecimal availableQty =
+          detailStockLocationLine != null
+              ? detailStockLocationLine.getCurrentQty()
+              : BigDecimal.ZERO;
+      Map<String, Object> map = new HashMap<String, Object>();
+      map.put("trackingNumber", trackingNumber);
+      map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
+      map.put("counter", BigDecimal.ZERO);
+      map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
+      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
+      map.put("$availableQty", availableQty);
+      trackingNumbers.add(map);
+    }
+    response.setValue("$trackingNumbers", trackingNumbers);
   }
 }

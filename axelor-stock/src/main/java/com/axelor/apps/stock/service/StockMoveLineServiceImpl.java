@@ -75,6 +75,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected UnitConversionService unitConversionService;
   private TrackingNumberService trackingNumberService;
 
+  @Inject protected TrackingNumberRepository trackingNumberRepo;
+
   @Inject
   public StockMoveLineServiceImpl(
       TrackingNumberService trackingNumberService,
@@ -100,6 +102,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -116,6 +119,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               description,
               quantity,
               unitPrice,
+              companyUnitPriceUntaxed,
               unit,
               stockMove,
               taxed,
@@ -133,6 +137,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           quantity,
           BigDecimal.ZERO,
           BigDecimal.ZERO,
+          companyUnitPriceUntaxed,
           unit,
           stockMove,
           null);
@@ -145,6 +150,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       boolean taxed,
@@ -175,6 +181,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         quantity,
         unitPriceUntaxed,
         unitPriceTaxed,
+        companyUnitPriceUntaxed,
         unit,
         stockMove,
         null);
@@ -308,6 +315,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
@@ -324,6 +332,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
     stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
+    stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -400,6 +409,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             qty,
             stockMoveLine.getUnitPriceUntaxed(),
             stockMoveLine.getUnitPriceTaxed(),
+            stockMoveLine.getCompanyUnitPriceUntaxed(),
             stockMoveLine.getUnit(),
             stockMoveLine.getStockMove(),
             trackingNumber);
@@ -479,7 +489,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     BigDecimal oldQty = stockLocationLine.getCurrentQty();
-    BigDecimal newPrice = stockMoveLine.getUnitPriceUntaxed();
+    BigDecimal newPrice = stockMoveLine.getCompanyUnitPriceUntaxed();
     BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
@@ -807,6 +817,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
+    stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
     return stockMoveLine;
   }
 
@@ -1021,6 +1032,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal totalSplitQty = BigDecimal.ZERO;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
+      if (counter.compareTo(BigDecimal.ZERO) == 0) {
+        continue;
+      }
       totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
@@ -1154,5 +1168,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_MISSING);
       }
     }
+  }
+
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove) {
+    List<TrackingNumber> trackingNumbers = null;
+    String domain =
+        "self.product.id = "
+            + stockMoveLine.getProduct().getId()
+            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
+            + stockMove.getFromStockLocation().getId()
+            + " )";
+    trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
+    return trackingNumbers;
   }
 }

@@ -548,6 +548,8 @@
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
+    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase"/>
+    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale"/>
 		<filter title="Current Products">
 			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 		</filter>

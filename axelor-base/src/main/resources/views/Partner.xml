@@ -178,7 +178,7 @@
 					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect"  colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly()" onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
-				<field name="isEmployee" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isCustomer || !isSupplier || partnerTypeSelect != 2" onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
+				<field name="isEmployee" colSpan="2" widget="InlineCheckbox" hideIf="$readonly() || isCustomer || isSupplier || isCarrier || isFactor || partnerTypeSelect != 2" onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
 				<field name="isCustomer" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isEmployee" onChange="action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
 				<field name="isSupplier" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isEmployee" onChange="action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
                 <field name="isCarrier" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isEmployee" if="__config__.app.isApp('stock')" onChange="action-partner-record-unset-factor" />
