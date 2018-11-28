@@ -83,7 +83,7 @@
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
-			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
     </form>
@@ -304,6 +304,10 @@
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
 	</action-method>
     
+    <action-method name="action-move-line-method-create-analytic-distribution">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
+	
     <action-method name="action-method-account-moveline-usher-process">
     	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
     </action-method>

@@ -117,6 +117,17 @@ public class MoveLineService {
     return moveLine;
   }
 
+  public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) throws AxelorException {
+    List<AnalyticMoveLine> analyticMoveLineList = null;
+    analyticMoveLineList =
+        analyticMoveLineService.generateLines(
+            moveLine.getAnalyticDistributionTemplate(),
+            moveLine.getDebit().add(moveLine.getCredit()));
+
+    moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    return moveLine;
+  }
+
   /**
    * Creating accounting move line method using move currency
    *
