@@ -152,6 +152,9 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 - Added mass payment on supplier invoices and generate account move on bank order validation.
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
+- Added management of subscription moves with MoveTemplate object
+- Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
+- Stock move: add tracking for cancel reason.
 - App Stock : Add new m2o field 'ecomonomicArea'.
 
 ## Improvements
@@ -244,6 +247,9 @@ Only display line where quantity is greater than 0.
 - PURCHASE ORDER : Allow to edit delivery informations on validated purchase order.
 - Stock Move : Specify views for origin field. 
 - STOCK MOVE : Set avilableStatus in stockMoveLineList.
+- Add 'stock unit' field on stock location line and add unit conversion.
+- STOCK LOCATION : allow report to export in XLS
+- JOB APPLICATION : Major updates in job application form view.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -335,6 +341,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
+- Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 
 ## [Unreleased 5.0.7]
 ## Features

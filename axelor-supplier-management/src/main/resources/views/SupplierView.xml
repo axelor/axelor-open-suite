@@ -9,14 +9,14 @@
 	</action-view>
 	
 	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard">
-		<panel name="main" hidden="true">
+		<panel name="mainPanel" hidden="true">
 			<field name="id"/>
 	    </panel>
-	    <panel name="actions">
-			<button name="myPurchaseOrder"   title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
-		    <button name="myRFQToComplete"   title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
-			<button name="myRFQ"   title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
-			<button name="myStockMove"   title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+	    <panel name="actionsPanel">
+			<button name="myPurchaseOrderBtn"   title="My purchase orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu" icon="img/128px/clientMenuSo_128px.jpg"/>
+		    <button name="myRFQToCompleteBtn"   title="My R.F.Q. to complete" onClick="wizard-supplier-form-open-my-rfq-to-complete" css="img-button client-img-menu" icon="img/128px/clientMenuInvoice_128px.jpg"/>
+			<button name="myRFQBtn"   title="My R.F.Q." onClick="wizard-supplier-form-open-my-rfq" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
+			<button name="myStockMoveBtn"   title="My deliveries" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg"/>
 		</panel>
 	</form>
 	
@@ -64,17 +64,17 @@
     </grid>
     
 	<form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" canNew="false" canDelete="false" canCopy="false">
-	  <panel name="main" >
+	  <panel name="statusPanel" >
 	    <field name="statusSelect" readonly="true" widget="NavSelect" colSpan="12"/>
 	  </panel>
-	  <panel name="generalInfo" readonly="true">
-	    <panel name="details" title="Stock move reference">
+	  <panel name="generalInfoPanel" readonly="true">
+	    <panel name="detailsPanel" title="Stock move reference">
 	      <field name="stockMoveSeq" colSpan="12"/>
 	      <field name="name" colSpan="12"/>
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
-	    <panel name="stockMoveInformations" title="Stock move informations">
+	    <panel name="stockMoveInformationsPanel" title="Stock move informations">
 	      <field name="estimatedDate" colSpan="12"/>
 	      <field name="realDate" title="Receipt date" colSpan="12"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
@@ -91,7 +91,7 @@
     </grid>
     
     <form name="stock-move-line-supplier-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="product" readonly="true"/>
 	        <field name="shippedQty"/>
 	        <field name="unit" readonly="true"/>

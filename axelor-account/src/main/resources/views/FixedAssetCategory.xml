@@ -15,25 +15,25 @@
 
 	<form name="fixed-asset-category-form" title="Fixed asset category" model="com.axelor.apps.account.db.FixedAssetCategory" width="large"
 		onNew="action-fixed-asset-category-record-default" onSave="action-fixed-asset-category-record-compute-duration">
-        <panel name="main">
+        <panel name="mainPanel">
         	<field name="name"/>
         	<field name="company" form-view="company-form" grid-view="company-grid"/>
         	<field name="fixedAssetType" form-view="fixed-asset-type-form" grid-view="fixed-asset-type-grid"/>
         	<field name="isValidateFixedAsset"/>
         </panel>
         
-        <panel-tabs>
-        	<panel name="accountingInfo" title="Accounting information">
+        <panel-tabs name="mainPanelTab">
+        	<panel name="accountingInfoPanel" title="Accounting information">
         		<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
         		<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
         		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
         	</panel>
-        	<panel name="periodicity" title="Periodicity">
+        	<panel name="periodicityPanel" title="Periodicity">
 	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
         	</panel>
-        	<panel name="depreciation" title="Depreciation method">
+        	<panel name="depreciationPanel" title="Depreciation method">
         		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
 	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
 	        	<field name="isProrataTemporis"/>

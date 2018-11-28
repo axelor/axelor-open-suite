@@ -20,8 +20,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
-import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
+import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.exception.service.TraceBackService;
@@ -29,11 +30,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
@@ -48,55 +51,61 @@ public class MoveTemplateController {
 
   @Inject protected MoveTemplateRepository moveTemplateRepo;
 
+  @Inject protected MoveTemplateTypeRepository moveTemplateTypeRepo;
+
   public void checkValidity(ActionRequest request, ActionResponse response) {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
     moveTemplate = moveTemplateRepo.find(moveTemplate.getId());
-    BigDecimal creditPercent = BigDecimal.ZERO;
-    BigDecimal debitPercent = BigDecimal.ZERO;
-    Boolean partnerDebit = false;
-    Boolean partnerCredit = false;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      LOG.debug("Adding percent: {}", line.getPercentage());
-      if (line.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
-        debitPercent = debitPercent.add(line.getPercentage());
-      } else {
-        creditPercent = creditPercent.add(line.getPercentage());
-      }
 
-      if (line.getHasPartnerToDebit()) {
-        partnerDebit = true;
-      } else if (line.getHasPartnerToCredit()) {
-        partnerCredit = true;
-      }
-    }
+    boolean valid = moveTemplateService.checkValidity(moveTemplate);
 
-    LOG.debug("Credit percent: {}, Debit percent: {}", new Object[] {creditPercent, debitPercent});
-    moveTemplate.setPartnerInputSelect(0);
-    if (creditPercent.compareTo(BigDecimal.ZERO) != 0
-        && debitPercent.compareTo(BigDecimal.ZERO) != 0
-        && creditPercent.compareTo(debitPercent) == 0) {
-      if (partnerCredit && partnerDebit) moveTemplate.setPartnerInputSelect(3);
-      else if (partnerCredit) moveTemplate.setPartnerInputSelect(2);
-      else if (partnerDebit) moveTemplate.setPartnerInputSelect(1);
-      moveTemplateService.validateMoveTemplateLine(moveTemplate);
+    if (valid) {
       response.setReload(true);
-    } else response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
+    }
   }
 
   @SuppressWarnings("unchecked")
   public void generateMove(ActionRequest request, ActionResponse response) {
 
     try {
+      Context context = request.getContext();
+
+      HashMap<String, Object> moveTemplateTypeMap =
+          (HashMap<String, Object>) context.get("moveTemplateType");
+      MoveTemplateType moveTemplateType =
+          moveTemplateTypeRepo.find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
+
       HashMap<String, Object> moveTemplateMap =
-          (HashMap<String, Object>) request.getContext().get("moveTemplate");
-      MoveTemplate moveTemplate =
-          moveTemplateRepo.find(Long.parseLong(moveTemplateMap.get("id").toString()));
+          (HashMap<String, Object>) context.get("moveTemplate");
+      MoveTemplate moveTemplate = null;
+      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+        moveTemplate = moveTemplateRepo.find(Long.parseLong(moveTemplateMap.get("id").toString()));
+      }
+
       List<HashMap<String, Object>> dataList =
-          (List<HashMap<String, Object>>) request.getContext().get("dataInputList");
+          (List<HashMap<String, Object>>) context.get("dataInputList");
+
+      List<HashMap<String, Object>> moveTemplateList =
+          (List<HashMap<String, Object>>) context.get("moveTemplateSet");
+
+      LocalDate moveDate = null;
+      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+        moveDate =
+            LocalDate.parse(
+                (String) context.get("moveDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      }
+
       LOG.debug("MoveTemplate : {}", moveTemplate);
       LOG.debug("Data inputlist : {}", dataList);
-      if (dataList != null && !dataList.isEmpty()) {
-        List<Long> moveList = moveTemplateService.generateMove(moveTemplate, dataList);
+      LOG.debug("Data inputlist : {}", moveTemplateList);
+
+      if ((dataList != null && !dataList.isEmpty())
+          || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
+        List<Long> moveList =
+            moveTemplateService.generateMove(
+                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
         if (moveList != null && !moveList.isEmpty()) {
           response.setView(
               ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))
@@ -116,11 +125,16 @@ public class MoveTemplateController {
 
   public void setIsValid(ActionRequest request, ActionResponse response) {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-    if (!moveTemplate.getIsValid()) {
+    if (moveTemplate.getIsValid()) {
+      boolean isValid = true;
       for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-        line.setIsValid(false);
+        if (!line.getIsValid()) {
+          isValid = false;
+        }
       }
-      response.setValue("moveTemplateLineList", moveTemplate.getMoveTemplateLineList());
+      if (!isValid) {
+        response.setValue("isValid", false);
+      }
     }
   }
 }

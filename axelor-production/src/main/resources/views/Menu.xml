@@ -235,6 +235,17 @@
 		<view type="grid" name="product-approval-grid"/>
 		<view type="form" name="product-approval-form"/>
 	</action-view>
+	
+	<!-- ADMINISTRATION -->
+
+	<menuitem name="admin-root-batch-production" parent="admin-root-batch" if="__config__.app.isApp('production')" if-module="axelor-production" 
+	title="Production batches" action="admin.root.batch.production" />
+
+	<action-view name="admin.root.batch.production" title="Production batches"
+		model="com.axelor.apps.production.db.ProductionBatch" >
+		<view type="grid" name="production-batch-grid" />
+		<view type="form" name="production-batch-form" />
+	</action-view>
 
 	<!-- TOP MENU -->
 	

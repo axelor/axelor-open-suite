@@ -8,6 +8,15 @@
   <entity name="MoveTemplateType" lang="java" cachable="true">
   	<string name="name" title="Name" required="true"/>
   	<string name="code" title="Code" />
+  	<integer name="typeSelect" title="Type" selection="account.move.template.type.type.select"/>
+  	
+  	<extra-code><![CDATA[
+
+	// TYPE SELECT
+	public static final int TYPE_PERCENTAGE = 1;
+	public static final int TYPE_AMOUNT = 2;
+	
+	]]></extra-code>
   </entity>
  
 </domain-models>

@@ -163,7 +163,8 @@ public class StockMoveLineController {
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public void computeAvailableQty(ActionRequest request, ActionResponse response) {
+  public void computeAvailableQty(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Context context = request.getContext();
     StockMoveLine stockMoveLineContext = context.asType(StockMoveLine.class);

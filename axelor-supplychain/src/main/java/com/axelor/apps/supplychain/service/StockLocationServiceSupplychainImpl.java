@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,8 +44,12 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   }
 
   @Override
-  public BigDecimal getReservedQty(Long productId, Long locationId) {
+  public BigDecimal getReservedQty(Long productId, Long locationId) throws AxelorException {
     if (productId != null) {
+      Product product = productRepo.find(productId);
+      Unit productUnit = product.getUnit();
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       if (locationId == null) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
@@ -51,7 +60,18 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
                     stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 
             if (stockLocationLine != null) {
+              Unit stockLocationLineUnit = stockLocationLine.getUnit();
               reservedQty = reservedQty.add(stockLocationLine.getReservedQty());
+
+              if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+                reservedQty =
+                    unitConversionService.convert(
+                        stockLocationLineUnit,
+                        productUnit,
+                        reservedQty,
+                        reservedQty.scale(),
+                        product);
+              }
             }
           }
           return reservedQty;
@@ -62,6 +82,16 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
                 stockLocationRepo.find(locationId), productRepo.find(productId));
 
         if (stockLocationLine != null) {
+          Unit stockLocationLineUnit = stockLocationLine.getUnit();
+
+          if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+            return unitConversionService.convert(
+                stockLocationLineUnit,
+                productUnit,
+                stockLocationLine.getReservedQty(),
+                stockLocationLine.getReservedQty().scale(),
+                product);
+          }
           return stockLocationLine.getReservedQty();
         }
       }

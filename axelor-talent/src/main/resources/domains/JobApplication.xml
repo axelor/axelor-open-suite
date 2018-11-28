@@ -29,11 +29,17 @@
 		<many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage" title="Hiring stage"/>
 		<string name="reasonNotHired" title="Reason not hired" large="true"/>
 		<many-to-many name="skillSet" title="Skills tag" ref="Skill"/>
+		<many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" initParam="true"/>
+		<date name="creationDate" title="Date of application"/>
+		<integer name="titleSelect" title="Title" selection="partner.title.type.select"/>
+		<string name="fax" title="Fax"/>
+		<many-to-one name="employeeAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;
 	   			public static final Integer STATUS_HIRED = 1;
 	   			public static final Integer STATUS_REJECTED = 2;
+	   			public static final Integer STATUS_CANCELLED = 3;
 	   		]]>
    		</extra-code>
 	</entity>

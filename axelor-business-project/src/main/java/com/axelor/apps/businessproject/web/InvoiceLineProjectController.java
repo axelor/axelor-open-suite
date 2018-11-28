@@ -70,13 +70,13 @@ public class InvoiceLineProjectController {
               .collect(Collectors.toList());
       invoiceLineProjectService.setProject(lineIds, project);
       response.setAttr("$customerInvoiceLineSet", "hidden", true);
-      response.setAttr("addSelectedCustomerInvoiceLines", "hidden", true);
-      response.setAttr("unlinkSelectedCustomerInvoiceLines", "hidden", true);
-      response.setAttr("cancelManageCustomerInvoiceLines", "hidden", true);
-      response.setAttr("customerInvoiceLineDashlet", "refresh", true);
-      response.setAttr("customerInvoiceDashlet", "refresh", true);
-      response.setAttr("selectNewCustomerInvoiceLines", "readonly", false);
-      response.setAttr("manageCustomerInvoiceLines", "readonly", false);
+      response.setAttr("addSelectedCustomerInvoiceLinesBtn", "hidden", true);
+      response.setAttr("unlinkSelectedCustomerInvoiceLinesBtn", "hidden", true);
+      response.setAttr("cancelManageCustomerInvoiceLinesBtn", "hidden", true);
+      response.setAttr("customerInvoiceLinePanel", "refresh", true);
+      response.setAttr("customerInvoicePanel", "refresh", true);
+      response.setAttr("selectNewCustomerInvoiceLinesBtn", "readonly", false);
+      response.setAttr("manageCustomerInvoiceLinesBtn", "readonly", false);
     }
   }
 
@@ -130,13 +130,13 @@ public class InvoiceLineProjectController {
               .collect(Collectors.toList());
       invoiceLineProjectService.setProject(lineIds, project);
       response.setAttr("$supplierInvoiceLineSet", "hidden", true);
-      response.setAttr("addSelectedSupplierInvoiceLines", "hidden", true);
-      response.setAttr("unlinkSelectedSupplierInvoiceLines", "hidden", true);
-      response.setAttr("cancelManageSupplierInvoiceLines", "hidden", true);
-      response.setAttr("supplierInvoiceLineDashlet", "refresh", true);
-      response.setAttr("supplierInvoiceDashlet", "refresh", true);
-      response.setAttr("selectNewSupplierInvoiceLines", "readonly", false);
-      response.setAttr("manageSupplierInvoiceLines", "readonly", false);
+      response.setAttr("addSelectedSupplierInvoiceLinesBtn", "hidden", true);
+      response.setAttr("unlinkSelectedSupplierInvoiceLinesBtn", "hidden", true);
+      response.setAttr("cancelManageSupplierInvoiceLinesBtn", "hidden", true);
+      response.setAttr("supplierInvoiceLinePanel", "refresh", true);
+      response.setAttr("supplierInvoicePanel", "refresh", true);
+      response.setAttr("selectNewSupplierInvoiceLinesBtn", "readonly", false);
+      response.setAttr("manageSupplierInvoiceLinesBtn", "readonly", false);
     }
   }
 

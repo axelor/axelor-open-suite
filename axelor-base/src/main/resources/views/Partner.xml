@@ -260,7 +260,7 @@
 					</field>
 					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
-				<panel name="partnerDetails" title="Partner Details" hideIf="isEmployee" colSpan="12" >
+				<panel name="partnerDetailsPanel" title="Partner Details" hideIf="isEmployee" colSpan="12" >
 					<panel colSpan="6" name="partnerCategoryPanel">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>

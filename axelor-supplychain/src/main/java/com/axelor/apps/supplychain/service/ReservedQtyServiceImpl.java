@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -39,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class ReservedQtyServiceImpl implements ReservedQtyService {
 
@@ -144,7 +146,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           stockLocationLine.getReservedQty().subtract(realReservedQty));
 
       // reallocate quantity in other stock move lines
-      // reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, realReservedQty);
+      if (isReallocatingQtyOnCancel(stockMoveLine)) {
+        reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, realReservedQty);
+      }
 
       // no more reserved qty in stock move and sale order lines
       updateReservedQuantityFromStockMoveLine(
@@ -160,6 +164,20 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
 
     checkReservedQtyStocks(stockLocationLine, toStatus);
+  }
+
+  /**
+   * Check in the stock move for cancel reason and return the config in cancel reason.
+   *
+   * @param stockMoveLine
+   * @return the value of the boolean field on cancel reason if found else false.
+   */
+  protected boolean isReallocatingQtyOnCancel(StockMoveLine stockMoveLine) {
+    return Optional.of(stockMoveLine)
+        .map(StockMoveLine::getStockMove)
+        .map(StockMove::getCancelReason)
+        .map(CancelReason::getCancelQuantityAllocation)
+        .orElse(false);
   }
 
   @Override
@@ -356,6 +374,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
     }
+
+    // update requested reserved qty
+    if (newReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
+      updateRequestedReservedQty(saleOrderLine, newReservedQty);
+    }
+
     StockLocationLine stockLocationLine =
         stockLocationLineService.getStockLocationLine(
             stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
@@ -378,18 +402,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     // update in stock location line
     stockLocationLine.setReservedQty(
         stockLocationLine.getReservedQty().add(diffReservedQuantityLocation));
-
-    // update requested reserved qty
-    if (newReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
-      updateRequestedReservedQty(saleOrderLine, newReservedQty);
-    }
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException {
-    saleOrderLine.setRequestedReservedQty(newReservedQty);
 
     StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
 
@@ -398,6 +416,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
     }
+
+    BigDecimal diffReservedQuantity =
+        newReservedQty.subtract(saleOrderLine.getRequestedReservedQty());
+
     // update in stock move line and sale order line
     updateRequestedReservedQuantityInStockMoveLines(
         saleOrderLine, stockMoveLine.getProduct(), newReservedQty);
@@ -406,8 +428,6 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockLocationLineService.getStockLocationLine(
             stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
 
-    BigDecimal diffReservedQuantity =
-        newReservedQty.subtract(saleOrderLine.getRequestedReservedQty());
     Product product = stockMoveLine.getProduct();
     // update in stock location line
     BigDecimal diffReservedQuantityLocation =

@@ -35,7 +35,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.List;
@@ -88,7 +87,7 @@ public class BatchBankStatement extends AbstractBatch {
 
       } catch (AxelorException e) {
         processError(e, e.getCategory(), ebicsPartner);
-      } catch (IOException e) {
+      } catch (Exception e) {
         processError(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner);
       }
     }

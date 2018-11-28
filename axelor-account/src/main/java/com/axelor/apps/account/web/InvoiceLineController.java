@@ -32,9 +32,7 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,7 +50,7 @@ public class InvoiceLineController {
 
   @Inject private InvoiceLineService invoiceLineService;
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+  public void getAndComputeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
     Invoice invoice = invoiceLine.getInvoice();
@@ -60,13 +58,18 @@ public class InvoiceLineController {
       invoice = request.getContext().getParent().asType(Invoice.class);
       invoiceLine.setInvoice(invoice);
     }
-    if (invoiceLine.getAnalyticDistributionTemplate() != null) {
-      invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
-      response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
-    }
+    invoiceLine = invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine);
+    response.setValue(
+        "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
+    response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
+  }
+
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+    invoiceLine = invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+    response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
   }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)

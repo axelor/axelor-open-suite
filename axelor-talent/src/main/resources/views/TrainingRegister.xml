@@ -30,7 +30,7 @@
 			<button name="planBtn" title="Accept/plan" showIf="statusSelect == 0" onClick="save,action-training-register-method-plan"/>
 			<button name="completeBtn" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
 			<button name="cancelBtn" title="Cancel" onClick="save,action-training-register-method-cancel"/>
-			<field name="ratingSelectBtn" widget="SelectProgress"/>
+			<field name="ratingSelect" widget="SelectProgress"/>
 		</panel>
 	</form>
 	

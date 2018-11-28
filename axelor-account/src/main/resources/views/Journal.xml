@@ -15,7 +15,7 @@
     
 	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
 		onNew="account-journal-record-default" width="large">
-		<panel name="status" title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="9"/>
 			<button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save" colSpan="2"/>
 		</panel>
@@ -30,24 +30,24 @@
 		
 			<panel-dashlet name="viewMoveLinePanel" title="General" action="action-journal-view-move-line" height="450" canSearch="true" hideIf="$popup()"/>
 		
-			<panel name="configurations" title="Configurations" hideIf="$popup()">
-				<panel name="moveLine" title="MoveLine" colSpan="12">
+			<panel name="configurationsPanel" title="Configurations" hideIf="$popup()">
+				<panel name="moveLinePanel" title="MoveLine" colSpan="12">
 					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
 				</panel>  
 				<spacer name="moveLineSpacer"/>
-				<panel name="payments" title="Payments" colSpan="12">
+				<panel name="paymentsPanel" title="Payments" colSpan="12">
 					<field name="editReceiptOk" colSpan="6"/>
 					<field name="excessPaymentOk" colSpan="6"/>
 				</panel>
-				<panel name="moveLinesSecuritySettings" title="Move lines security settings" colSpan="12">
+				<panel name="moveLinesSecuritySettingsPanel" title="Move lines security settings" colSpan="12">
 					<field name="validAccountTypeSet" canNew="false" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 					<field name="validAccountSet" domain="self.company = :company" canNew="false" grid-view="account-simple-grid" colSpan="6" form-view="account-form"/>
 				</panel>
 				<spacer name="securitySettingsSpacer"/>
-				<panel name="exports" title="Exports" colSpan="12">
+				<panel name="exportsPanel" title="Exports" colSpan="12">
 					<field name="exportCode" readonlyIf="notExportOk"/>
 					<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
 				</panel>

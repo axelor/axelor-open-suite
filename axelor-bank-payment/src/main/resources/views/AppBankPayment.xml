@@ -11,7 +11,7 @@
             <field name="enableEbicsModule" widget="boolean-switch"/>
         </panel>
         <panel name="configPanel">
-            <button name="generateBankPaymentConfigurations" title="Generate bank payment configurations" colSpan="4"
+            <button name="generateBankPaymentConfigurationsBtn" title="Generate bank payment configurations" colSpan="4"
                 onClick="save,com.axelor.apps.bankpayment.web.AppBankPaymentController:generateBankPaymentConfigurations"/>
             <panel-dashlet name="bankPaymentConfigPanel" action="admin.root.conf.bank.payment.config" colSpan="12"/>
         </panel>

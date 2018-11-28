@@ -133,6 +133,8 @@ public interface IExceptionMessage {
 
   static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
 
+  static final String STOCK_LOCATION_PRINT_WIZARD_TITLE = /*$$(*/ "Select format to Export" /*)*/;
+
   /** Stock Move Line Service */
   static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
       /*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;

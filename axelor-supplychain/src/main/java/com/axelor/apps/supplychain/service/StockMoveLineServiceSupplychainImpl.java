@@ -225,6 +225,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     return stockMoveLine;
   }
 
+  /**
+   * This method is overridden to fill requested reserved quantity and avoid to override every
+   * method using reserved quantity.
+   */
   @Override
   public void updateLocations(
       StockMoveLine stockMoveLine,
@@ -238,21 +242,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       TrackingNumber trackingNumber,
       BigDecimal requestedReservedQty)
       throws AxelorException {
-    BigDecimal convertedRequestedReservedQty = stockMoveLine.getRequestedReservedQty();
-    Unit productUnit = product.getUnit();
-    Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (stockMoveLineUnit != null && !stockMoveLineUnit.equals(productUnit)) {
-      qty =
-          unitConversionService.convert(
-              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
-      convertedRequestedReservedQty =
-          unitConversionService.convert(
-              stockMoveLineUnit,
-              productUnit,
-              convertedRequestedReservedQty,
-              convertedRequestedReservedQty.scale(),
-              stockMoveLine.getProduct());
-    }
+
     super.updateLocations(
         stockMoveLine,
         fromStockLocation,
@@ -263,7 +253,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         toStatus,
         lastFutureStockMoveDate,
         trackingNumber,
-        convertedRequestedReservedQty);
+        stockMoveLine.getRequestedReservedQty());
   }
 
   @Override

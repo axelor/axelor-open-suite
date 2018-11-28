@@ -74,7 +74,7 @@
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
         <field name="move.statusSelect"/>
        	<field name="reconcileGroup"/>
         <field name="origin"/>
@@ -82,8 +82,8 @@
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
-			<field name="analyticDistributionTemplate"/>
+    	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
     </form>
@@ -111,7 +111,7 @@
 					]]>
 				</viewer>
 			</field>
-			<panel name="dates" colSpan="12">
+			<panel name="datesPanel" colSpan="12">
 				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
@@ -129,7 +129,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
+			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
 				<field name="passageReason" showIf="$number(debit) > 0.00"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false"/>
@@ -203,7 +203,7 @@
 					]]>
 				</viewer>
 			</field>
-			<panel name="dates" colSpan="12">
+			<panel name="datesPanel" colSpan="12">
 				<field name="date" onChange="account-move-line-record-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
@@ -221,7 +221,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel name="irrecoverable" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
+			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
 				<field name="passageReason" showIf="$number(debit) > 0.00"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
 				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false"/>
@@ -254,7 +254,7 @@
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
 		
-		<panel-mail name="mails">
+		<panel-mail name="mailPanel">
 		    <mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
@@ -262,10 +262,10 @@
 
   <form name="account-move-line-calculation-wizard-form" title="Calculation"
     model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance">
-    <panel colSpan="12" title="Total of the selected lines : ">
-      <field name="$credit" title="Credit : " readonly="true" colSpan="4" />
-      <field name="$debit" title="Debit : " readonly="true" colSpan="4" />
-      <field name="$balance" title="Balance : " readonly="true" colSpan="4" />
+    <panel name="mainPanel" colSpan="12" title="Total of the selected lines :">
+      <field name="$credit" title="Credit :" readonly="true" colSpan="4" />
+      <field name="$debit" title="Debit :" readonly="true" colSpan="4" />
+      <field name="$balance" title="Balance :" readonly="true" colSpan="4" />
     </panel>
   </form>
     
@@ -313,12 +313,12 @@
     </action-method>
     
     <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
-		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
+		<attribute name="collapse" for="irrecoverablePanel" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
 		<attribute name="readonly" for="informationsPanel" expr="eval: move.statusSelect == 3 || move.statusSelect == 4"/>
-		<attribute name="readonly" for="irrecoverable,currency,othersPanel" expr="eval: move?.statusSelect == 3 "/>
+		<attribute name="readonly" for="irrecoverablePanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 "/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">

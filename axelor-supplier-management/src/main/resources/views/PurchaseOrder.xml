@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <form name="purchase-order-supplier-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder"   >
-    	<panel name="main" colSpan="12">
+    	<panel name="mainPanel" colSpan="12">
 			<field name="isPurchaseParent"/>
 			<field name="parentPurchaseOrder" hideIf="isPurchaseParent" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-			<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchase orders" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
-			<button name="showSuppliersPurchaseOrder" title="Show suppliers purchase orders" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
-			<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
+			<button name="generateSuppliersPurchaseOrderBtn" title="Generate suppliers purchase orders" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
+			<button name="showSuppliersPurchaseOrderBtn" title="Show suppliers purchase orders" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
+			<button name="generatePurchaseOrderSupplierLineBtn" title="Generate all suppliers requests" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
 		</panel>
 	</form>
     

@@ -38,7 +38,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="opportunityPanel" title="Opportunity">
-				<panel name="target" title="Target vs Real" colSpan="12">
+				<panel name="targetPanel" title="Target vs Real" colSpan="12">
 					<field name="opportunityAmountWonTarget" colSpan="5" />
 					<static colSpan="2"><![CDATA[<span style="height:21px; line-height: 21px; margin-top:18px; display:inline-block">VS</span>]]></static>
 					<field name="opportunityAmountWon" showTitle="false" colSpan="5" />
@@ -64,7 +64,7 @@
 			</panel>
 		</panel-tabs>
 
-		<panel sidebar="true" name="characteristics" title="Characteristics"
+		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
 			canCollapse="true">
 			<field name="periodTypeSelect" />
 			<field name="fromDate" colSpan="6" required="true" />

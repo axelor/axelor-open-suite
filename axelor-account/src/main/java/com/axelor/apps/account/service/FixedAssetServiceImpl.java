@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -137,24 +139,32 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (invoice != null && invoice.getInvoiceLineList() != null) {
 
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getFixedAssets()) {
+      AccountConfig accountConfig =
+          Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
 
-          if (invoiceLine.getFixedAssetCategory() == null) {
-            throw new AxelorException(
-                invoiceLine,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
-                invoiceLine.getProductName());
-          }
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+        if (accountConfig.getFixedAssetCatReqOnInvoice()
+            && invoiceLine.getFixedAssets()
+            && invoiceLine.getFixedAssetCategory() == null) {
+          throw new AxelorException(
+              invoiceLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
+              invoiceLine.getProductName());
+        }
+
+        if (accountConfig.getFixedAssetCatReqOnInvoice()
+            && invoiceLine.getFixedAssets()
+            && invoiceLine.getFixedAssetCategory() != null) {
 
           FixedAsset fixedAsset = new FixedAsset();
+          fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
           if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
             fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
           } else {
             fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
           }
-          fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
           fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
           fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
           fixedAsset.setReference(invoice.getInvoiceId());

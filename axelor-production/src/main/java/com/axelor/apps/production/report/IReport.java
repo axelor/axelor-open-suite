@@ -25,4 +25,5 @@ public interface IReport {
   public static final String BILL_OF_MATERIAL = "BillOfMaterial.rptdesign";
   public static final String RAW_MATERIAL_REQUIREMENT = "RawMaterialRequirement.rptdesign";
   public static final String COST_SHEET = "CostSheet.rptdesign";
+  public static final String WORK_IN_PROGRESS_VALUATION = "WorkInProgressValuation.rptdesign";
 }

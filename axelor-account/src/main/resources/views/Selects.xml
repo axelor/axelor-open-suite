@@ -377,4 +377,9 @@
 	<selection name="fixed.asset.batch.action.select">
 		<option value="1">Realize fixed asset lines</option>
 	</selection>
+	
+	<selection name="account.move.template.type.type.select">
+		<option value="1">%</option>
+		<option value="2">Amount</option>
+	</selection>
 </object-views>

@@ -3,48 +3,60 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="move-template-line-grid" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-        <field name="moveTemplate" form-view="move-template-form" grid-view="move-template-grid"/>
+    <grid name="move-template-line-in-amount-grid" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
         <field name="name" />
-        <field name="debitCreditSelect" />
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid"/>
-        <field name="percentage"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
+    	<field name="debit" />
+        <field name="credit" />
     </grid>
     
-   	<grid name="move-template-line-move-template-grid"  title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
+   	<grid name="move-template-line-in-percentage-grid"  title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
 		<field name="name"/>
-		<field name="debitCreditSelect"/>
 		<field name="product" grid-view="product-grid" form-view="product-form"/>
 		<field name="account" grid-view="account-grid" form-view="account-form"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
+    	<field name="debitCreditSelect"/>
 		<field name="percentage"/>
     </grid>
     
-    <form name="move-template-line-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-        <panel name="mainPanel" readonlyIf="isValid">
-	        <field name="moveTemplate" onChange="action-move-template-line-get-account" required="true" form-view="move-template-form" grid-view="move-template-grid"/>
-        </panel>
-        <panel-include view="move-template-line-move-template-form"/>
-    </form>
-    
-	<form name="move-template-line-move-template-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
+	<form name="move-template-line-in-amount-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
 		<panel name="mainPanel" readonlyIf="isValid">
 			<field name="name"/>
-			<field name="debitCreditSelect" onChange="action-move-template-line-get-account"/>
-			<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
+			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="debit" readonlyIf="credit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
+        	<field name="credit" readonlyIf="debit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
+        	<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
 			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
-			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent"/>
-			<field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
-			<field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
+	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
 			<field name="isValid" readonly="true"/>
 		</panel>
   	</form>
+  	
+  	<form name="move-template-line-in-percentage-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
+		<panel name="mainPanel" readonlyIf="isValid">
+			<field name="name"/>
+			<field name="debitCreditSelect" onChange="action-move-template-line-get-account" required="true"/>
+			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent,action-move-template-line-record-update-need-to-check-validity"/>
+			<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
+			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
+			<field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
+			<field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
+	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
+			<field name="isValid" readonly="true"/>
+		</panel>
+  	</form>
+  	
+  	<action-record name="action-move-template-line-record-update-need-to-check-validity" model="com.axelor.apps.account.db.MoveTemplateLine">
+  		<field name="isValid" expr="eval: false"/>
+  	</action-record>
     
     <action-record name="action-move-template-line-get-account" model="com.axelor.apps.account.db.MoveTemplateLine">
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,true)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; debitCreditSelect == 'D' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),true)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; debitCreditSelect == 'D' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,false)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; debitCreditSelect == 'C' "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),false)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; debitCreditSelect == 'C' "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,true)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),true)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,false)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),false)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
     </action-record>
     
     <action-validate name="action-template-move-line-check-percent">
@@ -54,6 +66,15 @@
     <action-record name="action-template-move-line-set-percent" model="com.axelor.apps.account.db.MoveTemplateLine">
     	<field name="percentage" expr="eval: 0" />
     </action-record>
+    
+    <action-attrs name="action-template-move-line-analyt">
+    	<attribute name="domain" for="" expr=""/>
+    </action-attrs>
+    
+    <action-attrs name="action-move-template-line-set-account-domain">
+        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
+        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
+    </action-attrs>
     
     
 </object-views>
