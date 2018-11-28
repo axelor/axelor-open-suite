@@ -345,6 +345,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
+- MRP : disable sort on grid to avoid a misinterpretation of the result
+- Disable sort on dummy fied "Avaibality qty" on product grid
 
 ## [Unreleased 5.0.7]
 ## Features
