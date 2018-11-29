@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -80,8 +79,6 @@ public class NotificationServiceImpl implements NotificationService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validate(Notification notification) throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);
-    InvoicePaymentCreateService invoicePaymentCreateService =
-        Beans.get(InvoicePaymentCreateService.class);
     ReconcileService reconcileService = Beans.get(ReconcileService.class);
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
