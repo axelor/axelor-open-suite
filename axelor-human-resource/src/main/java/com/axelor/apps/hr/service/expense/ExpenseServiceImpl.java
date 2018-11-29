@@ -122,8 +122,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
-      throws AxelorException {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
@@ -148,43 +147,31 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
-
-    if (expenseLine.getAnalyticDistributionTemplate() == null) {
-      return expenseLine;
-    }
+  public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = expenseLine.getAnalyticMoveLineList();
 
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      analyticMoveLineList =
-          analyticMoveLineService.generateLines(
-              expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
-      expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+      createAnalyticDistributionWithTemplate(expenseLine);
     }
     if (analyticMoveLineList != null) {
+      LocalDate date = appAccountService.getTodayDate();
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        this.updateAnalyticMoveLine(analyticMoveLine, expenseLine);
+        analyticMoveLineService.updateAnalyticMoveLine(
+            analyticMoveLine, expenseLine.getUntaxedAmount(), date);
       }
     }
     return expenseLine;
   }
 
-  public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, ExpenseLine expenseLine) {
-
-    analyticMoveLine.setOriginalPieceAmount(expenseLine.getUntaxedAmount());
-    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-    analyticMoveLine.setDate(appAccountService.getTodayDate());
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-  }
-
   @Override
-  public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine)
-      throws AxelorException {
-    List<AnalyticMoveLine> analyticMoveLineList = null;
-    analyticMoveLineList =
+  public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
-            expenseLine.getAnalyticDistributionTemplate(), expenseLine.getUntaxedAmount());
+            expenseLine.getAnalyticDistributionTemplate(),
+            expenseLine.getUntaxedAmount(),
+            AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
+            appAccountService.getTodayDate());
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;

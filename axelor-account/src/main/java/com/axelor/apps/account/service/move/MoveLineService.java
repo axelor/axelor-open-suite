@@ -41,7 +41,6 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
@@ -101,31 +100,46 @@ public class MoveLineService {
   public MoveLine computeAnalyticDistribution(MoveLine moveLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-    if (analyticMoveLineList != null
-        && appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-            != AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
-      for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
-        analyticDistributionLine.setAccount(moveLine.getAccount());
-        analyticDistributionLine.setAccountType(moveLine.getAccount().getAccountType());
-        analyticDistributionLine.setOriginalPieceAmount(
-            moveLine.getDebit().add(moveLine.getCredit()));
-        analyticDistributionLine.setAmount(
-            analyticMoveLineService.computeAmount(analyticDistributionLine));
-        analyticDistributionLine.setDate(appAccountService.getTodayDate());
+
+    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+      createAnalyticDistributionWithTemplate(moveLine);
+    } else {
+      LocalDate date = moveLine.getDate();
+      BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
       }
     }
+    updateAccountTypeOnAnalytic(moveLine, analyticMoveLineList);
+
     return moveLine;
   }
 
-  public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) throws AxelorException {
-    List<AnalyticMoveLine> analyticMoveLineList = null;
-    analyticMoveLineList =
+  public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getDebit().add(moveLine.getCredit()));
+            moveLine.getDebit().add(moveLine.getCredit()),
+            AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+            moveLine.getDate());
 
     moveLine.setAnalyticMoveLineList(analyticMoveLineList);
     return moveLine;
+  }
+
+  public void updateAccountTypeOnAnalytic(
+      MoveLine moveLine, List<AnalyticMoveLine> analyticMoveLineList) {
+
+    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+      return;
+    }
+
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      if (moveLine.getAccount() != null) {
+        analyticMoveLine.setAccount(moveLine.getAccount());
+        analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+      }
+    }
   }
 
   /**

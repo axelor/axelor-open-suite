@@ -27,10 +27,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,14 +61,17 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public List<AnalyticMoveLine> generateLines(
-      AnalyticDistributionTemplate analyticDistributionTemplate, BigDecimal total)
-      throws AxelorException {
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date) {
 
     List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
     if (analyticDistributionTemplate != null) {
       for (AnalyticDistributionLine analyticDistributionLine :
           analyticDistributionTemplate.getAnalyticDistributionLineList()) {
-        analyticMoveLineList.add(this.createAnalyticMoveLine(analyticDistributionLine, total));
+        analyticMoveLineList.add(
+            this.createAnalyticMoveLine(analyticDistributionLine, total, typeSelect, date));
       }
     }
 
@@ -77,7 +80,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException {
+      Partner partner, Product product, Company company) {
 
     AppAccount appAccount = appAccountService.getAppAccount();
 
@@ -93,15 +96,13 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   public AnalyticMoveLine createAnalyticMoveLine(
-      AnalyticDistributionLine analyticDistributionLine, BigDecimal total) {
+      AnalyticDistributionLine analyticDistributionLine,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date) {
 
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
     analyticMoveLine.setOriginalPieceAmount(total);
-    analyticMoveLine.setAmount(
-        analyticDistributionLine
-            .getPercentage()
-            .multiply(total)
-            .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
     analyticMoveLine.setAnalyticAccount(analyticDistributionLine.getAnalyticAccount());
     analyticMoveLine.setAnalyticAxis(analyticDistributionLine.getAnalyticAxis());
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
@@ -110,10 +111,21 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     if (company != null) {
       analyticMoveLine.setCurrency(company.getCurrency());
     }
-    analyticMoveLine.setDate(appAccountService.getTodayDate());
+    analyticMoveLine.setDate(date);
     analyticMoveLine.setPercentage(analyticDistributionLine.getPercentage());
+    analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
+    analyticMoveLine.setTypeSelect(typeSelect);
 
     return analyticMoveLine;
+  }
+
+  @Override
+  public void updateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date) {
+
+    analyticMoveLine.setOriginalPieceAmount(total);
+    analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
+    analyticMoveLine.setDate(date);
   }
 
   @Override

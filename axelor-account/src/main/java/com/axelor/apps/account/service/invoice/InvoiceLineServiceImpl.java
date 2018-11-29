@@ -48,6 +48,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,15 +76,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.analyticMoveLineService = analyticMoveLineService;
   }
 
-  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine)
-      throws AxelorException {
+  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine, Invoice invoice) {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       return invoiceLine;
     }
-
-    Invoice invoice = invoiceLine.getInvoice();
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
@@ -101,44 +99,30 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException {
-
-    if (invoiceLine.getAnalyticDistributionTemplate() == null) {
-      return invoiceLine;
-    }
+  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
 
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      analyticMoveLineList =
-          analyticMoveLineService.generateLines(
-              invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getCompanyExTaxTotal());
-      invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
-    }
-    if (analyticMoveLineList != null) {
+      createAnalyticDistributionWithTemplate(invoiceLine);
+    } else {
+      LocalDate date = appAccountService.getTodayDate();
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        this.updateAnalyticMoveLine(analyticMoveLine, invoiceLine);
+        analyticMoveLineService.updateAnalyticMoveLine(
+            analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
       }
     }
     return invoiceLine;
   }
 
   @Override
-  public void updateAnalyticMoveLine(AnalyticMoveLine analyticMoveLine, InvoiceLine invoiceLine) {
-
-    analyticMoveLine.setOriginalPieceAmount(invoiceLine.getCompanyExTaxTotal());
-    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-    analyticMoveLine.setDate(appAccountService.getTodayDate());
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-  }
-
-  @Override
-  public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
-      throws AxelorException {
-    List<AnalyticMoveLine> analyticMoveLineList = null;
-    analyticMoveLineList =
+  public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
-            invoiceLine.getAnalyticDistributionTemplate(), invoiceLine.getCompanyExTaxTotal());
+            invoiceLine.getAnalyticDistributionTemplate(),
+            invoiceLine.getCompanyExTaxTotal(),
+            AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
+            appAccountService.getTodayDate());
 
     invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
     return invoiceLine;

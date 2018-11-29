@@ -11,33 +11,36 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date" width="90" onChange="account-move-line-record-date-onchange"/>
+        <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
    		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"/>
         <field name="debit" aggregate="sum" width="100"/>
         <field name="credit" aggregate="sum" width="100"/>
         <field name="amountRemaining" aggregate="sum" width="100"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
         <field name="move.statusSelect" width="90"/>
         <field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
     </grid>
     
+    
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
-		<field name="date" width="100" onChange="account-move-line-record-date-onchange"/>
+		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
     	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
         <field name="origin"/>
         <field name="description"/>
 	</grid>
@@ -47,15 +50,16 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date" onChange="account-move-line-record-date-onchange"/>
+        <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
         <field name="move.statusSelect"/>
         <field name="reconcileGroup"/>
         <field name="origin"/>
@@ -66,15 +70,16 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name"/>
-        <field name="date" onChange="account-move-line-record-date-onchange"/>
+        <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
-        <field name="account" form-view="account-form" grid-view="account-grid"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
         <field name="move.statusSelect"/>
        	<field name="reconcileGroup"/>
         <field name="origin"/>
@@ -112,12 +117,12 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange"/>
+				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
         	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
-	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution"/>
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 			<field name="amountRemaining" colSpan="3"/>
@@ -204,12 +209,12 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange"/>
+				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
 			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
