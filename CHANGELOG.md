@@ -347,6 +347,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
 - MRP : disable sort on grid to avoid a misinterpretation of the result
 - Disable sort on dummy fied "Avaibality qty" on product grid
+- StockMoveLine : remove required constraint from trackingNumber if real qty not available.
 
 ## [Unreleased 5.0.7]
 ## Features
