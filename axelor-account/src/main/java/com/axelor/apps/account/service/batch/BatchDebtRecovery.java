@@ -127,6 +127,8 @@ public class BatchDebtRecovery extends BatchStrategy {
       findBatch();
 
       for (Partner partner : partnerList) {
+        ++offset;
+
         try {
           boolean remindedOk = debtRecoveryService.debtRecoveryGenerate(partner, company);
           if (remindedOk) {
@@ -152,7 +154,6 @@ public class BatchDebtRecovery extends BatchStrategy {
         }
       }
 
-      offset += partnerList.size();
       JPA.clear();
     }
   }
