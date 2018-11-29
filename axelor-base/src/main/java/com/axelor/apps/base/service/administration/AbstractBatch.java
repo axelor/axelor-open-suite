@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.AuditableModel;
@@ -48,6 +49,8 @@ public abstract class AbstractBatch {
 
   protected Batch batch;
   protected Model model;
+
+  @Inject protected BatchRepository batchRepo;
 
   private int done;
   private int anomaly;
