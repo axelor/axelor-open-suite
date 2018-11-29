@@ -58,6 +58,7 @@ public class JasperUtils {
    */
   public static String htmlFix(final String html) {
     return html.replaceAll("(?i)<p[^>]+>\\s*</p>|<!--\\w+-->", "")
+        .replaceAll("\\bfont-size\\s*:\\s*inherit\\b", "")
         .replaceAll("(?i)<p>\\s*<ul>|<(/)ul></p>", "<$1ul>")
         .replaceAll("(?i)<br/?>\\s*</(li|p)>", "</$1>")
         .replaceAll("(?i)<p", "<p style=\"margin-top: 0; margin-bottom:0.1em\" ");
