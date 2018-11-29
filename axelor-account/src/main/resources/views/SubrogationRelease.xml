@@ -16,9 +16,9 @@
 
 		<menubar>
 			<menu title="Print/Export" icon="fa-print">
-				<item action="action-subrogation-release-print-to-pdf" title="Print to PDF"
+				<item action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
 					readonlyIf="statusSelect &lt; 2" />
-				<item action="action-subrogation-release-export-to-csv" title="Export to CSV"
+				<item action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
 					readonlyIf="statusSelect &lt; 2" />
 			</menu>
 		</menubar>
@@ -38,50 +38,50 @@
 
 		<panel name="actionsPanel" title="Actions" sidebar="true">
 			<button name="retrieveInvoicesBtn" title="Retrieve invoices from factorized customers"
-				onClick="action-subrogation-release-retrieve-invoices" readonlyIf="company == null"
+				onClick="action-subrogation-release-method-retrieve-invoices" readonlyIf="company == null"
 				showIf="statusSelect == 1" />
 			<button name="transmitReleaseBtn" title="Transmit release"
-				onClick="save,action-subrogation-release-transmit-release"
+				onClick="save,action-subrogation-release-method-transmit-release"
 				readonlyIf="invoiceSet == null || invoiceSet.length == 0" showIf="statusSelect == 1" />
 			<button name="enterReleaseInTheAccountsBtn" title="Enter release in the accounts"
-				onClick="save,action-subrogation-release-enter-release-in-the-accounts" showIf="statusSelect == 2" />
+				onClick="save,action-subrogation-release-method-enter-release-in-the-accounts" showIf="statusSelect == 2" />
 			<button name="cancelReleaseBtn" title="Cancel release"
-				onClick="action-subrogation-release-cancel-release,save" showIf="statusSelect > 1 &amp;&amp; statusSelect &lt; 3" />
+				onClick="action-subrogation-release-record-cancel-release,save" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 3" />
 		</panel>
 
 	</form>
 
-	<action-method name="action-subrogation-release-retrieve-invoices">
+	<action-method name="action-subrogation-release-method-retrieve-invoices">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="retrieveInvoices" />
 	</action-method>
 
-	<action-method name="action-subrogation-release-transmit-release">
+	<action-method name="action-subrogation-release-method-transmit-release">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="transmitRelease" />
 	</action-method>
 
-	<action-method name="action-subrogation-release-print-to-pdf">
+	<action-method name="action-subrogation-release-method-print-to-pdf">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="printToPDF" />
 	</action-method>
 
-	<action-method name="action-subrogation-release-export-to-csv">
+	<action-method name="action-subrogation-release-method-export-to-csv">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="exportToCSV" />
 	</action-method>
 
-	<action-method name="action-subrogation-release-enter-release-in-the-accounts">
+	<action-method name="action-subrogation-release-method-enter-release-in-the-accounts">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="enterReleaseInTheAccounts" />
 	</action-method>
-
+	
 	<action-record name="action-subrogation-release-onnew"
 		model="com.axelor.apps.account.db.SubrogationRelease">
 		<field name="company" expr="eval: __user__.getActiveCompany()" />
 	</action-record>
-
-	<action-record name="action-subrogation-release-cancel-release"
+	
+	<action-record name="action-subrogation-release-record-cancel-release"
 		model="com.axelor.apps.account.db.SubrogationRelease">
 		<field name="statusSelect" expr="eval: __repo__(SubrogationRelease).STATUS_CANCELED" />
 	</action-record>
