@@ -26,6 +26,7 @@
         <field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="analyticMoveLineList" hidden="true"/>
     </grid>
     
     
@@ -43,6 +44,7 @@
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="analyticMoveLineList" hidden="true"/>
 	</grid>
     
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
@@ -64,6 +66,7 @@
         <field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="analyticMoveLineList" hidden="true"/>
     </grid>
     
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
@@ -84,6 +87,7 @@
        	<field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="analyticMoveLineList" hidden="true"/>
     </grid>
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
