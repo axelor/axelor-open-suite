@@ -554,54 +554,63 @@ WHERE bankReconciliation.id = ?]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">code</property>
+                    <property name="alias">code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">code</text-property>
                     <text-property name="heading">code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_date</property>
+                    <property name="alias">to_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_date</text-property>
                     <text-property name="heading">to_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reference</property>
+                    <property name="alias">reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reference</text-property>
                     <text-property name="heading">reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
+                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type</property>
+                    <property name="alias">type</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">type</text-property>
                     <text-property name="heading">type</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
+                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account_balance</property>
+                    <property name="alias">account_balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">account_balance</text-property>
                     <text-property name="heading">account_balance</text-property>
@@ -3062,12 +3071,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                         <property name="dataSet">BankReconciliationLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">account_balance</property>
-                                <text-property name="displayName">account_balance</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["account_balance"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">code</property>
                                 <text-property name="displayName">code</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["code"]</expression>
@@ -3110,6 +3113,18 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">amount</property>
+                                <text-property name="displayName">amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["amount"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">account_balance</property>
+                                <text-property name="displayName">account_balance</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["account_balance"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
                                 <property name="name">sum_debit</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
@@ -3140,36 +3155,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">Aggregation</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["account_balance"] - (row["credit"] - row["debit"])</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">amount</property>
-                                <text-property name="displayName">amount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">line_amount</property>
-                                <text-property name="displayName">line_amount</text-property>
-                                <expression name="expression" type="javascript">row["amount"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">sum_amount</property>
-                                <text-property name="displayName">sum_amount</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>TableGroup</value>
@@ -3178,9 +3164,15 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["amount"]</expression>
+                                        <expression name="value" type="javascript">row["credit"] - row["debit"]</expression>
                                     </structure>
                                 </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">accountBalance</property>
+                                <expression name="expression" type="javascript">row["account_balance"]</expression>
+                                <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -3580,10 +3572,10 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <data id="5232">
-                                            <property name="fontWeight">normal</property>
+                                        <data id="6017">
+                                            <property name="fontFamily">sans-serif</property>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">account_balance</property>
+                                            <property name="resultSetColumn">accountBalance</property>
                                         </data>
                                     </cell>
                                 </row>
@@ -3633,24 +3625,22 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                         </text>
                                     </cell>
                                     <cell id="5236">
-                                        <data id="5237">
+                                        <data id="6009">
                                             <property name="fontFamily">sans-serif</property>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">sum_debit</property>
                                         </data>
                                     </cell>
                                     <cell id="5238">
-                                        <data id="5239">
+                                        <data id="6010">
                                             <property name="fontFamily">sans-serif</property>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">sum_credit</property>
                                         </data>
                                     </cell>
                                     <cell id="5240">
-                                        <data id="5297">
-                                            <property name="fontFamily">sans-serif</property>
+                                        <data id="6016">
                                             <property name="textAlign">right</property>
-                                            <property name="display">none</property>
                                             <property name="resultSetColumn">sum_amount</property>
                                         </data>
                                     </cell>
@@ -3796,11 +3786,11 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     </data>
                                 </cell>
                                 <cell id="5263">
-                                    <data id="5296">
-                                        <property name="fontFamily">sans-serif</property>
+                                    <text-data id="6015">
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">line_amount</property>
-                                    </data>
+                                        <expression name="valueExpr">row["credit"] - row["debit"]</expression>
+                                        <property name="contentType">html</property>
+                                    </text-data>
                                 </cell>
                             </row>
                         </detail>
