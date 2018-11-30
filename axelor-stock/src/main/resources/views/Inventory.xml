@@ -11,7 +11,7 @@
         <field name="company" />
     </grid>
 
-    <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onSave="action-set-inventory-seq" onNew="action-inventory-record-new">
+    <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
 	        <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
 	        	<item action="action-inventory-method-show-stockmove" title="Show stock move" readonlyIf="statusSelect != 5"/>
@@ -83,12 +83,12 @@
     <action-group name="action-group-stock-inventory-fillinventoryBtn-click">
     	<action name="save"/>
     	<action name="action-inventory-method-fill-inventory"/>
-    	<action name="action-set-inventory-seq"/>
     	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-stock-inventory-plan-click">
     	<action name="save"/>
+    	<action name="action-inventory-validate-inventory-line-list"/>
     	<action name="action-inventory-record-plan"/>
     	<action name="action-set-inventory-seq"/>    	
     	<action name="save"/>
@@ -221,5 +221,9 @@
 	<action-attrs name="action-inventory-attrs-reset-stock-location">
 		<attribute name="value" for="stockLocation" expr="eval: null"/>
 	</action-attrs>
+	
+	<action-validate name="action-inventory-validate-inventory-line-list">
+		<error message="Please fill all inventory lines" if="inventoryLineList.any { it?.realQty == null }"/>
+	</action-validate>
 	
 </object-views>
