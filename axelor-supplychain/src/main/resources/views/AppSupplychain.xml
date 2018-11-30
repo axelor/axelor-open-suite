@@ -27,7 +27,6 @@
 		<panel name="stackPanel" title="Stock">
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
-			<field name="autoAllocateOnReceipt" widget="boolean-switch" showIf="manageStockReservation" colSpan="4"/>
 		</panel>
 		<panel name="intercoPanel" title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>

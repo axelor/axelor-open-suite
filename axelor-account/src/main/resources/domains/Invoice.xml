@@ -127,7 +127,7 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
-
+	
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[

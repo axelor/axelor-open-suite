@@ -447,7 +447,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
     LOG.debug(
@@ -739,11 +739,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
-        StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
-
-        newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
-        newStockMoveLine.setRealQty(newStockMoveLine.getQty());
-
+        StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
         newStockMove.addStockMoveLineListItem(newStockMoveLine);
       }
     }
@@ -768,6 +764,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     plan(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected StockMoveLine copySplittedStockMoveLine(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
+
+    newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+    newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    return newStockMoveLine;
   }
 
   @Override

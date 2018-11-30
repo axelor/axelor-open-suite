@@ -19,12 +19,13 @@
 		canNew="false"
 		readonlyIf="$get('stockMove.statusSelect') > 2"
 		domain="action-stock-move-line-attrs-tracking-number-domain"
-		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+		requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))" />
 	<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+    <field name="realQty" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
@@ -43,12 +44,13 @@
 		canNew="true"
 		readonlyIf="$get('stockMove.statusSelect') > 2"
 		domain="action-stock-move-line-attrs-tracking-number-domain"
-		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+		requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))" />
 	<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+    <field name="realQty" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"
@@ -75,13 +77,14 @@
         canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
         onSelect="action-stock-move-line-attrs-tracking-number-domain" 
         readonlyIf="$get('stockMove.statusSelect') > 2" 
-		requiredIf="$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged')" />
+		requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))" />
 		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
 		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
         <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
 		<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
       <field name="stockMove" hidden="true" />
       <field name="stockMove.statusSelect" hidden="true" />
+      <field name="realQty" hidden="true"/>
     </panel>
   </form>
 
@@ -95,5 +98,4 @@
     <call class="com.axelor.apps.production.web.StockMoveLineController"
       method="setProductInfo" />
   </action-method>
-
 </object-views>

@@ -80,6 +80,7 @@ public class EbicsCertificateService {
     }
 
     throw new AxelorException(
+        bank,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get("No bank certificate of type %s found"),
         type);

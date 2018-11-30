@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -30,8 +31,9 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -47,18 +49,18 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   protected StockLocationLineService stockLocationLineService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected UnitConversionService unitConversionService;
-  protected AppSupplychainService appSupplychainService;
+  protected SupplyChainConfigService supplychainConfigService;
 
   @Inject
   public ReservedQtyServiceImpl(
       StockLocationLineService stockLocationLineService,
       StockMoveLineRepository stockMoveLineRepository,
       UnitConversionService unitConversionService,
-      AppSupplychainService appSupplychainService) {
+      SupplyChainConfigService supplyChainConfigService) {
     this.stockLocationLineService = stockLocationLineService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.unitConversionService = unitConversionService;
-    this.appSupplychainService = appSupplychainService;
+    this.supplychainConfigService = supplyChainConfigService;
   }
 
   @Override
@@ -198,8 +200,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockLocationLine == null) {
       return;
     }
+    Company company = stockLocationLine.getStockLocation().getCompany();
+    SupplyChainConfig supplyChainConfig = supplychainConfigService.getSupplyChainConfig(company);
     if (toStatus == StockMoveRepository.STATUS_REALIZED
-        && appSupplychainService.getAppSupplychain().getAutoAllocateOnReceipt()) {
+        && supplyChainConfig.getAutoAllocateOnReceipt()) {
       reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, qty);
     }
     checkReservedQtyStocks(stockLocationLine, toStatus);
@@ -462,6 +466,38 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     // update requested reserved qty
     if (newReservedQty.compareTo(saleOrderLine.getReservedQty()) < 0) {
       updateReservedQty(saleOrderLine, newReservedQty);
+    }
+  }
+
+  @Override
+  public void desallocateStockMoveLineAfterSplit(
+      StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException {
+    // deallocate in sale order line
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    if (saleOrderLine != null) {
+      BigDecimal amountToDeallocateSO =
+          convertUnitWithProduct(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              amountToDeallocate,
+              stockMoveLine.getProduct());
+      saleOrderLine.setReservedQty(saleOrderLine.getReservedQty().subtract(amountToDeallocateSO));
+    }
+    // deallocate in stock location line
+    if (stockMoveLine.getStockMove() != null) {
+      StockLocationLine stockLocationLine =
+          stockLocationLineService.getStockLocationLine(
+              stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+      if (stockLocationLine != null) {
+        BigDecimal amountToDeallocateLocation =
+            convertUnitWithProduct(
+                stockMoveLine.getUnit(),
+                stockLocationLine.getUnit(),
+                amountToDeallocate,
+                stockMoveLine.getProduct());
+        stockLocationLine.setReservedQty(
+            stockLocationLine.getReservedQty().subtract(amountToDeallocateLocation));
+      }
     }
   }
 

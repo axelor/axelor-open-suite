@@ -23,6 +23,6 @@
     		return code+" - " + name;
 	    ]]>
         </string>
-        <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines"/>
+        <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines" massUpdate="true"/>
     </entity>
 </domain-models>

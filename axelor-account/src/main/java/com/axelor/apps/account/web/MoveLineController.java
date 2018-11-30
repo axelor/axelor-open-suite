@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -47,6 +48,20 @@ public class MoveLineController {
         moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

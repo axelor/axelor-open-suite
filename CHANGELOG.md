@@ -156,6 +156,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
 - Stock move: add tracking for cancel reason.
 - STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
+- App Stock : Add new m2o field 'ecomonomicArea'.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -251,6 +252,7 @@ Only display line where quantity is greater than 0.
 - STOCK LOCATION : allow report to export in XLS
 - JOB APPLICATION : Major updates in job application form view.
 - JOB POSITION : Major updates in job position form view.
+- SUBROGATION RELEASE : Add a link to the subrogation release on invoice in order to avoid to transmit many times the same invoice to the factor.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -345,6 +347,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
+- MRP : disable sort on grid to avoid a misinterpretation of the result
+- Disable sort on dummy fied "Avaibality qty" on product grid
+- StockMoveLine : remove required constraint from trackingNumber if real qty not available.
 - Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 
 ## [Unreleased 5.0.7]
@@ -467,6 +472,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Accounting Export : Fix NPE.
 - Configurator: add missing field in configurator sale order line formula form.
 - MANUF. ORDER : don't allow to print if status = draft
+- Tracking number search view fix.
+- Schedulers: fix missing traceback.
+- Debt recovery batch: fix error recovery.
 
 ## [5.0.6] - 2018-10-06
 ## Features
