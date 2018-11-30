@@ -19,8 +19,11 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
@@ -73,5 +76,19 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       }
     }
     return super.save(entity);
+  }
+
+  @Override
+  public void remove(ManufOrder entity) {
+    Integer status = entity.getStatusSelect();
+    if (status == ManufOrderRepository.STATUS_PLANNED
+        || status == ManufOrderRepository.STATUS_STANDBY
+        || status == ManufOrderRepository.STATUS_IN_PROGRESS) {
+      throw new PersistenceException(I18n.get(IExceptionMessage.ORDER_REMOVE_NOT_OK));
+    } else if (status == ManufOrderRepository.STATUS_FINISHED) {
+      entity.setArchived(true);
+    } else {
+      super.remove(entity);
+    }
   }
 }

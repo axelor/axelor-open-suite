@@ -41,7 +41,6 @@ public class InventoryLineService {
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
-    inventoryLine.setRealQty(BigDecimal.ONE);
     inventoryLine.setTrackingNumber(trackingNumber);
     this.compute(inventoryLine, inventory);
 
@@ -80,10 +79,12 @@ public class InventoryLineService {
           Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
 
       BigDecimal gap =
-          inventoryLine
-              .getCurrentQty()
-              .subtract(inventoryLine.getRealQty())
-              .setScale(2, RoundingMode.HALF_EVEN);
+          inventoryLine.getRealQty() != null
+              ? inventoryLine
+                  .getCurrentQty()
+                  .subtract(inventoryLine.getRealQty())
+                  .setScale(2, RoundingMode.HALF_EVEN)
+              : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
 
       if (stockLocationLine != null) {

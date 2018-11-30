@@ -70,14 +70,22 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .all()
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
-                    + "AND self.statusSelect = :statusSelect "
-                    + "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE")
-            // TODO
+                    + "AND self.statusSelect = :invoiceStatusVentilated "
+                    + "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE "
+                    + "AND self.id not in ("
+                    + "		select Invoices.id "
+                    + "		from SubrogationRelease as SR "
+                    + "		join SR.invoiceSet as Invoices "
+                    + "		where SR.statusSelect in (:subrogationReleaseStatusTransmitted, :subrogationReleaseStatusAccounted, :subrogationReleaseStatusCleared))")
             .order("invoiceDate")
             .order("dueDate")
             .order("invoiceId");
     query.bind("company", company);
-    query.bind("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    query.bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED);
+    query.bind(
+        "subrogationReleaseStatusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED);
+    query.bind("subrogationReleaseStatusAccounted", SubrogationReleaseRepository.STATUS_ACCOUNTED);
+    query.bind("subrogationReleaseStatusCleared", SubrogationReleaseRepository.STATUS_CLEARED);
     List<Invoice> invoiceList = query.fetch();
     return invoiceList;
   }
@@ -95,6 +103,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
           I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
           subrogationRelease.getCompany().getName());
     }
+
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
   }

@@ -179,4 +179,14 @@ public interface ReservedQtyService {
   void updateRequestedReservedQuantityInStockMoveLines(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException;
+
+  /**
+   * In a partially realized stock move line, call this method to desallocate the quantity that will
+   * be allocated to the newly generated stock move line.
+   *
+   * @param stockMoveLine
+   * @param amountToDeallocate
+   */
+  void desallocateStockMoveLineAfterSplit(
+      StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException;
 }
