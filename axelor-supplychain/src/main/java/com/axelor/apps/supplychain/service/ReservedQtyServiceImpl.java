@@ -469,6 +469,38 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
   }
 
+  @Override
+  public void desallocateStockMoveLineAfterSplit(
+      StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException {
+    // deallocate in sale order line
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    if (saleOrderLine != null) {
+      BigDecimal amountToDeallocateSO =
+          convertUnitWithProduct(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              amountToDeallocate,
+              stockMoveLine.getProduct());
+      saleOrderLine.setReservedQty(saleOrderLine.getReservedQty().subtract(amountToDeallocateSO));
+    }
+    // deallocate in stock location line
+    if (stockMoveLine.getStockMove() != null) {
+      StockLocationLine stockLocationLine =
+          stockLocationLineService.getStockLocationLine(
+              stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+      if (stockLocationLine != null) {
+        BigDecimal amountToDeallocateLocation =
+            convertUnitWithProduct(
+                stockMoveLine.getUnit(),
+                stockLocationLine.getUnit(),
+                amountToDeallocate,
+                stockMoveLine.getProduct());
+        stockLocationLine.setReservedQty(
+            stockLocationLine.getReservedQty().subtract(amountToDeallocateLocation));
+      }
+    }
+  }
+
   protected StockMoveLine getPlannedStockMoveLine(SaleOrderLine saleOrderLine) {
     return stockMoveLineRepository
         .all()
