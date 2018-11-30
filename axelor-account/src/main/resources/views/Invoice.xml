@@ -244,6 +244,8 @@
 					<button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable" showIf="irrecoverableStatusSelect == 1"/>
 					</panel>
 				</panel>
+				<panel-dashlet name="showSubrogationReleasePanel" action="action-invoice-view-show-subrogation-release" colSpan="12" showIf="partner.factorizedCustomer"/>
+				<field name="partner.factorizedCustomer" hidden="true"/>
 			</panel>
 			<panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
 				showTitle="false">
@@ -1035,7 +1037,14 @@ InvoiceSet.length > 0))"
 		<domain>self.invoice.id=:invoiceId</domain>
 		<context name="invoiceId" expr="eval:id" />
 	</action-view>
-
+	
+	<action-view name="action-invoice-view-show-subrogation-release" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">	
+		<view type="grid" name="subrogation-release-grid" />
+		<view type="form" name="subrogation-release-form" />
+	  	<domain>:_invoice MEMBER OF self.invoiceSet</domain>
+  		<context name="_invoice" expr="eval: __self__"/>
+	</action-view>
+	
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
