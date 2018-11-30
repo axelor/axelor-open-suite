@@ -142,6 +142,18 @@ public class MoveLineService {
     }
   }
 
+  public void generateAnalyticMoveLines(MoveLine moveLine) {
+
+    List<AnalyticMoveLine> analyticMoveLineList =
+        analyticMoveLineService.generateLines(
+            moveLine.getAnalyticDistributionTemplate(),
+            moveLine.getDebit().add(moveLine.getCredit()),
+            AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+            moveLine.getDate());
+
+    analyticMoveLineList.stream().forEach(moveLine::addAnalyticMoveLineListItem);
+  }
+
   /**
    * Creating accounting move line method using move currency
    *
@@ -455,8 +467,14 @@ public class MoveLineService {
             analyticMoveLine.setInvoiceLine(null);
             analyticMoveLine.setAccount(moveLine.getAccount());
             analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+            analyticMoveLineService.updateAnalyticMoveLine(
+                analyticMoveLine,
+                moveLine.getDebit().add(moveLine.getCredit()),
+                moveLine.getDate());
             moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
           }
+        } else {
+          generateAnalyticMoveLines(moveLine);
         }
 
         TaxLine taxLine = invoiceLine.getTaxLine();

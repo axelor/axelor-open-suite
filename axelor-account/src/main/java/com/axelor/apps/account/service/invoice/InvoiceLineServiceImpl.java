@@ -76,11 +76,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.analyticMoveLineService = analyticMoveLineService;
   }
 
-  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine, Invoice invoice) {
+  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
+      InvoiceLine invoiceLine, Invoice invoice) {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
-      return invoiceLine;
+      return invoiceLine.getAnalyticMoveLineList();
     }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
@@ -93,30 +94,28 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.getAnalyticMoveLineList().clear();
     }
 
-    this.computeAnalyticDistribution(invoiceLine);
-
-    return invoiceLine;
+    return this.computeAnalyticDistribution(invoiceLine);
   }
 
   @Override
-  public InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) {
+  public List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
 
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      createAnalyticDistributionWithTemplate(invoiceLine);
+      return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
       LocalDate date = appAccountService.getTodayDate();
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
       }
+      return analyticMoveLineList;
     }
-    return invoiceLine;
   }
 
   @Override
-  public InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
+  public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
@@ -124,8 +123,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             appAccountService.getTodayDate());
 
-    invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
-    return invoiceLine;
+    return analyticMoveLineList;
   }
 
   @Override
