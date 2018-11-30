@@ -25,7 +25,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -86,8 +85,7 @@ public class ProductStockController {
     }
   }
 
-  public void updateStockLocation(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void updateStockLocation(ActionRequest request, ActionResponse response) {
     try {
       Product product = request.getContext().asType(Product.class);
       if (product.getId() == null) {

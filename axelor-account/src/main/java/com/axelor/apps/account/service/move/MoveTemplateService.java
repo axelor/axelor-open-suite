@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
@@ -176,7 +177,10 @@ public class MoveTemplateService {
 
         moveLine.setAnalyticMoveLineList(
             analyticMoveLineService.generateLines(
-                moveTemplateLine.getAnalyticDistributionTemplate(), amount));
+                moveTemplateLine.getAnalyticDistributionTemplate(),
+                amount,
+                AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                moveDate));
 
         counter++;
       }
@@ -231,7 +235,10 @@ public class MoveTemplateService {
 
         moveLine.setAnalyticMoveLineList(
             analyticMoveLineService.generateLines(
-                moveTemplateLine.getAnalyticDistributionTemplate(), amount));
+                moveTemplateLine.getAnalyticDistributionTemplate(),
+                amount,
+                AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                moveDate));
 
         counter++;
       }

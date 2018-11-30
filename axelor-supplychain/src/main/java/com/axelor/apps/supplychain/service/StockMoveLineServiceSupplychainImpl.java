@@ -91,6 +91,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       BigDecimal quantity,
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -107,6 +108,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               description,
               quantity,
               unitPrice,
+              companyUnitPriceUntaxed,
               unit,
               stockMove,
               taxed,
@@ -126,6 +128,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           quantity,
           BigDecimal.ZERO,
           BigDecimal.ZERO,
+          companyUnitPriceUntaxed,
           unit,
           stockMove,
           null);
@@ -369,7 +372,16 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine generatedStockMoveLine =
         createStockMoveLine(
-            product, productName, description, quantity, null, null, unit, null, null);
+            product,
+            productName,
+            description,
+            quantity,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            unit,
+            null,
+            null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
     generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);

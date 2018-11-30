@@ -41,6 +41,8 @@
     
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
+    <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
+    
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
 

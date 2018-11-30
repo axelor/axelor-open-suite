@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.base.db"/>
 
   <entity name="CancelReason">
-    <boolean name="cancelQuantityAllocation" title="Cancel quantity allocation ?"/>
+    <boolean name="cancelQuantityAllocation" title="Cancel stock allocation ?"/>
   </entity>
 
 </domain-models>

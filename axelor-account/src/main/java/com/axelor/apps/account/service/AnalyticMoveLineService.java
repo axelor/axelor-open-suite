@@ -23,19 +23,24 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AnalyticMoveLineService {
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
   public List<AnalyticMoveLine> generateLines(
-      AnalyticDistributionTemplate analyticDistributionTemplate, BigDecimal total)
-      throws AxelorException;
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException;
+      Partner partner, Product product, Company company);
+
+  public void updateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
 
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
 }

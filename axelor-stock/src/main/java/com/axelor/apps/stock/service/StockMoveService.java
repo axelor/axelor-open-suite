@@ -273,4 +273,6 @@ public interface StockMoveService {
   Address getCompanyAddress(StockMove stockMove) throws AxelorException;
 
   void setAvailableStatus(StockMove stockMove);
+
+  void checkExpirationDates(StockMove stockMove) throws AxelorException;
 }

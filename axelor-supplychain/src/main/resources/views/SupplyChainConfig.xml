@@ -16,6 +16,7 @@
 			<field name="hasOutSmForNonStorableProduct"/>
 			<field name="hasInSmForStorableProduct"/>
 			<field name="hasInSmForNonStorableProduct"/>
+				<field name="autoAllocateOnReceipt" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="4"/>
 	  	</panel>
 	
 	</form>

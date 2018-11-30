@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -204,20 +205,41 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
 
-      invoiceLine.setAnalyticDistributionTemplate(saleOrderLine.getAnalyticDistributionTemplate());
-      this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-      invoiceLineService.computeAnalyticDistribution(invoiceLine);
+      if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            saleOrderLine.getAnalyticDistributionTemplate());
+        this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
+        invoiceLineService.computeAnalyticDistribution(invoiceLine);
+      } else {
+        invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+      }
 
     } else if (purchaseOrderLine != null) {
 
-      invoiceLine.setAnalyticDistributionTemplate(
-          purchaseOrderLine.getAnalyticDistributionTemplate());
-      this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-      invoiceLineService.computeAnalyticDistribution(invoiceLine);
+      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            purchaseOrderLine.getAnalyticDistributionTemplate());
+        this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
+        invoiceLineService.computeAnalyticDistribution(invoiceLine);
+      } else {
+        invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+      }
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+
+      if (product != null && isAccountRequired()) {
+        invoiceLine.setProductCode(product.getCode());
+        Account account =
+            accountManagementService.getProductAccount(
+                product,
+                invoice.getCompany(),
+                invoice.getPartner().getFiscalPosition(),
+                InvoiceToolService.isPurchase(invoice),
+                invoiceLine.getFixedAssets());
+        invoiceLine.setAccount(account);
+      }
 
     } else if (stockMoveLine != null) {
 
@@ -248,7 +270,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine);
+      invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     return invoiceLine;

@@ -100,11 +100,6 @@
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="origin"/>
-        <field name="availableStatusSelect">
-        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
-        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
-        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
-        </field>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -458,6 +453,7 @@
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
         <attribute name="hidden" for="stockMoveLineList.filterOnAvailableProducts" expr="eval: fromStockLocation.typeSelect == 3"/>
+        <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>

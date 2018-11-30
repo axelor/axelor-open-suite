@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -43,7 +44,8 @@ public interface ReservedQtyService {
    * @param fromStockLocation
    * @param toStockLocation
    * @param product
-   * @param qty
+   * @param qty the quantity in stock move unit.
+   * @param requestedReservedQty the requested reserved quantity in stock move unit.
    * @param toStatus
    * @throws AxelorException
    */
@@ -53,7 +55,7 @@ public interface ReservedQtyService {
       StockLocation toStockLocation,
       Product product,
       BigDecimal qty,
-      BigDecimal convertedRequestedReservedQty,
+      BigDecimal requestedReservedQty,
       int toStatus)
       throws AxelorException;
 
@@ -65,7 +67,7 @@ public interface ReservedQtyService {
    * @param stockLocation a stock location
    * @param product the product of the line
    * @param toStatus target status for the stock move
-   * @param requestedReservedQty the requested reserved quantity, converted in product unit.
+   * @param requestedReservedQty the requested reserved quantity in stock move unit
    * @throws AxelorException
    */
   void updateRequestedQuantityInFromStockLocation(
@@ -79,11 +81,11 @@ public interface ReservedQtyService {
    * Update location line, stock move line and sale order line with computed allocated quantity,
    * where the location is {@link com.axelor.apps.stock.db.StockMove#toStockLocation}.
    *
-   * @param stockMoveLine a stock move line
-   * @param stockLocation a stock location
-   * @param product the product of the line
-   * @param toStatus target status for the stock move
-   * @param qty
+   * @param stockMoveLine a stock move line.
+   * @param stockLocation a stock location.
+   * @param product the product of the line.
+   * @param toStatus target status for the stock move.
+   * @param qty the quantity in stock move unit.
    * @throws AxelorException
    */
   void updateRequestedQuantityInToStockLocation(
@@ -102,9 +104,13 @@ public interface ReservedQtyService {
    * @param qtyToAllocate
    * @param stockLocation
    * @param product
+   * @param stockLocationLineUnit
    */
   void allocateReservedQuantityInSaleOrderLines(
-      BigDecimal qtyToAllocate, StockLocation stockLocation, Product product)
+      BigDecimal qtyToAllocate,
+      StockLocation stockLocation,
+      Product product,
+      Unit stockLocationLineUnit)
       throws AxelorException;
 
   /**

@@ -56,9 +56,8 @@ public class InvoiceLineController {
     Invoice invoice = invoiceLine.getInvoice();
     if (invoice == null) {
       invoice = request.getContext().getParent().asType(Invoice.class);
-      invoiceLine.setInvoice(invoice);
     }
-    invoiceLine = invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine);
+    invoiceLine = invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     response.setValue(
         "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
     response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
@@ -76,14 +75,7 @@ public class InvoiceLineController {
       throws AxelorException {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-    Invoice invoice = invoiceLine.getInvoice();
-    if (invoice == null) {
-      if (context.getParent().getContextClass() == InvoiceLine.class) {
-        context = request.getContext().getParent();
-      }
-      invoice = context.getParent().asType(Invoice.class);
-      invoiceLine.setInvoice(invoice);
-    }
+
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       invoiceLine = invoiceLineService.computeAnalyticDistribution(invoiceLine);
       response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());

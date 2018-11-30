@@ -145,6 +145,14 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
               stockLocationLine.getReservedQty().scale(),
               product);
       stockLocationLine.setReservedQty(reservedQty);
+      BigDecimal requestedReservedQty =
+          unitConversionService.convert(
+              stockLocationUnit,
+              productUnit,
+              stockLocationLine.getRequestedReservedQty(),
+              stockLocationLine.getRequestedReservedQty().scale(),
+              product);
+      stockLocationLine.setRequestedReservedQty(requestedReservedQty);
     }
 
     return super.updateLocationFromProduct(stockLocationLine, product);
