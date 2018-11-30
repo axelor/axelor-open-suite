@@ -345,6 +345,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
+- Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 
 ## [Unreleased 5.0.7]
 ## Features
