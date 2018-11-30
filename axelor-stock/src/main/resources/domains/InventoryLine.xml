@@ -10,7 +10,7 @@
   	<many-to-one name="inventory" ref="com.axelor.apps.stock.db.Inventory" title="Inventory"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>    
 	<decimal name="currentQty" title="Current Qty"/>
-	<decimal name="realQty" title="Real Qty" min="1"/>
+	<decimal name="realQty" title="Real Qty" nullable="true"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
     <string name="rack" title="Rack"/>
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="TrackingNumber"/>
