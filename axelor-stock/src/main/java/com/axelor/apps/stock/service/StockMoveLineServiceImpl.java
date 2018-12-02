@@ -1011,11 +1011,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
     Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
 
-    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-        && fromCountry != null
+    return fromCountry != null
         && toCountry != null
         && !fromCountry.equals(toCountry)
         && stockMoveLine.getProduct() != null
+        && fromCountry.getEconomicArea() != null
+        && fromCountry.getEconomicArea().equals(toCountry.getEconomicArea())
         && stockMoveLine.getProduct().getUsedInDEB();
   }
 
