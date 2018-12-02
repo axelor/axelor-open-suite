@@ -132,6 +132,7 @@
 - ManufOrder : Track the Manufacture Order.
 - STOCK MOVE : Report footer Modify
 - SALEORDER : Generate stock move per estimated delivery date
+- PURCHASEORDER : Generate stock move per estimated delivery date
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
 - Partner : Add filter on partner depending on company.
 - STOCK MOVE : Report mass printing

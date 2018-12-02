@@ -79,6 +79,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderComputeServiceSupplychainImpl;
@@ -180,5 +182,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);
     bind(ReservedQtyService.class).to(ReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceImpl.class).to(PurchaseOrderLineServiceSupplychainImpl.class);
+    bind(PurchaseOrderStockService.class).to(PurchaseOrderStockServiceImpl.class);
   }
 }

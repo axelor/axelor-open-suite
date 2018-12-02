@@ -31,7 +31,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -42,7 +42,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +49,6 @@ import java.util.Map;
 
 @Singleton
 public class PurchaseOrderController {
-
-  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
-
-  @Inject protected AppSupplychainService appSupplychainService;
 
   public void createStockMove(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -64,8 +59,9 @@ public class PurchaseOrderController {
       if (purchaseOrder.getId() != null) {
 
         List<Long> stockMoveList =
-            purchaseOrderServiceSupplychain.createStocksMove(
-                Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
+            Beans.get(PurchaseOrderStockServiceImpl.class)
+                .createStockMoveFromPurchaseOrder(
+                    Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 
         if (stockMoveList != null && stockMoveList.size() == 1) {
           response.setView(
@@ -110,7 +106,7 @@ public class PurchaseOrderController {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    purchaseOrderServiceSupplychain.cancelReceipt(purchaseOrder);
+    Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
   }
 
   public void generateBudgetDistribution(ActionRequest request, ActionResponse response) {
@@ -121,7 +117,8 @@ public class PurchaseOrderController {
     if (appAccountService.isApp("budget")
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      purchaseOrderServiceSupplychain.generateBudgetDistribution(purchaseOrder);
+      Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+          .generateBudgetDistribution(purchaseOrder);
       response.setValues(purchaseOrder);
     }
   }
@@ -304,15 +301,16 @@ public class PurchaseOrderController {
 
     try {
       PurchaseOrder purchaseOrder =
-          purchaseOrderServiceSupplychain.mergePurchaseOrders(
-              purchaseOrderList,
-              commonCurrency,
-              commonSupplierPartner,
-              commonCompany,
-              commonLocation,
-              commonContactPartner,
-              commonPriceList,
-              commonTradingName);
+          Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+              .mergePurchaseOrders(
+                  purchaseOrderList,
+                  commonCurrency,
+                  commonSupplierPartner,
+                  commonCompany,
+                  commonLocation,
+                  commonContactPartner,
+                  commonPriceList,
+                  commonTradingName);
       if (purchaseOrder != null) {
         // Open the generated purchase order in a new tab
         response.setView(
@@ -333,7 +331,8 @@ public class PurchaseOrderController {
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+    Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+        .updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", purchaseOrder.getAmountToBeSpreadOverTheTimetable());
   }
@@ -342,6 +341,7 @@ public class PurchaseOrderController {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    purchaseOrderServiceSupplychain.applyToallBudgetDistribution(purchaseOrder);
+    Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+        .applyToallBudgetDistribution(purchaseOrder);
   }
 }

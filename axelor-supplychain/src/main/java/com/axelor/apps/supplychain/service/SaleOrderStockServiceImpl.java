@@ -134,7 +134,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
 
-    StockMove stockMove = this.createStockMove(saleOrder, saleOrder.getCompany());
+    StockMove stockMove =
+        this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null
@@ -167,7 +168,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
       }
 
-      stockMove.setEstimatedDate(estimatedDeliveryDate);
       stockMoveService.plan(stockMove);
 
       if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
@@ -243,7 +243,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException {
+  public StockMove createStockMove(
+      SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
+      throws AxelorException {
     StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
 
     StockMove stockMove =
@@ -255,7 +257,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             saleOrder.getStockLocation(),
             toStockLocation,
             null,
-            saleOrder.getShipmentDate(),
+            estimatedDeliveryDate,
             saleOrder.getDescription(),
             saleOrder.getShipmentMode(),
             saleOrder.getFreightCarrierMode(),

@@ -131,6 +131,10 @@ public interface IExceptionMessage {
   static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
 
+  /** Purchase Order Stock Service Implement */
+  static final String PO_MISSING_STOCK_LOCATION = /*$$(*/
+      "Stock location is missing for the purchase order %s." /*)*/;
+
   /** Timetable Controller */
   static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/
       "The invoice has already been generated." /*)*/;

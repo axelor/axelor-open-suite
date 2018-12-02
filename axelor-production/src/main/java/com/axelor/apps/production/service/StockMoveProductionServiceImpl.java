@@ -27,7 +27,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -47,7 +46,6 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
       AppSupplychainService appSupplyChainService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService) {
     super(
@@ -60,7 +58,6 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
         appSupplyChainService,
         purchaseOrderRepo,
         saleOrderRepo,
-        purchaseOrderServiceSupplychain,
         unitConversionService,
         reservedQtyService);
   }

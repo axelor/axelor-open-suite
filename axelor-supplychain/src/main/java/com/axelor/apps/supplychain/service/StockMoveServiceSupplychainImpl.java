@@ -62,7 +62,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected AppSupplychainService appSupplyChainService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected SaleOrderRepository saleOrderRepo;
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
 
@@ -77,7 +76,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       AppSupplychainService appSupplyChainService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService) {
     super(
@@ -90,7 +88,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.appSupplyChainService = appSupplyChainService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;
-    this.purchaseOrderServiceSupplychain = purchaseOrderServiceSupplychain;
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
   }
@@ -126,7 +123,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (newStockSeq != null) {
         purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
       } else {
-        purchaseOrderServiceSupplychain.updateReceiptState(purchaseOrder);
+        Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
         if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED
             && appSupplychain.getTerminatePurchaseOrderOnReceipt()) {

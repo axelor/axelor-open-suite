@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
@@ -50,25 +51,27 @@ import java.util.Map;
 
 public class ImportSupplyChain {
 
-  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 
-  @Inject private InvoiceService invoiceService;
+  @Inject protected PurchaseOrderStockServiceImpl purchaseOrderStockServiceImpl;
 
-  @Inject private SaleOrderStockService saleOrderStockService;
+  @Inject protected InvoiceService invoiceService;
 
-  @Inject private StockMoveRepository stockMoveRepo;
+  @Inject protected SaleOrderStockService saleOrderStockService;
 
-  @Inject private SaleOrderRepository saleOrderRepo;
+  @Inject protected StockMoveRepository stockMoveRepo;
 
-  @Inject private SaleConfigRepository saleConfigRepo;
+  @Inject protected SaleOrderRepository saleOrderRepo;
 
-  @Inject private SupplychainSaleConfigService configService;
+  @Inject protected SaleConfigRepository saleConfigRepo;
 
-  @Inject private StockConfigService stockConfigService;
+  @Inject protected SupplychainSaleConfigService configService;
 
-  @Inject private ImportPurchaseOrder importPurchaseOrder;
+  @Inject protected StockConfigService stockConfigService;
 
-  @Inject private ImportSaleOrder importSaleOrder;
+  @Inject protected ImportPurchaseOrder importPurchaseOrder;
+
+  @Inject protected ImportSaleOrder importSaleOrder;
 
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
@@ -103,7 +106,7 @@ public class ImportSupplyChain {
       }
 
       if (status == IPurchaseOrder.STATUS_FINISHED) {
-        purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
+        purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         StockMove stockMove =
             stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
         if (stockMove != null) {

@@ -24,6 +24,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SaleOrderStockService {
@@ -37,7 +38,8 @@ public interface SaleOrderStockService {
    */
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
+  public StockMove createStockMove(
+      SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate) throws AxelorException;
 
   public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine)
       throws AxelorException;
