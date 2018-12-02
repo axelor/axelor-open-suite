@@ -23,7 +23,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -58,7 +58,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
       if (Strings.isNullOrEmpty(stockMove.getName())
           || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
-        stockMove.setName(Beans.get(StockMoveService.class).computeName(stockMove));
+        stockMove.setName(Beans.get(StockMoveToolService.class).computeName(stockMove));
       }
 
       return stockMove;

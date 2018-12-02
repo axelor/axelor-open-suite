@@ -18,7 +18,6 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -27,6 +26,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
@@ -39,7 +39,7 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
   @Inject
   public StockMoveProductionServiceImpl(
       StockMoveLineService stockMoveLineService,
-      SequenceService sequenceService,
+      StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
@@ -52,7 +52,7 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
       ReservedQtyService reservedQtyService) {
     super(
         stockMoveLineService,
-        sequenceService,
+        stockMoveToolService,
         stockMoveLineRepository,
         appBaseService,
         stockMoveRepository,

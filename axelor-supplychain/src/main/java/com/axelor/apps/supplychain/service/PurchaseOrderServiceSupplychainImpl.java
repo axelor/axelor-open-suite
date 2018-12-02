@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -87,8 +88,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected StockMoveLineRepository stockMoveLineRepository;
   protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
-
-  @Inject private BudgetDistributionRepository budgetDistributionRepo;
+  protected ShippingCoefService shippingCoefService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -99,7 +100,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AppAccountService appAccountService,
       StockMoveLineRepository stockMoveLineRepository,
       PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ShippingCoefService shippingCoefService,
+      StockMoveLineService stockMoveLineService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveRepo = stockMoveRepo;
@@ -109,6 +112,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
     this.appBaseService = appBaseService;
+    this.shippingCoefService = shippingCoefService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -279,103 +284,110 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       BigDecimal qty)
       throws AxelorException {
 
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    Product product = purchaseOrderLine.getProduct();
-
     StockMoveLine stockMoveLine = null;
 
     if (this.isStockMoveProduct(purchaseOrderLine)) {
 
-      Unit unit = purchaseOrderLine.getProduct().getUnit();
-      BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-      BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getProduct().getCostPrice();
-
-      if (purchaseOrderLine.getQty() != BigDecimal.ZERO) {
-        companyUnitPriceUntaxed =
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .divide(
-                    purchaseOrderLine.getQty(),
-                    Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                    RoundingMode.HALF_EVEN);
-      }
-
-      if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
-        qty =
-            unitConversionService.convert(
-                purchaseOrderLine.getUnit(),
-                unit,
-                qty,
-                qty.scale(),
-                purchaseOrderLine.getProduct());
-        priceDiscounted =
-            unitConversionService.convert(
-                unit,
-                purchaseOrderLine.getUnit(),
-                priceDiscounted,
-                appBaseService.getNbDecimalDigitForUnitPrice(),
-                purchaseOrderLine.getProduct());
-      }
-
-      BigDecimal taxRate = BigDecimal.ZERO;
-      TaxLine taxLine = purchaseOrderLine.getTaxLine();
-      if (taxLine != null) {
-        taxRate = taxLine.getValue();
-      }
-
-      if (product.getControlOnReceipt()) {
-        stockMoveLine =
-            Beans.get(StockMoveLineService.class)
-                .createStockMoveLine(
-                    product,
-                    purchaseOrderLine.getProductName(),
-                    purchaseOrderLine.getDescription(),
-                    qty,
-                    priceDiscounted,
-                    companyUnitPriceUntaxed,
-                    unit,
-                    qualityStockMove,
-                    StockMoveLineService.TYPE_PURCHASES,
-                    purchaseOrder.getInAti(),
-                    taxRate);
-      } else {
-        stockMoveLine =
-            Beans.get(StockMoveLineService.class)
-                .createStockMoveLine(
-                    product,
-                    purchaseOrderLine.getProductName(),
-                    purchaseOrderLine.getDescription(),
-                    qty,
-                    priceDiscounted,
-                    companyUnitPriceUntaxed,
-                    unit,
-                    stockMove,
-                    StockMoveLineService.TYPE_PURCHASES,
-                    purchaseOrder.getInAti(),
-                    taxRate);
-      }
+      stockMoveLine =
+          createProductStockMoveLine(
+              purchaseOrderLine,
+              qty,
+              purchaseOrderLine.getProduct().getControlOnReceipt() ? qualityStockMove : stockMove);
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
-      stockMoveLine =
-          Beans.get(StockMoveLineService.class)
-              .createStockMoveLine(
-                  product,
-                  purchaseOrderLine.getProductName(),
-                  purchaseOrderLine.getDescription(),
-                  BigDecimal.ZERO,
-                  BigDecimal.ZERO,
-                  BigDecimal.ZERO,
-                  null,
-                  stockMove,
-                  2,
-                  purchaseOrder.getInAti(),
-                  null);
+      stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
     }
     if (stockMoveLine != null) {
-
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     }
     return stockMoveLine;
+  }
+
+  protected StockMoveLine createProductStockMoveLine(
+      PurchaseOrderLine purchaseOrderLine, BigDecimal qty, StockMove stockMove)
+      throws AxelorException {
+
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    Product product = purchaseOrderLine.getProduct();
+    Unit unit = product.getUnit();
+    BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+    BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getCompanyExTaxTotal();
+
+    if (purchaseOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+      companyUnitPriceUntaxed =
+          purchaseOrderLine
+              .getCompanyExTaxTotal()
+              .divide(
+                  purchaseOrderLine.getQty(),
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                  RoundingMode.HALF_EVEN);
+    }
+
+    if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
+      qty =
+          unitConversionService.convert(
+              purchaseOrderLine.getUnit(), unit, qty, qty.scale(), product);
+
+      priceDiscounted =
+          unitConversionService.convert(
+              unit,
+              purchaseOrderLine.getUnit(),
+              priceDiscounted,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
+
+      companyUnitPriceUntaxed =
+          unitConversionService.convert(
+              unit,
+              purchaseOrderLine.getUnit(),
+              companyUnitPriceUntaxed,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
+    }
+
+    BigDecimal shippingCoef =
+        shippingCoefService.getShippingCoef(
+            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+    if (shippingCoef.compareTo(BigDecimal.ONE) != 0) {
+      priceDiscounted = priceDiscounted.multiply(shippingCoef);
+      companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
+    }
+
+    BigDecimal taxRate = BigDecimal.ZERO;
+    TaxLine taxLine = purchaseOrderLine.getTaxLine();
+    if (taxLine != null) {
+      taxRate = taxLine.getValue();
+    }
+
+    return stockMoveLineService.createStockMoveLine(
+        product,
+        purchaseOrderLine.getProductName(),
+        purchaseOrderLine.getDescription(),
+        qty,
+        priceDiscounted,
+        companyUnitPriceUntaxed,
+        unit,
+        stockMove,
+        StockMoveLineService.TYPE_PURCHASES,
+        purchaseOrder.getInAti(),
+        taxRate);
+  }
+
+  protected StockMoveLine createTitleStockMoveLine(
+      PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
+
+    return stockMoveLineService.createStockMoveLine(
+        purchaseOrderLine.getProduct(),
+        purchaseOrderLine.getProductName(),
+        purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        null,
+        stockMove,
+        2,
+        purchaseOrderLine.getPurchaseOrder().getInAti(),
+        null);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
@@ -535,7 +547,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
-      budgetDistributionRepo.save(newBudgetDistribution);
+      Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
     }
   }
 

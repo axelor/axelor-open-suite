@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -60,20 +60,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychainService appSupplyChainService;
-
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected SaleOrderRepository saleOrderRepo;
-
   protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
-
   protected UnitConversionService unitConversionService;
-
   protected ReservedQtyService reservedQtyService;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
       StockMoveLineService stockMoveLineService,
-      SequenceService sequenceService,
+      StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
@@ -86,7 +82,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       ReservedQtyService reservedQtyService) {
     super(
         stockMoveLineService,
-        sequenceService,
+        stockMoveToolService,
         stockMoveLineRepository,
         appBaseService,
         stockMoveRepository,

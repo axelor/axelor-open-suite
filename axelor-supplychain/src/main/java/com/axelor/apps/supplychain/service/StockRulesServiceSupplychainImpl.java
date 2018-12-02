@@ -51,7 +51,6 @@ import java.util.List;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected TemplateRepository templateRepo;
@@ -61,14 +60,12 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
   @Inject
   public StockRulesServiceSupplychainImpl(
       StockRulesRepository stockRuleRepo,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       TemplateRepository templateRepo,
       TemplateMessageService templateMessageService,
       MessageRepository messageRepo) {
     super(stockRuleRepo);
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.templateRepo = templateRepo;
@@ -135,6 +132,9 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
           Company company = stockLocation.getCompany();
           LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+
+          PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
+              Beans.get(PurchaseOrderServiceSupplychainImpl.class);
 
           PurchaseOrder purchaseOrder =
               purchaseOrderRepo.save(

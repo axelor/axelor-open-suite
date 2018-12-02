@@ -36,12 +36,14 @@ public class ShippingCoefService {
   }
 
   /**
+   * Get the shipping coefficient of a product using the supplier catalog
+   *
    * @param product
    * @param partner
    * @param company
    * @return the shipping coefficient for the given product, partner and company.
    */
-  public BigDecimal getShippingCoef(Product product, Partner partner, Company company) {
+  public BigDecimal getShippingCoefDefByPartner(Product product, Partner partner, Company company) {
     BigDecimal shippingCoef = BigDecimal.ZERO;
     List<ShippingCoef> shippingCoefList =
         shippingCoefRepo
@@ -63,6 +65,29 @@ public class ShippingCoefService {
       }
     }
 
+    return shippingCoef;
+  }
+
+  /**
+   * Get the shipping coefficient of a product according to the product configuration
+   *
+   * @param product
+   * @param supplierPartner
+   * @param company
+   * @return the shipping coefficient for a product
+   */
+  public BigDecimal getShippingCoef(Product product, Partner supplierPartner, Company company) {
+    BigDecimal shippingCoef = BigDecimal.ZERO;
+
+    if (product.getDefShipCoefByPartner()) {
+      shippingCoef = getShippingCoefDefByPartner(product, supplierPartner, company);
+    } else {
+      shippingCoef = product.getShippingCoef();
+    }
+
+    if (shippingCoef.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ONE;
+    }
     return shippingCoef;
   }
 }

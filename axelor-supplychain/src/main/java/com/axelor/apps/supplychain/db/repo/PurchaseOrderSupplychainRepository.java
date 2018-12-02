@@ -30,14 +30,12 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
 
   @Inject private AppService appService;
 
-  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderService;
-
   @Override
   public PurchaseOrder copy(PurchaseOrder entity, boolean deep) {
 
     PurchaseOrder copy = super.copy(entity, deep);
 
-    if (!Beans.get(AppService.class).isApp("supplychain")) {
+    if (!appService.isApp("supplychain")) {
       return copy;
     }
 
@@ -58,7 +56,8 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
 
     if (appService.isApp("supplychain")) {
-      purchaseOrderService.generateBudgetDistribution(purchaseOrder);
+      Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+          .generateBudgetDistribution(purchaseOrder);
     }
     return super.save(purchaseOrder);
   }
