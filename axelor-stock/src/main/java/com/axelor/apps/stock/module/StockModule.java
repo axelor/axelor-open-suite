@@ -59,6 +59,8 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintServiceimpl;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
@@ -91,5 +93,6 @@ public class StockModule extends AxelorModule {
     bind(StockMovePrintService.class).to(StockMovePrintServiceImpl.class);
     bind(StockMoveToolService.class).to(StockMoveToolServiceImpl.class);
     bind(PickingStockMovePrintService.class).to(PickingStockMovePrintServiceimpl.class);
+    bind(ConformityCertificatePrintService.class).to(ConformityCertificatePrintServiceImpl.class);
   }
 }
