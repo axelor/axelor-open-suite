@@ -459,7 +459,7 @@ public class MoveLineService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (invoiceLine.getAnalyticMoveLineList() != null) {
+        if (invoiceLine.getAnalyticMoveLineList() != null && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
                 analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);
