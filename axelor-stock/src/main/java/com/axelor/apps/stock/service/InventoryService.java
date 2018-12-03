@@ -85,6 +85,8 @@ public class InventoryService {
 
   @Inject private StockMoveRepository stockMoveRepo;
 
+  @Inject private StockLocationLineService stockLocationLineService;
+
   public Inventory createInventory(
       LocalDate date,
       String description,
@@ -372,6 +374,14 @@ public class InventoryService {
 
       if (currentQty.compareTo(realQty) != 0) {
         BigDecimal diff = realQty.subtract(currentQty);
+        BigDecimal avgPrice;
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+        if (stockLocationLine != null) {
+          avgPrice = stockLocationLine.getAvgPrice();
+        } else {
+          avgPrice = BigDecimal.ZERO;
+        }
 
         StockMoveLine stockMoveLine =
             stockMoveLineService.createStockMoveLine(
@@ -379,8 +389,8 @@ public class InventoryService {
                 product.getName(),
                 product.getDescription(),
                 diff,
-                product.getCostPrice(),
-                product.getCostPrice(),
+                avgPrice,
+                avgPrice,
                 product.getUnit(),
                 stockMove,
                 StockMoveLineService.TYPE_NULL,

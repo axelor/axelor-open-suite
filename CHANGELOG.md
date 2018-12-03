@@ -45,6 +45,7 @@
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
 - Factor : New Organization for debt recovery submenu.
+- Inventory : Do not update average price when validating an inventory.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
