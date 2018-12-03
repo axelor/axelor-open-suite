@@ -331,7 +331,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
-    stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
     stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
 
     if (stockMove != null) {
@@ -350,6 +349,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .setScale(2, RoundingMode.HALF_EVEN));
 
     if (product != null) {
+      stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
     }
 

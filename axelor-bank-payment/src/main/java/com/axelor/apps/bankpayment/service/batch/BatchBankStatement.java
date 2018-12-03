@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -80,6 +81,8 @@ public class BatchBankStatement extends AbstractBatch {
                 bankStatementRepository.find(bankStatement.getId()), false);
           } catch (AxelorException e) {
             processError(e, e.getCategory(), ebicsPartner);
+          } finally {
+            JPA.clear();
           }
         }
 
