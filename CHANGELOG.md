@@ -121,6 +121,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Tracking number search view fix.
 - Schedulers: fix missing traceback.
 - Debt recovery batch: fix error recovery.
+- Sale : fix Null Pointer error.
 
 ## [5.0.6] - 2018-10-06
 ## Features
