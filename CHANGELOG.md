@@ -156,6 +156,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
 - Stock move: add tracking for cancel reason.
 - STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
+- Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel. 
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
