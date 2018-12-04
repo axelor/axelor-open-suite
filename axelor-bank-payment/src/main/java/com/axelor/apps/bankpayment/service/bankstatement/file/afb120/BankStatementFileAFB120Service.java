@@ -97,6 +97,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
       } catch (Exception e) {
         TraceBackService.trace(
             new Exception(String.format("Line %s : %s", sequence, e), e), IException.IMPORT);
+        bankStatement = bankStatementRepository.find(bankStatement.getId());
       } finally {
         if (sequence % 10 == 0) {
           JPA.clear();
