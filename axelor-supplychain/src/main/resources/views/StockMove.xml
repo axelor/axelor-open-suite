@@ -55,12 +55,13 @@
 	  	</panel>
     </form>
     
-    <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field-generate-invoice">
+    <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-attrs-set-is-from-wizard-true,action-record-load-dummy-field-generate-invoice">
 		<panel name="mainPanel" >
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
 			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
 			<field name="$contactPartner" title="Contact partner" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
-			<button name="confirmBtn" title="Confirm" onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-invoice" colSpan="12" width="200px"/>
+			<button name="confirmBtn" title="Confirm" onClick="action-supplychain-stock-move-method-generate-concat-invoice" colSpan="12" width="200px"/>
+			<field name="$isFromWizard" hidden="true"/>
 		</panel>
     </form>
 
@@ -92,17 +93,15 @@
 		<error message="You have to choose at least one incoming stock move" if="supplierStockMoveToInvoice == null || supplierStockMoveToInvoice.size() == 0"/>
 	</action-validate>
 	
-	<action-condition name="action-supplychain-stock-move-confirm-concat-invoice-check">
-		<check error="A payment condition must be selected" field="$paymentCondition" if="paymentConditionToCheck &amp;&amp; paymentCondition == null"/>
-		<check error="A payment mode must be selected" field="$paymentMode" if="paymentModeToCheck &amp;&amp; paymentMode == null"/>
-		<check error="A contact partner must be selected" field="$contactPartner" if="contactPartnerToCheck &amp;&amp; contactPartner == null"/>
-	</action-condition>
-	
 	<action-record name="action-record-load-dummy-field-generate-invoice" model="com.axelor.apps.stock.db.StockMove">
 		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
 		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
+
+	<action-attrs name="action-attrs-set-is-from-wizard-true">
+		<attribute for="$isFromWizard" name="value" expr="eval:true"/>
+	</action-attrs>
 
 </object-views>	

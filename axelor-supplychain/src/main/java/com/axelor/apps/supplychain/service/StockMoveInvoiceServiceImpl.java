@@ -242,7 +242,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,
       PaymentMode paymentModeIn,
-      Partner contactPartnerIn)
+      Partner contactPartnerIn,
+      boolean isFromWizard)
       throws AxelorException {
 
     Currency invoiceCurrency = null;
@@ -257,12 +258,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     PriceList invoicePriceList = null;
     Boolean invoiceInAti = null;
 
-    Map<String, Object> mapResult = new HashMap<String, Object>();
+    Map<String, Object> mapResult = new HashMap<>();
 
     StringBuilder fieldErrors = new StringBuilder();
 
     int count = 1;
-    List<StockMove> stockMoveToInvoiceList = new ArrayList<StockMove>();
+    List<StockMove> stockMoveToInvoiceList = new ArrayList<>();
     String message = "";
     // Check if field constraints are respected
     for (StockMove stockMove : stockMoveList) {
@@ -384,31 +385,33 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     }
 
     /**
-     * * Step 2, check if some fields require a selection from the user It can happed for the
+     * * Step 2, check if some fields require a selection from the user It can happen for the
      * payment condition, the payment mode and the contact partner
      */
-    if (invoicePaymentCondition == null) {
-      if (paymentConditionIn != null) {
-        invoicePaymentCondition = paymentConditionIn;
-      } else {
-        mapResult.put("paymentConditionToCheck", true);
+    if (!isFromWizard) {
+      if (invoicePaymentCondition == null) {
+        if (paymentConditionIn != null) {
+          invoicePaymentCondition = paymentConditionIn;
+        } else {
+          mapResult.put("paymentConditionToCheck", true);
+        }
       }
-    }
 
-    if (invoicePaymentMode == null) {
-      if (paymentModeIn != null) {
-        invoicePaymentMode = paymentModeIn;
-      } else {
-        mapResult.put("paymentModeToCheck", true);
+      if (invoicePaymentMode == null) {
+        if (paymentModeIn != null) {
+          invoicePaymentMode = paymentModeIn;
+        } else {
+          mapResult.put("paymentModeToCheck", true);
+        }
       }
-    }
 
-    if (invoiceContactPartner == null) {
-      if (contactPartnerIn != null) {
-        invoiceContactPartner = contactPartnerIn;
-      } else {
-        mapResult.put("contactPartnerToCheck", true);
-        mapResult.put("partnerId", invoiceClientPartner.getId());
+      if (invoiceContactPartner == null) {
+        if (contactPartnerIn != null) {
+          invoiceContactPartner = contactPartnerIn;
+        } else {
+          mapResult.put("contactPartnerToCheck", true);
+          mapResult.put("partnerId", invoiceClientPartner.getId());
+        }
       }
     }
 
@@ -510,7 +513,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Map<String, Object> createInvoiceFromMultiIncomingStockMove(
-      List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException {
+      List<StockMove> stockMoveList, Partner contactPartnerIn, boolean isFromWizard)
+      throws AxelorException {
 
     Company invoiceCompany = null;
     TradingName invoiceTradingName = null;
@@ -609,7 +613,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
      * * Step 2, check if some fields require a selection from the user It can happed for the
      * contact partner
      */
-    if (invoiceContactPartner == null) {
+    if (!isFromWizard && invoiceContactPartner == null) {
       if (contactPartnerIn != null) {
         invoiceContactPartner = contactPartnerIn;
       } else {
