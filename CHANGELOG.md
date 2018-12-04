@@ -118,6 +118,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Accounting Export : Fix NPE.
 - Configurator: add missing field in configurator sale order line formula form.
 - MANUF. ORDER : don't allow to print if status = draft
+- Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
 
 ## [5.0.6] - 2018-10-06
 ## Features
