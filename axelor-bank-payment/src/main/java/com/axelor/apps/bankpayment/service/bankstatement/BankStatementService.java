@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -78,7 +79,7 @@ public class BankStatementService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateStatus(BankStatement bankStatement) {
-
+    bankStatement = find(bankStatement);
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }
@@ -113,5 +114,17 @@ public class BankStatementService {
         .toAttach(bankStatement)
         .generate()
         .getFileLink();
+  }
+
+  /**
+   * Finds bank statement.
+   *
+   * @param bankStatement
+   * @return
+   */
+  public BankStatement find(BankStatement bankStatement) {
+    return JPA.em().contains(bankStatement)
+        ? bankStatement
+        : bankStatementRepository.find(bankStatement.getId());
   }
 }

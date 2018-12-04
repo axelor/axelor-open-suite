@@ -4,6 +4,7 @@
 ### Improvements
 
 ### Bug Fixes
+- Bank statement: fix status update for bank statement imports.
 
 ## [4.2.5] - 2018-10-06
 ### Improvements
