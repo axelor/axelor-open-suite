@@ -20,13 +20,13 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,8 +49,6 @@ public class BatchBankStatement extends AbstractBatch {
   @Inject protected EbicsPartnerService ebicsPartnerService;
 
   @Inject protected BankStatementService bankStatementService;
-
-  @Inject protected BankStatementRepository bankStatementRepository;
 
   @Override
   protected void process() {
@@ -75,10 +73,11 @@ public class BatchBankStatement extends AbstractBatch {
         for (BankStatement bankStatement : bankStatementList) {
 
           try {
-            bankStatementService.runImport(
-                bankStatementRepository.find(bankStatement.getId()), false);
+            bankStatementService.runImport(bankStatement, false);
           } catch (AxelorException e) {
             processError(e, e.getCategory(), ebicsPartner);
+          } finally {
+            JPA.clear();
           }
         }
 
