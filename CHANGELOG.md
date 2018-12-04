@@ -159,6 +159,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
 - App Stock : Add new m2o field 'ecomonomicArea'.
 - STOCKMOVE : mass printing for conformity certificate report
+- Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.

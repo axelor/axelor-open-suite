@@ -210,7 +210,10 @@
                     <viewer>{{record.toAddressStr}}</viewer>
                 </field>
             </panel>
-
+            
+            <field name="filterOnAvailableProducts" onChange="action-stock-move-method-update-stock-move-line"/>
+            
+            <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
                 <viewer>
                     <![CDATA[
@@ -230,7 +233,7 @@
         <panel-tabs name="mainPanelTab">
             <panel name="stockMoveLineListPanel" title="Stock move lines" itemSpan="12">
               <panel-related name="stockMoveLineList1Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect != 2"/>
-              <panel-related name="stockMoveLineList2Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
+              <panel-related name="stockMoveLineList2Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-record-filter-on-available-products" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
             </panel>
             <panel name="freightCarrierPanel" title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
                 <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
@@ -351,6 +354,10 @@
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="setAvailableStatus"/>
     </action-method>
     
+    <action-method name="action-stock-move-method-update-stock-move-line">
+      <call class="com.axelor.apps.stock.web.StockMoveController" method="updateMoveLineFilterOnAvailableproduct"/>
+    </action-method>
+    
     <action-view title="Split into 2" model="com.axelor.apps.stock.db.StockMove" name="action-stock-move-split-into-2">
 	    <view type="form" name="stock-move-split-into-2-form"/>
 	    <view-param name="popup" value="reload"/>
@@ -452,7 +459,6 @@
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
-        <attribute name="hidden" for="stockMoveLineList.filterOnAvailableProducts" expr="eval: fromStockLocation.typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">

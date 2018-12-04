@@ -78,6 +78,8 @@
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>
+  
+    <boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
     
