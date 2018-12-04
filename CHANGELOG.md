@@ -132,6 +132,7 @@
 - ManufOrder : Track the Manufacture Order.
 - STOCK MOVE : Report footer Modify
 - SALEORDER : Generate stock move per estimated delivery date
+- PURCHASEORDER : Generate stock move per estimated delivery date
 - INVOICE LINE : New option "Analytic template required on InvoiceLine" added in Account App.
 - Partner : Add filter on partner depending on company.
 - STOCK MOVE : Report mass printing
@@ -156,7 +157,9 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
 - Stock move: add tracking for cancel reason.
 - STOCK MOVES : tracking number wizard new button "Display available tracking numbers" (fr: "Afficher les lots disponibles").
-- Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel. 
+- App Stock : Add new m2o field 'ecomonomicArea'.
+- STOCKMOVE : mass printing for conformity certificate report
+- Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -252,6 +255,8 @@ Only display line where quantity is greater than 0.
 - STOCK LOCATION : allow report to export in XLS
 - JOB APPLICATION : Major updates in job application form view.
 - JOB POSITION : Major updates in job position form view.
+- SUBROGATION RELEASE : Add a link to the subrogation release on invoice in order to avoid to transmit many times the same invoice to the factor.
+- Apply shipping coef on WAP price valuation for purchase stock move.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -348,6 +353,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
 - MRP : disable sort on grid to avoid a misinterpretation of the result
 - Disable sort on dummy fied "Avaibality qty" on product grid
+- StockMoveLine : remove required constraint from trackingNumber if real qty not available.
+- Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
+- Improve JPA cache management in batch bank statement.
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -394,6 +402,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
+- Factor : New Organization for debt recovery submenu.
+- Inventory : Do not update average price when validating an inventory.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -442,7 +452,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
 - Product: Removed 'shippingCoef' value set from onLoad.
-- Alphabetical order on the table producedStockMoveLineList
+- Alphabetical order on the table producedStockMoveLineList and consumedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
@@ -470,6 +480,10 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Configurator: add missing field in configurator sale order line formula form.
 - MANUF. ORDER : don't allow to print if status = draft
 - Tracking number search view fix.
+- Schedulers: fix missing traceback.
+- Debt recovery batch: fix error recovery.
+- Base : Fix save issue on any change in AppBase record.
+- Sale : fix Null Pointer error.
 
 ## [5.0.6] - 2018-10-06
 ## Features

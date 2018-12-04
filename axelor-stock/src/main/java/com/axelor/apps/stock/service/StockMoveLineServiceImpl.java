@@ -69,7 +69,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
-  protected StockMoveService stockMoveService;
+  protected StockMoveToolService stockMoveToolService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected StockLocationLineService stockLocationLineService;
   protected UnitConversionService unitConversionService;
@@ -82,14 +82,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
       AppStockService appStockService,
-      StockMoveService stockMoveService,
+      StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
       StockLocationLineService stockLocationLineService,
       UnitConversionService unitConversionService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
-    this.stockMoveService = stockMoveService;
+    this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.unitConversionService = unitConversionService;
@@ -331,7 +331,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
-    stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
     stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
 
     if (stockMove != null) {
@@ -350,6 +349,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .setScale(2, RoundingMode.HALF_EVEN));
 
     if (product != null) {
+      stockMoveLine.setCountryOfOrigin(product.getCountryOfOrigin());
       stockMoveLine.setProductTypeSelect(product.getProductTypeSelect());
     }
 
@@ -1005,17 +1005,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine) {
-    Address fromAddress = stockMoveService.getFromAddress(stockMove);
-    Address toAddress = stockMoveService.getToAddress(stockMove);
+    Address fromAddress = stockMoveToolService.getFromAddress(stockMove);
+    Address toAddress = stockMoveToolService.getToAddress(stockMove);
 
     Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
     Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
 
-    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING)
-        && fromCountry != null
+    return fromCountry != null
         && toCountry != null
         && !fromCountry.equals(toCountry)
         && stockMoveLine.getProduct() != null
+        && fromCountry.getEconomicArea() != null
+        && fromCountry.getEconomicArea().equals(toCountry.getEconomicArea())
         && stockMoveLine.getProduct().getUsedInDEB();
   }
 

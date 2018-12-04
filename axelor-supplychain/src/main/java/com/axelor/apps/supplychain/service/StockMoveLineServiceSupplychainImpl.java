@@ -35,7 +35,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -56,31 +56,27 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected PriceListService priceListService;
 
-  protected StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl;
-
   @Inject
   public StockMoveLineServiceSupplychainImpl(
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
       AppStockService appStockService,
-      StockMoveService stockMoveService,
+      StockMoveToolService stockMoveToolService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService,
-      StockLocationLineServiceSupplychainImpl stockLocationLineServiceSupplychainImpl) {
+      StockLocationLineService stockLocationLineService) {
     super(
         trackingNumberService,
         appBaseService,
         appStockService,
-        stockMoveService,
+        stockMoveToolService,
         stockMoveLineRepository,
         stockLocationLineService,
         unitConversionService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
-    this.stockLocationLineServiceSupplychainImpl = stockLocationLineServiceSupplychainImpl;
   }
 
   @Override

@@ -532,6 +532,7 @@
 "WorkInProgressValuation.title",,,
 "Workshop",,,
 "You can't manage the consumed products on phases because this production process is related to several bills of material",,,
+"You can't remove this record",,,
 "You must add a positive quantity",,,
 "You must configure a component default stock location for company %s.",,,
 "You must configure a finished products default stock location for company %s.",,,

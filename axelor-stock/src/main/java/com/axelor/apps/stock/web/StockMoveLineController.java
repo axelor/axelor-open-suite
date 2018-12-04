@@ -29,7 +29,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -56,8 +55,6 @@ import java.util.TreeSet;
 public class StockMoveLineController {
 
   @Inject protected StockMoveLineService stockMoveLineService;
-
-  @Inject private StockMoveService stockMoveService;
 
   @Inject protected StockMoveLineRepository stockMoveLineRepo;
 

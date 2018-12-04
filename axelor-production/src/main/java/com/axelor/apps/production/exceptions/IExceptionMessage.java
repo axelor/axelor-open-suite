@@ -117,4 +117,6 @@ public interface IExceptionMessage {
   /** Raw Material RequirementService */
   String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
       "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
+
+  static final String ORDER_REMOVE_NOT_OK = /*$$(*/ "You can't remove this record" /*)*/;
 }

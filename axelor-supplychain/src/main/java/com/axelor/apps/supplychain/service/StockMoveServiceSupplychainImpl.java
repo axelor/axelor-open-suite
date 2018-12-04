@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -59,30 +59,37 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected AppSupplychainService appSupplyChainService;
-
-  @Inject protected PurchaseOrderRepository purchaseOrderRepo;
-  @Inject protected SaleOrderRepository saleOrderRepo;
-
-  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychain;
-
-  @Inject protected UnitConversionService unitConversionService;
+  protected AppSupplychainService appSupplyChainService;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected SaleOrderRepository saleOrderRepo;
+  protected UnitConversionService unitConversionService;
+  protected ReservedQtyService reservedQtyService;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
       StockMoveLineService stockMoveLineService,
-      SequenceService sequenceService,
+      StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
-      PartnerProductQualityRatingService partnerProductQualityRatingService) {
+      PartnerProductQualityRatingService partnerProductQualityRatingService,
+      AppSupplychainService appSupplyChainService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      SaleOrderRepository saleOrderRepo,
+      UnitConversionService unitConversionService,
+      ReservedQtyService reservedQtyService) {
     super(
         stockMoveLineService,
-        sequenceService,
+        stockMoveToolService,
         stockMoveLineRepository,
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService);
+    this.appSupplyChainService = appSupplyChainService;
+    this.purchaseOrderRepo = purchaseOrderRepo;
+    this.saleOrderRepo = saleOrderRepo;
+    this.unitConversionService = unitConversionService;
+    this.reservedQtyService = reservedQtyService;
   }
 
   @Override
@@ -116,7 +123,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (newStockSeq != null) {
         purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
       } else {
-        purchaseOrderServiceSupplychain.updateReceiptState(purchaseOrder);
+        Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
         if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED
             && appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
@@ -334,6 +341,38 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     return moveLines;
+  }
+
+  /**
+   * The splitted stock move line needs an allocation and will be planned before the previous stock
+   * move line is realized. To solve this issue, we deallocate here in the previous stock move line
+   * the quantity that will be allocated in the generated stock move line. The quantity will be
+   * reallocated when the generated stock move is planned.
+   *
+   * @param stockMoveLine the previous stock move line
+   * @return the generated stock move line
+   * @throws AxelorException
+   */
+  @Override
+  protected StockMoveLine copySplittedStockMoveLine(StockMoveLine stockMoveLine)
+      throws AxelorException {
+    StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
+
+    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+      BigDecimal requestedReservedQty =
+          stockMoveLine
+              .getRequestedReservedQty()
+              .subtract(stockMoveLine.getRealQty())
+              .max(BigDecimal.ZERO);
+
+      newStockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      newStockMoveLine.setReservedQty(BigDecimal.ZERO);
+
+      reservedQtyService.desallocateStockMoveLineAfterSplit(
+          stockMoveLine, stockMoveLine.getReservedQty());
+      stockMoveLine.setReservedQty(BigDecimal.ZERO);
+    }
+    return newStockMoveLine;
   }
 
   @Override

@@ -53,10 +53,14 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
+import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.StockMoveToolServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintServiceimpl;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
@@ -87,6 +91,8 @@ public class StockModule extends AxelorModule {
     PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     bind(TrackingNumberRepository.class).to(TrackingNumberManagementRepository.class);
     bind(StockMovePrintService.class).to(StockMovePrintServiceImpl.class);
+    bind(StockMoveToolService.class).to(StockMoveToolServiceImpl.class);
     bind(PickingStockMovePrintService.class).to(PickingStockMovePrintServiceimpl.class);
+    bind(ConformityCertificatePrintService.class).to(ConformityCertificatePrintServiceImpl.class);
   }
 }

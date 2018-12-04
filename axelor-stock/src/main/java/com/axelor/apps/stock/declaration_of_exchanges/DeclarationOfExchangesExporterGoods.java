@@ -32,7 +32,7 @@ import com.axelor.apps.stock.db.repo.CustomsCodeNomenclatureRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
@@ -101,7 +101,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
     int lineNum = 0;
 
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+    StockMoveToolService stockMoveToolService = Beans.get(StockMoveToolService.class);
     CustomsCodeNomenclatureRepository customsCodeNomenclatureRepo =
         Beans.get(CustomsCodeNomenclatureRepository.class);
 
@@ -188,8 +188,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
         modeOfTransport = ModeOfTransport.CONSIGNMENTS_BY_POST;
       }
 
-      Address partnerAddress = stockMoveService.getPartnerAddress(stockMoveLine.getStockMove());
-      Address companyAddress = stockMoveService.getCompanyAddress(stockMoveLine.getStockMove());
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
       String countryOrigCode;
 
       if (stockMoveLine.getCountryOfOrigin() != null) {

@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
@@ -158,8 +159,9 @@ public class InventoryController {
     try {
 
       Inventory inventory = request.getContext().asType(Inventory.class);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
 
-      if (inventory.getInventorySeq() == null) {
+      if (sequenceService.isEmptyOrDraftSequenceNumber(inventory.getInventorySeq())) {
 
         StockLocation stockLocation = inventory.getStockLocation();
 

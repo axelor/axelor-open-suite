@@ -17,17 +17,20 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.EconomicArea;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.DeclarationOfExchanges;
 import com.axelor.apps.stock.declaration_of_exchanges.DeclarationOfExchangesExporter;
 import com.axelor.apps.stock.declaration_of_exchanges.DeclarationOfExchangesExporterGoods;
 import com.axelor.apps.stock.declaration_of_exchanges.DeclarationOfExchangesExporterServices;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
@@ -38,15 +41,10 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchangesService {
-  protected static final Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
-      exportServiceClassMap =
-          ImmutableMap.of(
-              "EEA",
-              ImmutableMap.of(
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  DeclarationOfExchangesExporterGoods.class,
-                  ProductRepository.PRODUCT_TYPE_SERVICE,
-                  DeclarationOfExchangesExporterServices.class));
+
+  protected Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
+      exportServiceClassMap;
+
   protected StockConfigService stockConfigService;
 
   @Inject
@@ -65,9 +63,22 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
           declarationOfExchanges.getCountry().getName());
     }
 
-    Map<String, Class<? extends DeclarationOfExchangesExporter>> map =
-        exportServiceClassMap.get(declarationOfExchanges.getCountry().getEconomicArea().getCode());
+    Map<String, Class<? extends DeclarationOfExchangesExporter>> map = null;
+    EconomicArea economicArea = Beans.get(AppStockService.class).getAppStock().getEconomicArea();
+    if (economicArea != null) {
+      exportServiceClassMap =
+          ImmutableMap.of(
+              economicArea.getCode(),
+              ImmutableMap.of(
+                  ProductRepository.PRODUCT_TYPE_STORABLE,
+                  DeclarationOfExchangesExporterGoods.class,
+                  ProductRepository.PRODUCT_TYPE_SERVICE,
+                  DeclarationOfExchangesExporterServices.class));
 
+      map =
+          exportServiceClassMap.get(
+              declarationOfExchanges.getCountry().getEconomicArea().getCode());
+    }
     if (map == null) {
       throw new AxelorException(
           declarationOfExchanges,

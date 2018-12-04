@@ -203,15 +203,19 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     this.assignOriginElements(invoiceLine);
 
+    List<AnalyticMoveLine> analyticMoveLineList = null;
+
     if (saleOrderLine != null) {
 
       if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
         invoiceLine.setAnalyticDistributionTemplate(
             saleOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        invoiceLineService.computeAnalyticDistribution(invoiceLine);
+        analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
       } else {
-        invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+        analyticMoveLineList =
+            invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
     } else if (purchaseOrderLine != null) {
@@ -220,9 +224,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setAnalyticDistributionTemplate(
             purchaseOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        invoiceLineService.computeAnalyticDistribution(invoiceLine);
+        analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
       } else {
-        invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+        analyticMoveLineList =
+            invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
@@ -270,7 +276,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+      analyticMoveLineList =
+          invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+      analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
     return invoiceLine;

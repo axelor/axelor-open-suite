@@ -64,11 +64,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private PurchaseOrderLineTaxService purchaseOrderLineVatService;
+  @Inject protected PurchaseOrderLineTaxService purchaseOrderLineVatService;
 
-  @Inject private SequenceService sequenceService;
+  @Inject protected SequenceService sequenceService;
 
-  @Inject private PartnerRepository partnerRepo;
+  @Inject protected PartnerRepository partnerRepo;
 
   @Inject protected AppPurchaseService appPurchaseService;
 
@@ -400,7 +400,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
           if (product.getDefShipCoefByPartner()) {
             BigDecimal shippingCoef =
                 Beans.get(ShippingCoefService.class)
-                    .getShippingCoef(
+                    .getShippingCoefDefByPartner(
                         product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
             if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
               product.setShippingCoef(shippingCoef);

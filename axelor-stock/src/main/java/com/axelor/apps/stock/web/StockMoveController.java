@@ -26,8 +26,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
@@ -68,10 +69,6 @@ public class StockMoveController {
   @Inject private StockMoveService stockMoveService;
 
   @Inject private StockMoveRepository stockMoveRepo;
-
-  @Inject private StockMovePrintService stockMovePrintService;
-
-  @Inject private PickingStockMovePrintService pickingstockMovePrintService;
 
   public void plan(ActionRequest request, ActionResponse response) {
 
@@ -136,6 +133,8 @@ public class StockMoveController {
     String title;
 
     try {
+      StockMovePrintService stockMovePrintService = Beans.get(StockMovePrintService.class);
+
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
             Lists.transform(
@@ -180,6 +179,10 @@ public class StockMoveController {
     String title;
 
     try {
+
+      PickingStockMovePrintService pickingstockMovePrintService =
+          Beans.get(PickingStockMovePrintService.class);
+
       if (!ObjectUtils.isEmpty(context.get("_ids"))) {
         List<Long> ids =
             Lists.transform(
@@ -218,13 +221,45 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printConformityCertificate(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    String fileLink;
+    String title;
+
     try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, null, IReport.CONFORMITY_CERTIFICATE);
-      response.setView(
-          ActionView.define(I18n.get("Certificate of conformity")).add("html", fileLink).map());
+
+      ConformityCertificatePrintService conformityCertificatePrintService =
+          Beans.get(ConformityCertificatePrintService.class);
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = conformityCertificatePrintService.printConformityCertificates(ids);
+        title = I18n.get("Conformity Certificates");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = context.asType(StockMove.class);
+        title = conformityCertificatePrintService.getFileName(stockMove);
+        fileLink =
+            conformityCertificatePrintService.printConformityCertificate(
+                stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -370,7 +405,7 @@ public class StockMoveController {
   public void compute(ActionRequest request, ActionResponse response) {
 
     StockMove stockMove = request.getContext().asType(StockMove.class);
-    response.setValue("exTaxTotal", stockMoveService.compute(stockMove));
+    response.setValue("exTaxTotal", Beans.get(StockMoveToolService.class).compute(stockMove));
   }
 
   public void openStockPerDay(ActionRequest request, ActionResponse response) {
@@ -409,7 +444,7 @@ public class StockMoveController {
 
   public void fillAddressesStr(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
-    stockMoveService.computeAddressStr(stockMove);
+    Beans.get(StockMoveToolService.class).computeAddressStr(stockMove);
 
     response.setValues(stockMove);
   }

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -26,16 +27,18 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineService {
 
-  public InvoiceLine getAndComputeAnalyticDistribution(InvoiceLine invoiceLine, Invoice invoice)
+  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
+      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
+
+  List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine)
       throws AxelorException;
 
-  InvoiceLine computeAnalyticDistribution(InvoiceLine invoiceLine) throws AxelorException;
-
-  InvoiceLine createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
+  List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
       throws AxelorException;
 
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
