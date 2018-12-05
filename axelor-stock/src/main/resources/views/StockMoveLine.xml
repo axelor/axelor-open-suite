@@ -257,6 +257,7 @@
 		<field name="productName" />
 		<field name="stockMove.partner" />
 		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
+		<field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
