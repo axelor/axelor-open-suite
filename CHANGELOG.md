@@ -405,6 +405,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
+- Show delivery state in sale order grid view.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

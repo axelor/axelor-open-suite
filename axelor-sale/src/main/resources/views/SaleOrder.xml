@@ -56,6 +56,7 @@
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
 		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
+		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
 		<button name="printBtn" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
