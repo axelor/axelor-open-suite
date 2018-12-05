@@ -281,10 +281,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       processedDiscounts.put("discountTypeSelect", rawDiscounts.get("discountTypeSelect"));
     }
 
-    if (price
-        != (invoiceLine.getProduct().getInAti()
-            ? invoiceLine.getInTaxPrice()
-            : invoiceLine.getPrice())) {
+    if (price.compareTo(
+            invoiceLine.getProduct().getInAti()
+                ? invoiceLine.getInTaxPrice()
+                : invoiceLine.getPrice())
+        != 0) {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put("inTaxPrice", price);
         processedDiscounts.put(
@@ -375,6 +376,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
     productInformation.put("productName", invoiceLine.getProduct().getName());
+    productInformation.put("productCode", invoiceLine.getProduct().getCode());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
     if ((isPurchase
