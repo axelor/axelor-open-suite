@@ -125,6 +125,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Debt recovery batch: fix error recovery.
 - Sale: fix Null Pointer error.
 - Bank statement: fix status update for bank statement imports.
+- Invoice line: fill product code on product change.
 
 ## [5.0.6] - 2018-10-06
 ## Features

@@ -400,6 +400,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
     productInformation.put("productName", invoiceLine.getProduct().getName());
+    productInformation.put("productCode", invoiceLine.getProduct().getCode());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
     productInformation.put("price", price);
