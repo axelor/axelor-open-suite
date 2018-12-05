@@ -199,12 +199,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   @Override
   public boolean isPurchase(Invoice invoice) {
-    int operation = invoice.getOperationTypeSelect();
-    if (operation == 1 || operation == 2) {
-      return true;
-    } else {
-      return false;
-    }
+    return invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2;
   }
 
   @Override
