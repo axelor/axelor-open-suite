@@ -91,11 +91,17 @@ public class StockMoveLineController {
           company = operationOrder.getManufOrder().getCompany();
         } else {
           throw new AxelorException(
-              TraceBackRepository.TYPE_TECHNICAL,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
               IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
         }
       } else {
         company = stockMove.getCompany();
+      }
+
+      if (stockMoveLine.getProduct() == null) {
+        stockMoveLine = new StockMoveLine();
+        response.setValues(Mapper.toMap(stockMoveLine));
+        return;
       }
 
       Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);

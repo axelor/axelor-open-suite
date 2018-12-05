@@ -94,6 +94,12 @@ public class StockMoveLineController {
         stockMove = request.getContext().getParent().asType(StockMove.class);
       }
 
+      if (stockMoveLine.getProduct() == null) {
+        stockMoveLine = new StockMoveLine();
+        response.setValues(Mapper.toMap(stockMoveLine));
+        return;
+      }
+
       stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
