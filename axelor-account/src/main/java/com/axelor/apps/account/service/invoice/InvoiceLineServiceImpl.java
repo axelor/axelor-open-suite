@@ -286,10 +286,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       processedDiscounts.put("discountTypeSelect", rawDiscounts.get("discountTypeSelect"));
     }
 
-    if (price
-        != (invoiceLine.getProduct().getInAti()
-            ? invoiceLine.getInTaxPrice()
-            : invoiceLine.getPrice())) {
+    if (price.compareTo(
+            invoiceLine.getProduct().getInAti()
+                ? invoiceLine.getInTaxPrice()
+                : invoiceLine.getPrice())
+        != 0) {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put("inTaxPrice", price);
         processedDiscounts.put(
