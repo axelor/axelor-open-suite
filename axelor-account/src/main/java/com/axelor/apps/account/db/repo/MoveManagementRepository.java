@@ -89,10 +89,11 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public void remove(Move entity) {
 
-    if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+    if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+        && !entity.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
       throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
     } else {
-      entity.setArchived(true);
+      super.remove(entity);
     }
   }
 }
