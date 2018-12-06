@@ -67,6 +67,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
     String moveDescription = supplychainBatch.getMoveDescription();
     int accountingCutOffTypeSelect = supplychainBatch.getAccountingCutOffTypeSelect();
     Company company = supplychainBatch.getCompany();
+    boolean includeNotStockManagedProduct = supplychainBatch.getIncludeNotStockManagedProduct();
 
     if (accountingCutOffTypeSelect == 0) {
       return;
@@ -93,10 +94,15 @@ public class BatchAccountingCutOff extends BatchStrategy {
                   accountingCutOffTypeSelect,
                   recoveredTax,
                   ati,
-                  moveDescription);
+                  moveDescription,
+                  includeNotStockManagedProduct);
 
           if (moveList != null && !moveList.isEmpty()) {
             updateStockMove(stockMove);
+
+            for (Move move : moveList) {
+              updateAccountMove(move, false);
+            }
           }
 
         } catch (AxelorException e) {

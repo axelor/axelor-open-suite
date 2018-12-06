@@ -34,6 +34,7 @@
 	 <boolean name="recoveredTax" title="Recovered tax"/>
 	 <boolean name="ati" title="A.T.I."/>
 	 <string name="moveDescription" title="Move description"/>
+	 <boolean name="includeNotStockManagedProduct" title="Include not stock managed product"/>
  
   	<extra-code><![CDATA[
 	

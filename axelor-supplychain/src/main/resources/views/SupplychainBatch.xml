@@ -47,6 +47,7 @@
 				<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
 				<field name="recoveredTax"/>
 				<field name="ati" showIf="!recoveredTax"/>
+				<field name="includeNotStockManagedProduct"/>
 			</panel>	
 			<panel name="informationPanel" title="Information"  >
 				<field name="createdOn" title="Created on"/>

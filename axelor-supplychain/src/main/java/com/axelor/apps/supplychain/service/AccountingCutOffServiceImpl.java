@@ -1,0 +1,550 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.supplychain.service;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.supplychain.service.config.AccountConfigSupplychainService;
+import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AccountingCutOffServiceImpl implements AccountingCutOffService {
+
+  protected StockMoveRepository stockMoverepository;
+  protected MoveCreateService moveCreateService;
+  protected MoveLineService moveLineService;
+  protected AccountConfigSupplychainService accountConfigSupplychainService;
+  protected SaleOrderRepository saleOrderRepository;
+  protected PurchaseOrderRepository purchaseOrderRepository;
+  protected MoveToolService moveToolService;
+  protected AccountManagementAccountService accountManagementAccountService;
+  protected TaxAccountService taxAccountService;
+  protected AppAccountService appAccountService;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected MoveRepository moveRepository;
+  protected MoveValidateService moveValidateService;
+  protected UnitConversionService unitConversionService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected int counter = 0;
+
+  @Inject
+  public AccountingCutOffServiceImpl(
+      StockMoveRepository stockMoverepository,
+      MoveCreateService moveCreateService,
+      MoveLineService moveLineService,
+      AccountConfigSupplychainService accountConfigSupplychainService,
+      SaleOrderRepository saleOrderRepository,
+      PurchaseOrderRepository purchaseOrderRepository,
+      MoveToolService moveToolService,
+      AccountManagementAccountService accountManagementAccountService,
+      TaxAccountService taxAccountService,
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      MoveRepository moveRepository,
+      MoveValidateService moveValidateService,
+      UnitConversionService unitConversionService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
+
+    this.stockMoverepository = stockMoverepository;
+    this.moveCreateService = moveCreateService;
+    this.moveLineService = moveLineService;
+    this.accountConfigSupplychainService = accountConfigSupplychainService;
+    this.saleOrderRepository = saleOrderRepository;
+    this.purchaseOrderRepository = purchaseOrderRepository;
+    this.moveToolService = moveToolService;
+    this.accountManagementAccountService = accountManagementAccountService;
+    this.taxAccountService = taxAccountService;
+    this.appAccountService = appAccountService;
+    this.analyticMoveLineService = analyticMoveLineService;
+    this.moveRepository = moveRepository;
+    this.moveValidateService = moveValidateService;
+    this.unitConversionService = unitConversionService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
+  }
+
+  public List<StockMove> getStockMoves(
+      Company company,
+      int accountingCutOffTypeSelect,
+      LocalDate moveDate,
+      Integer limit,
+      Integer offset) {
+
+    int stockMoveTypeSelect = 0;
+
+    if (accountingCutOffTypeSelect
+        == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES) {
+      stockMoveTypeSelect = StockMoveRepository.TYPE_INCOMING;
+    } else if (accountingCutOffTypeSelect
+        == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_CUSTOMER_INVOICES) {
+      stockMoveTypeSelect = StockMoveRepository.TYPE_OUTGOING;
+    }
+
+    String queryStr =
+        "(self.invoice is null or self.invoice.statusSelect != :invoiceStatusVentilated or (self.invoice.statusSelect = :invoiceStatusVentilated and self.invoice.invoiceDate > :moveDate)) "
+            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+            + "AND self.typeSelect = :stockMoveType ";
+
+    if (company != null) {
+      queryStr += "AND self.company.id = :companyId";
+    }
+
+    Query<StockMove> query =
+        stockMoverepository
+            .all()
+            .filter(queryStr)
+            .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
+            .bind("stockMoveStatusRealized", StockMoveRepository.STATUS_REALIZED)
+            .bind("stockMoveType", stockMoveTypeSelect)
+            .bind("moveDate", moveDate);
+
+    if (company != null) {
+      query.bind("companyId", company.getId());
+    }
+
+    if (limit != null && offset != null) {
+      return query.order("id").fetch(limit, offset);
+    }
+
+    return query.order("id").fetch();
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateCutOffMoves(
+      StockMove stockMove,
+      LocalDate moveDate,
+      LocalDate reverseMoveDate,
+      int accountingCutOffTypeSelect,
+      boolean recoveredTax,
+      boolean ati,
+      String moveDescription,
+      boolean includeNotStockManagedProduct)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move move =
+        generateCutOffMove(
+            stockMove,
+            moveDate,
+            moveDate,
+            accountingCutOffTypeSelect
+                == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
+            recoveredTax,
+            ati,
+            moveDescription,
+            includeNotStockManagedProduct,
+            false);
+
+    if (move != null) {
+      moveList.add(move);
+    }
+
+    Move reverseMove =
+        generateCutOffMove(
+            stockMove,
+            reverseMoveDate,
+            moveDate,
+            accountingCutOffTypeSelect
+                == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
+            recoveredTax,
+            ati,
+            moveDescription,
+            includeNotStockManagedProduct,
+            true);
+
+    if (reverseMove != null) {
+      moveList.add(reverseMove);
+    }
+
+    return moveList;
+  }
+
+  public Move generateCutOffMove(
+      StockMove stockMove,
+      LocalDate moveDate,
+      LocalDate originDate,
+      boolean isPurchase,
+      boolean recoveredTax,
+      boolean ati,
+      String moveDescription,
+      boolean includeNotStockManagedProduct,
+      boolean isReverse)
+      throws AxelorException {
+
+    if (moveDate == null
+        || stockMove.getOriginTypeSelect() == null
+        || stockMove.getOriginId() == null) {
+      return null;
+    }
+
+    Company company = stockMove.getCompany();
+
+    AccountConfig accountConfig = accountConfigSupplychainService.getAccountConfig(company);
+
+    Partner partner = stockMove.getPartner();
+    Account partnerAccount = null;
+
+    Currency currency = null;
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        && stockMove.getOriginId() != null) {
+      SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+      currency = saleOrder.getCurrency();
+      if (partner == null) {
+        partner = saleOrder.getClientPartner();
+      }
+      partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
+    }
+    if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
+        && stockMove.getOriginId() != null) {
+      PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
+      currency = purchaseOrder.getCurrency();
+      if (partner == null) {
+        partner = purchaseOrder.getSupplierPartner();
+      }
+      partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
+    }
+
+    String origin = stockMove.getStockMoveSeq();
+
+    Move move =
+        moveCreateService.createMove(
+            accountConfigSupplychainService.getAutoMiscOpeJournal(accountConfig),
+            company,
+            currency,
+            partner,
+            moveDate,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    counter = 0;
+
+    this.generateMoveLines(
+        move,
+        stockMove.getStockMoveLineList(),
+        origin,
+        isPurchase,
+        recoveredTax,
+        ati,
+        moveDescription,
+        isReverse,
+        originDate,
+        includeNotStockManagedProduct);
+
+    this.generatePartnerMoveLine(move, origin, partnerAccount, moveDescription, originDate);
+
+    if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
+      move.setStockMove(stockMove);
+      moveValidateService.validate(move);
+    } else {
+      moveRepository.remove(move);
+      return null;
+    }
+
+    return move;
+  }
+
+  protected List<MoveLine> generateMoveLines(
+      Move move,
+      List<StockMoveLine> stockMoveLineList,
+      String origin,
+      boolean isPurchase,
+      boolean recoveredTax,
+      boolean ati,
+      String moveDescription,
+      boolean isReverse,
+      LocalDate originDate,
+      boolean includeNotStockManagedProduct)
+      throws AxelorException {
+
+    if (stockMoveLineList != null) {
+
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+
+        Product product = stockMoveLine.getProduct();
+
+        if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+            || product == null
+            || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+          continue;
+        }
+
+        generateProductMoveLine(
+            move,
+            stockMoveLine,
+            origin,
+            isPurchase,
+            recoveredTax,
+            ati,
+            moveDescription,
+            isReverse,
+            originDate);
+      }
+    }
+
+    return move.getMoveLineList();
+  }
+
+  protected MoveLine generateProductMoveLine(
+      Move move,
+      StockMoveLine stockMoveLine,
+      String origin,
+      boolean isPurchase,
+      boolean recoveredTax,
+      boolean ati,
+      String moveDescription,
+      boolean isReverse,
+      LocalDate originDate)
+      throws AxelorException {
+
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+    Company company = move.getCompany();
+    LocalDate moveDate = move.getDate();
+    Partner partner = move.getPartner();
+
+    boolean isFixedAssets = false;
+    BigDecimal amountInCurrency = null;
+    BigDecimal totalQty = null;
+    BigDecimal deliveredQty = null;
+
+    if (isPurchase && purchaseOrderLine != null) {
+      totalQty = purchaseOrderLine.getQty();
+
+      deliveredQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              purchaseOrderLine.getUnit(),
+              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().scale(),
+              purchaseOrderLine.getProduct());
+
+      isFixedAssets = purchaseOrderLine.getFixedAssets();
+      if (ati && !recoveredTax) {
+        amountInCurrency = purchaseOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = purchaseOrderLine.getExTaxTotal();
+      }
+    }
+    if (!isPurchase && saleOrderLine != null) {
+      totalQty = saleOrderLine.getQty();
+
+      deliveredQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().scale(),
+              saleOrderLine.getProduct());
+      if (ati) {
+        amountInCurrency = saleOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = saleOrderLine.getExTaxTotal();
+      }
+    }
+    if (BigDecimal.ZERO.compareTo(totalQty) == 0) {
+      return null;
+    }
+
+    BigDecimal qtyRate = deliveredQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
+    amountInCurrency = amountInCurrency.multiply(qtyRate);
+
+    if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      return null;
+    }
+
+    Product product = stockMoveLine.getProduct();
+
+    Account account =
+        accountManagementAccountService.getProductAccount(
+            product, company, partner.getFiscalPosition(), isPurchase, isFixedAssets);
+
+    boolean isDebit = false;
+    if ((isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == 1)
+        || !isPurchase && amountInCurrency.compareTo(BigDecimal.ZERO) == -1) {
+      isDebit = true;
+    }
+    if (isReverse) {
+      isDebit = !isDebit;
+    }
+
+    MoveLine moveLine =
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            account,
+            amountInCurrency,
+            isDebit,
+            originDate,
+            ++counter,
+            origin,
+            moveDescription);
+    moveLine.setDate(moveDate);
+    moveLine.setDueDate(moveDate);
+
+    getAndComputeAnalyticDistribution(product, move, moveLine);
+
+    TaxLine taxLine =
+        accountManagementAccountService.getTaxLine(
+            originDate, product, company, partner.getFiscalPosition(), isPurchase);
+    if (taxLine != null) {
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxRate(taxLine.getValue());
+      moveLine.setTaxCode(taxLine.getTax().getCode());
+    }
+
+    move.addMoveLineListItem(moveLine);
+
+    if (recoveredTax && taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
+      generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+    }
+
+    return moveLine;
+  }
+
+  protected void generateTaxMoveLine(
+      Move move,
+      MoveLine productMoveLine,
+      String origin,
+      boolean isPurchase,
+      boolean isFixedAssets,
+      String moveDescription)
+      throws AxelorException {
+
+    TaxLine taxLine = productMoveLine.getTaxLine();
+
+    Tax tax = taxLine.getTax();
+
+    Account taxAccount =
+        taxAccountService.getAccount(tax, move.getCompany(), isPurchase, isFixedAssets);
+
+    BigDecimal currencyTaxAmount =
+        InvoiceLineManagement.computeAmount(
+            productMoveLine.getCurrencyAmount(), taxLine.getValue());
+
+    MoveLine taxMoveLine =
+        moveLineService.createMoveLine(
+            move,
+            move.getPartner(),
+            taxAccount,
+            currencyTaxAmount,
+            productMoveLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
+            productMoveLine.getOriginDate(),
+            ++counter,
+            origin,
+            moveDescription);
+    taxMoveLine.setDate(move.getDate());
+    taxMoveLine.setDueDate(move.getDate());
+
+    move.addMoveLineListItem(taxMoveLine);
+  }
+
+  protected MoveLine generatePartnerMoveLine(
+      Move move, String origin, Account account, String moveDescription, LocalDate originDate)
+      throws AxelorException {
+    LocalDate moveDate = move.getDate();
+
+    BigDecimal currencyBalance = moveToolService.getBalanceCurrencyAmount(move.getMoveLineList());
+    BigDecimal balance = moveToolService.getBalanceAmount(move.getMoveLineList());
+
+    if (balance.compareTo(BigDecimal.ZERO) == 0) {
+      return null;
+    }
+
+    MoveLine moveLine =
+        moveLineService.createMoveLine(
+            move,
+            move.getPartner(),
+            account,
+            currencyBalance.abs(),
+            balance.abs(),
+            null,
+            balance.compareTo(BigDecimal.ZERO) == -1,
+            moveDate,
+            moveDate,
+            originDate,
+            ++counter,
+            origin,
+            moveDescription);
+
+    move.addMoveLineListItem(moveLine);
+
+    return moveLine;
+  }
+
+  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine) {
+
+    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
+        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+      return;
+    }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            move.getPartner(), product, move.getCompany());
+
+    moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    List<AnalyticMoveLine> analyticMoveLineList =
+        moveLineService.createAnalyticDistributionWithTemplate(moveLine).getAnalyticMoveLineList();
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      analyticMoveLine.setMoveLine(moveLine);
+    }
+    analyticMoveLineList.stream().forEach(analyticMoveLineRepository::save);
+  }
+}

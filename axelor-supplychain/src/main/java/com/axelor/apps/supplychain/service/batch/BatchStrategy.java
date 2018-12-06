@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -49,5 +50,16 @@ public abstract class BatchStrategy extends AbstractBatch {
     stockMove.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
 
     incrementDone();
+  }
+
+  protected void updateAccountMove(Move move, boolean incrementDone) {
+
+    move.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
+
+    if (incrementDone) {
+      incrementDone();
+    } else {
+      checkPoint();
+    }
   }
 }
