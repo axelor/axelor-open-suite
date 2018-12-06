@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -387,8 +389,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional
-  public void updateCostPrice(PurchaseOrder purchaseOrder) {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
@@ -398,10 +400,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   ? purchaseOrderLine.getInTaxPrice()
                   : purchaseOrderLine.getPrice());
           if (product.getDefShipCoefByPartner()) {
+            Unit productPurchaseUnit =
+                product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
+            BigDecimal convertedQty =
+                Beans.get(UnitConversionService.class)
+                    .convert(
+                        purchaseOrderLine.getUnit(),
+                        productPurchaseUnit,
+                        purchaseOrderLine.getQty(),
+                        purchaseOrderLine.getQty().scale(),
+                        product);
             BigDecimal shippingCoef =
                 Beans.get(ShippingCoefService.class)
                     .getShippingCoefDefByPartner(
-                        product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+                        product,
+                        purchaseOrder.getSupplierPartner(),
+                        purchaseOrder.getCompany(),
+                        convertedQty);
             if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
               product.setShippingCoef(shippingCoef);
             }
