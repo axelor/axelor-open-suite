@@ -99,7 +99,7 @@ public interface PurchaseOrderService {
       TradingName tradingName)
       throws AxelorException;
 
-  public void updateCostPrice(PurchaseOrder purchaseOrder);
+  public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
 
   public void draftPurchaseOrder(PurchaseOrder purchaseOrder);
 

@@ -360,6 +360,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - StockMoveLine : remove required constraint from trackingNumber if real qty not available.
 - Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 - Improve JPA cache management in batch bank statement.
+- Product: use quantity to get shipping coef from supplier catalog.
 
 ## [Unreleased 5.0.7]
 ## Features

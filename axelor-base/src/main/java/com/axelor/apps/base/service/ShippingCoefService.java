@@ -41,9 +41,11 @@ public class ShippingCoefService {
    * @param product
    * @param partner
    * @param company
+   * @param qty
    * @return the shipping coefficient for the given product, partner and company.
    */
-  public BigDecimal getShippingCoefDefByPartner(Product product, Partner partner, Company company) {
+  public BigDecimal getShippingCoefDefByPartner(
+      Product product, Partner partner, Company company, BigDecimal qty) {
     BigDecimal shippingCoef = BigDecimal.ONE;
     if (partner == null || company == null) {
       return shippingCoef;
@@ -52,10 +54,13 @@ public class ShippingCoefService {
         shippingCoefRepo
             .all()
             .filter(
-                "self.supplierCatalog.product = ?1"
-                    + " AND self.supplierCatalog.supplierPartner = ?2",
-                product,
-                partner)
+                "self.supplierCatalog.product.id = :productId"
+                    + " AND self.supplierCatalog.supplierPartner.id = :partnerId"
+                    + " AND self.supplierCatalog.minQty <= :qty")
+            .bind("productId", product.getId())
+            .bind("partnerId", partner.getId())
+            .bind("qty", qty)
+            .order("supplierCatalog.minQty")
             .fetch();
 
     if (shippingCoefList == null || shippingCoefList.isEmpty()) {
@@ -77,13 +82,15 @@ public class ShippingCoefService {
    * @param product
    * @param supplierPartner
    * @param company
+   * @param qty
    * @return the shipping coefficient for a product
    */
-  public BigDecimal getShippingCoef(Product product, Partner supplierPartner, Company company) {
+  public BigDecimal getShippingCoef(
+      Product product, Partner supplierPartner, Company company, BigDecimal qty) {
     BigDecimal shippingCoef;
 
     if (product.getDefShipCoefByPartner()) {
-      shippingCoef = getShippingCoefDefByPartner(product, supplierPartner, company);
+      shippingCoef = getShippingCoefDefByPartner(product, supplierPartner, company, qty);
     } else {
       shippingCoef = product.getShippingCoef();
     }

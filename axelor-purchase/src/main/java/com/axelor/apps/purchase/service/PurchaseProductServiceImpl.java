@@ -17,8 +17,19 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,5 +50,38 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
     }
 
     return discounts;
+  }
+
+  @Override
+  public BigDecimal getLastShippingCoef(Product product) throws AxelorException {
+    PurchaseOrderLine lastPurchaseOrderLine =
+        Beans.get(PurchaseOrderLineRepository.class)
+            .all()
+            .filter(
+                "self.product.id = :productId "
+                    + "AND (self.purchaseOrder.statusSelect = :validated "
+                    + "OR self.purchaseOrder.statusSelect = :finished)")
+            .bind("productId", product.getId())
+            .bind("validated", IPurchaseOrder.STATUS_VALIDATED)
+            .bind("finished", IPurchaseOrder.STATUS_FINISHED)
+            .order("-purchaseOrder.validationDate")
+            .fetchOne();
+    if (lastPurchaseOrderLine != null) {
+      Partner partner = lastPurchaseOrderLine.getPurchaseOrder().getSupplierPartner();
+      Company company = lastPurchaseOrderLine.getPurchaseOrder().getCompany();
+      Unit productUnit =
+          Beans.get(PurchaseOrderLineService.class).getPurchaseUnit(lastPurchaseOrderLine);
+      BigDecimal qty =
+          Beans.get(UnitConversionService.class)
+              .convert(
+                  lastPurchaseOrderLine.getUnit(),
+                  productUnit,
+                  lastPurchaseOrderLine.getQty(),
+                  lastPurchaseOrderLine.getQty().scale(),
+                  product);
+      return Beans.get(ShippingCoefService.class).getShippingCoef(product, partner, company, qty);
+    } else {
+      return BigDecimal.ONE;
+    }
   }
 }
