@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffService;
 import com.axelor.db.JPA;
@@ -40,6 +39,8 @@ import org.slf4j.LoggerFactory;
 public class BatchAccountingCutOff extends BatchStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected static final int FETCH_LIMIT = 1;
 
   protected AccountingCutOffService cutOffService;
   protected StockMoveRepository stockMoveRepository;
@@ -84,29 +85,17 @@ public class BatchAccountingCutOff extends BatchStrategy {
         ++offset;
 
         try {
-          Move move =
-              cutOffService.generateCutOffMove(
+          List<Move> moveList =
+              cutOffService.generateCutOffMoves(
                   stockMove,
                   moveDate,
-                  accountingCutOffTypeSelect
-                      == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
-                  recoveredTax,
-                  ati,
-                  moveDescription,
-                  false);
-
-          Move reverseMove =
-              cutOffService.generateCutOffMove(
-                  stockMove,
                   reverseMoveDate,
-                  accountingCutOffTypeSelect
-                      == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
+                  accountingCutOffTypeSelect,
                   recoveredTax,
                   ati,
-                  moveDescription,
-                  true);
+                  moveDescription);
 
-          if (move != null || reverseMove != null) {
+          if (moveList != null && !moveList.isEmpty()) {
             updateStockMove(stockMove);
           }
 
@@ -129,6 +118,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
           break;
         }
       }
+
       JPA.clear();
     }
   }

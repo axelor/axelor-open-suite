@@ -61,6 +61,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 // TODO interface
@@ -158,17 +159,64 @@ public class AccountingCutOffService {
     }
 
     if (limit != null && offset != null) {
-      return query.fetch(limit, offset);
+      return query.order("id").fetch(limit, offset);
     }
 
-    return query.fetch();
+    return query.order("id").fetch();
   }
 
-  // Rajouter un tableau O2M sur les mouvements de stock vers les écritures de cutOff ?
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateCutOffMoves(
+      StockMove stockMove,
+      LocalDate moveDate,
+      LocalDate reverseMoveDate,
+      int accountingCutOffTypeSelect,
+      boolean recoveredTax,
+      boolean ati,
+      String moveDescription)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move move =
+        generateCutOffMove(
+            stockMove,
+            moveDate,
+            moveDate,
+            accountingCutOffTypeSelect
+                == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
+            recoveredTax,
+            ati,
+            moveDescription,
+            false);
+
+    if (move != null) {
+      moveList.add(move);
+    }
+
+    Move reverseMove =
+        generateCutOffMove(
+            stockMove,
+            reverseMoveDate,
+            moveDate,
+            accountingCutOffTypeSelect
+                == SupplychainBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES,
+            recoveredTax,
+            ati,
+            moveDescription,
+            true);
+
+    if (reverseMove != null) {
+      moveList.add(reverseMove);
+    }
+
+    return moveList;
+  }
+
   public Move generateCutOffMove(
       StockMove stockMove,
       LocalDate moveDate,
+      LocalDate originDate,
       boolean isPurchase,
       boolean recoveredTax,
       boolean ati,
@@ -197,7 +245,7 @@ public class AccountingCutOffService {
       if (partner == null) {
         partner = saleOrder.getClientPartner();
       }
-      partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
+      partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {
@@ -206,7 +254,7 @@ public class AccountingCutOffService {
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
       }
-      partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
+      partnerAccount = accountConfigSupplychainService.getForecastedInvSuppAccount(accountConfig);
     }
 
     String origin = stockMove.getStockMoveSeq();
@@ -221,8 +269,6 @@ public class AccountingCutOffService {
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
-    move.setStockMove(stockMove);
-
     counter = 0;
 
     this.generateMoveLines(
@@ -233,11 +279,13 @@ public class AccountingCutOffService {
         recoveredTax,
         ati,
         moveDescription,
-        isReverse);
+        isReverse,
+        originDate);
 
-    this.generatePartnerMoveLine(move, origin, partnerAccount, moveDescription);
+    this.generatePartnerMoveLine(move, origin, partnerAccount, moveDescription, originDate);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
+      move.setStockMove(stockMove);
       moveValidateService.validate(move);
     } else {
       moveRepository.remove(move);
@@ -255,7 +303,8 @@ public class AccountingCutOffService {
       boolean recoveredTax,
       boolean ati,
       String moveDescription,
-      boolean isReverse)
+      boolean isReverse,
+      LocalDate originDate)
       throws AxelorException {
 
     if (stockMoveLineList != null) {
@@ -268,7 +317,15 @@ public class AccountingCutOffService {
         }
 
         generateProductMoveLine(
-            move, stockMoveLine, origin, isPurchase, recoveredTax, ati, moveDescription, isReverse);
+            move,
+            stockMoveLine,
+            origin,
+            isPurchase,
+            recoveredTax,
+            ati,
+            moveDescription,
+            isReverse,
+            originDate);
       }
     }
 
@@ -283,7 +340,8 @@ public class AccountingCutOffService {
       boolean recoveredTax,
       boolean ati,
       String moveDescription,
-      boolean isReverse)
+      boolean isReverse,
+      LocalDate originDate)
       throws AxelorException {
 
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
@@ -364,16 +422,18 @@ public class AccountingCutOffService {
             account,
             amountInCurrency,
             isDebit,
-            moveDate,
+            originDate,
             ++counter,
             origin,
             moveDescription);
+    moveLine.setDate(moveDate);
+    moveLine.setDueDate(moveDate);
 
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
     TaxLine taxLine =
         accountManagementAccountService.getTaxLine(
-            moveDate, product, company, partner.getFiscalPosition(), isPurchase);
+            originDate, product, company, partner.getFiscalPosition(), isPurchase);
     if (taxLine != null) {
       moveLine.setTaxLine(taxLine);
       moveLine.setTaxRate(taxLine.getValue());
@@ -416,17 +476,19 @@ public class AccountingCutOffService {
             taxAccount,
             currencyTaxAmount,
             productMoveLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
-            move.getDate(),
+            productMoveLine.getOriginDate(),
             ++counter,
             origin,
             moveDescription);
+    taxMoveLine.setDate(move.getDate());
+    taxMoveLine.setDueDate(move.getDate());
 
     move.addMoveLineListItem(taxMoveLine);
   }
 
   public MoveLine generatePartnerMoveLine(
-      Move move, String origin, Account account, String moveDescription) throws AxelorException {
-
+      Move move, String origin, Account account, String moveDescription, LocalDate originDate)
+      throws AxelorException {
     LocalDate moveDate = move.getDate();
 
     BigDecimal currencyBalance = moveToolService.getBalanceCurrencyAmount(move.getMoveLineList());
@@ -447,7 +509,7 @@ public class AccountingCutOffService {
             balance.compareTo(BigDecimal.ZERO) == -1,
             moveDate,
             moveDate,
-            moveDate,
+            originDate,
             ++counter,
             origin,
             moveDescription);
