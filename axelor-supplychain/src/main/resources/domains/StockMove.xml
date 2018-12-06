@@ -12,7 +12,9 @@
     <string name="specificPackage" large="true"/>
 
     <datetime name="reservationDateTime"/>
-
+    
+   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+   	
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>

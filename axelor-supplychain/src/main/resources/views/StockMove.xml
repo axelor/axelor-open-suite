@@ -104,5 +104,11 @@
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
+	
+	<action-view name="action-stock-move-view-account-moves" title="Moves" model="com.axelor.apps.account.db.Move" if-module="axelor-supplychain">
+		<view type="grid" name="move-grid"/>
+		<view type="form" name="move-form"/>
+		<domain>self.stockMove.id = :id</domain>
+	</action-view>
 
 </object-views>	

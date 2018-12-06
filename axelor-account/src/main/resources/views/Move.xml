@@ -79,6 +79,7 @@
                 <field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
                 <field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
                 <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
+            	<field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form" canNew="false" canEdit="false" if-module="axelor-supplychain"/>
             </panel>
 
             <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">

@@ -42,6 +42,9 @@ public class SupplychainBatchService extends AbstractBatchService {
     SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
     switch (supplychainBatch.getActionSelect()) {
+      case SupplychainBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
+        batch = accountingCutOff(supplychainBatch);
+        break;
       case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
         batch = invoiceOutgoingStockMoves(supplychainBatch);
         break;
@@ -57,6 +60,10 @@ public class SupplychainBatchService extends AbstractBatchService {
     }
 
     return batch;
+  }
+
+  public Batch accountingCutOff(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchAccountingCutOff.class).run(supplychainBatch);
   }
 
   public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {

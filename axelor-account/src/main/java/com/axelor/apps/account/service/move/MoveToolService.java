@@ -269,6 +269,49 @@ public class MoveToolService {
     return totalDebit;
   }
 
+  /**
+   * Compute the balance amount : total debit - total credit
+   *
+   * @param moveLineList
+   * @return
+   */
+  public BigDecimal getBalanceAmount(List<MoveLine> moveLineList) {
+    BigDecimal balance = BigDecimal.ZERO;
+
+    if (moveLineList == null) {
+      return balance;
+    }
+
+    for (MoveLine moveLine : moveLineList) {
+      balance = balance.add(moveLine.getDebit());
+      balance = balance.subtract(moveLine.getCredit());
+    }
+    return balance;
+  }
+
+  /**
+   * Compute the balance amount in currency origin : total debit - total credit
+   *
+   * @param moveLineList
+   * @return
+   */
+  public BigDecimal getBalanceCurrencyAmount(List<MoveLine> moveLineList) {
+    BigDecimal balance = BigDecimal.ZERO;
+
+    if (moveLineList == null) {
+      return balance;
+    }
+
+    for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
+        balance = balance.add(moveLine.getCurrencyAmount());
+      } else {
+        balance = balance.subtract(moveLine.getCurrencyAmount());
+      }
+    }
+    return balance;
+  }
+
   public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();

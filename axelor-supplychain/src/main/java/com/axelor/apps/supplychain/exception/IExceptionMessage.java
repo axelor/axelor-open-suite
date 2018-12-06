@@ -178,4 +178,18 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
+
+  /** Account config supplychain service */
+  static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
+      "You must configure a forecasted invoiced customer account for the company %s" /*)*/;
+
+  static final String FORECASTED_INVOICE_SUPPLIER_ACCOUNT = /*$$(*/
+      "You must configure a forecasted invoiced supplier account for the company %s" /*)*/;
+
+  /** Accounting cut off service */
+  static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
+      "Accounting cut off generation report :" /*)*/;
+
+  static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
+      "Stock move(s) processed" /*)*/;
 }

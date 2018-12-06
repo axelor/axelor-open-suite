@@ -196,9 +196,6 @@
             <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
             <field name="realDate" colSpan="3"/>
 
-            <field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="3"/>
-            <field name="isWithBackorder" colSpan="3"/>
-
             <panel name="addressPanel" stacked="true">
                 <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
                 <field name="fromAddressStr" showIf="typeSelect == 3" readonlyIf="statusSelect &gt; 2" height="3">
@@ -232,14 +229,14 @@
               <panel-related name="stockMoveLineList1Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect != 2"/>
               <panel-related name="stockMoveLineList2Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
             </panel>
-            <panel name="freightCarrierPanel" title="Freight Carrier" readonlyIf="statusSelect == 3 || statusSelect == 4" >
+            <panel name="freightCarrierPanel" title="Freight Carrier">
                 <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
 				<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
                 <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
             	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
-                <field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="trackingNumber" colSpan="4"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -258,10 +255,10 @@
                         </viewer>
                     </field>
                 </panel>
-							<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-							<field name="signatoryUser" canEdit="false" />
-							<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
-							<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
+				<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
+				<field name="signatoryUser" canEdit="false" />
+				<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
+				<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
 
               <field name="modeOfTransport" />
             </panel>
@@ -281,9 +278,14 @@
             <panel name="notePanel" title="Note" colSpan="12">
         		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
             </panel>
-            <panel name="configPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-                <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
+            <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
+            	<field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                 <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
+                <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
+            </panel>
+            <panel name="configPanel" title="Configuration">
+            	<field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="3"/>
+            	<field name="isWithBackorder" colSpan="3"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
             </panel>

@@ -48,4 +48,12 @@ public class SupplychainBatchController {
     response.setFlash(batch.getComments());
     response.setReload(true);
   }
+
+  public void accountingCutOff(ActionRequest request, ActionResponse response) {
+    SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
+    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
+    Batch batch = supplychainBatchService.accountingCutOff(supplychainBatch);
+    response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }

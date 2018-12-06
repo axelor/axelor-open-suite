@@ -123,7 +123,10 @@ public class MoveLineService {
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
-    moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    if (moveLine.getAnalyticMoveLineList() == null) {
+      moveLine.setAnalyticMoveLineList(new ArrayList<>());
+    }
+    moveLine.getAnalyticMoveLineList().addAll(analyticMoveLineList);
     return moveLine;
   }
 
@@ -459,7 +462,8 @@ public class MoveLineService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (invoiceLine.getAnalyticMoveLineList() != null && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
+        if (invoiceLine.getAnalyticMoveLineList() != null
+            && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
                 analyticMoveLineRepository.copy(invoiceAnalyticMoveLine, false);

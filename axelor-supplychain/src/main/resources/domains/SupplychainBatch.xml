@@ -24,12 +24,21 @@
 	<many-to-one name="team" ref="com.axelor.team.db.Team" />
 	<date name="orderUpToDate" />
 	<string name="deliveryOrReceiptState" />
-	<string name="statusSelect" title="Status" default="3" />
+	<string name="statusSelect" title="Status" default="3"/> 
+	
+	<!--ACCOUNTING CUT OFF CONFIGURATION -->
+ 	
+	 <integer name="accountingCutOffTypeSelect" title="Type" selection="supplychain.supplychain.batch.accounting.cut.off.type.select"/>
+	 <date name="moveDate" title="Move date"/>
+	 <date name="reverseMoveDate" title="Reverse move date"/>
+	 <boolean name="recoveredTax" title="Recovered tax"/>
+	 <boolean name="ati" title="A.T.I."/>
+	 <string name="moveDescription" title="Move description"/>
  
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
-		public static final int ACTION_BILL_SUB = 1;
+		public static final int ACTION_ACCOUNTING_CUT_OFF = 1;
 		public static final int ACTION_INVOICE_OUTGOING_STOCK_MOVES = 2;
 		public static final int ACTION_INVOICE_ORDERS = 3;
 
@@ -38,6 +47,11 @@
 		// INVOICE ORDERS TYPE
 		public static final int INVOICE_ORDERS_TYPE_SALE = 1;
 		public static final int INVOICE_ORDERS_TYPE_PURCHASE = 2;
+		
+		// ACCOUNTING CUT OFF
+		public static final int ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES = 1;
+		public static final int ACCOUNTING_CUT_OFF_TYPE_CUSTOMER_INVOICES = 2;
+	
 	]]></extra-code>
   
   </entity>

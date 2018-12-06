@@ -41,7 +41,7 @@ public class TaxAccountService {
     return null;
   }
 
-  public AccountManagement getTaxAccount(Tax tax, Company company) {
+  protected AccountManagement getTaxAccount(Tax tax, Company company) {
 
     if (tax != null && tax.getAccountManagementList() != null) {
 
