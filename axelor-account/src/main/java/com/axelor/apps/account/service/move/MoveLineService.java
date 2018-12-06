@@ -116,6 +116,7 @@ public class MoveLineService {
   }
 
   public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) {
+
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
@@ -125,6 +126,8 @@ public class MoveLineService {
 
     if (moveLine.getAnalyticMoveLineList() == null) {
       moveLine.setAnalyticMoveLineList(new ArrayList<>());
+    } else {
+      moveLine.getAnalyticMoveLineList().clear();
     }
     moveLine.getAnalyticMoveLineList().addAll(analyticMoveLineList);
     return moveLine;
