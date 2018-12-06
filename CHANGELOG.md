@@ -259,6 +259,8 @@ Only display line where quantity is greater than 0.
 - SUBROGATION RELEASE : Add a link to the subrogation release on invoice in order to avoid to transmit many times the same invoice to the factor.
 - Apply shipping coef on WAP price valuation for purchase stock move.
 - Stock move mass invoicing: allow null values after the prompt.
+- Improvement when updating stock move lines from product.
+- Shipping coef: remove duplicated code.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

@@ -17,22 +17,24 @@
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.base.service.ShippingCoefService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Singleton
 public class PurchaseProductController {
 
   /**
    * Called from product form view, on {@link Product#defShipCoefByPartner} change. Call {@link
-   * PurchaseProductService#getShippingCoefFromPartners(Product)}.
+   * ShippingCoefService#getShippingCoef(Product, Partner, Company)}.
    *
    * @param request
    * @param response
@@ -43,9 +45,13 @@ public class PurchaseProductController {
       if (!product.getDefShipCoefByPartner()) {
         return;
       }
-      Optional<BigDecimal> productShippingCoef =
-          Beans.get(PurchaseProductService.class).getShippingCoefFromPartners(product);
-      response.setValue("shippingCoef", productShippingCoef.orElse(BigDecimal.ONE));
+      BigDecimal productShippingCoef =
+          Beans.get(ShippingCoefService.class)
+              .getShippingCoef(
+                  product,
+                  product.getDefaultSupplierPartner(),
+                  Beans.get(UserService.class).getUserActiveCompany());
+      response.setValue("shippingCoef", productShippingCoef);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

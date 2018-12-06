@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
@@ -42,6 +43,8 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -382,5 +385,59 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
     generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     return generatedStockMoveLine;
+  }
+
+  /**
+   * This implementation copy fields from sale order line and purchase order line if the link
+   * exists.
+   *
+   * @param stockMove
+   * @param stockMoveLine
+   * @param company
+   */
+  @Override
+  public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException {
+    Preconditions.checkNotNull(stockMoveLine);
+    Preconditions.checkNotNull(company);
+
+    Product product = stockMoveLine.getProduct();
+
+    if (product == null) {
+      return;
+    }
+    super.setProductInfo(stockMove, stockMoveLine, company);
+
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+
+    if (saleOrderLine != null) {
+      setProductInfoFromSaleOrder(stockMoveLine, saleOrderLine);
+    }
+    if (purchaseOrderLine != null) {
+      setProductInfoFromPurchaseOrder(stockMoveLine, purchaseOrderLine);
+    }
+  }
+
+  protected void setProductInfoFromSaleOrder(
+      StockMoveLine stockMoveLine, SaleOrderLine saleOrderLine) {
+
+    stockMoveLine.setUnit(saleOrderLine.getUnit());
+    stockMoveLine.setProductName(saleOrderLine.getProductName());
+    if (Strings.isNullOrEmpty(stockMoveLine.getDescription())) {
+      stockMoveLine.setDescription(saleOrderLine.getDescription());
+    }
+    stockMoveLine.setQty(saleOrderLine.getQty());
+  }
+
+  protected void setProductInfoFromPurchaseOrder(
+      StockMoveLine stockMoveLine, PurchaseOrderLine purchaseOrderLine) {
+
+    stockMoveLine.setUnit(purchaseOrderLine.getUnit());
+    stockMoveLine.setProductName(purchaseOrderLine.getProductName());
+    if (Strings.isNullOrEmpty(stockMoveLine.getDescription())) {
+      stockMoveLine.setDescription(purchaseOrderLine.getDescription());
+    }
+    stockMoveLine.setQty(purchaseOrderLine.getQty());
   }
 }
