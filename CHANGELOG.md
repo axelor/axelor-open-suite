@@ -160,6 +160,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - App Stock : Add new m2o field 'ecomonomicArea'.
 - STOCKMOVE : mass printing for conformity certificate report
 - CUT-OFF : Managed accounting cut-off batch for supplier and customer deliveries.
+- Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
@@ -257,6 +258,7 @@ Only display line where quantity is greater than 0.
 - JOB POSITION : Major updates in job position form view.
 - SUBROGATION RELEASE : Add a link to the subrogation release on invoice in order to avoid to transmit many times the same invoice to the factor.
 - Apply shipping coef on WAP price valuation for purchase stock move.
+- Stock move mass invoicing: allow null values after the prompt.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -404,6 +406,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
+- Show delivery state in sale order grid view.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -482,8 +485,10 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Tracking number search view fix.
 - Schedulers: fix missing traceback.
 - Debt recovery batch: fix error recovery.
-- Base : Fix save issue on any change in AppBase record.
-- Sale : fix Null Pointer error.
+- Base: Fix save issue on any change in AppBase record.
+- Sale: fix Null Pointer error.
+- Bank statement: fix status update for bank statement imports.
+- Invoice line: fill product code on product change.
 
 ## [5.0.6] - 2018-10-06
 ## Features

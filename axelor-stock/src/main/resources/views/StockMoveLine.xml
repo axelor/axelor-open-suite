@@ -119,7 +119,7 @@
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
         <field name="stockMove.statusSelect" hidden="true"/>
-        <field name="filterOnAvailableProducts"/>
+        <field name="filterOnAvailableProducts" hidden="true"/>
         <button name="trackNumberWizardBtn" title="Split by tracking numbers"
 			icon="fa-barcode"
 			readonlyIf="!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2)"
@@ -257,6 +257,7 @@
 		<field name="productName" />
 		<field name="stockMove.partner" />
 		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
+		<field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -397,6 +398,7 @@
     <action-group name="action-stock-move-line-group-onnew">
       <action name="action-stock-move-line-attrs"/>
       <action name="action-stock-move-line-record-new"/>
+      <action name="action-stock-move-line-record-filter-on-available-products"/>
     </action-group>
 
     <action-group name="action-stock-move-line-group-onload">
@@ -480,6 +482,10 @@
 	    <field name="qty" expr="1"/>
 	    <field name="realQty" expr="1"/>
 	</action-record>
+  
+    <action-record name="action-stock-move-line-record-filter-on-available-products" model="com.axelor.apps.stock.db.StockMoveLine">
+      <field name="filterOnAvailableProducts" expr="eval: __parent__?.filterOnAvailableProducts" if="__parent__ != null"/>
+    </action-record>
 	
     <action-group name="action-stock-move-line-group-real-qty-onchange">
         <action name="action-stock-move-line-compute-price"/>

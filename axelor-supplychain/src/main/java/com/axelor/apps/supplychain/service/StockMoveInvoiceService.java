@@ -49,12 +49,14 @@ public interface StockMoveInvoiceService {
       List<StockMove> stockMoveList,
       PaymentCondition paymentCondition,
       PaymentMode paymentMode,
-      Partner contactPartner)
+      Partner contactPartner,
+      boolean isFromWizard)
       throws AxelorException;
 
   @Transactional
   public Map<String, Object> createInvoiceFromMultiIncomingStockMove(
-      List<StockMove> stockMoveList, Partner contactPartnerIn) throws AxelorException;
+      List<StockMove> stockMoveList, Partner contactPartnerIn, boolean isFromWizard)
+      throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 

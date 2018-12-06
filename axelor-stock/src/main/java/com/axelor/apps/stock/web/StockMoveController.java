@@ -494,4 +494,15 @@ public class StockMoveController {
     stockMoveService.setAvailableStatus(stockMove);
     response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
+
+  public void updateMoveLineFilterOnAvailableproduct(
+      ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        stockMoveLine.setFilterOnAvailableProducts(stockMove.getFilterOnAvailableProducts());
+      }
+      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+    }
+  }
 }

@@ -45,10 +45,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +83,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
-      return invoiceLine.getAnalyticMoveLineList();
+      return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
     }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
@@ -279,10 +281,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       processedDiscounts.put("discountTypeSelect", rawDiscounts.get("discountTypeSelect"));
     }
 
-    if (price
-        != (invoiceLine.getProduct().getInAti()
-            ? invoiceLine.getInTaxPrice()
-            : invoiceLine.getPrice())) {
+    if (price.compareTo(
+            invoiceLine.getProduct().getInAti()
+                ? invoiceLine.getInTaxPrice()
+                : invoiceLine.getPrice())
+        != 0) {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put("inTaxPrice", price);
         processedDiscounts.put(
@@ -373,6 +376,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
     productInformation.put("productName", invoiceLine.getProduct().getName());
+    productInformation.put("productCode", invoiceLine.getProduct().getCode());
     productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
 
     if ((isPurchase

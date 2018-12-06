@@ -13,7 +13,7 @@
 		<field name="product.code"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
-		<field name="requestedReservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price" x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
@@ -27,15 +27,13 @@
       	<field name="saleOrder.company"/>
       	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
   		<field name="saleOrder.clientPartner"/>
-  		<field name="saleOrder.inTaxTotal"/>
   		<field name="product.code"/>
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
+			<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="price" x-scale="2"/>
-		<field name="inTaxPrice" x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
-	    <field name="inTaxTotal" aggregate="sum"/>
    		<field name="estimatedDelivDate"/>
 	</grid>
     

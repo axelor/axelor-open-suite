@@ -508,7 +508,7 @@ where
             <xml-property name="queryText"><![CDATA[select Product.name as "productName",
 	Product.code as "productCode",BarCodeFile.file_path as "barcode_picture",Product.bar_code as "bar_code",
 	InventoryLine.current_qty,
-	InventoryLine.real_qty as "real_qty",
+	(CASE WHEN Inventory.status_select = 1 THEN null ELSE InventoryLine.real_qty END) as "real_qty",
 	InventoryLine.description,
 	Unit.name as "unit",
 	InventoryLine.rack as "rack",

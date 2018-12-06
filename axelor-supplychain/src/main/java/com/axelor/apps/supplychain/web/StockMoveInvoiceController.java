@@ -160,15 +160,17 @@ public class StockMoveInvoiceController {
     }
     try {
       Map<String, Object> mapResult = null;
+      Object isFromWizardContext = request.getContext().get("isFromWizard");
+      boolean isFromWizard = isFromWizardContext != null && (Boolean) isFromWizardContext;
 
       if (isCustomerStockMove) {
         mapResult =
             stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(
-                stockMoveList, paymentCondition, paymentMode, contactPartner);
+                stockMoveList, paymentCondition, paymentMode, contactPartner, isFromWizard);
       } else {
         mapResult =
             stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(
-                stockMoveList, contactPartner);
+                stockMoveList, contactPartner, isFromWizard);
       }
       if (mapResult.get("invoiceId") != null) {
         // No need to display intermediate screen
@@ -223,7 +225,7 @@ public class StockMoveInvoiceController {
         response.setView(confirmView.map());
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      TraceBackService.trace(response, e);
     }
   }
 
