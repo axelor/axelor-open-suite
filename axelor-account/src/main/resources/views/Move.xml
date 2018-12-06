@@ -67,7 +67,7 @@
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
-                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
+                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" prompt="The validation of a move brings irrevocable integration of a move in Moves book"/>
             </panel>
 		</panel>
 		
