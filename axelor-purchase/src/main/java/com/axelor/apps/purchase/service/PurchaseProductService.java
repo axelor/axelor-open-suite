@@ -17,21 +17,12 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Optional;
 
 public interface PurchaseProductService {
 
   public Map<String, Object> getDiscountsFromCatalog(
       SupplierCatalog supplierCatalog, BigDecimal price);
-
-  /**
-   * @param product a product
-   * @return An optional with the shippingCoef for the company and the partner of the product. An
-   *     empty optional if nothing was found
-   */
-  public Optional<BigDecimal> getShippingCoefFromPartners(Product product);
 }

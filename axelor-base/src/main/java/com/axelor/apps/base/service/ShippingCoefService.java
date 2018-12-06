@@ -44,7 +44,10 @@ public class ShippingCoefService {
    * @return the shipping coefficient for the given product, partner and company.
    */
   public BigDecimal getShippingCoefDefByPartner(Product product, Partner partner, Company company) {
-    BigDecimal shippingCoef = BigDecimal.ZERO;
+    BigDecimal shippingCoef = BigDecimal.ONE;
+    if (partner == null || company == null) {
+      return shippingCoef;
+    }
     List<ShippingCoef> shippingCoefList =
         shippingCoefRepo
             .all()
@@ -77,7 +80,7 @@ public class ShippingCoefService {
    * @return the shipping coefficient for a product
    */
   public BigDecimal getShippingCoef(Product product, Partner supplierPartner, Company company) {
-    BigDecimal shippingCoef = BigDecimal.ZERO;
+    BigDecimal shippingCoef;
 
     if (product.getDefShipCoefByPartner()) {
       shippingCoef = getShippingCoefDefByPartner(product, supplierPartner, company);

@@ -17,18 +17,11 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class PurchaseProductServiceImpl implements PurchaseProductService {
 
@@ -46,31 +39,5 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
     }
 
     return discounts;
-  }
-
-  @Override
-  public Optional<BigDecimal> getShippingCoefFromPartners(Product product) {
-    if (product.getSupplierCatalogList() == null
-        || !Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
-      return Optional.empty();
-    }
-    Company userActiveCompany = Beans.get(UserService.class).getUserActiveCompany();
-    return product
-        .getSupplierCatalogList()
-        .stream()
-        .filter(
-            supplierCatalog ->
-                supplierCatalog.getShippingCoefList() != null
-                    && supplierCatalog.getSupplierPartner() != null
-                    && supplierCatalog
-                        .getSupplierPartner()
-                        .equals(product.getDefaultSupplierPartner()))
-        .flatMap(supplierCatalog -> supplierCatalog.getShippingCoefList().stream())
-        .filter(
-            shippingCoef ->
-                shippingCoef.getCompany() != null
-                    && shippingCoef.getCompany().equals(userActiveCompany))
-        .map(ShippingCoef::getShippingCoef)
-        .findAny();
   }
 }
