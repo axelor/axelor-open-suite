@@ -255,10 +255,13 @@ public class ReconcileServiceImpl implements ReconcileService {
           I18n.get(IExceptionMessage.RECONCILE_5) + " " + I18n.get(IExceptionMessage.RECONCILE_3),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           reconcile.getReconcileSeq(),
+          reconcile.getAmount(),
           debitMoveLine.getName(),
           debitMoveLine.getAccount().getLabel(),
+          debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
           creditMoveLine.getName(),
-          creditMoveLine.getAccount().getLabel());
+          creditMoveLine.getAccount().getLabel(),
+          creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
     }
   }
 
@@ -346,15 +349,12 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
-    if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
-      BigDecimal amount =
-          debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
-      Reconcile reconcile =
-          this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
-      if (reconcile != null) {
-        this.confirmReconcile(reconcile, updateInvoicePayments);
-        return reconcile;
-      }
+    BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
+    Reconcile reconcile =
+        this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
+    if (reconcile != null) {
+      this.confirmReconcile(reconcile, updateInvoicePayments);
+      return reconcile;
     }
 
     return null;

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -48,6 +49,7 @@ public interface AccountingCutOffService {
 
   public Move generateCutOffMove(
       StockMove stockMove,
+      List<StockMoveLine> sortedStockMoveLine,
       LocalDate moveDate,
       LocalDate originDate,
       boolean isPurchase,

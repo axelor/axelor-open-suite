@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
@@ -62,6 +63,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
@@ -81,6 +85,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveValidateService moveValidateService;
   protected UnitConversionService unitConversionService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected ReconcileService reconcileService;
   protected int counter = 0;
 
   @Inject
@@ -99,7 +104,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveRepository moveRepository,
       MoveValidateService moveValidateService,
       UnitConversionService unitConversionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      ReconcileService reconcileService) {
 
     this.stockMoverepository = stockMoverepository;
     this.moveCreateService = moveCreateService;
@@ -116,6 +122,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveValidateService = moveValidateService;
     this.unitConversionService = unitConversionService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.reconcileService = reconcileService;
   }
 
   public List<StockMove> getStockMoves(
@@ -178,9 +185,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     List<Move> moveList = new ArrayList<>();
 
+    List<StockMoveLine> stockMoveLineSortedList = stockMove.getStockMoveLineList();
+    Collections.sort(stockMoveLineSortedList, Comparator.comparing(StockMoveLine::getSequence));
+
     Move move =
         generateCutOffMove(
             stockMove,
+            stockMoveLineSortedList,
             moveDate,
             moveDate,
             accountingCutOffTypeSelect
@@ -191,13 +202,15 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             includeNotStockManagedProduct,
             false);
 
-    if (move != null) {
-      moveList.add(move);
+    if (move == null) {
+      return null;
     }
+    moveList.add(move);
 
     Move reverseMove =
         generateCutOffMove(
             stockMove,
+            stockMoveLineSortedList,
             reverseMoveDate,
             moveDate,
             accountingCutOffTypeSelect
@@ -208,15 +221,19 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             includeNotStockManagedProduct,
             true);
 
-    if (reverseMove != null) {
-      moveList.add(reverseMove);
+    if (reverseMove == null) {
+      return null;
     }
+    moveList.add(reverseMove);
+
+    reconcile(move, reverseMove);
 
     return moveList;
   }
 
   public Move generateCutOffMove(
       StockMove stockMove,
+      List<StockMoveLine> sortedStockMoveLine,
       LocalDate moveDate,
       LocalDate originDate,
       boolean isPurchase,
@@ -402,7 +419,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     BigDecimal qtyRate = deliveredQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
-    amountInCurrency = amountInCurrency.multiply(qtyRate);
+    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_EVEN);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {
       return null;
@@ -546,5 +563,23 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       analyticMoveLine.setMoveLine(moveLine);
     }
     analyticMoveLineList.stream().forEach(analyticMoveLineRepository::save);
+  }
+
+  protected void reconcile(Move move, Move reverseMove) throws AxelorException {
+
+    List<MoveLine> moveLineSortedList = move.getMoveLineList();
+    Collections.sort(moveLineSortedList, Comparator.comparing(MoveLine::getCounter));
+
+    List<MoveLine> reverseMoveLineSortedList = reverseMove.getMoveLineList();
+    Collections.sort(reverseMoveLineSortedList, Comparator.comparing(MoveLine::getCounter));
+
+    Iterator<MoveLine> reverseMoveLinesIt = reverseMoveLineSortedList.iterator();
+
+    for (MoveLine moveLine : moveLineSortedList) {
+
+      MoveLine reverseMoveLine = reverseMoveLinesIt.next();
+
+      reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
+    }
   }
 }
