@@ -285,4 +285,20 @@ public final class StringTool {
   public static String getFilename(String name) {
     return StringUtils.replaceEach(name, FILENAME_SEARCH_LIST, FILENAME_REPLACEMENT_LIST);
   }
+
+  /**
+   * Some strings cannot be over 255 char because of database restriction. Cut it to 252 char then
+   * add "..." to indicate the string has been cut.
+   *
+   * @return the cut string
+   */
+  public static String cutTooLongString(String str) {
+    int defaultDbStrLength = 255;
+    String fillString = "...";
+    if (str.length() > defaultDbStrLength) {
+      return str.substring(0, defaultDbStrLength - fillString.length()) + fillString;
+    } else {
+      return str;
+    }
+  }
 }
