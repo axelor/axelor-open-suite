@@ -54,6 +54,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -273,13 +274,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
-    stockMove.setReservationDateTime(
-        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    setReservationDateTime(stockMove, saleOrder);
 
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
     return Beans.get(StockMoveRepository.class).save(stockMove);
+  }
+
+  /**
+   * Fill reservation date time in stock move with sale order confirmation date time.
+   *
+   * @param stockMove
+   * @param saleOrder
+   */
+  protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder) {
+    LocalDateTime reservationDateTime = saleOrder.getConfirmationDateTime();
+    if (reservationDateTime == null) {
+      reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+    }
+    stockMove.setReservationDateTime(reservationDateTime);
   }
 
   /**

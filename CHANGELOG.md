@@ -262,6 +262,7 @@ Only display line where quantity is greater than 0.
 - Improvement when updating stock move lines from product.
 - Shipping coef: remove duplicated code.
 - Sale Order: change confirmation date to datetime.
+- Reservation date on stock move is now copied from confirmation date time on sale order.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
