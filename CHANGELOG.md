@@ -261,6 +261,7 @@ Only display line where quantity is greater than 0.
 - Stock move mass invoicing: allow null values after the prompt.
 - Improvement when updating stock move lines from product.
 - Shipping coef: remove duplicated code.
+- Sale Order: change confirmation date to datetime.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.

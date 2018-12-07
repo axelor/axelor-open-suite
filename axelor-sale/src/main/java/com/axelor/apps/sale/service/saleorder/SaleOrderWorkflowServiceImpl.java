@@ -162,7 +162,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    saleOrder.setConfirmationDate(appSaleService.getTodayDate());
+    saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
     saleOrder.setConfirmedByUser(userService.getUser());
 
     this.validateCustomer(saleOrder);

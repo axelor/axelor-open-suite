@@ -162,8 +162,8 @@ public class ImportSupplyChain {
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
         // Generate invoice from sale order
         Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
-        if (saleOrder.getConfirmationDate() != null) {
-          invoice.setInvoiceDate(saleOrder.getConfirmationDate());
+        if (saleOrder.getConfirmationDateTime() != null) {
+          invoice.setInvoiceDate(saleOrder.getConfirmationDateTime().toLocalDate());
 
         } else {
           invoice.setInvoiceDate(LocalDate.now());
@@ -176,7 +176,9 @@ public class ImportSupplyChain {
             && !stockMove.getStockMoveLineList().isEmpty()) {
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.validate(stockMove);
-          stockMove.setRealDate(saleOrder.getConfirmationDate());
+          if (saleOrder.getConfirmationDateTime() != null) {
+            stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+          }
         }
       }
       saleOrderRepo.save(saleOrder);

@@ -42,8 +42,8 @@
 		<dataset type="sql">
 			SELECT
 				SUM(_line.ex_tax_total) AS _turn_over,
-				DATE_PART('month', self.confirmation_date) AS _month,  
-				DATE_PART('year', self.confirmation_date) AS _year
+				DATE_PART('month', self.confirmation_date_time) AS _month,
+				DATE_PART('year', self.confirmation_date_time) AS _year
 			FROM
 				sale_sale_order AS self
 			JOIN
@@ -56,11 +56,11 @@
 				self.status_select in (3,4)
 				AND self.company = _user.active_company  
 				AND(
-				    ( self.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-				    AND self.confirmation_date &lt;= DATE(:toDate))
+				    ( self.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
+				    AND self.confirmation_date_time &lt;= DATE(:toDate))
 					OR
-				    (self.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-				    AND self.confirmation_date &lt;= DATE(:toDateLY))
+				    (self.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
+				    AND self.confirmation_date_time &lt;= DATE(:toDateLY))
 				 )      
 			GROUP BY
 				_month, _year
@@ -77,7 +77,7 @@
 	    <![CDATA[
 		    SELECT
 		      SUM(_order.ex_tax_total) AS _turn_over,
-		      DATE_PART('year',_order.confirmation_date) AS _year
+		      DATE_PART('year',_order.confirmation_date_time) AS _year
 		    FROM
 		      sale_sale_order AS _order  
 		    JOIN
@@ -86,11 +86,11 @@
 		    WHERE
 		      _order.status_select in (3,4)
 		      AND _order.company = _user.active_company    
-		      AND ( ( _order.confirmation_date >= TO_DATE(DATE_PART('year',CURRENT_DATE - INTERVAL '1 year') || '-01-01','YYYY-MM-DD') 
-		              AND _order.confirmation_date <= CURRENT_DATE - INTERVAL '1 year')
+		      AND ( ( _order.confirmation_date_time >= TO_DATE(DATE_PART('year',CURRENT_DATE - INTERVAL '1 year') || '-01-01','YYYY-MM-DD')
+		              AND _order.confirmation_date_time <= CURRENT_DATE - INTERVAL '1 year')
 		            OR
-		            ( _order.confirmation_date >= TO_DATE(DATE_PART('year',CURRENT_DATE) || '-01-01','YYYY-MM-DD') 
-		              AND _order.confirmation_date <= CURRENT_DATE)
+		            ( _order.confirmation_date_time >= TO_DATE(DATE_PART('year',CURRENT_DATE) || '-01-01','YYYY-MM-DD')
+		              AND _order.confirmation_date_time <= CURRENT_DATE)
 		          )           
 		    GROUP BY
 		      _year
@@ -107,7 +107,7 @@
 	    <![CDATA[
 		SELECT
 			SUM(_line.ex_tax_total) AS _turn_over,
-			DATE_PART('year',_order.confirmation_date) AS _year,
+			DATE_PART('year',_order.confirmation_date_time) AS _year,
 			_line.product_name AS _product
 		FROM
 			sale_sale_order AS _order 
@@ -116,7 +116,7 @@
 			ON _line.sale_order = _order.id
 		WHERE
 			_order.status_select in (3,4)
-			AND DATE_PART('year',_order.confirmation_date) 
+			AND DATE_PART('year',_order.confirmation_date_time)
 			IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 		GROUP BY
 			_year, _product
@@ -133,7 +133,7 @@
 			SELECT
 			  coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
 			  _family.name AS _product_family,
-			  DATE_PART('year', _order.confirmation_date) AS _year
+			  DATE_PART('year', _order.confirmation_date_time) AS _year
 			FROM
 			  sale_sale_order_line AS _line
 			JOIN
@@ -149,7 +149,7 @@
 			ON
 			  _family.id = _product.product_family
 			WHERE
-			  DATE_PART('year', _order.confirmation_date) IN 
+			  DATE_PART('year', _order.confirmation_date_time) IN
 			  (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
 			GROUP BY
 			  _product_family, _year
@@ -166,7 +166,7 @@
 		<dataset type="sql">
 			SELECT
 			  SUM(_order.ex_tax_total) AS _turn_over,
-			  DATE_PART('year',_order.confirmation_date) AS _year
+			  DATE_PART('year',_order.confirmation_date_time) AS _year
 			FROM
 			  sale_sale_order AS _order  
 			JOIN
@@ -176,11 +176,11 @@
 			  _order.status_select in (3,4)
 			  AND _order.company = _user.active_company  
 			  AND(
-			      ( _order.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-			      AND _order.confirmation_date &lt;= DATE(:toDate))
+			      ( _order.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
+			      AND _order.confirmation_date_time &lt;= DATE(:toDate))
 			    OR
-			      (_order.confirmation_date &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-			      AND _order.confirmation_date &lt;= DATE(:toDateLY))
+			      (_order.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
+			      AND _order.confirmation_date_time &lt;= DATE(:toDateLY))
 			     )      
 			AND
 			    _order.ex_tax_total > 0.00	         
@@ -198,7 +198,7 @@
 			SELECT
 			  coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
 			  _family.name AS _product_family,
-			  DATE_PART('year', _order.confirmation_date) AS _year
+			  DATE_PART('year', _order.confirmation_date_time) AS _year
 			FROM
 			  sale_sale_order_line AS _line
 			JOIN
@@ -214,7 +214,7 @@
 			ON
 			  _family.id = _product.product_family
 			WHERE
-			  DATE_PART('year', _order.confirmation_date) IN 
+			  DATE_PART('year', _order.confirmation_date_time) IN
 			  (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
 			GROUP BY
 			  _product_family, _year
@@ -250,7 +250,7 @@
 	  		JOIN 
 	    		auth_user _user ON _user.id = :__user__ AND self.company = _user.active_company
 	  		WHERE
-	    		self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
+	    		self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 	  		GROUP BY
 	    		team.name
 	  		HAVING  
@@ -279,7 +279,7 @@
 			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
-			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  AND self.status_select in (3,4)
 			GROUP BY
 			  saleman_name
@@ -315,7 +315,7 @@
 				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
-				self.status_select in (3,4) AND self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				self.status_select in (3,4) AND self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
 			  family_name
 			HAVING
@@ -350,7 +350,7 @@
 				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
-				self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)    
+				self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 			GROUP BY
 				category_name
 		</dataset>
@@ -380,7 +380,7 @@
 			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
-			  self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  and self.status_select in (3,4)
 			GROUP BY
 			  country_name
@@ -399,14 +399,14 @@
   <dataset type="sql">
           SELECT
               COALESCE(SUM(self.ex_tax_total), 0.00) AS _amount,   
-              TO_CHAR(self.confirmation_date,'yyyy-MM') AS _month
+              TO_CHAR(self.confirmation_date_time,'yyyy-MM') AS _month
           FROM
               sale_sale_order AS self
           JOIN
               auth_user AS _user
               ON _user.id = :__user__
           WHERE
-              self.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+              self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
               AND self.saleman_user = :__user__
               AND self.company = _user.active_company
           GROUP BY
@@ -433,7 +433,7 @@
 			FROM 
 			    (SELECT
 			      _sale_order.id AS _order_id,
-			      _sale_order.confirmation_date AS _confirmation_date,
+			      _sale_order.confirmation_date_time AS _confirmation_date,
 			      _sale_order.ex_tax_total AS _turn_over,
 			      _line.product AS _line_product
 			    FROM
@@ -445,7 +445,7 @@
 			      ON _user.id = :__user__
 		      	AND _sale_order.company = _user.active_company    
 			    WHERE
-			      _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			      _sale_order.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			      AND _sale_order.status_select in (3,4)
 			    GROUP BY _sale_order.id, _line_product
 			    ORDER BY _turn_over DESC) AS _sale
@@ -482,7 +482,7 @@
 			FROM 
 			  (SELECT
 			    _sale_order.id AS _order_id,
-			    _sale_order.confirmation_date AS _confirmation_date,
+			    _sale_order.confirmation_date_time AS _confirmation_date,
 			    _line.qty AS _turn_over,
 			    _line.product AS _line_product
 			  FROM
@@ -494,7 +494,7 @@
 			    ON _user.id = :__user__
 			    AND _sale_order.company = _user.active_company    
 			  WHERE
-			    _sale_order.confirmation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			    _sale_order.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			    AND _sale_order.status_select in (3,4)
 			  GROUP BY _sale_order.id, _line_product, _turn_over
 			  ORDER BY _turn_over DESC) AS _sale

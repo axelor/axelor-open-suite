@@ -399,7 +399,7 @@
 	  <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDate" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
+	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
@@ -516,7 +516,7 @@
 	  <panel sidebar="true" name="infoPanel" title="Info.">
 	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6" showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="confirmationDateTime" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -603,7 +603,7 @@
 					</field>
 				</panel>
 	      <panel name="detailsPanel" colSpan="8">
-	        <field name="confirmationDate"/>
+	        <field name="confirmationDateTime"/>
 	        <field name="creationDate"/>
 	        <field name="orderDate"/>
 	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
