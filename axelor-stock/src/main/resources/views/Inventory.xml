@@ -57,8 +57,8 @@
 
         <panel-related name="inventoryLineListPanel" field="inventoryLineList" readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20" grid-view="inventory-line-grid" form-view="inventory-line-form"/>
 
-        <panel-tabs name="mainPanelTab" showIf="statusSelect != 6">
-            <panel name="exportPanel" title="Export" showIf="statusSelect != 6">
+        <panel-tabs name="mainPanelTab" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6">
+            <panel name="exportPanel" title="Export" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6">
                 <field name="formatSelect"/>
                 <panel name="showinventoryPanel" colSpan="3" stacked="true">
                     <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
@@ -88,7 +88,6 @@
     
     <action-group name="action-group-stock-inventory-plan-click">
     	<action name="save"/>
-    	<action name="action-inventory-validate-inventory-line-list"/>
     	<action name="action-inventory-record-plan"/>
     	<action name="action-set-inventory-seq"/>    	
     	<action name="save"/>
@@ -102,6 +101,7 @@
 
     <action-group name="action-group-stock-inventory-complete-click">
     	<action name="save"/>
+    	<action name="action-inventory-validate-inventory-line-list"/>
     	<action name="action-inventory-record-complete"/>
     	<action name="save"/>
     </action-group>
