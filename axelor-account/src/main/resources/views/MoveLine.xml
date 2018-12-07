@@ -136,8 +136,8 @@
 			<field name="taxAmount" showIf="taxAmount != 0"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
 				<field name="passageReason" showIf="$number(debit) > 0.00"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
@@ -226,10 +226,11 @@
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
 			<field name="taxAmount" showIf="taxAmount != 0"/>
+			<field name="move.statusSelect" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel-related name="debitReconcileListPanel" readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(debit) > 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel-related name="creditReconcileListPanel" readonlyIf="move.statusSelect == 3" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; $number(credit) > 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1">
 				<field name="passageReason" showIf="$number(debit) > 0.00"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
