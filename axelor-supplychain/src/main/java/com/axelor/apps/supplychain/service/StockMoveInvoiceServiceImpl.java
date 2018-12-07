@@ -46,6 +46,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -441,6 +442,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       stockMoveIdList.add(stockMoveLocal.getId());
     }
+    externalRef = StringTool.cutTooLongString(externalRef);
+    internalRef = StringTool.cutTooLongString(internalRef);
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
@@ -629,6 +632,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       stockMoveIdList.add(stockMoveLocal.getId());
     }
 
+    externalRef = StringTool.cutTooLongString(externalRef);
+    numSeq = StringTool.cutTooLongString(numSeq);
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
@@ -679,7 +684,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice) {
 
     invoice.setInternalReference(
-        stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference());
+        StringTool.cutTooLongString(
+            stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference()));
 
     return invoice;
   }
