@@ -922,7 +922,7 @@ Group by date_trunc('month',Invoice.invoice_date)::date,LangTranslate.message_va
 
 UNION
 
-SELECT  date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date))::date as "date",
+SELECT  date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time))::date as "date",
 		SUM(SaleOrderLine.company_ex_tax_total) as sum,
 		'Ordered' as type,
 		LangTranslate1.message_value as "translation"
@@ -939,12 +939,12 @@ LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as Assista
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'SaleInvoicesDetails.ordered')
 WHERE Company.id = ?
 		AND ( LangTranslate1.language = ? OR LangTranslate1.language is null )
-		AND COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date) BETWEEN Assistant.from_date AND Assistant.to_date
+		AND COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time) BETWEEN Assistant.from_date AND Assistant.to_date
 		AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set))
 		AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
 		AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
 		AND SaleOrder.status_select IN (3,4)
-Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date))::date,LangTranslate1.message_value]]></xml-property>
+Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation_date_time))::date,LangTranslate1.message_value]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Graph2DS" id="4796">
             <property name="nullsOrdering">nulls lowest</property>
