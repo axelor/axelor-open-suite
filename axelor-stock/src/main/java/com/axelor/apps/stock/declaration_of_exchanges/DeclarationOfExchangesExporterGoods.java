@@ -50,9 +50,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesExporter {
-  private static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
+  protected static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
 
-  private enum Column implements DeclarationOfExchangesColumnHeader {
+  protected enum Column implements DeclarationOfExchangesColumnHeader {
     LINE_NUM(/*$$(*/ "Line number" /*$$(*/),
     NOMENCLATURE(/*$$(*/ "Nomenclature" /*$$(*/),
     SRC_DST_COUNTRY(/*$$(*/ "Source or destination country" /*$$(*/),
@@ -78,9 +78,14 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
   }
 
+  protected CustomsCodeNomenclatureRepository customsCodeNomenclatureRepo;
+  protected StockMoveToolService stockMoveToolService;
+
   public DeclarationOfExchangesExporterGoods(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
     super(declarationOfExchanges, bundle, NAME_GOODS, Column.values());
+    this.customsCodeNomenclatureRepo = Beans.get(CustomsCodeNomenclatureRepository.class);
+    this.stockMoveToolService = Beans.get(StockMoveToolService.class);
   }
 
   @Override
@@ -99,148 +104,14 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
                 declarationOfExchanges.getCountry())
             .fetch();
     List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
-    int lineNum = 0;
-
-    StockMoveToolService stockMoveToolService = Beans.get(StockMoveToolService.class);
-    CustomsCodeNomenclatureRepository customsCodeNomenclatureRepo =
-        Beans.get(CustomsCodeNomenclatureRepository.class);
+    int lineNum = 1;
 
     for (StockMoveLine stockMoveLine : stockMoveLines) {
-      String[] data = new String[Column.values().length];
 
-      StockMove stockMove = stockMoveLine.getStockMove();
-
-      if (stockMove == null) {
-        throw new AxelorException(
-            stockMoveLine, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Missing stock move"));
+      String[] data = exportLineToCsv(stockMoveLine, lineNum++);
+      if (data != null) {
+        dataList.add(data);
       }
-
-      String customsCode = stockMoveLine.getCustomsCode();
-
-      if (StringUtils.isBlank(customsCode)) {
-        if (stockMoveLine.getProduct() == null) {
-          throw new AxelorException(
-              stockMoveLine,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Product is missing."));
-        }
-
-        if (stockMoveLine.getProduct().getCustomsCodeNomenclature() != null) {
-          customsCode = stockMoveLine.getProduct().getCustomsCodeNomenclature().getCode();
-        }
-
-        if (StringUtils.isBlank(customsCode)) {
-          throw new AxelorException(
-              stockMoveLine.getProduct(),
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Customs code nomenclature is missing on product %s."),
-              stockMoveLine.getProduct().getFullName());
-        }
-      }
-
-      BigDecimal fiscalValue =
-          stockMoveLine
-              .getUnitPriceUntaxed()
-              .multiply(stockMoveLine.getRealQty())
-              .setScale(0, RoundingMode.HALF_UP);
-
-      Regime regime = stockMoveLine.getRegime();
-
-      if (regime == null) {
-        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-          regime = Regime.EXONERATED_SHIPMENT_AND_TRANSFER;
-        } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-          regime = Regime.INTRACOMMUNITY_ACQUISITION_TAXABLE_IN_FRANCE;
-        } else {
-          throw new AxelorException(
-              stockMove,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get("Unexpected stock move type"));
-        }
-      }
-
-      BigDecimal totalNetMass = stockMoveLine.getTotalNetMass().setScale(0, RoundingMode.HALF_UP);
-
-      CustomsCodeNomenclature customsCodeNomenclature =
-          customsCodeNomenclatureRepo.findByCode(customsCode);
-
-      String supplementaryUnit;
-
-      if (customsCodeNomenclature != null
-          && StringUtils.notBlank(customsCodeNomenclature.getSupplementaryUnit())) {
-        supplementaryUnit = customsCodeNomenclature.getSupplementaryUnit();
-      } else {
-        supplementaryUnit = "";
-      }
-
-      NatureOfTransaction natTrans = stockMoveLine.getNatureOfTransaction();
-
-      if (natTrans == null) {
-        natTrans =
-            stockMove.getIsReversion()
-                ? NatureOfTransaction.RETURN_OF_GOODS
-                : NatureOfTransaction.FIRM_PURCHASE_OR_SALE;
-      }
-
-      ModeOfTransport modeOfTransport = stockMove.getModeOfTransport();
-
-      if (modeOfTransport == null) {
-        modeOfTransport = ModeOfTransport.CONSIGNMENTS_BY_POST;
-      }
-
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
-      String countryOrigCode;
-
-      if (stockMoveLine.getCountryOfOrigin() != null) {
-        countryOrigCode = stockMoveLine.getCountryOfOrigin().getAlpha2Code();
-      } else {
-        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-          countryOrigCode = partnerAddress.getAddressL7Country().getAlpha2Code();
-        } else {
-          countryOrigCode = "";
-        }
-      }
-
-      String taxNbr;
-
-      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && stockMoveLine.getRegime() != Regime.OTHER_EXPEDITIONS) {
-
-        if (stockMove.getPartner() == null) {
-          throw new AxelorException(
-              stockMove,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Partner is missing on stock move %s."),
-              stockMove.getName());
-        }
-
-        if (StringUtils.isBlank(stockMove.getPartner().getTaxNbr())) {
-          throw new AxelorException(
-              stockMove.getPartner(),
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Tax number is missing on partner %s."),
-              stockMove.getPartner().getName());
-        }
-
-        taxNbr = stockMove.getPartner().getTaxNbr();
-      } else {
-        taxNbr = "";
-      }
-
-      data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum++ % 10 + 1);
-      data[Column.NOMENCLATURE.ordinal()] = customsCode;
-      data[Column.SRC_DST_COUNTRY.ordinal()] = partnerAddress.getAddressL7Country().getAlpha2Code();
-      data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
-      data[Column.REGIME.ordinal()] = String.valueOf(regime.getValue());
-      data[Column.MASS.ordinal()] = String.valueOf(totalNetMass);
-      data[Column.UNITS.ordinal()] = supplementaryUnit;
-      data[Column.NAT_TRANS.ordinal()] = String.valueOf(natTrans.getValue());
-      data[Column.TRANSP.ordinal()] = String.valueOf(modeOfTransport.getValue());
-      data[Column.DEPT.ordinal()] = companyAddress.getCity().getDepartment().getCode();
-      data[Column.COUNTRY_ORIG.ordinal()] = countryOrigCode;
-      data[Column.ACQUIRER.ordinal()] = taxNbr;
-      dataList.add(data);
     }
 
     try {
@@ -248,7 +119,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       CsvTool.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
-          ',',
+          ';',
           getTranslatedHeaders(),
           dataList);
     } catch (IOException e) {
@@ -257,6 +128,143 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
 
     return attach(path.toString());
+  }
+
+  protected String[] exportLineToCsv(StockMoveLine stockMoveLine, int lineNum)
+      throws AxelorException {
+
+    String[] data = new String[Column.values().length];
+
+    StockMove stockMove = stockMoveLine.getStockMove();
+
+    String customsCode = stockMoveLine.getCustomsCode();
+
+    if (StringUtils.isBlank(customsCode)) {
+      if (stockMoveLine.getProduct() == null) {
+        customsCode = I18n.get("Product is missing.");
+      }
+
+      if (stockMoveLine.getProduct().getCustomsCodeNomenclature() != null) {
+        customsCode = stockMoveLine.getProduct().getCustomsCodeNomenclature().getCode();
+      }
+
+      if (StringUtils.isBlank(customsCode)) {
+        customsCode =
+            String.format(
+                I18n.get("Customs code nomenclature is missing on product %s."),
+                stockMoveLine.getProduct().getCode());
+      }
+    }
+
+    BigDecimal fiscalValue =
+        stockMoveLine
+            .getCompanyUnitPriceUntaxed()
+            .multiply(stockMoveLine.getRealQty())
+            .setScale(0, RoundingMode.HALF_UP);
+
+    // Only positive fiscal value should be take into account
+    if (fiscalValue.compareTo(BigDecimal.ZERO) != 1) {
+      return null;
+    }
+
+    Regime regime = stockMoveLine.getRegime();
+
+    if (regime == null) {
+      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+        regime = Regime.EXONERATED_SHIPMENT_AND_TRANSFER;
+      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+        regime = Regime.INTRACOMMUNITY_ACQUISITION_TAXABLE_IN_FRANCE;
+      }
+    }
+
+    BigDecimal totalNetMass = stockMoveLine.getTotalNetMass().setScale(0, RoundingMode.HALF_UP);
+
+    CustomsCodeNomenclature customsCodeNomenclature =
+        customsCodeNomenclatureRepo.findByCode(customsCode);
+
+    String supplementaryUnit;
+
+    if (customsCodeNomenclature != null
+        && StringUtils.notBlank(customsCodeNomenclature.getSupplementaryUnit())) {
+      supplementaryUnit = customsCodeNomenclature.getSupplementaryUnit();
+    } else {
+      supplementaryUnit = "";
+    }
+
+    NatureOfTransaction natTrans = stockMoveLine.getNatureOfTransaction();
+
+    if (natTrans == null) {
+      natTrans =
+          stockMove.getIsReversion()
+              ? NatureOfTransaction.RETURN_OF_GOODS
+              : NatureOfTransaction.FIRM_PURCHASE_OR_SALE;
+    }
+
+    ModeOfTransport modeOfTransport = stockMove.getModeOfTransport();
+
+    if (modeOfTransport == null) {
+      modeOfTransport = ModeOfTransport.CONSIGNMENTS_BY_POST;
+    }
+
+    String srcDstCountry = "";
+    String dept = "";
+    try {
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
+      srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
+    } catch (AxelorException e) {
+      srcDstCountry = e.getMessage();
+    }
+    try {
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
+      dept = companyAddress.getCity().getDepartment().getCode();
+    } catch (AxelorException e) {
+      dept = e.getMessage();
+    }
+
+    String countryOrigCode;
+
+    if (stockMoveLine.getCountryOfOrigin() != null) {
+      countryOrigCode = stockMoveLine.getCountryOfOrigin().getAlpha2Code();
+    } else {
+      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+        countryOrigCode = srcDstCountry;
+      } else {
+        countryOrigCode = "";
+      }
+    }
+
+    String taxNbr;
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMoveLine.getRegime() != Regime.OTHER_EXPEDITIONS) {
+
+      if (stockMove.getPartner() == null) {
+        taxNbr =
+            String.format(I18n.get("Partner is missing on stock move %s."), stockMove.getName());
+      } else if (StringUtils.isBlank(stockMove.getPartner().getTaxNbr())) {
+        taxNbr =
+            String.format(
+                I18n.get("Tax number is missing on partner %s."), stockMove.getPartner().getName());
+      } else {
+        taxNbr = stockMove.getPartner().getTaxNbr();
+      }
+    } else {
+      taxNbr = "";
+    }
+
+    data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum);
+    data[Column.NOMENCLATURE.ordinal()] = customsCode;
+    data[Column.SRC_DST_COUNTRY.ordinal()] = srcDstCountry;
+    data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
+    data[Column.REGIME.ordinal()] = String.valueOf(regime.getValue());
+    data[Column.MASS.ordinal()] = String.valueOf(totalNetMass);
+    data[Column.UNITS.ordinal()] = supplementaryUnit;
+    data[Column.NAT_TRANS.ordinal()] = String.valueOf(natTrans.getValue());
+    data[Column.TRANSP.ordinal()] = String.valueOf(modeOfTransport.getValue());
+    data[Column.DEPT.ordinal()] = dept;
+    data[Column.COUNTRY_ORIG.ordinal()] = countryOrigCode;
+    data[Column.ACQUIRER.ordinal()] = taxNbr;
+
+    return data;
   }
 
   @Override

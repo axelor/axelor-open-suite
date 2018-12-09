@@ -297,7 +297,6 @@ Only display line where quantity is greater than 0.
 - Sale Order, Sale Order Line : Fix margins with normal case and pack line case.
 - Sale Order Line : Fix pack type translations.
 - Sale Order : Fix NPE when we add a line and just enter the product name string field and enter unit price or qty.
-- Diclaration of exchange : filter productTypeSelect.
 - Stock Move : Fix when try to cancel an incoming realized stock move.
 - Data backup : Fix binary field restore.
 - Data backup : Include meta links.
@@ -327,7 +326,6 @@ Only display line where quantity is greater than 0.
 - SALEORDER : allow to change the payment condition and payment mode
 - MRP : Fix Null pointer exception.
 - Manufacturing Order:Unit price problem on consumedStockMoveLineList
-- DECLARATION OF EXCHANGE : stock move lines
 - MANUF ORDER : NPE when no product is selected on producedStockMoveLineList line
 - Disable average price update on cancelling stock move.
 - Use real qty instead of planned qty on StockMove report.
@@ -349,7 +347,6 @@ So, now, we check if the saleOrder.stockLocation is the same stock location or o
 Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
 - Fixed invoicing of partial deliveries in stock moves with several stock move lines with the same product.
 - Added name attribute to all panels and buttons and also renamed.
-- DeclarationsOfExchanges:display only the stock move lines with the status "Realized"
 - Panel rename issue
 - Filter out direct order stock location in sale order with the boolean direct order false.
 - Fixed some issues with analytic accounting management : manage currency, partial invoice, copy template, improve view management

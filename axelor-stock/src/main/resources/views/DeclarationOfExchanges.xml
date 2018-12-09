@@ -46,7 +46,7 @@
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
     </panel>
-    <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true"/>
+    <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true" canSearch="true"/>
   </form>
 
   <action-record name="action-declaration-of-exchanges-onnew" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
@@ -76,5 +76,29 @@
   <action-method name="action-declaration-of-exchanges-method-export" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
     <call class="com.axelor.apps.stock.web.DeclarationOfExchangesController" method="export"/>
   </action-method>
+  
+  <action-view name="action-stock-move-line-declaration-of-exchanges" title="Stock move lines"
+      model="com.axelor.apps.stock.db.StockMoveLine">
+      <view type="grid" name="stock-move-line-all-grid"/>
+      <view type="form" name="stock-move-line-all-form"/>
+      <domain>
+        self.stockMove.realDate BETWEEN :fromDate AND :toDate
+        AND self.product.productTypeSelect = :productTypeSelect
+        AND self.stockMove.typeSelect = :stockMoveTypeSelect
+        AND self.stockMove.statusSelect = 3
+        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
+        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
+        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
+        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
+        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
+        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)
+		AND self.product.usedInDEB = true
+      </domain>
+      <context name="fromDate" expr="eval: period?.fromDate"/>
+      <context name="toDate" expr="eval: period?.toDate"/>
+      <context name="productTypeSelect" expr="eval: productTypeSelect"/>
+      <context name="stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
+      <context name="country" expr="eval: country"/>
+    </action-view>
 
 </object-views>

@@ -60,8 +60,10 @@
       using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country"
       filter="
         self.stockMove.realDate BETWEEN :fromDate AND :toDate
+        AND self.product.usedInDEB is true 
         AND self.product.productTypeSelect = :productTypeSelect
         AND self.stockMove.typeSelect = :stockMoveTypeSelect
+        AND self.stockMove.statusSelect = 3 
         AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
         OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
         AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)

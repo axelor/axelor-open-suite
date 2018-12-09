@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1296,7 +1296,9 @@ coalesce(ToCountry.id, ToStockLocationCountry.id))
 and coalesce(FromCountry.id, FromStockLocationCountry.id)
 != coalesce(ToCountry.id, ToStockLocationCountry.id)
 and coalesce(FromCountry.economic_area, FromStockLocationCountry.economic_area)
-= coalesce(ToCountry.economic_area, ToStockLocationCountry.economic_area)
+= coalesce(ToCountry.economic_area, ToStockLocationCountry.economic_area) 
+AND round(StockMoveLine.company_unit_price_untaxed * StockMoveLine.real_qty) > 0
+
 order by StockMove.real_date, StockMoveLine.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2656,6 +2658,42 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                     </row>
                 </grid>
             </page-header>
+            <page-footer>
+                <grid id="4204">
+                    <column id="4216"/>
+                    <column id="4205">
+                        <property name="textAlign">right</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="4206">
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="4207">
+                        <property name="textAlign">left</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="4208">
+                        <cell id="4215"/>
+                        <cell id="4209">
+                            <auto-text id="4210">
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4211">
+                            <property name="textAlign">center</property>
+                            <text id="4212">
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4213">
+                            <auto-text id="4214">
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
@@ -2797,7 +2835,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
-            <property name="pageBreakInterval">10</property>
+            <property name="repeatHeader">true</property>
             <column id="4060">
                 <property name="width">1cm</property>
             </column>
@@ -3076,15 +3114,15 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                 <row id="4028">
                     <property name="textAlign">center</property>
                     <property name="verticalAlign">middle</property>
-                    <property name="height">1cm</property>
                     <cell id="4029">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <text id="4148">
+                            <property name="fontSize">9pt</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>(row.__rownum % 10) + 1</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>(row.__rownum+1)</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4031">
@@ -3094,6 +3132,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightWidth">thin</property>
                         <property name="textAlign">left</property>
                         <data id="4191">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Nomenclature</property>
                         </data>
                     </cell>
@@ -3103,6 +3142,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4193">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">DstSrcCountry</property>
                         </data>
                     </cell>
@@ -3113,6 +3153,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightWidth">thin</property>
                         <property name="textAlign">right</property>
                         <data id="4194">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">FiscalValue</property>
                         </data>
                     </cell>
@@ -3122,6 +3163,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4195">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Regime</property>
                         </data>
                     </cell>
@@ -3132,6 +3174,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightWidth">thin</property>
                         <property name="textAlign">right</property>
                         <data id="4197">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">NetMass</property>
                         </data>
                     </cell>
@@ -3141,6 +3184,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4198">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">SupUnits</property>
                         </data>
                     </cell>
@@ -3150,6 +3194,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4199">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">NatTrans</property>
                         </data>
                     </cell>
@@ -3159,6 +3204,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4200">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Transport</property>
                         </data>
                     </cell>
@@ -3168,6 +3214,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4201">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Dept</property>
                         </data>
                     </cell>
@@ -3177,6 +3224,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4202">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">CountryOrig</property>
                         </data>
                     </cell>
@@ -3186,6 +3234,7 @@ ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4203">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Acquirer</property>
                         </data>
                     </cell>

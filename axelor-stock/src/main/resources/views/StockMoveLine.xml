@@ -574,27 +574,6 @@
 		<domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
 	</action-view>
 
-    <action-view name="action-stock-move-line-declaration-of-exchanges" title="Stock move lines"
-      model="com.axelor.apps.stock.db.StockMoveLine">
-      <view type="grid" name="stock-move-line-all-grid"/>
-      <view type="form" name="stock-move-line-all-form"/>
-      <domain>
-        self.stockMove.realDate BETWEEN :fromDate AND :toDate
-        AND self.product.productTypeSelect = :productTypeSelect
-        AND self.stockMove.typeSelect = :stockMoveTypeSelect
-        AND self.stockMove.statusSelect = 3
-        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
-        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
-        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
-        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
-        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
-        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)
-				AND self.product.usedInDEB = true
-      </domain>
-      <context name="fromDate" expr="eval: period?.fromDate"/>
-      <context name="toDate" expr="eval: period?.toDate"/>
-    </action-view>
-
 	<action-validate name="action-stock-move-line-validate-check-split-quantity">
 		<error message="Split quantity cannot be negative." if="qty &lt; 0"/>
 		<error message="Split quantity cannot be higher than real quantity." if="qty &gt; realQty"/>

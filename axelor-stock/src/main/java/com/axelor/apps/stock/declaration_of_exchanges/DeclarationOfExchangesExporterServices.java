@@ -35,6 +35,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.io.MoreFiles;
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -63,6 +64,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
     }
   }
 
+  @Inject
   public DeclarationOfExchangesExporterServices(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
     super(declarationOfExchanges, bundle, NAME_SERVICES, Column.values());
@@ -85,17 +87,12 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
                 declarationOfExchanges.getCountry())
             .fetch();
     List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
-    int lineNum = 0;
+    int lineNum = 1;
 
     for (StockMoveLine stockMoveLine : stockMoveLines) {
       String[] data = new String[Column.values().length];
 
       StockMove stockMove = stockMoveLine.getStockMove();
-
-      if (stockMove == null) {
-        throw new AxelorException(
-            stockMoveLine, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("Missing stock move"));
-      }
 
       BigDecimal fiscalValue =
           stockMoveLine
@@ -109,19 +106,15 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
           && stockMoveLine.getRegime() != Regime.OTHER_EXPEDITIONS) {
 
         if (stockMove.getPartner() == null) {
-          throw new AxelorException(
-              stockMove,
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Partner is missing on stock move %s."),
-              stockMove.getName());
+          taxNbr =
+              String.format(I18n.get("Partner is missing on stock move %s."), stockMove.getName());
         }
 
         if (StringUtils.isBlank(stockMove.getPartner().getTaxNbr())) {
-          throw new AxelorException(
-              stockMove.getPartner(),
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get("Tax number is missing on partner %s."),
-              stockMove.getPartner().getName());
+          taxNbr =
+              String.format(
+                  I18n.get("Tax number is missing on partner %s."),
+                  stockMove.getPartner().getName());
         }
 
         taxNbr = stockMove.getPartner().getTaxNbr();
@@ -129,7 +122,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
         taxNbr = "";
       }
 
-      data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum++ % 15 + 1);
+      data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum++);
       data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
       data[Column.TAKER.ordinal()] = taxNbr;
       dataList.add(data);
@@ -140,7 +133,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
       CsvTool.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
-          ',',
+          ';',
           getTranslatedHeaders(),
           dataList);
     } catch (IOException e) {
