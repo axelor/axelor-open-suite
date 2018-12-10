@@ -1339,6 +1339,7 @@ balance
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="4116">
                 <property name="width">10%</property>
             </column>
@@ -1781,6 +1782,7 @@ balance
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="4052">
                 <property name="width">15%</property>
             </column>

@@ -1612,6 +1612,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4147">
                             <property name="width">0.5in</property>
                         </column>

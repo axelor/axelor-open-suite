@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1615,6 +1615,7 @@ else  {  0.00 }</expression>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4147">
                             <property name="width">0.5in</property>
                         </column>

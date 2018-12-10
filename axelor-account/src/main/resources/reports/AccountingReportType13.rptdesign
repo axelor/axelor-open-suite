@@ -916,6 +916,7 @@ row["credit"]
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="2917">
                 <property name="width">0.8125in</property>
             </column>

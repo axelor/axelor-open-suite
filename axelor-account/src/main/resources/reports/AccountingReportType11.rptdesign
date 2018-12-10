@@ -1505,6 +1505,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="4338">
                 <property name="overflow">visible</property>
                 <property name="width">3.8cm</property>
@@ -2200,6 +2201,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="464">
                 <property name="width">1.59375in</property>
             </column>

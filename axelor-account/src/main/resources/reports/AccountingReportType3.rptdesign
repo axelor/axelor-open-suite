@@ -1517,6 +1517,7 @@ row["ReportedBalanceAmount"]
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="1168">
                             <property name="width">4.6in</property>
                         </column>
@@ -2691,6 +2692,7 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="1446">
                             <property name="width">3.344in</property>
                         </column>

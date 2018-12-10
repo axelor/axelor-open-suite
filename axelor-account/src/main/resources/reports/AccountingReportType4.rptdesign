@@ -1688,6 +1688,7 @@ row["180&lt;days"]
                                 <property name="dataType">float</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="1168">
                             <property name="width">1.96875in</property>
                         </column>
@@ -2960,6 +2961,7 @@ row["amount_remaining"]
                                 <property name="dataType">float</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <list-property name="filter">
                             <structure>
                                 <property name="operator">ne</property>
