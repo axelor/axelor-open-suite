@@ -39,8 +39,6 @@
 		public static final String FILE_FORMAT_CAMT_053_001_02_STM = "camt.053.001.02.stm";
 		
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
-		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY = "camt.xxx.cfonb120.stm.0by";
-		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR = "camt.xxx.cfonb120.stm.eur";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_REP = "camt.xxx.cfonb120.rep";
 
 		public static final String FILE_FORMAT_CAMT_FIN_MT940_STM = "camt.fin.mt940.stm";

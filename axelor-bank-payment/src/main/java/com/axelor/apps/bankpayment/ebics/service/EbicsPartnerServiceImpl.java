@@ -81,8 +81,8 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 
     EbicsUser transportEbicsUser = ebicsPartner.getTransportEbicsUser();
 
-    if (ebicsPartner.getBankStatementFileFormatSet() == null
-        || ebicsPartner.getBankStatementFileFormatSet().isEmpty()
+    if (ebicsPartner.getBsEbicsPartnerServiceList() == null
+        || ebicsPartner.getBsEbicsPartnerServiceList().isEmpty()
         || transportEbicsUser == null) {
       return bankStatementList;
     }
@@ -110,8 +110,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
       bankStatementToDate = executionDateTime.toLocalDate();
     }
 
-    for (BankStatementFileFormat bankStatementFileFormat :
-        ebicsPartner.getBankStatementFileFormatSet()) {
+    for (com.axelor.apps.bankpayment.db.EbicsPartnerService bsEbicsPartnerService :
+        ebicsPartner.getBsEbicsPartnerServiceList()) {
+
+      BankStatementFileFormat bankStatementFileFormat =
+          bsEbicsPartnerService.getBankStatementFileFormat();
       if (bankStatementFileFormatCollection != null
           && !bankStatementFileFormatCollection.isEmpty()
           && !bankStatementFileFormatCollection.contains(bankStatementFileFormat)) {
@@ -125,7 +128,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
                 null,
                 startDate,
                 endDate,
-                bankStatementFileFormat.getStatementFileFormatSelect());
+                bsEbicsPartnerService.getEbicsCodification());
 
         BankStatement bankStatement =
             bankStatementCreateService.createBankStatement(
@@ -154,7 +157,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 
   public void checkBankDetailsMissingCurrency(EbicsPartner ebicsPartner) throws AxelorException {
     List<com.axelor.apps.bankpayment.db.EbicsPartnerService> ebicsPartnerServiceSet =
-        ebicsPartner.getEbicsPartnerServiceList();
+        ebicsPartner.getBoEbicsPartnerServiceList();
     if (ebicsPartnerServiceSet == null) {
       return;
     }

@@ -66,8 +66,6 @@ public class BankStatementService {
     switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
         Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
         updateStatus(bankStatement);
         break;
@@ -101,8 +99,6 @@ public class BankStatementService {
     switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
         reportName = IReport.BANK_STATEMENT_AFB120;
         break;
       default:

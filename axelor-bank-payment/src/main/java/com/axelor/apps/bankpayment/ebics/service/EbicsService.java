@@ -288,7 +288,7 @@ public class EbicsService {
     Preconditions.checkNotNull(transportUser.getEbicsPartner());
     Preconditions.checkNotNull(format);
     List<EbicsPartnerService> ebicsPartnerServiceList =
-        transportUser.getEbicsPartner().getEbicsPartnerServiceList();
+        transportUser.getEbicsPartner().getBoEbicsPartnerServiceList();
     String ebicsCodification;
 
     if (ebicsPartnerServiceList == null || ebicsPartnerServiceList.isEmpty()) {
@@ -305,8 +305,8 @@ public class EbicsService {
     Preconditions.checkNotNull(ebicsPartner);
     Preconditions.checkNotNull(format);
 
-    if (ebicsPartner.getEbicsPartnerServiceList() != null) {
-      for (EbicsPartnerService service : ebicsPartner.getEbicsPartnerServiceList()) {
+    if (ebicsPartner.getBoEbicsPartnerServiceList() != null) {
+      for (EbicsPartnerService service : ebicsPartner.getBoEbicsPartnerServiceList()) {
         if (format.equals(service.getBankOrderFileFormat())) {
           return service.getEbicsCodification();
         }

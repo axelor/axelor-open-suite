@@ -86,8 +86,6 @@ public class BankReconciliationService {
     switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
         Beans.get(BankReconciliationLoadAFB120Service.class).loadBankStatement(bankReconciliation);
         break;
 
