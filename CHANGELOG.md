@@ -161,6 +161,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - STOCKMOVE : mass printing for conformity certificate report
 - CUT-OFF : Managed accounting cut-off batch for supplier and customer deliveries.
 - Stock Move Line : Allow to update filterOnAvailableProducts from Main StockMove Panel.
+- MOVE : Automatic taxline generation.
 
 ## Improvements
 - Move project resource menu entry to project configuration menu.
