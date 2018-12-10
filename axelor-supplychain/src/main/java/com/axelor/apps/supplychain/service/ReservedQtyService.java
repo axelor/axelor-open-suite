@@ -38,6 +38,13 @@ public interface ReservedQtyService {
   void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException;
 
   /**
+   * For lines with duplicate product, fill all the reserved qty in one line and empty the others.
+   *
+   * @param stockMove
+   */
+  void consolidateReservedQtyInStockMoveLineByProduct(StockMove stockMove);
+
+  /**
    * Update requested quantity for internal or external location.
    *
    * @param stockMoveLine
@@ -124,7 +131,7 @@ public interface ReservedQtyService {
       StockLocationLine stockLocationLine, BigDecimal requestedReservedQty);
 
   /**
-   * Update allocated quantity in sale order line.
+   * Update allocated quantity in sale order line with a new quantity, updating location and moves.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -187,6 +194,22 @@ public interface ReservedQtyService {
    * @param stockMoveLine
    * @param amountToDeallocate
    */
-  void desallocateStockMoveLineAfterSplit(
-      StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException;
+  void deallocateStockMoveLineAfterSplit(StockMoveLine stockMoveLine, BigDecimal amountToDeallocate)
+      throws AxelorException;
+
+  /**
+   * Update reserved qty for sale order line from already updated stock move.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void updateReservedQty(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Update reserved qty for stock location line from already updated stock move.
+   *
+   * @param stockLocationLine
+   * @throws AxelorException
+   */
+  void updateReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
 }

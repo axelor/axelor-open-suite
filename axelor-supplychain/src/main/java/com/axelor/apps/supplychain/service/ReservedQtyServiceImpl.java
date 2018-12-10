@@ -42,7 +42,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ReservedQtyServiceImpl implements ReservedQtyService {
 
@@ -65,8 +67,13 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
   @Override
   public void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException {
-    if (stockMove.getStockMoveLineList() != null) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+    if (status == StockMoveRepository.STATUS_REALIZED) {
+      consolidateReservedQtyInStockMoveLineByProduct(stockMove);
+    }
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      stockMove.getStockMoveLineList().sort(Comparator.comparing(StockMoveLine::getId));
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal qty = stockMoveLine.getRealQty();
         BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
         Product product = stockMoveLine.getProduct();
@@ -82,6 +89,44 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             qty,
             requestedReservedQty,
             status);
+      }
+    }
+  }
+
+  @Override
+  public void consolidateReservedQtyInStockMoveLineByProduct(StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() == null) {
+      return;
+    }
+    List<Product> productList =
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .map(StockMoveLine::getProduct)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    for (Product product : productList) {
+      if (product != null) {
+        List<StockMoveLine> stockMoveLineListToConsolidate =
+            stockMove
+                .getStockMoveLineList()
+                .stream()
+                .filter(stockMoveLine1 -> product.equals(stockMoveLine1.getProduct()))
+                .collect(Collectors.toList());
+        if (stockMoveLineListToConsolidate.size() > 1) {
+          stockMoveLineListToConsolidate.sort(Comparator.comparing(StockMoveLine::getId));
+          BigDecimal reservedQtySum =
+              stockMoveLineListToConsolidate
+                  .stream()
+                  .map(StockMoveLine::getReservedQty)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          stockMoveLineListToConsolidate.forEach(
+              toConsolidateStockMoveLine ->
+                  toConsolidateStockMoveLine.setReservedQty(BigDecimal.ZERO));
+          stockMoveLineListToConsolidate.get(0).setReservedQty(reservedQtySum);
+        }
       }
     }
   }
@@ -142,10 +187,6 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
               realReservedStockMoveQty,
               stockMoveLine.getProduct());
 
-      // update allocated quantity in stock location line
-      stockLocationLine.setReservedQty(
-          stockLocationLine.getReservedQty().subtract(realReservedQty));
-
       // reallocate quantity in other stock move lines
       if (isReallocatingQtyOnCancel(stockMoveLine)) {
         reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, realReservedQty);
@@ -167,9 +208,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
               realReservedQty,
               stockMoveLine.getProduct());
       updateReservedQuantityFromStockMoveLine(stockMoveLine, product, realReservedStockMoveQty);
-      stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(realReservedQty));
     }
 
+    updateReservedQty(stockLocationLine);
     checkReservedQtyStocks(stockLocationLine, toStatus);
   }
 
@@ -243,9 +284,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     realReservedStockMoveQty =
         convertUnitWithProduct(stockLocationLineUnit, stockMoveLineUnit, realReservedQty, product);
-    stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(realReservedQty));
     allocateReservedQuantityInSaleOrderLines(
         realReservedStockMoveQty, stockLocation, product, stockLocationLineUnit);
+    updateReservedQty(stockLocationLine);
   }
 
   @Override
@@ -295,10 +336,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     stockMoveLine.setReservedQty(stockMoveLine.getReservedQty().add(reservedQtyToAdd));
     if (saleOrderLine != null) {
-      BigDecimal soLineReservedQtyToAdd =
-          convertUnitWithProduct(
-              stockMoveLine.getUnit(), saleOrderLine.getUnit(), reservedQtyToAdd, product);
-      saleOrderLine.setReservedQty(saleOrderLine.getReservedQty().add(soLineReservedQtyToAdd));
+      updateReservedQty(saleOrderLine);
     }
   }
 
@@ -306,10 +344,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   public void updateReservedQuantityInStockMoveLineFromSaleOrderLine(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException {
-    saleOrderLine.setReservedQty(newReservedQty);
 
     List<StockMoveLine> stockMoveLineList = getPlannedStockMoveLines(saleOrderLine);
-    BigDecimal allocatedQty = saleOrderLine.getReservedQty();
+    BigDecimal allocatedQty = newReservedQty;
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       BigDecimal stockMoveAllocatedQty =
           convertUnitWithProduct(
@@ -325,6 +362,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
               product);
       allocatedQty = allocatedQty.subtract(saleOrderReservedQtyInStockMoveLine);
     }
+    updateReservedQty(saleOrderLine);
   }
 
   @Override
@@ -427,8 +465,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         saleOrderLine, stockMoveLine.getProduct(), newReservedQty);
 
     // update in stock location line
-    stockLocationLine.setReservedQty(
-        stockLocationLine.getReservedQty().add(diffReservedQuantityLocation));
+    updateReservedQty(stockLocationLine);
   }
 
   @Override
@@ -470,18 +507,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  public void desallocateStockMoveLineAfterSplit(
+  public void deallocateStockMoveLineAfterSplit(
       StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException {
     // deallocate in sale order line
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     if (saleOrderLine != null) {
-      BigDecimal amountToDeallocateSO =
-          convertUnitWithProduct(
-              stockMoveLine.getUnit(),
-              saleOrderLine.getUnit(),
-              amountToDeallocate,
-              stockMoveLine.getProduct());
-      saleOrderLine.setReservedQty(saleOrderLine.getReservedQty().subtract(amountToDeallocateSO));
+      updateReservedQty(saleOrderLine);
     }
     // deallocate in stock location line
     if (stockMoveLine.getStockMove() != null) {
@@ -489,14 +520,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           stockLocationLineService.getStockLocationLine(
               stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
       if (stockLocationLine != null) {
-        BigDecimal amountToDeallocateLocation =
-            convertUnitWithProduct(
-                stockMoveLine.getUnit(),
-                stockLocationLine.getUnit(),
-                amountToDeallocate,
-                stockMoveLine.getProduct());
-        stockLocationLine.setReservedQty(
-            stockLocationLine.getReservedQty().subtract(amountToDeallocateLocation));
+        updateReservedQty(stockLocationLine);
       }
     }
   }
@@ -521,5 +545,57 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     } else {
       return qtyToConvert;
     }
+  }
+
+  @Override
+  public void updateReservedQty(SaleOrderLine saleOrderLine) throws AxelorException {
+    // compute from stock move lines
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .filter(
+                "self.saleOrderLine.id = :saleOrderLineId "
+                    + "AND self.stockMove.statusSelect = :planned")
+            .bind("saleOrderLineId", saleOrderLine.getId())
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .fetch();
+    BigDecimal reservedQty = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      reservedQty =
+          reservedQty.add(
+              convertUnitWithProduct(
+                  stockMoveLine.getUnit(),
+                  saleOrderLine.getUnit(),
+                  stockMoveLine.getReservedQty(),
+                  saleOrderLine.getProduct()));
+    }
+    saleOrderLine.setReservedQty(reservedQty);
+  }
+
+  @Override
+  public void updateReservedQty(StockLocationLine stockLocationLine) throws AxelorException {
+    // compute from stock move lines
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .filter(
+                "self.product.id = :productId "
+                    + "AND self.stockMove.fromStockLocation.id = :stockLocationId "
+                    + "AND self.stockMove.statusSelect = :planned")
+            .bind("productId", stockLocationLine.getProduct().getId())
+            .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .fetch();
+    BigDecimal reservedQty = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      reservedQty =
+          reservedQty.add(
+              convertUnitWithProduct(
+                  stockMoveLine.getUnit(),
+                  stockLocationLine.getUnit(),
+                  stockMoveLine.getReservedQty(),
+                  stockLocationLine.getProduct()));
+    }
+    stockLocationLine.setReservedQty(reservedQty);
   }
 }
