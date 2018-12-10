@@ -38,6 +38,13 @@ public interface ReservedQtyService {
   void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException;
 
   /**
+   * For lines with duplicate product, fill all the reserved qty in one line and empty the others.
+   *
+   * @param stockMove
+   */
+  void consolidateReservedQtyInStockMoveLineByProduct(StockMove stockMove);
+
+  /**
    * Update requested quantity for internal or external location.
    *
    * @param stockMoveLine

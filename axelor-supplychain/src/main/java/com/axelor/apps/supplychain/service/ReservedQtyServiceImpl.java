@@ -42,7 +42,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ReservedQtyServiceImpl implements ReservedQtyService {
 
@@ -65,8 +67,13 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
   @Override
   public void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException {
-    if (stockMove.getStockMoveLineList() != null) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+    if (status == StockMoveRepository.STATUS_REALIZED) {
+      consolidateReservedQtyInStockMoveLineByProduct(stockMove);
+    }
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      stockMove.getStockMoveLineList().sort(Comparator.comparing(StockMoveLine::getId));
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal qty = stockMoveLine.getRealQty();
         BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
         Product product = stockMoveLine.getProduct();
@@ -82,6 +89,44 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             qty,
             requestedReservedQty,
             status);
+      }
+    }
+  }
+
+  @Override
+  public void consolidateReservedQtyInStockMoveLineByProduct(StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() == null) {
+      return;
+    }
+    List<Product> productList =
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .map(StockMoveLine::getProduct)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    for (Product product : productList) {
+      if (product != null) {
+        List<StockMoveLine> stockMoveLineListToConsolidate =
+            stockMove
+                .getStockMoveLineList()
+                .stream()
+                .filter(stockMoveLine1 -> product.equals(stockMoveLine1.getProduct()))
+                .collect(Collectors.toList());
+        if (stockMoveLineListToConsolidate.size() > 1) {
+          stockMoveLineListToConsolidate.sort(Comparator.comparing(StockMoveLine::getId));
+          BigDecimal reservedQtySum =
+              stockMoveLineListToConsolidate
+                  .stream()
+                  .map(StockMoveLine::getReservedQty)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          stockMoveLineListToConsolidate.forEach(
+              toConsolidateStockMoveLine ->
+                  toConsolidateStockMoveLine.setReservedQty(BigDecimal.ZERO));
+          stockMoveLineListToConsolidate.get(0).setReservedQty(reservedQtySum);
+        }
       }
     }
   }
