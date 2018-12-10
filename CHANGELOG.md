@@ -264,6 +264,7 @@ Only display line where quantity is greater than 0.
 - Sale Order: change confirmation date to datetime.
 - Reservation date on stock move is now copied from confirmation date time on sale order.
 - Tax report : Refactoring entirely the debit tax report (type 12) and display the move lines details.
+- Accounting reports : disable page break interval to get only one tab on excel files
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
