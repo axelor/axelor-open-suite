@@ -124,7 +124,7 @@ public interface ReservedQtyService {
       StockLocationLine stockLocationLine, BigDecimal requestedReservedQty);
 
   /**
-   * Update allocated quantity in sale order line.
+   * Update allocated quantity in sale order line with a new quantity, updating location and moves.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -187,6 +187,14 @@ public interface ReservedQtyService {
    * @param stockMoveLine
    * @param amountToDeallocate
    */
-  void desallocateStockMoveLineAfterSplit(
-      StockMoveLine stockMoveLine, BigDecimal amountToDeallocate) throws AxelorException;
+  void deallocateStockMoveLineAfterSplit(StockMoveLine stockMoveLine, BigDecimal amountToDeallocate)
+      throws AxelorException;
+
+  /**
+   * Update reserved qty for sale order line from already updated stock move.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void updateReservedQty(SaleOrderLine saleOrderLine) throws AxelorException;
 }

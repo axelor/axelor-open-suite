@@ -368,7 +368,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       newStockMoveLine.setRequestedReservedQty(requestedReservedQty);
       newStockMoveLine.setReservedQty(BigDecimal.ZERO);
 
-      reservedQtyService.desallocateStockMoveLineAfterSplit(
+      reservedQtyService.deallocateStockMoveLineAfterSplit(
           stockMoveLine, stockMoveLine.getReservedQty());
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
