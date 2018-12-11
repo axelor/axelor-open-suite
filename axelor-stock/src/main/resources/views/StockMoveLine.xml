@@ -328,15 +328,15 @@
     <form model="com.axelor.apps.base.db.Wizard" title="Enter tracking numbers" name="stock-move-line-track-number-wizard-form" onNew="action-track-number-atts-from-stock-move-line">
     	<panel name="wizardPanel" colSpan="12">
 	    	<panel-related name="$trackingNumbersPanel" field="$trackingNumbers" canSelect="false" editable="true" type="one-to-many" colSpan="12" title="Enter tracking numbers" target="com.axelor.apps.stock.db.TrackingNumber">
-	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain"/>
+	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain" canEdit="false"/>
 	   			<field name="trackingNumberSeq" title="Tracking Nbr." onChange="action-stock-move-line-wizard-record-set-dates,action-track-number-atts-readonly-dates"/>
-				<field name="counter" title="Quantity"/>
 				<field name="$availableQty" title="Available qty" type="decimal" width="120" readonly="true" />
+				<field name="counter" title="Quantity" readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
 				<field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
 				<field name="perishableExpirationDate" title="Perishable expiration date" readonly="false"/>
 			</panel-related>
-    		<button name="validateBtn" title="Validate" onClick="action-stock-move-line-method-update-lines"/>
-    		<button name="availableTranckingNumberBtn" title="Display available tracking numbers" onClick="action-stock-move-line-method-display-available-tracking-number" />
+			<button name="availableTranckingNumberBtn" title="Display available tracking numbers" onClick="action-stock-move-line-method-display-available-tracking-number" />
+			<button name="validateBtn" title="Validate" onClick="action-stock-move-line-method-update-lines"/>
     	</panel>
     </form>
     
