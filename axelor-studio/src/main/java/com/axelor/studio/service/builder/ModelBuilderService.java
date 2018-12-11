@@ -23,6 +23,7 @@ import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.ObjectViews;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -101,9 +102,13 @@ public class ModelBuilderService {
 
     sortJsonFields(fields);
 
+    List<MetaJsonField> trackingFields = new ArrayList<>();
     StringBuilder fieldBuilder = new StringBuilder();
 
     for (MetaJsonField field : fields) {
+      if (field.getIsTrack()) {
+        trackingFields.add(field);
+      }
       String type = getType(field.getType());
       if (type == null || field.getIsWkf()) {
         continue;
@@ -128,6 +133,8 @@ public class ModelBuilderService {
       fieldBuilder.append("\n");
     }
 
+    fieldBuilder = createTracking(trackingFields, fieldBuilder);
+
     return fieldBuilder.toString();
   }
 
@@ -145,6 +152,22 @@ public class ModelBuilderService {
     type = type.replace("json-", "");
 
     return type;
+  }
+
+  private StringBuilder createTracking(
+      List<MetaJsonField> trackingFields, StringBuilder fieldBuilder) {
+
+    if (!trackingFields.isEmpty()) {
+      StringBuilder trackingFieldBuilder = new StringBuilder();
+      trackingFieldBuilder.append("\n\t\t<track>\n");
+      for (MetaJsonField trackingField : trackingFields) {
+        trackingFieldBuilder.append("\t\t\t<field name=\"" + trackingField.getName() + "\" />\n");
+      }
+      trackingFieldBuilder.append("\t\t</track>\n\n");
+      fieldBuilder.append(trackingFieldBuilder.toString());
+    }
+
+    return fieldBuilder;
   }
 
   private void addRelationalAtts(StringBuilder builder, MetaJsonField field, String module) {

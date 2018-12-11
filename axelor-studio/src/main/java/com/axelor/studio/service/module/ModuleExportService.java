@@ -114,10 +114,12 @@ public class ModuleExportService {
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
   @Transactional
-  public MetaFile export(String module, MetaFile metaFile)
+  public MetaFile exportModule(String module, MetaFile metaFile)
       throws AxelorException, ZipException, IOException, JAXBException {
 
     List<MetaJsonModel> jsonModels = metaJsonModelRepo.all().filter("self.isReal = true").fetch();
+    List<MetaJsonModel> jsonModelsWithoutReal =
+        metaJsonModelRepo.all().filter("self.isReal = false").fetch();
     List<MetaModel> metaModels = metaModelRepo.all().filter("self.isReal = true").fetch();
     List<ViewBuilder> viewBuilders =
         viewBuilderRepo
@@ -127,7 +129,7 @@ public class ModuleExportService {
                     + " OR self.model IN (SELECT name FROM MetaJsonModel WHERE isReal = true)")
             .fetch();
 
-    if (jsonModels.isEmpty() && metaModels.isEmpty() && viewBuilders.isEmpty()) {
+    if (jsonModels.isEmpty() && jsonModelsWithoutReal.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.NO_MODULE_DATA));
     }
@@ -144,7 +146,9 @@ public class ModuleExportService {
     addMenu(module, jsonModels, viewMap);
     addView(module, viewBuilders, zipOut, viewMap);
 
-    Beans.get(ModuleExportDataInitService.class).exportDataInit(module, zipOut);
+    if (!jsonModelsWithoutReal.isEmpty()) {
+      Beans.get(ModuleExportDataInitService.class).exportDataInit(module, zipOut);
+    }
 
     zipOut.close();
     if (metaFile != null) {

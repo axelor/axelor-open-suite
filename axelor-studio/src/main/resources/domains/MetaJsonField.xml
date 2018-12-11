@@ -10,6 +10,7 @@
         <boolean name="isWkf" />
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
             title="App builder" />
+        <boolean name="isTrack" title="Track on real"/>
     </entity>
 
 </domain-models>

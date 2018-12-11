@@ -27,6 +27,9 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.Panel;
 import com.axelor.meta.schema.views.PanelField;
+import com.axelor.meta.schema.views.PanelMail;
+import com.axelor.meta.schema.views.PanelMail.MailFollowers;
+import com.axelor.meta.schema.views.PanelMail.MailMessages;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.axelor.meta.schema.views.Separator;
 import com.axelor.meta.schema.views.SimpleWidget;
@@ -104,6 +107,7 @@ public class FormBuilderService {
   private List<AbstractWidget> createItems(List<MetaJsonField> fields) {
 
     List<AbstractWidget> items = new ArrayList<>();
+    boolean isTrack = false;
 
     PanelTabs panelTabs = null;
     Panel panel = null;
@@ -112,6 +116,9 @@ public class FormBuilderService {
     for (MetaJsonField field : fields) {
       if (field.getIsWkf()) {
         continue;
+      }
+      if (field.getIsTrack()) {
+        isTrack = true;
       }
       HashMap<String, Object> widgetAttrs = getWidgetAttrs(field);
 
@@ -138,6 +145,16 @@ public class FormBuilderService {
       } else {
         log.debug("Panel null for field: {}", field.getName());
       }
+    }
+
+    if (isTrack) {
+      PanelMail panelMail = new PanelMail();
+      panelMail.setItems(new ArrayList<>());
+      MailMessages mailMessages = new MailMessages();
+      mailMessages.setLimit(4);
+      panelMail.getItems().add(mailMessages);
+      panelMail.getItems().add(new MailFollowers());
+      items.add(panelMail);
     }
 
     return items;

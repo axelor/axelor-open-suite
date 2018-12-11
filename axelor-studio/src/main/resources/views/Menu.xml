@@ -120,11 +120,20 @@
         <domain>self.menuAction = false</domain>
     </action-view>
 
-    <menuitem name="app-builder-module-builders" title="Module builders" parent="app-builder-config" order="50" action="action.module.builders.view"/>
-  
-  	<action-view name="action.module.builders.view" title="Module builders" model="com.axelor.studio.db.ModuleBuilder">
-  		<view type="grid" name="module-builder-grid"/>
-    	<view type="form" name="module-builder-form"/>
+  	<menuitem title="Export/Import" name="app-builder-export-import" parent="app-builder-config" order="50"/>
+  	
+  	<menuitem title="Export module" name="app-builder-export-import-export-module" parent="app-builder-export-import" action="app.builder.export.import.export.module"/>
+  	
+  	<action-view name="app.builder.export.import.export.module" title="Export module" model="com.axelor.studio.db.ExportModule">
+  		<view type="grid" name="export-module-grid"/>
+  		<view type="form" name="export-module-form"/>
+  	</action-view>
+	
+	<menuitem title="Import module" name="app-builder-export-import-import-module" parent="app-builder-export-import" action="app.builder.export.import.import.module"/>
+  	
+  	<action-view name="app.builder.export.import.import.module" title="Import module" model="com.axelor.studio.db.ImportModule">
+  		<view type="grid" name="import-module-grid"/>
+  		<view type="form" name="import-module-form"/>
   	</action-view>
 
 </object-views>

@@ -1,0 +1,113 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.studio.service.validator;
+
+import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.studio.service.ConfigurationService;
+import com.axelor.studio.service.exporter.MenuExporter;
+import com.axelor.studio.service.importer.DataReaderService;
+import com.google.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MenuValidator {
+
+  private ValidatorService validatorService;
+
+  private List<String> menus;
+
+  @Inject private MetaMenuRepository metaMenuRepo;
+
+  @Inject private ConfigurationService configService;
+
+  public void validate(ValidatorService validatorService, DataReaderService reader, String key)
+      throws IOException {
+    if (validatorService == null) {
+      return;
+    }
+    this.validatorService = validatorService;
+    if (key == null || reader == null) {
+      return;
+    }
+
+    menus = new ArrayList<String>();
+
+    int totalLines = reader.getTotalLines(key);
+
+    for (int rowNum = 1; rowNum < totalLines; rowNum++) {
+
+      String[] row = reader.read(key, rowNum);
+      if (row == null) {
+        continue;
+      }
+
+      String module = row[MenuExporter.MODULE];
+
+      if (module == null) {
+        continue;
+      }
+
+      validateMenu(row, key, rowNum);
+    }
+  }
+
+  private void validateMenu(String[] row, String key, int rowNum) throws IOException {
+
+    String name = row[MenuExporter.NAME];
+    String title = row[MenuExporter.TITLE];
+
+    if (title == null) {
+      title = row[MenuExporter.TITLE_FR];
+    }
+
+    if (name == null && title == null) {
+      validatorService.addLog(I18n.get("Name and title is empty"), key, rowNum);
+    }
+
+    String model = row[MenuExporter.OBJECT];
+    if (model != null && !validatorService.isValidModel(model)) {
+      validatorService.addLog(I18n.get("Invalid model"), key, rowNum);
+    }
+
+    String order = row[MenuExporter.ORDER];
+    if (order != null) {
+      try {
+        Integer.parseInt(order.trim());
+      } catch (Exception e) {
+        validatorService.addLog(I18n.get("Invalid menu order"), key, rowNum);
+      }
+    }
+
+    if (name == null) {
+      name = title;
+    }
+
+    String parent = row[MenuExporter.PARENT];
+    if (parent != null && !menus.contains(parent)) {
+      MetaMenu menu = metaMenuRepo.all().filter("self.name = ?1", parent).fetchOne();
+      if (menu == null) {
+        validatorService.addLog(I18n.get("No parent menu defined"), key, rowNum);
+      }
+    }
+
+    menus.add(name);
+  }
+}

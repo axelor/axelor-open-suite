@@ -40,6 +40,13 @@
     	</panel>
     </form>
     
+    <form id="studio-json-field-form-base" name="json-field-form-base" title="Custom field" model="com.axelor.meta.db.MetaJsonField">
+    	<panel-include view="json-field-form-base" from="axelor-core"/>
+    	<panel sidebar="true">
+    		<field name="isTrack" widget="inline-checkbox"/>
+    	</panel>
+    </form>
+    
     <action-attrs name="action-studio-attr-json-field-read-only-model">
   		<attribute name="readonly" expr="eval: jsonCreator != null" for="model,modelField" />
 	</action-attrs>

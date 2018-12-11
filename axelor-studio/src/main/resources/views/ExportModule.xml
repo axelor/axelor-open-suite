@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="export-module-grid" title="Export module" model="com.axelor.studio.db.ExportModule">
+		<field name="name"/>
+		<field name="exportDate"/>
+		<field name="generatedFile"/>
+	</grid>
+	
+	<form name="export-module-form" title="Export module" model="com.axelor.studio.db.ExportModule" width="large">
+		<panel>
+			<field name="name" pattern="axelor(-[a-z]+)+$"/>
+			<field name="exportDate" readonly="true"/>
+			<field name="generatedFile" widget="binary-link" readonly="true"/>
+		<panel colSpan="12">
+			<button name="exportBtn" title="Export" colSpan="3" onClick="save,action-export-module-method-export-module,save"/>
+			<button name="exportExcelBtn" title="Export excel" colSpan="3" onClick="save,action-export-module-method-export-excel,save"/>
+		</panel>
+		</panel>
+	</form>
+	
+	<action-method name="action-export-module-method-export-module">
+  		<call class="com.axelor.studio.web.ExportImportController" method="exportModule"/>
+  	</action-method>
+  	
+  	<action-method name="action-export-module-method-export-excel">
+  		<call class="com.axelor.studio.web.ExportImportController" method="exportExcel"/>
+  	</action-method>
+  	
+</object-views>

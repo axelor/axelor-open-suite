@@ -5,9 +5,10 @@
 
 	<module name="studio" package="com.axelor.studio.db" />
   
-	<entity name="ModuleBuilder" cachable="true">
+	<entity name="ExportModule" cachable="true">
 	    <string name="name" title="Name" required="true"/>
-	    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+	    <date name="exportDate" title="Export date"/>
+	    <many-to-one name="generatedFile" ref="com.axelor.meta.db.MetaFile" title="Generated file"/>
 	</entity>
 
 </domain-models>

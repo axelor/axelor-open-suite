@@ -24,7 +24,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.ModuleBuilder;
+import com.axelor.studio.db.ImportModule;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
@@ -49,18 +49,18 @@ public class ModuleImportService {
           new String[] {"build.gradle", "src/main/java", "src/test/java", "src/main/resources"});
 
   @Transactional
-  public void importModule(ModuleBuilder moduleBuilder)
+  public void importModule(ImportModule importModule)
       throws ZipException, IOException, AxelorException {
 
-    if (moduleBuilder.getMetaFile() == null) {
+    if (importModule.getDataFile() == null) {
       return;
     }
 
-    MetaFile metaFile = moduleBuilder.getMetaFile();
+    MetaFile metaFile = importModule.getDataFile();
     File file = MetaFiles.getPath(metaFile).toFile();
     validateFile(file);
 
-    String moduleName = moduleBuilder.getName();
+    String moduleName = importModule.getDataFile().getFileName().replace(".zip", "");
     if (!moduleName.matches(MODULE_PATTERN)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="import-module-grid" title="Import module" model="com.axelor.studio.db.ImportModule">
+		<field name="dataFile"/>
+		<field name="importDate"/>
+		<field name="errLogFile"/>
+	</grid>
+	
+	<form name="import-module-form" title="Import module" model="com.axelor.studio.db.ImportModule" width="large">
+		<toolbar>
+			<button name="restartServer" title="Restart server" onClick="action-import-module-validate-restart-server,action-import-module-method-restart-server,save"/>
+		</toolbar>
+		<panel>
+			<field name="dataFile" widget="binary-link"/>
+			<field name="importDate" readonly="true"/>
+			<field name="errLogFile" widget="binary-link" readonly="true"/>
+		<panel colSpan="12">
+			<button name="importBtn" title="Import" colSpan="3" onClick="save,action-import-module-method-import-module,save"/>
+			<button name="importExcelBtn" title="Import excel" colSpan="3" onClick="save,action-import-module-method-import-excel,save"/>
+		</panel>
+		</panel>
+	</form>
+	
+	<action-method name="action-import-module-method-import-module">
+  		<call class="com.axelor.studio.web.ExportImportController" method="importModule"/>
+  	</action-method>
+  	
+  	<action-method name="action-import-module-method-import-excel">
+  		<call class="com.axelor.studio.web.ExportImportController" method="importExcel"/>
+  	</action-method>
+  	
+  	<action-method name="action-import-module-method-restart-server">
+  		<call class="com.axelor.studio.web.ExportImportController" method="restartServer"/>
+  	</action-method>
+  	
+  	<action-validate name="action-import-module-validate-restart-server">
+  		<alert message="Are you sure wants to restart the server?"/>
+  	</action-validate>
+	
+</object-views>
