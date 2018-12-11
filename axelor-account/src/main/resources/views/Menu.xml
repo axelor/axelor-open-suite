@@ -104,6 +104,16 @@
 		<view-param name="search-filters" value="move-filters"/>
 	</action-view>
 
+	<menuitem name="account-root-move-move-line" parent="account-root-move"
+		title="Move lines" action="account.root.move.move.line" />
+
+	<action-view name="account.root.move.move.line" title="Move lines"
+		model="com.axelor.apps.account.db.MoveLine" >
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
+	</action-view>
+
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5"/>
 
