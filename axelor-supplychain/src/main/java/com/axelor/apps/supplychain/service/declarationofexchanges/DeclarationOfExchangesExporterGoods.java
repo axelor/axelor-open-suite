@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.declaration_of_exchanges;
+package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
-import com.axelor.apps.stock.db.DeclarationOfExchanges;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
 import com.axelor.apps.stock.db.Regime;
@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
@@ -64,7 +65,11 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     TRANSP(/*$$(*/ "Mode of transport" /*$$(*/),
     DEPT(/*$$(*/ "Department" /*$$(*/),
     COUNTRY_ORIG(/*$$(*/ "Country of origin" /*$$(*/),
-    ACQUIRER(/*$$(*/ "Acquirer" /*$$(*/);
+    ACQUIRER(/*$$(*/ "Acquirer" /*$$(*/),
+    PRODUCT_CODE(/*$$(*/ "Product code" /*$$(*/),
+    PRODUCT_NAME(/*$$(*/ "Product name" /*$$(*/),
+    PARTNER_SEQ(/*$$(*/ "Partner" /*$$(*/),
+    INVOICE(/*$$(*/ "Invoice" /*$$(*/);
 
     private final String title;
 
@@ -83,6 +88,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
   public DeclarationOfExchangesExporterGoods(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
+
     super(declarationOfExchanges, bundle, NAME_GOODS, Column.values());
     this.customsCodeNomenclatureRepo = Beans.get(CustomsCodeNomenclatureRepository.class);
     this.stockMoveToolService = Beans.get(StockMoveToolService.class);
@@ -139,20 +145,21 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     String customsCode = stockMoveLine.getCustomsCode();
 
+    Product product = stockMoveLine.getProduct();
+
     if (StringUtils.isBlank(customsCode)) {
-      if (stockMoveLine.getProduct() == null) {
+      if (product == null) {
         customsCode = I18n.get("Product is missing.");
       }
 
-      if (stockMoveLine.getProduct().getCustomsCodeNomenclature() != null) {
-        customsCode = stockMoveLine.getProduct().getCustomsCodeNomenclature().getCode();
+      if (product.getCustomsCodeNomenclature() != null) {
+        customsCode = product.getCustomsCodeNomenclature().getCode();
       }
 
       if (StringUtils.isBlank(customsCode)) {
         customsCode =
             String.format(
-                I18n.get("Customs code nomenclature is missing on product %s."),
-                stockMoveLine.getProduct().getCode());
+                I18n.get("Customs code nomenclature is missing on product %s."), product.getCode());
       }
     }
 
@@ -251,6 +258,23 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       taxNbr = "";
     }
 
+    String partnerSeq = "";
+    if (stockMove.getPartner() != null) {
+      partnerSeq = stockMove.getPartner().getPartnerSeq();
+    }
+
+    String productCode = "";
+    String productName = "";
+    if (product != null) {
+      productCode = product.getCode();
+      productName = product.getName();
+    }
+
+    String invoiceId = "";
+    if (stockMove.getInvoice() != null) {
+      invoiceId = stockMove.getInvoice().getInvoiceId();
+    }
+
     data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum);
     data[Column.NOMENCLATURE.ordinal()] = customsCode;
     data[Column.SRC_DST_COUNTRY.ordinal()] = srcDstCountry;
@@ -263,6 +287,10 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     data[Column.DEPT.ordinal()] = dept;
     data[Column.COUNTRY_ORIG.ordinal()] = countryOrigCode;
     data[Column.ACQUIRER.ordinal()] = taxNbr;
+    data[Column.PRODUCT_CODE.ordinal()] = productCode;
+    data[Column.PRODUCT_NAME.ordinal()] = productName;
+    data[Column.PARTNER_SEQ.ordinal()] = partnerSeq;
+    data[Column.INVOICE.ordinal()] = invoiceId;
 
     return data;
   }

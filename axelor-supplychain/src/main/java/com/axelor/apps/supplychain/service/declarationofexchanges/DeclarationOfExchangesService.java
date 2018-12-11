@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.supplychain.service.declarationofexchanges;
 
-import com.axelor.apps.stock.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.exception.AxelorException;
 import java.nio.file.Path;
 import org.apache.commons.lang3.tuple.Pair;

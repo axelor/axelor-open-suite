@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.declaration_of_exchanges;
+package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 public interface DeclarationOfExchangesColumnHeader {
   String getTitle();

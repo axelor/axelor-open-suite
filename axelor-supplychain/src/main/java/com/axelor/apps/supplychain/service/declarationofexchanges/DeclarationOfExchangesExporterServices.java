@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.declaration_of_exchanges;
+package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.DeclarationOfExchanges;
 import com.axelor.apps.stock.db.Regime;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;

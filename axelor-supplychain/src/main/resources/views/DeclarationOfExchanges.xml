@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-  <grid model="com.axelor.apps.stock.db.DeclarationOfExchanges" title="Declarations of exchanges"
+  <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declarations of exchanges"
     name="declaration-of-exchanges-grid" orderBy="createdOn" onNew="action-declaration-of-exchanges-onnew">
     <field name="company" canEdit="false"/>
     <field name="country"
@@ -21,7 +21,7 @@
     <field name="createdOn"/>
   </grid>
 
-  <form model="com.axelor.apps.stock.db.DeclarationOfExchanges" title="Declaration of exchanges"
+  <form model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declaration of exchanges"
     name="declaration-of-exchanges-form" onNew="action-declaration-of-exchanges-onnew" width="large">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" onClick="action-declaration-of-exchanges-export"/>
@@ -49,22 +49,22 @@
     <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true" canSearch="true"/>
   </form>
 
-  <action-record name="action-declaration-of-exchanges-onnew" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
+  <action-record name="action-declaration-of-exchanges-onnew" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="country"
       expr="eval: (__user__.activeCompany?.stockConfig?.pickupDefaultStockLocation?.address ?: __user__.activeCompany?.address)?.addressL7Country"/>
   </action-record>
 
-  <action-record name="action-declaration-of-exchanges-fiscal-year-onchange" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
+  <action-record name="action-declaration-of-exchanges-fiscal-year-onchange" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
     <field name="period" expr="eval: null" if="period?.year != fiscalYear"/>
   </action-record>
 
-  <action-record name="action-declaration-of-exchanges-period-onchange" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
+  <action-record name="action-declaration-of-exchanges-period-onchange" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
     <field name="fiscalYear" expr="eval: period.year" if="!fiscalYear"/>
   </action-record>
 
   <action-record name="action-declaration-of-exchanges-product-type-select-onchange"
-    model="com.axelor.apps.stock.db.DeclarationOfExchanges">
+    model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
     <field name="stockMoveTypeSelect" expr="eval: STOCK_MOVE_TYPE_OUTGOING" if="productTypeSelect == 'service'"/>
   </action-record>
 
@@ -73,8 +73,8 @@
     <action name="action-declaration-of-exchanges-method-export"/>
   </action-group>
 
-  <action-method name="action-declaration-of-exchanges-method-export" model="com.axelor.apps.stock.db.DeclarationOfExchanges">
-    <call class="com.axelor.apps.stock.web.DeclarationOfExchangesController" method="export"/>
+  <action-method name="action-declaration-of-exchanges-method-export">
+    <call class="com.axelor.apps.supplychain.web.DeclarationOfExchangesController" method="export"/>
   </action-method>
   
   <action-view name="action-stock-move-line-declaration-of-exchanges" title="Stock move lines"

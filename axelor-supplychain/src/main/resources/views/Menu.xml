@@ -85,6 +85,18 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
+	<menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
+      parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
+
+    <action-view name="supplychain.declarations.of.exchanges" title="Declarations of exchanges"
+      model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
+      <view type="grid" name="declaration-of-exchanges-grid"/>
+      <view type="form" name="declaration-of-exchanges-form"/>
+      <context name="YEAR_TYPE_FISCAL" expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL"/>
+      <context name="STOCK_MOVE_TYPE_OUTGOING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING"/>
+      <context name="STOCK_MOVE_TYPE_INCOMING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
+    </action-view>
+	
 	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
 		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 

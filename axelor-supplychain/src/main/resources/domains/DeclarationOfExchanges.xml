@@ -2,7 +2,7 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="stock" package="com.axelor.apps.stock.db"/>
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="DeclarationOfExchanges">
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>

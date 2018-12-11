@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.web;
+package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.stock.db.DeclarationOfExchanges;
-import com.axelor.apps.stock.db.repo.DeclarationOfExchangesRepository;
-import com.axelor.apps.stock.service.DeclarationOfExchangesService;
+import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.db.repo.DeclarationOfExchangesRepository;
+import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

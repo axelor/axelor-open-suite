@@ -363,18 +363,6 @@
         <view type="form" name="logistical-form-form" />
     </action-view>
 
-    <menuitem title="Declarations of exchanges" name="stock-declarations-of-exchanges"
-      parent="stock-root" action="stock.declarations.of.exchanges" order="39"/>
-
-    <action-view name="stock.declarations.of.exchanges" title="Declarations of exchanges"
-      model="com.axelor.apps.stock.db.DeclarationOfExchanges">
-      <view type="grid" name="declaration-of-exchanges-grid"/>
-      <view type="form" name="declaration-of-exchanges-form"/>
-      <context name="YEAR_TYPE_FISCAL" expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL"/>
-      <context name="STOCK_MOVE_TYPE_OUTGOING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING"/>
-      <context name="STOCK_MOVE_TYPE_INCOMING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
-    </action-view>
-
 	<menuitem name="stock-root-conf-cancel-reason" title="Cancel reason" parent="stock-root-conf"
 			  action="action.stock.view.cancel.reason"/>
 

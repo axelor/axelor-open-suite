@@ -131,7 +131,6 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
       moveRepo.remove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
       response.setView(
           ActionView.define("Moves")
               .model(Move.class.getName())
