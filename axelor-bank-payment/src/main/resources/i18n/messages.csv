@@ -206,6 +206,7 @@
 "Bank to bank account for internal order (unique company)",,,
 "BankReconciliation.account",,,
 "BankReconciliation.amount",,,
+"BankReconciliation.cash_account",,,
 "BankReconciliation.code",,,
 "BankReconciliation.company",,,
 "BankReconciliation.credit",,,

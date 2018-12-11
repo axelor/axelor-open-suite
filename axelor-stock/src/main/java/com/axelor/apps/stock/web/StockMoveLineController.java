@@ -278,6 +278,7 @@ public class StockMoveLineController {
       map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
       map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
       map.put("$availableQty", availableQty);
+      map.put("$moveTypeSelect", stockMove.getTypeSelect());
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);

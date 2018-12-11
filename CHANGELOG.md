@@ -266,6 +266,8 @@ Only display line where quantity is greater than 0.
 - Tax report : Refactoring entirely the debit tax report (type 12) and display the move lines details.
 - Accounting reports : disable page break interval to get only one tab on excel files
 - EBICS partner : Add partner service for bank statement file format to manage specific bank codification.
+- FIXED ASSET BATCH : Move Fixed asset Batch to Accounting batch.
+- FILTER : Analytic distribution template filter by Company in Invoice, Sale Order, Purchase Order and Move.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -363,6 +365,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 - Improve JPA cache management in batch bank statement.
 - Product: use quantity to get shipping coef from supplier catalog.
+- StockMove:stockMoveLine in readonly if company or fromStockLocation is null
 
 ## [Unreleased 5.0.7]
 ## Features
@@ -412,6 +415,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
+- Account: Reset fields on onchange action in Accounting Report. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -496,6 +500,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Invoice line: fill product code on product change.
 - Base : Fix save issue on any change in AppBase record.
 - Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
+- TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
+- Taxline : fix suggestions in suggestbox.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features

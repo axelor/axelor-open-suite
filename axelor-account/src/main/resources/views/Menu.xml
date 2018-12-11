@@ -104,6 +104,16 @@
 		<view-param name="search-filters" value="move-filters"/>
 	</action-view>
 
+	<menuitem name="account-root-move-move-line" parent="account-root-move"
+		title="Move lines" action="account.root.move.move.line" />
+
+	<action-view name="account.root.move.move.line" title="Move lines"
+		model="com.axelor.apps.account.db.MoveLine" >
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
+	</action-view>
+
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5"/>
 
@@ -546,16 +556,7 @@
 		<view type="grid" name="accounting-batch-grid"/>
 		<view type="form" name="accounting-batch-form"/>
 	</action-view>
-	
-	<menuitem name="admin-root-batch-fixed-asset" parent="admin-root-batch" if="__config__.app.isApp('account')" if-module="axelor-account" 
-		title="Fixed asset batches" action="admin.root.batch.fixed.asset" />
-	
- 	<action-view name="admin.root.batch.fixed.asset" title="Fixed asset batches"
-		model="com.axelor.apps.account.db.FixedAssetBatch" >
-		<view type="grid" name="fixed-asset-batch-grid" />
-		<view type="form" name="fixed-asset-batch-form" />
-	</action-view>
-	
+		
 	<!-- Top Menus -->
 	
 	<menuitem name="top-invoicing" title="Invoicing" order="5" top="true" if="__config__.app.isApp('invoice')" left="false"/>

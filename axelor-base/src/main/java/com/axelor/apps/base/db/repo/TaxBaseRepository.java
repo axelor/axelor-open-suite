@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.db.repo;
+package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.account.db.FixedAssetBatch;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.TaxRepository;
 
-public class FixedAssetBatchManagementRepository extends FixedAssetBatchRepository {
+public class TaxBaseRepository extends TaxRepository {
 
   @Override
-  public FixedAssetBatch copy(FixedAssetBatch entity, boolean deep) {
-    FixedAssetBatch copy = super.copy(entity, deep);
-    copy.setBatchList(null);
+  public Tax copy(Tax entity, boolean deep) {
+    Tax copy = super.copy(entity, deep);
+    copy.setActiveTaxLine(null);
     return copy;
   }
 }

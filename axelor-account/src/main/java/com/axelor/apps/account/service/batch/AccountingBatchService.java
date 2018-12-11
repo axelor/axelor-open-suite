@@ -67,6 +67,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_CREDIT_TRANSFER:
         batch = creditTransfer(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES:
+        batch = realizeFixedAssetLines(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -142,5 +145,10 @@ public class AccountingBatchService extends AbstractBatchService {
   public Batch directDebit(AccountingBatch accountingBatch) {
     throw new UnsupportedOperationException(
         I18n.get("This batch requires the bank payment module."));
+  }
+
+  public Batch realizeFixedAssetLines(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchRealizeFixedAssetLine.class).run(accountingBatch);
   }
 }

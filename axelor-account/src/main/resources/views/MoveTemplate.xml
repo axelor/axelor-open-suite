@@ -106,7 +106,7 @@
     </action-attrs>
     
     
-    <action-attrs name="">
+    <action-attrs name="action-account-attrs-move-template-partner-domain">
     	<attribute name="domain" for="debitPartner,creditPartner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;"/>
     </action-attrs>
     

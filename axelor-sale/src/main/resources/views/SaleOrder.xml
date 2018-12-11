@@ -55,9 +55,11 @@
 		<field name="creationDate" />
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="amountInvoiced" hidden="true" aggregate="sum" if="__config__.app.isApp('supplychain')"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
+		<field name="salemanUser"/>
 		<button name="printBtn" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"

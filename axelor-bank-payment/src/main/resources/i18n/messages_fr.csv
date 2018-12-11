@@ -206,6 +206,7 @@
 "Bank to bank account for internal order (unique company)","Compte comptable pour les ordres bancaires (une seule société)",,
 "BankReconciliation.account","Compte Bancaire",,
 "BankReconciliation.amount","Montant",,
+"BankReconciliation.cash_account","Compte liquidité",,
 "BankReconciliation.code","Code",,
 "BankReconciliation.company","Entreprise",,
 "BankReconciliation.credit","Credit",,

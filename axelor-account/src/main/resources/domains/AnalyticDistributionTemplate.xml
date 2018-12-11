@@ -9,6 +9,7 @@
 	
 	<string name="name" title="Name" required="true"/>
 	<one-to-many name="analyticDistributionLineList" ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines" mappedBy="analyticDistributionTemplate"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   </entity>
 
 </domain-models>

@@ -76,6 +76,7 @@
 	    <button name="accountCustomerBatchBtn" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
+	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-fixed-asset-lines-realize" colSpan="12"/>
 	</panel>
 </form>
 
@@ -120,6 +121,11 @@
 	<action-method name="action-accounting-batch-method-action-credit-transfer">
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCreditTransfer"/>
 	</action-method>
+	
+	<action-method name="action-accounting-batch-method-action-fixed-asset-lines-realize">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionRealizeFixedAssetLines"/>
+	</action-method>
+	
 
     <!-- ACTION ATTRS -->
     

@@ -96,6 +96,8 @@ public interface ITranslation {
       "BankReconciliation.company"; /*)*/;
   public static final String BANK_RECONCILIATION_REPORT_DATE = /*$$(*/
       "BankReconciliation.report_date"; /*)*/;
+  public static final String BANK_RECONCILIATION_CASH_ACCOUNT = /*$$(*/
+      "BankReconciliation.cash_account"; /*)*/;
 
   public static final String BANK_RECONCILIATION_TYPE = /*$$(*/ "BankReconciliation.type"; /*)*/;
   public static final String BANK_RECONCILIATION_CODE = /*$$(*/ "BankReconciliation.code"; /*)*/;
