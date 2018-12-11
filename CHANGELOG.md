@@ -267,6 +267,7 @@ Only display line where quantity is greater than 0.
 - Accounting reports : disable page break interval to get only one tab on excel files
 - EBICS partner : Add partner service for bank statement file format to manage specific bank codification.
 - FIXED ASSET BATCH : Move Fixed asset Batch to Accounting batch.
+- FILTER : Analytic distribution template filter by Company in Invoice, Sale Order, Purchase Order and Move.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
