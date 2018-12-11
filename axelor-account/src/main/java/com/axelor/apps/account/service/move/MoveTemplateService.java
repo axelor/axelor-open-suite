@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
@@ -29,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,6 +54,7 @@ public class MoveTemplateService {
   protected MoveLineService moveLineService;
   protected PartnerRepository partnerRepo;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected TaxService taxService;
 
   @Inject protected MoveTemplateRepository moveTemplateRepo;
 
@@ -60,12 +64,14 @@ public class MoveTemplateService {
       MoveRepository moveRepo,
       MoveLineService moveLineService,
       PartnerRepository partnerRepo,
-      AnalyticMoveLineService analyticMoveLineService) {
+      AnalyticMoveLineService analyticMoveLineService,
+      TaxService taxService) {
     this.moveService = moveService;
     this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
     this.partnerRepo = partnerRepo;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.taxService = taxService;
   }
 
   @Transactional
@@ -171,6 +177,17 @@ public class MoveTemplateService {
                 moveTemplateLine.getName());
         move.getMoveLineList().add(moveLine);
 
+        Tax tax = moveTemplateLine.getTax();
+
+        if (tax != null) {
+          TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+          if (taxLine != null) {
+            moveLine.setTaxLine(taxLine);
+            moveLine.setTaxRate(taxLine.getValue());
+            moveLine.setTaxCode(tax.getCode());
+          }
+        }
+
         moveLine.setAnalyticDistributionTemplate(
             moveTemplateLine.getAnalyticDistributionTemplate());
         moveLineService.generateAnalyticMoveLines(moveLine);
@@ -222,6 +239,17 @@ public class MoveTemplateService {
                 moveTemplate.getFullName(),
                 moveTemplateLine.getName());
         move.getMoveLineList().add(moveLine);
+
+        Tax tax = moveTemplateLine.getTax();
+
+        if (tax != null) {
+          TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+          if (taxLine != null) {
+            moveLine.setTaxLine(taxLine);
+            moveLine.setTaxRate(taxLine.getValue());
+            moveLine.setTaxCode(tax.getCode());
+          }
+        }
 
         moveLine.setAnalyticDistributionTemplate(
             moveTemplateLine.getAnalyticDistributionTemplate());

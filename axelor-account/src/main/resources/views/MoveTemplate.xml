@@ -11,7 +11,7 @@
 		<field name="isValid"/>
     </grid>
    	
-    <form onNew="action-move-template-set-default" name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate" width="large">
+    <form name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate" width="large" onNew="action-move-template-set-default" >
   		<panel name="mainPanel" >
 		    <field name="name" readonlyIf="isValid"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="isValid" required="true" colSpan="3"/>

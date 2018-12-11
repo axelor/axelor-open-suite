@@ -18,6 +18,7 @@
 	<boolean name="hasPartnerToDebit" title="Partner to debit" />
 	<boolean name="hasPartnerToCredit" title="Partner to credit" />
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
 	<boolean name="isValid" title="Valid"/>  	
   	<extra-code><![CDATA[
 
