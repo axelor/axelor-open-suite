@@ -204,6 +204,9 @@
 		<field name="detailed" expr="eval: null"/>
 		<field name="year" expr="eval: null"/>
 		<field name="exportTypeSelect" expr="eval: null"/>
+		<field name="period" expr="eval: null"/>
+  		<field name="dateFrom" expr="eval: null"/>
+  		<field name="dateTo" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-default-global" model="com.axelor.apps.account.db.AccountingReport">
