@@ -29,8 +29,6 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
-import com.axelor.apps.account.db.repo.FixedAssetBatchManagementRepository;
-import com.axelor.apps.account.db.repo.FixedAssetBatchRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
@@ -237,7 +235,5 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
-
-    bind(FixedAssetBatchRepository.class).to(FixedAssetBatchManagementRepository.class);
   }
 }

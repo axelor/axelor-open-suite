@@ -160,6 +160,7 @@
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
 		<option value="19">Credit Transfer</option>
+		<option value="20">Realize fixed asset lines</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -372,10 +373,6 @@
 	<selection name="account.fixed.asset.line.status.select">
 		<option value="1">Planned</option>
 		<option value="2">Realized</option>
-	</selection>
-	
-	<selection name="fixed.asset.batch.action.select">
-		<option value="1">Realize fixed asset lines</option>
 	</selection>
 	
 	<selection name="account.move.template.type.type.select">
