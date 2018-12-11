@@ -12,7 +12,7 @@
     <date name="endDate" title="Run off Date" />
     <decimal name="value" title="Rate" scale="3" precision="20"/>
     
-    <string name="name" namecolumn="true" search="tax,startDate,endDate" title="Name">
+    <string name="name" namecolumn="true" title="Name">
 	    <![CDATA[
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getName();  }
