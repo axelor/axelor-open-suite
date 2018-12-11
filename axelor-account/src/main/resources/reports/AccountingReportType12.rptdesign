@@ -388,6 +388,7 @@ left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLi
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
 (AccountingReport.currency = Move.company_currency) 
+AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR Move.status_select = 2) 
@@ -716,6 +717,7 @@ left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLi
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
 (AccountingReport.currency = Move.company_currency) 
+AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR Move.status_select = 2) 
