@@ -29,17 +29,17 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBatch {
-  private static ThreadLocal<Batch> threadBatch = new ThreadLocal<>();
+  private static final ThreadLocal<Long> threadBatchId = new ThreadLocal<>();
 
   public static final int FETCH_LIMIT = 10;
 
@@ -50,9 +50,10 @@ public abstract class AbstractBatch {
   protected Batch batch;
   protected Model model;
 
-  private int done, anomaly;
-
   @Inject protected BatchRepository batchRepo;
+
+  private int done;
+  private int anomaly;
 
   protected AbstractBatch() {
     this.batch = new Batch();
@@ -64,6 +65,8 @@ public abstract class AbstractBatch {
 
     this.batch.setDone(this.done);
     this.batch.setAnomaly(this.anomaly);
+
+    JPA.runInTransaction(() -> batch = JPA.persist(batch));
   }
 
   public Batch getBatch() {
@@ -76,7 +79,7 @@ public abstract class AbstractBatch {
    * @return The Batch instance currently being run or <code>null</code> if no batch is in progress.
    */
   public static Batch getCurrentBatch() {
-    return threadBatch.get();
+    return JPA.find(Batch.class, getCurrentBatchId());
   }
 
   /**
@@ -86,19 +89,19 @@ public abstract class AbstractBatch {
    *     it to be directly used with {@link TraceBackService}.
    */
   public static long getCurrentBatchId() {
-    Batch b = getCurrentBatch();
-    return b == null ? 0 : b.getId();
+    Long id = threadBatchId.get();
+    return id == null ? 0 : id;
   }
 
   public Batch run(AuditableModel model) {
     Preconditions.checkNotNull(model);
-    if (threadBatch.get() != null) {
+    if (threadBatchId.get() != null) {
       throw new IllegalStateException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_2));
     }
 
     if (isRunnable(model)) {
       try {
-        threadBatch.set(batch);
+        threadBatchId.set(batch.getId());
         start();
         process();
         stop();
@@ -106,8 +109,8 @@ public abstract class AbstractBatch {
       } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
+        threadBatchId.remove();
         unarchived();
-        threadBatch.remove();
       }
     } else {
       throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1));
@@ -122,7 +125,6 @@ public abstract class AbstractBatch {
   }
 
   protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
     LOG.info("Début batch {} ::: {}", new Object[] {model, batch.getStartDate()});
 
     model.setArchived(true);
@@ -135,8 +137,7 @@ public abstract class AbstractBatch {
    * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
    */
   protected void stop() {
-
-    batch = batchRepo.find(batch.getId());
+    findBatch();
 
     batch.setEndDate(ZonedDateTime.now());
     batch.setDuration(getDuring());
@@ -173,8 +174,7 @@ public abstract class AbstractBatch {
   }
 
   protected void addComment(String comment) {
-
-    batch = batchRepo.find(batch.getId());
+    findBatch();
 
     batch.setComments(comment);
 
@@ -183,24 +183,26 @@ public abstract class AbstractBatch {
 
   @Transactional
   protected Batch checkPoint() {
-
-    return batchRepo.save(batch);
+    return findBatch();
   }
 
   @Transactional
   protected void unarchived() {
-
-    model = JPA.find(EntityHelper.getEntityClass(model), model.getId());
-    model.setArchived(false);
+    try {
+      final Class<? extends Model> entityClass = EntityHelper.getEntityClass(model);
+      final Long modelId = model.getId();
+      model = JPA.find(entityClass, modelId);
+      model.setArchived(false);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
   }
 
   private Long getDuring() {
-
     return ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate());
   }
 
   private void associateModel() throws IllegalArgumentException, IllegalAccessException {
-
     LOG.debug("ASSOCIATE batch:{} TO model:{}", new Object[] {batch, model});
 
     for (Field field : batch.getClass().getDeclaredFields()) {
@@ -221,11 +223,14 @@ public abstract class AbstractBatch {
   }
 
   private boolean isAssociable(Field field) {
-
     return field.getType().equals(EntityHelper.getEntityClass(model));
   }
 
-  protected void findBatch() {
-    batch = batchRepo.find(batch.getId());
+  protected Batch findBatch() {
+    if (!JPA.em().contains(batch)) {
+      batch = JPA.find(Batch.class, batch.getId());
+    }
+
+    return batch;
   }
 }

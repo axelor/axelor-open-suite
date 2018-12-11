@@ -44,6 +44,9 @@
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
+- Factor : New Organization for debt recovery submenu.
+- Inventory : Do not update average price when validating an inventory.
+- Account: Reset fields on onchange action in Accounting Report. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -92,7 +95,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
 - Product: Removed 'shippingCoef' value set from onLoad.
-- Alphabetical order on the table producedStockMoveLineList
+- Alphabetical order on the table producedStockMoveLineList and consumedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
@@ -121,7 +124,14 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Tracking number search view fix.
 - Schedulers: fix missing traceback.
 - Debt recovery batch: fix error recovery.
+- Sale: fix Null Pointer error.
+- Bank statement: fix status update for bank statement imports.
+- Invoice line: fill product code on product change.
+- Base : Fix save issue on any change in AppBase record.
+- Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
+- TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
 - Taxline : fix suggestions in suggestbox.
+
 
 ## [5.0.6] - 2018-10-06
 ## Features

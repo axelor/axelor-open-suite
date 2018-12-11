@@ -294,10 +294,11 @@ public class PurchaseOrderLineController {
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
       }
 
-      if (price
-          != (purchaseOrderLine.getProduct().getInAti()
-              ? purchaseOrderLine.getInTaxPrice()
-              : purchaseOrderLine.getPrice())) {
+      if (price.compareTo(
+              purchaseOrderLine.getProduct().getInAti()
+                  ? purchaseOrderLine.getInTaxPrice()
+                  : purchaseOrderLine.getPrice())
+          != 0) {
         if (purchaseOrderLine.getProduct().getInAti()) {
           response.setValue("inTaxPrice", price);
           response.setValue(
