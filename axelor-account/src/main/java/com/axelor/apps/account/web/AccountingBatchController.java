@@ -185,4 +185,13 @@ public class AccountingBatchController {
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
   }
+
+  public void actionRealizeFixedAssetLines(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+    Batch batch = accountingBatchService.realizeFixedAssetLines(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
 }
