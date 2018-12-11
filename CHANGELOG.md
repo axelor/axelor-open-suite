@@ -46,6 +46,7 @@
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
+- Account: Reset fields on onchange action in Accounting Report. 
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
