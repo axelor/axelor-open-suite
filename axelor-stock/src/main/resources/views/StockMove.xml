@@ -228,7 +228,7 @@
         </panel>
 
         <panel-tabs name="mainPanelTab">
-            <panel name="stockMoveLineListPanel" title="Stock move lines" itemSpan="12">
+            <panel name="stockMoveLineListPanel" title="Stock move lines" itemSpan="12" readonlyIf="company == null || fromStockLocation == null">
               <panel-related name="stockMoveLineList1Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect != 2"/>
               <panel-related name="stockMoveLineList2Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-record-filter-on-available-products" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
             </panel>
