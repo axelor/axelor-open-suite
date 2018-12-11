@@ -166,7 +166,7 @@
 				<field name="toInvoice" colSpan="3" hideIf="typeSelect == 2" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 			</panel>
 			<panel name="analyticDistribution"  hideIf="typeSelect == 2" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
+				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
 				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
@@ -231,7 +231,7 @@
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 			<panel name="analyticDistribution"  hideIf="typeSelect == 2" title="Analytic distribution" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
+				<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
 				<button name="generateDistributionLinesButton" onClick="action-sale-order-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
 				<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
@@ -279,6 +279,10 @@
 	
 	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-line-attrs-set-domain-analytic-distribution-template">
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
 	</action-attrs>
 	
 	<action-view name="action-sale-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
