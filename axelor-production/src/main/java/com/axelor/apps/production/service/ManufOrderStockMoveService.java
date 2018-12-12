@@ -259,7 +259,6 @@ public class ManufOrderStockMoveService {
         prodProduct.getProduct().getDescription(),
         qty,
         costPrice,
-        costPrice,
         prodProduct.getUnit(),
         stockMove,
         inOrOutType,
@@ -302,7 +301,7 @@ public class ManufOrderStockMoveService {
                 stockMoveLine.getProduct() != null
                     && stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
                         == ProductRepository.PRICE_METHOD_REAL)
-        .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
+        .forEach(stockMoveLine -> stockMoveLine.setValuatedUnitPrice(manufOrder.getCostPrice()));
   }
 
   public void finishStockMove(StockMove stockMove) throws AxelorException {

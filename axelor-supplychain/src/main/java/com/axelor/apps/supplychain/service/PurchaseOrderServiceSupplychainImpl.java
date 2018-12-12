@@ -232,11 +232,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
-          BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-          BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getProduct().getCostPrice();
+          BigDecimal valuatedUnitPrice = purchaseOrderLine.getProduct().getCostPrice();
 
-          if (purchaseOrderLine.getQty() != BigDecimal.ZERO) {
-            companyUnitPriceUntaxed =
+          if (purchaseOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+            valuatedUnitPrice =
                 purchaseOrderLine
                     .getCompanyExTaxTotal()
                     .divide(
@@ -253,13 +252,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                     qty,
                     qty.scale(),
                     purchaseOrderLine.getProduct());
-            priceDiscounted =
+
+            valuatedUnitPrice =
                 unitConversionService.convert(
                     unit,
                     purchaseOrderLine.getUnit(),
-                    priceDiscounted,
+                    valuatedUnitPrice,
                     appBaseService.getNbDecimalDigitForUnitPrice(),
-                    purchaseOrderLine.getProduct());
+                    product);
           }
 
           BigDecimal taxRate = BigDecimal.ZERO;
@@ -275,8 +275,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       purchaseOrderLine.getProductName(),
                       purchaseOrderLine.getDescription(),
                       qty,
-                      priceDiscounted,
-                      companyUnitPriceUntaxed,
+                      valuatedUnitPrice,
                       unit,
                       stockMove,
                       StockMoveLineService.TYPE_PURCHASES,
@@ -292,7 +291,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       product,
                       purchaseOrderLine.getProductName(),
                       purchaseOrderLine.getDescription(),
-                      BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       null,

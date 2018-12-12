@@ -47,6 +47,7 @@
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Account: Reset fields on onchange action in Accounting Report. 
+- Stock move line : now displays an (untaxed) valuated unit price in company currency.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
