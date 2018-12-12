@@ -269,6 +269,7 @@ Only display line where quantity is greater than 0.
 - FIXED ASSET BATCH : Move Fixed asset Batch to Accounting batch.
 - FILTER : Analytic distribution template filter by Company in Invoice, Sale Order, Purchase Order and Move.
 - SUBROGATION RELEASE : allow to select a refund of an invoice already transmitted to the factor and validated after the transmission of the original invoice to the factor
+- Remove planned stock move lines on cancel.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
