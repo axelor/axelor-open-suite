@@ -55,6 +55,7 @@
 - Inventory : Do not update average price when validating an inventory.
 - Account: Reset fields on onchange action in Accounting Report. 
 - Advance Export : Default value for selection translation.
+- Stock move line : now displays an (untaxed) valuated unit price in company currency.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.

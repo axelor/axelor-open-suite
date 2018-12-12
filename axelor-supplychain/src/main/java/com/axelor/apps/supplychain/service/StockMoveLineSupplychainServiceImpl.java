@@ -17,17 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -43,7 +38,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Map;
 
 @RequestScoped
 public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl {
@@ -52,11 +46,7 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
 
   protected PriceListService priceListService;
 
-  private PurchaseProductService productService;
-
   private UnitConversionService unitConversionService;
-
-  @Inject private SupplierCatalogService supplierCatalogService;
 
   @Inject
   public StockMoveLineSupplychainServiceImpl(
@@ -65,105 +55,53 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
       StockMoveService stockMoveService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
-      PurchaseProductService productService,
       UnitConversionService unitConversionService) {
     super(trackingNumberService, appBaseService, stockMoveService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
-    this.productService = productService;
     this.unitConversionService = unitConversionService;
   }
 
   @Override
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
-    BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
-    BigDecimal unitPriceTaxed = BigDecimal.ZERO;
-    TaxLine taxLine = null;
-    BigDecimal discountAmount;
+    BigDecimal valuatedUnitPrice = BigDecimal.ZERO;
+
     if (stockMove == null
         || (stockMove.getSaleOrder() == null && stockMove.getPurchaseOrder() == null)) {
       return super.compute(stockMoveLine, stockMove);
     } else {
       if (stockMoveLine.getProduct() != null) {
-        BigDecimal price;
         if (stockMove.getSaleOrder() != null) {
-          taxLine =
-              accountManagementService.getTaxLine(
-                  appBaseService.getTodayDate(),
-                  stockMoveLine.getProduct(),
-                  stockMove.getCompany(),
-                  stockMove.getSaleOrder().getClientPartner().getFiscalPosition(),
-                  false);
-          price = stockMoveLine.getProduct().getSalePrice();
-
-          PriceList priceList = stockMove.getSaleOrder().getPriceList();
-          if (priceList != null) {
-            PriceListLine priceListLine =
-                priceListService.getPriceListLine(
-                    stockMoveLine.getProduct(), stockMoveLine.getRealQty(), priceList);
-            Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, price);
-            if (discounts != null) {
-              discountAmount = (BigDecimal) discounts.get("discountAmount");
-              price =
-                  priceListService.computeDiscount(
-                      price, (int) discounts.get("discountTypeSelect"), discountAmount);
+          // if stockmoveline is linked to a sale line, get its exTax unit price.
+          if (stockMoveLine.getSaleOrderLine() != null) {
+            if (stockMoveLine.getSaleOrderLine().getQty().compareTo(BigDecimal.ZERO) != 0) {
+              valuatedUnitPrice =
+                  stockMoveLine
+                      .getSaleOrderLine()
+                      .getCompanyExTaxTotal()
+                      .divide(stockMoveLine.getSaleOrderLine().getQty());
             }
+          } else {
+            return super.compute(stockMoveLine, stockMove);
           }
         } else {
-          taxLine =
-              accountManagementService.getTaxLine(
-                  appBaseService.getTodayDate(),
-                  stockMoveLine.getProduct(),
-                  stockMove.getCompany(),
-                  stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(),
-                  true);
-          price = stockMoveLine.getProduct().getPurchasePrice();
-
-          BigDecimal catalogPrice =
-              (BigDecimal)
-                  supplierCatalogService
-                      .updateInfoFromCatalog(
-                          stockMoveLine.getProduct(),
-                          stockMoveLine.getRealQty(),
-                          stockMove.getPurchaseOrder().getSupplierPartner(),
-                          stockMove.getPurchaseOrder().getCurrency(),
-                          stockMove.getPurchaseOrder().getOrderDate())
-                      .get("price");
-
-          if (catalogPrice != null) {
-            price = catalogPrice;
-          }
-
-          PriceList priceList = stockMove.getPurchaseOrder().getPriceList();
-          if (priceList != null) {
-            PriceListLine priceListLine =
-                priceListService.getPriceListLine(
-                    stockMoveLine.getProduct(), stockMoveLine.getRealQty(), priceList);
-            Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, price);
-            if (discounts != null) {
-              discountAmount = (BigDecimal) discounts.get("discountAmount");
-              price =
-                  priceListService.computeDiscount(
-                      price, (int) discounts.get("discountTypeSelect"), discountAmount);
+          // if stockmoveline is linked to a purchase line, get its exTax unit price.
+          if (stockMoveLine.getPurchaseOrderLine() != null) {
+            if (stockMoveLine.getPurchaseOrderLine().getQty().compareTo(BigDecimal.ZERO) != 0) {
+              valuatedUnitPrice =
+                  stockMoveLine
+                      .getPurchaseOrderLine()
+                      .getCompanyExTaxTotal()
+                      .divide(stockMoveLine.getPurchaseOrderLine().getQty());
             }
+          } else {
+            return super.compute(stockMoveLine, stockMove);
           }
-        }
-
-        if (stockMoveLine.getProduct().getInAti()) {
-          unitPriceTaxed = price;
-          unitPriceUntaxed =
-              price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-        } else {
-          unitPriceUntaxed = price;
-          unitPriceTaxed = price.add(price.multiply(taxLine.getValue()));
         }
       }
     }
-    stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
-    stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
+    stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
     return stockMoveLine;
   }
 
