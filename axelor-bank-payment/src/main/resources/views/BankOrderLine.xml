@@ -59,6 +59,13 @@
 			<field name="receiverCountry.alpha2Code" colSpan="2"/>
 			<field name="receiverAddressStr" colSpan="12" max="105"/>
 		</panel>
+		<panel>
+		 	<field name="bankOrderLineOriginList" colSpan="12" readonly="true">
+      			<editor x-viewer="true">
+					<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
+       			</editor>
+   			</field>
+		</panel>
 		<panel name="actionPanel" showIf="bankOrder != null" itemSpan="12"
 			sidebar="true">
 			<field name="bankOrder.statusSelect" title="Bank Order Status"

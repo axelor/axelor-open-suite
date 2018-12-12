@@ -24,6 +24,7 @@
 				<field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
 	  			<field name="automaticTransmission" showIf="generateBankOrder"/>
 	  			<field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
+        		<field name="consoBankOrderLinePerPartner" showIf="generateBankOrder"/>
 	  			<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"/>
 	    		<field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"/>
 	  			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder"/>

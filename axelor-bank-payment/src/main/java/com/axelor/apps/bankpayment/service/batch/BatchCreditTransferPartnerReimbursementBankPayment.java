@@ -152,7 +152,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
               accountingBatch.getCompany().getCurrency(),
               bankOrderDate,
               reimbursement.getRef(),
-              reimbursement.getDescription());
+              reimbursement.getDescription(),
+              reimbursement);
       bankOrder.addBankOrderLineListItem(bankOrderLine);
       Beans.get(ReimbursementExportService.class)
           .reimburse(reimbursement, accountingBatch.getCompany());

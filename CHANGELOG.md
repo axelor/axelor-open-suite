@@ -152,6 +152,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 - Added mass payment on supplier invoices and generate account move on bank order validation.
+- Added an option according to the payment mode to automatically consolidate the bank order lines per partner
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.

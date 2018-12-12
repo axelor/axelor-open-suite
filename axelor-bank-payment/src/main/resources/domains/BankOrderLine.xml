@@ -23,6 +23,9 @@
 	<many-to-one name="senderMove" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
 	<many-to-one name="receiverMove" ref="com.axelor.apps.account.db.Move" title="Receiver move" readonly="true"/>
 	
+   	<one-to-many name="bankOrderLineOriginList" ref="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" mappedBy="bankOrderLine" title="Origins"/>
+	
+	
 <!-- 	REJECT -->
   	<boolean name="isRejected" title="Rejected"/>
   	<date name="rejectDate" title="Rejection date"/>

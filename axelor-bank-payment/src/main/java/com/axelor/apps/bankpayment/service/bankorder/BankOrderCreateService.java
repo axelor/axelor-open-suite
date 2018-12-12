@@ -167,8 +167,10 @@ public class BankOrderCreateService {
             currency,
             paymentDate,
             reference,
-            null);
+            null,
+            invoice);
     bankOrder.addBankOrderLineListItem(bankOrderLine);
+
     bankOrder = bankOrderRepo.save(bankOrder);
 
     return bankOrder;
