@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -459,7 +459,7 @@ ContactUser.full_name contact_full_name,
 ContactPartner.fixed_phone contact_fixed_phone,
 ContactPartner.fax contact_fax,
 coalesce(ContactEmailAddress.address, ContactUser.email) contact_email_address
-from stock_declaration_of_exchanges DeclarationOfExchanges
+from supplychain_declaration_of_exchanges DeclarationOfExchanges
 left join base_period Period
 on DeclarationOfExchanges.period = Period.id
 left join base_company Company
@@ -1244,7 +1244,7 @@ left join stock_customs_code_nomenclature CustomsCodeNomenclature
 on Product.customs_code_nomenclature = CustomsCodeNomenclature.id
 left join base_country CountryOfOrigin
 on StockMoveLine.country_of_origin = CountryOfOrigin.id
-left join stock_declaration_of_exchanges DeclarationOfExchanges
+left join supplychain_declaration_of_exchanges DeclarationOfExchanges
 on DeclarationOfExchanges.id = ?
 left join base_period Period
 on DeclarationOfExchanges.period = Period.id
@@ -1290,6 +1290,7 @@ and Product.product_type_select = DeclarationOfExchanges.product_type_select
 and Product.used_indeb = true
 and StockMove.type_select = DeclarationOfExchanges.stock_move_type_select
 and StockMove.status_select = 3
+and StockMove.company = DeclarationOfExchanges.company 
 and DeclarationOfExchanges.country
 in (coalesce(FromCountry.id, FromStockLocationCountry.id),
 coalesce(ToCountry.id, ToStockLocationCountry.id))

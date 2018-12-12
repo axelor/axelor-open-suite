@@ -22,4 +22,7 @@ public interface IReport {
   public static final String MRP_WEEKS = "MrpWeeks.rptdesign";
   public static final String MRP_LIST = "MrpList.rptdesign";
   public static final String PACKING_LIST = "PackingList.rptdesign";
+  public static final String DECLARATION_OF_EXCHANGES_OF_GOODS =
+      "DeclarationOfExchangesOfGoods.rptdesign";
+  public static final String DECLARATION_OF_SERVICES = "DeclarationOfServices.rptdesign";
 }

@@ -459,7 +459,7 @@ ContactUser.full_name contact_full_name,
 ContactPartner.fixed_phone contact_fixed_phone,
 ContactPartner.fax contact_fax,
 coalesce(ContactEmailAddress.address, ContactUser.email) contact_email_address
-from stock_declaration_of_exchanges DeclarationOfExchanges
+from supplychain_declaration_of_exchanges DeclarationOfExchanges
 left join base_period Period
 on DeclarationOfExchanges.period = Period.id
 left join base_company Company
@@ -1233,63 +1233,39 @@ when 3 then coalesce(ToDepartment.code, ToStockLocationDepartment.code) end depa
 coalesce(CountryOfOrigin.alpha2code, case StockMove.type_select when 3 then coalesce(FromCountry.alpha2code, FromStockLocationCountry.alpha2code) end) country_of_origin_code,
 case when StockMove.type_select = 2
 and coalesce(StockMoveLine.regime, case StockMove.type_select when 2 then 21 when 3 then 11 end) != 29 then Partner.tax_nbr else '' end tax_nbr
-from stock_stock_move_line StockMoveLine
-left join stock_stock_move StockMove
-on StockMoveLine.stock_move = StockMove.id
-left join base_partner Partner
-on StockMove.partner = Partner.id
-left join base_product Product
-on StockMoveLine.product = Product.id
-left join stock_customs_code_nomenclature CustomsCodeNomenclature
-on Product.customs_code_nomenclature = CustomsCodeNomenclature.id
-left join base_country CountryOfOrigin
-on StockMoveLine.country_of_origin = CountryOfOrigin.id
-left join stock_declaration_of_exchanges DeclarationOfExchanges
-on DeclarationOfExchanges.id = ?
-left join base_period Period
-on DeclarationOfExchanges.period = Period.id
-left join base_address FromAddress
-on StockMove.from_address = FromAddress.id
-left join base_country FromCountry
-on FromAddress.addressl7country = FromCountry.id
-left join base_city FromCity
-on FromAddress.city = FromCity.id
-left join base_department FromDepartment
-on FromCity.department = FromDepartment.id
-left join stock_stock_location FromStockLocation
-on StockMove.from_stock_location = FromStockLocation.id
-left join base_address FromStockLocationAddress
-on FromStockLocation.address = FromStockLocationAddress.id
-left join base_country FromStockLocationCountry
-on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
-left join base_city FromStockLocationCity
-on FromStockLocationAddress.city = FromStockLocationCity.id
-left join base_department FromStockLocationDepartment
-on FromStockLocationCity.department = FromStockLocationDepartment.id
-left join base_address ToAddress
-on StockMove.to_address = ToAddress.id
-left join base_country ToCountry
-on ToAddress.addressl7country = ToCountry.id
-left join base_city ToCity
-on ToAddress.city = ToCity.id
-left join base_department ToDepartment
-on ToCity.department = ToDepartment.id
-left join stock_stock_location ToStockLocation
-on StockMove.to_stock_location = ToStockLocation.id
-left join base_address ToStockLocationAddress
-on ToStockLocation.address = ToStockLocationAddress.id
-left join base_country ToStockLocationCountry
-on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
-left join base_city ToStockLocationCity
-on ToStockLocationAddress.city = ToStockLocationCity.id
-left join base_department ToStockLocationDepartment
-on ToStockLocationCity.department = ToStockLocationDepartment.id
+from stock_stock_move_line StockMoveLine 
+left join stock_stock_move StockMove on StockMoveLine.stock_move = StockMove.id
+left join base_partner Partner on StockMove.partner = Partner.id
+left join base_product Product on StockMoveLine.product = Product.id
+left join stock_customs_code_nomenclature CustomsCodeNomenclature on Product.customs_code_nomenclature = CustomsCodeNomenclature.id
+left join base_country CountryOfOrigin on StockMoveLine.country_of_origin = CountryOfOrigin.id
+left join supplychain_declaration_of_exchanges DeclarationOfExchanges on DeclarationOfExchanges.id = ?
+left join base_period Period on DeclarationOfExchanges.period = Period.id
+left join base_address FromAddress on StockMove.from_address = FromAddress.id
+left join base_country FromCountry on FromAddress.addressl7country = FromCountry.id
+left join base_city FromCity on FromAddress.city = FromCity.id
+left join base_department FromDepartment on FromCity.department = FromDepartment.id
+left join stock_stock_location FromStockLocation on StockMove.from_stock_location = FromStockLocation.id
+left join base_address FromStockLocationAddress on FromStockLocation.address = FromStockLocationAddress.id
+left join base_country FromStockLocationCountry on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
+left join base_city FromStockLocationCity on FromStockLocationAddress.city = FromStockLocationCity.id
+left join base_department FromStockLocationDepartment on FromStockLocationCity.department = FromStockLocationDepartment.id
+left join base_address ToAddress on StockMove.to_address = ToAddress.id
+left join base_country ToCountry on ToAddress.addressl7country = ToCountry.id
+left join base_city ToCity on ToAddress.city = ToCity.id
+left join base_department ToDepartment on ToCity.department = ToDepartment.id
+left join stock_stock_location ToStockLocation on StockMove.to_stock_location = ToStockLocation.id
+left join base_address ToStockLocationAddress on ToStockLocation.address = ToStockLocationAddress.id
+left join base_country ToStockLocationCountry on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
+left join base_city ToStockLocationCity on ToStockLocationAddress.city = ToStockLocationCity.id
+left join base_department ToStockLocationDepartment on ToStockLocationCity.department = ToStockLocationDepartment.id
 where
 StockMove.real_date between Period.from_date and Period.to_date
 and Product.product_type_select = DeclarationOfExchanges.product_type_select
 and Product.used_indeb = true
 and StockMove.type_select = DeclarationOfExchanges.stock_move_type_select
 and StockMove.status_select = 3
+and StockMove.company = DeclarationOfExchanges.company 
 and DeclarationOfExchanges.country
 in (coalesce(FromCountry.id, FromStockLocationCountry.id),
 coalesce(ToCountry.id, ToStockLocationCountry.id))
