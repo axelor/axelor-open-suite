@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -41,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /** Classe de création de ligne de facture abstraite. */
@@ -149,7 +149,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
     } else if (stockMoveLine != null) {
-      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+      this.price = stockMoveLine.getValuatedUnitPrice();
+
       Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
 
       if (saleOrPurchaseUnit != null
@@ -158,15 +159,33 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.qty =
             unitConversionService.convert(
                 this.unit, saleOrPurchaseUnit, qty, qty.scale(), stockMoveLine.getProduct());
-        this.priceDiscounted =
+        this.price =
             unitConversionService.convert(
                 this.unit,
                 saleOrPurchaseUnit,
-                this.priceDiscounted,
+                this.price,
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 product);
         this.unit = saleOrPurchaseUnit;
       }
+
+      this.price =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.price,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+      this.taxLine =
+          accountManagementService.getTaxLine(
+              appAccountService.getTodayDate(),
+              product,
+              invoice.getCompany(),
+              invoice.getPartner().getFiscalPosition(),
+              InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice = this.price.add(this.price.multiply(this.taxLine.getValue()));
+      this.priceDiscounted = invoice.getInAti() ? this.inTaxPrice : this.price;
     }
   }
 
@@ -192,35 +211,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
 
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
-    } else if (stockMoveLine != null) {
-
-      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-
-      this.price =
-          invoiceLineService.getExTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-      this.inTaxPrice =
-          invoiceLineService.getInTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-
-      this.price =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.price,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
-      this.inTaxPrice =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.inTaxPrice,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
-
-      invoiceLine.setPrice(price);
-      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     return invoiceLine;
