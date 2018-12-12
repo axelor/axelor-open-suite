@@ -381,7 +381,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMove.getEstimatedDate(),
         true);
 
-    updatePlannedRealQties(stockMove);
+    stockMove.clearPlannedStockMoveLineList();
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
@@ -439,29 +439,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
-    }
-  }
-
-  private void updatePlannedRealQties(StockMove stockMove) {
-    List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-    stockMoveLineList.addAll(
-        MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList()));
-    List<StockMoveLine> plannedStockMoveLineList =
-        MoreObjects.firstNonNull(stockMove.getPlannedStockMoveLineList(), Collections.emptyList());
-
-    for (StockMoveLine plannedStockMoveLine : plannedStockMoveLineList) {
-      plannedStockMoveLine.setRealQty(BigDecimal.ZERO);
-      Iterator<StockMoveLine> it = stockMoveLineList.iterator();
-
-      while (it.hasNext()) {
-        StockMoveLine stockMoveLine = it.next();
-        Optional<Product> productOpt = Optional.ofNullable(stockMoveLine.getProduct());
-        if (productOpt.isPresent() && productOpt.get().equals(plannedStockMoveLine.getProduct())) {
-          plannedStockMoveLine.setRealQty(
-              plannedStockMoveLine.getRealQty().add(stockMoveLine.getRealQty()));
-          it.remove();
-        }
-      }
     }
   }
 
@@ -765,6 +742,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.setRealDate(appBaseService.getTodayDate());
 
+    stockMove.clearPlannedStockMoveLineList();
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       partnerProductQualityRatingService.undoCalculation(stockMove);
