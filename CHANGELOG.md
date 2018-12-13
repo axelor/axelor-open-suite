@@ -373,7 +373,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Partner: Address on grid view
 - DataBackup : Handle Exception.
 
-## [Unreleased 5.0.7]
+## [5.0.7] - 2018-12-13
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
@@ -1435,7 +1435,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
+[5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
