@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -214,6 +215,9 @@ public class ManufOrderController {
             ReportFactory.createReport(IReport.MANUF_ORDER, name + "-${date}")
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
                 .addParam("ManufOrderId", manufOrderIds)
+                .addParam(
+                    "activateBarCodeGeneration",
+                    Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
                 .generate()
                 .getFileLink();
 

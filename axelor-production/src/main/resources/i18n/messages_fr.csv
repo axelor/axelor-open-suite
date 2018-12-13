@@ -222,7 +222,7 @@
 "ManufOrder.plannedEndDate","Date de fin planifiée",,
 "ManufOrder.plannedStartDate","Date début planifiée",,
 "ManufOrder.product","Produit",,
-"ManufOrder.productBarcode","Produit code à barre",,
+"ManufOrder.productBarcode","Code-Barre",,
 "ManufOrder.productCode","Code produit",,
 "ManufOrder.productName","Nom",,
 "ManufOrder.productionProcess","Gamme",,

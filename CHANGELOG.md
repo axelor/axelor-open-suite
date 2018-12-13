@@ -509,7 +509,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Taxline : fix suggestions in suggestbox.
 - COPY OF A PRODUCT : avgPrice, startDate and endDate empty
 - COST SHEET : fix wrong assignation of cost sheet group for human ressources
-
+- MANUF. ORDER PRINTING : change the name of a table's column
 
 ## [5.0.6] - 2018-10-06
 ## Features

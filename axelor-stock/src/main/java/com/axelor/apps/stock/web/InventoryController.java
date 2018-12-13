@@ -19,6 +19,7 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
@@ -71,6 +72,9 @@ public class InventoryController {
           ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
               .addParam("InventoryId", inventory.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "activateBarCodeGeneration",
+                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
               .addFormat(inventory.getFormatSelect())
               .generate()
               .getFileLink();
