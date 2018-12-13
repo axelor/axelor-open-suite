@@ -564,12 +564,43 @@ public class CostSheetServiceImpl implements CostSheetService {
           workCenter.getCostAmount(),
           cycleUnit);
     } else if (costType == IWorkCenter.COST_PER_HOUR) {
-      BigDecimal qty =
-          new BigDecimal(operationOrder.getRealDuration())
-              .divide(
-                  new BigDecimal(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN);
+      BigDecimal qty = BigDecimal.ZERO;
+
+      if (workCenter.getIsRevaluationAtActualPrices()) {
+
+        qty =
+            new BigDecimal(operationOrder.getRealDuration())
+                .divide(
+                    new BigDecimal(3600),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN);
+      } else {
+
+        BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+        BigDecimal durationPerCycle =
+            new BigDecimal(workCenter.getDurationPerCycle())
+                .divide(
+                    new BigDecimal(3600),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN);
+
+        if (manufOrderQty.compareTo(workCenter.getMinCapacityPerCycle()) == 1) {
+          BigDecimal maxCapacityPerCycle =
+              workCenter.getMaxCapacityPerCycle().compareTo(BigDecimal.ZERO) == 0
+                  ? BigDecimal.ONE
+                  : workCenter.getMaxCapacityPerCycle();
+          qty =
+              manufOrderQty
+                  .divide(
+                      maxCapacityPerCycle,
+                      appProductionService.getNbDecimalDigitForUnitPrice(),
+                      BigDecimal.ROUND_HALF_EVEN)
+                  .multiply(durationPerCycle)
+                  .setScale(QTY_MAX_SCALE, BigDecimal.ROUND_HALF_EVEN);
+        } else {
+          qty = durationPerCycle;
+        }
+      }
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
       costSheetLineService.createWorkCenterCostSheetLine(
           workCenter,
