@@ -29,6 +29,7 @@
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+  		  	  <field name="isRevaluationAtActualPrices"/>
 	        </panel>
 	    </panel>
 	    <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
@@ -59,6 +60,7 @@
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
+   		  	  <field name="isRevaluationAtActualPrices"/>
 	        </panel>
 	    </panel>
     </form>

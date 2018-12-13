@@ -14,6 +14,7 @@
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
+    <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
 	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	
