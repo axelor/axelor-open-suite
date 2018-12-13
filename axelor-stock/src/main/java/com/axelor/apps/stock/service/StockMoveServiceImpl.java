@@ -157,7 +157,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setForwarderPartner(forwarderPartner);
     stockMove.setIncoterm(incoterm);
     stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
-
+    stockMove.setIsWithBackorder(company.getStockConfig().getIsWithBackorder());
+    stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
     return stockMove;
   }
 
