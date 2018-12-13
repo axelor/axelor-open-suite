@@ -199,7 +199,9 @@ public class ManufOrderController {
             ReportFactory.createReport(IReport.MANUF_ORDER, name + "-${date}")
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
                 .addParam("ManufOrderId", manufOrderIds)
-                .addParam("activateBarCodeGeneration", Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
+                .addParam(
+                    "activateBarCodeGeneration",
+                    Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
                 .generate()
                 .getFileLink();
 
