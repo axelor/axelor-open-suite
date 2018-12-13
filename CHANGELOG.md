@@ -363,12 +363,11 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
 - MRP : disable sort on grid to avoid a misinterpretation of the result
-- Disable sort on dummy fied "Avaibality qty" on product grid
 - StockMoveLine : remove required constraint from trackingNumber if real qty not available.
 - Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 - Improve JPA cache management in batch bank statement.
 - Product: use quantity to get shipping coef from supplier catalog.
-- StockMove:stockMoveLine in readonly if company or fromStockLocation is null
+- StockMove : stockMoveLine in readonly if company or fromStockLocation is null
 - Partner: Address on grid view
 - DataBackup : Handle Exception.
 
