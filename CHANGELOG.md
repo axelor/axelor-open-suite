@@ -370,6 +370,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Product: use quantity to get shipping coef from supplier catalog.
 - StockMove:stockMoveLine in readonly if company or fromStockLocation is null
 - Partner: Address on grid view
+- DataBackup : Handle Exception.
 
 ## [Unreleased 5.0.7]
 ## Features
