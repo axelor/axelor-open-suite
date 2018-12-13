@@ -26,7 +26,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoper;
+import com.google.inject.servlet.ServletScopes;
 import java.io.File;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,7 +62,10 @@ public class DataBackupServiceImpl implements DataBackupService {
           new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-              startBackup(dataBackup);
+              RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+              try (RequestScoper.CloseableScope ignored = scope.open()) {
+                startBackup(dataBackup);
+              }
               return true;
             }
           });
