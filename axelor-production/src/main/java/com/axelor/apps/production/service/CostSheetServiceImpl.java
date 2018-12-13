@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.AppProduction;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -78,6 +79,10 @@ public class CostSheetServiceImpl implements CostSheetService {
             billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
+    Company company = billOfMaterial.getCompany();
+    if (company != null && company.getCurrency() != null) {
+      costSheet.setCurrency(company.getCurrency());
+    }
 
     this._computeCostPrice(billOfMaterial, 0, producedCostSheetLine);
 
@@ -113,6 +118,11 @@ public class CostSheetServiceImpl implements CostSheetService {
         costSheetLineService.createProducedProductCostSheetLine(
             manufOrder.getProduct(), manufOrder.getBillOfMaterial().getUnit(), producedQuantity);
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
+    Company company = manufOrder.getCompany();
+    if (company != null && company.getCurrency() != null) {
+      costSheet.setCurrency(company.getCurrency());
+    }
+
     this.computeRealCostPrice(manufOrder, 0, producedCostSheetLine);
 
     this.computeRealResidualProduct(manufOrder);

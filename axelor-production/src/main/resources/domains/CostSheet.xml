@@ -11,6 +11,7 @@
     <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="ManufOrder"/>
   	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="costSheet" title="Cost sheet lines"/>
     <decimal name="costPrice" title="Cost price"/>
+   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	
   </entity>
 </domain-models>

@@ -297,6 +297,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">manufacturing_order</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">bom</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bom</text-property>
+                    <text-property name="heading">bom</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">cost_price</property>
                     <property name="alias">cost_price</property>
                     <property name="analysis">measure</property>
@@ -347,16 +353,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">4</property>
+                        <property name="name">bom</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
                         <property name="name">cost_price</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">created_on</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">created_by</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -387,20 +398,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">4</property>
+                    <property name="name">bom</property>
+                    <property name="nativeName">bom</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">cost_price</property>
                     <property name="nativeName">cost_price</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">created_on</property>
                     <property name="nativeName">created_on</property>
                     <property name="dataType">date-time</property>
                     <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">created_by</property>
                     <property name="nativeName">created_by</property>
                     <property name="dataType">string</property>
@@ -411,12 +429,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	MetaFile.file_path as logo_path,
 	Company.name as Company,
 	ManufOrder.manuf_order_seq as manufacturing_order,
+	BillOfMaterial.name as BOM,
 	CostSheet.cost_price as cost_price,
 	CostSheet.created_on as created_on,
 	Auth_user.full_name as created_by
 from production_cost_sheet AS CostSheet
 LEFT JOIN production_manuf_order AS ManufOrder ON ManufOrder.id = CostSheet.manuf_order
-LEFT JOIN base_company AS Company ON Company.id = ManufOrder.company
+LEFT JOIN production_bill_of_material AS BillOfMaterial ON BillOfMaterial.id = CostSheet.bill_of_material
+LEFT JOIN base_company AS Company ON (CASE WHEN ManufOrder.id is NOT NULL THEN Company.id = ManufOrder.company ELSE Company.id = BillOfMaterial.company END )
 LEFT JOIN meta_file AS MetaFile ON MetaFile.id = Company.logo 
 LEFT JOIN auth_user AS Auth_user ON Auth_user.id = CostSheet.created_by
 where CostSheet.id = ?]]></xml-property>
@@ -720,34 +740,40 @@ where CostSheet.id = ?]]></xml-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">bom_level</property>
+                    <property name="columnName">BOMLevel</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">bom_level</text-property>
-                    <text-property name="heading">bom_level</text-property>
+                    <text-property name="displayName">BOMLevel</text-property>
+                    <text-property name="heading">BOMLevel</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">costsheet_group</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">costsheet_group</text-property>
-                    <text-property name="heading">costsheet_group</text-property>
+                    <property name="columnName">CostSheetGroup</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CostSheetGroup</text-property>
+                    <text-property name="heading">CostSheetGroup</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">consumption_qty</property>
+                    <property name="columnName">ConsumptionQty</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">consumption_qty</text-property>
-                    <text-property name="heading">consumption_qty</text-property>
+                    <text-property name="displayName">ConsumptionQty</text-property>
+                    <text-property name="heading">ConsumptionQty</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">unit</property>
+                    <property name="columnName">Type</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">unit</text-property>
-                    <text-property name="heading">unit</text-property>
+                    <text-property name="displayName">Type</text-property>
+                    <text-property name="heading">Type</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">cost_price</property>
+                    <property name="columnName">Unit</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <text-property name="heading">cost_price</text-property>
+                    <text-property name="displayName">Unit</text-property>
+                    <text-property name="heading">Unit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CostPrice</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CostPrice</text-property>
+                    <text-property name="heading">CostPrice</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -776,27 +802,32 @@ where CostSheet.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">bom_level</property>
+                        <property name="name">BOMLevel</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">costsheet_group</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">CostSheetGroup</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">consumption_qty</property>
+                        <property name="name">ConsumptionQty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">unit</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">Type</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">cost_price</property>
+                        <property name="name">Unit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">CostPrice</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -819,51 +850,61 @@ where CostSheet.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">bom_level</property>
-                    <property name="nativeName">bom_level</property>
+                    <property name="name">BOMLevel</property>
+                    <property name="nativeName">BOMLevel</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">costsheet_group</property>
-                    <property name="nativeName">costsheet_group</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">CostSheetGroup</property>
+                    <property name="nativeName">CostSheetGroup</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">consumption_qty</property>
-                    <property name="nativeName">consumption_qty</property>
+                    <property name="name">ConsumptionQty</property>
+                    <property name="nativeName">ConsumptionQty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">unit</property>
-                    <property name="nativeName">unit</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">Type</property>
+                    <property name="nativeName">Type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">cost_price</property>
-                    <property name="nativeName">cost_price</property>
+                    <property name="name">Unit</property>
+                    <property name="nativeName">Unit</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">CostPrice</property>
+                    <property name="nativeName">CostPrice</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
-	CostSheetLine.code as code,
-	CostSheetLine.name as name,
-	CostSheetLine.bom_level as bom_level,
-	CostSheetLine.cost_sheet_group as costsheet_group,
-	CostSheetLine.consumption_qty as consumption_qty,
-	CostSheetLine.unit as unit,
-	CostSheetLine.cost_price as cost_price
+	CostSheetLine.code as "code",
+	CostSheetLine.name as "name",
+	CostSheetLine.bom_level as "BOMLevel",
+	CostSheetGroup.name as "CostSheetGroup",
+	CostSheetLine.consumption_qty as "ConsumptionQty",
+	CostSheetLine.type_select as "Type",
+	Unit.name as "Unit",
+	CostSheetLine.cost_price as "CostPrice"
 from production_cost_sheet as CostSheet 
 LEFT JOIN production_cost_sheet_line as ParentCostSheetLine ON CostSheet.id = ParentCostSheetLine.cost_sheet 
 LEFT JOIN production_cost_sheet_line as CostSheetLine ON CostSheetLine.parent_cost_sheet_line = ParentCostSheetLine.id
+LEFT JOIN production_cost_sheet_group as CostSheetGroup ON CostSheetGroup.id = CostSheetLine.cost_sheet_group
+LEFT JOIN base_unit as Unit ON Unit.id = CostSheetLine.unit
 where CostSheet.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1165,34 +1206,40 @@ where CostSheet.id = ?]]></xml-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">bom_level</property>
+                    <property name="columnName">BOMLevel</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">bom_level</text-property>
-                    <text-property name="heading">bom_level</text-property>
+                    <text-property name="displayName">BOMLevel</text-property>
+                    <text-property name="heading">BOMLevel</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">costsheet_group</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">costsheet_group</text-property>
-                    <text-property name="heading">costsheet_group</text-property>
+                    <property name="columnName">CostSheetGroup</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CostSheetGroup</text-property>
+                    <text-property name="heading">CostSheetGroup</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">consumption_qty</property>
+                    <property name="columnName">ConsumptionQty</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">consumption_qty</text-property>
-                    <text-property name="heading">consumption_qty</text-property>
+                    <text-property name="displayName">ConsumptionQty</text-property>
+                    <text-property name="heading">ConsumptionQty</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">unit</property>
+                    <property name="columnName">Type</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">unit</text-property>
-                    <text-property name="heading">unit</text-property>
+                    <text-property name="displayName">Type</text-property>
+                    <text-property name="heading">Type</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">cost_price</property>
+                    <property name="columnName">Unit</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <text-property name="heading">cost_price</text-property>
+                    <text-property name="displayName">Unit</text-property>
+                    <text-property name="heading">Unit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CostPrice</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">CostPrice</text-property>
+                    <text-property name="heading">CostPrice</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -1221,27 +1268,32 @@ where CostSheet.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">bom_level</property>
+                        <property name="name">BOMLevel</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">costsheet_group</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">CostSheetGroup</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">consumption_qty</property>
+                        <property name="name">ConsumptionQty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">unit</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">Type</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">cost_price</property>
+                        <property name="name">Unit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">CostPrice</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -1264,51 +1316,62 @@ where CostSheet.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">bom_level</property>
-                    <property name="nativeName">bom_level</property>
+                    <property name="name">BOMLevel</property>
+                    <property name="nativeName">BOMLevel</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">costsheet_group</property>
-                    <property name="nativeName">costsheet_group</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">CostSheetGroup</property>
+                    <property name="nativeName">CostSheetGroup</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">consumption_qty</property>
-                    <property name="nativeName">consumption_qty</property>
+                    <property name="name">ConsumptionQty</property>
+                    <property name="nativeName">ConsumptionQty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">unit</property>
-                    <property name="nativeName">unit</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">Type</property>
+                    <property name="nativeName">Type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">cost_price</property>
-                    <property name="nativeName">cost_price</property>
+                    <property name="name">Unit</property>
+                    <property name="nativeName">Unit</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">CostPrice</property>
+                    <property name="nativeName">CostPrice</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
-	ParentCostSheetLine.code as code,
-	ParentCostSheetLine.name as name,
-	ParentCostSheetLine.bom_level as bom_level,
-	ParentCostSheetLine.cost_sheet_group as costsheet_group,
-	ParentCostSheetLine.consumption_qty as consumption_qty,
-	ParentCostSheetLine.unit as unit,
-	ParentCostSheetLine.cost_price as cost_price
+	ParentCostSheetLine.code as "code",
+	ParentCostSheetLine.name as "name",
+	ParentCostSheetLine.bom_level as "BOMLevel",
+	CostSheetGroup.name as "CostSheetGroup",
+	ParentCostSheetLine.consumption_qty as "ConsumptionQty",
+	ParentCostSheetLine.type_select as "Type",
+	Unit.name as "Unit",
+	ParentCostSheetLine.cost_price as "CostPrice"
 from production_cost_sheet as CostSheet 
 LEFT JOIN production_cost_sheet_line as ParentCostSheetLine ON CostSheet.id = ParentCostSheetLine.cost_sheet 
-where CostSheet.id = ?]]></xml-property>
+LEFT JOIN production_cost_sheet_group as CostSheetGroup ON CostSheetGroup.id = ParentCostSheetLine.cost_sheet_group
+LEFT JOIN base_unit as Unit ON Unit.id = ParentCostSheetLine.unit
+where CostSheet.id = ?
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1594,6 +1657,69 @@ where CostSheet.id = ?]]></xml-property>
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppProduction" id="5246">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">nb_decimal_digit_for_bom_qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
+                    <text-property name="heading">nb_decimal_digit_for_bom_qty</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">nb_decimal_digit_for_bom_qty</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">nb_decimal_digit_for_bom_qty</property>
+                    <property name="nativeName">nb_decimal_digit_for_bom_qty</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_bom_qty 
+from BASE_APP_PRODUCTION]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nb_decimal_digit_for_bom_qty</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>10</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nb_decimal_digit_for_bom_qty</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nb_decimal_digit_for_bom_qty</design:label>
+            <design:formattingHints>
+              <design:displaySize>11</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -1621,6 +1747,12 @@ where CostSheet.id = ?]]></xml-property>
                             <property name="name">manufacturing_order</property>
                             <text-property name="displayName">manufacturing_order</text-property>
                             <expression name="expression" type="javascript">dataSetRow["manufacturing_order"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">bom</property>
+                            <text-property name="displayName">bom</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["bom"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
@@ -1682,7 +1814,7 @@ where CostSheet.id = ?]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'CostSheet.ManufOrderNumber'</value>
+                                            <value type="javascript">row["manufacturing_order"] != null ? 'CostSheet.ManufOrderNumber' : 'CostSheet.billOfMaterial'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1701,7 +1833,7 @@ where CostSheet.id = ?]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3815">
@@ -1816,6 +1948,12 @@ where CostSheet.id = ?]]></xml-property>
                     <property name="name">manufacturing_order</property>
                     <text-property name="displayName">manufacturing_order</text-property>
                     <expression name="expression" type="javascript">dataSetRow["manufacturing_order"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">bom</property>
+                    <text-property name="displayName">bom</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bom"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2026,7 +2164,7 @@ where CostSheet.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'CostSheet.manufOrder'</value>
+                                    <value type="javascript">row["manufacturing_order"] != null ? 'CostSheet.manufOrder' : 'CostSheet.billOfMaterial'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2045,7 +2183,7 @@ where CostSheet.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="36">
@@ -2193,60 +2331,107 @@ where CostSheet.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">bom_level</property>
-                    <text-property name="displayName">bom_level</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["bom_level"]</expression>
+                    <property name="name">BOMLevel</property>
+                    <text-property name="displayName">BOMLevel</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["BOMLevel"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">costsheet_group</property>
-                    <text-property name="displayName">costsheet_group</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["costsheet_group"]</expression>
+                    <property name="name">CostSheetGroup</property>
+                    <text-property name="displayName">CostSheetGroup</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CostSheetGroup"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ConsumptionQty</property>
+                    <text-property name="displayName">ConsumptionQty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ConsumptionQty"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">consumption_qty</property>
-                    <text-property name="displayName">consumption_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["consumption_qty"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">Type</property>
+                    <text-property name="displayName">Type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Type"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">unit</property>
-                    <text-property name="displayName">unit</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["unit"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">Unit</property>
+                    <text-property name="displayName">Unit</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Unit"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">cost_price</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cost_price"]</expression>
+                    <property name="name">CostPrice</property>
+                    <text-property name="displayName">CostPrice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CostPrice"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <column id="5258">
+                <property name="width">1.15in</property>
+            </column>
             <column id="402">
-                <property name="width">1in</property>
+                <property name="width">1.05in</property>
             </column>
             <column id="403">
-                <property name="width">1.5in</property>
+                <property name="width">1.55in</property>
             </column>
             <column id="404">
-                <property name="width">1in</property>
+                <property name="width">0.6in</property>
             </column>
             <column id="405">
-                <property name="width">1.125in</property>
+                <property name="width">1.15in</property>
             </column>
             <column id="406">
-                <property name="width">1.125in</property>
+                <property name="width">0.9in</property>
             </column>
             <column id="407">
-                <property name="width">0.75in</property>
+                <property name="width">0.8in</property>
             </column>
             <column id="408">
-                <property name="width">1.125in</property>
+                <property name="width">0.8in</property>
             </column>
             <header>
                 <row id="364">
                     <property name="height">0.375in</property>
+                    <cell id="5255">
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="5273">
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'CostSheet.lineType'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="365">
                         <property name="backgroundColor">#E5E5E5</property>
                         <property name="borderBottomStyle">solid</property>
@@ -2518,6 +2703,45 @@ where CostSheet.id = ?]]></xml-property>
             <detail>
                 <row id="379">
                     <property name="height">0.325in</property>
+                    <cell id="5256">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="5274">
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">['CostSheet.lineTypeProduceProduct','CostSheet.lineTypeConsumeProduct','CostSheet.lineTypeWorkCenter','CostSheet.lineTypeIndirectCost','CostSheet.lineTypeConsumeProductWaste'][row["Type"]-1]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="380">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2563,7 +2787,7 @@ where CostSheet.id = ?]]></xml-property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["bom_level"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["BOMLevel"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="386">
@@ -2579,7 +2803,7 @@ where CostSheet.id = ?]]></xml-property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["costsheet_group"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["CostSheetGroup"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="388">
@@ -2594,8 +2818,17 @@ where CostSheet.id = ?]]></xml-property>
                         <text id="389">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
+                            <property name="dataSet">AppProduction</property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">nb_decimal_digit_for_bom_qty</property>
+                                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_bom_qty"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["consumption_qty"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_bom_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="390">
@@ -2611,7 +2844,7 @@ where CostSheet.id = ?]]></xml-property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["Unit"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="392">
@@ -2627,13 +2860,14 @@ where CostSheet.id = ?]]></xml-property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["cost_price"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["CostPrice"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
             </detail>
             <footer>
                 <row id="394">
+                    <cell id="5257"/>
                     <cell id="395"/>
                     <cell id="396"/>
                     <cell id="397"/>
@@ -2660,36 +2894,45 @@ where CostSheet.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">bom_level</property>
-                    <text-property name="displayName">bom_level</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["bom_level"]</expression>
+                    <property name="name">BOMLevel</property>
+                    <text-property name="displayName">BOMLevel</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["BOMLevel"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">costsheet_group</property>
-                    <text-property name="displayName">costsheet_group</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["costsheet_group"]</expression>
+                    <property name="name">CostSheetGroup</property>
+                    <text-property name="displayName">CostSheetGroup</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CostSheetGroup"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ConsumptionQty</property>
+                    <text-property name="displayName">ConsumptionQty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ConsumptionQty"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">consumption_qty</property>
-                    <text-property name="displayName">consumption_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["consumption_qty"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">Type</property>
+                    <text-property name="displayName">Type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Type"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">unit</property>
-                    <text-property name="displayName">unit</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["unit"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">Unit</property>
+                    <text-property name="displayName">Unit</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Unit"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">cost_price</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cost_price"]</expression>
+                    <property name="name">CostPrice</property>
+                    <text-property name="displayName">CostPrice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CostPrice"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <column id="5254">
+                <property name="width">1.15in</property>
+            </column>
             <column id="493">
                 <property name="width">1.05in</property>
             </column>
@@ -2697,22 +2940,23 @@ where CostSheet.id = ?]]></xml-property>
                 <property name="width">1.55in</property>
             </column>
             <column id="495">
-                <property name="width">1.05in</property>
+                <property name="width">0.6in</property>
             </column>
             <column id="496">
                 <property name="width">1.15in</property>
             </column>
             <column id="497">
-                <property name="width">1.2in</property>
+                <property name="width">0.9in</property>
             </column>
             <column id="498">
                 <property name="width">0.8in</property>
             </column>
             <column id="499">
-                <property name="width">1.125in</property>
+                <property name="width">0.8in</property>
             </column>
             <header>
                 <row id="462">
+                    <cell id="5251"/>
                     <cell id="463"/>
                     <cell id="464"/>
                     <cell id="465"/>
@@ -2725,6 +2969,44 @@ where CostSheet.id = ?]]></xml-property>
             <detail>
                 <row id="470">
                     <property name="height">0.375in</property>
+                    <cell id="5252">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="5276">
+                            <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">['CostSheet.lineTypeProduceProduct','CostSheet.lineTypeConsumeProduct','CostSheet.lineTypeWorkCenter','CostSheet.lineTypeIndirectCost','CostSheet.lineTypeConsumeProductWaste'][row["Type"]-1]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="471">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2767,7 +3049,7 @@ where CostSheet.id = ?]]></xml-property>
                         <text id="476">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["bom_level"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["BOMLevel"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="477">
@@ -2782,7 +3064,7 @@ where CostSheet.id = ?]]></xml-property>
                         <text id="478">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["costsheet_group"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["CostSheetGroup"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="479">
@@ -2796,8 +3078,17 @@ where CostSheet.id = ?]]></xml-property>
                         <property name="borderTopWidth">thin</property>
                         <text id="480">
                             <property name="textAlign">center</property>
+                            <property name="dataSet">AppProduction</property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">nb_decimal_digit_for_bom_qty</property>
+                                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_bom_qty"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["consumption_qty"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_bom_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="481">
@@ -2812,7 +3103,7 @@ where CostSheet.id = ?]]></xml-property>
                         <text id="482">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["Unit"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="483">
@@ -2827,13 +3118,14 @@ where CostSheet.id = ?]]></xml-property>
                         <text id="484">
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["cost_price"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["CostPrice"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
             </detail>
             <footer>
                 <row id="485">
+                    <cell id="5253"/>
                     <cell id="486"/>
                     <cell id="487"/>
                     <cell id="488"/>
