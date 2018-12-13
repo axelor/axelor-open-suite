@@ -69,7 +69,9 @@ public class InventoryController {
           ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
               .addParam("InventoryId", inventory.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("activateBarCodeGeneration", Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
+              .addParam(
+                  "activateBarCodeGeneration",
+                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
               .addFormat(inventory.getFormatSelect())
               .generate()
               .getFileLink();
