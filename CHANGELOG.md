@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.1]
+## [5.1.0] - 2018-12-13
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
 - MARKETING CAMPAIGN : Generate event to the team and salesman in charge depending of the partner or leads.
@@ -1434,7 +1434,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[5.1.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.1.0
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
