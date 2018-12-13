@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.CostSheetGroup;
@@ -163,12 +164,35 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal consumptionQty)
       throws AxelorException {
 
+    BigDecimal price;
+
+    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
+            || product
+                .getProductSubTypeSelect()
+                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+        && parentCostSheetLine
+            .getProduct()
+            .getRealOrEstimatedPriceSelect()
+            .equals(ProductRepository.PRICE_METHOD_REAL)
+        && parentCostSheetLine
+            .getProduct()
+            .getComponentsValuationMethod()
+            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
+      price = product.getAvgPrice();
+    } else {
+      price = product.getCostPrice();
+    }
+
+    if (price.compareTo(BigDecimal.ZERO) == 0) {
+      price = product.getPurchasePrice();
+    }
+
     BigDecimal costPrice =
         unitConversionService
             .convert(
                 unit,
                 product.getUnit(),
-                product.getCostPrice(),
+                price,
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
