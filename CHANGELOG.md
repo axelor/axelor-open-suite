@@ -132,6 +132,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
 - Taxline : fix suggestions in suggestbox.
 - COPY OF A PRODUCT : avgPrice, startDate and endDate empty
+- COST SHEET : fix wrong assignation of cost sheet group for human ressources
 
 
 ## [5.0.6] - 2018-10-06
