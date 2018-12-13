@@ -149,6 +149,11 @@
 				public static final int COST_TYPE_LAST_PURCHASE_PRICE = 2;
 				public static final int COST_TYPE_AVERAGE_PRICE = 3;
 				public static final int COST_TYPE_LAST_PRODUCTION_PRICE = 4;
+				
+				// PRODUCT SUB-TYPE SELECT
+				public static final int PRODUCT_SUB_TYPE_FINISHED_PRODUCT = 1;
+				public static final int PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT = 2;
+				public static final int PRODUCT_SUB_TYPE_COMPONENT = 3;
 	   		]]>
 	   	</extra-code>
 

@@ -272,6 +272,7 @@ Only display line where quantity is greater than 0.
 - SUBROGATION RELEASE : allow to select a refund of an invoice already transmitted to the factor and validated after the transmission of the original invoice to the factor
 - Remove planned stock move lines on cancel.
 - WORKCENTER: add new field "Revaluation at actual prices" for machines duration in costsheets
+- PRODUCT : New select 'Components valuation method' in Production Information.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
