@@ -65,6 +65,7 @@ public interface CostSheetLineService {
       throws AxelorException;
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
+      WorkCenter workCenter,
       ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
