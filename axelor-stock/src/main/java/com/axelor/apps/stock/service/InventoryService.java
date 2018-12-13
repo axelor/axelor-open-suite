@@ -576,24 +576,30 @@ public class InventoryService {
     List<String[]> list = new ArrayList<>();
 
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-      String[] item = new String[7];
+      String[] item = new String[8];
       String realQty = "";
 
       item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
       item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
-      item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
-      item[3] =
+      item[2] =
+          (inventoryLine.getProduct() == null)
+              ? ""
+              : ((inventoryLine.getProduct().getProductCategory() == null)
+                  ? ""
+                  : inventoryLine.getProduct().getProductCategory().getName());
+      item[3] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
+      item[4] =
           (inventoryLine.getTrackingNumber() == null)
               ? ""
               : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
-      item[4] = inventoryLine.getCurrentQty().toString();
+      item[5] = inventoryLine.getCurrentQty().toString();
       if (inventoryLine.getRealQty() != null
           && inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT
           && inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
         realQty = inventoryLine.getRealQty().toString();
       }
-      item[5] = realQty;
-      item[6] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+      item[6] = realQty;
+      item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
       list.add(item);
     }
 
@@ -616,6 +622,7 @@ public class InventoryService {
     String[] headers = {
       I18n.get("Product Name"),
       I18n.get("Product Code"),
+      I18n.get("Product category"),
       I18n.get("Rack"),
       I18n.get("Tracking Number"),
       I18n.get("Current Quantity"),

@@ -37,6 +37,7 @@
             <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
             <field name="dateT" readonlyIf="statusSelect >= 2"/>
             <field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="completedBy" readonly="true" showIf="completedBy"/>
             <field name="validatedBy" readonly="true" showIf="validatedBy"/>
             <field name="validatedOn" readonly="true" showIf="validatedOn"/>
             <field name="description" colSpan="12" height="3"/>
@@ -147,6 +148,7 @@
 	
 	<action-record name="action-inventory-record-complete" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="4"/>
+	    <field name="completedBy" expr="eval:__user__"/>
 	</action-record>
 
 	<action-method name="action-inventory-method-show-inventory">

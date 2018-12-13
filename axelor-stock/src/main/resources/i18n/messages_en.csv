@@ -266,6 +266,7 @@
 "Inventory.date","Date",,
 "Inventory.description","Description",,
 "Inventory.name","Name",,
+"Inventory.productCategory","Product category",,
 "Inventory.rack","Rack",,
 "Inventory.realQty","Real Quantity",,
 "Inventory.stockLocation","Stock location",,
