@@ -1149,7 +1149,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
-            <property name="headerHeight">1in</property>
+            <property name="headerHeight">0.3in</property>
             <page-header>
                 <grid id="3117">
                     <property name="height">2.513541666666667cm</property>
@@ -1203,21 +1203,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                         <property name="width">1.40625in</property>
                     </column>
                     <row id="3120">
-                        <cell id="4157">
-                            <image id="5962">
-                                <property name="height">84px</property>
-                                <property name="width">235px</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
-                        </cell>
+                        <cell id="4157"/>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
                             <text id="5973">
@@ -1270,6 +1256,51 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <grid id="4314">
                     <property name="height">1.905cm</property>
                     <property name="width">27.99291666666667cm</property>
+                    <property name="dataSet">BankReconciliationDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">company</property>
+                            <text-property name="displayName">company</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["company"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">report_date</property>
+                            <text-property name="displayName">report_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">currency</property>
+                            <text-property name="displayName">currency</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">journal</property>
+                            <text-property name="displayName">journal</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">cash_account</property>
+                            <text-property name="displayName">cash_account</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">account</property>
+                            <text-property name="displayName">account</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
                     <column id="4315">
                         <property name="width">23.468541666666667cm</property>
                     </column>
@@ -1301,6 +1332,60 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <image id="3419">
+                                <property name="overflow">hidden</property>
+                                <property name="height">35px</property>
+                                <property name="width">154px</property>
+                                <property name="dataSet">BankReconciliationDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">company</property>
+                                        <text-property name="displayName">company</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">report_date</property>
+                                        <text-property name="displayName">report_date</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">currency</property>
+                                        <text-property name="displayName">currency</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">journal</property>
+                                        <text-property name="displayName">journal</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">cash_account</property>
+                                        <text-property name="displayName">cash_account</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">account</property>
+                                        <text-property name="displayName">account</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4409">
                             <text id="4411">
@@ -1344,7 +1429,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
         <simple-master-page name="NewSimpleMasterPage" id="4968">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
-            <property name="headerHeight">1in</property>
+            <property name="headerHeight">0.3in</property>
             <page-header>
                 <grid id="5998">
                     <property name="height">2.513541666666667cm</property>
@@ -1398,21 +1483,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                         <property name="width">1.40625in</property>
                     </column>
                     <row id="6002">
-                        <cell id="6003">
-                            <image id="6004">
-                                <property name="height">84px</property>
-                                <property name="width">235px</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
-                        </cell>
+                        <cell id="6003"/>
                         <cell id="6005">
                             <property name="verticalAlign">top</property>
                             <text id="6006">
@@ -1465,6 +1536,51 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <grid id="5974">
                     <property name="height">1.905cm</property>
                     <property name="width">27.99291666666667cm</property>
+                    <property name="dataSet">BankReconciliationDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">company</property>
+                            <text-property name="displayName">company</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["company"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">report_date</property>
+                            <text-property name="displayName">report_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">currency</property>
+                            <text-property name="displayName">currency</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">journal</property>
+                            <text-property name="displayName">journal</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">cash_account</property>
+                            <text-property name="displayName">cash_account</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">account</property>
+                            <text-property name="displayName">account</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
                     <column id="5975">
                         <property name="width">23.468541666666667cm</property>
                     </column>
@@ -1496,6 +1612,60 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <image id="6022">
+                                <property name="overflow">hidden</property>
+                                <property name="height">35px</property>
+                                <property name="width">154px</property>
+                                <property name="dataSet">BankReconciliationDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">company</property>
+                                        <text-property name="displayName">company</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">report_date</property>
+                                        <text-property name="displayName">report_date</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">currency</property>
+                                        <text-property name="displayName">currency</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">journal</property>
+                                        <text-property name="displayName">journal</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">cash_account</property>
+                                        <text-property name="displayName">cash_account</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">account</property>
+                                        <text-property name="displayName">account</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="5984">
                             <text id="5985">
