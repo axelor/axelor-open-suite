@@ -320,6 +320,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 RoundingMode.HALF_EVEN);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
+        prodHumanResource.getWorkCenter(),
         prodHumanResource,
         priority,
         bomLevel,
@@ -536,6 +537,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 BigDecimal.ROUND_HALF_EVEN);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
+        workCenter,
         prodHumanResource,
         priority,
         bomLevel,
