@@ -304,11 +304,10 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     Product product = purchaseOrderLine.getProduct();
     Unit unit = product.getUnit();
-    BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
-    BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getCompanyExTaxTotal();
+    BigDecimal valuatedUnitPrice = purchaseOrderLine.getCompanyExTaxTotal();
 
     if (purchaseOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-      companyUnitPriceUntaxed =
+      valuatedUnitPrice =
           purchaseOrderLine
               .getCompanyExTaxTotal()
               .divide(
@@ -322,19 +321,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           unitConversionService.convert(
               purchaseOrderLine.getUnit(), unit, qty, qty.scale(), product);
 
-      priceDiscounted =
+      valuatedUnitPrice =
           unitConversionService.convert(
               unit,
               purchaseOrderLine.getUnit(),
-              priceDiscounted,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
-
-      companyUnitPriceUntaxed =
-          unitConversionService.convert(
-              unit,
-              purchaseOrderLine.getUnit(),
-              companyUnitPriceUntaxed,
+              valuatedUnitPrice,
               appBaseService.getNbDecimalDigitForUnitPrice(),
               product);
     }
@@ -343,8 +334,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         shippingCoefService.getShippingCoef(
             product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany(), qty);
     if (shippingCoef.compareTo(BigDecimal.ONE) != 0) {
-      priceDiscounted = priceDiscounted.multiply(shippingCoef);
-      companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
+      valuatedUnitPrice = valuatedUnitPrice.multiply(shippingCoef);
     }
 
     BigDecimal taxRate = BigDecimal.ZERO;
@@ -358,8 +348,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
         qty,
-        priceDiscounted,
-        companyUnitPriceUntaxed,
+        valuatedUnitPrice,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
@@ -374,7 +363,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
-        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         null,

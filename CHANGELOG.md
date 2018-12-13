@@ -417,6 +417,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
 - Account: Reset fields on onchange action in Accounting Report. 
+- Stock move line : now displays an (untaxed) valuated unit price in company currency.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -503,6 +504,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
 - TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
 - Taxline : fix suggestions in suggestbox.
+- COPY OF A PRODUCT : avgPrice, startDate and endDate empty
 
 
 ## [5.0.6] - 2018-10-06

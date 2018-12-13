@@ -167,7 +167,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     BigDecimal fiscalValue =
         stockMoveLine
-            .getCompanyUnitPriceUntaxed()
+            .getValuatedUnitPrice()
             .multiply(stockMoveLine.getRealQty())
             .setScale(0, RoundingMode.HALF_UP);
 

@@ -97,7 +97,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
 
       BigDecimal fiscalValue =
           stockMoveLine
-              .getUnitPriceUntaxed()
+              .getValuatedUnitPrice()
               .multiply(stockMoveLine.getRealQty())
               .setScale(0, RoundingMode.HALF_UP);
 

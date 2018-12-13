@@ -383,19 +383,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (this.isStockMoveProduct(saleOrderLine)) {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      BigDecimal valuatedUnitPrice = saleOrderLine.getProduct().getCostPrice();
       BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
 
-      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
                 saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
-        priceDiscounted =
+        valuatedUnitPrice =
             unitConversionService.convert(
                 unit,
                 saleOrderLine.getUnit(),
-                priceDiscounted,
+                valuatedUnitPrice,
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 saleOrderLine.getProduct());
         requestedReservedQty =
@@ -413,7 +412,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         taxRate = taxLine.getValue();
       }
       if (saleOrderLine.getQty() != BigDecimal.ZERO) {
-        companyUnitPriceUntaxed =
+        valuatedUnitPrice =
             saleOrderLine
                 .getCompanyExTaxTotal()
                 .divide(
@@ -429,8 +428,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getDescription(),
               qty,
               requestedReservedQty,
-              priceDiscounted,
-              companyUnitPriceUntaxed,
+              valuatedUnitPrice,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
@@ -453,7 +451,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               null,
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
-              BigDecimal.ZERO,
               BigDecimal.ZERO,
               BigDecimal.ZERO,
               null,
