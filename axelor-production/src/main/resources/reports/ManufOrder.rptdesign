@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -126,6 +126,18 @@
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
+        </scalar-parameter>
+        <scalar-parameter name="activateBarCodeGeneration" id="4587">
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
         </scalar-parameter>
     </parameters>
     <data-sources>
@@ -2955,6 +2967,12 @@ INNER JOIN
                                 </structure>
                             </list-property>
                             <column id="4576">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">3.571875cm</property>
                             </column>
                             <column id="4182">
@@ -3328,9 +3346,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -3801,12 +3819,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
+                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
-                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4200,9 +4218,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
+                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">
