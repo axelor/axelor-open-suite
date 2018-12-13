@@ -111,6 +111,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
+    subrogationRelease.setTransmissionDate(LocalDate.now());
   }
 
   @Override
@@ -278,5 +279,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
+    subrogationRelease.setAccountingDate(LocalDate.now());
   }
 }

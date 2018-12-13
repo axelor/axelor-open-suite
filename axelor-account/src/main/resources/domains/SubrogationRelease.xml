@@ -17,6 +17,12 @@
 
 		<many-to-many name="invoiceSet" title="Release details"
 			ref="com.axelor.apps.account.db.Invoice" />
+			
+		<date name="transmissionDate" title="Transmission Date"/>
+		<date name="accountingDate" title="Accounting Date"/>
+
+		<string name="comments" title="Comments" large="true"/>
+		<string name="cancelReason" title="Reasons of cancelation" large="true"/>
 
 		<extra-code><![CDATA[
 			// STATUS SELECT
@@ -26,6 +32,15 @@
 			public static final int STATUS_CLEARED = 4;
 			public static final int STATUS_CANCELED = 5;
 		]]></extra-code>
+		
+		<track>
+			<field name="statusSelect"/>
+			<message if="true" on="CREATE">Release created</message>
+			<message if="statusSelect == 2">Release transmitted</message>
+			<message if="statusSelect == 3">Release accounted</message>
+			<message if="statusSelect == 4">Release cleared</message>
+			<message if="statusSelect == 5">Release canceled</message>
+		</track>
 
 	</entity>
 
