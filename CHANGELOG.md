@@ -6,6 +6,11 @@
 ## Bug Fixes
 
 
+## [Unreleased 5.1.1]
+## Improvements
+## Bug Fixes
+
+
 ## [5.1.0] - 2018-12-13
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
@@ -1441,6 +1446,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[Unreleased 5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...dev
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.1.0
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
