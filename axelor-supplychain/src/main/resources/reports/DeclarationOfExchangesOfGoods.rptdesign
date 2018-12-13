@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -181,7 +181,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -459,7 +459,7 @@ ContactUser.full_name contact_full_name,
 ContactPartner.fixed_phone contact_fixed_phone,
 ContactPartner.fax contact_fax,
 coalesce(ContactEmailAddress.address, ContactUser.email) contact_email_address
-from stock_declaration_of_exchanges DeclarationOfExchanges
+from supplychain_declaration_of_exchanges DeclarationOfExchanges
 left join base_period Period
 on DeclarationOfExchanges.period = Period.id
 left join base_company Company
@@ -1099,7 +1099,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">7</property>
                         <property name="name">supplementary_unit</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
@@ -1176,8 +1176,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="position">7</property>
                     <property name="name">supplementary_unit</property>
                     <property name="nativeName">supplementary_unit</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
@@ -1221,10 +1221,10 @@ coalesce(StockMoveLine.customs_code, CustomsCodeNomenclature.code) customs_code,
 case StockMove.type_select
 when 2 then coalesce(ToCountry.alpha2code, ToStockLocationCountry.alpha2code)
 when 3 then coalesce(FromCountry.alpha2code, FromStockLocationCountry.alpha2code) end dst_src_country_code,
-round(StockMoveLine.unit_price_untaxed * StockMoveLine.real_qty) fiscal_value,
+round(StockMoveLine.company_unit_price_untaxed * StockMoveLine.real_qty) fiscal_value,
 coalesce(StockMoveLine.regime, case StockMove.type_select when 2 then 21 when 3 then 11 end) regime,
 round(StockMoveLine.total_net_mass) total_net_mass,
-CustomsCodeNomenclature.supplementary_unit,
+ceil(StockMoveLine.real_qty) as supplementary_unit,
 coalesce(StockMoveLine.nature_of_transaction, 11 + 10 * cast(StockMove.is_reversion as int)) nature_of_transaction,
 coalesce(StockMove.mode_of_transport, 5) mode_of_transport,
 case StockMove.type_select
@@ -1233,70 +1233,48 @@ when 3 then coalesce(ToDepartment.code, ToStockLocationDepartment.code) end depa
 coalesce(CountryOfOrigin.alpha2code, case StockMove.type_select when 3 then coalesce(FromCountry.alpha2code, FromStockLocationCountry.alpha2code) end) country_of_origin_code,
 case when StockMove.type_select = 2
 and coalesce(StockMoveLine.regime, case StockMove.type_select when 2 then 21 when 3 then 11 end) != 29 then Partner.tax_nbr else '' end tax_nbr
-from stock_stock_move_line StockMoveLine
-left join stock_stock_move StockMove
-on StockMoveLine.stock_move = StockMove.id
-left join base_partner Partner
-on StockMove.partner = Partner.id
-left join base_product Product
-on StockMoveLine.product = Product.id
-left join stock_customs_code_nomenclature CustomsCodeNomenclature
-on Product.customs_code_nomenclature = CustomsCodeNomenclature.id
-left join base_country CountryOfOrigin
-on StockMoveLine.country_of_origin = CountryOfOrigin.id
-left join stock_declaration_of_exchanges DeclarationOfExchanges
-on DeclarationOfExchanges.id = ?
-left join base_period Period
-on DeclarationOfExchanges.period = Period.id
-left join base_address FromAddress
-on StockMove.from_address = FromAddress.id
-left join base_country FromCountry
-on FromAddress.addressl7country = FromCountry.id
-left join base_city FromCity
-on FromAddress.city = FromCity.id
-left join base_department FromDepartment
-on FromCity.department = FromDepartment.id
-left join stock_stock_location FromStockLocation
-on StockMove.from_stock_location = FromStockLocation.id
-left join base_address FromStockLocationAddress
-on FromStockLocation.address = FromStockLocationAddress.id
-left join base_country FromStockLocationCountry
-on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
-left join base_city FromStockLocationCity
-on FromStockLocationAddress.city = FromStockLocationCity.id
-left join base_department FromStockLocationDepartment
-on FromStockLocationCity.department = FromStockLocationDepartment.id
-left join base_address ToAddress
-on StockMove.to_address = ToAddress.id
-left join base_country ToCountry
-on ToAddress.addressl7country = ToCountry.id
-left join base_city ToCity
-on ToAddress.city = ToCity.id
-left join base_department ToDepartment
-on ToCity.department = ToDepartment.id
-left join stock_stock_location ToStockLocation
-on StockMove.to_stock_location = ToStockLocation.id
-left join base_address ToStockLocationAddress
-on ToStockLocation.address = ToStockLocationAddress.id
-left join base_country ToStockLocationCountry
-on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
-left join base_city ToStockLocationCity
-on ToStockLocationAddress.city = ToStockLocationCity.id
-left join base_department ToStockLocationDepartment
-on ToStockLocationCity.department = ToStockLocationDepartment.id
+from stock_stock_move_line StockMoveLine 
+left join stock_stock_move StockMove on StockMoveLine.stock_move = StockMove.id
+left join base_partner Partner on StockMove.partner = Partner.id
+left join base_product Product on StockMoveLine.product = Product.id
+left join stock_customs_code_nomenclature CustomsCodeNomenclature on Product.customs_code_nomenclature = CustomsCodeNomenclature.id
+left join base_country CountryOfOrigin on StockMoveLine.country_of_origin = CountryOfOrigin.id
+left join supplychain_declaration_of_exchanges DeclarationOfExchanges on DeclarationOfExchanges.id = ?
+left join base_period Period on DeclarationOfExchanges.period = Period.id
+left join base_address FromAddress on StockMove.from_address = FromAddress.id
+left join base_country FromCountry on FromAddress.addressl7country = FromCountry.id
+left join base_city FromCity on FromAddress.city = FromCity.id
+left join base_department FromDepartment on FromCity.department = FromDepartment.id
+left join stock_stock_location FromStockLocation on StockMove.from_stock_location = FromStockLocation.id
+left join base_address FromStockLocationAddress on FromStockLocation.address = FromStockLocationAddress.id
+left join base_country FromStockLocationCountry on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
+left join base_city FromStockLocationCity on FromStockLocationAddress.city = FromStockLocationCity.id
+left join base_department FromStockLocationDepartment on FromStockLocationCity.department = FromStockLocationDepartment.id
+left join base_address ToAddress on StockMove.to_address = ToAddress.id
+left join base_country ToCountry on ToAddress.addressl7country = ToCountry.id
+left join base_city ToCity on ToAddress.city = ToCity.id
+left join base_department ToDepartment on ToCity.department = ToDepartment.id
+left join stock_stock_location ToStockLocation on StockMove.to_stock_location = ToStockLocation.id
+left join base_address ToStockLocationAddress on ToStockLocation.address = ToStockLocationAddress.id
+left join base_country ToStockLocationCountry on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
+left join base_city ToStockLocationCity on ToStockLocationAddress.city = ToStockLocationCity.id
+left join base_department ToStockLocationDepartment on ToStockLocationCity.department = ToStockLocationDepartment.id
 where
 StockMove.real_date between Period.from_date and Period.to_date
 and Product.product_type_select = DeclarationOfExchanges.product_type_select
 and Product.used_indeb = true
 and StockMove.type_select = DeclarationOfExchanges.stock_move_type_select
 and StockMove.status_select = 3
+and StockMove.company = DeclarationOfExchanges.company 
 and DeclarationOfExchanges.country
 in (coalesce(FromCountry.id, FromStockLocationCountry.id),
 coalesce(ToCountry.id, ToStockLocationCountry.id))
 and coalesce(FromCountry.id, FromStockLocationCountry.id)
 != coalesce(ToCountry.id, ToStockLocationCountry.id)
 and coalesce(FromCountry.economic_area, FromStockLocationCountry.economic_area)
-= coalesce(ToCountry.economic_area, ToStockLocationCountry.economic_area)
+= coalesce(ToCountry.economic_area, ToStockLocationCountry.economic_area) 
+AND round(StockMoveLine.company_unit_price_untaxed * StockMoveLine.real_qty) > 0
+
 order by StockMove.real_date, StockMoveLine.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2154,13 +2132,13 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
-            <property name="orientation">portrait</property>
+            <property name="orientation">landscape</property>
             <property name="showHeaderOnFirst">true</property>
             <property name="showFooterOnLast">true</property>
-            <property name="headerHeight">10cm</property>
+            <property name="headerHeight">6cm</property>
             <page-header>
                 <grid id="4072">
-                    <property name="height">3.7604166666666665in</property>
+                    <property name="height">2.6875in</property>
                     <property name="width">100%</property>
                     <property name="dataSet">DeclarationOfExchangesDS</property>
                     <list-property name="boundDataColumns">
@@ -2238,28 +2216,28 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                         </structure>
                     </list-property>
                     <column id="4073">
-                        <property name="width">50%</property>
+                        <property name="width">8.5cm</property>
                     </column>
                     <column id="4074">
-                        <property name="width">50%</property>
+                        <property name="width">12cm</property>
                     </column>
                     <column id="4075"/>
                     <row id="4076">
                         <property name="height">0.375in</property>
-                        <cell id="4077">
-                            <property name="colSpan">2</property>
-                            <property name="rowSpan">1</property>
+                        <cell id="4077"/>
+                        <cell id="4078">
                             <text id="4084">
                                 <property name="fontWeight">bold</property>
                                 <property name="textAlign">center</property>
                                 <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[DÉCLARATION EUROPÉENNE DE SERVICES]]></text-property>
+                                <text-property name="content"><![CDATA[DÉCLARATION D’ÉCHANGES DE BIENS
+ENTRE ÉTATS MEMBRES DE LA COMMUNAUTÉ EUROPÉENNE]]></text-property>
                             </text>
                         </cell>
                         <cell id="4079"/>
                     </row>
                     <row id="4080">
-                        <property name="height">1.0729166666666667in</property>
+                        <property name="height">2.3125in</property>
                         <cell id="4081">
                             <grid id="3964">
                                 <property name="borderBottomStyle">solid</property>
@@ -2270,7 +2248,7 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                                 <property name="borderRightWidth">thin</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
-                                <property name="height">0.9791666666666666in</property>
+                                <property name="height">1.5208333333333333in</property>
                                 <property name="width">8cm</property>
                                 <property name="dataSet">DeclarationOfExchangesDS</property>
                                 <list-property name="boundDataColumns">
@@ -2355,7 +2333,7 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                                     <property name="textAlign">center</property>
                                 </column>
                                 <row id="3968">
-                                    <property name="height">0.9791666666666666in</property>
+                                    <property name="height">0.84375in</property>
                                     <cell id="3969">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
@@ -2415,39 +2393,108 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                                         </grid>
                                     </cell>
                                 </row>
+                                <row id="3972">
+                                    <property name="verticalAlign">middle</property>
+                                    <property name="height">1cm</property>
+                                    <cell id="3973">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <text id="4003">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[B. Flux]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3974">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <text id="4004">
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[introduction]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3975">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <text id="4005">
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[expédition]]></text-property>
+                                        </text>
+                                    </cell>
+                                </row>
+                                <row id="3976">
+                                    <property name="verticalAlign">middle</property>
+                                    <property name="height">0.75cm</property>
+                                    <cell id="3977">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                    </cell>
+                                    <cell id="3978">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <text id="4070">
+                                            <property name="textAlign">center</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["stock_move_type_select"] == 3 ? "☒" : "☐"</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3979">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <text id="4071">
+                                            <property name="textAlign">center</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["stock_move_type_select"] == 2 ? "☒" : "☐"</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                </row>
                             </grid>
                         </cell>
-                        <cell id="4082"/>
-                        <cell id="4083"/>
-                    </row>
-                    <row id="4204">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="height">2.3125in</property>
-                        <cell id="4205">
-                            <property name="colSpan">3</property>
-                            <property name="rowSpan">1</property>
+                        <cell id="4082">
                             <grid id="4085">
                                 <property name="verticalAlign">middle</property>
-                                <property name="width">7.625in</property>
                                 <column id="4086">
-                                    <property name="width">25%</property>
+                                    <property name="width">4cm</property>
                                 </column>
-                                <column id="4087">
-                                    <property name="width">25%</property>
-                                </column>
-                                <column id="4088">
-                                    <property name="width">25%</property>
-                                </column>
-                                <column id="4089">
-                                    <property name="width">25%</property>
-                                </column>
+                                <column id="4087"/>
+                                <column id="4088"/>
+                                <column id="4089"/>
                                 <row id="4090">
                                     <cell id="4091">
                                         <property name="colSpan">4</property>
@@ -2583,9 +2630,46 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                                 </row>
                             </grid>
                         </cell>
+                        <cell id="4083"/>
                     </row>
                 </grid>
             </page-header>
+            <page-footer>
+                <grid id="4204">
+                    <column id="4216"/>
+                    <column id="4205">
+                        <property name="textAlign">right</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="4206">
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="4207">
+                        <property name="textAlign">left</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="4208">
+                        <cell id="4215"/>
+                        <cell id="4209">
+                            <auto-text id="4210">
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4211">
+                            <property name="textAlign">center</property>
+                            <text id="4212">
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4213">
+                            <auto-text id="4214">
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
@@ -2693,7 +2777,7 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                 <structure>
                     <property name="name">SupUnits</property>
                     <expression name="expression" type="javascript">dataSetRow["supplementary_unit"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -2727,11 +2811,20 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
-            <property name="pageBreakInterval">10</property>
+            <property name="repeatHeader">true</property>
             <column id="4060">
-                <property name="width">2cm</property>
+                <property name="width">1cm</property>
             </column>
+            <column id="4061"/>
+            <column id="4062"/>
             <column id="4063"/>
+            <column id="4064"/>
+            <column id="4065"/>
+            <column id="4066"/>
+            <column id="4067"/>
+            <column id="4068"/>
+            <column id="4069"/>
+            <column id="4173"/>
             <column id="4177"/>
             <header>
                 <row id="4149">
@@ -2754,22 +2847,106 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                             <text-property name="text">1</text-property>
                         </label>
                     </cell>
+                    <cell id="4151">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4161">
+                            <text-property name="text">2</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4152">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4162">
+                            <text-property name="text">3</text-property>
+                        </label>
+                    </cell>
                     <cell id="4153">
+                        <property name="backgroundColor">#DDDDDD</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <label id="4163">
-                            <text-property name="text">2</text-property>
+                            <text-property name="text">4</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4154">
+                        <property name="backgroundColor">#DDDDDD</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4164">
+                            <text-property name="text">5</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4155">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4165">
+                            <text-property name="text">6</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4156">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4166">
+                            <text-property name="text">7</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4157">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4167">
+                            <text-property name="text">8</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4158">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4168">
+                            <text-property name="text">9</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4159">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4169">
+                            <text-property name="text">10</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4170">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4178">
+                            <text-property name="text">11</text-property>
                         </label>
                     </cell>
                     <cell id="4174">
+                        <property name="backgroundColor">#DDDDDD</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <label id="4179">
-                            <text-property name="text">3</text-property>
+                            <text-property name="text">12</text-property>
                         </label>
                     </cell>
                 </row>
@@ -2794,7 +2971,28 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                             <text-property name="content"><![CDATA[N<sup>o</sup> ligne]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4010">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4180">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Nomenclature]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4012">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4181">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Pays dest. prov.]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="4014">
+                        <property name="backgroundColor">#DDDDDD</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
@@ -2804,14 +3002,86 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                             <text-property name="content"><![CDATA[Valeur]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4016">
+                        <property name="backgroundColor">#DDDDDD</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4183">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Régime]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4018">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4184">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Masse nette]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4020">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4185">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Unités supp.]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4022">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4186">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Nature transact.]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4024">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4187">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Mode de transport]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4026">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4188">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Département]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4171">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <text id="4189">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[Pays d’origine]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="4175">
+                        <property name="backgroundColor">#DDDDDD</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <text id="4190">
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[Preneur]]></text-property>
+                            <text-property name="content"><![CDATA[Acquéreur]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2820,16 +3090,37 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                 <row id="4028">
                     <property name="textAlign">center</property>
                     <property name="verticalAlign">middle</property>
-                    <property name="height">1cm</property>
                     <cell id="4029">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <text id="4148">
+                            <property name="fontSize">9pt</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>(row.__rownum % 15) + 1</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>(row.__rownum+1)</VALUE-OF>]]></text-property>
                         </text>
+                    </cell>
+                    <cell id="4031">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="textAlign">left</property>
+                        <data id="4191">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">Nomenclature</property>
+                        </data>
+                    </cell>
+                    <cell id="4033">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4193">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">DstSrcCountry</property>
+                        </data>
                     </cell>
                     <cell id="4035">
                         <property name="borderLeftStyle">solid</property>
@@ -2838,7 +3129,84 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                         <property name="borderRightWidth">thin</property>
                         <property name="textAlign">right</property>
                         <data id="4194">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">FiscalValue</property>
+                        </data>
+                    </cell>
+                    <cell id="4037">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4195">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">Regime</property>
+                        </data>
+                    </cell>
+                    <cell id="4039">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="textAlign">right</property>
+                        <data id="4197">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">NetMass</property>
+                        </data>
+                    </cell>
+                    <cell id="4041">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4198">
+                            <property name="fontSize">9pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">###,##0</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">SupUnits</property>
+                        </data>
+                    </cell>
+                    <cell id="4043">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4199">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">NatTrans</property>
+                        </data>
+                    </cell>
+                    <cell id="4045">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4200">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">Transport</property>
+                        </data>
+                    </cell>
+                    <cell id="4047">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4201">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">Dept</property>
+                        </data>
+                    </cell>
+                    <cell id="4172">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4202">
+                            <property name="fontSize">9pt</property>
+                            <property name="resultSetColumn">CountryOrig</property>
                         </data>
                     </cell>
                     <cell id="4176">
@@ -2847,6 +3215,7 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <data id="4203">
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">Acquirer</property>
                         </data>
                     </cell>

@@ -46,7 +46,7 @@
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
     </panel>
-    <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true" canSearch="true"/>
+    <panel-dashlet name="declarationOfExchangesPanel" action="action-stock-move-line-declaration-of-exchanges" readonly="true" canSearch="true" height="500"/>
   </form>
 
   <action-record name="action-declaration-of-exchanges-onnew" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
@@ -85,7 +85,8 @@
         self.stockMove.realDate BETWEEN :fromDate AND :toDate
         AND self.product.productTypeSelect = :productTypeSelect
         AND self.stockMove.typeSelect = :stockMoveTypeSelect
-        AND self.stockMove.statusSelect = 3
+        AND self.stockMove.statusSelect = 3 
+        AND self.stockMove.company = :company 
         AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
         OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
         AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
@@ -99,6 +100,7 @@
       <context name="productTypeSelect" expr="eval: productTypeSelect"/>
       <context name="stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
       <context name="country" expr="eval: country"/>
+      <context name="company" expr="eval: company"/>
     </action-view>
 
 </object-views>

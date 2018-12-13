@@ -152,6 +152,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 - Added mass payment on supplier invoices and generate account move on bank order validation.
+- Added an option according to the payment mode to automatically consolidate the bank order lines per partner
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
@@ -268,6 +269,8 @@ Only display line where quantity is greater than 0.
 - EBICS partner : Add partner service for bank statement file format to manage specific bank codification.
 - FIXED ASSET BATCH : Move Fixed asset Batch to Accounting batch.
 - FILTER : Analytic distribution template filter by Company in Invoice, Sale Order, Purchase Order and Move.
+- SUBROGATION RELEASE : allow to select a refund of an invoice already transmitted to the factor and validated after the transmission of the original invoice to the factor
+- Remove planned stock move lines on cancel.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -366,6 +369,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Improve JPA cache management in batch bank statement.
 - Product: use quantity to get shipping coef from supplier catalog.
 - StockMove:stockMoveLine in readonly if company or fromStockLocation is null
+- Partner: Address on grid view
 - DataBackup : Handle Exception.
 
 ## [Unreleased 5.0.7]
@@ -417,6 +421,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
 - Account: Reset fields on onchange action in Accounting Report. 
+- Advance Export : Default value for selection translation.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -503,6 +508,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
 - TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
 - Taxline : fix suggestions in suggestbox.
+- COPY OF A PRODUCT : avgPrice, startDate and endDate empty
+- COST SHEET : fix wrong assignation of cost sheet group for human ressources
 
 
 ## [5.0.6] - 2018-10-06

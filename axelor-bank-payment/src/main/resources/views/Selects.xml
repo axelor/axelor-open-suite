@@ -215,6 +215,13 @@
 		<option value="2">Bank statement</option>
 	</selection>
 	
+	<selection name="bank.payment.bank.order.line.origin.related.to.select">
+		<option value="com.axelor.apps.account.db.Invoice">Invoice</option>
+		<option value="com.axelor.apps.account.db.PaymentScheduleLine">Payment schedule line</option>
+		<option value="com.axelor.apps.account.db.Reimbursement">Reimbursement</option>
+		<option value="com.axelor.apps.hr.db.Expense">Expense</option>
+	</selection>
+	
 	<selection name="sequence.generic.code.select" id="bankpayment.sequence.generic.code.select">
 		<option value="bankOrder">Bank order</option>
 	</selection>

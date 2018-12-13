@@ -120,4 +120,11 @@ public class ProductStockRepository extends ProductBaseRepository {
       e.printStackTrace();
     }
   }
+
+  @Override
+  public Product copy(Product product, boolean deep) {
+    Product copy = super.copy(product, deep);
+    copy.setAvgPrice(BigDecimal.ZERO);
+    return copy;
+  }
 }

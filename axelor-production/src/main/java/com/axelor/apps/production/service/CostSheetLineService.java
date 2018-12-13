@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
@@ -63,7 +64,16 @@ public interface CostSheetLineService {
       BigDecimal wasteRate)
       throws AxelorException;
 
-  public CostSheetLine createWorkCenterCostSheetLine(
+  public CostSheetLine createWorkCenterHRCostSheetLine(
+      ProdHumanResource prodHumanResource,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit);
+
+  public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
       int priority,
       int bomLevel,

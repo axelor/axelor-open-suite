@@ -407,7 +407,7 @@
 	</action-record>
 
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:contactPartner?.contactAddress?.fullName"/>
+		<field name="location" expr="eval:contactPartner?.mainAddress?.fullName"/>
 	</action-record>
 
 	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">

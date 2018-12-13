@@ -3,16 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation releases"
-		name="subrogation-release-grid" orderBy="-sequenceNumber">
+	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease"
+		orderBy="-sequenceNumber">
 		<field name="sequenceNumber" />
 		<field name="company" />
 		<field name="company.accountConfig.factorPartner" />
 		<field name="statusSelect" />
 	</grid>
 
-	<form model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"
-		name="subrogation-release-form" onNew="action-subrogation-release-onnew">
+	<form name="subrogation-release-form" title="Subrogation release" model="com.axelor.apps.account.db.SubrogationRelease"
+		 onNew="action-subrogation-release-onnew">
 
 		<menubar>
 			<menu title="Print/Export" icon="fa-print">
@@ -32,8 +32,8 @@
 				form-view="invoice-form" colSpan="12" canNew="false" readonlyIf="statusSelect != 1"
 				domain="self.company = :company AND self.partner.factorizedCustomer = TRUE
                     AND self.statusSelect = 3 
-                    AND self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE 
-                    AND self.id not in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))" />
+                    AND self.id not in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))
+                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4)))" />
 		</panel>
 
 		<panel name="actionsPanel" title="Actions" sidebar="true">

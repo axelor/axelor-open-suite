@@ -91,7 +91,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             currency,
             paymentDate,
             expense.getExpenseSeq(),
-            expense.getFullName()));
+            expense.getFullName(),
+            expense));
     bankOrder = bankOrderRepo.save(bankOrder);
 
     return bankOrder;

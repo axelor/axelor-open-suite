@@ -71,12 +71,17 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
-                    + "AND self.amountRemaining > 0 AND self.hasPendingPayments = FALSE "
                     + "AND self.id not in ("
                     + "		select Invoices.id "
                     + "		from SubrogationRelease as SR "
                     + "		join SR.invoiceSet as Invoices "
-                    + "		where SR.statusSelect in (:subrogationReleaseStatusTransmitted, :subrogationReleaseStatusAccounted, :subrogationReleaseStatusCleared))")
+                    + "		where SR.statusSelect in (:subrogationReleaseStatusTransmitted, :subrogationReleaseStatusAccounted, :subrogationReleaseStatusCleared))"
+                    + "AND ((self.amountRemaining > 0 AND self.hasPendingPayments = FALSE)"
+                    + "			OR self.originalInvoice.id in ("
+                    + "				select Invoices.id "
+                    + "				from SubrogationRelease as SR "
+                    + "				join SR.invoiceSet as Invoices "
+                    + "				where SR.statusSelect in (:subrogationReleaseStatusTransmitted, :subrogationReleaseStatusAccounted, :subrogationReleaseStatusCleared)))")
             .order("invoiceDate")
             .order("dueDate")
             .order("invoiceId");

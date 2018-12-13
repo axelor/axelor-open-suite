@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -225,7 +225,7 @@
             <xml-property name="queryText"><![CDATA[select Partner.name, Partner.first_name, Address.addressl4, Address.addressl6
 from base_partner AS Partner
 left join base_partner_address AS PartnerAddress on (PartnerAddress.partner = partner.id and PartnerAddress.is_default_addr is true and PartnerAddress.is_invoicing_addr = true)
-inner join base_address AS Address on (Address.id = PartnerAddress.address OR Address.id = Partner.contact_address)
+inner join base_address AS Address on (Address.id = PartnerAddress.address OR Address.id = Partner.main_address)
 where Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

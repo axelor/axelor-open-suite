@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
@@ -84,7 +84,8 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
                 period.getToDate(),
                 declarationOfExchanges.getProductTypeSelect(),
                 declarationOfExchanges.getStockMoveTypeSelect(),
-                declarationOfExchanges.getCountry())
+                declarationOfExchanges.getCountry(),
+                declarationOfExchanges.getCompany())
             .fetch();
     List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
     int lineNum = 1;
