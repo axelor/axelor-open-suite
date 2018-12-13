@@ -1,4 +1,141 @@
 # Changelog
+
+## [5.0.7] - 2018-12-13
+## Features
+- MRP : Display createdBy user and stockLocation.company in form and grid view.
+- PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
+- SaleOrder : Modify views to display company and stockLocation.
+- PurchaseOrder : Modify views to display company and stockLocation.
+- Invoice : Fill the 'companyBankDetails' from the 'Factor partner' if selected partner is 'Factorized customer' on sale invoice or refund.
+- JOURNAL : Enable massUpdate feature
+- SaleOrder & PurchaseOrder : Add prompt message on btn of "complete" manually sale or purchase order"
+- Purchase Order Line : Removed field 'salePrice', 'saleMinPrice' and hilite done on it in  grid-view
+
+## Improvements
+- Show full name for products in Mrp report.
+- Sale and Purchase order form: Remove edit from stockLocation field.
+- Account: allow to have substitution & reverse charge on the same tax equivalence.
+- PERIOD : allow to reopen a period if the fiscal year is not closed
+- Currency conversion: allow to fetch today's rate on newly created conversion lines.
+- Remove unecessary table in VAT on invoice report.
+- Enable editable grid on AccountEquiv and added sort on AccountEquiv and TaxEquiv
+- Added possibility to hide lines with currentQuantity and futureQuantity equal to 0 in stock locations.
+- BankOrder : Specify limit for BankOrderLines.
+- Purchase : Fix wrong translation of fields.
+- PurchaseOrder : Disable edit button in Supplier-partner field
+- Product : Fix hide the fields based on sellable and purchasable boolean fields on form view
+- InvoiceLine : Added field product.code in grid 
+- PARTNER : balance viewer
+- SaleOrderLine : Added field product.code in grid
+- Purchase order : Fill the product code and product name if a supplier catalog is defined but no tax is defined for the product
+- Purchase order : Fill the tax line even if there is no supplier catalog
+- Invoice : Fill the product code and product name even if tax or account are missing for the product
+- FISCAL POSITION : When we select an toAccount, we should filter on the company of the fromAccount.
+- INVENTORY : stock location filter
+- INVOICE : Disabled canEdit attribute on paymentCondition,paymentMode,partner,saleOrder,contact,companyBankDetails,bankDetails,journal,partnerAccount.
+- INVENTORY : Disabled canEdit attribute on Stock location, Product famlily, Product category,inventoryLineList.product
+- StockMoveLine : Remove readonlyIf condition for tracking No. in form-view.
+- GROUP : Enable massUpdate feature.
+- Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
+- Databackup : Include thread in backup & restore task.
+- Use the char ';' for subrogation release export
+- Allow to define large text for sale order and purchase order information fields on Partner.
+- Replace Packaging with Packing in modules base, supplychain and stock.
+- StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
+- PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
+- Production : Generate Unique Barcode on Duplicate Manufacture order.
+- Factor : New Organization for debt recovery submenu.
+- Inventory : Do not update average price when validating an inventory.
+- Account: Reset fields on onchange action in Accounting Report. 
+- Advance Export : Default value for selection translation.
+
+## Bug Fixes
+- Logistical Form : Fix display logo on report.
+- Modify accounting export & path in demo-data & export to dms file if path not specified. 
+- Accounting Export : Fix filter on move lines when click on 'See Move Lines' from 'Exported moves'.
+- Fix manual invoice selection on subrogation release.
+- Subrogation release: Fix the process on button 'Enter release in the accounts'. 
+- Logistical Form : Fix the exception managed per TraceBack method when sequence is not defined.
+- Fix accounting notification process.
+- Subrogation Release : Fix the status reset and clear invoice set when copy.
+- Subrogation Release : Fix throw exception and trace it when sequence is not defined.
+- Fix demo data for configurator.
+- MOVE : Fixed wrong message that is displayed when no sequence is defined for journal
+- PERIOD : Get the right period per type (civil, payroll, fiscal)
+- YEAR : sort per date DESC
+- MOVE : display missing description field in moveLines
+- MOVE : remove the wrong domain on company field that allow to select only the user active company
+- BANKSTATEMENTAFB120 : DateTimeFormatter updated since we use java.date.time instead of joda.time
+- Stock - FreightCarrierCustomerAccountNumber : Change index name of CarrierPartner.
+- Fix menuitem's translations.
+- Get correct stock location for intercompany (interco) orders.
+- StockMove : make addresses updatable until it's not realized.
+- Fix a bug where duplicated stock move line were shown in a dashlet.
+- StockMove : Modify Locale for Picking Order report.
+- StockMove : Fix partner to display on m2m grid view of mass invoicing of stock move.
+- Fix @Transactional annotations refer 'javax.transaction' to 'com.google.inject.persist'.
+- PurchaseOrder : Hide 'Completed' button conditionally.
+- Fixed bad behaviour of discounts on sales/purchases/invoices, especially when coupled to currency changes or ati prices.
+- Fix wrong sort on MRP list report. Now we have exactly the same sorting as the MRP process.
+- Purchase Order:Sequence should be assigned when we click on button Requested only
+- Fix wrong domain on AccountingReport (Analytic reports were linked to export menu instead of report menu)
+- Use sign of General accounting move line to sign the analytic move line on analytic balance.
+- Move : Fix generated move lines.
+- Removed duplicate code in InvoiceLineServiceImpl that prevent to get product informations if tax or account is not defined on product.
+- Account move : Fixed wrong evaluation on account move form to know if the daybook mode is enabled or not (use move.company instead of user.activeCompany expression). 
+- Account move : removed unnecessary save on xml action after call an action-method with reload param
+- ACCOUNT MOVE : mass daybook validation - manage JPA cache
+- Tracking Number Configuration : Fix put requiredIf on 'Sequence' field.
+- Reviewed completely Daybook process : Now, any account move generated automatically or manually are taken into account. Any filter on MoveLine have been updated (partner balances, reports, accounting process, views). 
+When we update an existing move in daybook mode, we update the partner balances of the new version of move and for the previous version of move.
+- Update customer account balances in real time (when we validate an account move) for total balance, instead of when we load the partner accounting situation. Also, enable the real time at the end of accounting batch, to avoid issue with recycled thread. 
+- Validate all draft or daybook account moves when we close a period.
+- Sequence : Fix fill automatically the company field and put it readonly when create sequence from another model.
+- Sale Order Line : Fix calculate "Available stock" on onload.
+- STOCK LOCATION : report for external stock location
+- AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
+- AnalyticBalance report: Fix order by.
+- Product: Removed 'shippingCoef' value set from onLoad.
+- Alphabetical order on the table producedStockMoveLineList and consumedStockMoveLineList
+- Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
+- PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
+- MANUF ORDER : Exception Message tracking number not filled
+- ICalendar: Fix Nullpointer Exception
+- Fixed occasionnal scale rounding anomalies on unit conversions.
+- Fixed issue on BankStatement computation of name when the bank statements are get directly from the bank server
+- Base : fix Null Pointer error.
+- Stock Move Line : remove action of make 'Tracking number' field required on product onchange.
+- Account reconcile : use moveLine partner instead of move partner for mass lettering run from move line list on selected move lines.
+- Account move reverse : use today date
+- Fix NPE on opening sale order line form.
+- ACCOUNTCONFIG : factor partner define form view and grid view
+- INVOICEPAYMENT : company bank details filter
+- Fixed a button and a field having the same name in user view.
+- PACKING LIST : Use the external_reference instead of order number
+- Now, the mass reconcile from move line list works for moveline without partner.
+Moreover, the amount_remaining calculation on move line was wrong. Now we compute it when account is reconcile, not if the account is used for compute the partner balance.
+- PURCHASE ORDER :StockMoveLine add field companyUnitPriceUntaxed and stock location average price update with company currency unit price.
+- INVOICE : fix total decimal amount format on report
+- Event : Fill correct partner when generate event from Customer. 
+- Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
+- ACCOUNTING EXPORT : sequence issue fix
+- Accounting Export : Fix NPE.
+- Configurator: add missing field in configurator sale order line formula form.
+- MANUF. ORDER : don't allow to print if status = draft
+- Tracking number search view fix.
+- Schedulers: fix missing traceback.
+- Debt recovery batch: fix error recovery.
+- Sale: fix Null Pointer error.
+- Bank statement: fix status update for bank statement imports.
+- Invoice line: fill product code on product change.
+- Base : Fix save issue on any change in AppBase record.
+- Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
+- TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
+- Taxline : fix suggestions in suggestbox.
+- COPY OF A PRODUCT : avgPrice, startDate and endDate empty
+- COST SHEET : fix wrong assignation of cost sheet group for human ressources
+- MANUF. ORDER PRINTING : change the name of a table's column
+
 ## [5.0.6] - 2018-10-06
 ## Features
 - Stock move : add hilite on stock move grid.
@@ -21,6 +158,7 @@
 - User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
+
 
 ## [5.0.5] - 2018-09-19
 ## Features
@@ -226,6 +364,7 @@
 - Fix 'Fields to select duplicate' to readonly in check duplicate wizard.
 - Event :  when we create new event, set status 'Planned' by default.
 - Opportunity: Fix set customer when create opportunity from lead.
+- INVENTORY : fill the actual qty
 
 
 ## [5.0.2] - 2018-06-22
@@ -438,6 +577,7 @@ Also, improve the sale order line grid and form views.
 - Check partner blocking on invoicing, direct debit and reimbursement. 
 - Improved sale order status label.
 - Timesheet editor: No group by on project when unique product is used.
+- Invoice : Added domain filter for purchaseOrder field using supplierPartner and company.
 
 ## Bug Fixes
 - invoice: fix hilighting for overdue bills. Warning hilite was always taking precedence over danger because of overlapping conditions.
@@ -566,7 +706,40 @@ Also, improve the sale order line grid and form views.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
 
-## [Unreleased 4.x]
+## [4.2.5] - 2018-10-06
+### Improvements
+- Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
+- Hide Ebics user full name in grid view.
+- Add a new button on bank order grids to display the bank order lines.
+- Bank orders can now be deleted when their status is "draft" or "canceled".
+- Improve bank order printing layout.
+- BANK ORDER : receiver address management for internationnal transfer
+
+### Bug Fixes
+- Fix NPE in BankOrder generation on missing bank name.
+- Timesheets : use the timesheet user to filter the projects/tasks instead of the connected user.
+- Cannot create a new bank order from the menu entry "awaiting signature".
+
+## [4.2.4] - 2018-07-12
+### Improvements
+- Fiscal Position interface reworked and moved from Account to Base module
+- Accounting export, use 1000 for administration and 1001 for FEC
+- Move every method of mobile service in HumanRessourceMobileController + fix some and change parameters
+- Web service mobile, create getKilometricAllowParam
+- Add a new bank order type for existing file transfer
+		
+### Bug Fixes
+- Fix readonly on date field in Fiscal year view form when creating a new record after having created a previous.
+- Filter on values selection
+- Fix translation in base module, add traceback on checkPlanning method in WeeklyPlanningController
+- MoveLine, show tab of reconcile credit or debit
+- Human ressource, remove french title in Employee, employee-filters + add translation
+- Invoice, replace empty line on pending total by a color line (blue, info-text)
+- In MoveLineExportServiceImpl, always have ignoreInAccountingOk = false
+- Only "Active" EbicsUsers can be selected as signatoryEbicsUser in BankOrder form views.
+
+## [4.2.3] - 2018-02-28
+4.1.3 with axelor-process-studio modules
 
 ## [4.1.3] - 2018-02-28
 ### Improvements
@@ -590,7 +763,6 @@ Also, improve the sale order line grid and form views.
 - On Invoice payment, if it's due to an invoice or a refund, payment mode become null and hidden
 - On Invoice payment, fix NPE by requiring paymentMode
 - Change menu leave.request.root.leave.calender to leave.request.root.leave.calendar
-- Accounting export, fix problem on export FEC
 
 ## [4.1.2] - 2018-02-05
 ### Improvements
@@ -885,6 +1057,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.7]: https://github.com/axelor/abs-webapp/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/abs-webapp/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/abs-webapp/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/abs-webapp/compare/v5.0.3...v5.0.4
