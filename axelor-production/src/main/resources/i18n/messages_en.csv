@@ -239,7 +239,7 @@
 "ManufOrder.startDate","Start Date",,
 "ManufOrder.status","Status",,
 "ManufOrder.stockLocation","Workshop",,
-"ManufOrder.title","MANUFACTURING ORDER",,
+"ManufOrder.title","Manufacturing order",,
 "ManufOrder.to","To",,
 "ManufOrder.total","Total",,
 "ManufOrder.trackingNumber","Tracking Number",,
