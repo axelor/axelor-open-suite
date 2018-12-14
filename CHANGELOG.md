@@ -8,6 +8,7 @@
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 - COSTSHEET : add new Field Currency and Fix Information on CoshSheet Report Printing
+- Sale Invoice & Refund : Add factor viewer.
 
 ## Bug Fixes
 
