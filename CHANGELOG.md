@@ -9,7 +9,7 @@
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 
 ## Bug Fixes
-
+-SEQUENCES : Fix panelSide Tips problem
 
 ## [5.1.0] - 2018-12-13
 ## Features
