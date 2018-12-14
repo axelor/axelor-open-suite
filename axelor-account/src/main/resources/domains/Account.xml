@@ -24,5 +24,6 @@
 	    ]]>
         </string>
         <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines" massUpdate="true"/>
+        <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true"/>
     </entity>
 </domain-models>

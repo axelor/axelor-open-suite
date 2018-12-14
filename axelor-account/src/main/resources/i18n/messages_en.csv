@@ -362,6 +362,7 @@
 "Analytic axis",,,
 "Analytic balance",,,
 "Analytic distribution",,,
+"Analytic distribution authorized",,,
 "Analytic distribution is missing on configuration for line : %s (company : %s)",,,
 "Analytic distribution line",,,
 "Analytic distribution lines",,,
