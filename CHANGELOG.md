@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.1.1]
+## Features
+- Subrogation Release : add change tracking on status and add new fields.
+
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 
