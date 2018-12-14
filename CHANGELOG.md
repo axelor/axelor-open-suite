@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.1]
 ## Improvements
+- FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
+
 ## Bug Fixes
 
 
