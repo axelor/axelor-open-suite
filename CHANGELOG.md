@@ -438,6 +438,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 ## Features
 ## Improvements
 ## Bug Fixes
+- Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
 
 
 ## [5.0.7] - 2018-12-13
@@ -602,7 +603,6 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
-
 
 ## [5.0.5] - 2018-09-19
 ## Features
