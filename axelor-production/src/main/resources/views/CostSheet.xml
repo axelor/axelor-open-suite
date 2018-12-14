@@ -26,6 +26,7 @@
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
   		<field name="billOfMaterial.qty"/>
   		<field name="costPrice"/>
+  		<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12" height="600"/>
 	  </panel>
 	</form>
@@ -35,6 +36,7 @@
 	    <field name="createdOn" readonly="true"/>
   		<field name="createdBy" readonly="true"/>
  		<field name="costPrice" readonly="true"/>
+ 		<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
  		<button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
 	  </panel>
