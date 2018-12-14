@@ -70,7 +70,12 @@
 		<option value="3">Invoice selected lines</option>
 		<option value="4">Invoice an advance payment</option>
 	</selection>
-
+    
+    <selection name="supplychain.stock.move.invoicing.wizard.select">
+      <option value="1">Invoice all</option>
+      <option value="2">Invoice partially stock move</option>
+    </selection>
+    
 	<selection name="supplychain.sale.order.type.select">
 		<option value="1">Standard</option>
 		<option value="2">Subscription</option>

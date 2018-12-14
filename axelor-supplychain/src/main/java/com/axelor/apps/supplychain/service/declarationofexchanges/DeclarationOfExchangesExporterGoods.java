@@ -268,8 +268,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
 
     String invoiceId = "";
-    if (stockMove.getInvoice() != null) {
-      invoiceId = stockMove.getInvoice().getInvoiceId();
+    if (stockMove.getInvoiceSet() != null) {
+      // invoiceId = stockMove.getInvoice().getInvoiceId();
     }
 
     data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum);

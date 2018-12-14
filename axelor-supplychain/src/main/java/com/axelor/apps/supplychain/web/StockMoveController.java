@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.exception.service.TraceBackService;
@@ -25,6 +26,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StockMoveController {
 
@@ -95,6 +101,31 @@ public class StockMoveController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void fillDefaultValueWizard(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      List<Map<String, Object>> stockMoveLines = new ArrayList<Map<String, Object>>();
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        if (stockMoveLine.getIsSubLine()) {
+          continue;
+        }
+        Map<String, Object> stockMoveLineMap = new HashMap<String, Object>();
+        stockMoveLineMap.put("productCode", stockMoveLine.getProduct().getCode());
+        stockMoveLineMap.put("productName", stockMoveLine.getProductName());
+        stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
+        stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
+        stockMoveLineMap.put("invoiceAll", false);
+        stockMoveLineMap.put("isSubline", stockMoveLine.getIsSubLine());
+        stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
+        stockMoveLines.add(stockMoveLineMap);
+      }
+      response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
+      response.setValue("$stockMoveLines", stockMoveLines);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

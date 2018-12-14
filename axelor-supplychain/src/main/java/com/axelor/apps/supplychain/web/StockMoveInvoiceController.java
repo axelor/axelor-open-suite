@@ -24,6 +24,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
@@ -36,10 +38,14 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,42 +55,96 @@ public class StockMoveInvoiceController {
   @Inject private StockMoveInvoiceService stockMoveInvoiceService;
   @Inject private SaleOrderRepository saleRepo;
   @Inject private PurchaseOrderRepository purchaseRepo;
+  @Inject private StockMoveLineRepository stockMoveLineRepository;
 
   public void generateInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
 
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    Invoice invoice = null;
-    Long origin = stockMove.getOriginId();
-    try {
+    if (context.containsKey("operationSelect")) {
+      StockMove stockMove = context.asType(StockMove.class);
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+      int operationSelect = Integer.parseInt(context.get("operationSelect").toString());
 
-      if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        invoice =
-            stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleRepo.find(origin));
-      } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(
-          stockMove.getOriginTypeSelect())) {
-        invoice =
-            stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                stockMove, purchaseRepo.find(origin));
-      } else {
-        invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
+      @SuppressWarnings("unchecked")
+      List<Map<String, Object>> stockMoveLineListContext =
+          (List<Map<String, Object>>) context.get("stockMoveLines");
+      for (Map<String, Object> map : stockMoveLineListContext) {
+        if (map.get("qtyToInvoice") != null) {
+          BigDecimal qtyToInvoiceItem = new BigDecimal(map.get("qtyToInvoice").toString());
+          BigDecimal realQty = new BigDecimal(map.get("realQty").toString());
+          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
+              && qtyToInvoiceItem.compareTo(realQty) != 1) {
+            Long stockMoveLineId = Long.valueOf((Integer) map.get("stockMoveLineId"));
+            StockMoveLine stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
+            addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, stockMoveLineId);
+            Long id;
+            if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+              id = stockMoveLine.getSaleOrderLine().getId();
+            } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(
+                stockMove.getOriginTypeSelect())) {
+              id = stockMoveLine.getPurchaseOrderLine().getId();
+            } else {
+              id = stockMoveLine.getId();
+            }
+            qtyToInvoiceMap.put(id, qtyToInvoiceItem);
+          }
+        }
       }
 
-      if (invoice != null) {
-        // refresh stockMove context
-        response.setReload(true);
-        // Open the generated invoice in a new tab
-        response.setView(
-            ActionView.define("Invoice")
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-form")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(invoice.getId()))
-                .map());
+      Invoice invoice = null;
+      Long origin = stockMove.getOriginId();
+      try {
+        if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                  stockMove, saleRepo.find(origin), operationSelect, qtyToInvoiceMap);
+        } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(
+            stockMove.getOriginTypeSelect())) {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                  stockMove, purchaseRepo.find(origin), operationSelect, qtyToInvoiceMap);
+        } else {
+          invoice =
+              stockMoveInvoiceService.createInvoiceFromStockMove(
+                  stockMove, operationSelect, qtyToInvoiceMap);
+        }
+
+        if (invoice != null) {
+          // Open the generated invoice in a new tab
+          response.setView(
+              ActionView.define("Invoice")
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(invoice.getId()))
+                  .map());
+        }
+        response.setCanClose(true);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void addSubLineQty(
+      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long stockMoveLineId) {
+
+    StockMoveLine stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
+
+    if (stockMoveLine.getProductTypeSelect().equals("pack")) {
+      for (StockMoveLine subLine : stockMoveLine.getSubLineList()) {
+        BigDecimal qty = BigDecimal.ZERO;
+        if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+          qty =
+              qtyToInvoiceItem
+                  .multiply(subLine.getQty())
+                  .divide(stockMoveLine.getQty(), 2, RoundingMode.HALF_EVEN);
+        }
+        qty = qty.setScale(2, RoundingMode.HALF_EVEN);
+        qtyToInvoiceMap.put(subLine.getId(), qty);
+      }
     }
   }
 
@@ -253,7 +313,7 @@ public class StockMoveInvoiceController {
           if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
             invoice =
                 stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                    stockMove, saleRepo.find(stockMove.getOriginId()));
+                    stockMove, saleRepo.find(stockMove.getOriginId()), 0, null);
             invoiceIdList.add(invoice.getId());
           }
         } catch (AxelorException ae) {
@@ -280,7 +340,7 @@ public class StockMoveInvoiceController {
           if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
             invoice =
                 stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                    stockMove, purchaseRepo.find(stockMove.getOriginId()));
+                    stockMove, purchaseRepo.find(stockMove.getOriginId()), 0, null);
             invoiceIdList.add(invoice.getId());
           }
         } catch (AxelorException ae) {

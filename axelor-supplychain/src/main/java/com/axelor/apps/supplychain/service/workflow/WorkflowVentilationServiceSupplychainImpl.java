@@ -94,6 +94,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       // Update amount remaining to invoiced on SaleOrder
       this.saleOrderProcess(invoice);
     }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (invoiceLine.getStockMoveLine() != null) {
+        invoiceLine.getStockMoveLine().setQtyInvoiced(invoiceLine.getQty());
+      }
+    }
   }
 
   private void saleOrderProcess(Invoice invoice) throws AxelorException {
