@@ -6,6 +6,7 @@
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
+- Sale Invoice & Refund : Add factor viewer.
 
 ## Bug Fixes
 
