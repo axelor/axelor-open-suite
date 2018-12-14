@@ -11,7 +11,7 @@
 - Sale Invoice & Refund : Add factor viewer.
 
 ## Bug Fixes
-
+-SEQUENCES : Fix panelSide Tips problem
 
 ## [5.1.0] - 2018-12-13
 ## Features

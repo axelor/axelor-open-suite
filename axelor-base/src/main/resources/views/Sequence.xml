@@ -25,11 +25,11 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 		<panel name="tipsPanel" title="Tips" sidebar="true" itemSpan="12">
 			<label name="prefixOrSuffixLabel" title="The tags below can be used as a prefix or a suffix" />
 			<label name="fullYearLabel" title="%YYYY : Full Year (2017)" />
-			<label name="%YYLabel" title="%YY : Year (17)" />
-			<label name="%MLabel" title="%M : Month (1, 2, 3, ...)" />
-			<label name="%FMLabel" title="%FM : Full Month (01, 02, 03, ...)" />
-			<label name="%DLabel" title="%D : Day" />
-			<label name="%WYLabel" title="%WY : Week number" />
+			<label name="YYLabel" title="%YY : Year (17)" />
+			<label name="MLabel" title="%M : Month (1, 2, 3, ...)" />
+			<label name="FMLabel" title="%FM : Full Month (01, 02, 03, ...)" />
+			<label name="DLabel" title="%D : Day" />
+			<label name="WYLabel" title="%WY : Week number" />
 		</panel>
 		<panel name="sequenceDefinitionPanel" title="Sequence Definition" colSpan="12">
 			<field name="sequenceTypeSelect"/>
