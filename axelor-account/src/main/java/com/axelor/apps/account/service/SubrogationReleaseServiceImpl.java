@@ -46,6 +46,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,6 +63,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubrogationReleaseServiceImpl implements SubrogationReleaseService {
+
+  @Inject private AppBaseService appBaseService;
 
   @Override
   public List<Invoice> retrieveInvoices(Company company) {
@@ -111,6 +114,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
+    subrogationRelease.setTransmissionDate(appBaseService.getTodayDate());
   }
 
   @Override
@@ -278,5 +282,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
+    subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
   }
 }
