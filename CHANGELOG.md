@@ -12,6 +12,7 @@
 
 ## Bug Fixes
 -SEQUENCES : Fix panelSide Tips problem
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 
 ## [5.1.0] - 2018-12-13
 ## Features
