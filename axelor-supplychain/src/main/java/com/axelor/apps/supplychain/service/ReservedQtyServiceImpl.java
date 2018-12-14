@@ -211,7 +211,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
 
     updateReservedQty(stockLocationLine);
-    checkReservedQtyStocks(stockLocationLine, toStatus);
+    checkReservedQtyStocks(stockLocationLine, stockMoveLine, toStatus);
   }
 
   /**
@@ -247,7 +247,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         && supplyChainConfig.getAutoAllocateOnReceipt()) {
       reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, qty);
     }
-    checkReservedQtyStocks(stockLocationLine, toStatus);
+    checkReservedQtyStocks(stockLocationLine, stockMoveLine, toStatus);
   }
 
   /**
@@ -405,17 +405,41 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    * Allocated qty cannot be greater than available qty.
    *
    * @param stockLocationLine
+   * @param stockMoveLine
    * @throws AxelorException
    */
-  protected void checkReservedQtyStocks(StockLocationLine stockLocationLine, int toStatus)
+  protected void checkReservedQtyStocks(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, int toStatus)
       throws AxelorException {
 
     if (((toStatus == StockMoveRepository.STATUS_REALIZED)
             || toStatus == StockMoveRepository.STATUS_CANCELED)
         && stockLocationLine.getReservedQty().compareTo(stockLocationLine.getCurrentQty()) > 0) {
+      BigDecimal convertedAvailableQtyInStockMove =
+          convertUnitWithProduct(
+              stockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              stockMoveLine.getRealQty(),
+              stockLocationLine.getProduct());
+      BigDecimal convertedReservedQtyInStockMove =
+          convertUnitWithProduct(
+              stockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              stockMoveLine.getReservedQty(),
+              stockLocationLine.getProduct());
+
+      BigDecimal availableQty =
+          convertedAvailableQtyInStockMove
+              .add(stockLocationLine.getCurrentQty())
+              .subtract(convertedReservedQtyInStockMove.add(stockLocationLine.getReservedQty()));
+      BigDecimal neededQty =
+          convertedAvailableQtyInStockMove.subtract(convertedReservedQtyInStockMove);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY));
+          I18n.get(IExceptionMessage.LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY),
+          stockLocationLine.getProduct().getFullName(),
+          availableQty,
+          neededQty);
     }
   }
 
