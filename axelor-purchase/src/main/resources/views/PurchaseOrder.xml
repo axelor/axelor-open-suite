@@ -153,8 +153,8 @@
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
-				<field name="priceDisplay" colSpan="12"/>
-				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
+				<field name="displayPriceOnQuotationRequest" colSpan="12"/>
+				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -444,7 +444,7 @@
     </action-record>
 
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="priceDisplay" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
+    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
     	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
     </action-record>
 

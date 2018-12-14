@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3422</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -21,18 +33,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">3422</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3422</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3422</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -331,10 +331,10 @@
                     <text-property name="heading">notes</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">price_display</property>
+                    <property name="columnName">display_price_on_quotation_request</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">price_display</text-property>
-                    <text-property name="heading">price_display</text-property>
+                    <text-property name="displayName">display_price_on_quotation_request</text-property>
+                    <text-property name="heading">display_price_on_quotation_request</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">price_request</property>
@@ -628,7 +628,7 @@
                     </structure>
                     <structure>
                         <property name="position">27</property>
-                        <property name="name">price_display</property>
+                        <property name="name">display_price_on_quotation_request</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -940,8 +940,8 @@
                 </structure>
                 <structure>
                     <property name="position">27</property>
-                    <property name="name">price_display</property>
-                    <property name="nativeName">price_display</property>
+                    <property name="name">display_price_on_quotation_request</property>
+                    <property name="nativeName">display_price_on_quotation_request</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -1136,7 +1136,7 @@ DefBankDetail.iban,
 Bank.code as "bic",
 Company.name as "CompanyName",
 PurchaseOrder.notes,
-PurchaseOrder.price_display,
+PurchaseOrder.display_price_on_quotation_request,
 PurchaseOrder.price_request,
 PurchaseOrder.in_ati,
 PrintingSettings.pdf_header as "header",
@@ -2310,9 +2310,9 @@ from base_app_base]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">price_display</property>
-                    <text-property name="displayName">price_display</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["price_display"]</expression>
+                    <property name="name">display_price_on_quotation_request</property>
+                    <text-property name="displayName">display_price_on_quotation_request</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_price_on_quotation_request"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -3674,7 +3674,7 @@ row["first_name"]
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["price_display"] != true</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["display_price_on_quotation_request"] != true</expression>
                                 </structure>
                             </list-property>
                             <property name="width">0.7in</property>
@@ -5159,7 +5159,7 @@ row["first_name"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
@@ -5174,7 +5174,7 @@ row["first_name"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 't' || (!row._outer._outer["price_display"] &amp;&amp; row._outer._outer["status_select"] &lt; 3)</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 't' || (!row._outer._outer["display_price_on_quotation_request"] &amp;&amp; row._outer._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -5388,7 +5388,7 @@ row["first_name"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
@@ -5403,7 +5403,7 @@ row["first_name"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 't' || (!row._outer._outer["price_display"] &amp;&amp; row._outer._outer["status_select"] &lt; 3)</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 't' || (!row._outer._outer["display_price_on_quotation_request"] &amp;&amp; row._outer._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -6080,7 +6080,7 @@ row["first_name"]
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["display_tax_detail_on_printing"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["display_tax_detail_on_printing"] || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                         </structure>
                                     </list-property>
                                     <list-property name="boundDataColumns">
@@ -6549,7 +6549,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]|| (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"]|| (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6562,7 +6562,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || row["in_ati"] || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6631,7 +6631,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6644,7 +6644,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6706,7 +6706,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6719,7 +6719,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6825,7 +6825,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6838,7 +6838,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6943,7 +6943,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -6956,7 +6956,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">(!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -7070,7 +7070,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -7083,7 +7083,7 @@ row["first_name"]
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["price_display"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
+                                                        <expression name="valueExpr" type="javascript">row["sumDiscountLine"] == 0 || !row._outer["in_ati"] || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                                     </structure>
                                                 </list-property>
                                                 <property name="contentType">html</property>
@@ -7107,7 +7107,7 @@ row["first_name"]
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["status_select"] > 2 || row["price_display"]</expression>
+                                            <expression name="valueExpr" type="javascript">row["status_select"] > 2 || row["display_price_on_quotation_request"]</expression>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>

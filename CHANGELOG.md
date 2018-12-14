@@ -8,7 +8,7 @@
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 
 ## Bug Fixes
-
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 
 ## [5.1.0] - 2018-12-13
 ## Features
