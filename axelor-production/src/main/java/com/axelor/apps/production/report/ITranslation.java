@@ -181,4 +181,17 @@ public interface ITranslation {
   public static final String COST_SHEET_CREATED_BY = /*$$(*/ "CostSheet.createdBy"; /*)*/
   public static final String COST_SHEET_DATE_OF_EDITION = /*$$(*/ "CostSheet.dateOfEdition"; /*)*/
   public static final String COST_SHEET_MO_NUMBER = /*$$(*/ "CostSheet.ManufOrderNumber"; /*)*/
+  public static final String COST_SHEET_BILL_OF_MATERIAL = /*$$(*/ "CostSheet.billOfMaterial"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE = /*$$(*/ "CostSheet.lineType"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_PRODUCE_PRODUCT = /*$$(*/
+      "CostSheet.lineTypeProduceProduct"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_CONSUME_PRODUCT = /*$$(*/
+      "CostSheet.lineTypeConsumeProduct"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_WORK_CENTER = /*$$(*/
+      "CostSheet.lineTypeWorkCenter"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_INDIRECT_COST = /*$$(*/
+      "CostSheet.lineTypeIndirectCost"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_CONSUME_PRODUCT_WASTE = /*$$(*/
+      "CostSheet.lineTypeConsumeProductWaste"; /*)*/
+  public static final String COST_SHEET_CURRENCY = /*$$(*/ "CostSheet.currency"; /*)*/
 }
