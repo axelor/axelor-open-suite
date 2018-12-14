@@ -7,12 +7,13 @@
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
-- COSTSHEET : add new Field Currency and Fix Information on CoshSheet Report Printing
+- COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
 - Sale Invoice & Refund : Add factor viewer.
 - Reserved qty: improve exception message.
 
 ## Bug Fixes
--SEQUENCES : Fix panelSide Tips problem
+- SEQUENCES : Fix panelSide Tips problem
+- BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
 
 ## [5.1.0] - 2018-12-13
 ## Features
