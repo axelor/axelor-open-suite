@@ -91,19 +91,6 @@
 		<context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
 	</action-view>
 
-	<menuitem name="stock-root-availabilityreq" parent="stock-root-stock-moves"
-		title="Availability requests" action="stock.root.availabilityreq" order="32" 
-		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
-
-	<action-view name="stock.root.availabilityreq" title="Availability requests"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-availability-req-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-	</action-view>
 		
 	<menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search" action="stock.root.search" order="17"/>
 

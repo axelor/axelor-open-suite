@@ -5,6 +5,7 @@
 - Subrogation Release : add change tracking on status and add new fields.
 - MO printing : new design
 - StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
+- Menus : new organization
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
