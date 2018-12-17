@@ -14,6 +14,7 @@
 - Reserved qty: improve exception message.
 - SALE ORDER : Trading name on card view.
 - SALES : Display boolean 'freeText' in cancelation reason view.
+- Purchase order: do not regenerate sequence if it is already final.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
