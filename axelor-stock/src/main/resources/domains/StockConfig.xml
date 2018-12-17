@@ -37,7 +37,8 @@
 	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
 	
 	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>
-
+	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
+	<boolean name="isWithBackorder" title="Manage Backorder"/>
 
   </entity>
   
