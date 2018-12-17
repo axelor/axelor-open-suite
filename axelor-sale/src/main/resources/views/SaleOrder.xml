@@ -660,6 +660,7 @@
 		<field name="amountInvoiced" />
         <field name="orderBeingEdited" />
         <field name="company"/>
+        <field name="tradingName"/>
         <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
@@ -704,7 +705,8 @@
 			  </div>
 			</div>
 			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
 			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
@@ -723,6 +725,7 @@
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
 		<field name="company"/>
+		<field name="tradingName"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
@@ -764,7 +767,8 @@
 			  </div>
 			</div>
 			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
 			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
