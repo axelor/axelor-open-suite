@@ -19,6 +19,7 @@
 - SEQUENCES : Fix panelSide Tips problem
 - BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
 - MANUF ORDER : fix Sale order / client partner title
+- SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
 
 
 ## [5.1.0] - 2018-12-13
