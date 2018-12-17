@@ -25,6 +25,7 @@
   	<string name="fromRack" title="From rack"/>
   	<string name="toRack" title="To rack"/>
   	<many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
+  	<many-to-one name="completedBy" title="User" ref="com.axelor.auth.db.User"/>
   	<date name="validatedOn" title="Validated On"/>
   	
   	<unique-constraint columns="inventorySeq,stockLocation"/>
