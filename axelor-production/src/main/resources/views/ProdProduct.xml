@@ -2,6 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<<<<<<< HEAD
 
   <grid name="prod-product-consume-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
     <hilite if="$missingQty &gt; 0" color="danger"/>
@@ -20,7 +21,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
   </grid>
 
-    <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" orderBy="product.code">
     	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
     	<field name="qty" aggregate="sum" required="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
