@@ -12,6 +12,7 @@
 - Sale Invoice & Refund : Add factor viewer.
 - Reserved qty: improve exception message.
 - SALE ORDER : Trading name on card view.
+- SALES : Display boolean 'freeText' in cancelation reason view.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
