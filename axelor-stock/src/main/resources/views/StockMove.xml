@@ -162,7 +162,7 @@
                         </viewer>
                     </field>
 
-                    <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
+                    <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-attrs-set-values-typeselect-onchange,action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
                     <field name="conformitySelect" showIf="statusSelect == 2" onChange="action-stock-move-method-change-conformity" />
 
                     <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
@@ -443,6 +443,12 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
     </action-attrs>
+	
+	<action-attrs name="action-stock-move-attrs-set-values-typeselect-onchange">
+		<attribute name="value" for="isWithBackorder" expr="eval:company?.stockConfig?.isWithBackorder" if="company != null"/>
+    	<attribute name="value" for="isWithReturnSurplus" expr="eval:company?.stockConfig?.isWithReturnSurplus" if="company != null &amp;&amp; typeSelect == 3"/>
+    	<attribute name="value" for="isWithReturnSurplus" expr="eval:false" if="typeSelect != 3"/>
+	</action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">
         <attribute name="title" for="generateInvoiceBtn" expr="eval: com.axelor.i18n.I18n.get('Generate refund')"
@@ -463,6 +469,7 @@
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
+
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
@@ -471,7 +478,6 @@
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	    <field name="statusSelect" expr="eval: 1"/>
-	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
 	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
@@ -479,6 +485,9 @@
 	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
 	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
 	    <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+	    <field name="isWithBackorder" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithBackorder"  if="__user__.activeCompany != null"/>
+	    <field name="isWithReturnSurplus" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithReturnSurplus" if="__user__.activeCompany != null &amp;&amp; _typeSelect == 3"/>
+	    <field name="isWithReturnSurplus" expr="eval:false" if="_typeSelect != 3"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
@@ -676,6 +685,9 @@
 	<action-record name="action-stock-move-record-update-info-company" model="com.axelor.apps.stock.db.StockMove">
 		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
+		<field name="isWithReturnSurplus" expr="eval:false" if="typeSelect != 3"/>
+ 		<field name="isWithBackorder" expr="eval:company?.stockConfig?.isWithBackorder"/>
+	    <field name="isWithReturnSurplus" expr="eval:company?.stockConfig?.isWithReturnSurplus" if="typeSelect == 3"/>
 	</action-record>
 
 	<action-method name="action-stock-move-method-printing-settings-default-value">
