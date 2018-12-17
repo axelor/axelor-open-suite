@@ -88,9 +88,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
             null,
-            mrpLine
-                .getMaturityDate()
-                .atStartOfDay()); // TODO compute the time to produce to put the manuf order at the
+            mrpLine.getMaturityDate().atStartOfDay(),
+            ManufOrderServiceImpl
+                .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
     linkToOrder(mrpLine, manufOrder);

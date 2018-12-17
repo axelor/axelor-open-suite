@@ -6,6 +6,10 @@
 - MO printing : new design
 - StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
 - Menus : new organization
+- Improved management of production order generation from sale order :
+Add an option to allow to plan automatically manuf. order generated from a sale order.
+Add an option to choose to generate an unique production order for a sale order or a production order per line.
+Add sale order and client partner fields on production order.
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
@@ -1485,3 +1489,4 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0
+

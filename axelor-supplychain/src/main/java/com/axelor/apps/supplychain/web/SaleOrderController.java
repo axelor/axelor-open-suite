@@ -93,8 +93,8 @@ public class SaleOrderController {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
-                  .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());
