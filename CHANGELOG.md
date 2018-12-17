@@ -11,6 +11,7 @@
 - COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
 - Sale Invoice & Refund : Add factor viewer.
 - Reserved qty: improve exception message.
+- SALE ORDER : Trading name on card view.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
