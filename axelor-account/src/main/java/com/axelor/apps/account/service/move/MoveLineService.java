@@ -437,7 +437,8 @@ public class MoveLineService {
             new Object[] {account.getName(), companyExTaxTotal});
 
         if (invoiceLine.getAnalyticDistributionTemplate() == null
-            && invoiceLine.getAnalyticMoveLineList().isEmpty()
+            && (invoiceLine.getAnalyticMoveLineList() == null
+                || invoiceLine.getAnalyticMoveLineList().isEmpty())
             && account.getAnalyticDistributionAuthorized()
             && account.getAnalyticDistributionRequiredOnInvoiceLines()) {
           throw new AxelorException(

@@ -30,6 +30,7 @@ Add sale order and client partner fields on production order.
 - MANUF ORDER : fix Sale order / client partner title
 - SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
 - Stock move: delete obsolete actions and code for reserved quantity.
+- DEMO DATA : Import errors
 
 
 ## [5.1.0] - 2018-12-13
