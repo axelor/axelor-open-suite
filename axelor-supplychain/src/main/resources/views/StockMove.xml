@@ -77,14 +77,6 @@
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatStockMove"/>
 	</action-method>
 	
-	<action-method name="action-method-supplychain-stock-move-reserved-qty">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="updateReservedQty"/>
-	</action-method>
-
-	<action-method name="action-method-supplychain-stock-move-check-reserved-qty-change">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="checkReservedQtyChange"/>
-	</action-method>
-
 	<action-validate name="action-validate-supplychain-outgoing-stock-move-check-selection">
 		<error message="You have to choose at least one outgoing stock move" if="customerStockMoveToInvoice == null || customerStockMoveToInvoice.size() == 0"/>
 	</action-validate>
