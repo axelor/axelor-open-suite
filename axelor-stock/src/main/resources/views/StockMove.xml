@@ -265,9 +265,10 @@
 
               <field name="modeOfTransport" />
             </panel>
-
-            <panel-dashlet name="logisticalFormsPanel" action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
-
+			<panel name="logisticalFormsPanel" title="Logistical forms" showIf="id &amp;&amp; typeSelect == 2">
+				<field name="fullySpreadOverLogisticalFormsFlag"/>
+	            <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12"/>
+			</panel>
             <panel name="automaticMailPanel" title="Automatic mail" showIf="typeSelect == 2">
               <panel name="plannedStockMovePanel" colSpan="12">
                 <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
