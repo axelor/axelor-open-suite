@@ -122,15 +122,18 @@ public class StockLocationController {
                 ? I18n.get("Stock location") + " " + stockLocation.getName()
                 : I18n.get("Stock location(s)");
       }
-
+      boolean flag =
+          context.get("withTrackingNbrDetails") == null
+              ? false
+              : (boolean) context.get("withTrackingNbrDetails");
       String fileLink =
           ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
               .addParam("StockLocationId", locationIds)
               .addParam("Locale", language)
               .addFormat(exportType)
+              .addParam("withTrackingNbrDetails", flag)
               .generate()
               .getFileLink();
-
       logger.debug("Printing " + title);
 
       response.setView(ActionView.define(title).add("html", fileLink).map());

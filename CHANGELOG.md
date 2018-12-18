@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+-STOCK LOCATION : printing with tracking number
+
 ## Improvements
 ## Bug Fixes
 
