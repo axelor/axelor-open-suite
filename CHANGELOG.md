@@ -22,6 +22,7 @@ Add sale order and client partner fields on production order.
 - Purchase order: do not regenerate sequence if it is already final.
 - SALE ORDER : Display the manufacturing orders panel in production tab.
 - MANUF ORDER : Assign draft sequence on repository save method.
+- Delete commented-out code.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem

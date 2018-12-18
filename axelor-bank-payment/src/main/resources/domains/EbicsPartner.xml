@@ -13,7 +13,6 @@
     <string name="partnerId" title="Partner id" namecolumn="true" max="35" required="true"/>
     <many-to-one name="defaultSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Default signatory"/>
 
-<!--     <many-to-many name="bankStatementFileFormatSet" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Supported file formats"/> -->
 	<datetime name="bankStatementLastExeDateT" title="Date of last execution"/>
 	<integer name="bankStatementGetModeSelect" title="Get mode" selection="bankpayment.ebics.bank.bank.statement.period.mode.select" default="1"/>
 	<date name="bankStatementStartDate" title="Start date"/>
