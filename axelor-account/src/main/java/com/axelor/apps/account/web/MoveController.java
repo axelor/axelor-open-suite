@@ -38,6 +38,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class MoveController {
@@ -218,5 +219,11 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    Map<String, Object> values = moveService.computeTotals(move);
+    response.setValues(values);
   }
 }
