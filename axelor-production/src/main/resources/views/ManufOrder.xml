@@ -84,12 +84,11 @@
 
 	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onSave="save,action-manuf-order-set-draft-seq,save"
 	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print" action="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print" showIf="statusSelect > 1" />
+	            <item title="Print" action="save,action-manuf-order-method-print" showIf="statusSelect > 1" />
 	            <item title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
 		</menubar>
@@ -125,7 +124,7 @@
 			<field name="product.isModel" hidden="true"/>
 		</panel>
 		<panel name="actionsPanel" title="Actions" colSpan="4">
-			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan" />
+			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-plan" />
 			<button name="startBtn" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
 			<button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
@@ -278,10 +277,6 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="isPermanent" expr="eval: _createPermanent"/>
     	<field name="qty" expr="eval: 0" if="_createPermanent"/>
-    </action-record>
-    
-    <action-record name="action-manuf-order-set-draft-seq" model="com.axelor.apps.production.db.ManufOrder">
-        <field name="manufOrderSeq" expr="eval:'*'+id" if="manufOrderSeq == null"/>
     </action-record>
 
 	<action-record name="action-manuf-order-record-update-qty-from-prod-process" model="com.axelor.apps.production.db.ManufOrder">
