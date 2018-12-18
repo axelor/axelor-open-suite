@@ -21,6 +21,7 @@ Add sale order and client partner fields on production order.
 - SALES : Display boolean 'freeText' in cancelation reason view.
 - Purchase order: do not regenerate sequence if it is already final.
 - SALE ORDER : Display the manufacturing orders panel in production tab.
+- MANUF ORDER : Assign draft sequence on repository save method.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
