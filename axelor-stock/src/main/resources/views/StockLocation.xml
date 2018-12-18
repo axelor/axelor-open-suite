@@ -73,6 +73,7 @@
 	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form">
 		<panel name="mainPanel">
 			<field name="$exportTypeSelect" title="Export Type" selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+			<field name="$withTrackingNbrDetails" title="With Tracking Number Details" type="boolean" widget="boolean-switch"/>
 			<button name="printBtn" title="Print" onClick="action-stock-location-method-print" readonlyIf="$exportTypeSelect == null" colSpan="3"/>
 		</panel>
 	</form>    

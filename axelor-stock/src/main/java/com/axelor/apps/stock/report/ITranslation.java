@@ -43,6 +43,15 @@ public interface ITranslation {
   public static final String STOCK_LOCATION_TOTAL = /*$$(*/ "StockLocation.total"; /*)*/
   public static final String STOCK_LOCATION_DETAILS_BY_STOCK_LOCATION = /*$$(*/
       "StockLocation.detailsByStockLocation"; /*)*/
+  public static final String STOCK_LOCATION_DETAILS = /*$$(*/
+      "StockLocation.stockLocationDetails"; /*)*/
+
+  public static final String TRACKING_NUMBER_TRACKING_NUMBER_SEQ = /*$$(*/
+      "TrackingNumber.trackingNumberSeq"; /*)*/
+  public static final String TRACKING_NUMBER_WARRANTY_EXPIRATION_Date = /*$$(*/
+      "TrackingNumber.warrantyExpirationDate"; /*)*/
+  public static final String TRACKING_NUMBER_PERISHABLE_EXPIRATION_Date = /*$$(*/
+      "TrackingNumber.perishableExpirationDate"; /*)*/
 
   public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
   public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
