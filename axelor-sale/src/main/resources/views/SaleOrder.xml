@@ -299,6 +299,7 @@
 	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
 		  	<field name="productionNote" widget="Html" colSpan="12"/>
+		  	<panel-dashlet name="manufOrdersPanel" action="action-sale-order-view-manuf-orders" colSpan="12"/>
 	    </panel>
 		<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 			<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType" colSpan="6"/>
@@ -1137,6 +1138,12 @@
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false"/>
         <context name="_saleOrderId" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-sale-order-view-manuf-orders" title="Manufacturing Orders" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		<domain>self.saleOrder.id = :id</domain>
 	</action-view>
 
 	<action-validate name="action-sale-order-validate-information">
