@@ -60,8 +60,8 @@
 160;"saleInterface";"Sale interface";1;10;"SALINT_%YY_";;1;1
 161;"treasuryInterface";"Cash flow interface";1;10;"CSHFLWINT_%YY_";;1;1
 162;"reconcile";"Account reconcile";1;10;"RECON_%YY_%M_";;1;1
-172;"reconcileGroupDraft";"Draft lettering";"LETTERS";"LOWERCASE";1;5;;;1;0
-173;"reconcileGroupFinal";"Final lettering";"LETTERS";"UPPERCASE";1;5;;;1;0
+172;"reconcileGroupDraft";"Draft lettering";1;5;;;1;0
+173;"reconcileGroupFinal";"Final lettering";1;5;;;1;0
 171;"analyticReport";"Analytic Report";1;10;"ANAREP_%YY_";;1;1
 170;"depositSlip";"Deposit slip";1;4;"DS%YY%FM";;1;1
 169;"subrogationRelease";"Subrogation release";1;4;"SR%YY%FM";;1;1

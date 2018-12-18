@@ -28,4 +28,4 @@ Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
 
 <p>We are seeing a shortage of stock for the product $StockRules.product.fullName$ in the $StockRules.stockLocation.name$ location.</p>
 
-<p>Best Regards</p>";;;;
+<p>Best Regards</p>";;;;2
