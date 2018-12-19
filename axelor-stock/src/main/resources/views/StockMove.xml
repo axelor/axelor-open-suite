@@ -111,7 +111,7 @@
     </calendar>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-method-supplychain-stock-move-reserved-qty">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -265,9 +265,10 @@
 
               <field name="modeOfTransport" />
             </panel>
-
-            <panel-dashlet name="logisticalFormsPanel" action="action-stock-move-view-logistical-forms" showIf="id &amp;&amp; typeSelect == 2" title="Logistical forms"/>
-
+			<panel name="logisticalFormsPanel" title="Logistical forms" showIf="id &amp;&amp; typeSelect == 2">
+				<field name="fullySpreadOverLogisticalFormsFlag"/>
+	            <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12"/>
+			</panel>
             <panel name="automaticMailPanel" title="Automatic mail" showIf="typeSelect == 2">
               <panel name="plannedStockMovePanel" colSpan="12">
                 <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
@@ -393,7 +394,6 @@
     	<action name="save" if="stockMoveLineList.find{it->it.lineTypeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-stock-move-method-add-subline"/>
     	<action name="action-stock-move-method-compute"/>
-      <action name="action-method-supplychain-stock-move-check-reserved-qty-change" if="__config__.app.isApp('supplychain')"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>
     </action-group>

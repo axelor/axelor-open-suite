@@ -6,6 +6,11 @@
 - MO printing : new design
 - StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
 - Menus : new organization
+- Improved management of production order generation from sale order :
+Add an option to allow to plan automatically manuf. order generated from a sale order.
+Add an option to choose to generate an unique production order for a sale order or a production order per line.
+Add sale order and client partner fields on production order.
+- Account Move : Display total number of lines, total debit, total credit and the gap on move form.
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
@@ -14,12 +19,24 @@
 - Reserved qty: improve exception message.
 - SALE ORDER : Trading name on card view.
 - SALES : Display boolean 'freeText' in cancelation reason view.
+- Purchase order: do not regenerate sequence if it is already final.
+- SALE ORDER : Display the manufacturing orders panel in production tab.
+- MANUF ORDER : Assign draft sequence on repository save method.
+- Delete commented-out code.
+- STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
 - INVENTORY : filters displayed on printing and in new tab "Filter"
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
 - BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
 - MANUF ORDER : fix Sale order / client partner title
+- SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
+- Stock move: delete obsolete actions and code for reserved quantity.
+- DEMO DATA : Import errors
+- Partner : Fix NPE on creating new partner and saving without address.
+- SUBORGATION RELEASE : Don't try to generate an account move for invoice or refund without remaining amount.
+- ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move 
+- INVOICE PAYMENT : Fix loop issue when we cancel an invoice payment that is linked to a bank order
 
 
 ## [5.1.0] - 2018-12-13
@@ -1484,3 +1501,4 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0
+

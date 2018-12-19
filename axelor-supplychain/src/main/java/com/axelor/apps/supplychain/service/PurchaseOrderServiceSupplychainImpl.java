@@ -229,8 +229,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     // budget control
     if (appAccountService.isApp("budget")
         && appAccountService.getAppBudget().getCheckAvailableBudget()) {

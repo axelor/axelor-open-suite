@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.AppAccount;
@@ -107,7 +108,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setAnalyticAxis(analyticDistributionLine.getAnalyticAxis());
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
 
-    Company company = analyticDistributionLine.getAnalyticJournal().getCompany();
+    AnalyticJournal analyticJournal = analyticDistributionLine.getAnalyticJournal();
+    Company company = analyticJournal == null ? null : analyticJournal.getCompany();
     if (company != null) {
       analyticMoveLine.setCurrency(company.getCurrency());
     }

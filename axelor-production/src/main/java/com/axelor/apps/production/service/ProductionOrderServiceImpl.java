@@ -55,9 +55,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     this.productionOrderRepo = productionOrderRepo;
   }
 
-  public ProductionOrder createProductionOrder() throws AxelorException {
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    return new ProductionOrder(this.getProductionOrderSeq());
+    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
+    if (saleOrder != null) {
+      productionOrder.setClientPartner(saleOrder.getClientPartner());
+      productionOrder.setSaleOrder(saleOrder);
+    }
+    return productionOrder;
   }
 
   public String getProductionOrderSeq() throws AxelorException {
@@ -92,13 +97,21 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate)
       throws AxelorException {
 
-    ProductionOrder productionOrder = this.createProductionOrder();
+    ProductionOrder productionOrder = this.createProductionOrder(null);
 
-    this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested, startDate, null);
+    this.addManufOrder(
+        productionOrder,
+        product,
+        billOfMaterial,
+        qtyRequested,
+        startDate,
+        null,
+        ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
   }
 
+  @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public ProductionOrder addManufOrder(
       ProductionOrder productionOrder,
@@ -106,7 +119,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate,
-      SaleOrder saleOrder)
+      SaleOrder saleOrder,
+      int originType)
       throws AxelorException {
 
     ManufOrder manufOrder =
@@ -116,14 +130,16 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
             billOfMaterial,
-            startDate);
+            startDate,
+            originType);
 
-    if (saleOrder != null) {
-      manufOrder.setSaleOrder(saleOrder);
-      manufOrder.setClientPartner(saleOrder.getClientPartner());
+    if (manufOrder != null) {
+      if (saleOrder != null) {
+        manufOrder.setSaleOrder(saleOrder);
+        manufOrder.setClientPartner(saleOrder.getClientPartner());
+      }
+      productionOrder.addManufOrderListItem(manufOrder);
     }
-    productionOrder.addManufOrderListItem(manufOrder);
-
     return productionOrderRepo.save(productionOrder);
   }
 }

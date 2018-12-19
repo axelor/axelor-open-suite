@@ -42,15 +42,6 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     super(manufOrderService, sequenceService, productionOrderRepo);
   }
 
-  public ProductionOrder createProductionOrder(Project project, boolean isToInvoice)
-      throws AxelorException {
-
-    ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
-    productionOrder.setProject(project);
-
-    return productionOrder;
-  }
-
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
@@ -61,10 +52,17 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       SaleOrder saleOrder)
       throws AxelorException {
 
-    ProductionOrder productionOrder = this.createProductionOrder(project, false);
+    ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
+    productionOrder.setProject(project);
 
     this.addManufOrder(
-        productionOrder, product, billOfMaterial, qtyRequested, startDate, saleOrder);
+        productionOrder,
+        product,
+        billOfMaterial,
+        qtyRequested,
+        startDate,
+        saleOrder,
+        ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
   }

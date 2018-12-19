@@ -36,6 +36,24 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
+  public static int ORIGIN_TYPE_MRP = 1;
+  public static int ORIGIN_TYPE_SALE_ORDER = 2;
+  public static int ORIGIN_TYPE_OTHER = 3;
+
+  /**
+   * @param product
+   * @param qtyRequested
+   * @param priority
+   * @param isToInvoice
+   * @param billOfMaterial
+   * @param plannedStartDateT
+   * @param originType
+   *     <li>1 : MRP
+   *     <li>2 : Sale order
+   *     <li>3 : Other
+   * @return
+   * @throws AxelorException
+   */
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
@@ -43,7 +61,8 @@ public interface ManufOrderService {
       int priority,
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      int originType)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);

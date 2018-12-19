@@ -21,14 +21,17 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -44,60 +47,102 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected UnitConversionService unitConversionService;
   protected ProductionOrderService productionOrderService;
   protected ProductionOrderRepository productionOrderRepo;
+  protected AppProductionService appProductionService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
-      UserService userInfoService,
       UnitConversionService unitConversionService,
       ProductionOrderService productionOrderService,
-      ProductionOrderRepository productionOrderRepo) {
+      ProductionOrderRepository productionOrderRepo,
+      AppProductionService appProductionService) {
 
     this.unitConversionService = unitConversionService;
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
+    this.appProductionService = appProductionService;
   }
 
   @Override
   public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
+    boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
+
     List<Long> productionOrderIdList = new ArrayList<>();
-    if (saleOrder.getSaleOrderLineList() != null) {
+    if (saleOrder.getSaleOrderLineList() == null) {
+      return productionOrderIdList;
+    }
 
-      ProductionOrder productionOrder = null;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    ProductionOrder productionOrder = null;
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-        productionOrder = this.generateProductionOrder(saleOrderLine);
-        if (productionOrder != null) {
-          productionOrderIdList.add(productionOrder.getId());
-        }
+      if (productionOrder == null || !oneProdOrderPerSO) {
+        productionOrder = this.createProductionOrder(saleOrder);
+      }
+
+      productionOrder = this.generateManufOrder(productionOrder, saleOrderLine);
+
+      if (productionOrder != null && !productionOrderIdList.contains(productionOrder.getId())) {
+        productionOrderIdList.add(productionOrder.getId());
       }
     }
 
     return productionOrderIdList;
   }
 
+  protected ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+
+    return productionOrderService.createProductionOrder(saleOrder);
+  }
+
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public ProductionOrder generateProductionOrder(SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public ProductionOrder generateManufOrder(
+      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
 
     if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE
-        && saleOrderLine.getBillOfMaterial() != null
-        && saleOrderLine.getBillOfMaterial().getProdProcess() != null
         && product != null
         && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+
+      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+
+      if (billOfMaterial == null) {
+        billOfMaterial = product.getDefaultBillOfMaterial();
+      }
+
+      if (billOfMaterial == null && product.getParentProduct() != null) {
+        billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+      }
+
+      if (billOfMaterial == null) {
+        throw new AxelorException(
+            saleOrderLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
+            product.getName(),
+            product.getCode());
+      }
+
+      if (billOfMaterial.getProdProcess() == null) {
+        return null;
+      }
+
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal qty = saleOrderLine.getQty();
-      if (!unit.equals(saleOrderLine.getUnit())) {
+      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
                 saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
-      return productionOrderRepo.save(
-          productionOrderService.generateProductionOrder(
-              product, saleOrderLine.getBillOfMaterial(), qty, LocalDateTime.now()));
+
+      return productionOrderService.addManufOrder(
+          productionOrder,
+          product,
+          billOfMaterial,
+          qty,
+          LocalDateTime.now(),
+          saleOrderLine.getSaleOrder(),
+          ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
     }
 
     return null;
