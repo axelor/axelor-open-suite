@@ -14,6 +14,7 @@
 - Reserved qty: improve exception message.
 - SALE ORDER : Trading name on card view.
 - SALES : Display boolean 'freeText' in cancelation reason view.
+- INVENTORY : filters displayed on printing and in new tab "Filter"
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
