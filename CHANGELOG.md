@@ -5,6 +5,7 @@
 ## Improvements
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
+- MANUF. ORDER PRINTING : Hide barcode column when it is empty.
 
 ## [5.0.7] - 2018-12-13
 ## Features
