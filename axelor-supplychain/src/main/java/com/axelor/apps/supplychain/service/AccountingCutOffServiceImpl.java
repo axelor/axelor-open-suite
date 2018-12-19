@@ -455,22 +455,22 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     moveLine.setDueDate(moveDate);
 
     getAndComputeAnalyticDistribution(product, move, moveLine);
-    
+
     move.addMoveLineListItem(moveLine);
 
-    if(recoveredTax)  {
-	    TaxLine taxLine =
-	        accountManagementAccountService.getTaxLine(
-	            originDate, product, company, partner.getFiscalPosition(), isPurchase);
-	    if (taxLine != null) {
-	      moveLine.setTaxLine(taxLine);
-	      moveLine.setTaxRate(taxLine.getValue());
-	      moveLine.setTaxCode(taxLine.getTax().getCode());
-	      
-	      if (taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
-		      generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
-	      }
-	    }
+    if (recoveredTax) {
+      TaxLine taxLine =
+          accountManagementAccountService.getTaxLine(
+              originDate, product, company, partner.getFiscalPosition(), isPurchase);
+      if (taxLine != null) {
+        moveLine.setTaxLine(taxLine);
+        moveLine.setTaxRate(taxLine.getValue());
+        moveLine.setTaxCode(taxLine.getTax().getCode());
+
+        if (taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
+          generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+        }
+      }
     }
 
     return moveLine;

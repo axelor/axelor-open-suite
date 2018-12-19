@@ -24,6 +24,8 @@ Add sale order and client partner fields on production order.
 - MANUF ORDER : Assign draft sequence on repository save method.
 - Delete commented-out code.
 - STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- BANKORDER : use bank order line origin to know which invoice payment should be validated when we validate a bank order 
+instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem

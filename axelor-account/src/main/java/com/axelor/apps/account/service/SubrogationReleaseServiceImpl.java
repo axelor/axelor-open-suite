@@ -201,10 +201,10 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Account factorDebitAccount = accountConfigService.getFactorDebitAccount(accountConfig);
 
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
-      if(invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0)  {
-    	  continue;
+      if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0) {
+        continue;
       }
-    	
+
       LocalDate date = appBaseService.getTodayDate();
       Move move =
           moveService

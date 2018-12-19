@@ -88,6 +88,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
+  protected BankOrderLineOriginService bankOrderLineOriginService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -97,7 +98,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       EbicsService ebicsService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      BankOrderLineOriginService bankOrderLineOriginService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -106,6 +108,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
+    this.bankOrderLineOriginService = bankOrderLineOriginService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -265,8 +268,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
       if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED) {
-        invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
+          && invoicePayment.getInvoice() != null) {
+
+        if (bankOrderLineOriginService.existBankOrderLineOrigin(
+            bankOrder, invoicePayment.getInvoice())) {
+
+          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+        }
       }
     }
   }
