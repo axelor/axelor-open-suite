@@ -5,6 +5,7 @@
 ## Improvements
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
+- MRPLine : Specify views for proposalSelect. 
 
 ## [5.0.7] - 2018-12-13
 ## Features
