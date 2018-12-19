@@ -34,6 +34,7 @@ Add sale order and client partner fields on production order.
 - DEMO DATA : Import errors
 - Partner : Fix NPE on creating new partner and saving without address.
 - SUBORGATION RELEASE : Don't try to generate an account move for invoice or refund without remaining amount.
+- ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move 
 
 
 ## [5.1.0] - 2018-12-13
