@@ -24,6 +24,7 @@ Add sale order and client partner fields on production order.
 - MANUF ORDER : Assign draft sequence on repository save method.
 - Delete commented-out code.
 - STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- INVENTORY : filters displayed on printing and in new tab "Filter"
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
