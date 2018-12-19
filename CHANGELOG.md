@@ -32,6 +32,7 @@ Add sale order and client partner fields on production order.
 - SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
 - Stock move: delete obsolete actions and code for reserved quantity.
 - DEMO DATA : Import errors
+- Partner : Fix NPE on creating new partner and saving without address.
 
 
 ## [5.1.0] - 2018-12-13
