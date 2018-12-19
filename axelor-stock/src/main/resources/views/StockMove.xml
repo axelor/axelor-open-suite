@@ -111,7 +111,7 @@
     </calendar>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
