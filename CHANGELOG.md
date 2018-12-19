@@ -24,6 +24,7 @@ Add sale order and client partner fields on production order.
 - MANUF ORDER : Assign draft sequence on repository save method.
 - Delete commented-out code.
 - STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- INVENTORY : filters displayed on printing and in new tab "Filter"
 - BANKORDER : use bank order line origin to know which invoice payment should be validated when we validate a bank order 
 instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
 
@@ -36,7 +37,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - DEMO DATA : Import errors
 - Partner : Fix NPE on creating new partner and saving without address.
 - SUBORGATION RELEASE : Don't try to generate an account move for invoice or refund without remaining amount.
-- ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move 
+- ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move
 - INVOICE PAYMENT : Fix loop issue when we cancel an invoice payment that is linked to a bank order
 
 
@@ -412,6 +413,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - StockMove : stockMoveLine in readonly if company or fromStockLocation is null
 - Partner: Address on grid view
 - DataBackup : Handle Exception.
+- Purchase Order: remove save on loading purchase order form.
 
 ## [5.0.7] - 2018-12-13
 ## Features
@@ -461,7 +463,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
-- Account: Reset fields on onchange action in Accounting Report. 
+- Account: Reset fields on onchange action in Accounting Report.
 - Advance Export : Default value for selection translation.
 
 ## Bug Fixes
