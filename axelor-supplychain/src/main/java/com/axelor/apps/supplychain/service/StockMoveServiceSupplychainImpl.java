@@ -41,7 +41,6 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -49,8 +48,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -373,50 +370,5 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     return newStockMoveLine;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void updateReservedQty(StockMove stockMove) throws AxelorException {
-    cancel(stockMove);
-    plan(stockMove);
-  }
-
-  @Override
-  public boolean hasReservedQtyChanged(StockMove oldStockMove, StockMove newStockMove)
-      throws AxelorException {
-    List<StockMoveLine> oldStockMoveLineList =
-        MoreObjects.firstNonNull(oldStockMove.getStockMoveLineList(), new ArrayList<>());
-    List<StockMoveLine> newStockMoveLineList =
-        MoreObjects.firstNonNull(newStockMove.getStockMoveLineList(), new ArrayList<>());
-
-    for (StockMoveLine oldStockMoveLine : oldStockMoveLineList) {
-      Optional<StockMoveLine> newStockMoveLine =
-          newStockMoveLineList
-              .stream()
-              .filter(stockMoveLine -> stockMoveLine.getId().equals(oldStockMoveLine.getId()))
-              .findAny();
-      if (newStockMoveLine.isPresent()) {
-        if (newStockMoveLine.get().getReservedQty().compareTo(oldStockMoveLine.getReservedQty())
-            != 0) {
-          return true;
-        }
-      } else if (oldStockMoveLine.getReservedQty().signum() != 0) {
-        return true;
-      }
-    }
-    // get added lines
-    List<StockMoveLine> newStockMoveLineListFiltered =
-        newStockMoveLineList
-            .stream()
-            .filter(stockMoveLine -> !oldStockMoveLineList.contains(stockMoveLine))
-            .collect(Collectors.toList());
-    for (StockMoveLine filteredNewStockMoveLine : newStockMoveLineListFiltered) {
-      if (filteredNewStockMoveLine.getReservedQty().signum() != 0) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

@@ -239,8 +239,15 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         selectField = "";
       }
       if (language.equals(LANGUAGE_FR)) {
-        aliasName = ("mt_" + (mt));
-        selectField += ".message";
+        aliasName =
+            "COALESCE ("
+                + "NULLIF"
+                + "("
+                + ("mt_" + (mt))
+                + ".message, '') , "
+                + ("msi_" + (msi))
+                + ".title)";
+        selectField += "";
       } else {
         aliasName = ("msi_" + (msi));
         selectField += ".title";

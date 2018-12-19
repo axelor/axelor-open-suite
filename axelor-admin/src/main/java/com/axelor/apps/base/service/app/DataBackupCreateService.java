@@ -221,7 +221,12 @@ public class DataBackupCreateService {
 
   private long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
       throws InterruptedException, ClassNotFoundException {
-    return getQuery(metaModel, subClasses).count();
+    Query<Model> query = getQuery(metaModel, subClasses);
+    long count = 0;
+    if (query != null) {
+      count = query.count();
+    }
+    return count;
   }
 
   private Query<Model> getQuery(MetaModel metaModel, List<String> subClasses)
@@ -235,9 +240,18 @@ public class DataBackupCreateService {
     }
     @SuppressWarnings("unchecked")
     Class<Model> klass = (Class<Model>) Class.forName(metaModel.getFullName());
-    Query<Model> query = JpaRepository.of(klass).all();
-    if (StringUtils.notEmpty(whereStr)) {
-      query.filter(whereStr);
+    JpaRepository<Model> model = null;
+    Query<Model> query = null;
+    try {
+      model = JpaRepository.of(klass);
+    } catch (Exception e) {
+      TraceBackService.trace(e, DataBackupService.class.getName());
+    }
+    if (model != null) {
+      query = JpaRepository.of(klass).all();
+      if (StringUtils.notEmpty(whereStr)) {
+        query.filter(whereStr);
+      }
     }
     return query;
   }

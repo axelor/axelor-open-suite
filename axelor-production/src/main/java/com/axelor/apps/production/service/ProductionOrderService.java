@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 
 public interface ProductionOrderService {
 
-  public ProductionOrder createProductionOrder() throws AxelorException;
+  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
   public String getProductionOrderSeq() throws AxelorException;
 
@@ -52,6 +52,20 @@ public interface ProductionOrderService {
       LocalDateTime startDate)
       throws AxelorException;
 
+  /**
+   * @param productionOrder
+   * @param product
+   * @param billOfMaterial
+   * @param qtyRequested
+   * @param startDate
+   * @param saleOrder
+   * @param originType
+   *     <li>1 : MRP
+   *     <li>2 : Sale order
+   *     <li>3 : Other
+   * @return
+   * @throws AxelorException
+   */
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public ProductionOrder addManufOrder(
       ProductionOrder productionOrder,
@@ -59,6 +73,7 @@ public interface ProductionOrderService {
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate,
-      SaleOrder saleOrder)
+      SaleOrder saleOrder,
+      int originType)
       throws AxelorException;
 }

@@ -1318,7 +1318,7 @@ order by Tax.code ASC]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">creditBalance</property>
-                    <expression name="expression" type="javascript">var balance = row["credittaxamount"] - row["debittaxamount"]
+                    <expression name="expression" type="javascript">var balance = row["totalCreditTaxAmount"] - row["totalDebitTaxAmount"]
 if(balance > 0)  {
 balance
 }</expression>
@@ -1327,7 +1327,7 @@ balance
                 </structure>
                 <structure>
                     <property name="name">debitBalance</property>
-                    <expression name="expression" type="javascript">var balance = row["debittaxamount"] - row["credittaxamount"]
+                    <expression name="expression" type="javascript">var balance = row["totalDebitTaxAmount"] - row["totalCreditTaxAmount"]
 if(balance > 0)  {
 balance
 }</expression>

@@ -69,6 +69,18 @@ public class PartnerBaseRepository extends PartnerRepository {
               I18n.get(IExceptionMessage.PARTNER_EMAIL_EXIST));
         }
       }
+
+      if (!partner.getIsContact()) {
+        partner.setMainAddress(null);
+        if (partner.getPartnerAddressList() != null) {
+          for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
+            if (partnerAddress.getIsDefaultAddr()) {
+              partner.setMainAddress(partnerAddress.getAddress());
+              break;
+            }
+          }
+        }
+      }
       partnerService.setPartnerFullName(partner);
       partnerService.setCompanyStr(partner);
       return super.save(partner);

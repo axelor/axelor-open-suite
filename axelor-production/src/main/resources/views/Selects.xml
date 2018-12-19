@@ -93,6 +93,11 @@
 		<option value="2">Real</option>
 	</selection>
 	
+	<selection name="production.product.components.valuation.select">
+		<option value="1">Average Price</option>
+		<option value="2">Cost Price</option>
+	</selection>
+	
 	<selection name="sequence.generic.code.select" id="production.sequence.generic.code.select">
 		<option value="productionOrder">Production order</option>
 		<option value="manufOrder">Manufacturing order</option>

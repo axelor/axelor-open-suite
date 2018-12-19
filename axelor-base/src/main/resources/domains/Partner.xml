@@ -70,7 +70,7 @@
  	<string name="simpleFullName" title="Name"/>
 	 
    	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" massUpdate="true"/>
-	<many-to-one name="contactAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
+	<many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
 	
 	<string name="timeSlot" title="Time slot" large="true"/>
 	<string name="companyStr" title="Companies" />

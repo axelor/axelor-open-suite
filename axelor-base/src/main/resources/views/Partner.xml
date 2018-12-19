@@ -18,7 +18,7 @@
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
-		<field name="address.fullName" title="Address"/>
+		<field name="mainAddress"/>
 		<field name="companyStr" />
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -43,7 +43,7 @@
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
-		<field name="address.fullName" title="Address"/>
+		<field name="mainAddress"/>
 		<field name="companyStr" />
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -68,7 +68,7 @@
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
-		<field name="address.fullName" title="Address"/>
+		<field name="mainAddress"/>
 		<field name="companyStr" />
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
@@ -225,7 +225,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="informationPanel" title="Information">
 				<panel name="employeeAddressPanel" title="Contact address" colSpan="12" showIf="isEmployee">
-					<field name="contactAddress" form-view="address-form" grid-view="address-grid">
+					<field name="mainAddress" form-view="address-form" grid-view="address-grid">
 						<editor x-show-titles="false">
 							<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 							<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -244,7 +244,7 @@
 							<field name="address.addressL4" hidden="true" colSpan="12"/>
 							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()" />
+							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
 						</editor>
 					</field>
@@ -471,7 +471,7 @@
 					</editor>
 				</field>
 				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid" colSpan="12"/>
+				<field name="mainAddress" canNew="true" form-view="address-form" grid-view="address-grid" colSpan="12"/>
 				<field name="timeSlot" colSpan="12"/>
 			</panel>
 			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')" >
@@ -528,6 +528,7 @@
 		<field name="fiscalPosition.code"/>
 		<field name="registrationCode" />
 		<field name="companyStr"/>
+		<field name="mainAddress"/>
 		<template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -543,7 +544,7 @@
 			  <div class="span8">
 			  	{{registrationCode}}
 			  	<address>
-			  	{{address.fullName}}
+			  	{{mainAddress.fullName}}
 			  	</address>
 			    <span>
 			    {{fixedPhone}}<br/>
@@ -566,7 +567,7 @@
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
 		<field name="partnerCategory" />
-		<field name="contactAddress" />
+		<field name="mainAddress" />
 		<field name="titleSelect" />
 		<template><![CDATA[
 			<div>
@@ -580,7 +581,7 @@
                 <img ng-show="!picture && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
-			    <span>{{contactAddress.fullName}}<br/>
+			    <span>{{mainAddress.fullName}}<br/>
 			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
 			    {{partnerCategory.name}}</span>
@@ -644,7 +645,7 @@
 					</editor>
 				</field>
 				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-				<field name="contactAddress" title="Address" canNew="true" form-view="address-form" grid-view="address-grid"/>
+				<field name="mainAddress" canNew="true" form-view="address-form" grid-view="address-grid"/>
 			</panel>
 			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact" if="__config__.app.isApp('crm')">
 				<panel-include view="incl-activities-contact-form" from="axelor-crm" />

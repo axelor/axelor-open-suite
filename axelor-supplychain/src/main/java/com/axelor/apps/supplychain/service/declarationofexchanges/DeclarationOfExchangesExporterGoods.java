@@ -44,6 +44,7 @@ import com.axelor.inject.Beans;
 import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -191,14 +192,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     CustomsCodeNomenclature customsCodeNomenclature =
         customsCodeNomenclatureRepo.findByCode(customsCode);
 
-    String supplementaryUnit;
-
-    if (customsCodeNomenclature != null
-        && StringUtils.notBlank(customsCodeNomenclature.getSupplementaryUnit())) {
-      supplementaryUnit = customsCodeNomenclature.getSupplementaryUnit();
-    } else {
-      supplementaryUnit = "";
-    }
+    BigInteger supplementaryUnit =
+        stockMoveLine.getRealQty().setScale(0, RoundingMode.CEILING).toBigInteger();
 
     NatureOfTransaction natTrans = stockMoveLine.getNatureOfTransaction();
 
@@ -283,7 +278,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
     data[Column.REGIME.ordinal()] = String.valueOf(regime.getValue());
     data[Column.MASS.ordinal()] = String.valueOf(totalNetMass);
-    data[Column.UNITS.ordinal()] = supplementaryUnit;
+    data[Column.UNITS.ordinal()] = String.valueOf(supplementaryUnit);
     data[Column.NAT_TRANS.ordinal()] = String.valueOf(natTrans.getValue());
     data[Column.TRANSP.ordinal()] = String.valueOf(modeOfTransport.getValue());
     data[Column.DEPT.ordinal()] = dept;

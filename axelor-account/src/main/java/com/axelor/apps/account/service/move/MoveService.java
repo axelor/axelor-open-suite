@@ -41,7 +41,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -472,5 +474,30 @@ public class MoveService {
                     I18n.get("%s account not found in move %s"),
                     account.getName(),
                     move.getReference()));
+  }
+
+  public Map<String, Object> computeTotals(Move move) {
+
+    Map<String, Object> values = new HashMap<>();
+    values.put("$totalLines", move.getMoveLineList().size());
+
+    BigDecimal totalDebit =
+        move.getMoveLineList()
+            .stream()
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalDebit", totalDebit);
+
+    BigDecimal totalCredit =
+        move.getMoveLineList()
+            .stream()
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCredit", totalCredit);
+
+    BigDecimal difference = totalDebit.subtract(totalCredit);
+    values.put("$difference", difference);
+
+    return values;
   }
 }

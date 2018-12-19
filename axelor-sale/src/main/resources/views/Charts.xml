@@ -16,16 +16,16 @@
 		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				to_char(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				to_char(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.productFamily.id = :id
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
-				to_char(self.saleOrder.confirmationDate,'yyyy-MM') 
+				to_char(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY
 				_month
 		</dataset>
@@ -529,16 +529,16 @@
  		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.company = :activeCompany
 				AND self.product.id = :id
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')  
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY  _month 
 		</dataset>
 		<category key="_month" type="month" title="Month"/>
@@ -556,16 +556,16 @@
 		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 			  SaleOrderLine AS self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)  
 				AND self.saleOrder.company = :activeCompany
 				AND self.product = :product
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
 			GROUP BY
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY _month
 		</dataset>
 		<category key="_month" type="month" title="Month"/>
@@ -581,16 +581,16 @@
 		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
 				AND self.saleOrder.company = :activeCompany
 			GROUP BY
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY
 				_month 
 		</dataset>
@@ -612,16 +612,16 @@
 		<dataset type="jpql">
 			SELECT
 				SUM(self.exTaxTotal) AS _amount,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salemanUser =:salemanUser
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
 				AND self.saleOrder.company = :activeCompany
 			GROUP BY
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY
 				_month 
 		</dataset>
@@ -649,7 +649,7 @@
 				MetaSelectItem item
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND item.select.name='partner.partner.type.select'
 				AND CAST(item.value as int) = self.saleOrder.clientPartner.partnerTypeSelect
@@ -673,7 +673,7 @@
 		    	SaleOrderLine self
 		    WHERE
 			    self.saleOrder.statusSelect in (3,4)
-			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate) 
+			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
 		    	self.saleOrder.clientPartner.partnerCategory.name
@@ -696,7 +696,7 @@
 				IndustrySector industrySector
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
-				AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id
 			GROUP BY
@@ -714,16 +714,16 @@
 		<dataset type="jpql">
 			SELECT
 			    SUM(self.exTaxTotal) AS _amount,
-			    TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+			    TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 			    SaleOrderLine self
 			WHERE
 			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.company = :activeCompany
 			    AND self.product.productCategory.id = :id
-			    AND self.saleOrder.confirmationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
-			   TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')
+			   TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY
 			    _month
 		 </dataset>
@@ -743,7 +743,7 @@
 			SELECT
 				COALESCE(SUM(saleOrderLine.exTaxTotal), 0.00) AS turnOver,
 				productFamily.name AS family,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM') AS _month
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM') AS _month
 			FROM
 				SaleOrderLine saleOrderLine,
 				SaleOrder saleOrder,
@@ -760,19 +760,19 @@
 				AND
 				  productFamily = product.productFamily
 				AND
-				  YEAR(saleOrder.confirmationDate) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
+				  YEAR(saleOrder.confirmationDateTime) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
 				AND
 				  saleOrder.clientPartner.id=:id
 				AND(
-				  ( saleOrder.confirmationDate &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-				  AND saleOrder.confirmationDate &lt;= DATE(:toDate))
+				  ( saleOrder.confirmationDateTime &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD')
+				  AND saleOrder.confirmationDateTime &lt;= DATE(:toDate))
 				OR
-				  (saleOrder.confirmationDate &gt;= TO_DATE(YEAR(DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-				  AND saleOrder.confirmationDate &lt;= DATE(:toDateLY))
-				 )        
+				  (saleOrder.confirmationDateTime &gt;= TO_DATE(YEAR(DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
+				  AND saleOrder.confirmationDateTime &lt;= DATE(:toDateLY))
+				 )
 			GROUP BY
 				productFamily.name,
-				TO_CHAR(self.saleOrder.confirmationDate,'yyyy-MM')
+				TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
 			ORDER BY
 				_month
 		</dataset>

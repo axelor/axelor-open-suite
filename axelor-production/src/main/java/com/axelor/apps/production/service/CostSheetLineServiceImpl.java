@@ -19,10 +19,12 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
@@ -162,12 +164,35 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal consumptionQty)
       throws AxelorException {
 
+    BigDecimal price;
+
+    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
+            || product
+                .getProductSubTypeSelect()
+                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+        && parentCostSheetLine
+            .getProduct()
+            .getRealOrEstimatedPriceSelect()
+            .equals(ProductRepository.PRICE_METHOD_REAL)
+        && parentCostSheetLine
+            .getProduct()
+            .getComponentsValuationMethod()
+            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
+      price = product.getAvgPrice();
+    } else {
+      price = product.getCostPrice();
+    }
+
+    if (price.compareTo(BigDecimal.ZERO) == 0) {
+      price = product.getPurchasePrice();
+    }
+
     BigDecimal costPrice =
         unitConversionService
             .convert(
                 unit,
                 product.getUnit(),
-                product.getCostPrice(),
+                price,
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
@@ -228,7 +253,28 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
-  public CostSheetLine createWorkCenterCostSheetLine(
+  public CostSheetLine createWorkCenterHRCostSheetLine(
+      WorkCenter workCenter,
+      ProdHumanResource prodHumanResource,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit) {
+
+    return this.createWorkCenterCostSheetLine(
+        workCenter,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        costPrice,
+        unit,
+        prodHumanResource.getCostSheetGroup());
+  }
+
+  public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
       int priority,
       int bomLevel,
@@ -237,13 +283,34 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal costPrice,
       Unit unit) {
 
+    return this.createWorkCenterCostSheetLine(
+        workCenter,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        costPrice,
+        unit,
+        workCenter.getCostSheetGroup());
+  }
+
+  protected CostSheetLine createWorkCenterCostSheetLine(
+      WorkCenter workCenter,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit,
+      CostSheetGroup costSheetGroup) {
+
     return this.createCostSheetLine(
         workCenter.getName(),
         priority + " - " + workCenter.getCode(),
         bomLevel,
         consumptionQty,
         costPrice,
-        workCenter.getCostSheetGroup(),
+        costSheetGroup,
         null,
         CostSheetLineRepository.TYPE_WORK_CENTER,
         unit,

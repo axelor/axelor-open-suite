@@ -14,6 +14,7 @@
   	<string name="bankOrderExportFolderPath"/>
   	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
     <boolean name="generateMoveAutoFromBankOrder" title="Generate account move from the bank order"/>
+	<boolean name="consoBankOrderLinePerPartner" title="Consolidate bank order lines per partner"/>
 
     <extra-code><![CDATA[
         public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 1;

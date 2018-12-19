@@ -192,6 +192,9 @@
 							<field name="specialInstructionsLine3" showTitle="false"/>
 						</panel>
 					</panel>
+					<panel name="originPanel" title="Origins" colSpan="12" canCollapse="true" collapseIf="true" showIf="bankOrderLineOriginList != null &amp;&amp; bankOrderLineOriginList.length &gt; 0">
+						 <field name="bankOrderLineOriginList" showTitle="false" colSpan="12" readonly="true"/>
+					</panel>
 					<panel name="accountingInfoPanel" title="Accounting information" colSpan="12" hidden="true" showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)">
 						<field name="senderMove" form-view="move-form" grid-view="move-grid" />
 						<field name="receiverMove" showIf="receiverMove" form-view="move-form" grid-view="move-grid" />

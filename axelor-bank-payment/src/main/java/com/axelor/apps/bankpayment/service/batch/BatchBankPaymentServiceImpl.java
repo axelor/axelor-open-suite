@@ -287,7 +287,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
                   currency,
                   bankOrderDate,
                   receiverReference,
-                  receiverLabel);
+                  receiverLabel,
+                  paymentScheduleLine);
           bankOrder.addBankOrderLineListItem(bankOrderLine);
         }
 

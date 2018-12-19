@@ -33,7 +33,7 @@
     onNew="action-move-template-wizard-set-active-company" onLoad="action-move-template-wizard-set-active-company" >
         <panel name="mainPanel" >
         	<field name="moveTemplateType" canEdit="false" title="Type" target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplateType" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
-        	<field name="company"  type="many-to-one" target="com.axelor.apps.base.db.Company" canEdit="false" title="Company" form-view="company-form" grid-view="company-grid" />
+        	<field name="company"  type="many-to-one" target="com.axelor.apps.base.db.Company" canEdit="false" title="Company" form-view="company-form" grid-view="company-grid" onChange="action-move-template-wizard-attrs-company-onchange"/>
    	 		<field name="moveDate" type="date" title="Move date" requiredIf="moveTemplateType.typeSelect == 2" showIf="moveTemplateType.typeSelect == 2"/>
 	        <field name="moveTemplate" canEdit="false" requiredIf="moveTemplateType.typeSelect == 1"  target-name="name" type="many-to-one" target="com.axelor.apps.account.db.MoveTemplate" showIf="moveTemplateType.typeSelect == 1" title="Template" 
 	        domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND self.endOfValidityDate &gt;= CURRENT_DATE" form-view="move-template-form" grid-view="move-template-grid"/>
@@ -88,6 +88,12 @@
     <action-record name="action-move-template-record-is-not-valid" model="com.axelor.apps.account.db.MoveTemplate">
       <field name="isValid" expr="false"/>
     </action-record>
+    
+    <action-attrs name="action-move-template-wizard-attrs-company-onchange">
+    	<attribute name="value" for="moveTemplateSet" expr="eval: null" />
+    	<attribute name="value" for="dataInputList" expr="eval: null" />
+    	<attribute name="value" for="moveTemplate" expr="eval: null" />
+    </action-attrs>
 
     <action-method name="action-move-template-method-check-validity">
     	<call method="checkValidity" class="com.axelor.apps.account.web.MoveTemplateController" />

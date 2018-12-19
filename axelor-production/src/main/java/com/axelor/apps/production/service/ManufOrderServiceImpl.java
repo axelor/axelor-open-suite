@@ -105,7 +105,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       int priority,
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      int originType)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -120,7 +121,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         this.createManufOrder(
             product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 
-    manufOrder = manufOrderWorkflowService.plan(manufOrder);
+    if (originType == ORIGIN_TYPE_SALE_ORDER
+            && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
+        || originType == ORIGIN_TYPE_MRP
+        || originType == ORIGIN_TYPE_OTHER) {
+      manufOrder = manufOrderWorkflowService.plan(manufOrder);
+    }
 
     return manufOrderRepo.save(manufOrder);
   }
@@ -250,6 +256,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             prodProcess,
             plannedStartDateT,
             ManufOrderRepository.STATUS_DRAFT);
+
+    if (appProductionService.getAppProduction().getManageWorkshop()) {
+      manufOrder.setWorkshopStockLocation(billOfMaterial.getWorkshopStockLocation());
+    }
 
     if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
       for (ProdProcessLine prodProcessLine :

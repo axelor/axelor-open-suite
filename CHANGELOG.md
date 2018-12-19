@@ -1,6 +1,42 @@
 # Changelog
 
-## [Unreleased 5.1]
+## [Unreleased 5.1.1]
+## Features
+- Subrogation Release : add change tracking on status and add new fields.
+- MO printing : new design
+- StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
+- Menus : new organization
+- Improved management of production order generation from sale order :
+Add an option to allow to plan automatically manuf. order generated from a sale order.
+Add an option to choose to generate an unique production order for a sale order or a production order per line.
+Add sale order and client partner fields on production order.
+- Account Move : Display total number of lines, total debit, total credit and the gap on move form.
+
+## Improvements
+- FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
+- COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
+- Sale Invoice & Refund : Add factor viewer.
+- Reserved qty: improve exception message.
+- SALE ORDER : Trading name on card view.
+- SALES : Display boolean 'freeText' in cancelation reason view.
+- Purchase order: do not regenerate sequence if it is already final.
+- SALE ORDER : Display the manufacturing orders panel in production tab.
+- MANUF ORDER : Assign draft sequence on repository save method.
+- Delete commented-out code.
+- STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- Stock move line : now displays an (untaxed) valuated unit price in company currency.
+
+## Bug Fixes
+- SEQUENCES : Fix panelSide Tips problem
+- BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
+- MANUF ORDER : fix Sale order / client partner title
+- SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
+- Stock move: delete obsolete actions and code for reserved quantity.
+- DEMO DATA : Import errors
+- Partner : Fix NPE on creating new partner and saving without address.
+
+
+## [5.1.0] - 2018-12-13
 ## Features
 - Production: billOfMaterial set the BOM as default on product (button and viewer)
 - MARKETING CAMPAIGN : Generate event to the team and salesman in charge depending of the partner or leads.
@@ -152,6 +188,7 @@ If not date is filled, added an option to choose or not to include it for sale o
 - Supplier Invoice : Alert when invoice is already created for supplier invoice number.
 - Accounting Move : Calculate the Credit , Debit & Balance amount for selected MoveLines.
 - Added mass payment on supplier invoices and generate account move on bank order validation.
+- Added an option according to the payment mode to automatically consolidate the bank order lines per partner
 - Created CostSheet report.Added button to print Cost sheet report from Manufacturing order form.
 - Added management of subscription moves with MoveTemplate object
 - Batch : Add 'Production Batch : compute work in progress valuation' and generate PDF in production module.
@@ -269,6 +306,9 @@ Only display line where quantity is greater than 0.
 - FIXED ASSET BATCH : Move Fixed asset Batch to Accounting batch.
 - FILTER : Analytic distribution template filter by Company in Invoice, Sale Order, Purchase Order and Move.
 - SUBROGATION RELEASE : allow to select a refund of an invoice already transmitted to the factor and validated after the transmission of the original invoice to the factor
+- Remove planned stock move lines on cancel.
+- WORKCENTER: add new field "Revaluation at actual prices" for machines duration in costsheets
+- PRODUCT : New select 'Components valuation method' in Production Information.
 
 ## Bug Fixes
 - Check duplicate : Apply manual filter before duplicate check and allow to open form view.
@@ -361,14 +401,15 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock Move Line : Hide Available stock display for virtual stock Location.
 - STOCK MOVES : delete available status for supplier arrivals and customer returns
 - MRP : disable sort on grid to avoid a misinterpretation of the result
-- Disable sort on dummy fied "Avaibality qty" on product grid
 - StockMoveLine : remove required constraint from trackingNumber if real qty not available.
 - Manuf Order : Prevent Removing of order according to status & Archive it if status is Finished.
 - Improve JPA cache management in batch bank statement.
 - Product: use quantity to get shipping coef from supplier catalog.
-- StockMove:stockMoveLine in readonly if company or fromStockLocation is null
+- StockMove : stockMoveLine in readonly if company or fromStockLocation is null
+- Partner: Address on grid view
+- DataBackup : Handle Exception.
 
-## [Unreleased 5.0.7]
+## [5.0.7] - 2018-12-13
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
@@ -416,8 +457,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
-- Account: Reset fields on onchange action in Accounting Report. 
-- Stock move line : now displays an (untaxed) valuated unit price in company currency.
+- Account: Reset fields on onchange action in Accounting Report.
+- Advance Export : Default value for selection translation.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -505,7 +546,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
 - Taxline : fix suggestions in suggestbox.
 - COPY OF A PRODUCT : avgPrice, startDate and endDate empty
-
+- COST SHEET : fix wrong assignation of cost sheet group for human ressources
+- MANUF. ORDER PRINTING : change the name of a table's column
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -1427,9 +1469,9 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
-
-[Unreleased 5.1]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
+[Unreleased 5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...dev
+[5.1.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.1.0
+[5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
@@ -1456,3 +1498,4 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0
+
