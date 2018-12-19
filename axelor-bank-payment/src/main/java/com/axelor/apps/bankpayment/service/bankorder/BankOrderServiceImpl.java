@@ -456,9 +456,9 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    this.cancelPayment(bankOrder);
-
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
+
+    this.cancelPayment(bankOrder);
 
     bankOrderRepo.save(bankOrder);
   }
