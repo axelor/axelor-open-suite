@@ -128,7 +128,7 @@
 				<field name="estimatedDelivDate"/>
 				<field name="receivedQty" readonly="true"/>
 				<field name="supplierComment" colSpan="12"/>
-				<panel-dashlet name="POLineStockMoveLinePanel" action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
+				<panel-dashlet title="In Stock Moves" name="POLineStockMoveLinePanel" action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="amountInvoiced"/>
