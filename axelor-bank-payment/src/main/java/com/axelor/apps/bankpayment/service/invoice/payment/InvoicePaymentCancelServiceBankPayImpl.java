@@ -84,7 +84,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
             invoicePayment,
             TraceBackRepository.TYPE_FUNCTIONNAL,
             I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
-      } else {
+      } else if(paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         bankOrderService.cancelBankOrder(paymentBankOrder);
         this.updateCancelStatus(invoicePayment);
       }
