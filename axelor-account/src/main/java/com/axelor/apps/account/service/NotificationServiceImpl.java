@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -42,6 +43,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import javax.persistence.TypedQuery;
 
 public class NotificationServiceImpl implements NotificationService {
 
@@ -87,9 +89,29 @@ public class NotificationServiceImpl implements NotificationService {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
     boolean allCleared = true;
+    boolean isValid = true;
 
     for (NotificationItem notificationItem : notification.getNotificationItemList()) {
       Invoice invoice = notificationItem.getInvoice();
+      SubrogationRelease subrogationReleaseFromInvoice = null;
+
+      if (subrogationRelease == null) {
+        TypedQuery<SubrogationRelease> query =
+            JPA.em()
+                .createQuery(
+                    "SELECT self FROM SubrogationRelease self JOIN self.invoiceSet invoices WHERE self.statusSelect = :statusSelect AND invoices.id IN (:invoiceId)",
+                    SubrogationRelease.class);
+        query.setParameter("statusSelect", SubrogationReleaseRepository.STATUS_ACCOUNTED);
+        query.setParameter("invoiceId", invoice.getId());
+
+        subrogationReleaseFromInvoice = query.getSingleResult();
+
+        if (subrogationReleaseFromInvoice == null) {
+          isValid = false;
+          continue;
+        }
+      }
+
       BigDecimal amountRemaining = invoice.getAmountRemaining();
 
       if (amountRemaining.signum() > 0) {
@@ -132,7 +154,9 @@ public class NotificationServiceImpl implements NotificationService {
                       notification.getPaymentDate(),
                       null,
                       1,
-                      subrogationRelease.getSequenceNumber(),
+                      subrogationRelease != null
+                          ? subrogationRelease.getSequenceNumber()
+                          : subrogationReleaseFromInvoice.getSequenceNumber(),
                       invoice.getInvoiceId());
           debitMoveLine =
               moveService
@@ -146,7 +170,9 @@ public class NotificationServiceImpl implements NotificationService {
                       notification.getPaymentDate(),
                       null,
                       2,
-                      subrogationRelease.getSequenceNumber(),
+                      subrogationRelease != null
+                          ? subrogationRelease.getSequenceNumber()
+                          : subrogationReleaseFromInvoice.getSequenceNumber(),
                       invoice.getInvoiceId());
         } else {
           creditMoveLine =
@@ -161,7 +187,9 @@ public class NotificationServiceImpl implements NotificationService {
                       notification.getPaymentDate(),
                       null,
                       1,
-                      subrogationRelease.getSequenceNumber(),
+                      subrogationRelease != null
+                          ? subrogationRelease.getSequenceNumber()
+                          : subrogationReleaseFromInvoice.getSequenceNumber(),
                       invoice.getInvoiceId());
           debitMoveLine =
               moveService
@@ -175,7 +203,9 @@ public class NotificationServiceImpl implements NotificationService {
                       notification.getPaymentDate(),
                       null,
                       2,
-                      subrogationRelease.getSequenceNumber(),
+                      subrogationRelease != null
+                          ? subrogationRelease.getSequenceNumber()
+                          : subrogationReleaseFromInvoice.getSequenceNumber(),
                       invoice.getInvoiceId());
         }
 
@@ -193,13 +223,19 @@ public class NotificationServiceImpl implements NotificationService {
               debitMoveLine, findInvoiceAccountMoveLine(invoice), true, true);
         }
       }
+
+      if (allCleared && subrogationReleaseFromInvoice != null) {
+        subrogationReleaseFromInvoice.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
+      }
     }
 
-    if (allCleared) {
+    if (allCleared && subrogationRelease != null) {
       subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
     }
 
-    notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+    if (isValid) {
+      notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+    }
   }
 
   private MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
