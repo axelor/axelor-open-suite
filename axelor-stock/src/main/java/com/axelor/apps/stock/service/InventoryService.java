@@ -89,7 +89,8 @@ public class InventoryService {
   @Inject private StockLocationLineService stockLocationLineService;
 
   public Inventory createInventory(
-      LocalDate date,
+      LocalDate plannedStartDate,
+      LocalDate plannedEndDate,
       String description,
       StockLocation stockLocation,
       boolean excludeOutOfStock,
@@ -108,7 +109,9 @@ public class InventoryService {
 
     inventory.setInventorySeq(this.getInventorySequence(stockLocation.getCompany()));
 
-    inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
+    inventory.setPlannedStartDateT(plannedStartDate.atStartOfDay(ZoneOffset.UTC));
+
+    inventory.setPlannedEndDateT(plannedEndDate.atStartOfDay(ZoneOffset.UTC));
 
     inventory.setDescription(description);
 
@@ -315,7 +318,7 @@ public class InventoryService {
         BigDecimal realQty = consolidatedRealQties.get(product);
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
-          stockLocationLine.setLastInventoryDateT(inventory.getDateT());
+          stockLocationLine.setLastInventoryDateT(inventory.getPlannedEndDateT());
         }
 
         String rack = realRacks.get(product);
@@ -335,7 +338,7 @@ public class InventoryService {
         BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
-          detailsStockLocationLine.setLastInventoryDateT(inventory.getDateT());
+          detailsStockLocationLine.setLastInventoryDateT(inventory.getPlannedEndDateT());
         }
 
         String rack = realRacks.get(product);
@@ -365,7 +368,11 @@ public class InventoryService {
 
     StockMove stockMove =
         this.createStockMoveHeader(
-            inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+            inventory,
+            company,
+            toStockLocation,
+            inventory.getPlannedEndDateT().toLocalDate(),
+            inventorySeq);
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
     stockMove.setOriginId(inventory.getId());
     stockMove.setOrigin(inventorySeq);
@@ -479,7 +486,8 @@ public class InventoryService {
       Boolean succeed = false;
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         if (stockLocationLine.getTrackingNumber()
-            == null) { // if no tracking number on stockLocationLine, check if there is a tracking
+            == null) { // if no tracking number on stockLocationLine,
+          // check if there is a tracking
           // number on the product
           long numberOfTrackingNumberOnAProduct =
               Beans.get(StockLocationLineRepository.class)
@@ -516,7 +524,7 @@ public class InventoryService {
 
     if (!inventory.getIncludeObsolete()) {
       query += " and (self.product.endDate > ? or self.product.endDate is null)";
-      params.add(inventory.getDateT().toLocalDate());
+      params.add(inventory.getPlannedEndDateT().toLocalDate());
     }
 
     if (inventory.getProductFamily() != null) {
@@ -637,5 +645,13 @@ public class InventoryService {
             StockMoveRepository.ORIGIN_INVENTORY,
             inventory.getId())
         .fetchOne();
+  }
+
+  public String computeDisplayDiscription(Inventory entity) {
+    return (entity.getStockLocation() != null
+                && !Strings.isNullOrEmpty(entity.getStockLocation().getName())
+            ? entity.getStockLocation().getName() + " - "
+            : "")
+        + (!Strings.isNullOrEmpty(entity.getDescription()) ? entity.getDescription() : "");
   }
 }

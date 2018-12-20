@@ -182,30 +182,49 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">inventoryName</property>
+                    <property name="alias">inventoryName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">inventoryName</text-property>
                     <text-property name="heading">inventoryName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">inventoryLocation</property>
+                    <property name="alias">inventoryLocation</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">inventoryLocation</text-property>
                     <text-property name="heading">inventoryLocation</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">inventoryDate</property>
+                    <property name="columnName">inventoryPlannedStartDate</property>
+                    <property name="alias">inventoryPlannedStartDate</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">inventoryDate</text-property>
-                    <text-property name="heading">inventoryDate</text-property>
+                    <text-property name="displayName">inventoryPlannedStartDate</text-property>
+                    <text-property name="heading">inventoryPlannedStartDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">inventoryPlannedEndDate</property>
+                    <property name="alias">inventoryPlannedEndDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">inventoryPlannedEndDate</text-property>
+                    <text-property name="heading">inventoryPlannedEndDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">inventoryCreatedOn</property>
+                    <property name="alias">inventoryCreatedOn</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">inventoryCreatedOn</text-property>
+                    <text-property name="heading">inventoryCreatedOn</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">companyName</property>
+                    <property name="alias">companyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">companyName</text-property>
                     <text-property name="heading">companyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
@@ -238,16 +257,26 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">inventoryDate</property>
+                        <property name="name">inventoryPlannedStartDate</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
+                        <property name="name">inventoryPlannedEndDate</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">inventoryCreatedOn</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
                         <property name="name">companyName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">7</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -260,41 +289,50 @@
                     <property name="name">inventoryName</property>
                     <property name="nativeName">inventoryName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">inventoryLocation</property>
                     <property name="nativeName">inventoryLocation</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">inventoryDate</property>
-                    <property name="nativeName">inventoryDate</property>
+                    <property name="name">inventoryPlannedStartDate</property>
+                    <property name="nativeName">inventoryPlannedStartDate</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">companyName</property>
-                    <property name="nativeName">companyName</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">inventoryPlannedEndDate</property>
+                    <property name="nativeName">inventoryPlannedEndDate</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
+                    <property name="name">inventoryCreatedOn</property>
+                    <property name="nativeName">inventoryCreatedOn</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">companyName</property>
+                    <property name="nativeName">companyName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
 	Inventory.inventory_seq as "inventoryName",
 	Location.name as "inventoryLocation",
-	Inventory.dateT as "inventoryDate",
+	Inventory.planned_start_datet as "inventoryPlannedStartDate",
+	Inventory.planned_end_datet as "inventoryPlannedEndDate",
+	Inventory.created_on as "inventoryCreatedOn",
 	Company.name as "companyName",
 	MetaFile.file_path as logo_path
 from
@@ -781,69 +819,49 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     <body>
         <table id="3746">
             <property name="width">11.145833333333334in</property>
-            <property name="dataSet">InventoryLineDS</property>
+            <property name="dataSet">InventoryDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">productName</property>
-                    <text-property name="displayName">productName</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["productName"]</expression>
+                    <property name="name">inventoryName</property>
+                    <text-property name="displayName">inventoryName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">productCode</property>
-                    <text-property name="displayName">productCode</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["productCode"]</expression>
+                    <property name="name">inventoryLocation</property>
+                    <text-property name="displayName">inventoryLocation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">current_qty</property>
-                    <text-property name="displayName">current_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">inventoryPlannedStartDate</property>
+                    <text-property name="displayName">inventoryPlannedStartDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["inventoryPlannedStartDate"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">real_qty</property>
-                    <text-property name="displayName">real_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["real_qty"]</expression>
-                    <property name="dataType">decimal</property>
+                    <property name="name">inventoryCreatedOn</property>
+                    <text-property name="displayName">inventoryCreatedOn</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["inventoryCreatedOn"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">description</property>
-                    <text-property name="displayName">description</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="name">companyName</property>
+                    <text-property name="displayName">companyName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">unit</property>
-                    <text-property name="displayName">unit</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["unit"]</expression>
+                    <property name="name">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">rack</property>
-                    <text-property name="displayName">rack</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["rack"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">TrackingNumberSeq</property>
-                    <text-property name="displayName">TrackingNumberSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["TrackingNumberSeq"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">bar_code</property>
-                    <text-property name="displayName">bar_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["bar_code"]</expression>
-                    <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">barcode_picture</property>
-                    <text-property name="displayName">barcode_picture</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
+                    <property name="name">inventoryPlannedEndDate</property>
+                    <text-property name="displayName">inventoryPlannedEndDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["inventoryPlannedEndDate"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
             <list-property name="sort">
@@ -974,7 +992,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text id="3837">
                             <property name="fontSize">15pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">center</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
@@ -1155,42 +1172,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="showIfBlank">false</property>
                         <property name="canShrink">false</property>
                         <property name="overflow">hidden</property>
-                        <data id="4597">
-                            <property name="dataSet">InventoryDS</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">inventoryName</property>
-                                    <text-property name="displayName">inventoryName</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryLocation</property>
-                                    <text-property name="displayName">inventoryLocation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryDate</property>
-                                    <text-property name="displayName">inventoryDate</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                    <property name="dataType">date-time</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">logo_path</property>
-                                    <text-property name="displayName">logo_path</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Inventory Number</property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">Inventory Number</property>
-                        </data>
+                        <text id="4765">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["inventoryName"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="3857">
                         <property name="colSpan">2</property>
@@ -1285,42 +1270,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="3892">
-                            <property name="dataSet">InventoryDS</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">inventoryName</property>
-                                    <text-property name="displayName">inventoryName</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryLocation</property>
-                                    <text-property name="displayName">inventoryLocation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryDate</property>
-                                    <text-property name="displayName">inventoryDate</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                    <property name="dataType">date-time</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">logo_path</property>
-                                    <text-property name="displayName">logo_path</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Inventory Location</property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">Inventory Location</property>
-                        </data>
+                        <text id="4766">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["inventoryLocation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="3860">
@@ -1398,7 +1351,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Inventory.date'</value>
+                                        <value type="javascript">'Inventory.createdOn'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1476,46 +1429,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="showIfBlank">false</property>
                         <property name="canShrink">false</property>
                         <property name="overflow">hidden</property>
-                        <data id="4595">
-                            <structure name="dateTimeFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">dd/MM/yyyy</property>
-                            </structure>
-                            <property name="dataSet">InventoryDS</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">inventoryName</property>
-                                    <text-property name="displayName">inventoryName</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryLocation</property>
-                                    <text-property name="displayName">inventoryLocation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryDate</property>
-                                    <text-property name="displayName">inventoryDate</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                    <property name="dataType">date-time</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">logo_path</property>
-                                    <text-property name="displayName">logo_path</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Inventory Date</property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                    <property name="dataType">date</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">Inventory Date</property>
-                        </data>
+                        <text id="4768">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy hh:mm">row["inventoryCreatedOn"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="3850">
                         <property name="backgroundColor">white</property>
@@ -1578,54 +1495,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderBottomColor">#606062</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightColor">#606062</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4598">
-                            <property name="dataSet">InventoryDS</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">inventoryName</property>
-                                    <text-property name="displayName">inventoryName</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryLocation</property>
-                                    <text-property name="displayName">inventoryLocation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">inventoryDate</property>
-                                    <text-property name="displayName">inventoryDate</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                    <property name="dataType">date-time</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">companyName</property>
-                                    <text-property name="displayName">companyName</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">logo_path</property>
-                                    <text-property name="displayName">logo_path</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Company Name</property>
-                                    <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">Company Name</property>
-                        </data>
+                        <text id="4767">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["companyName"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="3874">
@@ -1659,6 +1541,183 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="backgroundColor">white</property>
                     </cell>
                     <cell id="3934">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                </row>
+                <row id="4738">
+                    <property name="height">0.2604166666666667in</property>
+                    <cell id="4739">
+                        <property name="backgroundColor">#606062</property>
+                        <text id="4760">
+                            <property name="fontWeight">bold</property>
+                            <property name="color">#FFFFFF</property>
+                            <property name="borderBottomColor">#606062</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#606062</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#606062</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#606062</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'Inventory.plannedStartDateT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4740">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <property name="backgroundColor">white</property>
+                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4769">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy hh:mm">row["inventoryPlannedStartDate"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4743">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4744">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4745">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4746">
+                        <property name="backgroundColor">#606062</property>
+                        <text id="4761">
+                            <property name="fontWeight">bold</property>
+                            <property name="color">#FFFFFF</property>
+                            <property name="borderBottomColor">#606062</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#606062</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#606062</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#606062</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'Inventory.plannedEndDateT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4747">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="backgroundColor">white</property>
+                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4770">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy hh:mm">row["inventoryPlannedEndDate"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+                <row id="4749">
+                    <property name="height">0.2604166666666667in</property>
+                    <cell id="4750">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4751">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4752">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4753">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4754">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4755">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4756">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4757">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4758">
+                        <property name="backgroundColor">white</property>
+                    </cell>
+                    <cell id="4759">
                         <property name="backgroundColor">white</property>
                     </cell>
                 </row>

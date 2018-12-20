@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+-Inventory : Added calendar-view
 ## Improvements
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

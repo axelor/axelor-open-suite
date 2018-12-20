@@ -37,7 +37,7 @@ public class ImportInventory {
 
     Inventory inventory = (Inventory) bean;
     StockMove stockMove = inventoryService.validateInventory(inventory);
-    stockMove.setRealDate(inventory.getDateT().toLocalDate());
+    stockMove.setRealDate(inventory.getPlannedEndDateT().toLocalDate());
 
     return inventory;
   }

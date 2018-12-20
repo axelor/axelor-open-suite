@@ -6,7 +6,8 @@
     <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
         <field name="inventorySeq"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="dateT"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
         <field name="statusSelect"/>
         <field name="company" />
     </grid>
@@ -35,7 +36,9 @@
 
         <panel name="detailPanel">
             <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
-            <field name="dateT" readonlyIf="statusSelect >= 2"/>
+            <field name="plannedStartDateT" readonlyIf="statusSelect >= 3" required="true" colSpan="2"/>
+            <field name="plannedEndDateT" readonlyIf="statusSelect >= 5" required="true" colSpan="2" validIf="plannedStartDateT &lt; plannedEndDateT"/>
+            <field name="createdOn" readonly="true" colSpan="2"/>
             <field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
             <field name="validatedBy" readonly="true" showIf="validatedBy"/>
             <field name="validatedOn" readonly="true" showIf="validatedOn"/>
@@ -72,6 +75,10 @@
             </panel>
         </panel-tabs>
     </form>
+    
+    <calendar name="inventory-calendar" model="com.axelor.apps.stock.db.Inventory" colorBy="statusSelect"  eventStart="plannedStartDateT" eventStop="plannedEndDateT"  title="Inventory Calendar">
+    	<field name="dispalyDescription"/>
+    </calendar>
     
     <action-group name="action-group-stock-inventory-importfile-click">
     	<action name="save"/>
@@ -126,7 +133,6 @@
 
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
-	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	    <field name="stockLocation" expr="eval:_location"/>
 	</action-record>
