@@ -3,6 +3,8 @@
 ## [Unreleased 5.2.0]
 ## Features
 ## Improvements
+- TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
+
 ## Bug Fixes
 
 
