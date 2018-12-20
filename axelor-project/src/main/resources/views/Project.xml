@@ -263,6 +263,8 @@
 			<panel title="Invoicing" name="invoicingPanel"  showIf="isBusinessProject"
 				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 				<field name="projInvTypeSelect" />
+				<field name="isInvoicingExpenses" colSpan="3" />
+				<field name="isInvoicingPurchases" colSpan="3" />
 				<button name="showInvoicingProjectsBtn" title="Create invoicing project"
 						css="btn-custom" icon="fa-file-text-o"
 						onClick="save,action-project-view-show-invoicing-projects"/>
