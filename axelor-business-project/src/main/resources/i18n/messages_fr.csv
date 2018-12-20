@@ -74,6 +74,8 @@
 "Invoice.timesheetUser","Employé(e)",,
 "Invoiced","Facturé",,
 "Invoiced Orders Total","Total Commandes facturées",,
+"Invoicing Expenses","Facturation NdeF",,
+"Invoicing Purchases","IFacturation Achats",,
 "Invoicing Type","Type de facturation",,
 "Invoicing business project","Facturation affaire",,
 "Invoicing business projects","Facturation affaires",,

@@ -3,8 +3,11 @@
 ## [Unreleased 5.2.0]
 ## Features
 ## Improvements
+- Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 
+## [Unreleased 5.1.1]
+## Improvements
 ## Bug Fixes
 
 
@@ -1443,6 +1446,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+[Unreleased 5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...dev
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.1.0
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6

@@ -67,6 +67,7 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
       costSheet.addCostSheetLineListItem(
           costSheetLineService.createWorkCenterHRCostSheetLine(
+              prodHumanResource.getWorkCenter(),
               prodHumanResource,
               priority,
               bomLevel,

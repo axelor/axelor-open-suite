@@ -254,6 +254,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
+      WorkCenter workCenter,
       ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
@@ -263,7 +264,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Unit unit) {
 
     return this.createWorkCenterCostSheetLine(
-        prodHumanResource.getWorkCenter(),
+        workCenter,
         priority,
         bomLevel,
         parentCostSheetLine,
