@@ -18,8 +18,10 @@
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
 		<field name="project" width="200" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+		<field name="teamTask" width="200" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="timeToCharge" width="150"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="100" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
@@ -60,8 +62,10 @@
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
 		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+		<field name="teamTask" width="200" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="timeToCharge" width="150"/>
 		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -92,8 +96,10 @@
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
 		<panel name="overviewPanel" title="Overview">
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+			<field name="teamTask" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 			<field name="date" />
 			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="timeToCharge"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />
@@ -156,6 +162,10 @@
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project">
 		<attribute name="domain" for="project" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-line-attrs-domain-team-task">
+		<attribute name="domain" for="teamTask" expr="eval: &quot; self.project.id = ${project?.id} &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-title-project">
