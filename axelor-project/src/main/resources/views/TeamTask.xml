@@ -84,6 +84,7 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
+				<field name="projInvTypeSelect" colspan="5" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="toInvoice" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 					<viewer><![CDATA[
@@ -279,6 +280,7 @@
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
+		<field name="projInvTypeSelect" expr="eval: project?.projInvTypeSelect"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">

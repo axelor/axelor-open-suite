@@ -4,9 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<selection name="project.invoicing.type.select">
-		<option value="1">None</option>
-		<option value="2">Realised based</option>
-		<option value="3">Flat Rate</option>
+		<option value="1">No</option>
+		<option value="2">Package</option>
+		<option value="3">Time spent</option>
 	</selection>
 	
 	<selection name="invoicing.project.priority.select">
