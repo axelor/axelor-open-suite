@@ -42,8 +42,10 @@
 	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="project" orphanRemoval="false"/>
 		<one-to-many name="invoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice lines" mappedBy="project" orphanRemoval="false"/>
 		
-		
 		<boolean name="isBusinessProject" title="Business project" />
+
+		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
+		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
 
 	 	<extra-code><![CDATA[
 		

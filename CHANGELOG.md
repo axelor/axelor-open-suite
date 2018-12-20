@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.0]
 ## Features
 ## Improvements
+- Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 ## Bug Fixes
 
 
