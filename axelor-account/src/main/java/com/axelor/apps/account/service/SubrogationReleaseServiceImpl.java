@@ -64,12 +64,20 @@ import java.util.stream.Collectors;
 
 public class SubrogationReleaseServiceImpl implements SubrogationReleaseService {
 
-  @Inject private AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
+  protected InvoiceRepository invoiceRepository;
+
+  @Inject
+  public SubrogationReleaseServiceImpl(
+      AppBaseService appBaseService, InvoiceRepository invoiceRepository) {
+    this.appBaseService = appBaseService;
+    this.invoiceRepository = invoiceRepository;
+  }
 
   @Override
   public List<Invoice> retrieveInvoices(Company company) {
     Query<Invoice> query =
-        Beans.get(InvoiceRepository.class)
+        invoiceRepository
             .all()
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
@@ -200,12 +208,16 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Account factorCreditAccount = accountConfigService.getFactorCreditAccount(accountConfig);
     Account factorDebitAccount = accountConfigService.getFactorDebitAccount(accountConfig);
 
+    if (subrogationRelease.getAccountingDate() == null) {
+      subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
+    }
+
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
       if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
 
-      LocalDate date = appBaseService.getTodayDate();
+      LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
           moveService
               .getMoveCreateService()
@@ -219,73 +231,64 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
       MoveLine creditMoveLine, debitMoveLine;
 
-      if (InvoiceToolService.isOutPayment(invoice)) {
-        creditMoveLine =
-            moveService
-                .getMoveLineService()
-                .createMoveLine(
-                    move,
-                    invoice.getPartner(),
-                    factorDebitAccount,
-                    invoice.getCompanyInTaxTotalRemaining(),
-                    false,
-                    date,
-                    null,
-                    1,
-                    subrogationRelease.getSequenceNumber(),
-                    null);
-        debitMoveLine =
-            moveService
-                .getMoveLineService()
-                .createMoveLine(
-                    move,
-                    invoice.getPartner(),
-                    factorCreditAccount,
-                    invoice.getCompanyInTaxTotalRemaining(),
-                    true,
-                    date,
-                    null,
-                    2,
-                    subrogationRelease.getSequenceNumber(),
-                    null);
-      } else {
-        creditMoveLine =
-            moveService
-                .getMoveLineService()
-                .createMoveLine(
-                    move,
-                    invoice.getPartner(),
-                    factorCreditAccount,
-                    invoice.getCompanyInTaxTotalRemaining(),
-                    false,
-                    date,
-                    null,
-                    1,
-                    subrogationRelease.getSequenceNumber(),
-                    null);
-        debitMoveLine =
-            moveService
-                .getMoveLineService()
-                .createMoveLine(
-                    move,
-                    invoice.getPartner(),
-                    factorDebitAccount,
-                    invoice.getCompanyInTaxTotalRemaining(),
-                    true,
-                    date,
-                    null,
-                    2,
-                    subrogationRelease.getSequenceNumber(),
-                    null);
-      }
+      debitMoveLine =
+          moveService
+              .getMoveLineService()
+              .createMoveLine(
+                  move,
+                  invoice.getPartner(),
+                  factorDebitAccount,
+                  invoice.getCompanyInTaxTotalRemaining(),
+                  true,
+                  date,
+                  null,
+                  1,
+                  subrogationRelease.getSequenceNumber(),
+                  null);
 
-      move.addMoveLineListItem(creditMoveLine);
+      creditMoveLine =
+          moveService
+              .getMoveLineService()
+              .createMoveLine(
+                  move,
+                  invoice.getPartner(),
+                  factorCreditAccount,
+                  invoice.getCompanyInTaxTotalRemaining(),
+                  false,
+                  date,
+                  null,
+                  2,
+                  subrogationRelease.getSequenceNumber(),
+                  null);
+
       move.addMoveLineListItem(debitMoveLine);
+      move.addMoveLineListItem(creditMoveLine);
+
       move = moveRepository.save(move);
       moveService.getMoveValidateService().validate(move);
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
-    subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
+  }
+
+  @Override
+  @Transactional
+  public void clear(SubrogationRelease subrogationRelease) {
+
+    if (isSubrogationReleaseCompletelyPaid(subrogationRelease)) {
+
+      subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
+    }
+  }
+
+  @Override
+  public boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease) {
+
+    return subrogationRelease
+            .getInvoiceSet()
+            .stream()
+            .filter(p -> p.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
+            .count()
+        == 0;
   }
 }
