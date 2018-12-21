@@ -13,6 +13,7 @@
 		<field name="status"/>
 		<field name="priority"/>
 		<field name="projectCategory"/>
+		<field name="targetVersion"/>
 	</grid>
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"
@@ -56,6 +57,7 @@
 				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations"/>
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="progressSelect" colSpan="4" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="version-form" grid-view="version-grid"/>
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
@@ -377,5 +379,5 @@
 	<action-method name="action-team-task-method-cancel-timer">
 		<call class="com.axelor.apps.project.web.TeamTaskController" method="cancelTimer"/>
 	</action-method>
-
+	
 </object-views>
