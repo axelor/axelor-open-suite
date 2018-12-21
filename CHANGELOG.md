@@ -46,6 +46,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Partner: Fix error handling on partner repository save.  
 - Fix panel name in manuf order.
 - Set reserved qty to 0 when we copy a stock move or a sale order.
+- StockMove copy: set logistical form flag to false.
 
 ## [5.1.0] - 2018-12-13
 ## Features
