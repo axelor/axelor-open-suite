@@ -46,8 +46,14 @@
 		<view type="grid" name="wiki-grid"/>
 		<view type="form" name="wiki-form"/>
 	</action-view>
+	
+	<menuitem title="Versions" name="project-versions" parent="menu-project-root" action="action.version.view.all.versions" order="36"/>
+	<action-view name="action.version.view.all.versions" title="Versions" model="com.axelor.apps.project.db.Version">
+		<view type="grid" name="version-grid"/>
+		<view type="form" name="version-form"/>
+	</action-view>
 
-	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="36" icon="fa-clock-o"/>
+	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="39" icon="fa-clock-o"/>
 
 	<menuitem name="project-task-history" parent="project-historical" title="Task history" action="all.tasks.history"/>
 	<action-view name="all.tasks.history" title="Task history" model="com.axelor.team.db.TeamTask">
@@ -55,7 +61,7 @@
 		<view type="form" name="team-task-form"/>
 	</action-view>
 
-  <menuitem name="project-reporting" parent="menu-project-root" order="39" title="Reportings" icon="fa-bar-chart"/>
+  <menuitem name="project-reporting" parent="menu-project-root" order="40" title="Reportings" icon="fa-bar-chart"/>
 
 	<menuitem name="project-reporting-my-projects" parent="project-reporting" order="31" title="My projects" action="project.my.projects"/>
 	<action-view name="project.my.projects" title="My projects">
@@ -71,7 +77,7 @@
 	
 	
     <!-- PROJECT CONFIGURATION -->
-	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="40" icon="fa-cog"/>
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="41" icon="fa-cog"/>
 	
 	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
 	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">

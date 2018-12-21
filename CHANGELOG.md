@@ -4,6 +4,7 @@
 ## Features
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
+- Add new object 'Version' in project module.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
