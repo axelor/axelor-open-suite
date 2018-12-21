@@ -110,6 +110,8 @@ public class IntercoServiceImpl implements IntercoService {
       }
     }
 
+    saleOrder.setPrintingSettings(intercoCompany.getPrintingSettings());
+
     // compute the sale order
     saleOrderComputeService.computeSaleOrder(saleOrder);
 
@@ -167,6 +169,7 @@ public class IntercoServiceImpl implements IntercoService {
         this.createIntercoPurchaseLineFromSaleLine(saleOrderLine, purchaseOrder);
       }
     }
+    purchaseOrder.setPrintingSettings(intercoCompany.getPrintingSettings());
 
     // compute the purchase order
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
@@ -315,6 +318,7 @@ public class IntercoServiceImpl implements IntercoService {
           .getInvoiceLineTaxList()
           .forEach(invoiceTaxLine -> invoiceTaxLine.setInvoice(intercoInvoice));
     }
+    intercoInvoice.setPrintingSettings(intercoCompany.getPrintingSettings());
 
     return invoiceRepository.save(intercoInvoice);
   }
