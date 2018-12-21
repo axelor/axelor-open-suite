@@ -301,6 +301,14 @@
 			<panel title="Wiki"  name="wikiPanel" >
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
+			<panel title="Roadmap" name="roadmapPanel">
+				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="version-form">
+					<field name="title"/>
+					<field name="statusSelect"/>
+					<field name="testingServerDate"/>
+					<field name="productionServerDate"/>
+				</panel-related>
+			</panel>
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
