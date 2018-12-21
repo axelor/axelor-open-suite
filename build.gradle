@@ -30,6 +30,10 @@ spotless {
 
 allprojects {
 
+	configurations {
+   		runtime.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
+	}
+	
 	apply plugin: 'idea'
 	apply plugin: 'eclipse'
 	apply plugin: "com.diffplug.gradle.spotless"
