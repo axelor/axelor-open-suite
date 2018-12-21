@@ -28,6 +28,7 @@ Add sale order and client partner fields on production order.
 - BANKORDER : use bank order line origin to know which invoice payment should be validated when we validate a bank order 
 instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
 - Purchase order line: add panel to dashlet.
+- When generating interco invoice or order, get the right printing settings.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
