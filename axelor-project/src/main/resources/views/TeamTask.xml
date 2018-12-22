@@ -65,14 +65,19 @@
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
 			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-				<field name="totalPlannedHrs" readonly="true">
+				<field name="totalPlannedHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
-				<field name="totalRealHrs" readonly="true">
+				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
+       			]]></viewer>
+				</field>
+				<field name="budgetedTime" colSpan="4">
+				<viewer><![CDATA[
+                   	<span>{{record.budgetedTime}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
 				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
