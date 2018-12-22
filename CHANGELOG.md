@@ -48,6 +48,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Set reserved qty to 0 when we copy a stock move or a sale order.
 - StockMove copy: set logistical form flag to false.
 - Sale Order : Make AnalyticDistributionTemplate editable.
+- Account Move : Reload the view after reconciliation.
 
 ## [5.1.0] - 2018-12-13
 ## Features
