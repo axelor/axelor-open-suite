@@ -29,6 +29,7 @@ Add sale order and client partner fields on production order.
 instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
 - Purchase order line: add panel to dashlet.
 - When generating interco invoice or order, get the right printing settings.
+- SALE ORDER & PURCHASE ORDER : Create an alert when order already created.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
