@@ -70,7 +70,7 @@
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
-			<panel name="informationsPanel" title="Information">
+			<panel name="informationsPanel" title="Information" readonlyIf="$isNotEditable">
 				<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly">
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
@@ -134,38 +134,38 @@
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 			</panel>
-			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0 || $isReadOnly" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
+			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0 || $isReadOnly || $isNotEditable" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
 				<panel-related name="subLineListPanel" field="subLineList" onChange="action-sale-order-line-compute-total-pack" colSpan="12" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" canRemove="false"/>
 				<field name="totalPack" readonly="true"/>
 			</panel>
-			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly">
+			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly || $isNotEditable">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
 				<field name="subTotalGrossMargin" readonly="true"/>
 				<field name="subMarginRate" readonly="true"/>
 				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
-			<panel name="deliveryPanel" title="Delivery" readonlyIf="$isReadOnly">
+			<panel name="deliveryPanel" title="Delivery" readonlyIf="$isReadOnly || $isNotEditable">
 				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
 				<field name="deliveredQty" readonly="true"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 			</panel>
-			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
+			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly || $isNotEditable" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="invoicingDate"/>
 				<field name="amountInvoiced" />
 				<panel-dashlet name="invoiceLinesFromSOLinePanel" action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 			</panel>
-			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly" if-module="axelor-business-project">
+			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly || $isNotEditable" if-module="axelor-business-project">
 				<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="toInvoice" colSpan="3" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 			</panel>
-			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
+			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly || $isNotEditable" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
-			<panel name="settingsPanel" readonlyIf="$isReadOnly" title="Configuration" >
+			<panel name="settingsPanel" readonlyIf="$isReadOnly || $isNotEditable" title="Configuration" >
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="standardDelay" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" hidden="true"  showIf="saleSupplySelect == 2 || saleSupplySelect ==3" />
 				<field name="supplierPartner" showIf="saleSupplySelect == 2" onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
@@ -326,6 +326,7 @@
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
+        <action name="action-sale-order-line-record-is-form-editable"/>
     	<action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
@@ -435,6 +436,10 @@
 	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="$isReadOnly" expr="eval: isSubLine"/>
 	</action-record>
+  
+    <action-record name="action-sale-order-line-record-is-form-editable" model="com.axelor.apps.sale.db.SaleOrderLine">
+      <field name="$isNotEditable" expr="eval: __parent__?.clientPartner == null || __parent__?.statusSelect == 2 || (__parent__?.statusSelect == 3  &amp;&amp; !orderBeingEdited) || __parent__?.statusSelect == 4"/>
+    </action-record>
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
