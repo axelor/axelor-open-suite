@@ -41,7 +41,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move
 - INVOICE PAYMENT : Fix loop issue when we cancel an invoice payment that is linked to a bank order
 - Notification : Fix NPE when we validate without select 'Subrogation release'.
-
+- Sale Order : Make AnalyticDistributionTemplate editable.
 
 ## [5.1.0] - 2018-12-13
 ## Features
