@@ -34,6 +34,8 @@
 		<date name="taskEndDate" title="Task end" />
 
 		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
+		
+		<decimal name="budgetedTime" title="Budgeted time"/>
 
 	 <track>
 	 	<field name="sequence"/>

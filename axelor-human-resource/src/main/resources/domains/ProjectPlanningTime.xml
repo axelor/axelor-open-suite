@@ -18,6 +18,7 @@
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
+	  <decimal name="timeToCharge" title="Time to charge"/>
 	  
 	  <string name="fullName" namecolumn="true">
 			<![CDATA[
