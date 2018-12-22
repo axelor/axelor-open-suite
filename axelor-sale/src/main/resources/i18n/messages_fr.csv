@@ -116,6 +116,8 @@
 "Delivery information","Informations de livraison",,
 "Description","Description",,
 "Description to display","Description à afficher",,
+"Description to display on delivery","Description à afficher sur les BL",,
+"Description to display on invoice","Description à afficher sur la facture",,
 "Desired delivery date",,,
 "Details Lines","Lignes de détails",,
 "Discount","Remise",,

@@ -150,6 +150,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+
     Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 
     return purchaseOrder;
