@@ -52,7 +52,7 @@
 		
 		<panel sidebar="true">
 			<field name="transmissionDate"/>
-			<field name="accountingDate"/>
+			<field name="accountingDate" readonlyIf="statusSelect >= 3"/>
 			<field name="comments"/>
 			<field name="cancelReason" showIf="statusSelect == 5"/>
 		</panel>

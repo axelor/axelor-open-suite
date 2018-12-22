@@ -85,7 +85,7 @@ public class PartnerBaseRepository extends PartnerRepository {
       partnerService.setCompanyStr(partner);
       return super.save(partner);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 
