@@ -275,6 +275,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     setReservationDateTime(stockMove, saleOrder);
+    stockMove.setNote(saleOrder.getDeliveryComments());
 
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);

@@ -130,6 +130,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
+    invoice.setNote(saleOrder.getInvoiceComments());
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

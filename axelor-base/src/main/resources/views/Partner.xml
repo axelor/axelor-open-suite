@@ -292,6 +292,7 @@
 			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
+				<field name="invoiceComments" widget="html" colSpan="12"/>
 			</panel>
 			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
@@ -314,6 +315,7 @@
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
+				<field name="saleOrderComments" widget="html" colSpan="12"/>
 			</panel>
 			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
@@ -323,6 +325,7 @@
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer name="supplierSpacer"/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
+				<field name="purchaseOrderComments" widget="html" colSpan="12"/>
 			</panel>
 			<panel name="carrierPanel" title="Carrier" showIf="isCarrier">
 				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
@@ -338,6 +341,7 @@
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
+                <field name="deliveryComments" widget="html" colSpan="12"/>
             </panel>
         </panel-tabs>
         <panel name="partnerAttrsPanel">
