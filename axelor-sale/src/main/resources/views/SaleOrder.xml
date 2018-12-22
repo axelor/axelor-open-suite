@@ -381,8 +381,9 @@
 	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	  </panel>
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
 	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid"/>
-	    <field name="externalReference" hideIf="company == null"/>
+	    <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
 	  </panel>
 	  <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	  	<field name="accountedRevenue">
@@ -484,7 +485,8 @@
           </panel>
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
-      	  <field name="externalReference"/>
+      	  <field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
+      	  <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
       </panel>
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="contentPanel" title="Content">
@@ -830,6 +832,7 @@
     	<action name="action-sale-order-attrs-in-ati"/>
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
+        <action name="action-sale-order-attrs-external-reference"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -838,6 +841,7 @@
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
+		<action name="action-sale-order-attrs-external-reference"/>
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -1220,6 +1224,11 @@
 
 	<action-attrs name="action-sale-order-record-project-default-fields" if-module="axelor-business-project">
 		<attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-external-reference">
+		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
+                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
 
 </object-views>
