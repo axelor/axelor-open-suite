@@ -44,6 +44,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - NOTIFICATON : Fix some issues and allow to select invoice from different subrogation release.
 - DEMO DATA: Fix duplicate alpha2code country code. 
 - Partner: Fix error handling on partner repository save.  
+- MRP : Fixed filter issue on saleOrderSet
 
 ## [5.1.0] - 2018-12-13
 ## Features
