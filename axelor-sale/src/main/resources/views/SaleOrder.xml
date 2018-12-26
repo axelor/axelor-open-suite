@@ -295,8 +295,12 @@
 	      <field name="isNeedingConformityCertificate"/>
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
+	      <field name="deliveryComments" widget="html" colSpan="12"/>
 	    </panel>
-	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
+	    <panel name="invoicingPanel" title="Invoicing">
+	    	<panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order" colSpan="12"/>
+	    	<field name="invoiceComments" widget="html" colSpan="12"/>
+	    </panel>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
 		  	<field name="productionNote" widget="Html" colSpan="12"/>
 	    </panel>
@@ -1013,6 +1017,9 @@
 			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
 		<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
 		<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
+		<field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
+		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

@@ -8,6 +8,7 @@
         <field name="user"/>
         <field name="task"/>
         <field name="plannedHours" />
+        <field name="timeToCharge"/>
         <field name="realHours"/>
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
@@ -29,6 +30,7 @@
 			<field name="plannedHours" />
 			<field name="realHours"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
+			<field name="timeToCharge"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
 		</panel>
@@ -108,6 +110,12 @@
 		<attribute name="value" for="task" expr="eval:_task"/>
 		<attribute name="value" for="project" expr="eval:_project"/>
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
+		
+		<attribute name="value" for="date" expr="#{__date__}"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
+		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="value" for="task" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">

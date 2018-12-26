@@ -116,6 +116,8 @@
 "Delivery information",,,
 "Description",,,
 "Description to display",,,
+"Description to display on delivery",,,
+"Description to display on invoice",,,
 "Desired delivery date",,,
 "Details Lines",,,
 "Discount",,,

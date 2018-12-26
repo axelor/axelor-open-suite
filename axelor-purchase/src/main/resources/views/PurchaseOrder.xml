@@ -475,6 +475,7 @@
  		<field name="contactPartner" expr="eval:null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
+    	<field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
  	</action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
