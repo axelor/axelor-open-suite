@@ -6,7 +6,8 @@
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
 - Add new object 'Version' in project module.
 - TeamTask : New fields 'timeToCharge' and 'budgetedTime' added. Also filled default values for new items created from 'projectPlanningTimeList'.
-- SaleOrder/Partner : Adding new field to commit invoices, sale orders , purchase orders and deliveries.
+- SaleOrder/Partner : Adding new fields for comments on invoices, sale orders , purchase orders and deliveries.
+- Project : Add new object 'Annoucement'.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
