@@ -530,6 +530,8 @@
 		<attribute name="value" for="isProject" expr="eval:_fromProject"/>
 		<attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
 		<attribute name="value" for="parentProject" expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null" />
+		<attribute name="value" for="isInvoicingPurchases" expr="eval: true"/>
+		<attribute name="value" for="isInvoicingExpenses" expr="eval: true"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-project-add-member" model="com.axelor.apps.project.db.Project">

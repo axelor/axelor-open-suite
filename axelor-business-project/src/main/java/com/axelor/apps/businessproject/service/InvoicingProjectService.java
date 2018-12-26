@@ -307,7 +307,7 @@ public class InvoicingProjectService {
 
     StringBuilder polQueryBuilder = new StringBuilder(commonQuery);
     polQueryBuilder.append(
-        " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
+        " AND (self.project.isInvoicingPurchases = true) AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
 
     Map<String, Object> polQueryMap = new HashMap<>();
     polQueryMap.put("project", project);
@@ -321,7 +321,7 @@ public class InvoicingProjectService {
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
     expenseLineQueryBuilder.append(
-        " AND (self.expense.statusSelect = :statusValidated OR self.expense.statusSelect = :statusReimbursed)");
+        " AND (self.project.isInvoicingExpenses = true) AND (self.expense.statusSelect = :statusValidated OR self.expense.statusSelect = :statusReimbursed)");
 
     Map<String, Object> expenseLineQueryMap = new HashMap<>();
     expenseLineQueryMap.put("project", project);
