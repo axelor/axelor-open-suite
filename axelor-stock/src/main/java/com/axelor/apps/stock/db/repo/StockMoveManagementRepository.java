@@ -42,6 +42,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     copy.setName(null);
     copy.setRealDate(null);
     copy.setAvailabilityRequest(false);
+    copy.setFullySpreadOverLogisticalFormsFlag(false);
 
     return copy;
   }

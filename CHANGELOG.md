@@ -29,6 +29,7 @@ Add sale order and client partner fields on production order.
 instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
 - Purchase order line: add panel to dashlet.
 - When generating interco invoice or order, get the right printing settings.
+- SALE ORDER & PURCHASE ORDER : Create an alert when order already created.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
@@ -44,6 +45,11 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - NOTIFICATON : Fix some issues and allow to select invoice from different subrogation release.
 - DEMO DATA: Fix duplicate alpha2code country code. 
 - Partner: Fix error handling on partner repository save.  
+- Fix panel name in manuf order.
+- Set reserved qty to 0 when we copy a stock move or a sale order.
+- StockMove copy: set logistical form flag to false.
+- Sale Order : Make AnalyticDistributionTemplate editable.
+- Account Move : Reload the view after reconciliation.
 - MRP : Fixed filter issue on saleOrderSet
 
 ## [5.1.0] - 2018-12-13

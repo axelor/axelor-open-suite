@@ -126,6 +126,7 @@ public class MoveLineController {
 
       if (!moveLineList.isEmpty()) {
         Beans.get(MoveLineService.class).reconcileMoveLines(moveLineList);
+        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

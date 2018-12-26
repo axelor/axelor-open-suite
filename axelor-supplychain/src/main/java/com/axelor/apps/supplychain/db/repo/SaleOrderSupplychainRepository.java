@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
@@ -49,6 +50,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
       saleOrderLine.setInvoiced(null);
       saleOrderLine.setInvoicingDate(null);
       saleOrderLine.setIsInvoiceControlled(null);
+      saleOrderLine.setReservedQty(BigDecimal.ZERO);
     }
 
     return copy;

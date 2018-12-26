@@ -118,8 +118,7 @@
 
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
           onNew="action-account-invoice-onnew-group"
-          onLoad="action-account-invoice-onload-group"
-          onSave="action-account-invoice-condition-supplier-invoice-number" >
+          onLoad="action-account-invoice-onload-group" >
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -201,8 +200,9 @@
             <field name="saleOrder"  canEdit="false" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
             <field name="purchaseOrder" domain="self.supplierPartner = :partner AND self.company = :company" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="partnerTaxNbr" readonlyIf="statusSelect != 1" hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-condition-supplier-invoice-number"/>
-			<field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
+		    <label name="duplicateInvoiceNbr" hidden="true" colSpan="12" css="label label-important" title="Watch out, an invoice was already created for this supplier invoice number."/>	
+            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
@@ -658,6 +658,7 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-attrs-change-create-refund-title"/>
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+        <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -703,7 +704,7 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-method-compute"/>
 		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
 	</action-group>
-	
+  
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
     	<attribute name="hidden" for="invoiceLineList.price" expr="inAti"/>
@@ -857,6 +858,12 @@ InvoiceSet.length > 0))"
 	<action-attrs name="action-invoice-attrs-change-create-refund-title">
 		<attribute name="title" for="createRefundBtn" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
 	</action-attrs>
+  
+    <action-attrs name="action-account-invoice-atts-suppier-invoice-nbr">
+      <attribute name="hidden" for="duplicateInvoiceNbr" 
+      expr="eval: !((supplierInvoiceNb != null &amp;&amp; id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.id != ?', supplierInvoiceNb , id).count() > 0)
+                 || (supplierInvoiceNb != null &amp;&amp; id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ?', supplierInvoiceNb).count() > 0))"/>
+    </action-attrs>
 
 	<!-- DOMAIN -->
 
@@ -877,14 +884,6 @@ InvoiceSet.length > 0))"
 	<action-validate name="action-validate-send-email-remove-access-for-client">
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
-
-    <!-- ACTION CONDITION -->
-    
-    <action-condition name="action-account-invoice-condition-supplier-invoice-number">
-      <check field="supplierInvoiceNb" error="Watch out, an invoice was already created for this supplier invoice number" 
-      if="eval: (supplierInvoiceNb != null &amp;&amp; id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.id != ?', supplierInvoiceNb , id).fetchOne() != null)
-                 || (supplierInvoiceNb != null &amp;&amp; id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ?', supplierInvoiceNb).fetchOne() != null)"/>
-    </action-condition>
     
 	<!-- ACTION METHOD -->
 
