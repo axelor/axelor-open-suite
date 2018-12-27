@@ -12,6 +12,7 @@
 - TeamTask : Added new fields "Private","internalDesription" and "orderAccepted".
 - Axelor-Business-Support : Addition of new module 'axelor-business-support'.
 - TeamTask : Addition of new field 'assignment' in bussiness-support module.
+- Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

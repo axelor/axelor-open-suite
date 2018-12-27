@@ -8,7 +8,7 @@
 	<entity name="Project" cachable="true">
         
   		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
-		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
+		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type" />
 		<string name="invoicingComment" title="Invoicing comment" large="true" />
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
@@ -46,13 +46,13 @@
 
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
+		<boolean name="timeInvoicing" title="Invoicing Time"/>
 
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT
-			public static final int INVOICING_TYPE_NONE = 1;
-			public static final int INVOICING_TYPE_TIME_BASED = 2;
-			public static final int INVOICING_TYPE_FLAT_RATE = 3;
+			public static final int INVOICING_TYPE_TIME_BASED = 1;
+			public static final int INVOICING_TYPE_PACKAGE = 2;
 		
    			public static final int TASK_PER_LINE_ALONE = 1;
    			public static final int TASK_PER_LINE_PHASE = 2;
