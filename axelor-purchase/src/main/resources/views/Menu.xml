@@ -92,13 +92,6 @@
 		<context name="_status" expr="eval: 3"/>
 	</action-view>
 	
-	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
-	
-	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
-	</action-view>
 	
 	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase"/>
 	
