@@ -10,6 +10,7 @@
 - Project : Add new object 'Annoucement'.
 - Project : Onchange on Project.isInvoicingExpenses and Project.isInvoicingPurchases
 - TeamTask : Added new fields "Private","internalDesription" and "orderAccepted".
+- Axelor-Business-Support : Addition of new module 'axelor-business-support'.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
