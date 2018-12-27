@@ -42,9 +42,11 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl {
         super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 
     if (project != null
-        && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED
+        && ((project.getTimeInvoicing()
+                && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED)
             || (project.getParentProject() != null
-                && project.getParentProject().getProjInvTypeSelect()
+                && project.getParentProject().getTimeInvoicing()
+                && project.getParentProject().getInvoicingType()
                     == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
       timesheetLine.setToInvoice(true);
 

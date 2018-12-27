@@ -193,14 +193,14 @@
     <action-record name="action-timesheet-line-record-to-invoice"
         model="com.axelor.apps.hr.db.TimesheetLine">
         <field name="toInvoice"
-            expr="eval: project?.projInvTypeSelect == 2 || project?.parentProject?.projInvTypeSelect == 2"
+            expr="eval: (project?.timeInvoicing &amp;&amp; project?.invoicingType == 1) || (project?.parentProject?.timeInvoicing &amp;&amp; project?.parentProject?.invoicingType == 1)"
             if="__config__.app.isApp('business-project')"/>
     </action-record>
 	
     <action-record name="action-timesheet-line-record-to-invoice-parent"
         model="com.axelor.apps.hr.db.TimesheetLine">
         <field name="toInvoice"
-            expr="eval: _parent?.project?.projInvTypeSelect == 2 || _parent?.parentProject?.parentProject?.projInvTypeSelect == 2"
+            expr="eval: (_parent?.project?.timeInvoicing &amp;&amp; _parent?.project?.invoicingType == 1) || (_parent?.parentProject?.parentProject?.timeInvoicing &amp;&amp; _parent?.parentProject?.parentProject?.invoicingType == 1)"
             if="__config__.app.isApp('business-project')"/>
     </action-record>
 	
