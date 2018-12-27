@@ -7,6 +7,9 @@
 
 	<entity name="TeamTask">
 		<integer name="assignment" title="Assignment" selection="support.assignment.select"/>
+		<boolean name="isPrivate" title="Private" />
+		<boolean name="isOrderAccepted" title="Order Accepted"/>
+		<string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
 	</entity>
 
 </domain-models>
