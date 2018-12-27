@@ -87,27 +87,6 @@
         <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="26" if="__config__.app.isApp('supplychain')"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"/>
-		
-	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
-		title="Availability requests" action="stock.root.availabilityreq" 
-		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
-
-	<action-view name="stock.root.availabilityreq" title="Availability requests"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-availability-req-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-	</action-view>
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30"/>
 	
