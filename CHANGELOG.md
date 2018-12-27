@@ -8,6 +8,7 @@
 - TeamTask : New fields 'timeToCharge' and 'budgetedTime' added. Also filled default values for new items created from 'projectPlanningTimeList'.
 - SaleOrder/Partner : Adding new fields for comments on invoices, sale orders , purchase orders and deliveries.
 - Project : Add new object 'Annoucement'.
+- Axelor-Business-Support : Addition of new module 'axelor-business-support'.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
