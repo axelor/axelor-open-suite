@@ -9,6 +9,7 @@
 - SaleOrder/Partner : Adding new fields for comments on invoices, sale orders , purchase orders and deliveries.
 - Project : Add new object 'Annoucement'.
 - Project : Onchange on Project.isInvoicingExpenses and Project.isInvoicingPurchases
+- TeamTask : Added new fields "Private","internalDesription" and "orderAccepted".
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
