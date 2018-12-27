@@ -63,6 +63,7 @@
 				<field name="progressSelect" colSpan="4" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="version-form" grid-view="version-grid"/>
 			</panel>
+			<field name="assignment" if-module="axelor-business-support"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contentPanel" title="Content" colSpan="12">
