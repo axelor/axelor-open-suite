@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <menuitem name="project-announcement" title="Announcement" order="37" parent="menu-project-root" action="project.announcement"  />
+  
+  <action-view name="project.announcement" title="Announcement" model="com.axelor.apps.project.db.Announcement">
+    <view type="grid" name="announcement-grid" />
+	<view type="form" name="announcement-form" />
+  </action-view>
+  
+</object-views>
+ 
