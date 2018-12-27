@@ -290,6 +290,7 @@
     
     <action-record name="action-purchase-order-line-record-project" model="com.axelor.apps.purchase.db.PurchaseOrderLine" if-module="axelor-business-project">
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+		<field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases" if="__config__.app.isApp('business-project')"/>
 	</action-record>
     
    	<!-- ACTION METHOD -->
