@@ -20,8 +20,13 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.project.service.TimerTeamTaskService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,6 +36,7 @@ import java.time.Duration;
 public class TeamTaskController {
 
   private static final String HIDDEN_ATTR = "hidden";
+  private static final String TITLE_ATTR = "title";
 
   public void manageTimerButtons(ActionRequest request, ActionResponse response) {
     try {
@@ -93,6 +99,27 @@ public class TeamTaskController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTicketAssignment(ActionRequest request, ActionResponse response) {
+    TeamTask task = request.getContext().asType(TeamTask.class);
+    Project project = task.getProject();
+
+    if (project != null && Beans.get(TeamTaskService.class).checkTicketAssignment(task, project)) {
+      String msg =
+          String.format(
+              I18n.get(IExceptionMessage.PROJECT_TICKET_ASSIGNMENT),
+              project.getCompany().getName());
+
+      String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_IMPORTANT, 75);
+
+      response.setAttr("ticketAssignmentLabel", TITLE_ATTR, title);
+      response.setAttr("ticketAssignmentLabel", HIDDEN_ATTR, false);
+      response.setAttr("returnTicketButton", HIDDEN_ATTR, false);
+    } else {
+      response.setAttr("ticketAssignmentLabel", HIDDEN_ATTR, true);
+      response.setAttr("returnTicketButton", HIDDEN_ATTR, true);
     }
   }
 }

@@ -23,4 +23,6 @@ import com.axelor.team.db.TeamTask;
 
 public interface TeamTaskService {
   TeamTask create(String subject, Project project, User assignedTo);
+
+  boolean checkTicketAssignment(TeamTask task, Project project);
 }

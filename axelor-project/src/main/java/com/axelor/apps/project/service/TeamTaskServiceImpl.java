@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import java.time.LocalDate;
 
@@ -34,5 +36,18 @@ public class TeamTaskServiceImpl implements TeamTaskService {
     task.setPriority("normal");
     project.addTeamTaskListItem(task);
     return task;
+  }
+
+  @Override
+  public boolean checkTicketAssignment(TeamTask task, Project project) {
+    User taskAssignedTo = task.getAssignedTo();
+    User projectAssignedTo = project.getAssignedTo();
+    Boolean isUserClient = Beans.get(UserService.class).getUser().getGroup().getIsClient();
+
+    if (taskAssignedTo != null && !taskAssignedTo.equals(projectAssignedTo) && isUserClient) {
+      return taskAssignedTo.getGroup().getIsClient();
+    }
+
+    return false;
   }
 }

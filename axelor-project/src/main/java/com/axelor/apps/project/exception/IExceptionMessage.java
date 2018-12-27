@@ -35,4 +35,5 @@ public interface IExceptionMessage {
   static final String PROJECT_NO_ACTIVE_TEAM = /*$$(*/
       "You have no active team, the planning can't be generated" /*)*/;
   static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;
+  static final String PROJECT_TICKET_ASSIGNMENT = /*$$(*/ "Ticket not assigned to %s" /*)*/;
 }

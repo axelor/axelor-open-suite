@@ -18,7 +18,7 @@
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"
 		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
-		onLoad="action-team-task-group-timer-process" width="large">
+		onLoad="action-team-task-group-timer-process,action-task-method-check-ticket-assignment" width="large">
 		<toolbar>
 			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
 			<button name="startBtn" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
@@ -31,7 +31,8 @@
 	        </menu>
 	    </menubar>
 		<panel name="mainPanel" colSpan="12">
-			<field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<label name="ticketAssignmentLabel" hidden="true" colSpan="4"/>
 			<panel name="projectDetailsPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12">
 					<viewer depends="name">
@@ -48,9 +49,9 @@
 				<field name="project" colSpan="4" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 				<field name="parentTask" readonlyIf="project == null" colSpan="4" onSelect="action-task-attrs-project-parent-task-configurations"/>
 				<button name="acceptOrderBtn" title="Accept Order" hideIf="projInvTypeSelect == 1 || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="4"/>
-				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
+				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onChange="action-task-method-check-ticket-assignment" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 				<field name="team" readonly="true" colSpan="4" form-view="team-form" grid-view="grid-form"/>
-				<spacer name="teamSpacer" colSpan="4"/>
+				<button name="returnTicketButton" title="Return Ticket" onClick="action-task-attrs-set-assigned-to-return-ticket,action-task-method-check-ticket-assignment,save" hidden="true" colSpan="4"/>
 				<field name="isOrderAccepted" readonly="true" showIf="projInvTypeSelect != 1" colSpan="4"/>
 				<field name="isPrivate"  colSpan="4"/>
 			</panel>
@@ -345,6 +346,10 @@
 	<action-attrs name="action-team-task-attrs-hide-fields-for-clients">
 		<attribute name="hidden" for="isPrivate,internalDescriptionPanel" expr="eval:true" if="__user__.group.isClient"/>
 	</action-attrs>
+
+	<action-attrs name="action-task-attrs-set-assigned-to-return-ticket">
+		<attribute name="value" for="assignedTo" expr="eval: project.assignedTo"/>
+	</action-attrs>
 	
 	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="form" name="resource-booking-form" />
@@ -405,4 +410,8 @@
 		<call class="com.axelor.apps.project.web.TeamTaskController" method="cancelTimer"/>
 	</action-method>
 	
+	<action-method name="action-task-method-check-ticket-assignment">
+		<call class="com.axelor.apps.project.web.TeamTaskController" method="checkTicketAssignment"/>
+	</action-method>
+
 </object-views>
