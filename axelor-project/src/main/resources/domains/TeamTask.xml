@@ -25,9 +25,6 @@
 		<decimal name="unitPrice" title="Unit price" />
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
 		<many-to-one name="targetVersion" title="Target version" ref="com.axelor.apps.project.db.Version"/>
-		<boolean name="isPrivate" title="Private" />
-		<boolean name="isOrderAccepted" title="Order Accepted"/>
-		<string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
 		
 		<!-- Gantt view fields -->
 		
