@@ -20,7 +20,7 @@
 		<field name="taskDate"/>
 		<field name="status"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<field name="projInvTypeSelect"/>
+		<field name="invoicingType"/>
 		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
 	</grid>
 
@@ -47,5 +47,14 @@
 		<view-param name="popup" value="true"/>
 		<domain>self.targetVersion.id = :id</domain>
 	</action-view>
+	
+	<action-record name="action-team-task-record-set-invoicing-type" model="com.axelor.team.db.TeamTask">
+		<field name="invoicingType" expr="eval: null"/>
+	</action-record>
+	
+	<action-record name="action-team-task-record-update-invoicing-type-and-time-invoicing" model="com.axelor.team.db.TeamTask">
+		<field name="timeInvoicing" expr="eval: project.timeInvoicing"/>
+		<field name="invoicingType" expr="eval: project.invoicingType"/>
+	</action-record>
 
 </object-views>

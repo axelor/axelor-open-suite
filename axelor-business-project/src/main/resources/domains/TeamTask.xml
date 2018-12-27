@@ -13,7 +13,8 @@
   		<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
 		<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
 		<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
-		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type"/>
+		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type"/>
+		<boolean name="timeInvoicing" title="Invoicing Time"/>
 		
 	</entity>
 
