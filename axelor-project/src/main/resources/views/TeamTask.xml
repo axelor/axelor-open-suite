@@ -45,10 +45,14 @@
 						<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
 					</editor>
 				</field>
-				<field name="project" colSpan="6" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
-				<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
-				<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-				<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
+				<field name="project" colSpan="4" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
+				<field name="parentTask" readonlyIf="project == null" colSpan="4" onSelect="action-task-attrs-project-parent-task-configurations"/>
+				<button name="acceptOrderBtn" title="Accept Order" hideIf="projInvTypeSelect == 1 || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="4"/>
+				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
+				<field name="team" readonly="true" colSpan="4" form-view="team-form" grid-view="grid-form"/>
+				<spacer name="teamSpacer" colSpan="4"/>
+				<field name="isOrderAccepted" readonly="true" showIf="projInvTypeSelect != 1" colSpan="4"/>
+				<field name="isPrivate"  colSpan="4"/>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
@@ -64,6 +68,11 @@
 			<panel name="contentPanel" title="Content" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
+			
+			<panel name="internalDescriptionPanel" title="Internal Description" >
+				<field name="internalDescription" colSpan="12" widget="html"/>
+			</panel>
+			
 			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
 				<field name="totalPlannedHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
@@ -236,6 +245,7 @@
 		<action name="action-task-defaults"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-task-record-project-configurations" if="project != null"/>
+		<action name="action-team-task-attrs-hide-fields-for-clients"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-onchange">
@@ -327,6 +337,15 @@
 		<attribute name="value" for="taskEndDate" expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)" if="taskDate != null"/>
 	</action-attrs>
 	
+	<action-attrs name="action-task-attrs-set-isOrderAccepted-onclick">
+		<attribute name="value" for="isOrderAccepted" expr="eval:true"/>
+		<attribute name="hidden" for="acceptOrderBtn" expr="eval:true"/>
+	</action-attrs>
+	
+	<action-attrs name="action-team-task-attrs-hide-fields-for-clients">
+		<attribute name="hidden" for="isPrivate,internalDescriptionPanel" expr="eval:true" if="__user__.group.isClient"/>
+	</action-attrs>
+	
 	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="form" name="resource-booking-form" />
 		<view type="grid" name="resource-booking-grid" />
@@ -371,6 +390,7 @@
 		<action name="action-team-task-method-manage-timer-buttons"/>
 		<action name="action-team-task-method-compute-total-timer-duration"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
+		<action name="action-team-task-attrs-hide-fields-for-clients"/>
 	</action-group>
 
 	<action-method name="action-team-task-method-start-timer">
