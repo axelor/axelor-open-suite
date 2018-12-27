@@ -78,9 +78,9 @@
 				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
-				<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
+				<item title="Lines Generation Wizard" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
 				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
-				<item title="Generate Lines From Realise Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
+				<item title="Generate Lines From Realise Planning Project / Task" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
 			</menu>
 		</menubar>
 		<panel name="mainPanel">

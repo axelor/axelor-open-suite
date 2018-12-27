@@ -12,6 +12,7 @@
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
+- HR Module : Timesheet - Rename Action Title in "timesheet-form".
 
 ## [Unreleased 5.1.1]
 ## Improvements
