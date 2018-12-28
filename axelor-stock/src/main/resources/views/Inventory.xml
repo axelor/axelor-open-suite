@@ -93,13 +93,11 @@
     	<action name="save"/>
     	<action name="action-set-inventory-seq"/>
     	<action name="action-inventory-method-import-file"/>
-    	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-stock-inventory-fillinventoryBtn-click">
     	<action name="save"/>
     	<action name="action-inventory-method-fill-inventory"/>
-    	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-stock-inventory-plan-click">
@@ -125,13 +123,11 @@
     <action-group name="action-group-stock-inventory-validate-click">
     	<action name="save"/>
     	<action name="action-inventory-method-realize-stock-move"/>
-    	<action name="save"/>
     </action-group>
 
     <action-group name="action-group-stock-inventory-cancel-click">
     	<action name="save"/>
     	<action name="action-inventory-method-cancel"/>
-    	<action name="save"/>
     </action-group>
 
     <action-group name="action-group-stock-inventory-draft-click">
