@@ -986,6 +986,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      timesheetLine.setTeamTask(projectPlanningTime.getTimeSpentTask());
       timesheet.addTimesheetLineListItem(timesheetLine);
     }
   }
