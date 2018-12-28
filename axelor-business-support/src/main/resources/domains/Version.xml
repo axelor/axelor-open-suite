@@ -3,12 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="version" package="com.axelor.apps.project.db"/>
+  <module name="business-support" package="com.axelor.apps.businesssupport.db"/>
 
   <entity name="Version">
 		<string name="title" title="Title" namecolumn="true"/>
-		<many-to-one name="project" title="Project" ref="Project"/>
-		<integer name="statusSelect" title="Status" selection="project.version.status.select"/>
+		<many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
+		<integer name="statusSelect" title="Status" selection="support.version.status.select"/>
 		<date name="testingServerDate" title="Testing server date"/>
 		<date name="productionServerDate" title="Production server date"/>
 		<string name="content" title="Content" large="true"/>

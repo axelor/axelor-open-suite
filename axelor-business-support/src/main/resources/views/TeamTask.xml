@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid model="com.axelor.team.db.TeamTask" title="Tasks" name="business-support-version-team-task-grid" orderBy="-taskDate">
+		<field name="name"/>
+		<field name="taskDate"/>
+		<field name="status"/>
+		<field name="progressSelect" widget="SelectProgress"/>
+		<field name="projInvTypeSelect"/>
+		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
+	</grid>
+	
+	<action-view name="action-dashlet-version-view-show-task" title="Ticket associated" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="business-support-version-team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.targetVersion.id = :id</domain>
+	</action-view>
+
+</object-views>

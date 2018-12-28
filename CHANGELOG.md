@@ -4,7 +4,7 @@
 ## Features
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
-- Add new object 'Version' in project module.
+- Add new object 'Version' in business support module.
 - TeamTask : New fields 'timeToCharge' and 'budgetedTime' added. Also filled default values for new items created from 'projectPlanningTimeList'.
 - SaleOrder/Partner : Adding new fields for comments on invoices, sale orders , purchase orders and deliveries.
 - Project : Add new object 'Annoucement'.
