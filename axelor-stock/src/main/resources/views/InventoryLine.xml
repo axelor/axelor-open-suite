@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
-        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute" grid-view="product-grid" form-view="product-form"/>
+        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute" domain="self.stockManaged = true" grid-view="product-grid" form-view="product-form"/>
         <field name="currentQty" readonly="true" aggregate="sum" width="120"/>
         <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum" width="120"/>
         <field name="description"/>
@@ -17,7 +17,7 @@
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine">
     	<panel name="mainPanel">
 	        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
-	        	domain="self.expense = false and self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid"/>
+	        	domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty" onChange="action-inventory-line-method-compute"/>
 	        <field name="description"/>
