@@ -481,8 +481,9 @@ public class InventoryService {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null",
-                      stockLocationLine.getProduct())
+                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
+                      stockLocationLine.getProduct(),
+                      inventory.getStockLocation())
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
