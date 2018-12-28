@@ -598,7 +598,7 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-      timesheetServiceProvider.get().generateLinesFromProjectPlanning(timesheet, true);
+      timesheetServiceProvider.get().generateLinesFromRealisedProjectPlanning(timesheet);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -609,7 +609,7 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
-      timesheetServiceProvider.get().generateLinesFromProjectPlanning(timesheet, false);
+      timesheetServiceProvider.get().generateLinesFromExpectedProjectPlanning(timesheet);
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

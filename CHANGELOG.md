@@ -14,6 +14,7 @@
 - TeamTask : Addition of new field 'assignment' in bussiness-support module.
 - TeamTask : Added 'Private','internalDesription' and 'orderAccepted' in bussiness-support module.
 - Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
+- TeamTask : Add new o2m 'projectPlanningTimeSpentList' field.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

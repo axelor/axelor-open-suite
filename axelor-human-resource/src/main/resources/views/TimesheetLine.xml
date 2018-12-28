@@ -21,7 +21,6 @@
 		<field name="teamTask" width="200" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="timeToCharge" width="150"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="100" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
@@ -65,7 +64,6 @@
 		<field name="teamTask" width="200" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="timeToCharge" width="150"/>
 		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -99,7 +97,6 @@
 			<field name="teamTask" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task"/>
 			<field name="date" />
 			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-			<field name="timeToCharge"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />

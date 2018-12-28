@@ -8,7 +8,28 @@
         <field name="user"/>
         <field name="task"/>
         <field name="plannedHours" />
-        <field name="timeToCharge"/>
+        <field name="realHours"/>
+        <field name="isIncludeInTurnoverForecast"/>
+        <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
+    </grid>
+    
+    <grid name="project-planning-planned-time-grid" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="project"/>
+        <field name="task"/>
+		<field name="date"/>
+        <field name="user"/>
+        <field name="plannedHours" />
+        <field name="realHours" hidden="true"/>
+        <field name="isIncludeInTurnoverForecast"/>
+        <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
+    </grid>
+    
+    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Time spent" name="project-planning-time-spent-grid">
+    	<field name="project"/>
+        <field name="timeSpentTask"/>
+		<field name="date"/>
+        <field name="user"/>
+        <field name="plannedHours" hidden="true"/>
         <field name="realHours"/>
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
@@ -30,7 +51,34 @@
 			<field name="plannedHours" />
 			<field name="realHours"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
-			<field name="timeToCharge"/>
+			<field name="isIncludeInTurnoverForecast"/>
+            <field name="description" colSpan="12" widget="html"/>
+		</panel>
+	</form>
+	
+	<form name="project-planning-planned-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default">
+		<panel name="mainPanel">
+			<field name="plannedHours"/>
+			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>		
+			<field name="project" readonly="true"/>
+			<field name="task" domain="self.project = :project" canEdit="false" />
+			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
+			<field name="date" />
+			<field name="realHours" hidden="true"/>
+			<field name="isIncludeInTurnoverForecast"/>
+            <field name="description" colSpan="12" widget="html"/>
+		</panel>
+	</form>
+	
+	<form name="project-planning-time-spent-form" title="Time spent" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-spent-attrs-default">
+		<panel name="mainPanel">
+			<field name="realHours"/>
+			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>		
+			<field name="project" readonly="true"/>
+			<field name="timeSpentTask" domain="self.project = :project" canEdit="false" />
+			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
+			<field name="date" />
+			<field name="plannedHours" hidden="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
 		</panel>
@@ -68,6 +116,16 @@
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
 	</action-view>
 	
+	<action-view name="action-project-view-add-multiple-project-planning-spent-time" title="Project planning time spent" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="project-planning-time-wizard-form"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
+		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
+		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
+		<context name="_timeSpent" expr="eval:true"/>
+	</action-view>
 	
 	<action-view name="action-project-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
@@ -92,6 +150,9 @@
 	
 	<action-attrs name="action-planning-time-attr-update-planned-hours">
 		<attribute name="value" for="totalPlannedHrs" expr="eval: projectPlanningTimeList.collect{it->it.plannedHours}.sum()" />
+	</action-attrs>
+	
+	<action-attrs name="action-planning-time-attr-update-real-hours">
 		<attribute name="value" for="totalRealHrs" expr="eval: projectPlanningTimeList.collect{it->it.realHours}.sum()" />
 	</action-attrs>
 	
@@ -99,7 +160,7 @@
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;" 
 	   for="userSet,user" if="project != null"/>
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" 
-	   for="userSet"  if="project == null"/>
+	   for="userSet" if="project == null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-user-change">
@@ -110,12 +171,25 @@
 		<attribute name="value" for="task" expr="eval:_task"/>
 		<attribute name="value" for="project" expr="eval:_project"/>
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet"/>
 		
 		<attribute name="value" for="date" expr="#{__date__}"/>
-		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
 		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
 		<attribute name="value" for="task" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
 		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+	</action-attrs>
+	
+	<action-attrs name="action-project-planning-time-spent-attrs-default">
+		<attribute name="value" for="task" expr="eval:_task"/>
+		<attribute name="value" for="project" expr="eval:_project"/>
+		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
+		
+		<attribute name="value" for="date" expr="#{__date__}"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
+		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="value" for="timeSpentTask" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="readonly" for="timeSpentTask" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">
