@@ -32,6 +32,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - SALE ORDER & PURCHASE ORDER : Create an alert when order already created.
 - MENUS : Moved three menus 'Mass Cust. Stock Move Invoicing','Mass Suppl. Stock Move Invoicing' and 'Availabilty Requests' in supplychain module
 - INVENTORY LINE : domain on product field where stockManaged is true
+- STOCKLOCATIONLINE : add a button to update the average price.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
