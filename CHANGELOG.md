@@ -441,6 +441,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
 - MANUF. ORDER PRINTING : Hide barcode column when it is empty.
 - Purchase Order: remove save on loading purchase order form.
+- Stock Chart : Wrong action name fixed.
 
 ## [5.0.7] - 2018-12-13
 ## Features
