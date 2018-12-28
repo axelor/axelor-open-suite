@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
   
-  <grid name="announcement-grid" title="Announcement" model="com.axelor.apps.project.db.Announcement">
+  <grid name="announcement-grid" title="Announcement" model="com.axelor.apps.businesssupport.db.Announcement">
     <field name="title"/>
     <field name="project"/>
     <field name="content"/>
@@ -10,7 +10,7 @@
   </grid>
   
   <form name="announcement-form" title="Announcement"
-    model="com.axelor.apps.project.db.Announcement" width="large"
+    model="com.axelor.apps.businesssupport.db.Announcement" width="large"
     onNew="action-project-record-announcement-onnew">
     <panel name="mainPanel">
       <field name="title" colSpan="12"/>
@@ -24,7 +24,7 @@
     <attribute name="domain" for="project" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;"/>
   </action-attrs>
   
-  <action-record name="action-project-record-announcement-onnew" model="com.axelor.apps.project.db.Announcement">
+  <action-record name="action-project-record-announcement-onnew" model="com.axelor.apps.businesssupport.db.Announcement">
     <field name="date" expr="eval: __date__"/>
   </action-record>
   

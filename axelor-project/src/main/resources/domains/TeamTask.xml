@@ -24,7 +24,6 @@
 		<decimal name="quantity" title="Quantity"/>
 		<decimal name="unitPrice" title="Unit price" />
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
-		<many-to-one name="targetVersion" title="Target version" ref="com.axelor.apps.project.db.Version"/>
 		
 		<!-- Gantt view fields -->
 		
