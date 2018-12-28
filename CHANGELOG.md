@@ -52,6 +52,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Sale Order : Make AnalyticDistributionTemplate editable.
 - Account Move : Reload the view after reconciliation.
 - MRP : Fixed filter issue on saleOrderSet
+- INVENTORY : Removed useless save actions
 
 ## [5.1.0] - 2018-12-13
 ## Features
