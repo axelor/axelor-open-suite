@@ -487,7 +487,7 @@ public class InventoryService {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND (self.stockLocation = ?2 OR self.detailsStockLocation = ?2)",
+                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
                       stockLocationLine.getProduct(),
                       inventory.getStockLocation())
                   .count();
