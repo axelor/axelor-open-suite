@@ -104,7 +104,7 @@
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
 				<field name="timeInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="toInvoice" colSpan="4" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="toInvoice" hidden="true" colSpan="4" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 					<viewer><![CDATA[
                         <h4>
@@ -114,7 +114,7 @@
                     ]]>
 					</viewer>
 				</field>
-				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing"/>
+				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing" onChange="action-team-task-attrs-to-invoice"/>
 				<spacer name="invoicingTypeSpacer" colSpan="6"/>
 				<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
 				<spacer name="productSpacer" colSpan="6"/>
@@ -411,5 +411,10 @@
 	<action-method name="action-team-task-method-cancel-timer">
 		<call class="com.axelor.apps.project.web.TeamTaskController" method="cancelTimer"/>
 	</action-method>
+	
+	<action-attrs name="action-team-task-attrs-to-invoice">
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 2 &amp;&amp; timeInvoicing"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 2 &amp;&amp; timeInvoicing"/>
+	</action-attrs>
 	
 </object-views>

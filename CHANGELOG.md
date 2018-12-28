@@ -16,6 +16,7 @@
 - Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
 - TeamTask : Add new o2m 'projectPlanningTimeSpentList' field.
 - Timesheet : Assign Task to lines when generating from Realise Planning. 
+- TeamTask : Make 'toInvoice' field hidden and set its value automatically from invoiceType.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
