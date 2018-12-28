@@ -31,6 +31,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - When generating interco invoice or order, get the right printing settings.
 - SALE ORDER & PURCHASE ORDER : Create an alert when order already created.
 - MENUS : Moved three menus 'Mass Cust. Stock Move Invoicing','Mass Suppl. Stock Move Invoicing' and 'Availabilty Requests' in supplychain module
+- INVENTORY LINE : domain on product field where stockManaged is true
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
