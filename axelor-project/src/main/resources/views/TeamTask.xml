@@ -90,8 +90,10 @@
                    	<span>{{record.budgetedTime}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
-				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
-				<button name="addMultipleLinesBtn" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"  hideIf="$popup()"/>
+				<field name="projectPlanningTimeList" grid-view="project-planning-planned-time-grid" form-view="project-planning-planned-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
+				<button name="addMultipleLinesBtn" title="Add multiple lines" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"  hideIf="$popup()"/>
+				<field name="projectPlanningTimeSpentList" grid-view="project-planning-time-spent-grid" form-view="project-planning-time-spent-form" colSpan="12" onChange="action-planning-time-attr-update-real-hours"/>
+				<button name="addMultipleLinesBtn" title="Add multiple lines" onClick="save,action-project-view-add-multiple-project-planning-spent-time" colSpan="3"  hideIf="$popup()"/>
 				<field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
 			</panel>
 			<panel name="treeViewPanel" title="Tree view" colSpan="12">

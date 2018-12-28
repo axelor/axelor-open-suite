@@ -910,24 +910,15 @@ public class TimesheetServiceImpl implements TimesheetService {
 
   @Transactional
   @Override
-  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
-      throws AxelorException {
+  public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     User user = timesheet.getUser();
-    List<ProjectPlanningTime> planningList = getProjectPlanningTimeList(timesheet);
+    List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = new TimesheetLine();
-      if (realHours) {
-        timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, projectPlanningTime.getRealHours(), false));
-      } else {
-        timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, projectPlanningTime.getPlannedHours(), false));
-      }
-
+      timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+      timesheetLine.setDuration(
+          timesheetLineService.computeHoursDuration(
+              timesheet, projectPlanningTime.getPlannedHours(), false));
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
@@ -938,8 +929,9 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
   }
 
-  private List<ProjectPlanningTime> getProjectPlanningTimeList(Timesheet timesheet) {
+  private List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
     List<ProjectPlanningTime> planningList;
+
     if (timesheet.getToDate() == null) {
       planningList =
           projectPlanningTimeRepository
@@ -950,7 +942,8 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3)",
+                      + "AND timesheetLine.timesheet = ?3) "
+                      + "AND self.timeSpentTask is null",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -961,11 +954,73 @@ public class TimesheetServiceImpl implements TimesheetService {
               .all()
               .filter(
                   "self.user.id = ?1 "
-                      + "AND self.date ?2 BETWEEN ?3 "
+                      + "AND self.date BETWEEN ?2 AND ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4)",
+                      + "AND timesheetLine.timesheet = ?4) "
+                      + "AND self.timeSpentTask is null",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet.getToDate(),
+                  timesheet)
+              .fetch();
+    }
+    return planningList;
+  }
+
+  @Transactional
+  @Override
+  public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException {
+    User user = timesheet.getUser();
+    List<ProjectPlanningTime> planningList = getRealisedProjectPlanningTimeList(timesheet);
+    for (ProjectPlanningTime projectPlanningTime : planningList) {
+      TimesheetLine timesheetLine = new TimesheetLine();
+      timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
+      timesheetLine.setDuration(
+          timesheetLineService.computeHoursDuration(
+              timesheet, projectPlanningTime.getRealHours(), false));
+      timesheetLine.setTimesheet(timesheet);
+      timesheetLine.setUser(user);
+      timesheetLine.setProduct(projectPlanningTime.getProduct());
+      timesheetLine.setProject(projectPlanningTime.getProject());
+      timesheetLine.setDate(projectPlanningTime.getDate());
+      timesheetLine.setProjectPlanningTime(projectPlanningTime);
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
+  }
+
+  private List<ProjectPlanningTime> getRealisedProjectPlanningTimeList(Timesheet timesheet) {
+    List<ProjectPlanningTime> planningList;
+
+    if (timesheet.getToDate() == null) {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date >= ?2 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?3) "
+                      + "AND self.timeSpentTask != null",
+                  timesheet.getUser().getId(),
+                  timesheet.getFromDate(),
+                  timesheet)
+              .fetch();
+    } else {
+      planningList =
+          projectPlanningTimeRepository
+              .all()
+              .filter(
+                  "self.user.id = ?1 "
+                      + "AND self.date BETWEEN ?2 AND ?3 "
+                      + "AND self.id NOT IN "
+                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
+                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "AND timesheetLine.timesheet = ?4) "
+                      + "AND self.timeSpentTask != null",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),

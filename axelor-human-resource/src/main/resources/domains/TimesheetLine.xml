@@ -23,7 +23,6 @@
 	  <many-to-one name="projectPlanningTime" ref="com.axelor.apps.project.db.ProjectPlanningTime" />
 	  
 	  <many-to-one name="teamTask" ref="com.axelor.team.db.TeamTask" title="Task" />
-	  <decimal name="timeToCharge" title="Time to charge"/>
 	  
 	  <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
   </entity>

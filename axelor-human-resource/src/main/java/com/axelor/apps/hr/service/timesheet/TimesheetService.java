@@ -151,6 +151,8 @@ public interface TimesheetService {
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
   @Transactional
-  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
-      throws AxelorException;
+  public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
+
+  @Transactional
+  public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException;
 }
