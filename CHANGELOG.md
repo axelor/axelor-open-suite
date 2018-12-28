@@ -54,6 +54,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Account Move : Reload the view after reconciliation.
 - MRP : Fixed filter issue on saleOrderSet
 - INVENTORY : Removed useless save actions
+- INVENTORY LINES : some products don't display
 
 ## [5.1.0] - 2018-12-13
 ## Features
