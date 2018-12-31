@@ -16,6 +16,14 @@
 		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type"/>
 		<boolean name="timeInvoicing" title="Invoicing Time"/>
 		
+        <extra-code>
+          <![CDATA[
+            // INVOICE TYPE SELECT
+            public static final int INVOICE_TYPE_TIME_SPENT = 1;
+            public static final int INVOICE_TYPE_PACKAGE = 2;
+          ]]>
+        </extra-code>
+        
 	</entity>
 
 </domain-models>

@@ -14,6 +14,7 @@
 		<field name="priority"/>
 		<field name="projectCategory"/>
 		<field name="targetVersion" if-module="axelor-business-support"/>
+        <button name="timeSpentBtn" title="Enter Time spent" icon="fa-clock-o" onClick="action-team-task-view-time-spent" />
 	</grid>
 	
 	<form title="Task" id="project-team-task-grid" name="team-task-form"
@@ -32,6 +33,7 @@
 	    </menubar>
 		<panel name="mainPanel" colSpan="12">
 			<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+            <button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="4"/>
 			<label name="orderAcceptedLabel" colSpan="2" hidden="true" showIf="isOrderAccepted" title="Order Accepted" css="label-bold label-success label-center font-white"/>
 			<label name="orderProposedLabel" colSpan="2" hidden="true" showIf="!isOrderAccepted &amp;&amp; isOrderProposed" title="Order Proposed" css="label-bold label-important label-center font-white"/>
 			<panel name="projectDetailsPanel" colSpan="12">
@@ -297,6 +299,16 @@
 		<view-param name="show-toolbar" value="true"/>
 		<view-param name="forceEdit" value="true" />
     	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
+    
+    <action-view name="action-team-task-view-time-spent" title="Time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+      <view type="form" name="project-planning-time-spent-form"/>
+      <view-param name="popup" value="reload"/>
+      <view-param name="show-toolbar" value="false"/>
+      <view-param name="forceEdit" value="true" />
+       <context name="_timeSpentPopup" expr="eval: true"/>
+      <context name="_task" expr="eval: __self__"/>
+      <context name="_project" expr="eval: project"/>
     </action-view>
 	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
