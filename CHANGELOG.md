@@ -16,6 +16,8 @@
 - Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
 - TeamTask : Add new o2m 'projectPlanningTimeSpentList' field.
 - Timesheet : Assign Task to lines when generating from Realise Planning. 
+- Project : Added new O2M field 'announcementList' in bussiness-support module.
+- TeamTask : Addition of new boolean 'isOrderProposed' in business-support module and label on isOrderAccepted.
 - TeamTask : Make 'toInvoice' field hidden and set its value automatically from invoiceType.
 
 ## Improvements
