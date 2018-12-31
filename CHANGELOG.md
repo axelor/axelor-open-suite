@@ -21,6 +21,7 @@
 - TeamTask : Make 'toInvoice' field hidden and set its value automatically from invoiceType.
 - Timesheet : Assign toInvoice while generating timesheetLine from Realise Planning.
 - TeamTask : Add button to enter spent time.
+- TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
