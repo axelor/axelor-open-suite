@@ -19,6 +19,7 @@
 - Project : Added new O2M field 'announcementList' in bussiness-support module.
 - TeamTask : Addition of new boolean 'isOrderProposed' in business-support module and label on isOrderAccepted.
 - Timesheet : Assign toInvoice while generating timesheetLine from Realise Planning.
+- TeamTask : Add button to enter spent time.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
