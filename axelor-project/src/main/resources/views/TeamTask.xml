@@ -32,32 +32,48 @@
 	        </menu>
 	    </menubar>
 		<panel name="mainPanel" colSpan="12">
-			<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
-            <button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="4"/>
-			<label name="orderAcceptedLabel" colSpan="2" hidden="true" showIf="isOrderAccepted" title="Order Accepted" css="label-bold label-success label-center font-white"/>
-			<label name="orderProposedLabel" colSpan="2" hidden="true" showIf="!isOrderAccepted &amp;&amp; isOrderProposed" title="Order Proposed" css="label-bold label-important label-center font-white"/>
-			<panel name="projectDetailsPanel" colSpan="12">
-				<field name="fullName" showTitle="false" colSpan="12">
-					<viewer depends="name">
+			<field name="status" colSpan="6" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="6">
+				<viewer>
 					<![CDATA[
-						<h3>
-							<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-						</h3>
+						<h4 class="text-right">
+							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+							<span class="label label-success" ng-show="record.assignment == 2" x-translate>Task assigned to the provider</span>
+							
+							<span class="label label-important" ng-show="!record.isOrderAccepted && record.isOrderProposed" x-translate>Order Proposed</span>
+							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
+						</h4>
 					]]>
-					</viewer>
-					<editor>
-						<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
-					</editor>
-				</field>
-				<field name="project" colSpan="4" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
-				<field name="parentTask" readonlyIf="project == null" colSpan="4" onSelect="action-task-attrs-project-parent-task-configurations"/>
-				<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="4" if-module="axelor-business-support"/>
-				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-				<field name="team" readonly="true" colSpan="4" form-view="team-form" grid-view="grid-form"/>
-				<spacer name="teamSpacer" colSpan="4"/>
-				<field name="isOrderAccepted" readonly="true" showIf="timeInvoicing &amp;&amp; invoicingType" colSpan="4"  if-module="axelor-business-support"/>
-				<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support"/>
-				<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support"/>
+				</viewer>
+			</field>
+			<panel name="projectDetailsPanel" colSpan="12">
+				<panel name="detailsPanel" colSpan="8">
+					<field name="fullName" showTitle="false" colSpan="12">
+						<viewer depends="name">
+						<![CDATA[
+							<h3>
+								<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+							</h3>
+						]]>
+						</viewer>
+						<editor>
+							<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
+						</editor>
+					</field>
+					<field name="project" colSpan="6" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
+					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
+					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
+					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
+					<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support"/>
+					<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support"/>
+					<field name="isOrderAccepted" readonly="true" showIf="timeInvoicing &amp;&amp; invoicingType" colSpan="4"  if-module="axelor-business-support"/>
+				</panel>
+				<panel name="actionPanel" colSpan="4">
+					<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support"/>
+					<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="12"/>
+					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" showIf="assignment == 1"/>
+					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" showIf="assignment == 2"/>
+				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
@@ -431,6 +447,14 @@
 	<action-attrs name="action-team-task-attrs-to-invoice">
 		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 2 &amp;&amp; timeInvoicing"/>
 		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 2 &amp;&amp; timeInvoicing"/>
+	</action-attrs>
+	
+	<action-attrs name="action-team-task-attrs-assginment-customer">
+		<attribute name="value" for="assignment" expr="eval: 1"/>
+	</action-attrs>
+	
+	<action-attrs name="action-team-task-attrs-assginment-provider">
+		<attribute name="value" for="assignment" expr="eval: 2"/>
 	</action-attrs>
 	
 </object-views>
