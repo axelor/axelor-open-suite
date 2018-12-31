@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -30,11 +31,13 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -143,5 +146,22 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  public TimesheetLine generateTimesheetLine(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine timesheetLine = super.generateTimesheetLine(timesheet, projectPlanningTime);
+    if (timesheetLine != null && timesheetLine.getTeamTask() != null) {
+      if (timesheetLine.getTeamTask().getTimeInvoicing()
+          && timesheetLine.getTeamTask().getInvoicingType()
+              == TeamTaskRepository.INVOICE_TYPE_TIME_SPENT) {
+        timesheetLine.setToInvoice(true);
+      } else {
+        timesheetLine.setToInvoice(false);
+      }
+      return timesheetLine;
+    }
+    return null;
   }
 }
