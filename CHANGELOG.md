@@ -22,6 +22,7 @@
 - Timesheet : Assign toInvoice while generating timesheetLine from Realise Planning.
 - TeamTask : Add button to enter spent time.
 - TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
+- Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
