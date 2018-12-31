@@ -18,12 +18,16 @@
 - Timesheet : Assign Task to lines when generating from Realise Planning. 
 - Project : Added new O2M field 'announcementList' in bussiness-support module.
 - TeamTask : Addition of new boolean 'isOrderProposed' in business-support module and label on isOrderAccepted.
+- Timesheet : Assign toInvoice while generating timesheetLine from Realise Planning.
 - TeamTask : Add button to enter spent time.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
 - HR Module : Timesheet - Rename Action Title in "timesheet-form".
+
+## Bug Fixes
+- TeamTask : Resolve NPE on save of new team task.
 
 ## [Unreleased 5.1.1]
 ## Improvements

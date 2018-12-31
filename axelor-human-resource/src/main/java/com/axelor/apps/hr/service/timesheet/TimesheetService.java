@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
@@ -155,4 +156,7 @@ public interface TimesheetService {
 
   @Transactional
   public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException;
+
+  public TimesheetLine generateTimesheetLine(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException;
 }

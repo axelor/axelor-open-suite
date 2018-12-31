@@ -972,23 +972,34 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional
   @Override
   public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException {
-    User user = timesheet.getUser();
     List<ProjectPlanningTime> planningList = getRealisedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
+      TimesheetLine timesheetLine = generateTimesheetLine(timesheet, projectPlanningTime);
+      if (timesheetLine != null) {
+        timesheet.addTimesheetLineListItem(timesheetLine);
+      }
+    }
+  }
+
+  @Override
+  public TimesheetLine generateTimesheetLine(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    if (projectPlanningTime != null) {
       TimesheetLine timesheetLine = new TimesheetLine();
       timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
       timesheetLine.setDuration(
           timesheetLineService.computeHoursDuration(
               timesheet, projectPlanningTime.getRealHours(), false));
       timesheetLine.setTimesheet(timesheet);
-      timesheetLine.setUser(user);
+      timesheetLine.setUser(timesheet.getUser());
       timesheetLine.setProduct(projectPlanningTime.getProduct());
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
       timesheetLine.setTeamTask(projectPlanningTime.getTimeSpentTask());
-      timesheet.addTimesheetLineListItem(timesheetLine);
+      return timesheetLine;
     }
+    return null;
   }
 
   private List<ProjectPlanningTime> getRealisedProjectPlanningTimeList(Timesheet timesheet) {
