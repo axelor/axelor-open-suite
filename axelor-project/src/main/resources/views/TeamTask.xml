@@ -49,7 +49,7 @@
 				</field>
 				<field name="project" colSpan="4" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 				<field name="parentTask" readonlyIf="project == null" colSpan="4" onSelect="action-task-attrs-project-parent-task-configurations"/>
-				<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="4" if-module="axelor-business-support"/>
+				<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="4" if-module="axelor-business-support"/>
 				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 				<field name="team" readonly="true" colSpan="4" form-view="team-form" grid-view="grid-form"/>
 				<spacer name="teamSpacer" colSpan="4"/>
@@ -347,8 +347,9 @@
 		<attribute name="value" for="taskEndDate" expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)" if="taskDate != null"/>
 	</action-attrs>
 	
-	<action-attrs name="action-task-attrs-set-isOrderAccepted-onclick">
+	<action-attrs name="action-task-attrs-onclick-order-accepted">
 		<attribute name="value" for="isOrderAccepted" expr="eval:true"/>
+		<attribute name="value" for="assignment" expr="eval:2"/>
 		<attribute name="hidden" for="acceptOrderBtn" expr="eval:true"/>
 	</action-attrs>
 	
