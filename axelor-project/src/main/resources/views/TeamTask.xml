@@ -31,7 +31,9 @@
 	        </menu>
 	    </menubar>
 		<panel name="mainPanel" colSpan="12">
-			<field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<label name="orderAcceptedLabel" colSpan="2" hidden="true" showIf="isOrderAccepted" title="Order Accepted" css="label-bold label-success label-center font-white"/>
+			<label name="orderProposedLabel" colSpan="2" hidden="true" showIf="!isOrderAccepted &amp;&amp; isOrderProposed" title="Order Proposed" css="label-bold label-important label-center font-white"/>
 			<panel name="projectDetailsPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12">
 					<viewer depends="name">
@@ -47,11 +49,12 @@
 				</field>
 				<field name="project" colSpan="4" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 				<field name="parentTask" readonlyIf="project == null" colSpan="4" onSelect="action-task-attrs-project-parent-task-configurations"/>
-				<button name="acceptOrderBtn" title="Accept Order" hideIf="!invoicingType || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="4" if-module="axelor-business-support"/>
+				<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="4" if-module="axelor-business-support"/>
 				<field name="assignedTo" readonlyIf="project == null" colSpan="4" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 				<field name="team" readonly="true" colSpan="4" form-view="team-form" grid-view="grid-form"/>
 				<spacer name="teamSpacer" colSpan="4"/>
 				<field name="isOrderAccepted" readonly="true" showIf="timeInvoicing &amp;&amp; invoicingType" colSpan="4"  if-module="axelor-business-support"/>
+				<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support"/>
 				<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support"/>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">

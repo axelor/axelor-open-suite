@@ -11,6 +11,7 @@
 		<boolean name="isOrderAccepted" title="Order Accepted"/>
 		<string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
 		<many-to-one name="targetVersion" title="Target version" ref="com.axelor.apps.businesssupport.db.Version"/>
+		<boolean name="isOrderProposed" title="Order Proposed"/>
 	</entity>
 
 </domain-models>
