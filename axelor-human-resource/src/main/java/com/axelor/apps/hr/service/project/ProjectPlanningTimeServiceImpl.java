@@ -66,8 +66,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings = task.getProjectPlanningTimeList();
-      totalPlanned =
-          plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (plannings != null) {
+        totalPlanned =
+            plannings
+                .stream()
+                .map(p -> p.getPlannedHours())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalPlanned;
@@ -79,8 +84,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalRealHrs = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings = task.getProjectPlanningTimeSpentList();
-      totalRealHrs =
-          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (plannings != null) {
+        totalRealHrs =
+            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalRealHrs;
@@ -93,8 +100,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     if (project != null) {
       List<ProjectPlanningTime> plannings =
           planningTimeRepo.all().filter("self.project = ?1", project).fetch();
-      totalPlanned =
-          plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (plannings != null) {
+        totalPlanned =
+            plannings
+                .stream()
+                .map(p -> p.getPlannedHours())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalPlanned;
@@ -107,8 +119,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     if (project != null) {
       List<ProjectPlanningTime> plannings =
           planningTimeRepo.all().filter("self.project = ?1", project).fetch();
-      totalRealHrs =
-          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (plannings != null) {
+        totalRealHrs =
+            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalRealHrs;
