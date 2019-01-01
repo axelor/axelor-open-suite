@@ -37,6 +37,7 @@
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
+- Studio: Fix import app without image. 
 
 ## [Unreleased 5.1.1]
 ## Improvements
