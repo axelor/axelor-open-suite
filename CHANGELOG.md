@@ -23,6 +23,7 @@
 - TeamTask : Add button to enter spent time.
 - TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
 - Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
+- Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

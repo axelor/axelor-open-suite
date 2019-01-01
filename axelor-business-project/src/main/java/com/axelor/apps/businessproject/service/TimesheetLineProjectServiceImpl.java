@@ -24,10 +24,17 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl {
+public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
+    implements TimesheetLineBusinessService {
+
+  @Inject private ProjectRepository projectRepo;
+  @Inject private TeamTaskRepository teamTaskaRepo;
 
   @Override
   public TimesheetLine createTimesheetLine(
@@ -50,6 +57,42 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl {
                     == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
       timesheetLine.setToInvoice(true);
 
+    return timesheetLine;
+  }
+
+  @Override
+  public TimesheetLine getDefaultToInvoice(TimesheetLine timesheetLine) {
+    Project project =
+        timesheetLine.getProject() != null
+            ? projectRepo.find(timesheetLine.getProject().getId())
+            : null;
+    TeamTask teamTask =
+        timesheetLine.getTeamTask() != null
+            ? teamTaskaRepo.find(timesheetLine.getTeamTask().getId())
+            : null;
+    Boolean toInvoice;
+    if (teamTask == null && project == null) {
+      toInvoice = null;
+    } else if (teamTask != null) {
+      toInvoice =
+          teamTask.getTimeInvoicing()
+              ? (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_TIME_SPENT
+                  ? true
+                  : (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_PACKAGE
+                      ? false
+                      : null))
+              : false;
+    } else {
+      toInvoice =
+          project.getTimeInvoicing()
+              ? (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED
+                  ? true
+                  : (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE
+                      ? false
+                      : null))
+              : false;
+    }
+    timesheetLine.setToInvoice(toInvoice);
     return timesheetLine;
   }
 }
