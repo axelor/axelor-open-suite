@@ -24,6 +24,7 @@
 - TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
 - Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
 - Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory 
+- TeamTask : Setting panel-mail mail-messages.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
