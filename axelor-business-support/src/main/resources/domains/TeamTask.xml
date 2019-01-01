@@ -12,6 +12,33 @@
 		<string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
 		<many-to-one name="targetVersion" title="Target version" ref="com.axelor.apps.businesssupport.db.Version"/>
 		<boolean name="isOrderProposed" title="Order Proposed"/>
+	
+		<track>
+			<field name="assignment"/>
+	 		<field name="isPrivate"/>
+	 		<field name="isOrderAccepted"/>
+	 		<field name="internalDescription"/>
+	 		<field name="targetVersion"/>
+	 		<field name="isOrderProposed"/>
+	 		<field name="toInvoice"/>
+	 		<field name="exTaxTotal"/>
+	 		<field name="discountTypeSelect"/>
+	 		<field name="discountAmount"/>
+	 		<field name="priceDiscounted"/>
+	 		<field name="invoicingType"/>
+	 		<field name="timeInvoicing"/>
+	 		<field name="totalPlannedHrs"/>
+	 		<field name="totalRealHrs"/>
+	 		<field name="team"/>
+	 		<field name="product"/>
+	 		<field name="unit"/>
+	 		<field name="quantity"/>
+	 		<field name="unitPrice"/>
+	 		<field name="currency"/>
+	 		<field name="plannedProgress"/>
+	 		<field name="taskEndDate"/>
+	 		<field name="budgetedTime"/>
+		</track>
 	</entity>
 
 </domain-models>
