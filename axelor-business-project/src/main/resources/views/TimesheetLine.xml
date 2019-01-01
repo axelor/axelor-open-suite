@@ -6,4 +6,8 @@
 		<attribute name="domain" for="project" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
 	</action-attrs>
 	
+	<action-method name="action-timesheet-line-method-set-default-to-invoice">
+		<call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController" method="setDefaultToInvoice"/>
+	</action-method>
+	
 </object-views>

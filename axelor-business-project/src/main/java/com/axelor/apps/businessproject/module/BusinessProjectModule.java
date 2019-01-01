@@ -42,6 +42,7 @@ import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
@@ -91,5 +92,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceSupplychainRepository.class).to(InvoiceProjectRepository.class);
     bind(WorkflowVentilationServiceSupplychainImpl.class)
         .to(WorkflowVentilationProjectServiceImpl.class);
+    bind(TimesheetLineBusinessService.class).to(TimesheetLineProjectServiceImpl.class);
   }
 }

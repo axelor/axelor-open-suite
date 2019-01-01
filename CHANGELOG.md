@@ -25,6 +25,7 @@
 - Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
 - Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory 
 - TeamTask : Setting panel-mail mail-messages.
+- Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
