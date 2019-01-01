@@ -79,7 +79,7 @@
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4"/>
-				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations"/>
+				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="progressSelect" colSpan="4" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 				<field name="targetVersion" if-module="axelor-business-support" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="version-form" grid-view="version-grid"/>
@@ -385,6 +385,7 @@
 		<attribute name="hidden" for="isPrivate,internalDescriptionPanel" expr="eval:true" if="__user__.group.isClient"/>
 	</action-attrs>
 	
+	
 	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="form" name="resource-booking-form" />
 		<view type="grid" name="resource-booking-grid" />
@@ -431,6 +432,10 @@
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-attrs-hide-fields-for-clients"/>
 	</action-group>
+	
+	<action-group name="action-team-task-group-project-category-onchange">
+		<action name="action-team-task-method-onchange-category" if="__config__.app.isApp('business-support')" />
+	</action-group>
 
 	<action-method name="action-team-task-method-start-timer">
 		<call class="com.axelor.apps.project.web.TeamTaskController" method="startTimer"/>
@@ -442,6 +447,10 @@
 
 	<action-method name="action-team-task-method-cancel-timer">
 		<call class="com.axelor.apps.project.web.TeamTaskController" method="cancelTimer"/>
+	</action-method>
+	
+	<action-method name="action-team-task-method-onchange-category">
+		<call class="com.axelor.apps.businesssupport.web.TeamTaskController" method="onChangeCategory"/>
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-to-invoice">
