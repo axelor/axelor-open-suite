@@ -303,7 +303,7 @@
 			<panel title="Wiki"  name="wikiPanel" >
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
-			<panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support">
+			<panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
 				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="version-form">
 					<field name="title"/>
 					<field name="statusSelect"/>
@@ -311,7 +311,7 @@
 					<field name="productionServerDate"/>
 				</panel-related>
 			</panel>
-			<panel name="announcementPanel" title="Announcement" if-module="axelor-business-support">
+			<panel name="announcementPanel" title="Announcement" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
 				<panel-related name="announcementListPanel" field="announcementList" colSpan="12" form-view="announcement-form">
 					<field name="title"/>
 					<field name="date"/>

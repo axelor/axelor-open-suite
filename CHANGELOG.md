@@ -26,6 +26,7 @@
 - Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory 
 - TeamTask : Setting panel-mail mail-messages.
 - Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
+- APP for axelor-business-support.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

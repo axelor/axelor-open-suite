@@ -1,7 +1,9 @@
 "key","message","comment","context"
 "Announcement",,,
+"App Business Support",,,
 "Assignment",,,
 "Client",,,
+"Configuration",,,
 "Content",,,
 "Date",,,
 "Default Invoicing",,,
@@ -18,6 +20,7 @@
 "Private",,,
 "Production server date",,,
 "Project",,,
+"Provider",,,
 "Status",,,
 "Target version",,,
 "Tasks",,,
