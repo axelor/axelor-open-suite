@@ -23,12 +23,15 @@
 - TeamTask : Add button to enter spent time.
 - TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
 - Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
+- Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory 
+- TeamTask : Setting panel-mail mail-messages.
 - Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
 - HR Module : Timesheet - Rename Action Title in "timesheet-form".
+- Studio : Allowing to export all data without selecting any app builder.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
