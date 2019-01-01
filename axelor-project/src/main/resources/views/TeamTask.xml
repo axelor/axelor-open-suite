@@ -13,7 +13,7 @@
 		<field name="status"/>
 		<field name="priority"/>
 		<field name="projectCategory"/>
-		<field name="targetVersion" if-module="axelor-business-support"/>
+		<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="timeSpentBtn" title="Enter Time spent" icon="fa-clock-o" onClick="action-team-task-view-time-spent" />
 	</grid>
 	
@@ -64,15 +64,15 @@
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
-					<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support"/>
-					<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support"/>
-					<field name="isOrderAccepted" readonly="true" showIf="timeInvoicing &amp;&amp; invoicingType" colSpan="4"  if-module="axelor-business-support"/>
+					<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderAccepted" readonly="true" showIf="timeInvoicing &amp;&amp; invoicingType" colSpan="4"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
-					<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support"/>
+					<button name="acceptOrderBtn" title="Accept Order" hideIf="timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="12"/>
-					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" showIf="assignment == 1"/>
-					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" showIf="assignment == 2"/>
+					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1"/>
+					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2"/>
 				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
@@ -82,16 +82,16 @@
 				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="progressSelect" colSpan="4" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
-				<field name="targetVersion" if-module="axelor-business-support" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="version-form" grid-view="version-grid"/>
+				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="version-form" grid-view="version-grid"/>
 			</panel>
-			<field name="assignment" if-module="axelor-business-support"/>
+			<field name="assignment" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contentPanel" title="Content" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
 			
-			<panel name="internalDescriptionPanel" title="Internal Description"  if-module="axelor-business-support">
+			<panel name="internalDescriptionPanel" title="Internal Description" if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
 				<field name="internalDescription" colSpan="12" widget="html"/>
 			</panel>
 			
