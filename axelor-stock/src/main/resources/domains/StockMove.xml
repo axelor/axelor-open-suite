@@ -75,6 +75,9 @@
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
+
+    <many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Correction Reason"/>
+
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>
@@ -107,6 +110,7 @@
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
 		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
+		public static final String ORIGIN_STOCK_CORRECTION = "com.axelor.apps.stock.db.StockCorrection";
 	]]></extra-code>
 	
 	<track>

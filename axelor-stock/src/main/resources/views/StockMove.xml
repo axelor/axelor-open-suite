@@ -294,13 +294,15 @@
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
             </panel>
         </panel-tabs>
-        
+        <panel name="stockCorrectionReasonPanel" sidebar="true" showIf="stockCorrectionReason">
+			<field name="stockCorrectionReason"/>
+        </panel>
         <panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
 	  	</panel-mail>
     </form>
-    
+
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>

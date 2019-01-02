@@ -13,6 +13,7 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
+        <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
     <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onLoad="action-stock-location-line-group-onload">
@@ -36,6 +37,9 @@
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel name="stockCorrectionPanel" sidebar="true">
+			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
+        </panel>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -114,6 +118,7 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
+        <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
     <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
@@ -132,6 +137,9 @@
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
+		</panel>
+		<panel name="stockCorrectionPanel" sidebar="true">
+			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
 		</panel>
     </form>
     
@@ -195,4 +203,9 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
     
+    <action-view name="action-stock-location-line-view-open-stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection">
+		<view type="form" name="stock_correction-form"/>
+		<context name="_stockLocationLineId" expr="eval: id"/>
+    </action-view>
+
 </object-views>

@@ -125,6 +125,12 @@
 		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
 		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
 		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
+		<option value="com.axelor.apps.stock.db.StockCorrection" data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
+	</selection>
+
+	<selection name="stock.correction.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
 	</selection>
 
 </object-views>
