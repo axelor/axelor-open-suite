@@ -22,6 +22,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
@@ -42,7 +43,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       EbicsService ebicsService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      BankOrderLineOriginService bankOrderLineOriginService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -50,7 +52,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         ebicsService,
         invoicePaymentCancelService,
         bankPaymentConfigService,
-        sequenceService);
+        sequenceService,
+        bankOrderLineOriginService);
   }
 
   @Override

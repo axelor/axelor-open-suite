@@ -212,8 +212,9 @@
       <field name="validatedByUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 		</panel>
 		<panel name="referencesPanel" title="References" hideIf="supplierPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
+      <field name="externalReference" hideIf="company == null" onChange="action-purchase-order-attrs-external-reference"/>
       <field name="internalReference"/>
-      <field name="externalReference" hideIf="company == null"/>
+      <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
 		</panel>
 	   <panel name="characteristicsPanel" title="Characteristics" sidebar="true" hideIf="supplierPartner == null" canCollapse="true" collapseIf="true">
 			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 
@@ -368,15 +369,15 @@
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
+		<action name="action-purchase-order-attrs-external-reference"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
-		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="action-purchase-order-attrs-interco"/>
-		<action name="save"/>
+		<action name="action-purchase-order-attrs-external-reference"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -661,5 +662,10 @@
 	<action-method name="action-purchase-order-method-printing-settings-default-value">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="fillDefaultPrintingSettings"/>
 	</action-method>
+	
+	<action-attrs name="action-purchase-order-attrs-external-reference">
+		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
+                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
+	</action-attrs>
 
 </object-views>

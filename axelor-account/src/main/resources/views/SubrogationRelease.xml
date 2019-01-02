@@ -8,6 +8,7 @@
 		<field name="sequenceNumber" />
 		<field name="company" />
 		<field name="company.accountConfig.factorPartner" />
+		<field name="transmissionDate"/>
 		<field name="statusSelect" />
 	</grid>
 
@@ -48,6 +49,18 @@
 			<button name="cancelReleaseBtn" title="Cancel release"
 				onClick="action-subrogation-release-record-cancel-release,save" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 3" />
 		</panel>
+		
+		<panel sidebar="true">
+			<field name="transmissionDate"/>
+			<field name="accountingDate" readonlyIf="statusSelect >= 3"/>
+			<field name="comments"/>
+			<field name="cancelReason" showIf="statusSelect == 5"/>
+		</panel>
+		
+		<panel-mail>
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 
 	</form>
 

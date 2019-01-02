@@ -84,12 +84,11 @@
 
 	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onSave="save,action-manuf-order-set-draft-seq,save"
 	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print" action="save,action-manuf-order-set-draft-seq,action-manuf-order-method-print" showIf="statusSelect > 1" />
+	            <item title="Print" action="save,action-manuf-order-method-print" showIf="statusSelect > 1" />
 	            <item title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
 		</menubar>
@@ -117,7 +116,7 @@
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-atts-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order"/>
 			<field name="isConsProOnOperation" />
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
@@ -125,7 +124,7 @@
 			<field name="product.isModel" hidden="true"/>
 		</panel>
 		<panel name="actionsPanel" title="Actions" colSpan="4">
-			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-set-draft-seq,action-manuf-order-method-plan" />
+			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-plan" />
 			<button name="startBtn" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
 			<button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
@@ -161,7 +160,7 @@
 				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="id"/>
 				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
-				<panel-related name="consumedStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
+				<panel-related name="diffStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel name="consumedProductsPanel" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
 				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
@@ -255,7 +254,7 @@
     	<attribute for="isConsProOnOperation" name="readonly" expr="eval: !(prodProcess?.isConsProOnOperation)"/>
     </action-attrs>
     
-    <action-attrs name="action-manuf-order-atts-sale-order-onselect">
+    <action-attrs name="action-manuf-order-attrs-sale-order-onselect">
 	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
 	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
 	</action-attrs>
@@ -278,10 +277,6 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="isPermanent" expr="eval: _createPermanent"/>
     	<field name="qty" expr="eval: 0" if="_createPermanent"/>
-    </action-record>
-    
-    <action-record name="action-manuf-order-set-draft-seq" model="com.axelor.apps.production.db.ManufOrder">
-        <field name="manufOrderSeq" expr="eval:'*'+id" if="manufOrderSeq == null"/>
     </action-record>
 
 	<action-record name="action-manuf-order-record-update-qty-from-prod-process" model="com.axelor.apps.production.db.ManufOrder">

@@ -69,4 +69,19 @@ public interface SubrogationReleaseService {
    * @throws AxelorException
    */
   void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease) throws AxelorException;
+
+  /**
+   * Clear the subrogation release
+   *
+   * @param subrogationRelease
+   */
+  void clear(SubrogationRelease subrogationRelease);
+
+  /**
+   * Check if the all invoice of the subrogation release are completely cleared
+   *
+   * @param subrogationRelease
+   * @return
+   */
+  boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease);
 }

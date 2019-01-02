@@ -9,7 +9,7 @@
         <field name="reference"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
-        <field name="bankStatementLine.amosuntRemainToReconcile" aggregate="sum"/>
+        <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
         <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
         <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form" grid-view="account-grid"/>
         <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"  onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>

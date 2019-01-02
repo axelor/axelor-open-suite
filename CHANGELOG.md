@@ -40,9 +40,61 @@
 - Studio: Fix import app without image. 
 
 ## [Unreleased 5.1.1]
-## Improvements
-## Bug Fixes
+## Features
+- Subrogation Release : add change tracking on status and add new fields.
+- MO printing : new design
+- StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
+- Menus : new organization
+- Improved management of production order generation from sale order :
+Add an option to allow to plan automatically manuf. order generated from a sale order.
+Add an option to choose to generate an unique production order for a sale order or a production order per line.
+Add sale order and client partner fields on production order.
+- Account Move : Display total number of lines, total debit, total credit and the gap on move form.
 
+## Improvements
+- FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
+- COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
+- Sale Invoice & Refund : Add factor viewer.
+- Reserved qty: improve exception message.
+- SALE ORDER : Trading name on card view.
+- SALES : Display boolean 'freeText' in cancelation reason view.
+- Purchase order: do not regenerate sequence if it is already final.
+- SALE ORDER : Display the manufacturing orders panel in production tab.
+- MANUF ORDER : Assign draft sequence on repository save method.
+- Delete commented-out code.
+- STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- INVENTORY : filters displayed on printing and in new tab "Filter"
+- BANKORDER : use bank order line origin to know which invoice payment should be validated when we validate a bank order 
+instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remove a line of the bank order, invoice payment is not wrongly updated.
+- Purchase order line: add panel to dashlet.
+- When generating interco invoice or order, get the right printing settings.
+- SALE ORDER & PURCHASE ORDER : Create an alert when order already created.
+- MENUS : Moved three menus 'Mass Cust. Stock Move Invoicing','Mass Suppl. Stock Move Invoicing' and 'Availabilty Requests' in supplychain module
+- INVENTORY LINE : domain on product field where stockManaged is true
+- STOCKLOCATIONLINE : add a button to update the average price.
+
+## Bug Fixes
+- SEQUENCES : Fix panelSide Tips problem
+- BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
+- MANUF ORDER : fix Sale order / client partner title
+- SALEORDER : Fix NPE when we select analyticDistributionTemplate value on SaleOrderLine.
+- Stock move: delete obsolete actions and code for reserved quantity.
+- DEMO DATA : Import errors
+- Partner : Fix NPE on creating new partner and saving without address.
+- SUBORGATION RELEASE : Don't try to generate an account move for invoice or refund without remaining amount.
+- ACCOUNTING CUTOFF : Don't fill taxLine on charge and product move lines if we don't generate account tax move
+- INVOICE PAYMENT : Fix loop issue when we cancel an invoice payment that is linked to a bank order
+- NOTIFICATON : Fix some issues and allow to select invoice from different subrogation release.
+- DEMO DATA: Fix duplicate alpha2code country code. 
+- Partner: Fix error handling on partner repository save.  
+- Fix panel name in manuf order.
+- Set reserved qty to 0 when we copy a stock move or a sale order.
+- StockMove copy: set logistical form flag to false.
+- Sale Order : Make AnalyticDistributionTemplate editable.
+- Account Move : Reload the view after reconciliation.
+- MRP : Fixed filter issue on saleOrderSet
+- INVENTORY : Removed useless save actions
+- INVENTORY LINES : some products don't display
 
 ## [5.1.0] - 2018-12-13
 ## Features
@@ -416,6 +468,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - StockMove : stockMoveLine in readonly if company or fromStockLocation is null
 - Partner: Address on grid view
 - DataBackup : Handle Exception.
+- Purchase Order: remove save on loading purchase order form.
 
 ## [5.0.7] - 2018-12-13
 ## Features
@@ -465,7 +518,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
-- Account: Reset fields on onchange action in Accounting Report. 
+- Account: Reset fields on onchange action in Accounting Report.
 - Advance Export : Default value for selection translation.
 
 ## Bug Fixes
@@ -1508,3 +1561,4 @@ Fully responsive mobile ready views, gradle based build system and much more.
 [3.0.2]: https://github.com/axelor/axelor-business-suite/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/axelor/axelor-business-suite/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/axelor/axelor-business-suite/compare/0f38e90dcd9126079eac78c1639a40c728e63d94...v3.0.0
+

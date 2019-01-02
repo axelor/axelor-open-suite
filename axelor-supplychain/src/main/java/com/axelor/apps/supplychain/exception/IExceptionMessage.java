@@ -171,7 +171,7 @@ public interface IExceptionMessage {
 
   /** Reserved qty service */
   static final String LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY = /*$$(*/
-      "You cannot change the stock move status: please lower the allocated quantity" /*)*/;
+      "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate." /*)*/;
 
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;

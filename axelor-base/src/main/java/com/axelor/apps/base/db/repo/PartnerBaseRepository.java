@@ -72,10 +72,12 @@ public class PartnerBaseRepository extends PartnerRepository {
 
       if (!partner.getIsContact()) {
         partner.setMainAddress(null);
-        for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
-          if (partnerAddress.getIsDefaultAddr()) {
-            partner.setMainAddress(partnerAddress.getAddress());
-            break;
+        if (partner.getPartnerAddressList() != null) {
+          for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
+            if (partnerAddress.getIsDefaultAddr()) {
+              partner.setMainAddress(partnerAddress.getAddress());
+              break;
+            }
           }
         }
       }
@@ -83,7 +85,7 @@ public class PartnerBaseRepository extends PartnerRepository {
       partnerService.setCompanyStr(partner);
       return super.save(partner);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 

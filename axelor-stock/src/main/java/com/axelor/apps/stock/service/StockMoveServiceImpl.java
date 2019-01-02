@@ -205,12 +205,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setToStockLocation(toStockLocation);
     stockMove.setDescription(description);
-
     stockMove.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
     stockMove.setTypeSelect(typeSelect);
-
+    stockMove.setIsWithBackorder(company.getStockConfig().getIsWithBackorder());
+    if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
+      stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
+    }
     return stockMove;
   }
 

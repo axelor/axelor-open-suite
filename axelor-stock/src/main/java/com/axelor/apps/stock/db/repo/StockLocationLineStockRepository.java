@@ -15,18 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import java.util.List;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.inject.Beans;
 
-public interface ProductionOrderSaleOrderService {
+public class StockLocationLineStockRepository extends StockLocationLineRepository {
 
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
-
-  public ProductionOrder generateManufOrder(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  @Override
+  public StockLocationLine save(StockLocationLine entity) {
+    Product product = entity.getProduct();
+    Beans.get(StockLocationService.class).computeAvgPriceForProduct(product);
+    return super.save(entity);
+  }
 }

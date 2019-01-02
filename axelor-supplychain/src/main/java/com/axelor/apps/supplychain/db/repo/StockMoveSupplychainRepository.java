@@ -15,18 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.supplychain.db.repo;
 
-import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import java.util.List;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
+import java.math.BigDecimal;
 
-public interface ProductionOrderSaleOrderService {
+public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
 
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  @Override
+  public StockMove copy(StockMove entity, boolean deep) {
 
-  public ProductionOrder generateManufOrder(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+    StockMove copy = super.copy(entity, deep);
+
+    if (copy.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
+        stockMoveLine.setReservedQty(BigDecimal.ZERO);
+      }
+    }
+
+    return copy;
+  }
 }

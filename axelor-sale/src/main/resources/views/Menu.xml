@@ -87,6 +87,7 @@
         <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
 	</action-view>
 	
+	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30"/>
 	
 	<menuitem title="Completed orders" name="sc-historical-completed-sale-orders" parent="sc-root-sale-historical"

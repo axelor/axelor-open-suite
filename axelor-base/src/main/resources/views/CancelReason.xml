@@ -13,6 +13,7 @@
             <field name="name"/>
             <field name="applicationType" hidden="true"/>
             <field name="cancelQuantityAllocation" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+            <field name="freeText" widget="boolean-switch"/>
         </panel>
     </form>
 
