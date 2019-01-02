@@ -5,6 +5,7 @@
 	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project" orderBy="-date">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="teamTask"/>
 		<field name="date" />
 		<field name="product" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="hoursDuration" width="62%" min="0.01"/>
@@ -124,6 +125,7 @@
 	onLoad="action-timesheet-line-group-onload" width="large">
 		<panel name="overviewPanel" title="Overview">
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+			<field name="teamTask"/>
 			<field name="date" />
 			<field name="product" canEdit="false" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="hoursDuration" width="62%" colSpan="2" min="0.01"/>
