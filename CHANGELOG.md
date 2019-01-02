@@ -34,6 +34,7 @@
 - HR Module : Timesheet - Rename Action Title in "timesheet-form".
 - Studio : Allowing to export all data without selecting any app builder.
 - Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder. 
+- Project : Display task field on logTimesPanel.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
