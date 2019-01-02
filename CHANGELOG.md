@@ -27,6 +27,7 @@
 - TeamTask : Setting panel-mail mail-messages.
 - Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 - APP for axelor-business-support.
+- Stock Correction
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

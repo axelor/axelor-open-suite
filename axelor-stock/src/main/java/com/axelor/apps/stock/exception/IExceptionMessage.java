@@ -184,4 +184,11 @@ public interface IExceptionMessage {
 
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
+
+  /** Stock correction service and controller */
+  public static final String STOCK_CORRECTION_1 = /*$$(*/
+      "Incorrect product for stock correction" /*)*/;
+
+  public static final String STOCK_CORRECTION_2 = /*$$(*/
+      "No stock move generated.Please verify stock correction details." /*)*/;
 }

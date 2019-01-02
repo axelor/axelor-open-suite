@@ -229,6 +229,15 @@
 		model="com.axelor.apps.stock.db.StockLocation" >
 		<view type="tree" name="stock-location-tree"/>
 	</action-view>
+
+	<menuitem name="stock-root-stock-correction" parent="stock-root"
+		title="Stock Corrections" action="stock.root.stock.correction" order="43"/>
+
+	<action-view name="stock.root.stock.correction" title="Stock Corrections"
+		model="com.axelor.apps.stock.db.StockCorrection">
+		<view type="grid" name="stock-correction-grid"/>
+		<view type="form" name="stock-correction-form"/>
+	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 		
@@ -358,6 +367,14 @@
 		<view type="form" name="cancel-reason-form"/>
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
+	</action-view>
+
+	<menuitem name="stock-root-conf-stock-correction-reason" title="Stock Correction Reason" parent="stock-root-conf"
+		action="stock.root.conf.stock.correction.reason"/>
+
+	<action-view name="stock.root.conf.stock.correction.reason" title="Stock Correction Reason" model="com.axelor.apps.stock.db.StockCorrectionReason">
+		<view type="grid" name="stock-correction-reason-grid"/>
+		<view type="form" name="stock-correction-reason-form"/>
 	</action-view>
 
 </object-views>
