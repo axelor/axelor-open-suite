@@ -35,6 +35,7 @@
 - Studio : Allowing to export all data without selecting any app builder.
 - Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder. 
 - Project : Display task field on logTimesPanel.
+- Project : Default value set for ProjectPlanningTime.product.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
