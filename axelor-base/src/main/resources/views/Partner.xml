@@ -785,7 +785,6 @@
 	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
-		<field name="contactPartnerSet" expr="eval: null"/>
 		<field name="isEmployee" expr="eval: false" if="partnerTypeSelect == 1"/>
 	</action-record>
 
