@@ -1,6 +1,19 @@
 # Changelog
 
-## [Unreleased 5.0.7]
+## [Unreleased 5.0.8]
+## Features
+## Improvements
+- Invoice : journal & partner account are now set on validation rather than on ventilation.
+- Advanced exports: store dates as dates and numbers as numbers in Excel export.
+
+## Bug Fixes
+- Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
+- MANUF. ORDER PRINTING: hide barcode column when it is empty.
+- Purchase Order: remove save on loading purchase order form.
+- Stock Chart: fix wrong action name.
+- App Sale: fix unresolved action error.
+
+## [5.0.7] - 2018-12-13
 ## Features
 - MRP : Display createdBy user and stockLocation.company in form and grid view.
 - PRODUCT - Add new dashlet 'Where-used list' in 'Production information' tab.
@@ -39,12 +52,15 @@
 - Timesheet for manufacturing : display user in grid view, disable canEdit and canView and reorder the columns.
 - Databackup : Include thread in backup & restore task.
 - Use the char ';' for subrogation release export
-- Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Allow to define large text for sale order and purchase order information fields on Partner.
 - Replace Packaging with Packing in modules base, supplychain and stock.
 - StockMove : checkExpirationDate At StockMove Realization done only if toStockLocation not virtual stock location except for inStockMove on ManufOrder.
 - PRODUCT : Changed title of two fields(purchaseProductMultipleQtyList,saleProductMultipleQtyList) in advanced search and added fr translation for it.
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
+- Factor : New Organization for debt recovery submenu.
+- Inventory : Do not update average price when validating an inventory.
+- Account: Reset fields on onchange action in Accounting Report. 
+- Advance Export : Default value for selection translation.
 
 ## Bug Fixes
 - Logistical Form : Fix display logo on report.
@@ -93,7 +109,7 @@ When we update an existing move in daybook mode, we update the partner balances 
 - AnalyticMoveLine : Fill account & accountType from moveLine AND remove the rounding bug.
 - AnalyticBalance report: Fix order by.
 - Product: Removed 'shippingCoef' value set from onLoad.
-- Alphabetical order on the table producedStockMoveLineList
+- Alphabetical order on the table producedStockMoveLineList and consumedStockMoveLineList
 - Schedulers: fix unclosed transaction errors over multiple runs with batch jobs.
 - PARTNER : contact partner form view If the option generatePartnerSequence is false in Base App,allow to edit the field partnerSeq.
 - MANUF ORDER : Exception Message tracking number not filled
@@ -117,6 +133,21 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Base : Removed invoice binding in ClientSituation report for allowing all different invoices to show in report.
 - ACCOUNTING EXPORT : sequence issue fix
 - Accounting Export : Fix NPE.
+- Configurator: add missing field in configurator sale order line formula form.
+- MANUF. ORDER : don't allow to print if status = draft
+- Tracking number search view fix.
+- Schedulers: fix missing traceback.
+- Debt recovery batch: fix error recovery.
+- Sale: fix Null Pointer error.
+- Bank statement: fix status update for bank statement imports.
+- Invoice line: fill product code on product change.
+- Base : Fix save issue on any change in AppBase record.
+- Mass stock move invoicing: fixed issue where the generated invoice could not be saved because the reference string was too long.
+- TAX : copy. Active version of original tax is assigned to the new tax. It souldn't
+- Taxline : fix suggestions in suggestbox.
+- COPY OF A PRODUCT : avgPrice, startDate and endDate empty
+- COST SHEET : fix wrong assignation of cost sheet group for human ressources
+- MANUF. ORDER PRINTING : change the name of a table's column
 
 ## [5.0.6] - 2018-10-06
 ## Features
@@ -140,7 +171,6 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - User : restrict active team selection to only teams that the user is already in.
 - Partner : Fix add partner seq on card view.
 - Purchase Order Line : Fix NPE when clear the 'Tax' field.
-
 
 ## [5.0.5] - 2018-09-19
 ## Features
@@ -243,7 +273,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
-- Account : prefill employee/supplier/customer account creation form with default values from configuration.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
 - Improve partner form view.
 - Address: rework coordinates updating.
@@ -1039,7 +1069,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...dev
+[5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
 [5.0.4]: https://github.com/axelor/axelor-business-suite/compare/v5.0.3...v5.0.4
