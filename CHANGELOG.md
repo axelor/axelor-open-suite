@@ -436,6 +436,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 
 ## [Unreleased 5.0.8]
 ## Features
+ - Account: add option to automatically create partners' accounts
+
 ## Improvements
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
@@ -494,8 +496,12 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Production : Generate Unique Barcode on Duplicate Manufacture order.
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
+<<<<<<< HEAD
 - Show delivery state in sale order grid view.
 - Account: Reset fields on onchange action in Accounting Report.
+=======
+- Account: Reset fields on onchange action in Accounting Report. 
+>>>>>>> 485433e... Update CHANGELOG.md
 - Advance Export : Default value for selection translation.
 
 ## Bug Fixes
@@ -575,7 +581,10 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Tracking number search view fix.
 - Schedulers: fix missing traceback.
 - Debt recovery batch: fix error recovery.
+<<<<<<< HEAD
 - Base: Fix save issue on any change in AppBase record.
+=======
+>>>>>>> 485433e... Update CHANGELOG.md
 - Sale: fix Null Pointer error.
 - Bank statement: fix status update for bank statement imports.
 - Invoice line: fill product code on product change.
@@ -1506,8 +1515,12 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+<<<<<<< HEAD
 [Unreleased 5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...dev
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.1.0
+=======
+
+>>>>>>> 485433e... Update CHANGELOG.md
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5
