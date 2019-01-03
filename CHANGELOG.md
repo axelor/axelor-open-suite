@@ -41,6 +41,7 @@
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
 - Studio: Fix import app without image. 
+- TeamTask : Resolve NPE by updating action of HR module.
 
 ## [Unreleased 5.1.1]
 ## Features
