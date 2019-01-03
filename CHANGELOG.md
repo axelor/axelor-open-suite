@@ -4,6 +4,7 @@
 ## Features
 ## Improvements
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
+- Advanced exports: store dates as dates and numbers as numbers in Excel export.
 
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
@@ -272,7 +273,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
-- Account : prefill employee/supplier/customer account creation form with default values from configuration.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
 - Improve partner form view.
 - Address: rework coordinates updating.
