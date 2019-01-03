@@ -33,12 +33,13 @@
 	    </menubar>
 		<panel name="mainPanel" colSpan="12">
 			<field name="status" colSpan="6" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
-			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="4">
+			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="4" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
 				<viewer>
 					<![CDATA[
 						<h4 class="text-right">
 							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-							<span class="label label-success" ng-show="record.assignment == 2" x-translate>Task assigned to the provider</span>
+							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
+							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
 							
 							<span class="label label-important" ng-show="!record.isOrderAccepted && record.isOrderProposed" x-translate>Order Proposed</span>
 							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
@@ -47,6 +48,7 @@
 				</viewer>
 			</field>
 			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="2"/>
+			<field name="$provider" hidden="true" type="string"/>
 			<panel name="projectDetailsPanel" colSpan="12">
 				<panel name="detailsPanel" colSpan="8">
 					<field name="fullName" showTitle="false" colSpan="12">
@@ -272,6 +274,7 @@
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-task-record-project-configurations" if="project != null"/>
 		<action name="action-team-task-attrs-hide-fields-for-clients"/>
+		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-onchange">
@@ -345,6 +348,10 @@
     	<field name="status" expr="new" />
     	<field name="taskDate" expr="#{__date__}" />
     	<field name="project" expr="eval:_project" />
+	</action-record>
+	
+	<action-record name="action-team-task-business-support-provider" model="com.axelor.team.db.TeamTask">
+		<field name="$provider" expr="eval: __config__.app.getApp('business-support').provider.name" if="__config__.app.getApp('business-support').provider"/>
 	</action-record>
 	
 	<action-record name="action-task-update-planned-progress" model="com.axelor.team.db.TeamTask">
@@ -431,6 +438,7 @@
 		<action name="action-team-task-method-compute-total-timer-duration"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-attrs-hide-fields-for-clients"/>
+		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-category-onchange">
