@@ -437,6 +437,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 ## [Unreleased 5.0.8]
 ## Features
 ## Improvements
+- Invoice : journal & partner account are now set on validation rather than on ventilation.
+
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
 - MANUF. ORDER PRINTING: hide barcode column when it is empty.
