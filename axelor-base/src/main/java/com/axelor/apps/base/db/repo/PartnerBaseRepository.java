@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
@@ -80,6 +81,9 @@ public class PartnerBaseRepository extends PartnerRepository {
             }
           }
         }
+      }
+      if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
+        partner.setContactPartnerSet(new HashSet<>());
       }
       partnerService.setPartnerFullName(partner);
       partnerService.setCompanyStr(partner);
