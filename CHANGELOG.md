@@ -53,7 +53,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - StockMove copy: set logistical form flag to false.
 - Sale Order : Make AnalyticDistributionTemplate editable.
 - Account Move : Reload the view after reconciliation.
-- MRP : Fixed filter issue on saleOrderSet
+- MRP : Fixed filter issue on saleOrderSet and remove canEdit on stockLocation field on MRP form view
 - INVENTORY : Removed useless save actions
 - INVENTORY LINES : some products don't display
 - Partner : Do not clean contacts on partner type change but clean on save
