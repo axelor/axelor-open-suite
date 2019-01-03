@@ -82,9 +82,19 @@ public class PartnerBaseRepository extends PartnerRepository {
           }
         }
       }
+
       if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
         partner.setContactPartnerSet(new HashSet<>());
       }
+
+      if (!partner.getIsContact() && partner.getContactPartnerSet() != null) {
+        for (Partner contact : partner.getContactPartnerSet()) {
+          if(contact.getMainPartner() == null) {
+              contact.setMainPartner(partner);
+          }
+        }
+      }
+
       partnerService.setPartnerFullName(partner);
       partnerService.setCompanyStr(partner);
       return super.save(partner);
