@@ -34,7 +34,7 @@
 		    	<panel name="productBarCode" title="Product BarCode">
 		    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
-     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="editProductBarcodeType==false"/>
+     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
 				</panel>
                 <field name="generatePartnerSequence" widget="boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>

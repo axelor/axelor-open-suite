@@ -319,8 +319,9 @@ public class CostSheetServiceImpl implements CostSheetService {
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 RoundingMode.HALF_EVEN);
 
-    costSheetLineService.createWorkCenterCostSheetLine(
+    costSheetLineService.createWorkCenterHRCostSheetLine(
         prodHumanResource.getWorkCenter(),
+        prodHumanResource,
         priority,
         bomLevel,
         parentCostSheetLine,
@@ -342,7 +343,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     if (costType == IWorkCenter.COST_PER_CYCLE) {
 
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           prodProcessLine.getPriority(),
           bomLevel,
@@ -363,7 +364,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       qty = qty.setScale(QTY_MAX_SCALE, BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           prodProcessLine.getPriority(),
           bomLevel,
@@ -376,7 +377,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
 
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           prodProcessLine.getPriority(),
           bomLevel,
@@ -533,8 +534,9 @@ public class CostSheetServiceImpl implements CostSheetService {
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 BigDecimal.ROUND_HALF_EVEN);
 
-    costSheetLineService.createWorkCenterCostSheetLine(
+    costSheetLineService.createWorkCenterHRCostSheetLine(
         workCenter,
+        prodHumanResource,
         priority,
         bomLevel,
         parentCostSheetLine,
@@ -553,7 +555,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     int costType = workCenter.getCostTypeSelect();
 
     if (costType == IWorkCenter.COST_PER_CYCLE) {
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
           bomLevel,
@@ -569,7 +571,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   appProductionService.getNbDecimalDigitForUnitPrice(),
                   BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
           bomLevel,
@@ -580,7 +582,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     } else if (costType == IWorkCenter.COST_PER_PIECE) {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
-      costSheetLineService.createWorkCenterCostSheetLine(
+      costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
           bomLevel,

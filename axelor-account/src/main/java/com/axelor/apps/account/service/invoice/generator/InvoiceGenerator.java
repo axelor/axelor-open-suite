@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -50,19 +49,18 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class InvoiceGenerator {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected JournalService journalService;
 
   protected int operationType;
   protected Company company;
@@ -113,7 +111,6 @@ public abstract class InvoiceGenerator {
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   /**
@@ -147,12 +144,10 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected InvoiceGenerator() {
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected int inverseOperationType(int operationType) throws AxelorException {

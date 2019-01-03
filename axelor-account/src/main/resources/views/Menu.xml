@@ -178,8 +178,10 @@
 		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 
+    <menuitem title="Factoring" name="debt-recovery-root-factoring" parent="account-root-debt-recovery" order="1"/>
+
 	<menuitem title="Subrogation releases" name="debt-recovery-root-subrogation-releases"
-		parent="account-root-debt-recovery" action="debt.recovery.root.subrogation.releases" order="1" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.subrogation.releases" order="1" />
 
 	<action-view name="debt.recovery.root.subrogation.releases"
 		title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">
@@ -188,7 +190,7 @@
 	</action-view>
 
 	<menuitem title="Notifications" name="debt-recovery-root-notifications"
-		parent="account-root-debt-recovery" action="debt.recovery.root.notifications" order="2" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.notifications" order="2" />
 
 	<action-view name="debt.recovery.root.notifications"
 		title="Notifications" model="com.axelor.apps.account.db.Notification">

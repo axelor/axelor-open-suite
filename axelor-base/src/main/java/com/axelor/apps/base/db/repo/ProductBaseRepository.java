@@ -113,7 +113,8 @@ public class ProductBaseRepository extends ProductRepository {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
+    copy.setStartDate(null);
+    copy.setEndDate(null);
     return copy;
   }
 }

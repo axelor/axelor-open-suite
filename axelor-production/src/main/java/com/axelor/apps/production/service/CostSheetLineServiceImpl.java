@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
@@ -228,7 +229,28 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
-  public CostSheetLine createWorkCenterCostSheetLine(
+  public CostSheetLine createWorkCenterHRCostSheetLine(
+      WorkCenter workCenter,
+      ProdHumanResource prodHumanResource,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit) {
+
+    return this.createWorkCenterCostSheetLine(
+        workCenter,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        costPrice,
+        unit,
+        prodHumanResource.getCostSheetGroup());
+  }
+
+  public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
       int priority,
       int bomLevel,
@@ -237,13 +259,34 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal costPrice,
       Unit unit) {
 
+    return this.createWorkCenterCostSheetLine(
+        workCenter,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        costPrice,
+        unit,
+        workCenter.getCostSheetGroup());
+  }
+
+  protected CostSheetLine createWorkCenterCostSheetLine(
+      WorkCenter workCenter,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice,
+      Unit unit,
+      CostSheetGroup costSheetGroup) {
+
     return this.createCostSheetLine(
         workCenter.getName(),
         priority + " - " + workCenter.getCode(),
         bomLevel,
         consumptionQty,
         costPrice,
-        workCenter.getCostSheetGroup(),
+        costSheetGroup,
         null,
         CostSheetLineRepository.TYPE_WORK_CENTER,
         unit,

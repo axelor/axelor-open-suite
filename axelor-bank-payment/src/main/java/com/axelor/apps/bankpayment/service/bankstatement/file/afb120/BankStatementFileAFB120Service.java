@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.db.BankDetails;
@@ -67,9 +67,9 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
 
   @Inject
-  public BankStatementFileAFB120Service(BankStatementRepository bankStatementRepository) {
+  public BankStatementFileAFB120Service(BankStatementService bankStatementService) {
 
-    super(bankStatementRepository);
+    super(bankStatementService);
 
     this.cfonbToolService = Beans.get(CfonbToolService.class);
     this.currencyRepository = Beans.get(CurrencyRepository.class);
@@ -87,7 +87,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     List<Map<String, Object>> structuredContentFile = readFile();
 
     int sequence = 0;
-    bankStatement = bankStatementRepository.find(bankStatement.getId());
+    findBankStatement();
 
     for (Map<String, Object> structuredContentLine : structuredContentFile) {
 
@@ -96,13 +96,16 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
       } catch (Exception e) {
         TraceBackService.trace(
             new Exception(String.format("Line %s : %s", sequence, e), e), IException.IMPORT);
+        findBankStatement();
       } finally {
         if (sequence % 10 == 0) {
           JPA.clear();
-          bankStatement = bankStatementRepository.find(bankStatement.getId());
+          findBankStatement();
         }
       }
     }
+
+    JPA.clear();
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -149,8 +152,8 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
 
     BankStatementLineAFB120 bankStatementLineAFB120 =
         bankStatementLineAFB120Service.createBankStatementLine(
-            bankStatementRepository.find(bankStatement.getId()),
-            sequence++,
+            findBankStatement(),
+            sequence,
             bankDetails,
             (BigDecimal) structuredContentLine.get("debit"),
             (BigDecimal) structuredContentLine.get("credit"),
