@@ -12,6 +12,79 @@
 		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
 	</grid>
 	
+	<grid name="team-task-client-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate">
+		<hilite if="status == 'closed'" color="success"/>
+		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
+		<hilite if="priority == 'urgent'" color="warning"/>
+		<field name="name"/>
+		<field name="taskDate"/>
+		<field name="taskEndDate" hidden="true"/>
+		<field name="status"/>
+		<field name="projectCategory"/>
+		<field name="targetVersion"/>
+	</grid>
+
+	<form name="team-task-client-form" title="Task" model="com.axelor.team.db.TeamTask"
+		onNew="action-team-task-group-onnew" onLoad="action-team-task-group-timer-process" width="large">
+		<panel name="mainPanel">
+			<panel name="statusSelectPanel" colSpan="12">
+				<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			</panel>
+			<panel name="detailsPanel" colSpan="8" readonlyIf="id">
+				<field name="fullName" showTitle="false" colSpan="12">
+					<viewer depends="name">
+					<![CDATA[
+						<h3>
+							<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+						</h3>
+					]]>
+					</viewer>
+					<editor>
+						<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
+					</editor>
+				</field>
+				<field name="project" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
+				<field name="parentTask" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
+			</panel>
+			<panel name="actionsPanel" colSpan="4">
+				<button name="acceptOrderBtn" title="Accept Order" hideIf="!invoicingType || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="12" if-module="axelor-business-support"/>
+			</panel>
+			<panel name="characteristicsPanel" title="Characteristics" colSpan="12" readonlyIf="id">
+				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true"/>
+				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations"/>
+				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="version-form" grid-view="version-grid"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+			</panel>
+		</panel>
+		<panel-tabs name="mainPanelTab" readonlyIf="id">
+			<panel name="contentPanel" title="Content" colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+			</panel>
+			<panel name="treeViewPanel" title="Tree view" colSpan="12">
+				<panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>
+				<panel-related name="finishToStartSetPanel" field="finishToStartSet" colSpan="12">
+				<field name="name"/>
+				</panel-related>
+			</panel>
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
+				<field name="timeInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing"/>
+				<panel name="pricingPanel" showIf="timeInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
+					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
+					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
+					<field name="exTaxTotal" readonly="true" colSpan="4"/>
+				</panel>
+				<panel-related field="projectPlanningTimeSpentList" colSpan="12" showIf="timeInvoicing &amp;&amp; invoicingType == 1" readonly="true">
+					<field name="project"/>
+					<field name="task"/>
+					<field name="date"/>
+					<field name="realHours"/>
+				</panel-related>
+			</panel>
+		</panel-tabs>
+	</form>
+
 	<action-view name="action-dashlet-version-view-show-task" title="Ticket associated" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="business-support-version-team-task-grid"/>
 		<view type="form" name="team-task-form"/>

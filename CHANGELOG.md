@@ -28,6 +28,7 @@
 - Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 - APP for axelor-business-support.
 - Stock Correction
+- Business support module : New form/grid views of TeamTask for customers.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
