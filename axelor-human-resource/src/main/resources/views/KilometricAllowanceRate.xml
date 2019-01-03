@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<grid name="kilometric-allowance-rate-grid" title="Kilometric allowance rates" model="com.axelor.apps.hr.db.KilometricAllowanceRate" orderBy="kilometricAllowParam.code">
-	    <field name="kilometricAllowParam.name" />
-		<field name="kilometricAllowParam.code" />
-        <field name="kilometricAllowParam" hidden="true" />
-    </grid>
+  <grid name="kilometric-allowance-rate-grid" title="Kilometric allowance rates" model="com.axelor.apps.hr.db.KilometricAllowanceRate" orderBy="kilometricAllowParam.code">
+    <field name="kilometricAllowParam.name"/>
+    <field name="kilometricAllowParam.code"/>
+    <field name="kilometricAllowParam" hidden="true"/>
+  </grid>
 
-    <form name="kilometric-allowance-rate-form" title="Kilometric allowance rate" model="com.axelor.apps.hr.db.KilometricAllowanceRate">
-    	<panel name="main">
-		    <field name="kilometricAllowParam" />
-        </panel>
-        <panel-related field="kilometricAllowanceRuleList" form-view="kilometric-allowance-rule-form" grid-view="kilometric-allowance-rule-grid"/>
-    </form>
+  <form name="kilometric-allowance-rate-form" title="Kilometric allowance rate" model="com.axelor.apps.hr.db.KilometricAllowanceRate">
+    <panel>
+      <field name="kilometricAllowParam" canNew="true"/>
+    </panel>
+    <panel-related field="kilometricAllowanceRuleList" form-view="kilometric-allowance-rule-form" grid-view="kilometric-allowance-rule-grid"/>
+  </form>
 
 </object-views>
