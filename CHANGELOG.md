@@ -37,6 +37,7 @@
 - Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder. 
 - Project : Display task field on logTimesPanel.
 - Project : Default value set for ProjectPlanningTime.product.
+- TeamTask : Change in team-task-form view. 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
