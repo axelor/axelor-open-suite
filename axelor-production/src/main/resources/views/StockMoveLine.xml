@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
-    orderBy="stockMove.statusSelect" model="com.axelor.apps.stock.db.StockMoveLine"
+    orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
@@ -20,7 +20,7 @@
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
-    orderBy="stockMove.statusSelect,product.name,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
+    orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />

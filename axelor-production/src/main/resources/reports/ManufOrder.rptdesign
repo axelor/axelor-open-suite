@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -126,6 +126,18 @@
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
+        </scalar-parameter>
+        <scalar-parameter name="activateBarCodeGeneration" id="4587">
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
         </scalar-parameter>
     </parameters>
     <data-sources>
@@ -2943,6 +2955,19 @@ INNER JOIN
                                     <property name="dataType">string</property>
                                     <property name="allowExport">true</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">is_barcode_available</property>
+                                    <property name="dataType">integer</property>
+                                    <property name="aggregateFunction">COUNT</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">row["bar_code"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <expression name="filterExpr" type="javascript">row["bar_code"]!=null</expression>
+                                    <property name="allowExport">true</property>
+                                </structure>
                             </list-property>
                             <list-property name="filter">
                                 <structure>
@@ -2955,6 +2980,12 @@ INNER JOIN
                                 </structure>
                             </list-property>
                             <column id="4576">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value || row["is_barcode_available"]==0</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">3.571875cm</property>
                             </column>
                             <column id="4182">
@@ -3055,6 +3086,10 @@ INNER JOIN
                                 <row id="4200">
                                     <cell id="4572">
                                         <property name="backgroundColor">#FFFFFF</property>
+                                        <data id="4588">
+                                            <property name="display">none</property>
+                                            <property name="resultSetColumn">is_barcode_available</property>
+                                        </data>
                                     </cell>
                                     <cell id="4201">
                                         <property name="backgroundColor">#FFFFFF</property>
@@ -3328,9 +3363,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -3607,6 +3642,19 @@ else dataSetRow["planned_end_datet"]</expression>
                                     <expression name="expression" type="javascript">dataSetRow["operation_name"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">is_operation_barcode_available</property>
+                                    <property name="dataType">integer</property>
+                                    <property name="aggregateFunction">COUNT</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">row["bar_code_path"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <expression name="filterExpr" type="javascript">row["bar_code_path"]!=null</expression>
+                                    <property name="allowExport">true</property>
+                                </structure>
                             </list-property>
                             <property name="repeatHeader">false</property>
                             <column id="4391">
@@ -3673,7 +3721,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                 <row id="4379">
                                     <cell id="4380"/>
                                     <cell id="4557"/>
-                                    <cell id="4381"/>
+                                    <cell id="4381">
+                                        <data id="4589">
+                                            <property name="display">none</property>
+                                            <property name="resultSetColumn">is_operation_barcode_available</property>
+                                        </data>
+                                    </cell>
                                 </row>
                             </header>
                             <group id="4400">
@@ -3800,13 +3853,23 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="rowSpan">4</property>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
+                                            <list-property name="highlightRules">
+                                                <structure>
+                                                    <property name="operator">eq</property>
+                                                    <property name="backgroundColor">#E5E5E5</property>
+                                                    <expression name="testExpr" type="javascript">row["is_operation_barcode_available"]</expression>
+                                                    <simple-property-list name="value1">
+                                                        <value type="javascript">0</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
                                             <image id="4531">
+                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
-                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4200,9 +4263,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
+                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">

@@ -177,7 +177,7 @@
 "ManufOrder.origin","Origin",,
 "ManufOrder.plannedStartDate","Planned start date",,
 "ManufOrder.product","Product",,
-"ManufOrder.productBarcode","Product Barcode",,
+"ManufOrder.productBarcode","Barcode",,
 "ManufOrder.productCode","Product Code",,
 "ManufOrder.productName","Product Name",,
 "ManufOrder.productionProcess","Production Process",,

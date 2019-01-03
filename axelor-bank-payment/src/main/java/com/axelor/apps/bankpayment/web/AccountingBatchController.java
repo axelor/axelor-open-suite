@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -41,10 +42,15 @@ public class AccountingBatchController {
   }
 
   public void actionBankStatement(ActionRequest request, ActionResponse response) {
-    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-    Batch batch = accountingBatchService.bankStatement(accountingBatch);
-    response.setFlash(batch.getComments());
-    response.setReload(true);
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+      Batch batch = accountingBatchService.bankStatement(accountingBatch);
+      response.setFlash(batch.getComments());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 }
