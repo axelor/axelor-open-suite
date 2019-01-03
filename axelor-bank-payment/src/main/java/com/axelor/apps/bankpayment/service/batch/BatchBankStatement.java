@@ -20,13 +20,13 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -34,7 +34,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.List;
@@ -50,8 +49,6 @@ public class BatchBankStatement extends AbstractBatch {
   @Inject protected EbicsPartnerService ebicsPartnerService;
 
   @Inject protected BankStatementService bankStatementService;
-
-  @Inject protected BankStatementRepository bankStatementRepository;
 
   @Override
   protected void process() {
@@ -76,10 +73,11 @@ public class BatchBankStatement extends AbstractBatch {
         for (BankStatement bankStatement : bankStatementList) {
 
           try {
-            bankStatementService.runImport(
-                bankStatementRepository.find(bankStatement.getId()), false);
+            bankStatementService.runImport(bankStatement, false);
           } catch (AxelorException e) {
             processError(e, e.getCategory(), ebicsPartner);
+          } finally {
+            JPA.clear();
           }
         }
 
@@ -87,22 +85,23 @@ public class BatchBankStatement extends AbstractBatch {
 
       } catch (AxelorException e) {
         processError(e, e.getCategory(), ebicsPartner);
-      } catch (IOException e) {
+      } catch (Exception e) {
         processError(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ebicsPartner);
       }
     }
   }
 
   protected void processError(Exception cause, int category, EbicsPartner ebicsPartner) {
+    log.error(cause.getMessage(), cause);
     incrementAnomaly();
-    log.error(cause.getMessage());
-    // TODO in v5: link Axelor exception to ebicsPartner instead of custom message.
-    String message =
-        String.format(
+    AxelorException exception =
+        new AxelorException(
+            cause,
+            ebicsPartner,
+            category,
             IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
-    AxelorException exception = new AxelorException(message, cause, category);
     TraceBackService.trace(exception, IException.BANK_STATEMENT, batch.getId());
   }
 

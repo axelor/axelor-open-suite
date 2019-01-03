@@ -220,10 +220,11 @@ public class SaleOrderLineController {
       if (discounts != null) {
         BigDecimal price = (BigDecimal) discounts.get("price");
         if (price != null
-            && price
-                != (saleOrderLine.getProduct().getInAti()
-                    ? saleOrderLine.getInTaxPrice()
-                    : saleOrderLine.getPrice())) {
+            && price.compareTo(
+                    saleOrderLine.getProduct().getInAti()
+                        ? saleOrderLine.getInTaxPrice()
+                        : saleOrderLine.getPrice())
+                != 0) {
           if (saleOrderLine.getProduct().getInAti()) {
             response.setValue("inTaxPrice", price);
             response.setValue(

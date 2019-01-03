@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.google.inject.Inject;
@@ -73,5 +74,12 @@ public class ProductStockRepository extends ProductBaseRepository {
     }
 
     return json;
+  }
+
+  @Override
+  public Product copy(Product product, boolean deep) {
+    Product copy = super.copy(product, deep);
+    copy.setAvgPrice(BigDecimal.ZERO);
+    return copy;
   }
 }
