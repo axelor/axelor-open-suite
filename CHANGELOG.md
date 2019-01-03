@@ -24,6 +24,7 @@ Add sale order and client partner fields on production order.
 - MANUF ORDER : Assign draft sequence on repository save method.
 - Delete commented-out code.
 - STOCKMOVE : display the boolean field "fullySpreadOverLogisticalFormsFlag" on form view and allow to reset it manually.
+- Stock move line : now displays an (untaxed) valuated unit price in company currency.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
@@ -456,7 +457,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Factor : New Organization for debt recovery submenu.
 - Inventory : Do not update average price when validating an inventory.
 - Show delivery state in sale order grid view.
-- Account: Reset fields on onchange action in Accounting Report. 
+- Account: Reset fields on onchange action in Accounting Report.
 - Advance Export : Default value for selection translation.
 
 ## Bug Fixes

@@ -396,7 +396,6 @@ public class InventoryService {
                 product.getDescription(),
                 diff,
                 avgPrice,
-                avgPrice,
                 product.getUnit(),
                 stockMove,
                 StockMoveLineService.TYPE_NULL,
