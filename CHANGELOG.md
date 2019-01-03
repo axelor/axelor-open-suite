@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.0.8]
 ## Features
+ - Account: add option to automatically create partners' accounts
+
 ## Improvements
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
