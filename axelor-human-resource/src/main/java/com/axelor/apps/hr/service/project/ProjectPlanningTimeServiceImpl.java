@@ -139,7 +139,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    boolean isTimeSpent = (boolean) datas.get("_timeSpent");
+    boolean isTimeSpent = false;
+    if (datas.get("_timeSpent") != null) {
+      isTimeSpent = (boolean) datas.get("_timeSpent");
+    }
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
