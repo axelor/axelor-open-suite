@@ -451,6 +451,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock Chart: fix wrong action name.
 - App Sale: fix unresolved action error.
 - Payment voucher: fix confirm button display on credit card supplier payments.
+- General balance report : fix wrong sums when we filter on some accounts of the same branch
 
 ## [5.0.7] - 2018-12-13
 ## Features
