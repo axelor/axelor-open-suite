@@ -2,7 +2,8 @@
 
 ## [Unreleased 5.0.8]
 ## Features
- - Account: add option to automatically create partners' accounts
+- Account: add option to automatically create partners' accounts
+- Account: use partner name as default account name when creating from partner's account configuration screen.
 
 ## Improvements
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
