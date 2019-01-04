@@ -40,6 +40,10 @@ public class TraceBackService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  // TYPE SELECT
+  protected static final int TYPE_TECHNICAL = 0;
+  protected static final int TYPE_FUNCTIONAL = 1;
+
   /**
    * Créer un log des exceptions en tant qu'anomalie.
    *
@@ -48,7 +52,7 @@ public class TraceBackService {
    *     2 = Aucune valeur retournée</code> <code>3 = Problème de configuration</code>
    */
   private static TraceBack _create(
-      Exception e, String origin, int typeSelect, int categorySelect, long batchId) {
+      Throwable e, String origin, int typeSelect, int categorySelect, long batchId) {
 
     StringWriter sw = new StringWriter();
     e.printStackTrace(new PrintWriter(sw));
@@ -79,13 +83,12 @@ public class TraceBackService {
     return traceBack;
   }
 
-  private static TraceBack _create(Exception e, String origin, int categorySelect, long batchId) {
-    return _create(e, origin, TraceBackRepository.TYPE_TECHNICAL, categorySelect, batchId);
+  private static TraceBack _create(Throwable e, String origin, int categorySelect, long batchId) {
+    return _create(e, origin, TYPE_TECHNICAL, categorySelect, batchId);
   }
 
   private static TraceBack _create(AxelorException e, String origin, long batchId) {
-    TraceBack traceBack =
-        _create(e, origin, TraceBackRepository.TYPE_FUNCTIONNAL, e.getCategory(), batchId);
+    TraceBack traceBack = _create(e, origin, TYPE_FUNCTIONAL, e.getCategory(), batchId);
 
     if (e.getRefClass() != null) {
       traceBack.setRef(e.getRefClass().getName());
@@ -102,7 +105,7 @@ public class TraceBackService {
    * @param e L'exception cible.
    */
   private static void _response(
-      ActionResponse response, Exception e, ResponseMessageType responseMessageType) {
+      ActionResponse response, Throwable e, ResponseMessageType responseMessageType) {
 
     String message = e.getMessage() != null ? e.getMessage() : e.toString();
     responseMessageType.setMessage(response, message);
@@ -113,22 +116,17 @@ public class TraceBackService {
    *
    * @param e L'exception cible.
    */
-  public static void trace(final Exception e, final String origin) {
+  public static void trace(final Throwable e, final String origin) {
 
     JPA.runInTransaction(
-        new Runnable() {
+        () -> {
+          if (e instanceof AxelorException) {
 
-          @Override
-          public void run() {
+            LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
 
-            if (e instanceof AxelorException) {
+          } else {
 
-              LOG.trace(_create((AxelorException) e, origin, 0).getTrace());
-
-            } else {
-
-              LOG.error(_create(e, origin, 0, 0).getTrace());
-            }
+            LOG.error(_create(e, origin, 0, 0).getTrace());
           }
         });
   }
@@ -140,15 +138,7 @@ public class TraceBackService {
    */
   public static void trace(final AxelorException e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(
-        new Runnable() {
-
-          @Override
-          public void run() {
-
-            LOG.trace(_create(e, origin, batchId).getTrace());
-          }
-        });
+    JPA.runInTransaction(() -> LOG.trace(_create(e, origin, batchId).getTrace()));
   }
 
   /**
@@ -156,17 +146,9 @@ public class TraceBackService {
    *
    * @param e L'exception cible.
    */
-  public static void trace(final Exception e, final String origin, final long batchId) {
+  public static void trace(final Throwable e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(
-        new Runnable() {
-
-          @Override
-          public void run() {
-
-            LOG.error(_create(e, origin, 0, batchId).getTrace());
-          }
-        });
+    JPA.runInTransaction(() -> LOG.error(_create(e, origin, 0, batchId).getTrace()));
   }
 
   /**
@@ -174,7 +156,7 @@ public class TraceBackService {
    *
    * @param e L'exception cible.
    */
-  public static void trace(Exception e) {
+  public static void trace(Throwable e) {
 
     trace(e, null);
   }
@@ -198,7 +180,7 @@ public class TraceBackService {
    * @param response
    * @param e L'exception cible.
    */
-  public static void trace(ActionResponse response, Exception e, String origin) {
+  public static void trace(ActionResponse response, Throwable e, String origin) {
 
     trace(e, origin);
     _response(response, e, ResponseMessageType.INFORMATION);
@@ -211,7 +193,7 @@ public class TraceBackService {
    * @param response
    * @param e L'exception cible.
    */
-  public static void trace(ActionResponse response, Exception e) {
+  public static void trace(ActionResponse response, Throwable e) {
 
     trace(response, e, (String) null);
   }
@@ -227,7 +209,7 @@ public class TraceBackService {
    */
   public static void trace(
       ActionResponse response,
-      Exception e,
+      Throwable e,
       String origin,
       ResponseMessageType responseMessageType) {
 
@@ -244,7 +226,7 @@ public class TraceBackService {
    * @param responseMessageType
    */
   public static void trace(
-      ActionResponse response, Exception e, ResponseMessageType responseMessageType) {
+      ActionResponse response, Throwable e, ResponseMessageType responseMessageType) {
 
     trace(response, e, null, responseMessageType);
   }

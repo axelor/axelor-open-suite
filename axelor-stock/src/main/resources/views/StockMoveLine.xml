@@ -167,7 +167,7 @@
 	</grid>
 
     <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine"
-    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision,action-inventory-line-attrs-tracking-number" readonlyIf="stockMove.statusSelect == 3" width="large"
+    	onNew="action-stock-move-line-record-new" onLoad="action-stock-move-line-attrs-scale-and-precision" readonlyIf="stockMove.statusSelect == 3" width="large"
     	canNew="false" canDelete="false">
         <panel name="stockMove" title="Stock move">
 	    	<field name="stockMove.stockMoveSeq"/>
@@ -205,13 +205,11 @@
 
     <action-group name="action-stock-move-line-group-onload">
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
-        <action name="action-inventory-line-attrs-tracking-number"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
 	</action-group>
 
     <action-group name="action-group-stock-stockmoveline-product-onchange">
-    	<action name="action-inventory-line-attrs-tracking-number"/>
     	<action name="action-stock-move-line-set-product-info"/>
     	<action name="action-stock-move-line-compute-price"/>
     	<action name="action-stock-move-line-store-product-type"/>

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -99,9 +100,12 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param company
    * @param paymentMode
    * @return
+   * @throws AxelorException
    */
   @Override
-  public String createCompanyBankDetailsDomain(Company company, PaymentMode paymentMode) {
+  public String createCompanyBankDetailsDomain(
+      Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
+      throws AxelorException {
     if (company == null) {
       return "self.id IN (0)";
     }
@@ -113,7 +117,9 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
   @Override
   public BankDetails getDefaultCompanyBankDetails(
-      Company company, PaymentMode paymentMode, Partner partner) {
+      Company company, PaymentMode paymentMode, Partner partner, Integer operationTypeSelect)
+      throws AxelorException {
+
     BankDetails bankDetails = company.getDefaultBankDetails();
     if (bankDetails != null && bankDetails.getActive()) {
       return company.getDefaultBankDetails();

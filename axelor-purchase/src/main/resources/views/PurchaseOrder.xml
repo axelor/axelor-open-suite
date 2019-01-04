@@ -14,6 +14,8 @@
             </menu>
         </menubar>
 		<field name="purchaseOrderSeq"/>
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="orderDate"/>
@@ -34,6 +36,8 @@
             </menu>
         </menubar>
 		<field name="purchaseOrderSeq"/>
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
         <field name="orderDate"/>
@@ -115,7 +119,7 @@
 		</panel>
 
 		<panel name="supplierInformation" title="Supplier information"  hideIf="company == null">
-			<field name="supplierPartner" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierPartner" canEdit="false" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner"
 				domain="self.isContact = true"
 				form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -170,10 +174,10 @@
 			<button name="draft" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requested" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="validate" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
-			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save"/>
+			<button name="completed" title="Completed" showIf="statusSelect == 3"   onClick="action-purchase-order-record-completed,save" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))"/>
 			<button name="showInvoice" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 			<button name="generateSupplierStockMove" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnSO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
-            <button name="finishManuallyPurchaseOrder" title="Finish the order" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
+            <button name="finishManuallyPurchaseOrder" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
 			<spacer/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2"   onClick="save,action-purchase-order-record-cancel"/>
 		</panel>
@@ -228,6 +232,8 @@
 		<field name="statusSelect"/>
 		<field name="receiptState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -267,6 +273,10 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -282,6 +292,8 @@
 		<field name="statusSelect"/>
 		<field name="receiptState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -321,6 +333,10 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -347,10 +363,8 @@
     <action-group name="action-group-purchase-order-on-load-actions">
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
-		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="action-purchase-order-attrs-interco"/>
-		<action name="save"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -547,7 +561,7 @@
 	</action-validate>
 
 	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner.purchaseOrderInformation != null"/>
+		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">

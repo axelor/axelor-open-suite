@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.base.service.app;
 
 import com.axelor.auth.db.AuditableModel;
@@ -27,6 +26,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -150,8 +150,9 @@ public class DataBackupCreateService {
             fileNameList.add(metaModel.getName() + ".csv");
           }
         }
-      } catch (ClassNotFoundException | IOException | InterruptedException e) {
-        e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+      } catch (IOException e) {
+        TraceBackService.trace(e);
       }
     }
 
@@ -164,7 +165,7 @@ public class DataBackupCreateService {
 
     fileNameList.add(DataBackupServiceImpl.configFileName);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
-    LOG.debug("Data Import Completed");
+    LOG.debug("Data Backup Completed");
     return zippedFile;
   }
 
@@ -180,16 +181,22 @@ public class DataBackupCreateService {
 
   /* Get All Data of Specific MetaModel */
   private List<Model> getMetaModelDataList(MetaModel metaModel, int start, Integer fetchLimit) {
-    return JPA.em()
-        .createQuery("FROM " + metaModel.getName(), Model.class)
-        .setHint(QueryHints.MAINTAIN_CACHE, HintValues.FALSE)
-        .setFirstResult(start)
-        .setMaxResults(fetchLimit)
-        .getResultList();
+    List<Model> metaModelDataList = new ArrayList<>();
+    try {
+      metaModelDataList =
+          JPA.em()
+              .createQuery("FROM " + metaModel.getName(), Model.class)
+              .setHint(QueryHints.MAINTAIN_CACHE, HintValues.FALSE)
+              .setFirstResult(start)
+              .setMaxResults(fetchLimit)
+              .getResultList();
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return metaModelDataList;
   }
 
-  private long getMetaModelDataCount(MetaModel metaModel)
-      throws InterruptedException, ClassNotFoundException {
+  private long getMetaModelDataCount(MetaModel metaModel) {
     return (long)
         JPA.em().createQuery("SELECT count(*) FROM " + metaModel.getName()).getSingleResult();
   }
@@ -242,7 +249,6 @@ public class DataBackupCreateService {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
       }
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
     }
     return csvInput;
   }
@@ -372,8 +378,7 @@ public class DataBackupCreateService {
       }
       out.close();
     } catch (IOException e) {
-      e.printStackTrace();
-      LOG.debug("Error From DataBackupCreateService - generateZIP() : " + e.getMessage());
+      TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
     return zipFile;
   }
@@ -391,8 +396,7 @@ public class DataBackupCreateService {
 
       fileWriter.close();
     } catch (IOException e) {
-      e.printStackTrace();
-      LOG.debug("Error From DataBackupCreateService - generateConfig() : " + e.getMessage());
+      TraceBackService.trace(e, "Error From DataBackupCreateService - generateConfig()");
     }
   }
 }

@@ -24,25 +24,27 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
-import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   protected PurchaseProductService purchaseProductService;
+
+  @Inject protected AppBaseService appBaseService;
+
+  @Inject protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public InvoiceLineSupplychainService(
@@ -82,48 +84,35 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   }
 
   @Override
-  public Map<String, Object> getDiscount(
-      Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
+  public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
+      throws AxelorException {
 
-    PriceList priceList = invoice.getPriceList();
-    BigDecimal discountAmount = BigDecimal.ZERO;
-    int computeMethodDiscountSelect =
-        appAccountService.getAppBase().getComputeMethodDiscountSelect();
+    Map<String, Object> discounts = new HashMap<>();
 
-    Map<String, Object> discounts = super.getDiscount(invoice, invoiceLine, price);
+    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+      Map<String, Object> catalogInfo = this.updateInfoFromCatalog(invoice, invoiceLine);
 
-    if (priceList != null) {
-      discountAmount = (BigDecimal) discounts.get("discountAmount");
-    }
-
-    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-        && discountAmount.compareTo(BigDecimal.ZERO) == 0) {
-      List<SupplierCatalog> supplierCatalogList = invoiceLine.getProduct().getSupplierCatalogList();
-      if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
-        SupplierCatalog supplierCatalog =
-            Beans.get(SupplierCatalogRepository.class)
-                .all()
-                .filter(
-                    "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
-                    invoiceLine.getProduct(),
-                    invoiceLine.getQty(),
-                    invoice.getPartner())
-                .fetchOne();
-        if (supplierCatalog != null) {
-
-          discounts = purchaseProductService.getDiscountsFromCatalog(supplierCatalog, price);
-
-          if (computeMethodDiscountSelect != AppBaseRepository.DISCOUNT_SEPARATE) {
-            discounts.put(
-                "price",
-                priceListService.computeDiscount(
-                    price,
-                    (int) discounts.get("discountTypeSelect"),
-                    (BigDecimal) discounts.get("discountAmount")));
-          }
+      if (catalogInfo != null) {
+        if (catalogInfo.get("price") != null) {
+          price = (BigDecimal) catalogInfo.get("price");
         }
+        discounts.put("productName", catalogInfo.get("productName"));
       }
     }
+
+    discounts.putAll(super.getDiscount(invoice, invoiceLine, price));
+
     return discounts;
+  }
+
+  private Map<String, Object> updateInfoFromCatalog(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+
+    return supplierCatalogService.updateInfoFromCatalog(
+        invoiceLine.getProduct(),
+        invoiceLine.getQty(),
+        invoice.getPartner(),
+        invoice.getCurrency(),
+        invoice.getInvoiceDate());
   }
 }

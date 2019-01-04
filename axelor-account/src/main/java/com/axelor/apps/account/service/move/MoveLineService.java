@@ -105,6 +105,8 @@ public class MoveLineService {
             != AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       for (AnalyticMoveLine analyticDistributionLine : analyticMoveLineList) {
         analyticDistributionLine.setMoveLine(moveLine);
+        analyticDistributionLine.setAccount(moveLine.getAccount());
+        analyticDistributionLine.setAccountType(moveLine.getAccount().getAccountType());
         analyticDistributionLine.setAmount(
             analyticMoveLineService.computeAmount(analyticDistributionLine));
         analyticDistributionLine.setDate(appAccountService.getTodayDate());
@@ -817,7 +819,7 @@ public class MoveLineService {
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
     List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
 
-    Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
 
     populateCredit(moveLineMap, reconciliableCreditMoveLineList);
 
@@ -838,36 +840,36 @@ public class MoveLineService {
   }
 
   private void populateCredit(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
   }
 
   private void populateDebit(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
   }
 
   private void populateMoveLineMap(
-      Map<Pair<Company, Partner>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
     for (MoveLine moveLine : reconciliableMoveLineList) {
 
       Move move = moveLine.getMove();
 
-      if (move.getCompany() == null || move.getPartner() == null) {
-        continue;
-      }
+      List<Object> keys = new ArrayList<Object>();
 
-      Pair<Company, Partner> key = Pair.of(move.getCompany(), move.getPartner());
+      keys.add(move.getCompany());
+      keys.add(moveLine.getAccount());
+      keys.add(moveLine.getPartner());
 
-      Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(key);
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(keys);
 
       if (moveLineLists == null) {
         moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
-        moveLineMap.put(key, moveLineLists);
+        moveLineMap.put(keys, moveLineLists);
       }
 
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();

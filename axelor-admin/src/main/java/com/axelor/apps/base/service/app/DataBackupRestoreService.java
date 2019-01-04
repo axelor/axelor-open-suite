@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.axelor.apps.base.service.app;
 
 import com.axelor.common.StringUtils;
@@ -23,6 +22,7 @@ import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
@@ -88,7 +88,7 @@ public class DataBackupRestoreService {
             }
           });
       csvImporter.run();
-      LOG.info("Data Export Completed");
+      LOG.info("Data Restore Completed");
       FileUtils.cleanDirectory(new File(tempDir.getAbsolutePath()));
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
       String logFileName = "DataBackupLog_" + LocalDateTime.now().format(formatter) + ".log";
@@ -99,8 +99,7 @@ public class DataBackupRestoreService {
       pw.close();
       return file;
     } catch (IOException e) {
-      LOG.error(e.getMessage());
-      e.printStackTrace();
+      TraceBackService.trace(e);
       return null;
     }
   }

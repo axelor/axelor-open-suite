@@ -57,7 +57,7 @@
 				<field name="publicHolidayEventsPlanning" form-view="events-planning-form" grid-view="events-planning-grid" canNew="true" />
 	  		</panel>
 	    	<panel name="bankDetails" title="Bank details">
-                <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain"/>
+                <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	      		<panel-related field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
 	    	<panel name="orderBloquedMessage" title="Order Bloqued Message" if-module="axelor-sale" if="__config__.app.isApp('sale')">

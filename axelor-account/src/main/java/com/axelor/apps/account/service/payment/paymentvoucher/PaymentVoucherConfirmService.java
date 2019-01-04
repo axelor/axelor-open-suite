@@ -331,7 +331,7 @@ public class PaymentVoucherConfirmService {
           reconcileService.balanceCredit(moveLine);
         }
       }
-      moveService.getMoveValidateService().validateMove(move);
+      moveService.getMoveValidateService().validate(move);
       paymentVoucher.setGeneratedMove(move);
     }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);

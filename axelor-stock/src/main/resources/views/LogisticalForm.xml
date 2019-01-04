@@ -27,8 +27,8 @@
                 onClick="action-logistical-form-carrier-validated" icon="fa-check" />
             <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-logistical-form-process-collected" icon="fa-truck" />
-            <button name="packagingListBtn" title="Print packaging list" readonlyIf="!logisticalFormLineList.length"
-                onClick="action-logistical-form-print-packaging-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
+            <button name="packingListBtn" title="Print packing list" readonlyIf="!logisticalFormLineList.length"
+                onClick="action-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
             <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" />
         </toolbar>
         <panel colSpan="12" readonlyIf="statusSelect > 1">

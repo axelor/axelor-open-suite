@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -243,6 +243,9 @@ left outer join public.base_period as Period on (Move.period = Period.id)
 									
 where AccountingReport.year = Period.year
 and AccountType.technical_type_select = 'receivable'
+AND  Move.ignore_in_accounting_ok = false 
+and (Move.status_select = 3 OR Move.status_select = 2)
+
 group by AccountingReport.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -96,6 +97,7 @@ public class PurchaseOrderLineController {
     try {
       Optional<TaxLine> taxLine =
           purchaseOrderLineService.getOptionalTaxLine(purchaseOrder, purchaseOrderLine);
+      purchaseOrderLine.setTaxLine(taxLine.orElse(null));
       response.setValue("taxLine", taxLine.orElse(null));
 
       BigDecimal price =
@@ -111,10 +113,15 @@ public class PurchaseOrderLineController {
 
       // Do not interrupt process if product is not in catalog. Purchase price will use
       // its default value if configuration says so (handled in get*TaxUnitPrice).
-      if (StringUtils.isBlank(productName)) productName = product.getName();
+      if (StringUtils.isBlank(productName) && StringUtils.isBlank(productCode)) {
+        productName = product.getName();
+        productCode = product.getCode();
+      }
 
       response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
-      response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder, purchaseOrderLine));
+      BigDecimal qty = purchaseOrderLineService.getQty(purchaseOrder, purchaseOrderLine);
+      purchaseOrderLine.setQty(qty);
+      response.setValue("qty", qty);
 
       Tax tax =
           Beans.get(AccountManagementService.class)
@@ -127,6 +134,43 @@ public class PurchaseOrderLineController {
               .getTaxEquiv(purchaseOrder.getSupplierPartner().getFiscalPosition(), tax);
       response.setValue("taxEquiv", taxEquiv);
 
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscountsFromPriceLists(
+              purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
+
+      if (discounts != null) {
+        if (discounts.get("price") != null) {
+          BigDecimal discountPrice = (BigDecimal) discounts.get("price");
+          if (purchaseOrderLine.getProduct().getInAti()) {
+            inTaxPrice = discountPrice;
+            price =
+                purchaseOrderLineService.convertUnitPrice(
+                    true, purchaseOrderLine.getTaxLine(), discountPrice);
+          } else {
+            price = discountPrice;
+            inTaxPrice =
+                purchaseOrderLineService.convertUnitPrice(
+                    false, purchaseOrderLine.getTaxLine(), discountPrice);
+          }
+        }
+        if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()
+            && (Integer) discounts.get("discountTypeSelect")
+                != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+          response.setValue(
+              "discountAmount",
+              purchaseOrderLineService.convertUnitPrice(
+                  purchaseOrderLine.getProduct().getInAti(),
+                  purchaseOrderLine.getTaxLine(),
+                  (BigDecimal) discounts.get("discountAmount")));
+        } else {
+          response.setValue("discountAmount", discounts.get("discountAmount"));
+        }
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+      }
+
+      response.setValue("price", price);
+      response.setValue("inTaxPrice", inTaxPrice);
+
       response.setValue(
           "saleMinPrice",
           purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
@@ -137,47 +181,12 @@ public class PurchaseOrderLineController {
               purchaseOrderLine.getProduct(),
               purchaseOrder.getInAti() ? inTaxPrice : price));
 
-      Map<String, Object> discounts;
-      discounts =
-          purchaseOrderLineService.getDiscount(
-              purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
-
-      if (discounts != null) {
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          if (product.getInAti()) {
-            inTaxPrice = (BigDecimal) discounts.get("price");
-            price =
-                purchaseOrderLineService.convertUnitPrice(true, taxLine.orElse(null), inTaxPrice);
-          } else {
-            price = (BigDecimal) discounts.get("price");
-            inTaxPrice =
-                purchaseOrderLineService.convertUnitPrice(false, taxLine.orElse(null), price);
-          }
-        }
-      }
-
-      response.setValue("price", price);
-      response.setValue("inTaxPrice", inTaxPrice);
-      response.setValue("productName", productName);
-      response.setValue("productCode", productCode);
-
       if (!taxLine.isPresent()) {
-        String msg;
-
-        if (purchaseOrder.getCompany() != null) {
-          msg =
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_3),
-                  product.getCode(),
-                  purchaseOrder.getCompany().getName());
-        } else {
-          msg =
-              String.format(
-                  I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_2),
-                  product.getCode());
-        }
+        String msg =
+            String.format(
+                I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ACCOUNT_MANAGEMENT_3),
+                product.getCode(),
+                purchaseOrder.getCompany().getName());
 
         response.setFlash(msg);
       }
@@ -204,6 +213,7 @@ public class PurchaseOrderLineController {
     response.setValue("companyInTaxTotal", null);
     response.setValue("companyExTaxTotal", null);
     response.setValue("productCode", null);
+    response.setValue("qty", BigDecimal.ONE);
     response.setAttr("minQtyNotRespectedLabel", "hidden", true);
     response.setAttr("multipleQtyNotRespectedLabel", "hidden", true);
   }
@@ -228,7 +238,7 @@ public class PurchaseOrderLineController {
             purchaseOrderLine.getTaxLine().getTax()));
   }
 
-  public void getDiscount(ActionRequest request, ActionResponse response) {
+  public void updateProductInformation(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
@@ -241,36 +251,67 @@ public class PurchaseOrderLineController {
     }
 
     try {
-      Map<String, Object> discounts;
-      if (purchaseOrderLine.getProduct().getInAti()) {
-        discounts =
-            purchaseOrderLineService.getDiscount(
-                purchaseOrder, purchaseOrderLine, purchaseOrderLine.getInTaxPrice());
-      } else {
-        discounts =
-            purchaseOrderLineService.getDiscount(
-                purchaseOrder, purchaseOrderLine, purchaseOrderLine.getPrice());
+      BigDecimal price =
+          purchaseOrderLine.getProduct().getInAti()
+              ? purchaseOrderLineService.getInTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine())
+              : purchaseOrderLineService.getExTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
+
+      Map<String, Object> catalogInfo =
+          purchaseOrderLineService.updateInfoFromCatalog(purchaseOrder, purchaseOrderLine);
+
+      if (catalogInfo != null) {
+        if (catalogInfo.get("price") != null) {
+          price = (BigDecimal) catalogInfo.get("price");
+        }
+        response.setValue("productName", catalogInfo.get("productName"));
+        response.setValue("productCode", catalogInfo.get("productCode"));
       }
 
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscountsFromPriceLists(
+              purchaseOrder, purchaseOrderLine, price);
+
       if (discounts != null) {
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
         if (discounts.get("price") != null) {
-          if (purchaseOrderLine.getProduct().getInAti()) {
-            response.setValue("inTaxPrice", discounts.get("price"));
-            response.setValue(
-                "price",
-                purchaseOrderLineService.convertUnitPrice(
-                    true, purchaseOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          } else {
-            response.setValue("price", discounts.get("price"));
-            response.setValue(
-                "inTaxPrice",
-                purchaseOrderLineService.convertUnitPrice(
-                    false, purchaseOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          }
+          price = (BigDecimal) discounts.get("price");
+        }
+        if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()
+            && (Integer) discounts.get("discountTypeSelect")
+                != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+          response.setValue(
+              "discountAmount",
+              purchaseOrderLineService.convertUnitPrice(
+                  purchaseOrderLine.getProduct().getInAti(),
+                  purchaseOrderLine.getTaxLine(),
+                  (BigDecimal) discounts.get("discountAmount")));
+        } else {
+          response.setValue("discountAmount", discounts.get("discountAmount"));
+        }
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+      }
+
+      if (price.compareTo(
+              purchaseOrderLine.getProduct().getInAti()
+                  ? purchaseOrderLine.getInTaxPrice()
+                  : purchaseOrderLine.getPrice())
+          != 0) {
+        if (purchaseOrderLine.getProduct().getInAti()) {
+          response.setValue("inTaxPrice", price);
+          response.setValue(
+              "price",
+              purchaseOrderLineService.convertUnitPrice(
+                  true, purchaseOrderLine.getTaxLine(), price));
+        } else {
+          response.setValue("price", price);
+          response.setValue(
+              "inTaxPrice",
+              purchaseOrderLineService.convertUnitPrice(
+                  false, purchaseOrderLine.getTaxLine(), price));
         }
       }
+
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }

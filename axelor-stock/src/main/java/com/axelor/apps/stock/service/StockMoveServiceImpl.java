@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -435,13 +436,12 @@ public class StockMoveServiceImpl implements StockMoveService {
         MoreObjects.firstNonNull(stockMove.getStockMoveLineList(), Collections.emptyList());
     stockMove.clearPlannedStockMoveLineList();
 
-    stockMoveLineList
-        .stream()
-        .forEach(
-            stockMoveLine -> {
-              StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
-              stockMove.addPlannedStockMoveLineListItem(copy);
-            });
+    stockMoveLineList.forEach(
+        stockMoveLine -> {
+          StockMoveLine copy = stockMoveLineRepo.copy(stockMoveLine, false);
+          copy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(copy);
+        });
   }
 
   @Override
@@ -462,7 +462,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     String newStockSeq = null;
     stockMoveLineService.checkConformitySelection(stockMove);
-    stockMoveLineService.checkExpirationDates(stockMove);
+    checkExpirationDates(stockMove);
 
     stockMoveLineService.updateLocations(
         stockMove.getFromStockLocation(),
@@ -664,7 +664,13 @@ public class StockMoveServiceImpl implements StockMoveService {
         Unit startUnit = product.getWeightUnit();
 
         if (startUnit != null) {
-          netWeight = unitConversionService.convert(startUnit, endUnit, product.getNetWeight());
+          netWeight =
+              unitConversionService.convert(
+                  startUnit,
+                  endUnit,
+                  product.getNetWeight(),
+                  product.getNetWeight().scale(),
+                  product);
           stockMoveLine.setNetWeight(netWeight);
         }
       }
@@ -1243,10 +1249,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     String report = isPicking ? IReport.PICKING_STOCK_MOVE : IReport.STOCK_MOVE;
+    String locale =
+        isPicking
+            ? Beans.get(UserService.class).getLanguage()
+            : ReportSettings.getPrintingLocale(stockMove.getPartner());
 
     return ReportFactory.createReport(report, title + "-${date}")
         .addParam("StockMoveId", stockMoveIds)
-        .addParam("Locale", ReportSettings.getPrintingLocale(stockMove.getPartner()))
+        .addParam("Locale", locale)
         .generate()
         .getFileLink();
   }
@@ -1316,5 +1326,12 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(IExceptionMessage.CANCEL_REASON_BAD_TYPE));
     }
     stockMove.setCancelReason(cancelReason);
+  }
+
+  @Override
+  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+    if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMoveLineService.checkExpirationDates(stockMove);
+    }
   }
 }

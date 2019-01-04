@@ -66,8 +66,9 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
                   BigDecimal.ROUND_HALF_EVEN);
 
       costSheet.addCostSheetLineListItem(
-          costSheetLineService.createWorkCenterCostSheetLine(
+          costSheetLineService.createWorkCenterHRCostSheetLine(
               prodHumanResource.getWorkCenter(),
+              prodHumanResource,
               priority,
               bomLevel,
               parentCostSheetLine,

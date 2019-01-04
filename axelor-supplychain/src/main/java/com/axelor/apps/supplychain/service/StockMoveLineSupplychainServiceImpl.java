@@ -26,9 +26,8 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -44,7 +43,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @RequestScoped
@@ -57,6 +55,8 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
   private PurchaseProductService productService;
 
   private UnitConversionService unitConversionService;
+
+  @Inject private SupplierCatalogService supplierCatalogService;
 
   @Inject
   public StockMoveLineSupplychainServiceImpl(
@@ -80,12 +80,13 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
     BigDecimal unitPriceTaxed = BigDecimal.ZERO;
     TaxLine taxLine = null;
-    BigDecimal discountAmount = BigDecimal.ZERO;
+    BigDecimal discountAmount;
     if (stockMove == null
         || (stockMove.getSaleOrder() == null && stockMove.getPurchaseOrder() == null)) {
       return super.compute(stockMoveLine, stockMove);
     } else {
       if (stockMoveLine.getProduct() != null) {
+        BigDecimal price;
         if (stockMove.getSaleOrder() != null) {
           taxLine =
               accountManagementService.getTaxLine(
@@ -94,19 +95,20 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                   stockMove.getCompany(),
                   stockMove.getSaleOrder().getClientPartner().getFiscalPosition(),
                   false);
-          unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
+          price = stockMoveLine.getProduct().getSalePrice();
+
           PriceList priceList = stockMove.getSaleOrder().getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
                 priceListService.getPriceListLine(
-                    stockMoveLine.getProduct(), stockMoveLine.getQty(), priceList);
+                    stockMoveLine.getProduct(), stockMoveLine.getRealQty(), priceList);
             Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, unitPriceUntaxed);
+                priceListService.getDiscounts(priceList, priceListLine, price);
             if (discounts != null) {
               discountAmount = (BigDecimal) discounts.get("discountAmount");
-              unitPriceUntaxed =
+              price =
                   priceListService.computeDiscount(
-                      unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
+                      price, (int) discounts.get("discountTypeSelect"), discountAmount);
             }
           }
         } else {
@@ -117,49 +119,47 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
                   stockMove.getCompany(),
                   stockMove.getPurchaseOrder().getSupplierPartner().getFiscalPosition(),
                   true);
-          unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
+          price = stockMoveLine.getProduct().getPurchasePrice();
+
+          BigDecimal catalogPrice =
+              (BigDecimal)
+                  supplierCatalogService
+                      .updateInfoFromCatalog(
+                          stockMoveLine.getProduct(),
+                          stockMoveLine.getRealQty(),
+                          stockMove.getPurchaseOrder().getSupplierPartner(),
+                          stockMove.getPurchaseOrder().getCurrency(),
+                          stockMove.getPurchaseOrder().getOrderDate())
+                      .get("price");
+
+          if (catalogPrice != null) {
+            price = catalogPrice;
+          }
+
           PriceList priceList = stockMove.getPurchaseOrder().getPriceList();
           if (priceList != null) {
             PriceListLine priceListLine =
                 priceListService.getPriceListLine(
-                    stockMoveLine.getProduct(), stockMoveLine.getQty(), priceList);
+                    stockMoveLine.getProduct(), stockMoveLine.getRealQty(), priceList);
             Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, unitPriceUntaxed);
+                priceListService.getDiscounts(priceList, priceListLine, price);
             if (discounts != null) {
               discountAmount = (BigDecimal) discounts.get("discountAmount");
-              unitPriceUntaxed =
+              price =
                   priceListService.computeDiscount(
-                      unitPriceUntaxed, (int) discounts.get("discountTypeSelect"), discountAmount);
-            }
-          }
-          if (discountAmount.compareTo(BigDecimal.ZERO) == 0) {
-            List<SupplierCatalog> supplierCatalogList =
-                stockMoveLine.getProduct().getSupplierCatalogList();
-            if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
-              SupplierCatalog supplierCatalog =
-                  Beans.get(SupplierCatalogRepository.class)
-                      .all()
-                      .filter(
-                          "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
-                          stockMoveLine.getProduct(),
-                          unitPriceUntaxed,
-                          stockMove.getPurchaseOrder().getSupplierPartner())
-                      .fetchOne();
-              if (supplierCatalog != null) {
-                Map<String, Object> discounts =
-                    productService.getDiscountsFromCatalog(supplierCatalog, unitPriceUntaxed);
-                if (discounts != null) {
-                  unitPriceUntaxed =
-                      priceListService.computeDiscount(
-                          unitPriceUntaxed,
-                          (int) discounts.get("discountTypeSelect"),
-                          (BigDecimal) discounts.get("discountAmount"));
-                }
-              }
+                      price, (int) discounts.get("discountTypeSelect"), discountAmount);
             }
           }
         }
-        unitPriceTaxed = unitPriceUntaxed.multiply(taxLine.getValue().add(BigDecimal.ONE));
+
+        if (stockMoveLine.getProduct().getInAti()) {
+          unitPriceTaxed = price;
+          unitPriceUntaxed =
+              price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+        } else {
+          unitPriceUntaxed = price;
+          unitPriceTaxed = price.add(price.multiply(taxLine.getValue()));
+        }
       }
     }
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
@@ -205,11 +205,15 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
     if (productUnit != null && !productUnit.equals(stockMoveLineUnit)) {
       qty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, qty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit, productUnit, qty, qty.scale(), stockMoveLine.getProduct());
       realReservedQty =
-          unitConversionService.convertWithProduct(
-              stockMoveLineUnit, productUnit, realReservedQty, stockMoveLine.getProduct());
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              productUnit,
+              realReservedQty,
+              realReservedQty.scale(),
+              stockMoveLine.getProduct());
     }
     super.updateLocations(
         stockMoveLine,

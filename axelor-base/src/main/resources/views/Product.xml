@@ -100,7 +100,7 @@
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
                     <field name="saleSupplySelect" colSpan="12"
                         onChange="action-product-validate-sale-supply-select"
-                        hideIf="isShippingCostsProduct"/>
+                        hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="units" title="Units" colSpan="6">
 						<field name="unit" canEdit="false" colSpan="12" form-view="unit-form" grid-view="unit-grid"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="12" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
@@ -117,7 +117,7 @@
 			      	</panel>
 			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
 		        	<field name="versionSelect" colSpan="12"/>
-                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.getApp('sale')?.getManageMultipleSaleQuantity()">
+                    <panel title="Multiple quantities" colSpan="12" if="__config__.app.getApp('sale')?.getManageMultipleSaleQuantity()" hideIf="!sellable">
 						<field name="allowToForceSaleQty"/>
 						<panel-related field="saleProductMultipleQtyList" grid-view="product-multiple-qty-grid" form-view="product-multiple-qty-form" colSpan="12" editable="true"/>
 					</panel>
@@ -145,8 +145,8 @@
 			        <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1" onChange="action-product-record-compute-sale-price"/>
 			        <field name="costTypeSelect" colSpan="6" onChange="action-product-group-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
-					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
-					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner &amp;&amp; purchasable" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
+					<field name="defShipCoefByPartner" onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
 	      		</panel>
 	      		<panel-related field="supplierCatalogList" form-view="supplier-catalog-form" grid-view="supplier-catalog-grid" title="Suppliers catalog" showIf="purchasable" colSpan="12"
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
@@ -242,7 +242,7 @@
 <!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
-            <panel name="packaging" title="Packaging" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
+            <panel name="packing" title="Packing" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
 	  			<panel name="weight" title="Weight" colSpan="6">
 	  				<field name="weightUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossWeight"/>
@@ -361,7 +361,6 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
         <action name="action-product-attrs-hidden-is-shipping-costs-product"/>
-		<action name="action-product-method-supplier-catalog-coeff"/>
 		<action name="action-product-attrs-cost-price-variant"/>
     </action-group>
 
@@ -526,6 +525,8 @@
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
+    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase"/>
+    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale"/>
 		<filter title="Current Products">
 			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 		</filter>

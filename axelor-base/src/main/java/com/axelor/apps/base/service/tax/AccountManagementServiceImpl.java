@@ -28,6 +28,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,17 @@ import org.slf4j.LoggerFactory;
 public class AccountManagementServiceImpl implements AccountManagementService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private FiscalPositionService fiscalPositionService;
+
+  private TaxService taxService;
+
+  @Inject
+  public AccountManagementServiceImpl(
+      FiscalPositionService fiscalPositionService, TaxService taxService) {
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
+  }
 
   /**
    * Obtenir la bonne configuration comptable en fonction du produit et de la société.
@@ -139,10 +151,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
         new Object[] {product.getCode(), company.getName(), isPurchase});
 
     Tax tax =
-        new FiscalPositionServiceImpl()
-            .getTax(
-                fiscalPosition,
-                this.getProductTax(this.getAccountManagement(product, company), isPurchase));
+        fiscalPositionService.getTax(
+            fiscalPosition,
+            this.getProductTax(this.getAccountManagement(product, company), isPurchase));
 
     if (tax != null) {
       return tax;
@@ -191,8 +202,8 @@ public class AccountManagementServiceImpl implements AccountManagementService {
       throws AxelorException {
 
     TaxLine taxLine =
-        new TaxService()
-            .getTaxLine(this.getProductTax(product, company, fiscalPosition, isPurchase), date);
+        taxService.getTaxLine(
+            this.getProductTax(product, company, fiscalPosition, isPurchase), date);
     if (taxLine != null) {
       return taxLine;
     }

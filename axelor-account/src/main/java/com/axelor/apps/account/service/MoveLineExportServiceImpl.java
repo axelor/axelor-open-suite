@@ -340,7 +340,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -525,7 +528,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -616,7 +622,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
           if (sumCredit.compareTo(BigDecimal.ZERO) == 1) {
 
-            String exportNumber = this.getSaleExportNumber(company);
+            String exportNumber = this.getRefundExportNumber(company);
 
             Move firstMove = moveList.get(0);
             String periodCode =
@@ -711,7 +717,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -896,7 +905,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    dateQueryStr += String.format(" AND self.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -1110,7 +1122,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     Company company = accountingReport.getCompany();
 
     LocalDate interfaceDate = accountingReport.getDate();
-    String exportNumber = this.getSaleExportNumber(company);
 
     String moveLineQueryStr = "";
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
@@ -1156,7 +1167,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         moveLineRepo
             .all()
             .filter(
-                "self.move.statusSelect = ?1" + moveLineQueryStr, MoveRepository.STATUS_VALIDATED)
+                "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
+                MoveRepository.STATUS_VALIDATED,
+                MoveRepository.STATUS_DAYBOOK)
             .order("date")
             .order("name")
             .fetch();
@@ -1183,13 +1196,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[7] = partner.getFullName();
         }
         items[8] = moveLine.getOrigin();
-        items[9] =
-            moveLine
-                .getDate()
-                .format(
-                    DateTimeFormatter.ofPattern(
-                        DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des lignes
-        // d'écriture.
+        if (moveLine.getDate() != null) {
+          items[9] =
+              moveLine
+                  .getDate()
+                  .format(
+                      DateTimeFormatter.ofPattern(
+                          DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des
+          // lignes
+          // d'écriture.
+        }
         items[10] = moveLine.getDescription();
         items[11] = moveLine.getDebit().toString();
         items[12] = moveLine.getCredit().toString();
@@ -1221,8 +1237,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[13] = StringUtils.join(reconcileSeqList, "; ");
           items[14] = StringUtils.join(reconcileDateList, "; ");
         }
-        items[15] =
-            move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        if (move.getValidationDate() != null) {
+          items[15] =
+              move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+        }
         items[16] = moveLine.getCurrencyAmount().toString();
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
@@ -1231,6 +1249,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       if (!administration) {
+        String exportNumber = this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
     }
@@ -1302,7 +1321,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             "AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.accountingReport = %s",
             accountingReport.getId());
     moveLineQueryStr +=
-        String.format(" AND self.move.statusSelect = %s ", MoveRepository.STATUS_VALIDATED);
+        String.format(
+            " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
 
     Query queryDate =
         JPA.em()

@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -65,6 +66,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +83,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject private BudgetDistributionRepository budgetDistributionRepo;
 
@@ -90,12 +93,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       StockMoveRepository stockMoveRepo,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AppBaseService appBaseService) {
     this.unitConversionService = unitConversionService;
     this.stockMoveRepo = stockMoveRepo;
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -228,16 +233,32 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
           Unit unit = purchaseOrderLine.getProduct().getUnit();
           BigDecimal qty = purchaseOrderLine.getQty();
           BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+          BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getProduct().getCostPrice();
+
+          if (purchaseOrderLine.getQty() != BigDecimal.ZERO) {
+            companyUnitPriceUntaxed =
+                purchaseOrderLine
+                    .getCompanyExTaxTotal()
+                    .divide(
+                        purchaseOrderLine.getQty(),
+                        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                        RoundingMode.HALF_EVEN);
+          }
 
           if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {
             qty =
-                unitConversionService.convertWithProduct(
-                    purchaseOrderLine.getUnit(), unit, qty, purchaseOrderLine.getProduct());
+                unitConversionService.convert(
+                    purchaseOrderLine.getUnit(),
+                    unit,
+                    qty,
+                    qty.scale(),
+                    purchaseOrderLine.getProduct());
             priceDiscounted =
-                unitConversionService.convertWithProduct(
+                unitConversionService.convert(
                     unit,
                     purchaseOrderLine.getUnit(),
                     priceDiscounted,
+                    appBaseService.getNbDecimalDigitForUnitPrice(),
                     purchaseOrderLine.getProduct());
           }
 
@@ -255,6 +276,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       purchaseOrderLine.getDescription(),
                       qty,
                       priceDiscounted,
+                      companyUnitPriceUntaxed,
                       unit,
                       stockMove,
                       StockMoveLineService.TYPE_PURCHASES,
@@ -270,6 +292,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
                       product,
                       purchaseOrderLine.getProductName(),
                       purchaseOrderLine.getDescription(),
+                      BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       BigDecimal.ZERO,
                       null,

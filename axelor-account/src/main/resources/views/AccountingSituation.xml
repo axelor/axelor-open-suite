@@ -64,7 +64,6 @@
     </grid>
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
-	     onLoad="action-account-accounting-situation-method-update-customer-account"  
 	     onNew="action-account-accounting-situation-default-set" >
 		<panel name="main" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -101,7 +100,6 @@
 	</action-group>
 
 	<action-group name="action-accounting-situation-group-form-onload">
-		<action name="action-account-accounting-situation-method-update-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
 		<action name="action-accounting-situation-attrs-hide-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-employee-account"/>
@@ -119,10 +117,6 @@
 		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
 	</action-attrs>
 
-  	<action-method name="action-account-accounting-situation-method-update-customer-account">
-		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
-	</action-method>
-
 	<action-method name="action-supplychain-method-compute-used-credit">
 		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
@@ -131,7 +125,7 @@
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
-    	AND self.account.useForPartnerBalance = 'true' AND self.move.statusSelect = 3</domain>
+    	AND self.account.useForPartnerBalance = 'true' AND (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
     </action-view>
     
 	<action-record name="action-account-accounting-situation-default-set" model="com.axelor.apps.account.db.AccountingSituation">

@@ -174,7 +174,7 @@
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || (operationTypeSelect != 1 &amp;&amp; operationTypeSelect != 3) || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
-            <field name="companyBankDetails" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+            <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="currency" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
             <field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if-module="axelor-business-project" if="__config__.app.isApp('project')"/>
             <field name="interco"/>
@@ -182,20 +182,20 @@
         </panel>
 
         <panel title="Invoicing informations" hideIf="company == null">
-            <field name="partner" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
-            <field name="contactPartner" onSelect="action-set-partner-domain" domain="self.isContact = true" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+            <field name="partner" canEdit="false" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+            <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <panel stacked="true">
                 <field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" canEdit="false" canNew="true" form-view="address-partner-address-form" grid-view="address-grid"/>
                 <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
                     <viewer>{{record.addressStr}}</viewer>
                 </field>
             </panel>
-            <field name="paymentMode" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-            <field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-            <field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+            <field name="paymentMode" canEdit="false" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+            <field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+            <field name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="priceList" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-            <field name="saleOrder" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
-            <field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+            <field name="saleOrder" canEdit="false" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid"/>
+            <field name="purchaseOrder" domain="self.supplierPartner = :partner AND self.company = :company" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
         </panel>
 
@@ -211,8 +211,8 @@
 			</panel>
 			<panel name="accounting" title="Accounting" showTitle="false">
 				<panel name="accountingDetails" title="Accounting details"  colSpan="12">
-					<field name="journal" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-					<field name="partnerAccount" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+					<field name="journal" canEdit="false" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+					<field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 					<panel showIf="move != null">
 						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
 						<field name="move.accountingOk" readonly="true"/>
@@ -420,15 +420,15 @@
 
 			</panel>
 			<field name="company" widget="SuggestBox" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect != 1"/>
-			<field name="companyBankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyBankDetails" canEdit="false" widget="SuggestBox" onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="currency" canEdit="false" onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="project" if-module="axelor-business-project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')"/>
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 		</panel>
 
 		<panel name="invoicingInformations" title="Invoicing informations">
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
-			<field name="contactPartner"  onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
+			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
+			<field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
 			<panel stacked="true">
 				<field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" form-view="address-partner-address-form" canEdit="false" canNew="true"/>
@@ -436,11 +436,11 @@
 					<viewer>{{record.addressStr}}</viewer>
 				</field>
 			</panel>
-			<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
-			<field name="paymentCondition" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-			<field name="bankDetails" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
-			<field name="purchaseOrder" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+			<field name="paymentMode" canEdit="false" grid-view="payment-mode-grid" form-view="payment-mode-form" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details"/>
+			<field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+			<field name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="saleOrder" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" onChange="action-invoice-group-saleorder-onchange" form-view="sale-order-form" grid-view="sale-order-grid"/>
+			<field name="purchaseOrder" domain="self.supplierPartner = :partner AND self.company = :company" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 			<field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		</panel>
 
@@ -731,6 +731,7 @@
     	<field name="contactPartner" expr="eval:null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
+    	<field name="purchaseOrder" expr="eval: null"/>
     </action-record>
 
     <action-record name="action-invoice-record-reset-suboperationtype" model="com.axelor.apps.account.db.Invoice">
@@ -773,14 +774,14 @@
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
     	<attribute name="hidden" for="cancel" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
     </action-attrs>
-
+	
 	<action-attrs name="action-set-partner-domain">
 		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
  		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()"/>
 	</action-attrs>
-
+			
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
 	</action-attrs>

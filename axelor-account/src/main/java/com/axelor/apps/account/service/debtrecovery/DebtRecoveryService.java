@@ -464,7 +464,7 @@ public class DebtRecoveryService {
           debtRecoverySessionService.debtRecoverySession(debtRecovery);
         }
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
-          // Si le niveau de relance à évolué
+          // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel() != null
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()

@@ -220,4 +220,42 @@ public class BankOrderController {
     BankDetails bankDetails = bankOrderService.getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
+
+  public void resetReceivers(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+      bankOrderService.resetReceivers(bankOrder);
+      response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void displayBankOrderLines(ActionRequest actionRequest, ActionResponse response) {
+    try {
+      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+      System.out.println(linesDomain);
+      response.setView(
+          bankOrderService
+              .buildBankOrderLineView("bank-order-line-grid", "bank-order-line-form", linesDomain)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void displayBankOrderLinesBankToBank(
+      ActionRequest actionRequest, ActionResponse response) {
+    try {
+      String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
+      System.out.println(linesDomain);
+      response.setView(
+          bankOrderService
+              .buildBankOrderLineView(
+                  "bank-order-line-grid-bank-to-bank", "bank-order-line-form", linesDomain)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

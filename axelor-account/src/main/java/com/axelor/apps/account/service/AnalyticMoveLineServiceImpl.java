@@ -60,31 +60,22 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       amount =
           analyticMoveLine
               .getPercentage()
-              .multiply(
-                  analyticMoveLine
-                      .getInvoiceLine()
-                      .getExTaxTotal()
-                      .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+              .multiply(analyticMoveLine.getInvoiceLine().getExTaxTotal())
+              .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
     }
     if (analyticMoveLine.getMoveLine() != null) {
       if (analyticMoveLine.getMoveLine().getCredit().compareTo(BigDecimal.ZERO) != 0) {
         amount =
             analyticMoveLine
                 .getPercentage()
-                .multiply(
-                    analyticMoveLine
-                        .getMoveLine()
-                        .getCredit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+                .multiply(analyticMoveLine.getMoveLine().getCredit())
+                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
       } else {
         amount =
             analyticMoveLine
                 .getPercentage()
-                .multiply(
-                    analyticMoveLine
-                        .getMoveLine()
-                        .getDebit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+                .multiply(analyticMoveLine.getMoveLine().getDebit())
+                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
       }
     }
     return amount;

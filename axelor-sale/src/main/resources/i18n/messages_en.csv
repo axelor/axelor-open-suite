@@ -457,6 +457,7 @@
 "Value",,,
 "Version Number",,,
 "WT",,,
+"Warning, a completed order can't be changed anymore, do you want to continue?",,,
 "Widget Attributes",,,
 "Word Export",,,
 "Year",,,
@@ -473,3 +474,5 @@
 "success",,,
 "value:Sale",,,
 "warning",,,
+"{{ company.name }}",,,
+"{{ stockLocation.name }}",,,

@@ -178,8 +178,10 @@
 		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 
+    <menuitem title="Factoring" name="debt-recovery-root-factoring" parent="account-root-debt-recovery" order="1"/>
+
 	<menuitem title="Subrogation releases" name="debt-recovery-root-subrogation-releases"
-		parent="account-root-debt-recovery" action="debt.recovery.root.subrogation.releases" order="1" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.subrogation.releases" order="1" />
 
 	<action-view name="debt.recovery.root.subrogation.releases"
 		title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">
@@ -188,7 +190,7 @@
 	</action-view>
 
 	<menuitem title="Notifications" name="debt-recovery-root-notifications"
-		parent="account-root-debt-recovery" action="debt.recovery.root.notifications" order="2" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.notifications" order="2" />
 
 	<action-view name="debt.recovery.root.notifications"
 		title="Notifications" model="com.axelor.apps.account.db.Notification">
@@ -249,7 +251,7 @@
 		title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-grid" />
 		<view type="form" name="accounting-report-form" />
-		<domain>self.typeSelect &lt; 1000</domain>
+		<domain>self.typeSelect &lt; 1000 or self.typeSelect &gt;= 2000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -259,7 +261,7 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-export-grid" />
 		<view type="form" name="accounting-report-export-form" />
-		<domain>self.typeSelect &gt;= 1000</domain>
+		<domain>self.typeSelect &gt;= 1000 and self.typeSelect &lt; 2000</domain>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"

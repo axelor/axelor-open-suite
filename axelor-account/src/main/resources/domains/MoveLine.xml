@@ -53,6 +53,10 @@
     <string name="partnerFullName" readonly="true"/>
     <string name="partnerSeq" readonly="true"/>
     
+<!--     Used for update partner balances when we change the partner of a move line in daybook mode -->
+    <long name="partnerId"/>
+    <long name="accountId"/>
+    
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
       
@@ -71,7 +75,7 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use" >
     	<![CDATA[
-    	if (account != null && account.getUseForPartnerBalance()){
+    	if (account != null && account.getReconcileOk()){
 		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
 		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
 		    else return BigDecimal.ZERO;

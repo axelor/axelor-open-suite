@@ -122,7 +122,7 @@ public interface SaleOrderLineService {
    */
   public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
 
-  public Map<String, Object> getDiscount(
+  public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
@@ -136,7 +136,7 @@ public interface SaleOrderLineService {
   public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine);
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 

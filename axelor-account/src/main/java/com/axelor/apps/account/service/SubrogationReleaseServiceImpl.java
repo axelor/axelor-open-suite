@@ -157,7 +157,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
     Files.createDirectories(Paths.get(filePath));
     Path path = Paths.get(filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', null, allMoveLineData);
+    CsvTool.csvWriter(filePath, fileName, ';', null, allMoveLineData);
 
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, subrogationRelease);
@@ -259,7 +259,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       move.addMoveLineListItem(creditMoveLine);
       move.addMoveLineListItem(debitMoveLine);
       move = moveRepository.save(move);
-      moveService.getMoveValidateService().validateMove(move);
+      moveService.getMoveValidateService().validate(move);
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);

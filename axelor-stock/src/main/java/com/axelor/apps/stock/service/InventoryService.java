@@ -85,6 +85,8 @@ public class InventoryService {
 
   @Inject private StockMoveRepository stockMoveRepo;
 
+  @Inject private StockLocationLineService stockLocationLineService;
+
   public Inventory createInventory(
       LocalDate date,
       String description,
@@ -372,6 +374,14 @@ public class InventoryService {
 
       if (currentQty.compareTo(realQty) != 0) {
         BigDecimal diff = realQty.subtract(currentQty);
+        BigDecimal avgPrice;
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+        if (stockLocationLine != null) {
+          avgPrice = stockLocationLine.getAvgPrice();
+        } else {
+          avgPrice = BigDecimal.ZERO;
+        }
 
         StockMoveLine stockMoveLine =
             stockMoveLineService.createStockMoveLine(
@@ -379,7 +389,8 @@ public class InventoryService {
                 product.getName(),
                 product.getDescription(),
                 diff,
-                product.getCostPrice(),
+                avgPrice,
+                avgPrice,
                 product.getUnit(),
                 stockMove,
                 StockMoveLineService.TYPE_NULL,
@@ -470,8 +481,9 @@ public class InventoryService {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null",
-                      stockLocationLine.getProduct())
+                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
+                      stockLocationLine.getProduct(),
+                      inventory.getStockLocation())
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product

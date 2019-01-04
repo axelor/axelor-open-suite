@@ -16,6 +16,7 @@
   	<string name="formatSelect" title="File Format" selection="iadministration.export.type.select"/>
   	<many-to-one name="importFile" title="File (CSV)" ref="com.axelor.meta.db.MetaFile" />
   	
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
   	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
   	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
   	<boolean name="excludeOutOfStock" title="Excl. out of stock products ?"/>

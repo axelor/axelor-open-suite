@@ -9,17 +9,17 @@
   
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="journalType" ref="JournalType" title="Journal Type"/>
-    <string name="exportCode" title="Export code" />
-    <boolean name="excessPaymentOk" title="Allow payments greater than due amount ?"/>
-    <boolean name="editReceiptOk" title="Edit receipt ?"/>
-  	<string name="descriptionModel" title="Label for automatic moveline generation"/>
-  	<boolean name="descriptionIdentificationOk" title="Add Move line N° in the description" default="false"/>
-  	<boolean name="notExportOk" title="Do not export ?" default="false"/>
+    <many-to-one name="journalType" ref="JournalType" title="Journal Type" massUpdate="true"/>
+    <string name="exportCode" title="Export code" massUpdate="true"/>
+    <boolean name="excessPaymentOk" title="Allow payments greater than due amount ?" massUpdate="true"/>
+    <boolean name="editReceiptOk" title="Edit receipt ?" massUpdate="true"/>
+  	<string name="descriptionModel" title="Label for automatic moveline generation" massUpdate="true"/>
+  	<boolean name="descriptionIdentificationOk" title="Add Move line N° in the description" default="false" massUpdate="true"/>
+  	<boolean name="notExportOk" title="Do not export ?" default="false" massUpdate="true"/>
   	<integer name="statusSelect" title="Status" selection="account.journal.status.select"/>
-	<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="false"/>
+	<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="false" massUpdate="true"/>
   	
-  	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
+  	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" massUpdate="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   	
   	<many-to-many name="validAccountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Compatible Account Types"/>

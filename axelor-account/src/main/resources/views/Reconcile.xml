@@ -48,13 +48,13 @@
    	
    	
 	<action-attrs name="action-reconcile-attrs-domain-debit">
-		<attribute if="eval: creditMoveLine != null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
-		<attribute if="eval: creditMoveLine == null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
+		<attribute if="eval: creditMoveLine != null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
+		<attribute if="eval: creditMoveLine == null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
 	</action-attrs>
     
 	<action-attrs name="action-reconcile-attrs-domain-credit">
-		<attribute if="eval: debitMoveLine != null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
-		<attribute if="eval: debitMoveLine == null" name="domain" expr="eval: &quot;self.move.statusSelect = 3 AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
+		<attribute if="eval: debitMoveLine != null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
+		<attribute if="eval: debitMoveLine == null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
 	</action-attrs>
     
     <action-method name="action-reconcile-method-reconcile">

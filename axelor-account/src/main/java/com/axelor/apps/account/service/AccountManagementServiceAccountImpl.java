@@ -23,9 +23,12 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,12 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     implements AccountManagementAccountService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject
+  public AccountManagementServiceAccountImpl(
+      FiscalPositionService fiscalPositionService, TaxService taxService) {
+    super(fiscalPositionService, taxService);
+  }
 
   /**
    * Obtenir le compte comptable d'un produit.

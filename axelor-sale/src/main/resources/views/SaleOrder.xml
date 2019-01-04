@@ -18,6 +18,7 @@
         <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -47,6 +48,7 @@
 		<field name="endOfValidityDate" hidden="true" />
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
@@ -319,7 +321,7 @@
 
 	  <panel sidebar="true" name="actions" title="Actions" stacked="true" hideIf="clientPartner == null">
 	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize-quotation"/>
-        <button name="completeManuallySaleOrder" title="Complete manually sale order" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
+        <button name="completeManuallySaleOrder" title="Complete manually sale order" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
 	    <button name="newVersion" title="New version" if="__config__.app.getApp('sale').getManageSaleOrderVersion()" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
         <button name="editOrder" title="Edit order" if="__config__.app.getApp('sale').allowPendingOrderModification" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
         <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
@@ -647,6 +649,8 @@
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
         <field name="orderBeingEdited" />
+        <field name="company"/>
+        <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -689,6 +693,10 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -704,6 +712,8 @@
 		<field name="statusSelect"/>
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -742,6 +752,10 @@
 				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
 				  </div>
 			  </div>
+			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
 		</template>

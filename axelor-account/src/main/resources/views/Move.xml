@@ -5,7 +5,7 @@
     
     <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <toolbar>
-            <button name="validateMove" title="Validate" if="__repo__(AccountConfig).findByCompany(__user__.getActiveCompany()).getAccountingDaybook()" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
+            <button name="validateMove" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
             <button name="deleteMoves" title="Delete" prompt="Only 'Draft' moves can be deleted" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
         	<button name="moveLines" title="See Move Lines" onClick="action-move-method-show-move-lines" />
         </toolbar>
@@ -24,7 +24,8 @@
 
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
-          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status">
+          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status,action-move-attrs-validate-button-title" 
+          onSave="save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
             <button name="print" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
@@ -36,7 +37,7 @@
 			<panel colSpan="9">
                 <field name="reference" colSpan="12"/>
                 <panel readonlyIf="moveLineList.length &gt; 0" colSpan="12">
-                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-method-get-period" form-view="company-form" grid-view="company-grid"/>
+                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
                     <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
@@ -66,8 +67,7 @@
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
-                <button name="validate" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" if="!__user__.activeCompany?.accountConfig?.accountingDaybook"/>
-                <button name="account" title="Accounting.toAccount" onClick="action-group-account-move-account-click" colSpan="12" hideIf="statusSelect >= 2" if="__user__.activeCompany?.accountConfig?.accountingDaybook"/>
+                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
             </panel>
 		</panel>
 		
@@ -109,19 +109,14 @@
 		<action name="action-move-method-get-period"/>
 		<action name="action-move-attrs-adjusting-move"/>
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
+		<action name="action-move-attrs-validate-button-title"/>
 	</action-group>
 	
 	<action-group name="action-group-account-move-validate-click">
 		<action name="save"/>
 		<action name="action-move-method-validate"/>
-		<action name="save"/>
 	</action-group>
 
-	<action-group name="action-group-account-move-account-click">
-		<action name="save"/>
-		<action name="action-move-method-account"/>
-		<action name="save"/>
-	</action-group>
 
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
@@ -157,13 +152,18 @@
 		<attribute name="hidden" for="moveLineList.amountRemaining" expr="eval: statusSelect == null || statusSelect == 1"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-attrs-validate-button-title">
+		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Validate')" if="eval: !company?.accountConfig?.accountingDaybook || statusSelect == MoveRepository.STATUS_DAYBOOK"/>
+		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
+	</action-attrs>
+	
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
 	</action-method>
-
-	<action-method name="action-move-method-account">
-		<call class="com.axelor.apps.account.web.MoveController" method="account"/>
+	
+	<action-method name="action-move-method-update-in-day-book-mode">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateInDayBookMode"/>
 	</action-method>
 
 	<action-method name="action-move-method-generate-reverse-move">
@@ -216,7 +216,7 @@
 		<filter title="Draft Moves">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
-		<filter title="Simulated Moves">
+		<filter title="Daybook Moves">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
 		<filter title="Validated Moves">

@@ -26,11 +26,12 @@
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" editable="true" onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
 		<field name="date" width="100"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200"/>
-        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0"/>
-        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
+        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
+		<field name="amountPaid" hidden="true"/>
         <field name="origin"/>
         <field name="description"/>
 	</grid>
@@ -92,8 +93,8 @@
    			<field name="name"/>
 	        <field name="date"/>
 	        <field name="dueDate"/>
-        	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"/>
-	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
+        	<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+	        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"/>
 	        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange"/>
 	        <field name="amountPaid"/>
@@ -105,7 +106,7 @@
 	   	<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect &gt; 1">
 	        <field name="passageReason" showIf="$number(debit) &gt; 0.00"/>
 	        <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange"/>
-	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
+	        <field name="interbankCodeLine" showIf="interbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form" canEdit="false"/>
    		</panel>
     	
     	<panel-tabs>
@@ -151,10 +152,10 @@
 			<field name="name" css="bold"/>
 			<field name="date" colOffset="3" colSpan="3" onChange="action-move-line-record-update-due-date"/>
 			<panel name="informations" title="Informations" colSpan="12">
-        		<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"/>
-				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"/>
-				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0" css="label-bold bold" colSpan="3"/>
-				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0" css="label-bold bold" colSpan="3"/>
+        		<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+				<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+				<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
+				<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="origin" colSpan="6" />
@@ -247,7 +248,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
-		<attribute name="readonly" for="informations" expr="eval: move.statusSelect != 1"/>
+		<attribute name="readonly" for="informations" expr="eval: move.statusSelect == 3 || move.statusSelect == 4"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
@@ -307,6 +308,7 @@
 		<field name="move.journal" title="Journal"/>
 		<field name="move.statusSelect" title="Status"/>
 		<field name="move.company" title="Company"/>
+		<field name="account.reconcileOk" title="Reconcilable"/>
 		<filter title="Sale Entries">
 			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>
