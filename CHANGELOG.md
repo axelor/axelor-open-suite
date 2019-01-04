@@ -442,6 +442,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 ## Improvements
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
+- Base : Removal of PartnerList object and its relevant controller because of no use.
 
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
