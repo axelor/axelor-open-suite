@@ -273,7 +273,6 @@
 		<action name="action-task-defaults"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-task-record-project-configurations" if="project != null"/>
-		<action name="action-team-task-attrs-hide-fields-for-clients"/>
 		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 	</action-group>
 	
@@ -387,12 +386,7 @@
 		<attribute name="value" for="assignment" expr="eval:2"/>
 		<attribute name="hidden" for="acceptOrderBtn" expr="eval:true"/>
 	</action-attrs>
-	
-	<action-attrs name="action-team-task-attrs-hide-fields-for-clients">
-		<attribute name="hidden" for="isPrivate,internalDescriptionPanel" expr="eval:true" if="__user__.group.isClient"/>
-	</action-attrs>
-	
-	
+
 	<action-view name="action-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="form" name="resource-booking-form" />
 		<view type="grid" name="resource-booking-grid" />
@@ -437,7 +431,6 @@
 		<action name="action-team-task-method-manage-timer-buttons"/>
 		<action name="action-team-task-method-compute-total-timer-duration"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
-		<action name="action-team-task-attrs-hide-fields-for-clients"/>
 		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 	</action-group>
 	

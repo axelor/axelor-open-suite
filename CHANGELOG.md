@@ -29,6 +29,7 @@
 - APP for axelor-business-support.
 - Stock Correction
 - Business support module : New form/grid views of TeamTask for customers.
+- Business Support module / Objet TeamTask : Menu entries for customers.Added new role(role.customer) in data-init.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

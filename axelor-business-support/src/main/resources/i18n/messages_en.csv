@@ -1,4 +1,6 @@
 "key","message","comment","context"
+"All open tasks",,,
+"All tickets",,,
 "Announcement",,,
 "App Business Support",,,
 "Assignment",,,
@@ -11,6 +13,7 @@
 "In progress",,,
 "In test",,,
 "Internal Description",,,
+"New tasks",,,
 "No",,,
 "On hold",,,
 "Order Accepted",,,
@@ -24,6 +27,8 @@
 "Status",,,
 "Target version",,,
 "Tasks",,,
+"Tasks to be treated by customer",,,
+"Tasks to be treated by provider",,,
 "Testing server date",,,
 "Ticket associated",,,
 "Time Spent",,,
