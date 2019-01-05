@@ -35,7 +35,6 @@ public class JournalService {
   /** Credit balance = credit - debit */
   public static final Integer BALANCE_TYPE_CREDIT_BALANCE = 1;
 
-
   /**
    * Compute the balance of the journal, depending of the account type and balance type
    *

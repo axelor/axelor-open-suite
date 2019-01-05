@@ -18,7 +18,6 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -70,7 +69,7 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -327,7 +326,7 @@ public class IntercoServiceImpl implements IntercoService {
     intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
-    
+
     intercoInvoice.setPrintingSettings(intercoCompany.getPrintingSettings());
 
     if (intercoInvoice.getInvoiceLineList() != null) {
@@ -337,7 +336,7 @@ public class IntercoServiceImpl implements IntercoService {
       }
     }
     calculateInvoiceAmounts(intercoInvoice);
-    
+
     return invoiceRepository.save(intercoInvoice);
   }
 
@@ -347,19 +346,24 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
+    Partner partner = intercoInvoice.getPartner();
     if (intercoInvoice.getCompany() != null) {
-      AccountManagement accountManagement =
-          accountManagementAccountService.getAccountManagement(
-              invoiceLine.getProduct(), intercoInvoice.getCompany());
       Account account =
-          accountManagementAccountService.getProductAccount(accountManagement, isPurchase);
+          accountManagementAccountService.getProductAccount(
+              invoiceLine.getProduct(),
+              intercoInvoice.getCompany(),
+              partner.getFiscalPosition(),
+              isPurchase,
+              false);
       invoiceLine.setAccount(account);
 
       TaxLine taxLine = invoiceLineService.getTaxLine(intercoInvoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);
       invoiceLine.setTaxRate(taxLine.getValue());
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
-      Tax tax = accountManagementAccountService.getProductTax(accountManagement, isPurchase);
+      Tax tax =
+          accountManagementAccountService.getProductTax(
+              invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
       TaxEquiv taxEquiv =
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
