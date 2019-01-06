@@ -69,6 +69,18 @@ public class CostSheetServiceImpl implements CostSheetService {
     this.billOfMaterialRepo = billOfMaterialRepo;
   }
 
+  
+  protected void init() {
+
+    AppProduction appProduction = appProductionService.getAppProduction();
+    this.hourUnit = appProductionService.getAppBase().getUnitHours();
+    this.cycleUnit = appProduction.getCycleUnit();
+    this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
+
+    costSheet = new CostSheet();
+  }
+  
+  
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
@@ -98,15 +110,6 @@ public class CostSheetServiceImpl implements CostSheetService {
     return costSheet;
   }
 
-  protected void init() {
-
-    AppProduction appProduction = appProductionService.getAppProduction();
-    this.hourUnit = appProductionService.getAppBase().getUnitHours();
-    this.cycleUnit = appProduction.getCycleUnit();
-    this.manageResidualProductOnBom = appProduction.getManageResidualProductOnBom();
-
-    costSheet = new CostSheet();
-  }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
