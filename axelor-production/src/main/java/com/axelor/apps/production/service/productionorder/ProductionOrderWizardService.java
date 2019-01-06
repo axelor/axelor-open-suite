@@ -15,18 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.productionorder;
 
-import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
-import java.util.List;
+import com.axelor.rpc.Context;
 
-public interface ProductionOrderSaleOrderService {
+public interface ProductionOrderWizardService {
 
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
-
-  public ProductionOrder generateManufOrder(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  public Long validate(Context context) throws AxelorException;
 }

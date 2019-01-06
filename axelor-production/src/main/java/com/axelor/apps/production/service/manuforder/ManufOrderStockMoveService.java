@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -54,10 +55,10 @@ import org.slf4j.LoggerFactory;
 
 public class ManufOrderStockMoveService {
 
-  protected static final int PART_FINISH_IN = 1;
-  protected static final int PART_FINISH_OUT = 2;
-  protected static final int STOCK_LOCATION_IN = 1;
-  protected static final int STOCK_LOCATION_OUT = 2;
+  public static final int PART_FINISH_IN = 1;
+  public static final int PART_FINISH_OUT = 2;
+  public static final int STOCK_LOCATION_IN = 1;
+  public static final int STOCK_LOCATION_OUT = 2;
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
@@ -135,8 +136,8 @@ public class ManufOrderStockMoveService {
    * @return the found stock location, which can be null.
    * @throws AxelorException if the stock config is missing for the company.
    */
-  protected StockLocation getDefaultStockLocation(
-      ManufOrder manufOrder, Company company, int inOrOut) throws AxelorException {
+  public StockLocation getDefaultStockLocation(ManufOrder manufOrder, Company company, int inOrOut)
+      throws AxelorException {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
       throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
@@ -256,7 +257,7 @@ public class ManufOrderStockMoveService {
     return _createStockMoveLine(prodProduct, stockMove, inOrOutType, prodProduct.getQty());
   }
 
-  protected StockMoveLine _createStockMoveLine(
+  public StockMoveLine _createStockMoveLine(
       ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
       throws AxelorException {
     return _createStockMoveLine(

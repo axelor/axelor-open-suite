@@ -20,7 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
-import com.axelor.apps.production.service.CostSheetService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

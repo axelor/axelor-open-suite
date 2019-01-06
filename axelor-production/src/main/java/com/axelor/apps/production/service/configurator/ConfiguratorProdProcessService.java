@@ -15,12 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.production.db.ConfiguratorProdProcess;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
+import com.axelor.rpc.JsonContext;
 
-public interface ProductionOrderWizardService {
+public interface ConfiguratorProdProcessService {
 
-  public Long validate(Context context) throws AxelorException;
+  /**
+   * Generate a prod process from a configurator prod process and a JsonContext holding the custom
+   * values
+   *
+   * @param confProdProcess
+   * @param attributes
+   * @return
+   */
+  ProdProcess generateProdProcessService(
+      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException;
 }

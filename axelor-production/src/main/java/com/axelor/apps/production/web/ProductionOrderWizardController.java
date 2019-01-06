@@ -19,7 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ProductionOrderWizardService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;

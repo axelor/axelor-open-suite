@@ -23,7 +23,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.CostSheetService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;

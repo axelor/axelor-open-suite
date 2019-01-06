@@ -15,23 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.productionorder;
 
-import com.axelor.apps.production.db.ConfiguratorProdProcess;
-import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.JsonContext;
+import java.util.List;
 
-public interface ConfiguratorProdProcessService {
+public interface ProductionOrderSaleOrderService {
 
-  /**
-   * Generate a prod process from a configurator prod process and a JsonContext holding the custom
-   * values
-   *
-   * @param confProdProcess
-   * @param attributes
-   * @return
-   */
-  ProdProcess generateProdProcessService(
-      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException;
+  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  public ProductionOrder generateManufOrder(
+      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }

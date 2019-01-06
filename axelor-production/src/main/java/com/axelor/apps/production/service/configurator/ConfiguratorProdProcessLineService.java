@@ -15,25 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.configurator;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 
-public interface ConfiguratorBomService {
+public interface ConfiguratorProdProcessLineService {
 
   /**
-   * Generate a bill of material from a configurator BOM and a JsonContext holding the custom values
+   * Generate a prod process line from a configurator prod process line and a JsonContext holding
+   * the custom values
    *
-   * @param configuratorBOM
+   * @param confProdProcessLine
    * @param attributes
-   * @param level
-   * @param generatedProduct
+   * @return
    */
-  BillOfMaterial generateBillOfMaterial(
-      ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
+  ProdProcessLine generateProdProcessLine(
+      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
       throws AxelorException;
 }
