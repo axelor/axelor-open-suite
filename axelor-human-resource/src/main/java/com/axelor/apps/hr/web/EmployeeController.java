@@ -34,7 +34,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
@@ -42,6 +45,8 @@ import wslite.json.JSONObject;
 public class EmployeeController {
 
   @Inject private EmployeeService employeeService;
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void showAnnualReport(ActionRequest request, ActionResponse response)
       throws JSONException, NumberFormatException, AxelorException {
@@ -93,5 +98,24 @@ public class EmployeeController {
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
+  }
+
+  public void printEmployeePhonebook(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    User user = AuthUtils.getUser();
+
+    String name = I18n.get("Employee PhoneBook");
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE_PHONEBOOK, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("UserId", user.getId())
+            .generate()
+            .getFileLink();
+
+    LOG.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }
