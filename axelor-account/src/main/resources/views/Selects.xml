@@ -123,13 +123,6 @@
 		<option value="2">Advance payment invoice</option>
 		<option value="3">Balance invoice</option>
 	</selection>
-
-	<!-- <selection name='ipayment.operation.type.select'>
-		<option value='1'>Supplier purchase</option>
-		<option value='2'>Supplier refund</option>
-		<option value='3'>Customer sale</option>
-		<option value='4'>Customer refund</option>
-	</selection> -->
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
 		<option value='0'>Payment smoothing(DD)</option>
@@ -177,12 +170,7 @@
 		<option value="1">Generate reimbursements</option>
 		<option value="2">Export reimbursements</option>
 	</selection>
-	
-	<selection name="iaccount.account.schedule.type.select">
-		<option value="1">Export direct debits</option>
-		<option value="2">Import direct debit rejects</option>
-	</selection>
-	
+		
 	<selection name="idebt.recovery.batch.type.select">
 		<option value="1">Classic debt recovery</option>
 	</selection>
