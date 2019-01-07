@@ -12,6 +12,7 @@ Add an option to choose to generate an unique production order for a sale order 
 Add sale order and client partner fields on production order.
 - Account Move : Display total number of lines, total debit, total credit and the gap on move form.
 - COST SHEET : cost sheet type
+- Add generated purchase orders panel in sale order form.
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
