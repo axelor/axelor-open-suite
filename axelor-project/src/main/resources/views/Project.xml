@@ -312,7 +312,7 @@
 				</panel-related>
 			</panel>
 			<panel name="announcementPanel" title="Announcement" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
-				<panel-related name="announcementListPanel" field="announcementList" colSpan="12" form-view="announcement-form">
+				<panel-related name="announcementListPanel" field="announcementList" colSpan="12" form-view="project-announcement-form">
 					<field name="title"/>
 					<field name="date"/>
 					<field name="content"/>

@@ -5,7 +5,7 @@
 
   <module name="business-support" package="com.axelor.apps.businesssupport.db"/>
 
-  <entity name="Announcement">
+  <entity name="ProjectAnnouncement">
     <string name="title" title="Title"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <date name="date" column="date_val"/>
