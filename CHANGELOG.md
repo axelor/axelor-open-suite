@@ -33,6 +33,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - MENUS : Moved three menus 'Mass Cust. Stock Move Invoicing','Mass Suppl. Stock Move Invoicing' and 'Availabilty Requests' in supplychain module
 - INVENTORY LINE : domain on product field where stockManaged is true
 - STOCKLOCATIONLINE : add a button to update the average price.
+- INVENTORY : move 'detailPanel' to PanelTab in form view
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
