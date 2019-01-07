@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.*;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -90,6 +91,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
+    costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -110,7 +112,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException {
+  public CostSheet computeCostPrice(ManufOrder manufOrder, int calculationTypeSelect)
+      throws AxelorException {
     this.init();
 
     BigDecimal producedQuantity =
@@ -119,6 +122,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         costSheetLineService.createProducedProductCostSheetLine(
             manufOrder.getProduct(), manufOrder.getBillOfMaterial().getUnit(), producedQuantity);
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
+    costSheet.setCalculationTypeSelect(calculationTypeSelect);
     Company company = manufOrder.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());

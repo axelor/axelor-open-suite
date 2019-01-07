@@ -29,5 +29,6 @@ public interface CostSheetService {
   public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(ManufOrder manufOrder) throws AxelorException;
+  public CostSheet computeCostPrice(ManufOrder manufOrder, int calculationTypeSelect)
+      throws AxelorException;
 }

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionBatch;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -75,7 +76,8 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     for (ManufOrder manufOrder : manufOrderList) {
       try {
-        costSheetService.computeCostPrice(manufOrder);
+        costSheetService.computeCostPrice(
+            manufOrder, CostSheetRepository.CALCULATION_WORK_IN_PROGRESS);
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();

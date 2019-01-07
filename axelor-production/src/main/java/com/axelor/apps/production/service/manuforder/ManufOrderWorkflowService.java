@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
@@ -196,7 +197,8 @@ public class ManufOrderWorkflowService {
     }
 
     // create cost sheet
-    Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+    Beans.get(CostSheetService.class)
+        .computeCostPrice(manufOrder, CostSheetRepository.CALCULATION_END_OF_PRODUCTION);
 
     // update price in product
     Product product = manufOrder.getProduct();
@@ -259,7 +261,8 @@ public class ManufOrderWorkflowService {
         }
       }
     }
-    Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+    Beans.get(CostSheetService.class)
+        .computeCostPrice(manufOrder, CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION);
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
   }
 
