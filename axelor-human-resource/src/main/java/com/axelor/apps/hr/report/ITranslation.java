@@ -80,4 +80,7 @@ public class ITranslation {
   public static final String LUNCH_VOUCHER_SIGNATURE = /*$$(*/ "LunchVoucher.signature"; /*)*/
 
   public static final String EDITOR_ADD_LINE = /*$$(*/ "Add a line"; /*)*/
+
+  public static final String PHONE_BOOK_COMPANY_PHONE_BOOK = /*$$(*/
+      "Phonebook.employeePhonebook"; /*)*/
 }
