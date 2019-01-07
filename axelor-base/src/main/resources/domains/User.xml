@@ -42,6 +42,8 @@
     <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount" title="Email accounts"/>
 
     <string name="transientPassword" transient="true"/>
+    
+    <integer name="stepStatusSelect" selection="base.user.form.step.select" default="0"/>
 
     <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
   </entity>

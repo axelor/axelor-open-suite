@@ -4,8 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <form id="mobile-user-form-extension" name="user-form" title="User" model="com.axelor.auth.db.User" extension="true">
-    	<panel name="mainPanel" sidebar="true" if="__config__.app.isApp('mobile')">
+    	<panel name="mainPanel" sidebar="true" if="__config__.app.isApp('mobile')" showIf="stepStatusSelect == 5">
     		<field name="appPermissions" widget="MultiSelect"/>
+    	</panel>
+    	
+    	<panel name="stepPanel" if="__config__.app.isApp('mobile')" showIf="stepStatusSelect == 1">
+    		<field name="appPermissions" widget="MultiSelect" colSpan="12"/>
     	</panel>
     </form>
 
