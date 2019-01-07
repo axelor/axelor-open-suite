@@ -3,6 +3,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
+		<toolbar>
+			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
+		</toolbar>	
 		 <field name="contactPartner.fullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
@@ -265,7 +268,11 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-
+    
+    <action-method name="action-print-employee-phonebook" >
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
+	</action-method>
+    
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"
