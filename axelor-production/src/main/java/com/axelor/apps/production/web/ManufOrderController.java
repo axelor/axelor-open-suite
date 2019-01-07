@@ -20,6 +20,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
@@ -387,7 +388,8 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-      Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+      Beans.get(CostSheetService.class)
+          .computeCostPrice(manufOrder, CostSheetRepository.CALCULATION_WORK_IN_PROGRESS);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
