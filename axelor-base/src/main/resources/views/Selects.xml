@@ -436,5 +436,14 @@
     <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
 		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
 	  </selection>
+    
+    <selection name="base.user.form.step.select">
+		<option value="0">Basic Overview</option>
+		<option value="1">Authorization Details</option>
+		<option value="2">Contact / Partner</option>
+		<option value="3">Employee</option>
+		<option value="4">Activation</option>
+		<option value="5">Complete</option>
+    </selection>
 
 </object-views>

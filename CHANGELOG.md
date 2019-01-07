@@ -31,6 +31,7 @@
 - Business support module : New form/grid views of TeamTask for customers.
 - Business Support module / Objet TeamTask : Menu entries for customers.Added new role(role.customer) in data-init.
 - Employee:Company(Employee) Phonebook 
+- User Form : Provide step wise view.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
