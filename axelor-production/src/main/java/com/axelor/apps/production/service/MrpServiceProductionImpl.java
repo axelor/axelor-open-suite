@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -284,9 +285,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpLineType manufProposalNeedMrpLineType =
           this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED);
 
-      for (BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine :
+          defaultBillOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = billOfMaterial.getProduct();
+        Product subProduct = billOfMaterialLine.getProduct();
 
         if (this.isMrpProduct(subProduct)) {
           // TODO take the time to do the Manuf order (use machine planning)
@@ -294,7 +296,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               subProduct,
               manufProposalNeedMrpLineType,
-              reorderQty.multiply(billOfMaterial.getQty()),
+              reorderQty.multiply(billOfMaterialLine.getQty()),
               stockLocation,
               maturityDate,
               mrpLineOriginList,
@@ -373,8 +375,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    */
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level) {
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()
+    if (billOfMaterial.getBillOfMaterialLineList() == null
+        || billOfMaterial.getBillOfMaterialLineList().isEmpty()
         || level > 100) {
 
       Product subProduct = billOfMaterial.getProduct();
@@ -386,12 +388,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       level = level + 1;
 
-      for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = subBillOfMaterial.getProduct();
+        Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
-          this.assignProductLevel(subBillOfMaterial, level);
+        if (billOfMaterialLine.getBillOfMaterial() != null && this.isMrpProduct(subProduct)) {
+          this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
 
           if (subProduct.getDefaultBillOfMaterial() != null) {
             this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);

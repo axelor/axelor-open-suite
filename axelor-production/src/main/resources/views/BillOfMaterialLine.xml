@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid model="com.axelor.apps.production.db.BillOfMaterialLine"
+		title="BOM Lines" name="bill-of-material-line-grid">
+		<field name="priority" />
+		<field name="product" />
+		<field name="qty" />
+		<field name="billOfMaterial" />
+	</grid>
+	
+	<form model="com.axelor.apps.production.db.BillOfMaterialLine"
+		title="BOM Line" name="bill-of-material-line-form"
+		onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits"
+		onLoad="action-bill-of-material-attrs-price-and-qty-digits">
+		<panel name="mainPanel">
+			<field name="product" domain="self.stockManaged='true'" form-view="product-form" grid-view="product-grid" />
+			<field name="qty" />
+			<field name="billOfMaterial" readonlyIf="product == null" onSelect="action-bill-of-material-line-attrs-bom-domain-onselect" />
+			<field name="priority" />
+		</panel>
+	</form>
+
+	<action-attrs name="action-bill-of-material-line-attrs-bom-domain-onselect">
+		<attribute name="domain" for="billOfMaterial"
+			expr="eval:  &quot; self.product=:product  &quot;" />
+	</action-attrs>
+
+	<action-record name="action-bill-of-material-line-default-record"
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="qty" expr="1" />
+		<field name="priority" if="__parent__?.billOfMaterialLineList?.size() > 0"
+			expr="eval:__parent__?.billOfMaterialLineList?.max{ it.getPriority() }?.getPriority() + 10" />
+	</action-record>
+
+</object-views>

@@ -43,6 +43,7 @@
 - Project : Default value set for ProjectPlanningTime.product.
 - TeamTask : Change in team-task-form view. 
 - TeamTask object : Change label "Task assigned to the provider".
+- BillOfMaterial : Replaced M2M 'billOfMaterialSet' with O2M 'billOfMaterialLineList' and added new entity 'BillOfMaterialLine'
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

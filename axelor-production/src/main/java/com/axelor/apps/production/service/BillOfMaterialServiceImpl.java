@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
@@ -39,9 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +112,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     if (billOfMaterial != null) {
-      BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
+      BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, false);
       billOfMaterialRepo.save(personalizedBOM);
       personalizedBOM.setName(
           personalizedBOM.getName()
@@ -123,12 +122,22 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + personalizedBOM.getId()
               + ")");
       personalizedBOM.setPersonalized(true);
-      Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
-      for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
-        personalizedBOMSet.add(customizeBillOfMaterial(childBillOfMaterial, depth + 1));
-      }
-      personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
 
+      ArrayList<BillOfMaterialLine> personalizedBOMLineList = new ArrayList<>();
+
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+        BillOfMaterialLine bomLine = new BillOfMaterialLine();
+
+        bomLine.setProduct(billOfMaterialLine.getProduct());
+        bomLine.setPriority(billOfMaterialLine.getPriority());
+        bomLine.setParent(personalizedBOM);
+        bomLine.setQty(billOfMaterialLine.getQty());
+
+        bomLine.setBillOfMaterial(
+            customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
+        personalizedBOMLineList.add(bomLine);
+      }
+      personalizedBOM.setBillOfMaterialLineList(personalizedBOMLineList);
       return personalizedBOM;
     }
 
@@ -253,19 +262,36 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return bomTree;
   }
 
+  @Transactional
+  public TempBomTree getBomTree(
+      BillOfMaterialLine bomLine, BillOfMaterial parentBom, TempBomTree bomTree) {
+
+    TempBomTree tempBomTree = new TempBomTree();
+    tempBomTree.setProduct(bomLine.getProduct());
+    tempBomTree.setQty(bomLine.getQty());
+    tempBomTree.setParentBom(parentBom);
+    tempBomTree.setParent(bomTree);
+
+    return tempBomTreeRepo.save(tempBomTree);
+  }
+
   private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree) {
 
     List<Long> validBomIds = new ArrayList<Long>();
 
-    for (BillOfMaterial childBom : bom.getBillOfMaterialSet()) {
-      if (!processedBom.contains(childBom.getId())) {
-        getBomTree(childBom, bom, bomTree);
-      } else {
-        log.debug("Already processed: {}", childBom.getId());
-      }
-      validBomIds.add(childBom.getId());
-    }
+    for (BillOfMaterialLine bomLine : bom.getBillOfMaterialLineList()) {
 
+      if (bomLine.getBillOfMaterial() != null) {
+        if (!processedBom.contains(bomLine.getBillOfMaterial().getId())) {
+          getBomTree(bomLine.getBillOfMaterial(), bom, bomTree);
+        } else {
+          log.debug("Already processed: {}", bomLine.getBillOfMaterial().getId());
+        }
+        validBomIds.add(bomLine.getBillOfMaterial().getId());
+      } else {
+        getBomTree(bomLine, bom, bomTree);
+      }
+    }
     return validBomIds;
   }
 

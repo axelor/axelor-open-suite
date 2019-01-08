@@ -18,8 +18,10 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
+import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.CostSheetService;
@@ -49,6 +51,8 @@ public class BillOfMaterialController {
   @Inject CostSheetService costSheetService;
 
   @Inject BillOfMaterialRepository billOfMaterialRepo;
+
+  @Inject BillOfMaterialLineRepository billOfMaterialLineRepo;
 
   public void computeCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -186,5 +190,28 @@ public class BillOfMaterialController {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
+  }
+
+  public void showBomLineFormView(ActionRequest request, ActionResponse response) {
+    TempBomTree tempBomTree = request.getContext().asType(TempBomTree.class);
+    BillOfMaterialLine bomLine =
+        billOfMaterialLineRepo
+            .all()
+            .filter(
+                "self.parent=? AND self.product=?",
+                tempBomTree.getParentBom(),
+                tempBomTree.getProduct())
+            .fetchOne();
+    response.setView(
+        ActionView.define(I18n.get("BOM Line"))
+            .model(BillOfMaterialLine.class.getName())
+            .add("form", "bill-of-material-line-form")
+            .param("popup", "true")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .param("forceEdit", "false")
+            .context("_showRecord", String.valueOf(bomLine.getId()))
+            .map());
   }
 }

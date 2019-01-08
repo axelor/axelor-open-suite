@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -140,12 +141,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BigDecimal bomQty = billOfMaterial.getQty();
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine :
-          getSortedBillsOfMaterials(billOfMaterial.getBillOfMaterialSet())) {
+      for (BillOfMaterialLine billOfMaterialLine :
+          getSortedBillsOfMaterialLines(billOfMaterial.getBillOfMaterialLineList())) {
 
-        if (!billOfMaterialLine.getHasNoManageStock()) {
+        if (billOfMaterialLine.getBillOfMaterial() != null
+            && !billOfMaterialLine.getBillOfMaterial().getHasNoManageStock()) {
 
           Product product =
               productVariantService.getProductVariant(
@@ -154,7 +156,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           BigDecimal qty =
               computeToConsumeProdProductLineQuantity(
                   bomQty, manufOrderQty, billOfMaterialLine.getQty());
-          ProdProduct prodProduct = new ProdProduct(product, qty, billOfMaterialLine.getUnit());
+          ProdProduct prodProduct =
+              new ProdProduct(product, qty, billOfMaterialLine.getBillOfMaterial().getUnit());
           manufOrder.addToConsumeProdProductListItem(prodProduct);
           prodProductRepo.persist(prodProduct); // id by order of creation
         }
@@ -180,15 +183,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return qty;
   }
 
-  private List<BillOfMaterial> getSortedBillsOfMaterials(
-      Collection<BillOfMaterial> billsOfMaterials) {
+  private List<BillOfMaterialLine> getSortedBillsOfMaterialLines(
+      Collection<BillOfMaterialLine> billsOfMaterialLines) {
 
-    billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
-    return billsOfMaterials
+    billsOfMaterialLines = MoreObjects.firstNonNull(billsOfMaterialLines, Collections.emptyList());
+    return billsOfMaterialLines
         .stream()
         .sorted(
-            Comparator.comparing(BillOfMaterial::getPriority)
-                .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
+            Comparator.comparing(BillOfMaterialLine::getPriority)
+                .thenComparing(Comparator.comparing(BillOfMaterialLine::getId)))
         .collect(Collectors.toList());
   }
 

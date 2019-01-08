@@ -216,36 +216,41 @@ public class CostSheetServiceImpl implements CostSheetService {
       BillOfMaterial billOfMaterial, int bomLevel, CostSheetLine parentCostSheetLine)
       throws AxelorException {
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
         Product product = billOfMaterialLine.getProduct();
 
         if (product != null) {
 
+          Unit unit =
+              billOfMaterialLine.getBillOfMaterial() != null
+                  ? billOfMaterialLine.getBillOfMaterial().getUnit()
+                  : product.getUnit();
+
           CostSheetLine costSheetLine =
               costSheetLineService.createConsumedProductCostSheetLine(
+                  product, unit, bomLevel, parentCostSheetLine, billOfMaterialLine.getQty());
+
+          if (billOfMaterialLine.getBillOfMaterial() != null) {
+
+            BigDecimal wasteRate = billOfMaterialLine.getBillOfMaterial().getWasteRate();
+
+            if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
+              costSheetLineService.createConsumedProductWasteCostSheetLine(
                   product,
-                  billOfMaterialLine.getUnit(),
+                  unit,
                   bomLevel,
                   parentCostSheetLine,
-                  billOfMaterialLine.getQty());
+                  billOfMaterialLine.getQty(),
+                  wasteRate);
+            }
 
-          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
-
-          if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
-            costSheetLineService.createConsumedProductWasteCostSheetLine(
-                product,
-                billOfMaterialLine.getUnit(),
-                bomLevel,
-                parentCostSheetLine,
-                billOfMaterialLine.getQty(),
-                wasteRate);
-          }
-
-          if (billOfMaterialLine.getDefineSubBillOfMaterial()) {
-            this._computeCostPrice(billOfMaterialLine, bomLevel, costSheetLine);
+            if (billOfMaterialLine.getBillOfMaterial().getDefineSubBillOfMaterial()) {
+              this._computeCostPrice(
+                  billOfMaterialLine.getBillOfMaterial(), bomLevel, costSheetLine);
+            }
           }
         }
       }
