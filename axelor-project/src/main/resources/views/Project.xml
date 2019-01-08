@@ -766,5 +766,10 @@
 		<view-param name="popup" value="reload"/>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
+	
+	<action-attrs name="action-business-support-attrs-project-default">
+		<attribute name="value" for="project" expr="eval:_parent" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+		<attribute name="readonly" for="project" expr="eval:true" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+	</action-attrs>
 
 </object-views>

@@ -11,7 +11,7 @@
   
   <form name="project-announcement-form" title="Announcement"
     model="com.axelor.apps.businesssupport.db.ProjectAnnouncement" width="large"
-    onNew="action-project-record-project-announcement-onnew">
+    onNew="action-project-record-project-announcement-onnew,action-business-support-attrs-project-default">
     <panel name="mainPanel">
       <field name="title" colSpan="12"/>
       <field name="project" form-view="project-form" grid-view="project-grid" onSelect="action-project-attrs-project-announcement-project-domain"/>

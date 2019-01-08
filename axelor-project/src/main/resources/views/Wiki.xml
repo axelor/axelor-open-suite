@@ -14,7 +14,7 @@
 		<field name="content"/>
 	</grid>
 	
-	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large">
+	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large" onNew="action-business-support-attrs-project-default">
 		<panel name="mainPanel">
 			<field name="title" colSpan="6"/>
 			<field name="project" colSpan="6" canEdit="false"/>

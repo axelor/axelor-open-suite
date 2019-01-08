@@ -67,9 +67,9 @@
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
-					<field name="isPrivate"  colSpan="4"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<field name="isOrderProposed" colSpan="4" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<field name="isOrderAccepted" colSpan="4"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isPrivate"  colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderProposed" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderAccepted" colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
 					<button name="acceptOrderBtn" title="Accept Order" hideIf="!timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -89,7 +89,7 @@
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel name="contentPanel" title="Content" colSpan="12">
+			<panel name="contentPanel" title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
 			
