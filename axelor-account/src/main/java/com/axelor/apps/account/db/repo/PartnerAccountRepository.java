@@ -26,9 +26,8 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
-
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PartnerAccountRepository extends PartnerBaseRepository {
