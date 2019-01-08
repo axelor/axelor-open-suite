@@ -33,6 +33,7 @@
 - Employee:Company(Employee) Phonebook 
 - User Form : Provide step wise view.
 - TeamTask : Update teamtask client view. 
+- Project : Default value for project on Wiki/Version/Announcement.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
