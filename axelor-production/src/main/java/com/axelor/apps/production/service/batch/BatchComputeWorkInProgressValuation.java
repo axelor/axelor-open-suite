@@ -77,7 +77,9 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     for (ManufOrder manufOrder : manufOrderList) {
       try {
         costSheetService.computeCostPrice(
-            manufOrder, CostSheetRepository.CALCULATION_WORK_IN_PROGRESS);
+            manufOrder,
+            CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+            productionBatch.getValuationDate());
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();

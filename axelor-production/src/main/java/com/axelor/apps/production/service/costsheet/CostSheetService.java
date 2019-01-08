@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 
 public interface CostSheetService {
 
@@ -29,6 +30,7 @@ public interface CostSheetService {
   public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(ManufOrder manufOrder, int calculationTypeSelect)
+  public CostSheet computeCostPrice(
+      ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException;
 }

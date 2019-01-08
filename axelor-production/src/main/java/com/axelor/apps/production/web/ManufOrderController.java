@@ -388,8 +388,12 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
+
       Beans.get(CostSheetService.class)
-          .computeCostPrice(manufOrder, CostSheetRepository.CALCULATION_WORK_IN_PROGRESS);
+          .computeCostPrice(
+              manufOrder,
+              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+              Beans.get(AppBaseService.class).getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
