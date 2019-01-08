@@ -5,10 +5,10 @@
 
   <module name="business-support" package="com.axelor.apps.businesssupport.db"/>
 
-  <entity name="Version">
+  <entity name="ProjectVersion">
 		<string name="title" title="Title" namecolumn="true"/>
 		<many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
-		<integer name="statusSelect" title="Status" selection="support.version.status.select"/>
+		<integer name="statusSelect" title="Status" selection="support.project.version.status.select"/>
 		<date name="testingServerDate" title="Testing server date"/>
 		<date name="productionServerDate" title="Production server date"/>
 		<string name="content" title="Content" large="true"/>
