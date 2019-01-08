@@ -304,7 +304,7 @@
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
 			<panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
-				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="version-form">
+				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="project-version-form">
 					<field name="title"/>
 					<field name="statusSelect"/>
 					<field name="testingServerDate"/>

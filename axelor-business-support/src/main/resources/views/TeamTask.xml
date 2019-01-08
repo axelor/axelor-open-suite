@@ -52,7 +52,7 @@
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12" readonlyIf="id">
 				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations"/>
-				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="version-form" grid-view="version-grid"/>
+				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid"/>
 				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
 		</panel>
