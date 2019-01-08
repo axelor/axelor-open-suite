@@ -41,12 +41,11 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.commons.lang3.StringUtils;
-
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 @Singleton
 public class PurchaseOrderLineController {

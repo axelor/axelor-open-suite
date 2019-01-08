@@ -331,6 +331,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   /**
    * Normalize partner's fullname to be usable as an account name. Name is appended to prefix, then
    * uppercased and unaccented
+   *
    * @param prefix Prefix to prepend to the generated account code
    * @param partner Partner to generate account code for
    * @return The generated account code.

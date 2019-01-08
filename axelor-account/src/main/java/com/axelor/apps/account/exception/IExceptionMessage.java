@@ -50,9 +50,10 @@ public interface IExceptionMessage {
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
 
-  /** AccountingSituationService **/
+  /** AccountingSituationService * */
   static final String ACCOUNTING_SITUATION_1 = /*$$(*/
       "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+
   static final String ACCOUNTING_SITUATION_2 = /*$$(*/
       "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s" /*)*/;
   static final String ACCOUNTING_SITUATION_3 = /*$$(*/
