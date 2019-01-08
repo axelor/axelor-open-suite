@@ -38,6 +38,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - STOCKLOCATIONLINE : add a button to update the average price.
 - INVENTORY : move 'detailPanel' to PanelTab in form view
 - Invoice: currency is now required in database.
+- Declaration of exchanges: refactor the code, making it easier to override the export.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
