@@ -12,6 +12,7 @@ Add an option to choose to generate an unique production order for a sale order 
 Add sale order and client partner fields on production order.
 - Account Move : Display total number of lines, total debit, total credit and the gap on move form.
 - COST SHEET : cost sheet type
+- Add generated purchase orders panel in sale order form.
 - COST SHEET : calculation date
 
 ## Improvements
@@ -36,6 +37,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - INVENTORY LINE : domain on product field where stockManaged is true
 - STOCKLOCATIONLINE : add a button to update the average price.
 - INVENTORY : move 'detailPanel' to PanelTab in form view
+- Invoice: currency is now required in database.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem

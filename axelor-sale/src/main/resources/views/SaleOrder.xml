@@ -325,6 +325,7 @@
 	      <field name="specificNotes" readonly="true" showIf="specificNotes" colSpan="12"/>
 	    </panel>
 	    <panel-include if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
+			<panel-dashlet if="__config__.app.isApp('supplychain')" name="generatedPurchaseOrderPanel" title="Generated purchase orders" action="action-sale-order-view-show-generated-po"/>
 	  </panel-tabs>
 	  <panel name="attrsPanel">
 	    <field name="attrs" colSpan="12"/>
@@ -1149,6 +1150,12 @@
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
 		<domain>self.saleOrder.id = :id</domain>
+	</action-view>
+
+	<action-view name="action-sale-order-view-show-generated-po" title="Generated purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+    <domain>self.generatedSaleOrderId = :id</domain>
 	</action-view>
 
 	<action-validate name="action-sale-order-validate-information">
