@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.*;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -37,6 +38,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +94,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
+    costSheet.setCalculationDate(Beans.get(AppBaseService.class).getTodayDate());
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -112,7 +115,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(ManufOrder manufOrder, int calculationTypeSelect)
+  public CostSheet computeCostPrice(
+      ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {
     this.init();
 
@@ -123,6 +127,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             manufOrder.getProduct(), manufOrder.getBillOfMaterial().getUnit(), producedQuantity);
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(calculationTypeSelect);
+    costSheet.setCalculationDate(
+        calculationDate != null ? calculationDate : Beans.get(AppBaseService.class).getTodayDate());
     Company company = manufOrder.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());

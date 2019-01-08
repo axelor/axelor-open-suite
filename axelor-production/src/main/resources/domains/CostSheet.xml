@@ -13,6 +13,7 @@
     <decimal name="costPrice" title="Cost price"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<integer name="calculationTypeSelect" title="Calculation type" selection="production.cost.sheet.calculation.type.select"/>
+   	<date name="calculationDate" title="Date of calculation"/>
   	
   	<extra-code><![CDATA[
 		// CALCULATION TYPE SELECT
