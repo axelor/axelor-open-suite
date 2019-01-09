@@ -39,7 +39,8 @@
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 			<panel name="informationsPanel" title="Information">
-				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" domain="self.isModel = false"/>
+				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
+				<field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
 				<field name="packPriceSelect" colSpan="3" showIf="typeSelect == 2" onChange="action-group-invoice-line-pack-price-select-onchange" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
@@ -190,6 +191,11 @@
 
 		<attribute name="readonly" for="accountingPanel" expr="eval: invoice.statusSelect &gt; 2"/>
 	</action-attrs>
+	
+	<action-attrs name="action-invoice-line-attrs-set-product-domain-onselect">
+  		<attribute if="__parent__.operationTypeSelect &lt; 3  &amp;&amp; __config__.app.isApp('purchase')  &amp;&amp;  __config__.app.getApp('purchase').getManageSupplierCatalog()" name="domain" expr="eval: isFilterOnSupplier ? &quot; self.isModel = false and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.partner?.id}) &quot; : &quot; self.isModel = false &quot;" for="product"/>
+  		<attribute  name="domain"  for="product" expr="eval: &quot; self.isModel = false &quot;" if="__parent__.operationTypeSelect > 2"/>
+	</action-attrs>
 
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
@@ -238,12 +244,14 @@
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="qty" expr="eval: 1"/>
+    	<field name="$isFilterOnSupplier" expr="eval:true"/>
     </action-record>
 
     <action-record name="action-invoice-line-record-operation-type" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="$_operationTypeSelect" expr="eval: __parent__.operationTypeSelect"/>
     	<field name="$_company" expr="eval:__parent__?.company"/>
     </action-record>
+    
     <action-record name="action-invoice-sub-line-record-form-isReadonly" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="$isReadOnly" expr="eval: true" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; isSubLine"/>
     </action-record>
@@ -316,7 +324,8 @@
 		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="budgetPanel" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />
-
+		<attribute name="hidden" for="$isFilterOnSupplier" expr="eval: __parent__?.operationTypeSelect &gt; 2" />
+		
 		<!-- Scale and Precision -->
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
