@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.i18n.I18n;
@@ -80,9 +81,13 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   public void attachBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate, Message message)
       throws AxelorException, IOException {
 
-    logger.debug("Generate birt metafile: {}", birtTemplate.getName());
+    String fileName =
+        StringTool.getFilename(birtTemplate.getName())
+            + "-"
+            + new DateTime().toString("yyyyMMddHHmmss");
 
-    String fileName = birtTemplate.getName() + "-" + new DateTime().toString("yyyyMMddHHmmss");
+    logger.debug("Generate birt metafile: {}", fileName);
+
     File file =
         generateBirtTemplate(
             maker,
