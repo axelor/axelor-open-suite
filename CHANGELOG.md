@@ -14,6 +14,7 @@ Add sale order and client partner fields on production order.
 - COST SHEET : cost sheet type
 - Add generated purchase orders panel in sale order form.
 - COST SHEET : calculation date
+- INVOICE : filter on product in InvoiceLine on supplier catalog for supplier invoice
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
