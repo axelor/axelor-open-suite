@@ -120,6 +120,9 @@
                         markers.push(marker);
                         bounds.extend(marker.getPosition());
                     } //end loop
+
+                    addYourLocationButton(map, markers, bounds);
+
                     if (markers.length < 2) {
                         var latLng;
                         if (markers.length) {
