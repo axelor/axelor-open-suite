@@ -55,6 +55,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -90,6 +91,9 @@ public class IntercoServiceImpl implements IntercoService {
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
             null);
+
+    // in ati
+    saleOrder.setInAti(purchaseOrder.getInAti());
 
     // copy date
     saleOrder.setOrderDate(purchaseOrder.getOrderDate());
@@ -153,6 +157,9 @@ public class IntercoServiceImpl implements IntercoService {
             saleOrder.getPriceList(),
             saleOrder.getCompany().getPartner(),
             saleOrder.getTradingName());
+
+    // in ati
+    purchaseOrder.setInAti(saleOrder.getInAti());
     // copy date
     purchaseOrder.setOrderDate(saleOrder.getOrderDate());
 
@@ -216,6 +223,12 @@ public class IntercoServiceImpl implements IntercoService {
     // delivery
     purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
 
+    // compute price discounted
+    BigDecimal priceDiscounted =
+        Beans.get(PurchaseOrderLineService.class)
+            .computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
+    purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+
     // tax
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
@@ -246,6 +259,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setExTaxTotal(purchaseOrderLine.getExTaxTotal());
     saleOrderLine.setDiscountTypeSelect(purchaseOrderLine.getDiscountTypeSelect());
     saleOrderLine.setDiscountAmount(purchaseOrderLine.getDiscountAmount());
+
+    // compute price discounted
+    BigDecimal priceDiscounted =
+        Beans.get(SaleOrderLineService.class).computeDiscount(saleOrderLine, saleOrder.getInAti());
+    saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
     saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
