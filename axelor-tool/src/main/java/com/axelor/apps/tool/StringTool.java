@@ -23,8 +23,14 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public final class StringTool {
+
+  private static final String[] FILENAME_SEARCH_LIST =
+      new String[] {"*", "\"", "/", "\\", "?", "%", ":", "|", "<", ">"};
+  private static final String[] FILENAME_REPLACEMENT_LIST =
+      new String[] {"#", "'", "_", "_", "_", "_", "_", "_", "_", "_"};
 
   private StringTool() {}
 
@@ -255,5 +261,9 @@ public final class StringTool {
       idString = Joiner.on(",").join(idList);
     }
     return idString;
+  }
+
+  public static String getFilename(String name) {
+    return StringUtils.replaceEach(name, FILENAME_SEARCH_LIST, FILENAME_REPLACEMENT_LIST);
   }
 }
