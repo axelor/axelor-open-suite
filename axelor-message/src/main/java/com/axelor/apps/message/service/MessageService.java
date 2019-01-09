@@ -74,4 +74,6 @@ public interface MessageService {
    * @throws Exception If a error append during generation.
    */
   Message regenerateMessage(Message message) throws Exception;
+
+  public String getFullEmailAddress(EmailAddress emailAddress);
 }
