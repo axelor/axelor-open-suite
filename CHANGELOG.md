@@ -71,6 +71,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Partner : Resolve error on save when modify fields and contactSet at same time. 
 - Interco: Compute price discounted for sale and purchase orders.
 - Generating a reversion of a stock move now correctly updates delivered/received quantity in linked order.
+- Correctly update orders status on cancelling/realizing reversion of a stock move.
 
 ## [5.1.0] - 2018-12-13
 ## Features
