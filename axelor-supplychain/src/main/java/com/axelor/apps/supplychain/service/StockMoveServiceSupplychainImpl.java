@@ -98,7 +98,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      updateSaleOrderLinesDeliveryState(stockMove, true);
+      updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       // Update linked saleOrder delivery state depending on BackOrder's existence
       SaleOrder saleOrder = saleOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
@@ -114,7 +114,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
       Beans.get(SaleOrderRepository.class).save(saleOrder);
     } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      updatePurchaseOrderLines(stockMove, true);
+      updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
@@ -193,10 +193,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             .getTerminateSaleOrderOnDelivery()) {
       so.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     }
-    updateSaleOrderLinesDeliveryState(stockMove, false);
+    updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
   }
 
-  protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean realize)
+  protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getSaleOrderLine() != null) {
@@ -210,7 +210,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
-        if (realize) {
+        if (qtyWasDelivered) {
           saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
         } else {
           saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
@@ -254,10 +254,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             .getTerminatePurchaseOrderOnReceipt()) {
       po.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
     }
-    updatePurchaseOrderLines(stockMove, false);
+    updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
   }
 
-  protected void updatePurchaseOrderLines(StockMove stockMove, boolean realize)
+  protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getPurchaseOrderLine() != null) {
@@ -271,7 +271,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 purchaseOrderLine.getProduct());
 
-        if (realize) {
+        if (qtyWasReceived) {
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().add(realQty));
         } else {
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
