@@ -32,19 +32,6 @@
                 <button name="draftBtn" title="Draft" showIf="statusSelect == 6" onClick="action-group-stock-inventory-draft-click"/>
             </panel>
         </panel>
-
-        <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-            <field name="productFamily" canEdit="false" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
-            <field name="productCategory" canEdit="false" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
-            <field name="excludeOutOfStock" colSpan="3"/>
-            <field name="includeObsolete" colSpan="3"/>
-            <panel name="racksRangePanel" title="Racks range">
-			    <field name="fromRack"/>
-			    <field name="toRack"/>
-            </panel>
-            <button name="fillInventoryBtn" title="Fill inventory" showIf="stockLocation != null" onClick="action-group-stock-inventory-fillinventoryBtn-click" colSpan="3"/>
-        </panel>
         
         <panel-tabs name="mainPanelTab">
         	<panel title="Details">
@@ -87,6 +74,18 @@
         	</panel>
         </panel-tabs>
 
+		<panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
+            <field name="productFamily" canEdit="false" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
+            <field name="productCategory" canEdit="false" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
+            <field name="excludeOutOfStock" colSpan="3"/>
+            <field name="includeObsolete" colSpan="3"/>
+            <panel name="racksRangePanel" title="Racks range">
+			    <field name="fromRack"/>
+			    <field name="toRack"/>
+            </panel>
+            <button name="fillInventoryBtn" title="Fill inventory" showIf="stockLocation != null" onClick="action-group-stock-inventory-fillinventoryBtn-click" colSpan="3"/>
+        </panel>
     </form>
     
     <action-group name="action-group-stock-inventory-importfile-click">
