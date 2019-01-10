@@ -39,6 +39,13 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
     project.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(project));
 
+    Project parentProject = project.getParentProject();
+    if (parentProject != null) {
+      parentProject.setTotalPlannedHrs(
+          projectPlanningTimeService.getProjectPlannedHrs(parentProject));
+      parentProject.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(parentProject));
+    }
+
     return teamTask;
   }
 

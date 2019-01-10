@@ -113,18 +113,25 @@ public class ProjectPlanningTimeController {
     }
   }
 
-  @Transactional
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
-    List<Map<String, Object>> lines =
+    List<Map<String, Object>> projectPlanningTimeLines =
         (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
 
-    if (lines != null) {
-      for (Map<String, Object> line : lines) {
-        ProjectPlanningTime projectPlanningTime =
-            projectPlanningTimeRepo.find(Long.parseLong(line.get("id").toString()));
-        projectPlanningTimeRepo.remove(projectPlanningTime);
-      }
+    if (projectPlanningTimeLines != null) {
+      projectPlanningTimeService.removeProjectPlanningLines(projectPlanningTimeLines);
+    }
+
+    response.setReload(true);
+  }
+
+  public void removeProjectPlanningTimeSpent(ActionRequest request, ActionResponse response) {
+
+    List<Map<String, Object>> projectPlanningTimeSpentLines =
+        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSpentSet");
+
+    if (projectPlanningTimeSpentLines != null) {
+      projectPlanningTimeService.removeProjectPlanningLines(projectPlanningTimeSpentLines);
     }
 
     response.setReload(true);

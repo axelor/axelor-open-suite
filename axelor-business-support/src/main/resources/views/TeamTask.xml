@@ -23,6 +23,13 @@
 		<field name="projectCategory"/>
 		<field name="targetVersion"/>
 	</grid>
+	
+    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Time spent" name="project-planning-time-spent-client-grid">
+		<field name="project"/>
+		<field name="task"/>
+		<field name="date"/>
+		<field name="realHours"/>
+    </grid>
 
 	<form name="team-task-client-form" title="Task" model="com.axelor.team.db.TeamTask"
 		onNew="action-team-task-group-onnew" onLoad="action-team-task-group-timer-process" width="large">
@@ -95,12 +102,7 @@
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-related field="projectPlanningTimeSpentList" colSpan="12" showIf="timeInvoicing &amp;&amp; invoicingType == 1" readonly="true">
-					<field name="project"/>
-					<field name="task"/>
-					<field name="date"/>
-					<field name="realHours"/>
-				</panel-related>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project planning time spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="timeInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">
@@ -108,12 +110,28 @@
 			<mail-followers/>
 		</panel-mail>
 	</form>
+	
+	<form name="project-planning-time-spent-client-form" title="Time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<panel name="mainPanel" readonly="true">
+			<field name="realHours"/>	
+			<field name="project"/>
+			<field name="task"/>
+			<field name="date"/>
+		</panel>
+	</form>
 
 	<action-view name="action-dashlet-version-view-show-task" title="Ticket associated" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="business-support-version-team-task-grid"/>
 		<view type="form" name="team-task-form"/>
 		<view-param name="popup" value="true"/>
 		<domain>self.targetVersion.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-team-task-client-dashlet-project-planning-time-spent" title="Project planning time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<view type="grid" name="project-planning-time-spent-client-grid"/>
+		<view type="form" name="project-planning-time-spent-client-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.task.id = :id AND self.typeSelect = 2</domain>
 	</action-view>
 
 </object-views>
