@@ -942,8 +942,7 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.timeSpentTask is null",
+                      + "AND timesheetLine.timesheet = ?3)",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -958,8 +957,7 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.timeSpentTask is null",
+                      + "AND timesheetLine.timesheet = ?4)",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
@@ -996,7 +994,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
-      timesheetLine.setTeamTask(projectPlanningTime.getTimeSpentTask());
+      timesheetLine.setTeamTask(projectPlanningTime.getTask());
       return timesheetLine;
     }
     return null;
@@ -1016,10 +1014,12 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.timeSpentTask != null",
+                      + "AND self.task != null "
+                      + "AND self.typeSelect = ?4",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
-                  timesheet)
+                  timesheet,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
               .fetch();
     } else {
       planningList =
@@ -1032,11 +1032,13 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.timeSpentTask != null",
+                      + "AND self.task != null "
+                      + "AND self.typeSelect = ?5",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
-                  timesheet)
+                  timesheet,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
               .fetch();
     }
     return planningList;

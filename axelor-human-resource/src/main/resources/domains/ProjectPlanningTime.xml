@@ -13,12 +13,12 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"  required="true"/>
       <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Team task" />
-      <many-to-one name="timeSpentTask" ref="com.axelor.team.db.TeamTask" title="Team task" />
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
+	  <integer name="typeSelect" title="Type" selection="hr.project.planning.time.type"/>
 	  
 	  <string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -43,6 +43,13 @@
 	  		return fullName;
 	  	]]>
 	  </string>
+	  
+      <extra-code>
+      	<![CDATA[
+	  		public static final int TYPE_PROJECT_PLANNING_TIME = 1;
+	  		public static final int TYPE_PROJECT_PLANNING_TIME_SPENT = 2;
+	  ]]>
+      </extra-code>
 		
   </entity>
   
