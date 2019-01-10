@@ -14,6 +14,7 @@ Add sale order and client partner fields on production order.
 - COST SHEET : cost sheet type
 - Add generated purchase orders panel in sale order form.
 - COST SHEET : calculation date
+- INVOICE : filter on product in InvoiceLine on supplier catalog for supplier invoice
 - Message : Email - 'From' e-mail adress contact Name.
 
 ## Improvements
@@ -40,6 +41,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - INVENTORY : move 'detailPanel' to PanelTab in form view
 - Invoice: currency is now required in database.
 - Declaration of exchanges: refactor the code, making it easier to override the export.
+- SALE ORDER : change position of tradingName field.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
