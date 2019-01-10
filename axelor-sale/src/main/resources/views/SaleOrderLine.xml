@@ -438,7 +438,7 @@
 	</action-record>
   
     <action-record name="action-sale-order-line-record-is-form-editable" model="com.axelor.apps.sale.db.SaleOrderLine">
-      <field name="$isNotEditable" expr="eval: __parent__?.clientPartner == null || __parent__?.statusSelect == 2 || (__parent__?.statusSelect == 3  &amp;&amp; !orderBeingEdited) || __parent__?.statusSelect == 4"/>
+      <field name="$isNotEditable" expr="eval: __parent__?.clientPartner == null || __parent__?.statusSelect == 2 || (__parent__?.statusSelect == 3  &amp;&amp; !__parent__.orderBeingEdited) || __parent__?.statusSelect == 4"/>
     </action-record>
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
