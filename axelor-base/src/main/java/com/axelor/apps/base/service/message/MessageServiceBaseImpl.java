@@ -195,4 +195,19 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     return "";
   }
+
+  @Override
+  public String getFullEmailAddress(EmailAddress emailAddress) {
+    String partnerName = "";
+    if (emailAddress.getPartner() != null) {
+
+      try {
+        partnerName = new String(emailAddress.getPartner().getName().getBytes(), "ISO-8859-1");
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
+  }
 }
