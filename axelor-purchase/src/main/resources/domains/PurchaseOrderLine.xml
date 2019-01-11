@@ -46,8 +46,8 @@
   	  	
   	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
   	
-	<date name="estimatedDelivDate" title="Estim. delivery date"/>
-	<date name="desiredDelivDate" title="Desired delivery date"/>
+	<date name="estimatedDelivDate" title="Estim. receipt date"/>
+	<date name="desiredDelivDate" title="Desired receipt date"/>
 	<decimal name="receivedQty" title="Received quantity"/>
 	  
 	<string name="supplierComment" title="Supplier Comment"/>
