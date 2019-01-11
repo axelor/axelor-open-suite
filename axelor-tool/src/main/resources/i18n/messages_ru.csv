@@ -1,0 +1,12 @@
+"key","message","comment","context"
+"An error occurs while opening the connection. Please verify the following URL : %s.","При разрыве соединения возникает ошибка. Пожалуйста, проверьте следующий URL: %s.",,
+"Can not opening the connection to a empty URL.","Невозможно открыть соединение с пустым URL-адресом.",,
+"Cannot find record #%s","Не могу найти запись #%s",,
+"No such template","Нет такого шаблона",,
+"Templating can not be empty","Шаблон не может быть пустым",,
+"The collection of IDs cannot be null.","Сбор идентификаторов не может быть нулевым.",,
+"The consumer cannot be null.","Потребитель не может быть недействительным.",,
+"The parameter copyNumber should be superior to 0.","CopyNumber параметра должен быть выше 0.",,
+"This field needs to be unique.","Это поле должно быть уникальным.",,
+"Url %s is malformed.","Url %s неправильно сформирован.",,
+"Years in 360 days","Годы в 360 дней",,
