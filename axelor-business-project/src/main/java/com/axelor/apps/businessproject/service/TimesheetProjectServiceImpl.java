@@ -133,9 +133,13 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       Project project = (Project) timesheetInformations[5];
       PriceList priceList = project.getPriceList();
       if (consolidate) {
-        strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+        if (startDate != null && endDate != null) {
+          strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+        }
       } else {
-        strDate = startDate.format(ddmmFormat);
+        if (startDate != null) {
+          strDate = startDate.format(ddmmFormat);
+        }
       }
 
       invoiceLineList.addAll(

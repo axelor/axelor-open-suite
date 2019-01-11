@@ -609,8 +609,10 @@ public class TimesheetServiceImpl implements TimesheetService {
       }
     }
 
-    String description = user.getFullName(),
-        productName = product.getName() + " " + "(" + date + ")";
+    String description = user.getFullName(), productName = product.getName();
+    if (date != null) {
+      productName += " " + "(" + date + ")";
+    }
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(

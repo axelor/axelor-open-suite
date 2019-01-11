@@ -109,6 +109,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - INVENTORY LINES : some products don't display
 - Partner : Do not clean contacts on partner type change but clean on save
 - Partner : Resolve error on save when modify fields and contactSet at same time. 
+- Project : Fix NPE on invoice generation.
 
 ## [5.1.0] - 2018-12-13
 ## Features
