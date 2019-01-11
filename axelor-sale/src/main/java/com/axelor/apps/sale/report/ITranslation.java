@@ -29,6 +29,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_PAYMENT_MODE = /*$$(*/ "SaleOrder.paymentMode"; /*)*/
   public static final String SALES_ORDER_SUPPLY_REF = /*$$(*/ "SaleOrder.supplyRef"; /*)*/
   public static final String SALES_ORDER_CUSTOMER_REF = /*$$(*/ "SaleOrder.customerRef"; /*)*/
+  public static final String SALES_ORDER_CUSTOMER_CODE = /*$$(*/ "SaleOrder.customerCode"; /*)*/
   public static final String SALES_ORDER_SUPPLIER = /*$$(*/ "SaleOrder.supplier"; /*)*/
   public static final String SALES_ORDER_CUSTOMER = /*$$(*/ "SaleOrder.customer"; /*)*/
   public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
