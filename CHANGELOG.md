@@ -45,6 +45,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Declaration of exchanges: refactor the code, making it easier to override the export.
 - SALE ORDER : change position of tradingName field.
 - Stock : Change in view in Inventory form.
+- PURCHASE ORDER : change columns names and positions in PurchaseOrderLine
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
