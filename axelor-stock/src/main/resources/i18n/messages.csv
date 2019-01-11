@@ -395,6 +395,7 @@
 "Perishable expiration date",,,
 "PickingStockMove.aspect",,,
 "PickingStockMove.code",,,
+"PickingStockMove.customerCode",,,
 "PickingStockMove.lineNumber",,,
 "PickingStockMove.manual",,,
 "PickingStockMove.mark",,,

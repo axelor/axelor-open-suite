@@ -395,6 +395,7 @@
 "Perishable expiration date","Date de péremption",,
 "PickingStockMove.aspect","Aspect",,
 "PickingStockMove.code","Code",,
+"PickingStockMove.customerCode","Code client",,
 "PickingStockMove.lineNumber","N° ligne",,
 "PickingStockMove.manual","Notice",,
 "PickingStockMove.mark","Marquage",,
