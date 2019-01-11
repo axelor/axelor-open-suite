@@ -19,7 +19,9 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class StockLocationStockRepository extends StockLocationRepository {
 
@@ -33,5 +35,21 @@ public class StockLocationStockRepository extends StockLocationRepository {
   public StockLocation save(StockLocation entity) {
     Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
     return super.save(entity);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    Long stocklocationId = (Long) json.get("id");
+    StockLocation stockLocation = find(stocklocationId);
+
+    if (stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+      return super.populate(json, context);
+    }
+
+    json.put(
+        "stockLocationValue",
+        Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+
+    return super.populate(json, context);
   }
 }

@@ -18,6 +18,7 @@ Add sale order and client partner fields on production order.
 - Message : Email - 'From' e-mail adress contact Name.
 - Account : Added two boolean 'isTaxAuthorizedOnMoveLine' and 'isTaxRequiredOnMoveLine' and applied condition on MoveLine's tax
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
+- STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
