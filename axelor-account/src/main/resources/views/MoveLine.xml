@@ -27,6 +27,7 @@
         <field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="dueDate"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
     
