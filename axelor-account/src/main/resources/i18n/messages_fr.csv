@@ -1706,7 +1706,7 @@
 "View all unpaid invoices","Voir factures impayées",,
 "Waiting for deposit slip","En attente du bordereau",,
 "Warning, existing lines will be deleted, do you wish to continue?","Attention, les lignes existantes vont être supprimées, voulez-vous continuer ?",,
-"Watch out, an invoice was already created for this supplier invoice number.",,,
+"Watch out, an invoice was already created for this supplier invoice number","Attention une facture existe déjà pour ce numéro de facture fournisseur",,
 "Weight table (Payer quality)","Table des poids (Qualité payeur)",,
 "Wire Transfer","Virement",,
 "Wire transfer operation code","Code Opér. Virement",,
