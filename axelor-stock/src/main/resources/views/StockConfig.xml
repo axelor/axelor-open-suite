@@ -60,6 +60,7 @@
 		<panel name="stockMovePrintSettingsPanel" title="Stock move printing settings">
 			<field name="displayTrackNbrOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayBarcodeOnPickingPrinting" widget="boolean-switch"/>
+			<field name="displayCustomerCodeOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 			<field name="displayLineDetailsOnPrinting" widget="boolean-switch"/>
 		</panel>
