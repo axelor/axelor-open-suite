@@ -15,9 +15,8 @@
     <one-to-many name="stockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="stockLocation" title="Stock location lines"/>
     <one-to-many name="detailsStockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="detailsStockLocation" title="Details stock location lines"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
-
+	<decimal name="stockLocationValue" title="Stock location value" transient="true"/>
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
     
