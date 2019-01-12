@@ -20,6 +20,7 @@
   	<integer name="typeSelect" title="Type" selection="production.cost.sheet.line.type.select"/>
   	<string name="code" title="Code"/>
   	<string name="name" title="name"/>
+  	<integer name="typeSelectIcon" selection="production.cost.sheet.line.type.select"/>
   	
   	 <extra-code><![CDATA[
 	
@@ -29,6 +30,7 @@
 		public static final int TYPE_WORK_CENTER = 3;
 		public static final int TYPE_INDIRECT_COST = 4;
 		public static final int TYPE_CONSUMED_PRODUCT_WASTE = 5;
+		public static final int TYPE_HUMAN = 6;
 	
 	]]></extra-code>
     
