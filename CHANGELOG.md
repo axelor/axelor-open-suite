@@ -80,6 +80,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - ACCOUNTING REPORT : change title of field year and delete canEdit from view
 - Invoice: fix an exception showing when creating a new invoice from an invoice generated from stock move.
 - Fix exception on interco invoice generation.
+- Stock config: fix typo.
 
 ## [5.1.0] - 2018-12-13
 ## Features
