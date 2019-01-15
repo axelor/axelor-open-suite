@@ -1105,6 +1105,8 @@
 "No of Units",,,
 "No reimbursement found for the ref %s and the company %s.",,,
 "Not implemented for OSM",,,
+"Note: there are existing not imputed client refunds.",,,
+"Note: there are existing not imputed supplier refunds.",,,
 "Notes",,,
 "Notification",,,
 "Notification item",,,

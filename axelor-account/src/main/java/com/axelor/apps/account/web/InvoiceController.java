@@ -204,6 +204,20 @@ public class InvoiceController {
     }
   }
 
+  public void checkNotImputedRefunds(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = invoiceRepo.find(invoice.getId());
+
+    try {
+      String msg = invoiceService.checkNotImputedRefunds(invoice);
+      if (msg != null) {
+        response.setFlash(msg);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Fonction appeler par le bouton générer un avoir.
    *
