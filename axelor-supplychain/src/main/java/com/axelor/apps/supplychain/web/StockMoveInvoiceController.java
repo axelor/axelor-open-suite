@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -82,6 +84,8 @@ public class StockMoveInvoiceController {
                 .add("form", "invoice-form")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
+                .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+                .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                 .map());
       }
     } catch (Exception e) {
