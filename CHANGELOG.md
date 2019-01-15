@@ -47,7 +47,8 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - SALE ORDER : change position of tradingName field.
 - Stock : Change in view in Inventory form.
 - PURCHASE ORDER : change columns names and positions in PurchaseOrderLine
-- Production Batch: Improved data fetching on production valuation batch. 
+- Production Batch: Improved data fetching on production valuation batch.
+- Mass invoicing stock move feature now works with stock move with no linked sale order or purchase order.
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem

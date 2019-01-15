@@ -250,36 +250,29 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean contactPartnerToCheck = false;
 
     checkForAlreadyInvoicedStockMove(stockMoveList);
-    checkOutStockMoveRequiredFieldsAreTheSame(stockMoveList);
+    List<Invoice> dummyInvoiceList =
+        stockMoveList.stream().map(this::createDummyOutInvoice).collect(Collectors.toList());
+    checkOutStockMoveRequiredFieldsAreTheSame(dummyInvoiceList);
 
-    List<SaleOrder> saleOrderList =
-        stockMoveList
-            .stream()
-            .filter(
-                stockMove ->
-                    stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)
-                        && stockMove.getOriginId() != null)
-            .map(stockMove -> saleOrderRepository.find(stockMove.getOriginId()))
-            .collect(Collectors.toList());
-    if (!saleOrderList.isEmpty()) {
-      PaymentCondition firstPaymentCondition = saleOrderList.get(0).getPaymentCondition();
-      PaymentMode firstPaymentMode = saleOrderList.get(0).getPaymentMode();
-      Partner firstContactPartner = saleOrderList.get(0).getContactPartner();
+    if (!dummyInvoiceList.isEmpty()) {
+      PaymentCondition firstPaymentCondition = dummyInvoiceList.get(0).getPaymentCondition();
+      PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
+      Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !saleOrderList
+          !dummyInvoiceList
               .stream()
-              .map(SaleOrder::getPaymentCondition)
+              .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !saleOrderList
+          !dummyInvoiceList
               .stream()
-              .map(SaleOrder::getPaymentMode)
+              .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !saleOrderList
+          !dummyInvoiceList
               .stream()
-              .map(SaleOrder::getContactPartner)
+              .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
 
       mapResult.put("paymentCondition", firstPaymentCondition);
@@ -294,54 +287,46 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return mapResult;
   }
 
-  protected void checkOutStockMoveRequiredFieldsAreTheSame(List<StockMove> stockMoveList)
+  protected void checkOutStockMoveRequiredFieldsAreTheSame(List<Invoice> dummyInvoiceList)
       throws AxelorException {
-    if (stockMoveList == null || stockMoveList.isEmpty()) {
+    if (dummyInvoiceList == null || dummyInvoiceList.isEmpty()) {
       return;
     }
-    Invoice dummyInvoice = createDummyOutInvoice(stockMoveList.get(0));
-    List<SaleOrder> saleOrderList =
-        stockMoveList
-            .stream()
-            .filter(
-                stockMove ->
-                    stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)
-                        && stockMove.getOriginId() != null)
-            .map(stockMove -> saleOrderRepository.find(stockMove.getOriginId()))
-            .collect(Collectors.toList());
+    Invoice firstDummyInvoice = dummyInvoiceList.get(0);
 
-    for (SaleOrder saleOrder : saleOrderList) {
-      if (dummyInvoice.getCurrency() != null
-          && !dummyInvoice.getCurrency().equals(saleOrder.getCurrency())) {
+    for (Invoice dummyInvoice : dummyInvoiceList) {
+      if (firstDummyInvoice.getCurrency() != null
+          && !firstDummyInvoice.getCurrency().equals(dummyInvoice.getCurrency())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
       }
 
-      if (dummyInvoice.getPartner() != null
-          && !dummyInvoice.getPartner().equals(saleOrder.getClientPartner())) {
+      if (firstDummyInvoice.getPartner() != null
+          && !firstDummyInvoice.getPartner().equals(dummyInvoice.getPartner())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER));
       }
 
-      if (dummyInvoice.getCompany() != null
-          && !dummyInvoice.getCompany().equals(saleOrder.getCompany())) {
+      if (firstDummyInvoice.getCompany() != null
+          && !firstDummyInvoice.getCompany().equals(dummyInvoice.getCompany())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_SO));
       }
 
-      if ((dummyInvoice.getTradingName() != null
-              && !dummyInvoice.getTradingName().equals(saleOrder.getTradingName()))
-          || (dummyInvoice.getTradingName() == null && saleOrder.getTradingName() != null)) {
+      if ((firstDummyInvoice.getTradingName() != null
+              && !firstDummyInvoice.getTradingName().equals(dummyInvoice.getTradingName()))
+          || (firstDummyInvoice.getTradingName() == null
+              && dummyInvoice.getTradingName() != null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_SO));
       }
 
-      if (dummyInvoice.getInAti() != null
-          && !dummyInvoice.getInAti().equals(saleOrder.getInAti())) {
+      if (firstDummyInvoice.getInAti() != null
+          && !firstDummyInvoice.getInAti().equals(dummyInvoice.getInAti())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
@@ -359,38 +344,29 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean contactPartnerToCheck = false;
 
     checkForAlreadyInvoicedStockMove(stockMoveList);
-    checkInStockMoveRequiredFieldsAreTheSame(stockMoveList);
+    List<Invoice> dummyInvoiceList =
+        stockMoveList.stream().map(this::createDummyInInvoice).collect(Collectors.toList());
+    checkInStockMoveRequiredFieldsAreTheSame(dummyInvoiceList);
 
-    List<PurchaseOrder> purchaseOrderList =
-        stockMoveList
-            .stream()
-            .filter(
-                stockMove ->
-                    stockMove
-                            .getOriginTypeSelect()
-                            .equals(StockMoveRepository.ORIGIN_PURCHASE_ORDER)
-                        && stockMove.getOriginId() != null)
-            .map(stockMove -> purchaseOrderRepository.find(stockMove.getOriginId()))
-            .collect(Collectors.toList());
-    if (!purchaseOrderList.isEmpty()) {
-      PaymentCondition firstPaymentCondition = purchaseOrderList.get(0).getPaymentCondition();
-      PaymentMode firstPaymentMode = purchaseOrderList.get(0).getPaymentMode();
-      Partner firstContactPartner = purchaseOrderList.get(0).getContactPartner();
+    if (!dummyInvoiceList.isEmpty()) {
+      PaymentCondition firstPaymentCondition = dummyInvoiceList.get(0).getPaymentCondition();
+      PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
+      Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !purchaseOrderList
+          !dummyInvoiceList
               .stream()
-              .map(PurchaseOrder::getPaymentCondition)
+              .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !purchaseOrderList
+          !dummyInvoiceList
               .stream()
-              .map(PurchaseOrder::getPaymentMode)
+              .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !purchaseOrderList
+          !dummyInvoiceList
               .stream()
-              .map(PurchaseOrder::getContactPartner)
+              .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
       mapResult.put("paymentCondition", firstPaymentCondition);
       mapResult.put("paymentMode", firstPaymentMode);
@@ -404,57 +380,47 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return mapResult;
   }
 
-  protected void checkInStockMoveRequiredFieldsAreTheSame(List<StockMove> stockMoveList)
+  protected void checkInStockMoveRequiredFieldsAreTheSame(List<Invoice> dummyInvoiceList)
       throws AxelorException {
-    if (stockMoveList == null || stockMoveList.isEmpty()) {
+    if (dummyInvoiceList == null || dummyInvoiceList.isEmpty()) {
       return;
     }
-    Invoice dummyInvoice = createDummyInInvoice(stockMoveList.get(0));
-    List<PurchaseOrder> purchaseOrderList =
-        stockMoveList
-            .stream()
-            .filter(
-                stockMove ->
-                    stockMove
-                            .getOriginTypeSelect()
-                            .equals(StockMoveRepository.ORIGIN_PURCHASE_ORDER)
-                        && stockMove.getOriginId() != null)
-            .map(stockMove -> purchaseOrderRepository.find(stockMove.getOriginId()))
-            .collect(Collectors.toList());
+    Invoice firstDummyInvoice = dummyInvoiceList.get(0);
 
-    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+    for (Invoice dummyInvoice : dummyInvoiceList) {
 
-      if (dummyInvoice.getCurrency() != null
-          && !dummyInvoice.getCurrency().equals(purchaseOrder.getCurrency())) {
+      if (firstDummyInvoice.getCurrency() != null
+          && !firstDummyInvoice.getCurrency().equals(dummyInvoice.getCurrency())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_CURRENCY));
       }
 
-      if (dummyInvoice.getPartner() != null
-          && !dummyInvoice.getPartner().equals(purchaseOrder.getSupplierPartner())) {
+      if (firstDummyInvoice.getPartner() != null
+          && !firstDummyInvoice.getPartner().equals(dummyInvoice.getPartner())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER));
       }
 
-      if (dummyInvoice.getCompany() != null
-          && !dummyInvoice.getCompany().equals(purchaseOrder.getCompany())) {
+      if (firstDummyInvoice.getCompany() != null
+          && !firstDummyInvoice.getCompany().equals(dummyInvoice.getCompany())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_COMPANY_PO));
       }
 
-      if ((dummyInvoice.getTradingName() != null
-              && !dummyInvoice.getTradingName().equals(purchaseOrder.getTradingName()))
-          || (dummyInvoice.getTradingName() == null && purchaseOrder.getTradingName() != null)) {
+      if ((firstDummyInvoice.getTradingName() != null
+              && !firstDummyInvoice.getTradingName().equals(dummyInvoice.getTradingName()))
+          || (firstDummyInvoice.getTradingName() == null
+              && dummyInvoice.getTradingName() != null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO));
       }
 
-      if (dummyInvoice.getInAti() != null
-          && !dummyInvoice.getInAti().equals(purchaseOrder.getInAti())) {
+      if (firstDummyInvoice.getInAti() != null
+          && !firstDummyInvoice.getInAti().equals(dummyInvoice.getInAti())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_MULTI_INVOICE_IN_ATI));
@@ -647,7 +613,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Invoice dummyInvoice = new Invoice();
 
     if (stockMove.getOriginId() != null
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
+        && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
       dummyInvoice.setCurrency(saleOrder.getCurrency());
       dummyInvoice.setPartner(saleOrder.getClientPartner());
@@ -660,6 +626,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       dummyInvoice.setContactPartner(saleOrder.getContactPartner());
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
+    } else {
+      dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
+      dummyInvoice.setPartner(stockMove.getPartner());
+      dummyInvoice.setCompany(stockMove.getCompany());
+      dummyInvoice.setTradingName(stockMove.getTradingName());
+      dummyInvoice.setAddress(stockMove.getToAddress());
+      dummyInvoice.setAddressStr(stockMove.getToAddressStr());
     }
     return dummyInvoice;
   }
@@ -674,7 +647,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Invoice dummyInvoice = new Invoice();
 
     if (stockMove.getOriginId() != null
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_PURCHASE_ORDER)) {
+        && StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
@@ -685,6 +658,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       dummyInvoice.setContactPartner(purchaseOrder.getContactPartner());
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
+    } else {
+      dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
+      dummyInvoice.setPartner(stockMove.getPartner());
+      dummyInvoice.setCompany(stockMove.getCompany());
+      dummyInvoice.setTradingName(stockMove.getTradingName());
+      dummyInvoice.setAddress(stockMove.getFromAddress());
+      dummyInvoice.setAddressStr(stockMove.getFromAddressStr());
     }
     return dummyInvoice;
   }
@@ -732,35 +712,35 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Invoice dummyInvoice, StockMove stockMove) {
 
     if (stockMove.getOriginId() != null
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
+        && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       return;
     }
 
-    SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+    Invoice comparedDummyInvoice = createDummyOutInvoice(stockMove);
 
     if (dummyInvoice.getPaymentCondition() != null
-        && !dummyInvoice.getPaymentCondition().equals(saleOrder.getPaymentCondition())) {
+        && !dummyInvoice.getPaymentCondition().equals(comparedDummyInvoice.getPaymentCondition())) {
       dummyInvoice.setPaymentCondition(null);
     }
 
     if (dummyInvoice.getPaymentMode() != null
-        && !dummyInvoice.getPaymentMode().equals(saleOrder.getPaymentMode())) {
+        && !dummyInvoice.getPaymentMode().equals(comparedDummyInvoice.getPaymentMode())) {
       dummyInvoice.setPaymentMode(null);
     }
 
     if (dummyInvoice.getAddress() != null
-        && !dummyInvoice.getAddress().equals(saleOrder.getMainInvoicingAddress())) {
+        && !dummyInvoice.getAddress().equals(comparedDummyInvoice.getAddress())) {
       dummyInvoice.setAddress(null);
       dummyInvoice.setAddressStr(null);
     }
 
     if (dummyInvoice.getContactPartner() != null
-        && !dummyInvoice.getContactPartner().equals(saleOrder.getContactPartner())) {
+        && !dummyInvoice.getContactPartner().equals(comparedDummyInvoice.getContactPartner())) {
       dummyInvoice.setContactPartner(null);
     }
 
     if (dummyInvoice.getPriceList() != null
-        && !dummyInvoice.getPriceList().equals(saleOrder.getPriceList())) {
+        && !dummyInvoice.getPriceList().equals(comparedDummyInvoice.getPriceList())) {
       dummyInvoice.setPriceList(null);
     }
   }
@@ -776,29 +756,29 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Invoice dummyInvoice, StockMove stockMove) {
 
     if (stockMove.getOriginId() != null
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_PURCHASE_ORDER)) {
+        && StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       return;
     }
 
-    PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
+    Invoice comparedDummyInvoice = createDummyInInvoice(stockMove);
 
     if (dummyInvoice.getPaymentCondition() != null
-        && !dummyInvoice.getPaymentCondition().equals(purchaseOrder.getPaymentCondition())) {
+        && !dummyInvoice.getPaymentCondition().equals(comparedDummyInvoice.getPaymentCondition())) {
       dummyInvoice.setPaymentCondition(null);
     }
 
     if (dummyInvoice.getPaymentMode() != null
-        && !dummyInvoice.getPaymentMode().equals(purchaseOrder.getPaymentMode())) {
+        && !dummyInvoice.getPaymentMode().equals(comparedDummyInvoice.getPaymentMode())) {
       dummyInvoice.setPaymentMode(null);
     }
 
     if (dummyInvoice.getContactPartner() != null
-        && !dummyInvoice.getContactPartner().equals(purchaseOrder.getContactPartner())) {
+        && !dummyInvoice.getContactPartner().equals(comparedDummyInvoice.getContactPartner())) {
       dummyInvoice.setContactPartner(null);
     }
 
     if (dummyInvoice.getPriceList() != null
-        && !dummyInvoice.getPriceList().equals(purchaseOrder.getPriceList())) {
+        && !dummyInvoice.getPriceList().equals(comparedDummyInvoice.getPriceList())) {
       dummyInvoice.setPriceList(null);
     }
   }
@@ -816,7 +796,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
       SaleOrder saleOrder =
-          stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)
+          StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
                   && stockMove.getOriginId() != null
               ? saleOrderRepository.find(stockMove.getOriginId())
               : null;
@@ -849,7 +829,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
       PurchaseOrder purchaseOrder =
-          stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_PURCHASE_ORDER)
+          StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
                   && stockMove.getOriginId() != null
               ? purchaseOrderRepository.find(stockMove.getOriginId())
               : null;
