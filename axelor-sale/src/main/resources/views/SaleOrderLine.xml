@@ -113,13 +113,16 @@
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
 				</panel>
 
-				<panel name="taxPanel" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable">
-					<field name="taxLine" canEdit="false" colSpan="6" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<panel name="taxPanel" colSpan="12">
+					<field name="taxLine" canEdit="false" colSpan="6" readonlyIf="$isReadOnly || $isNotEditable" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
-					<field name="isSubLine" hideIf="!isSubLine" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
-					<field name="parentLine" hideIf="!isSubLine || parentLine == null" />
-					<field name="requestedReservedQty" colSpan="6"  if-module="axelor-supplychain" onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+					<field name="isSubLine" hideIf="!isSubLine" readonlyIf="$isReadOnly || $isNotEditable" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+					<field name="parentLine" hideIf="!isSubLine || parentLine == null" readonlyIf="$isReadOnly || $isNotEditable"/>
+					<field name="requestedReservedQty" colSpan="6" readonlyIf="$isReadOnly || saleOrder.statusSelect &gt; 2"
+						if-module="axelor-supplychain"
+						onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"
+						if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 					<field name="reservedQty" colSpan="6" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				</panel>
         		<panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
