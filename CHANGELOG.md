@@ -9,6 +9,7 @@
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
+- Base : Updation of type in demo-data in Birt Template Parameter.
 
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
