@@ -281,6 +281,7 @@
 "Inventory.trackingNumber",,,
 "Inventory.unit",,,
 "Is ISPM15 required",,,
+"Is avg price changed",,,
 "Is certificate of conformity required",,,
 "Is certificate of conformity signed",,,
 "Is reversion",,,

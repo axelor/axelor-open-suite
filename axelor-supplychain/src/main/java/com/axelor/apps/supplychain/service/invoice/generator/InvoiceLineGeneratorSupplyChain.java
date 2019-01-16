@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
@@ -245,6 +246,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
                 InvoiceToolService.isPurchase(invoice),
                 invoiceLine.getFixedAssets());
         invoiceLine.setAccount(account);
+      }
+
+      if (product != null && purchaseOrderLine.getFixedAssets()) {
+        AccountManagement accountManagement =
+            accountManagementService.getAccountManagement(
+                product.getAccountManagementList(), invoice.getCompany());
+        if (accountManagement != null) {
+          invoiceLine.setFixedAssetCategory(accountManagement.getFixedAssetCategory());
+        }
       }
 
     } else if (stockMoveLine != null) {

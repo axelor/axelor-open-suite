@@ -440,7 +440,13 @@ public class IntercoServiceImpl implements IntercoService {
     }
 
     invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));
-    invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
+    invoice.setCompanyExTaxTotal(
+        invoice.getCompanyExTaxTotal().setScale(2, BigDecimal.ROUND_HALF_EVEN));
+    invoice.setCompanyInTaxTotal(
+        invoice
+            .getCompanyExTaxTotal()
+            .add(invoice.getCompanyTaxTotal())
+            .setScale(2, BigDecimal.ROUND_HALF_EVEN));
     invoice.setAmountRemaining(invoice.getInTaxTotal());
     invoice.setHasPendingPayments(false);
   }

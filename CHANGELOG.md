@@ -19,6 +19,7 @@ Add sale order and client partner fields on production order.
 - Account : Added two boolean 'isTaxAuthorizedOnMoveLine' and 'isTaxRequiredOnMoveLine' and applied condition on MoveLine's tax
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
+- MOVE : Automatic taxline generation.
 - Bill of materials : now have the possibility to add raw materials en masse to components.
 
 ## Improvements
@@ -48,7 +49,10 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - SALE ORDER : change position of tradingName field.
 - Stock : Change in view in Inventory form.
 - PURCHASE ORDER : change columns names and positions in PurchaseOrderLine
-- Production Batch: Improved data fetching on production valuation batch. 
+- Production Batch: Improved data fetching on production valuation batch.
+- Mass invoicing stock move feature now works with stock move with no linked sale order or purchase order.
+- Invoice : Change font color for existing supplier invoice alert message. 
+- Fixed asset : invoice generated from purchase order
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
@@ -78,6 +82,16 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Generating a reversion of a stock move now correctly updates delivered/received quantity in linked order.
 - Correctly update orders status on cancelling/realizing reversion of a stock move.
 - ACCOUNTING REPORT : change title of field year and delete canEdit from view
+- Invoice: fix an exception showing when creating a new invoice from an invoice generated from stock move.
+- Fix exception on interco invoice generation.
+- Stock config: fix typo.
+- SALE ORDER LINE : Fixed buttons to clickable by removing condition
+- Advance Export : Fix issue in exporting the model with permissions with parameters.
+- PRODUCT : Field 'isShippingCostsProduct' set to default hidden.
+- TeamTask : Inter change id of form and grid view of teamtask.
+- PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
+- Requested reserved qty readonly in confirmed sale order line form.
+- MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
 
 ## [5.1.0] - 2018-12-13
 ## Features
