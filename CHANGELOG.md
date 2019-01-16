@@ -81,6 +81,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice: fix an exception showing when creating a new invoice from an invoice generated from stock move.
 - Fix exception on interco invoice generation.
 - Stock config: fix typo.
+- SALE ORDER LINE : Fixed buttons to clickable by removing condition
 
 ## [5.1.0] - 2018-12-13
 ## Features
