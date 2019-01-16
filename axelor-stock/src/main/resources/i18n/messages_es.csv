@@ -281,6 +281,7 @@
 "Inventory.trackingNumber","Seguimiento n°",,
 "Inventory.unit","Cantidad Supuesta",,
 "Is ISPM15 required","¿Se requiere la NIMF 15?",,
+"Is avg price changed",,,
 "Is certificate of conformity required","¿Se requiere un certificado de conformidad?",,
 "Is certificate of conformity signed","Está firmado el certificado de conformidad",,
 "Is reversion","Es la reversión",,
