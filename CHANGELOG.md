@@ -164,6 +164,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
+- Base : Update of type in demo-data in Birt Template Parameter.
 
 ## Bug Fixes
 - Payroll preparation: changed export file name which was causing error
