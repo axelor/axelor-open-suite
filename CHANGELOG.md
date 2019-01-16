@@ -82,6 +82,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Fix exception on interco invoice generation.
 - Stock config: fix typo.
 - SALE ORDER LINE : Fixed buttons to clickable by removing condition
+- Advance Export : Fix issue in exporting the model with permissions with parameters.
 
 ## [5.1.0] - 2018-12-13
 ## Features
