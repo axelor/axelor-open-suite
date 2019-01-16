@@ -83,6 +83,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Stock config: fix typo.
 - SALE ORDER LINE : Fixed buttons to clickable by removing condition
 - Advance Export : Fix issue in exporting the model with permissions with parameters.
+- PRODUCT : Field 'isShippingCostsProduct' set to default hidden.
 
 ## [5.1.0] - 2018-12-13
 ## Features
