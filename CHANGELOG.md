@@ -90,6 +90,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - TeamTask : Inter change id of form and grid view of teamtask.
 - PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 - Requested reserved qty readonly in confirmed sale order line form.
+- MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
 
 ## [5.1.0] - 2018-12-13
 ## Features
