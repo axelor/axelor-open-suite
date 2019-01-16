@@ -54,6 +54,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Fixed asset : invoice generated from purchase order
 
 ## Bug Fixes
+- Payroll preparation: changed export file name which was causing error
 - SEQUENCES : Fix panelSide Tips problem
 - BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
 - MANUF ORDER : fix Sale order / client partner title
