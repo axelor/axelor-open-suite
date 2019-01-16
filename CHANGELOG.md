@@ -50,6 +50,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Production Batch: Improved data fetching on production valuation batch.
 - Mass invoicing stock move feature now works with stock move with no linked sale order or purchase order.
 - Invoice : Change font color for existing supplier invoice alert message. 
+- Fixed asset : invoice generated from purchase order
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
