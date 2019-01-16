@@ -35,6 +35,7 @@
 - TeamTask : Update teamtask client view. 
 - Project : Default value for project on Wiki/Version/Announcement.
 - Project : Divide planned and spent time project planning lines in seprate dashlets.
+- Team Task : Add new field 'customerReferral'.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

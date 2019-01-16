@@ -21,6 +21,7 @@
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
 		<field name="projectCategory"/>
+		<field name="customerReferral"/>
 		<field name="targetVersion"/>
 	</grid>
 	
@@ -79,7 +80,8 @@
 				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations"/>
 				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid"/>
-				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
+				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 				<field name="assignment" hidden="true"/>
 			</panel>
 		</panel>
