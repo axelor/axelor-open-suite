@@ -23,7 +23,10 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface BillOfMaterialService {
 
@@ -59,4 +62,9 @@ public interface BillOfMaterialService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
+
+  String computeName(BillOfMaterial bom);
+
+  Set<BillOfMaterial> addRawMaterials(
+      BillOfMaterial billOfMaterial, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
 }
