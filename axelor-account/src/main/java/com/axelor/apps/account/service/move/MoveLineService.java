@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -988,5 +990,128 @@ public class MoveLineService {
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
       moveLineList.add(moveLine);
     }
+  }
+
+  public void autoTaxLineGenerate(Move move) throws AxelorException {
+
+    List<MoveLine> moveLineList = move.getMoveLineList();
+
+    moveLineList.sort(
+        new Comparator<MoveLine>() {
+          @Override
+          public int compare(MoveLine o1, MoveLine o2) {
+            if (o2.getSourceTaxLine() != null) {
+              return 0;
+            }
+            return -1;
+          }
+        });
+
+    Iterator<MoveLine> moveLineItr = moveLineList.iterator();
+
+    Map<String, MoveLine> map = new HashMap<>();
+    Map<String, MoveLine> newMap = new HashMap<>();
+
+    while (moveLineItr.hasNext()) {
+
+      MoveLine moveLine = moveLineItr.next();
+
+      TaxLine taxLine = moveLine.getTaxLine();
+      TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
+
+      if (sourceTaxLine != null) {
+
+        String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
+
+        moveLine.setCredit(BigDecimal.ZERO);
+        moveLine.setDebit(BigDecimal.ZERO);
+        map.put(sourceTaxLineKey, moveLine);
+        moveLineItr.remove();
+        continue;
+      }
+
+      if (taxLine != null) {
+
+        String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+
+        if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+            || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
+            || accountType.equals(AccountTypeRepository.TYPE_INCOME)
+            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+
+          BigDecimal debit = moveLine.getDebit();
+          BigDecimal credit = moveLine.getCredit();
+          LocalDate date = moveLine.getDate();
+          Company company = move.getCompany();
+
+          MoveLine newOrUpdatedMoveLine = new MoveLine();
+
+          if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+              || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+            newOrUpdatedMoveLine.setAccount(
+                taxAccountService.getAccount(taxLine.getTax(), company, true, false));
+          } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+            newOrUpdatedMoveLine.setAccount(
+                taxAccountService.getAccount(taxLine.getTax(), company, false, false));
+          } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+            newOrUpdatedMoveLine.setAccount(
+                taxAccountService.getAccount(taxLine.getTax(), company, true, true));
+          }
+
+          Account newAccount = newOrUpdatedMoveLine.getAccount();
+
+          if (newAccount == null) {
+            throw new AxelorException(
+                move,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.MOVE_LINE_6),
+                taxLine.getName(),
+                company.getName());
+          }
+
+          String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+
+          if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
+
+            newOrUpdatedMoveLine =
+                this.createNewMoveLine(
+                    debit, credit, date, accountType, taxLine, newOrUpdatedMoveLine);
+          } else {
+
+            if (newMap.containsKey(newSourceTaxLineKey)) {
+              newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
+            } else if (!newMap.containsKey(newSourceTaxLineKey)
+                && map.containsKey(newSourceTaxLineKey)) {
+              newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
+            }
+            newOrUpdatedMoveLine.setDebit(
+                newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
+            newOrUpdatedMoveLine.setCredit(
+                newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
+          }
+
+          newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+        }
+      }
+    }
+
+    moveLineList.addAll(newMap.values());
+  }
+
+  public MoveLine createNewMoveLine(
+      BigDecimal debit,
+      BigDecimal credit,
+      LocalDate date,
+      String accountType,
+      TaxLine taxLine,
+      MoveLine newOrUpdatedMoveLine) {
+
+    newOrUpdatedMoveLine.setSourceTaxLine(taxLine);
+    newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
+    newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
+    newOrUpdatedMoveLine.setDescription(taxLine.getTax().getName());
+    newOrUpdatedMoveLine.setDate(date);
+
+    return newOrUpdatedMoveLine;
   }
 }

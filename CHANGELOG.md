@@ -19,6 +19,7 @@ Add sale order and client partner fields on production order.
 - Account : Added two boolean 'isTaxAuthorizedOnMoveLine' and 'isTaxRequiredOnMoveLine' and applied condition on MoveLine's tax
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
+- MOVE : Automatic taxline generation.
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
@@ -89,6 +90,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - TeamTask : Inter change id of form and grid view of teamtask.
 - PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 - Requested reserved qty readonly in confirmed sale order line form.
+- MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
 - PAYROLL : spelling problem
 
 ## [5.1.0] - 2018-12-13
