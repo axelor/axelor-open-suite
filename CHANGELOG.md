@@ -87,6 +87,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Advance Export : Fix issue in exporting the model with permissions with parameters.
 - PRODUCT : Field 'isShippingCostsProduct' set to default hidden.
 - TeamTask : Inter change id of form and grid view of teamtask.
+- PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 
 ## [5.1.0] - 2018-12-13
 ## Features
