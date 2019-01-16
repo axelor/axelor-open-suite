@@ -15,6 +15,7 @@
 		<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
 		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type"/>
 		<boolean name="timeInvoicing" title="Invoicing Time"/>
+		<many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral"/>
 		
         <extra-code>
           <![CDATA[
