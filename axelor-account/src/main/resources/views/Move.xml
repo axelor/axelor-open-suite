@@ -68,6 +68,7 @@
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" prompt="The validation of a move brings irrevocable integration of a move in Moves book"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
@@ -246,6 +247,10 @@
 	
 	<action-method name="action-account-move-method-compute-totals">
 		<call class="com.axelor.apps.account.web.MoveController" method="computeTotals"/>
+	</action-method>
+	
+	<action-method name="action-account-move-method-automatic-taxline-generation">
+		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
