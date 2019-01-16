@@ -17,19 +17,34 @@
  */
 package com.axelor.apps.account.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -49,22 +64,6 @@ import com.axelor.meta.MetaFiles;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Query;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveLineExportServiceImpl implements MoveLineExportService {
 
@@ -1193,7 +1192,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         Partner partner = moveLine.getPartner();
         if (partner != null) {
           items[6] = partner.getPartnerSeq();
-          items[7] = partner.getFullName();
+          items[7] = partner.getName();
         }
         items[8] = moveLine.getOrigin();
         if (moveLine.getDate() != null) {
@@ -1209,34 +1208,46 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         items[10] = moveLine.getDescription();
         items[11] = moveLine.getDebit().toString();
         items[12] = moveLine.getCredit().toString();
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-          List<String> reconcileSeqList = new ArrayList<>();
-          List<String> reconcileDateList = new ArrayList<>();
-
-          for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-            reconcileSeqList.add(reconcile.getReconcileSeq());
-            reconcileDateList.add(
-                reconcile
-                    .getReconciliationDate()
-                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
-          }
-          items[13] = StringUtils.join(reconcileSeqList, "; ");
-          items[14] = StringUtils.join(reconcileDateList, "; ");
-        } else {
-          List<String> reconcileSeqList = new ArrayList<>();
-          List<String> reconcileDateList = new ArrayList<>();
-          for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-            if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-              reconcileSeqList.add(reconcile.getReconcileSeq());
-              reconcileDateList.add(
-                  reconcile
-                      .getReconciliationDate()
-                      .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
-            }
-          }
-          items[13] = StringUtils.join(reconcileSeqList, "; ");
-          items[14] = StringUtils.join(reconcileDateList, "; ");
+//        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+//          List<String> reconcileSeqList = new ArrayList<>();
+//          List<String> reconcileDateList = new ArrayList<>();
+//
+//          for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+//            reconcileSeqList.add(reconcile.getReconcileSeq());
+//            reconcileDateList.add(
+//                reconcile
+//                    .getReconciliationDate()
+//                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
+//          }
+//          items[13] = StringUtils.join(reconcileSeqList, "; ");
+//          items[14] = StringUtils.join(reconcileDateList, "; ");
+//        } else {
+//          List<String> reconcileSeqList = new ArrayList<>();
+//          List<String> reconcileDateList = new ArrayList<>();
+//          for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+//            if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+//              reconcileSeqList.add(reconcile.getReconcileSeq());
+//              reconcileDateList.add(
+//                  reconcile
+//                      .getReconciliationDate()
+//                      .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
+//            }
+//          }
+//          items[13] = StringUtils.join(reconcileSeqList, "; ");
+//          items[14] = StringUtils.join(reconcileDateList, "; ");
+//        }
+      
+        ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
+        if(reconcileGroup != null && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+          items[13] = reconcileGroup.getCode();
+          items[14] = reconcileGroup.getDateOfLettering().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)).toString();
         }
+        
+        else {
+          items[13] = "";
+          items[14] = "";
+        }
+        
         if (move.getValidationDate() != null) {
           items[15] =
               move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
