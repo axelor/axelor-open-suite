@@ -6,6 +6,19 @@
 	<menuitem name="crm-root" title="CRM" order="-108" if="__config__.app.isApp('crm')"
 		icon="fa-user" icon-background="#2fa042"/>
 	
+	<menuitem name="crm-root-lead" parent="crm-root"
+		title="Leads" action="crm.root.lead" order="1"/>
+
+	<action-view name="crm.root.lead" title="Leads"
+		model="com.axelor.apps.crm.db.Lead" >
+		<view type="grid" name="lead-grid"/>
+		<view type="form" name="lead-form"/>
+		<view-param name="search-filters" value="lead-filters"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="_internalUserId" expr="eval:__user__.id"/>
+	</action-view>
+	
 	<menuitem name="crm-root-customers" parent="crm-root" 
 		title="Customers" action="crm.root.customers" order="5"/>
 
@@ -52,21 +65,9 @@
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
-	<menuitem name="crm-root-lead" parent="crm-root"
-		title="Leads" action="crm.root.lead" order="20"/>
-
-	<action-view name="crm.root.lead" title="Leads"
-		model="com.axelor.apps.crm.db.Lead" >
-		<view type="grid" name="lead-grid"/>
-		<view type="form" name="lead-form"/>
-		<view-param name="search-filters" value="lead-filters"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-		<context name="_internalUserId" expr="eval:__user__.id"/>
-	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
-		title="Opportunities" action="crm.root.opportunity" order="25"/>
+		title="Opportunities" action="crm.root.opportunity" order="20"/>
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity" home="true">
