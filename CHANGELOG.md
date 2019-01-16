@@ -49,6 +49,8 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - PURCHASE ORDER : change columns names and positions in PurchaseOrderLine
 - Production Batch: Improved data fetching on production valuation batch.
 - Mass invoicing stock move feature now works with stock move with no linked sale order or purchase order.
+- Invoice : Change font color for existing supplier invoice alert message. 
+- Fixed asset : invoice generated from purchase order
 
 ## Bug Fixes
 - SEQUENCES : Fix panelSide Tips problem
@@ -81,6 +83,10 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice: fix an exception showing when creating a new invoice from an invoice generated from stock move.
 - Fix exception on interco invoice generation.
 - Stock config: fix typo.
+- SALE ORDER LINE : Fixed buttons to clickable by removing condition
+- Advance Export : Fix issue in exporting the model with permissions with parameters.
+- PRODUCT : Field 'isShippingCostsProduct' set to default hidden.
+- TeamTask : Inter change id of form and grid view of teamtask.
 - PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 
 ## [5.1.0] - 2018-12-13
