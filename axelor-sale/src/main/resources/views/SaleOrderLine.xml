@@ -70,8 +70,8 @@
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
-			<panel name="informationsPanel" title="Information" readonlyIf="$isNotEditable">
-				<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly">
+			<panel name="informationsPanel" title="Information">
+				<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable" >
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
@@ -99,7 +99,7 @@
 				<field name="productName" colSpan="12"/>
 				<field name="oldQty"/>
 			</panel>
-				<panel name="productDetailPanel" colSpan="12" readonlyIf="$isReadOnly">
+				<panel name="productDetailPanel" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable">
 					<field name="qty" colSpan="3"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"  validIf="$qtyValid != false"/>
 					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || isSubLine" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
@@ -113,7 +113,7 @@
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
 				</panel>
 
-				<panel name="taxPanel" colSpan="12" readonlyIf="$isReadOnly">
+				<panel name="taxPanel" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable">
 					<field name="taxLine" canEdit="false" colSpan="6" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
@@ -130,7 +130,7 @@
 				<field name="$isReadOnly" hidden="true"/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
-				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly">
+				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable">
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 			</panel>
@@ -438,7 +438,7 @@
 	</action-record>
   
     <action-record name="action-sale-order-line-record-is-form-editable" model="com.axelor.apps.sale.db.SaleOrderLine">
-      <field name="$isNotEditable" expr="eval: __parent__?.clientPartner == null || __parent__?.statusSelect == 2 || (__parent__?.statusSelect == 3  &amp;&amp; !orderBeingEdited) || __parent__?.statusSelect == 4"/>
+      <field name="$isNotEditable" expr="eval: __parent__?.clientPartner == null || __parent__?.statusSelect == 2 || (__parent__?.statusSelect == 3  &amp;&amp; !__parent__.orderBeingEdited) || __parent__?.statusSelect == 4"/>
     </action-record>
     
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">

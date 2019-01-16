@@ -249,12 +249,12 @@
 	      <field name="currency" readonlyIf="statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
 	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
-	      <field name="contactPartner" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
+	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
 	      <panel name="otherInfoPanel" colSpan="3">
 	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
 	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
-	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="6" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
 	    	</panel>
 	    </panel>
 	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
@@ -384,7 +384,7 @@
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
 	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid"/>
-	    <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
+	    <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
 	  </panel>
 	  <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	  	<field name="accountedRevenue">
@@ -487,7 +487,7 @@
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
       	  <field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
-      	  <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
+      	  <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
       </panel>
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="contentPanel" title="Content">

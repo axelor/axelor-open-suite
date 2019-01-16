@@ -25,5 +25,7 @@
         </string>
         <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines" massUpdate="true"/>
         <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true"/>
+        <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line"/>
+    	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line"/>
     </entity>
 </domain-models>

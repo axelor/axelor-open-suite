@@ -24,12 +24,10 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -106,9 +104,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       } else {
         Beans.get(SaleOrderStockService.class).updateDeliveryState(saleOrder);
 
-        if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
-            && appSupplychain.getTerminateSaleOrderOnDelivery()) {
-          Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
+        if (appSupplychain.getTerminateSaleOrderOnDelivery()) {
+          terminateOrConfirmSaleOrderStatus(saleOrder);
         }
       }
 
@@ -122,9 +119,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       } else {
         Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
-        if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED
-            && appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
-          Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
+        if (appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
+          finishOrValidatePurchaseOrderStatus(purchaseOrder);
         }
       }
 
@@ -170,30 +166,28 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter(
-                "self.originId = ?1 AND self.originTypeSelect = ?2",
-                so.getId(),
-                StockMoveRepository.ORIGIN_SALE_ORDER)
-            .fetch();
-    so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
-    for (StockMove stock : stockMoveList) {
-      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
-          && !stock.getId().equals(stockMove.getId())) {
-        so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
-        break;
-      }
-    }
-
-    if (so.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED
-        && Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getTerminateSaleOrderOnDelivery()) {
-      so.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    }
     updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
+    Beans.get(SaleOrderStockService.class).updateDeliveryState(so);
+
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getTerminateSaleOrderOnDelivery()) {
+      terminateOrConfirmSaleOrderStatus(so);
+    }
+  }
+
+  /**
+   * Update saleOrder status from or to terminated status, from or to confirm status, depending on
+   * its delivery state. Should be called only if we terminate sale order on receipt.
+   *
+   * @param saleOrder
+   */
+  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) {
+    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    } else {
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    }
   }
 
   protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
@@ -231,30 +225,28 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
     PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
 
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter(
-                "self.originId = ?1 AND self.originTypeSelect = ?2",
-                po.getId(),
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER)
-            .fetch();
-    po.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
-    for (StockMove stock : stockMoveList) {
-      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
-          && !stock.getId().equals(stockMove.getId())) {
-        po.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
-        break;
-      }
-    }
-
-    if (po.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED
-        && Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getTerminatePurchaseOrderOnReceipt()) {
-      po.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-    }
     updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
+    Beans.get(PurchaseOrderStockService.class).updateReceiptState(po);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getTerminatePurchaseOrderOnReceipt()) {
+      finishOrValidatePurchaseOrderStatus(po);
+    }
+  }
+
+  /**
+   * Update purchaseOrder status from or to finished status, from or to validated status, depending
+   * on its state. Should be called only if we terminate purchase order on receipt.
+   *
+   * @param purchaseOrder a purchase order.
+   */
+  protected void finishOrValidatePurchaseOrderStatus(PurchaseOrder purchaseOrder) {
+
+    if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
+      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    } else {
+      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+    }
   }
 
   protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
