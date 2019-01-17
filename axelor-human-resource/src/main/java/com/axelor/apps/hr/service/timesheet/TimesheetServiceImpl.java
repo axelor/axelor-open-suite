@@ -924,6 +924,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
+      timesheetLine.setTeamTask(projectPlanningTime.getTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
@@ -944,10 +945,13 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3)",
+                      + "AND timesheetLine.timesheet = ?3) "
+                      + "AND self.task != null "
+                      + "AND self.typeSelect = ?4",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
-                  timesheet)
+                  timesheet,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
               .fetch();
     } else {
       planningList =
@@ -959,11 +963,14 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4)",
+                      + "AND timesheetLine.timesheet = ?4) "
+                      + "AND self.task != null "
+                      + "AND self.typeSelect = ?5",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
-                  timesheet)
+                  timesheet,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
               .fetch();
     }
     return planningList;
