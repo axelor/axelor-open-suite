@@ -1,409 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?><%
-	configuratorCreatorRepository = 'com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository'
-	def cc = { com.axelor.inject.Beans.get(configuratorCreatorRepository as Class).find(it) }
-	
-	def attributeMethod = {
-		attribute = ""
-		cc(it).attributes?.each( { att ->
-			attribute += """
-			<attribute>
-				<name>${att.name}</name>
-				<title>"""
-				if (att.title != null) {
-					attribute += "${att.title}"
-				}
-				attribute += """</title>
-				<type>${att.type}</type>
-				<defaultValue>"""
-				if (att.defaultValue != null) {
-					attribute += "${att.defaultValue}"
-				}
-				attribute += """</defaultValue>
-				<model>${att.model}</model>
-				<modelField>${att.modelField}</modelField>
-				<jsonModelCode>"""
-				if (att.jsonModel?.code != null) {
-					attribute += "${att.jsonModel?.code}"
-				}
-				attribute += """</jsonModelCode>
-				<selection>"""
-				if (att.selection != null) {
-					attribute += "${att.selection}"
-				}
-				attribute += """</selection>
-				<widget>"""
-				if (att.widget != null) {
-					attribute += "${att.widget}"
-				}
-				attribute += """</widget>
-				<help>"""
-				if (att.help != null) {
-					attribute += "${att.help}" 
-				}
-				attribute += """</help>
-				<showIf>"""
-				if (att.showIf != null) {
-					attribute += "${att.showIf}"
-				}
-				attribute += """</showIf>
-				<hideIf>"""
-				if (att.hideIf != null) {
-					attribute += "${att.hideIf}"
-				}
-				attribute += """</hideIf>
-				<requiredIf>"""
-				if (att.requiredIf != null) {
-					attribute += "${att.requiredIf}"
-				}
-				attribute += """</requiredIf>
-				<hidden>${att.hidden}</hidden>
-				<required>${att.required}</required>
-				<nameField>${att.nameField}</nameField>
-				<minSize>${att.minSize}</minSize>
-				<maxSize>${att.maxSize}</maxSize>
-				<precision>${att.precision}</precision>
-				<scale>${att.scale}</scale>
-				<regex>"""
-				if (att.regex != null) {
-					attribute += "${att.regex}"
-				}
-				attribute += """</regex>
-				<targetModel>"""
-				if (att.targetModel != null) {
-					attribute += "${att.targetModel}"
-				}
-				attribute += """</targetModel>
-				<enumType>"""
-				if (att.enumType != null) {
-					attribute += "${att.enumType}"
-				}
-				attribute += """</enumType>
-				<formView>"""
-				if (att.formView != null) {
-					attribute += "${att.formView}"
-				}
-				attribute += """</formView>
-				<gridView>"""
-				if (att.gridView != null) {
-					attribute += "${att.gridView}"
-				}
-				attribute += """</gridView>
-				<domain>"""
-				if (att.domain) {
-					attribute += "${att.domain}"
-				}
-				attribute += """</domain>
-				<targetJsonModelCode>"""
-				if (att.targetJsonModel?.code != null) {
-					attribute += "${att.targetJsonModel?.code}"
-				}
-				attribute += """</targetJsonModelCode>
-				<sequence>${att.sequence}</sequence>
-				<onChange>"""
-				if (att.onChange != null) {
-					attribute += "${att.onChange}"
-				}
-				attribute += """</onChange>
-				<onClick>"""
-				if (att.onClick != null) {
-					attribute += "${att.onClick}"
-				}
-				attribute += """</onClick>
-				<widgetAttrs>"""
-				if (att.widgetAttrs != null) {
-					attribute += "${att.widgetAttrs}"
-				}
-				attribute += """</widgetAttrs>
-				<contextField>"""
-				if (att.contextField != null) {
-					attribute += "${att.contextField}"
-				}
-				attribute += """</contextField>
-				<contextFieldTarget>"""
-				if (att.contextFieldTarget != null) {
-					attribute += "${att.contextFieldTarget}"
-				}
-				attribute += """</contextFieldTarget>
-				<contextFieldTargetName>"""
-				if (att.contextFieldTargetName != null) {
-					attribute += "${att.contextFieldTargetName}"
-				}
-				attribute += """</contextFieldTargetName>
-				<contextFieldValue>"""
-				if (att.contextFieldValue != null) {
-					attribute += "${att.contextFieldValue}"
-				}
-				attribute += """</contextFieldValue>
-			</attribute>
-		"""
-		})
-		return attribute
-	} 	
-	
-	def configuratorProductFormulaMethod = {
-		configuratorProductFormula = ""
-		cc(it).configuratorProductFormulaList?.each( { cf ->
-			configuratorProductFormula += """
-			<configuratorProductFormula>
-				"""
-			if (cf.metaField?.id != null) {
-				configuratorProductFormula += "<metaField>${cf.metaField?.id}</metaField>"
-			}
-			configuratorProductFormula += 	"""
-				<formula>"""
-				if (cf.formula != null) {
-					configuratorProductFormula += "${cf.formula}"
-				}
-				configuratorProductFormula += """</formula>
-				<showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
-				<configuratorCreatorImportId>${cf.productCreator?.id}</configuratorCreatorImportId>
-			</configuratorProductFormula>
-		"""
-		})
-		return configuratorProductFormula
-	}
+configuratorCreatorRepository = 'com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository'
+def cc = { com.axelor.inject.Beans.get(configuratorCreatorRepository as Class).find(it) }
 
-	def configuratorSOLineFormulaMethod = {
-		configuratorSOLineFormula = ""
-		cc(it).configuratorSOLineFormulaList?.each( { cf ->
-			configuratorSOLineFormula += """
-			<configuratorSOLineFormula>
-				"""
-			if (cf.metaField?.id != null) {
-				configuratorSOLineFormula += "<metaField>${cf.metaField?.id}</metaField>"
-			}
-			configuratorSOLineFormula += 	"""
-				<formula>"""
-				if (cf.formula != null) {
-					configuratorSOLineFormula += "${cf.formula}"
-				}
-				configuratorSOLineFormula += """</formula>
-				<showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
-				<updateFromSelect>${cf.updateFromSelect}</updateFromSelect>
-				<configuratorCreatorImportId>${cf.soLineCreator?.id}</configuratorCreatorImportId>
-			</configuratorSOLineFormula>
-		"""
-		})
-		return configuratorSOLineFormula
-	}
+def attributeMethod = {
+    attribute = ""
+        cc(it).attributes?.each( { att ->
+                attribute += """
+                <attribute>
+                <name>${att.name}</name>
+                <title>"""
+                if (att.title != null) {
+                attribute += "${att.title}"
+                }
+                attribute += """</title>
+                <type>${att.type}</type>
+                <defaultValue>"""
+                if (att.defaultValue != null) {
+                attribute += "${att.defaultValue}"
+                }
+                attribute += """</defaultValue>
+                <model>${att.model}</model>
+                <modelField>${att.modelField}</modelField>
+                <jsonModelCode>"""
+                if (att.jsonModel?.code != null) {
+                attribute += "${att.jsonModel?.code}"
+                }
+                attribute += """</jsonModelCode>
+                    <selection>"""
+                    if (att.selection != null) {
+                        attribute += "${att.selection}"
+                    }
+                attribute += """</selection>
+                    <widget>"""
+                    if (att.widget != null) {
+                        attribute += "${att.widget}"
+                    }
+                attribute += """</widget>
+                    <help>"""
+                    if (att.help != null) {
+                        attribute += "${att.help}"
+                    }
+                attribute += """</help>
+                    <showIf>"""
+                    if (att.showIf != null) {
+                        attribute += "${att.showIf}"
+                    }
+                attribute += """</showIf>
+                    <hideIf>"""
+                    if (att.hideIf != null) {
+                        attribute += "${att.hideIf}"
+                    }
+                attribute += """</hideIf>
+                    <requiredIf>"""
+                    if (att.requiredIf != null) {
+                        attribute += "${att.requiredIf}"
+                    }
+                attribute += """</requiredIf>
+                    <hidden>${att.hidden}</hidden>
+                    <required>${att.required}</required>
+                    <nameField>${att.nameField}</nameField>
+                    <minSize>${att.minSize}</minSize>
+                    <maxSize>${att.maxSize}</maxSize>
+                    <precision>${att.precision}</precision>
+                    <scale>${att.scale}</scale>
+                    <regex>"""
+                    if (att.regex != null) {
+                        attribute += "${att.regex}"
+                    }
+                attribute += """</regex>
+                    <targetModel>"""
+                    if (att.targetModel != null) {
+                        attribute += "${att.targetModel}"
+                    }
+                attribute += """</targetModel>
+                    <enumType>"""
+                    if (att.enumType != null) {
+                        attribute += "${att.enumType}"
+                    }
+                attribute += """</enumType>
+                    <formView>"""
+                    if (att.formView != null) {
+                        attribute += "${att.formView}"
+                    }
+                attribute += """</formView>
+                    <gridView>"""
+                    if (att.gridView != null) {
+                        attribute += "${att.gridView}"
+                    }
+                attribute += """</gridView>
+                    <domain>"""
+                    if (att.domain) {
+                        attribute += "${att.domain}"
+                    }
+                attribute += """</domain>
+                    <targetJsonModelCode>"""
+                    if (att.targetJsonModel?.code != null) {
+                        attribute += "${att.targetJsonModel?.code}"
+                    }
+                attribute += """</targetJsonModelCode>
+                    <sequence>${att.sequence}</sequence>
+                    <onChange>"""
+                    if (att.onChange != null) {
+                        attribute += "${att.onChange}"
+                    }
+                attribute += """</onChange>
+                    <onClick>"""
+                    if (att.onClick != null) {
+                        attribute += "${att.onClick}"
+                    }
+                attribute += """</onClick>
+                    <widgetAttrs>"""
+                    if (att.widgetAttrs != null) {
+                        attribute += "${att.widgetAttrs}"
+                    }
+                attribute += """</widgetAttrs>
+                    <contextField>"""
+                    if (att.contextField != null) {
+                        attribute += "${att.contextField}"
+                    }
+                attribute += """</contextField>
+                    <contextFieldTarget>"""
+                    if (att.contextFieldTarget != null) {
+                        attribute += "${att.contextFieldTarget}"
+                    }
+                attribute += """</contextFieldTarget>
+                    <contextFieldTargetName>"""
+                    if (att.contextFieldTargetName != null) {
+                        attribute += "${att.contextFieldTargetName}"
+                    }
+                attribute += """</contextFieldTargetName>
+                    <contextFieldValue>"""
+                    if (att.contextFieldValue != null) {
+                        attribute += "${att.contextFieldValue}"
+                    }
+                attribute += """</contextFieldValue>
+                    </attribute>
+                    """
+        })
+    return attribute
+}
 
-	def authorizedUserMethod = {
-		authorizedUser = ""
-		cc(it).authorizedUserSet?.each( { au ->
-			authorizedUser += """
-			<authorizedUser>${au.code}</authorizedUser>"""
-		})
-		return authorizedUser
-	}
-	
-	def authorizedGroupMethod = {
-		authorizedGroup = ""
-		cc(it).authorizedGroupSet?.each( { ag ->
-			authorizedGroup += """
-			<authorizedGroup>${ag.code}</authorizedGroup>"""
-		})
-		return authorizedGroup
-	}
-	
-	def retrieveConfiguratorProdProcessLine = { cppl ->
-		configProdProcessLine = ""
-		configProdProcessLine += """
-				<configuratorProdProcessLine>
-					<name>"""
-					if (cppl.name != null) {
-						configProdProcessLine += "${cppl.name}"
-					}
-					configProdProcessLine += """</name>
-					<priority>${cppl.priority}</priority>
-					<workCenter>${cppl.workCenter?.id}</workCenter>
-					<outsourcing>${cppl.outsourcing}</outsourcing>
-					<stockLocation>"""
-					if (cppl.stockLocation?.id != null) {
-						configProdProcessLine += "${cppl.stockLocation?.id}"
-					}
-					configProdProcessLine += """</stockLocation>
-					<description>"""
-					if (cppl.description != null) {
-						configProdProcessLine += "${cppl.description}"
-					}
-					configProdProcessLine += """</description>
-					<minCapacityPerCycle>${cppl.minCapacityPerCycle}</minCapacityPerCycle>
-					<minCapacityPerCycleFormula>"""
-					if (cppl.minCapacityPerCycleFormula != null) {
-						configProdProcessLine += "${cppl.minCapacityPerCycleFormula}"
-					}
-					configProdProcessLine += """</minCapacityPerCycleFormula>
-					<defMinCapacityFormula>${cppl.defMinCapacityFormula}</defMinCapacityFormula>
-					<maxCapacityPerCycle>${cppl.maxCapacityPerCycle}</maxCapacityPerCycle>
-					<maxCapacityPerCycleFormula>"""
-					if (cppl.maxCapacityPerCycleFormula != null) {
-						configProdProcessLine += "${cppl.maxCapacityPerCycleFormula}"
-					}
-					configProdProcessLine += """</maxCapacityPerCycleFormula>
-					<defMaxCapacityFormula>${cppl.defMaxCapacityFormula}</defMaxCapacityFormula>
-					<durationPerCycle>${cppl.durationPerCycle}</durationPerCycle>
-					<durationPerCycleFormula>"""
-					if (cppl.durationPerCycleFormula != null) {
-						configProdProcessLine += "${cppl.durationPerCycleFormula}"
-					}
-					configProdProcessLine += """</durationPerCycleFormula>
-					<defDurationFormula>${cppl.defDurationFormula}</defDurationFormula>
-				</configuratorProdProcessLine>
-		"""
-		return configProdProcessLine
-	}
-	
-	def configuratorProdProcessLineMethod = {
-		configuratorProdProcessLine = ""
-		cc(it).configuratorBom?.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
-			configuratorProdProcessLine = retrieveConfiguratorProdProcessLine(cppl)
-		})
-		return configuratorProdProcessLine
-	}
-	
-	def retrieveConfiguratorBomWithChildren
-	
-	def retrieveConfiguratorBomWithChildren2 = { index, childCb ->
-		return retrieveConfiguratorBomWithChildren( index, childCb )
-	}
+def configuratorProductFormulaMethod = {
+    configuratorProductFormula = ""
+        cc(it).configuratorProductFormulaList?.each( { cf ->
+                configuratorProductFormula += """
+                <configuratorProductFormula>
+                """
+                if (cf.metaField?.id != null) {
+                configuratorProductFormula += "<metaField>${cf.metaField?.name}</metaField>"
+                }
+                configuratorProductFormula += 	"""
+                <formula>"""
+                if (cf.formula != null) {
+                configuratorProductFormula += "${cf.formula}"
+                }
+                configuratorProductFormula += """</formula>
+                <showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
+                <configuratorCreatorImportId>${cf.productCreator?.id}</configuratorCreatorImportId>
+                </configuratorProductFormula>
+                """
+                })
+    return configuratorProductFormula
+}
 
-	configBom = ""
-	retrieveConfiguratorBomWithChildren = { index, cb ->
-		if (index < 20) {
-			configBom += """
-			
-	<configurator-bom>
-		"""
-			if (cb.company?.id != null) {
-				configBom += "<companyCode>${cb.company?.code}</companyCode>"
-			}
-			configBom += """
-		<name>"""
-		if (cb.name != null) {
-			configBom += "${cb.name}"
-		}
-		configBom += """</name>
-		<importId>${cb.id}</importId>
-		<nameFormula>"""
-		if (cb.nameFormula != null) {
-			configBom += "${cb.nameFormula}"
-		}
-		configBom += """</nameFormula>
-		<defNameAsFormula>${cb.defNameAsFormula}</defNameAsFormula>"""
-			if (cb.product?.id != null) {
-				configBom += "<productCode>${cb.product?.code}</productCode>"
-			}
-			configBom += """
-		<productFormula>"""
-		if (cb.productFormula != null){
-			configBom += "${cb.productFormula}"
-		}
-		configBom += """</productFormula>
-		<defProductAsFormula>${cb.defProductAsFormula}</defProductAsFormula>
-		<defProductFromConfigurator>${cb.defProductFromConfigurator}</defProductFromConfigurator>
-		<qty>${cb.qty}</qty>
-		<qtyFormula>"""
-		if (cb.qtyFormula != null) {
-			configBom += "${cb.qtyFormula}"
-		}
-		configBom += """</qtyFormula>
-		<defQtyAsFormula>${cb.defQtyAsFormula}</defQtyAsFormula>"""
-			if (cb.unit?.id != null) {
-				configBom += "<unitId>${cb.unit?.id}</unitId>"
-			}
-			configBom += """
-		<unitFormula>"""
-		if (cb.unitFormula != null) {
-			configBom += "${cb.unitFormula}"
-		}
-		configBom += """</unitFormula>
-		<defUnitAsFormula>${cb.defUnitAsFormula}</defUnitAsFormula>"""
-			if (cb.prodProcess?.id != null) {
-				configBom += "<prodProcessCode>${cb.prodProcess?.code}</prodProcessCode>"
-			}
-			if (cb.configuratorProdProcess?.id != null) {
-				configBom += """
-		<configuratorProdProcess>
-			<importId>${cb.configuratorProdProcess?.id}</importId>
-			<name>${cb.configuratorProdProcess?.name}</name>
-			<companyCode>${cb.configuratorProdProcess?.company?.code}</companyCode>
-			<stockLocation>${cb.configuratorProdProcess?.stockLocation?.id}</stockLocation>
-			<configuratorProdProcessLineList>"""	
-				cb.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
-					configBom += retrieveConfiguratorProdProcessLine(cppl)
-				})			
-				configBom += """	</configuratorProdProcessLineList>
-		</configuratorProdProcess>"""
-			}
-			configBom += """
-		<prodProcessFormula>"""
-		if (cb.prodProcessFormula != null) {
-			configBom += "${cb.prodProcessFormula}"
-		}
-		configBom += """</prodProcessFormula>
-		<defProdProcessAsFormula>${cb.defProdProcessAsFormula}</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>${cb.defProdProcessAsConfigurator}</defProdProcessAsConfigurator>
-		"""
-		if (cb.parentConfiguratorBOM?.id != null) {
-			configBom += "<parentConfiguratorBOMId>${cb.parentConfiguratorBOM?.id}</parentConfiguratorBOMId>"
-		}
-		configBom += """<useCondition>"""
-		if (cb.useCondition != null) {
-			configBom += "${cb.useCondition}"
-		}
-		configBom += """</useCondition>
-		<billOfMaterialId>${cb.billOfMaterialId}</billOfMaterialId>
-	</configurator-bom>"""
-			cb.configuratorBomList?.each( { childCb ->
-				configBom = retrieveConfiguratorBomWithChildren2( index+1, childCb )
-			})
-		} else {
-			configBom += "Some others ConfiguratorBOM"
-		}
-		return configBom
-	}
-	
-	def configBomMethod = {
-		configBom = ""
-		if (cc(it).configuratorBom != null) {
-			configBom = retrieveConfiguratorBomWithChildren(0, cc(it).configuratorBom)
-		}
-		return configBom
-	} 
+def configuratorSOLineFormulaMethod = {
+    configuratorSOLineFormula = ""
+        cc(it).configuratorSOLineFormulaList?.each( { cf ->
+                configuratorSOLineFormula += """
+                <configuratorSOLineFormula>
+                """
+                if (cf.metaField?.id != null) {
+                configuratorSOLineFormula += "<metaField>${ cf.metaField?.name}</metaField>"
+                }
+                configuratorSOLineFormula += 	"""
+                <formula>"""
+                if (cf.formula != null) {
+                configuratorSOLineFormula += "${cf.formula}"
+                }
+                configuratorSOLineFormula += """</formula>
+                <showOnConfigurator>${cf.showOnConfigurator}</showOnConfigurator>
+                <updateFromSelect>${cf.updateFromSelect}</updateFromSelect>
+                <configuratorCreatorImportId>${cf.soLineCreator?.id}</configuratorCreatorImportId>
+                </configuratorSOLineFormula>
+                """
+                })
+    return configuratorSOLineFormula
+}
 
+def authorizedUserMethod = {
+    authorizedUser = ""
+        cc(it).authorizedUserSet?.each( { au ->
+                authorizedUser += """
+                <authorizedUser>${au.code}</authorizedUser>"""
+                })
+    return authorizedUser
+}
 
+def authorizedGroupMethod = {
+    authorizedGroup = ""
+        cc(it).authorizedGroupSet?.each( { ag ->
+                authorizedGroup += """
+                <authorizedGroup>${ag.code}</authorizedGroup>"""
+                })
+    return authorizedGroup
+}
 %>
 
 <configurator-export>
 
-<configurator-boms><% __ids__.each( { it ->
-out << configBomMethod(it) })%>
-</configurator-boms>
-
 <configurator-creators><% __ids__.each( { it -> %>
 
-	<configurator-creator>
-		<importId><% out << cc(it).id %></importId>
-		<name><% out << cc(it).name %></name>
-		<attributes><% out << attributeMethod(it) %></attributes>
-		
-		<configuratorProductFormulaList><% out << configuratorProductFormulaMethod(it) %></configuratorProductFormulaList>
+        <configurator-creator>
+        <importId><% out << cc(it).id %></importId>
+        <name><% out << cc(it).name %></name>
+        <attributes><% out << attributeMethod(it) %></attributes>
 
-		<configuratorSOLineFormulaList><% out << configuratorSOLineFormulaMethod(it) %></configuratorSOLineFormulaList>
+        <configuratorProductFormulaList><% out << configuratorProductFormulaMethod(it) %></configuratorProductFormulaList>
 
-		<authorizedUserSet><% out << authorizedUserMethod(it) %>
-		</authorizedUserSet>
-		
-		<authorizedGroupSet><% out << authorizedGroupMethod(it) %>
-		</authorizedGroupSet>
-		
-		<generateProduct><% out << cc(it).generateProduct %></generateProduct>
-		<isActive><% out << cc(it).isActive %></isActive>
-		<% if (cc(it).configuratorBom != null) { %>
-		<configuratorBomImportId><% out << cc(it).configuratorBom?.id %></configuratorBomImportId>
-		<% } %>
-	
-	</configurator-creator><% })%>
+        <configuratorSOLineFormulaList><% out << configuratorSOLineFormulaMethod(it) %></configuratorSOLineFormulaList>
+
+        <authorizedUserSet><% out << authorizedUserMethod(it) %>
+        </authorizedUserSet>
+
+        <authorizedGroupSet><% out << authorizedGroupMethod(it) %>
+        </authorizedGroupSet>
+
+        <generateProduct><% out << cc(it).generateProduct %></generateProduct>
+        <isActive><% out << cc(it).isActive %></isActive>
+
+        </configurator-creator><% })%>
 
 </configurator-creators>
 
