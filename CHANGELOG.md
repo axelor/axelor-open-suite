@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.1]
 ## Features
+- Sale Order report: added option to display product picture
 - Subrogation Release : add change tracking on status and add new fields.
 - MO printing : new design
 - StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
@@ -20,8 +21,12 @@ Add sale order and client partner fields on production order.
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 - MOVE : Automatic taxline generation.
+- Bill of materials : now have the possibility to add raw materials en masse to components.
+- RECONCILE GROUP : New field "dateOfLettering"
+- ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 
 ## Improvements
+- Move: check if balance is correct before saving (when daybook is enabled)
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 - COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
 - Sale Invoice & Refund : Add factor viewer.
@@ -93,6 +98,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Requested reserved qty readonly in confirmed sale order line form.
 - MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
 - MOVE : some moveLine fields reseted when a move is duplicated
+- INVENTORY : add namecolumn="true" on inventorySeq field
 
 ## [5.1.0] - 2018-12-13
 ## Features
