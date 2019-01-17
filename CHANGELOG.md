@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+- LogisticalForm: if config enabled, send an email on first save
 - SaleOrder: added boolean to invoice via generated task
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
