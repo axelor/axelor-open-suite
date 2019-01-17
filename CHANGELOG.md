@@ -6,6 +6,7 @@
 - Account: use partner name as default account name when creating from partner's account configuration screen.
 
 ## Improvements
+- Disabled 'canEdit' attribute for some fields
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
