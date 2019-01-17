@@ -510,6 +510,7 @@
 "Seller","Vendeur",,
 "Send email on stock move realization","Envoyer un email lors de la réalisation du mouvement de stock",,
 "Send email when planning stock move","Envoyer un email lors de la planification du mouvement de stock",,
+"Send email when saving logistical form","Envoyer un email lors de la sauvegarde d'une fiche logistique",,
 "Separate the shipment operations",,,
 "Seq.","Séq.",,
 "Sequence","Séquence",,

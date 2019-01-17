@@ -170,6 +170,9 @@ public interface IExceptionMessage {
       "Detail line(s) not inside a parcel/pallet" /*)*/;
   String LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION = /*$$(*/ "Unknown account selection" /*)*/;
 
+  String LOGISTICAL_FORM_MISSING_TEMPLATE = /*$$(*/
+      "The template to send message on save is missing." /*)*/;
+
   String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
   String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
