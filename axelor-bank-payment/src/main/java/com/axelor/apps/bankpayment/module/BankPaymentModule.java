@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
@@ -34,6 +35,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
@@ -105,5 +107,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoicePaymentCreateServiceImpl.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
 
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
+
+    bind(MoveManagementRepository.class).to(MoveBankPaymentRepository.class);
   }
 }

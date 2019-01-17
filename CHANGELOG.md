@@ -97,6 +97,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 - Requested reserved qty readonly in confirmed sale order line form.
 - MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
+- MOVE : some moveLine fields reseted when a move is duplicated
 - INVENTORY : add namecolumn="true" on inventorySeq field
 
 ## [5.1.0] - 2018-12-13
