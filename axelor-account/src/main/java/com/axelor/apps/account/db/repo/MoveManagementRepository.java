@@ -39,17 +39,18 @@ public class MoveManagementRepository extends MoveRepository {
 
     Move copy = super.copy(entity, deep);
 
+    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
+
     Period period = null;
     try {
       period =
           Beans.get(PeriodService.class)
-              .rightPeriod(entity.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+              .rightPeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
     copy.setStatusSelect(STATUS_NEW);
     copy.setReference(null);
-    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
     copy.setExportNumber(null);
     copy.setExportDate(null);
     copy.setAccountingReport(null);
@@ -59,8 +60,30 @@ public class MoveManagementRepository extends MoveRepository {
     copy.setIgnoreInDebtRecoveryOk(false);
     copy.setPaymentVoucher(null);
     copy.setRejectOk(false);
+    copy.setInvoice(null);
+
+    List<MoveLine> moveLineList = copy.getMoveLineList();
+
+    if (moveLineList != null) {
+      moveLineList.forEach(this::resetMoveLine);
+    }
 
     return copy;
+  }
+
+  public void resetMoveLine(MoveLine moveLine) {
+    moveLine.setInvoiceReject(null);
+    moveLine.setDate(Beans.get(AppBaseService.class).getTodayDate());
+    moveLine.setExportedDirectDebitOk(false);
+    moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+
+    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+
+    if (analyticMoveLineList != null) {
+      moveLine
+          .getAnalyticMoveLineList()
+          .forEach(line -> line.setDate(Beans.get(AppBaseService.class).getTodayDate()));
+    }
   }
 
   @Override
