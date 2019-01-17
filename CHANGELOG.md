@@ -2,6 +2,7 @@
 
 ## [Unreleased 4.2.6]
 ### Improvements
+- Kilometric allowance rate: added option to create a kilometric allowance param from form view
 
 ### Bug Fixes
 - Bank statement: fix status update for bank statement imports.
