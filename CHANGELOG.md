@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.1]
 ## Features
+- Sale Order report: added option to display product picture
 - Subrogation Release : add change tracking on status and add new fields.
 - MO printing : new design
 - StockMove : Added two boolean 'isWithBackorder' and 'isWithReturnSurplus' in StockConfig and copy their values in StockMove
