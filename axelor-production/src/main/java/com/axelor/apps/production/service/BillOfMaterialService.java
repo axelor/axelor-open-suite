@@ -26,7 +26,6 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 public interface BillOfMaterialService {
 
@@ -65,6 +64,6 @@ public interface BillOfMaterialService {
 
   String computeName(BillOfMaterial bom);
 
-  Set<BillOfMaterial> addRawMaterials(
-      BillOfMaterial billOfMaterial, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
+  void addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
 }

@@ -81,7 +81,7 @@
 				<panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet" title="Components" colSpan="12" height="15" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid" onChange="action-bill-of-material-record-count-number-of-components"/>
 				<button name="addComponentsEnMasseBtn" title="Add components en masse" onClick="action-bill-of-material-attrs-show-component-panel"/>
 				<panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
-					<button name="addToComponents" title="Add to components" colSpan="3" css="btn-custom" onClick="action-bill-of-material-method-add-raw-materials"/>
+					<button name="addToComponents" title="Add to components" colSpan="3" css="btn-custom" onClick="save,action-bill-of-material-method-add-raw-materials"/>
 					<field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false" canSelect="true" form-view="product-form" grid-view="product-grid"/>
 				</panel>
 			</panel>

@@ -56,6 +56,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Inject private TempBomTreeRepository tempBomTreeRepo;
 
+  @Inject private ProductRepository productRepo;
+
   private List<Long> processedBom;
 
   @Override
@@ -316,46 +318,48 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   @Transactional
-  public Set<BillOfMaterial> addRawMaterials(
-      BillOfMaterial billOfMaterial, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
-    Set<BillOfMaterial> components = billOfMaterial.getBillOfMaterialSet();
-    int priority =
-        Collections.max(
-            billOfMaterial
-                .getBillOfMaterialSet()
-                .stream()
-                .map(it -> it.getPriority())
-                .collect(Collectors.toSet()));
-
-    for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
-      priority += 10;
-      BillOfMaterial newComponent =
-          createBomFromRawMaterial(Long.valueOf((int) rawMaterial.get("id")), priority);
-      components.add(newComponent);
+  public void addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
+    if (rawMaterials != null && !rawMaterials.isEmpty()) {
+      BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
+      int priority = 0;
+      if (billOfMaterial.getBillOfMaterialSet() != null && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+          priority = Collections.max(
+              billOfMaterial
+                  .getBillOfMaterialSet()
+                  .stream()
+                  .map(it -> it.getPriority())
+                  .collect(Collectors.toSet()));
+      }
+  
+      for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
+        priority += 10;
+        BillOfMaterial newComponent =
+            createBomFromRawMaterial(Long.valueOf((int) rawMaterial.get("id")), priority);
+        billOfMaterial.getBillOfMaterialSet().add(newComponent);
+      }
+    } else {
+      return;
     }
-
-    return components;
   }
 
-  private BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
+  @Transactional
+  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
     BillOfMaterial newBom = new BillOfMaterial();
-    JPA.runInTransaction(
-        () -> {
-          ProductRepository productRepo = Beans.get(ProductRepository.class);
-          Product rawMaterial = productRepo.find(productId);
-          newBom.setDefineSubBillOfMaterial(false);
-          newBom.setPriority(priority);
-          newBom.setProduct(rawMaterial);
-          newBom.setQty(new BigDecimal(1));
-          newBom.setUnit(rawMaterial.getUnit());
-          newBom.setWasteRate(BigDecimal.ZERO);
-          newBom.setHasNoManageStock(false);
+    Product rawMaterial = productRepo.find(productId);
+    newBom.setDefineSubBillOfMaterial(false);
+    newBom.setPriority(priority);
+    newBom.setProduct(rawMaterial);
+    newBom.setQty(new BigDecimal(1));
+    newBom.setUnit(rawMaterial.getUnit());
+    newBom.setWasteRate(BigDecimal.ZERO);
+    newBom.setHasNoManageStock(false);
 
-          billOfMaterialRepo.save(newBom);
-          String name = this.computeName(newBom); // need to save first cuz computeName uses the id.
-          newBom.setName(name);
-          newBom.setFullName(name);
-        });
+    billOfMaterialRepo.save(newBom);
+    String name = this.computeName(newBom); // need to save first cuz computeName uses the id.
+    newBom.setName(name);
+    newBom.setFullName(name);
+
     return newBom;
   }
 }

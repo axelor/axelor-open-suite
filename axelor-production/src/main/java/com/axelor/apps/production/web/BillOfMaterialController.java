@@ -38,7 +38,6 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,11 +205,11 @@ public class BillOfMaterialController {
       ArrayList<LinkedHashMap<String, Object>> rawMaterials =
           (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
 
-      Set<BillOfMaterial> components =
-          billOfMaterialService.addRawMaterials(billOfMaterial, rawMaterials);
-
-      response.setValue("billOfMaterialSet", components);
-      response.setValue("$rawMaterials", null);
+      if (rawMaterials != null && !rawMaterials.isEmpty()) {
+        billOfMaterialService.addRawMaterials(billOfMaterial.getId(), rawMaterials);
+  
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
