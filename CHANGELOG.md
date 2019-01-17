@@ -21,6 +21,7 @@ Add sale order and client partner fields on production order.
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 
 ## Improvements
+- Move: check if balance is correct before saving (when daybook is enabled)
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 - COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
 - Sale Invoice & Refund : Add factor viewer.
