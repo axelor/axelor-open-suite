@@ -145,30 +145,30 @@
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
 				<field name="timeInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="toInvoice" hidden="true" colSpan="4" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-					<viewer><![CDATA[
-                        <h4>
-                            <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                            <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                        </h4>
-                    ]]>
-					</viewer>
-				</field>
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing" onChange="action-team-task-attrs-to-invoice"/>
-				<spacer name="invoicingTypeSpacer" colSpan="6"/>
-				<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
-				<spacer name="productSpacer" colSpan="6"/>
-				<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
-				<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
-				<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
-				<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>
-				<panel name="discountPanel" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-					<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-attrs-discountamount-title"/>
-					<field name="discountAmount" colSpan="3"/>
-					<field name="priceDiscounted" colSpan="3"/>
+				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
+					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
+					<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="6" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+						<viewer><![CDATA[
+	                        <h4 class="text-right">
+	                            <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+	                            <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+	                        </h4>
+	                    ]]>
+						</viewer>
+					</field>					
+					<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
+					<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+					<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
+					<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>
+					<field name="toInvoice" hidden="true" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+					<panel name="discountPanel" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+						<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-attrs-discountamount-title"/>
+						<field name="discountAmount" colSpan="3"/>
+						<field name="priceDiscounted" colSpan="3"/>
+					</panel>
+					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 				</panel>
-				<field name="exTaxTotal" readonly="true" colSpan="3"/>
 			</panel>
 			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
 				<panel name="actionsPanel" title="Actions">

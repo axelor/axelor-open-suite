@@ -48,6 +48,7 @@
 - TeamTask : Change in team-task-form view. 
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
+- Team Task : Change in team-task-form view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
