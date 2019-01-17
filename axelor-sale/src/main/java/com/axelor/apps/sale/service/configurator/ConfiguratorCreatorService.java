@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.script.ScriptBindings;
+import java.io.IOException;
 
 public interface ConfiguratorCreatorService {
 
@@ -77,4 +78,12 @@ public interface ConfiguratorCreatorService {
    * @param creator
    */
   void activate(ConfiguratorCreator creator);
+
+  /**
+   * Import configurator creators from default XML config file.
+   *
+   * @return the import log file.
+   * @param filePath
+   */
+  String importConfiguratorCreators(String filePath) throws IOException;
 }
