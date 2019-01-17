@@ -67,7 +67,9 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      Beans.get(MoveValidateService.class).checkPreconditions(move);
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+        Beans.get(MoveValidateService.class).checkPreconditions(move);
+      }
 
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       List<MoveLine> moveLineList = move.getMoveLineList();
