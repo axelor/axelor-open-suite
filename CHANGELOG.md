@@ -52,6 +52,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Mass invoicing stock move feature now works with stock move with no linked sale order or purchase order.
 - Invoice : Change font color for existing supplier invoice alert message. 
 - Fixed asset : invoice generated from purchase order
+- Job Position : Change job-position-form view
 
 ## Bug Fixes
 - Payroll preparation: changed export file name which was causing error
