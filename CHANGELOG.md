@@ -21,6 +21,8 @@ Add sale order and client partner fields on production order.
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 - MOVE : Automatic taxline generation.
 - Bill of materials : now have the possibility to add raw materials en masse to components.
+- RECONCILE GROUP : New field "dateOfLettering"
+- ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
@@ -55,6 +57,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Fixed asset : invoice generated from purchase order
 
 ## Bug Fixes
+- Payroll preparation: changed export file name which was causing error
 - SEQUENCES : Fix panelSide Tips problem
 - BANK RECONCILIATION LINE : fix typo issu on grid view on amountRemaining dotted field.
 - MANUF ORDER : fix Sale order / client partner title
@@ -92,6 +95,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - PhoneBook : Fix report layout design of Contact PhoneBook and Company PhoneBook
 - Requested reserved qty readonly in confirmed sale order line form.
 - MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
+- INVENTORY : add namecolumn="true" on inventorySeq field
 
 ## [5.1.0] - 2018-12-13
 ## Features

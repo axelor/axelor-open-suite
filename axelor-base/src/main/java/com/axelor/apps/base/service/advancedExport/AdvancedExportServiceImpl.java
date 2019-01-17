@@ -335,7 +335,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         helper = new JoinHelper(Class.forName(metaModel.getFullName()));
         permissionFilter = helper.parse(permissionFilter).toString();
       } catch (ClassNotFoundException e) {
-        TraceBackService.trace(e,e.getMessage());
+        TraceBackService.trace(e, e.getMessage());
       }
       if (recordIds == null) {
         criteria = " WHERE " + permissionFilter;
