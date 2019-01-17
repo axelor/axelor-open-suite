@@ -20,6 +20,7 @@ Add sale order and client partner fields on production order.
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 - MOVE : Automatic taxline generation.
+- Bill of materials : now have the possibility to add raw materials en masse to components.
 - RECONCILE GROUP : New field "dateOfLettering"
 - ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 
