@@ -100,6 +100,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - MANUF ORDER : remove canEdit attribute from sale order and client partner fields.
 - MOVE : some moveLine fields reseted when a move is duplicated
 - INVENTORY : add namecolumn="true" on inventorySeq field
+- Fixes in configurator import/export and demo data.
 
 ## [5.1.0] - 2018-12-13
 ## Features
