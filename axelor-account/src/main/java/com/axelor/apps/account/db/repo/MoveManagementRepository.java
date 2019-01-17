@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
@@ -65,24 +66,22 @@ public class MoveManagementRepository extends MoveRepository {
     List<MoveLine> moveLineList = copy.getMoveLineList();
 
     if (moveLineList != null) {
-      moveLineList.forEach(this::resetMoveLine);
+      moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
     }
 
     return copy;
   }
 
-  public void resetMoveLine(MoveLine moveLine) {
+  public void resetMoveLine(MoveLine moveLine, LocalDate date) {
     moveLine.setInvoiceReject(null);
-    moveLine.setDate(Beans.get(AppBaseService.class).getTodayDate());
+    moveLine.setDate(date);
     moveLine.setExportedDirectDebitOk(false);
     moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
     if (analyticMoveLineList != null) {
-      moveLine
-          .getAnalyticMoveLineList()
-          .forEach(line -> line.setDate(Beans.get(AppBaseService.class).getTodayDate()));
+      moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
     }
   }
 
