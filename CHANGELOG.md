@@ -20,6 +20,8 @@ Add sale order and client partner fields on production order.
 - Translation : Translation: Add support for more languages (German,Spanish,Portuguese,Italian,Dutch,Polish,Russian)
 - STOCK LOCATION : Replaced existing dummy field '$stockLocationValue' with new transient field in domain stockLocationValue
 - MOVE : Automatic taxline generation.
+- RECONCILE GROUP : New field "dateOfLettering"
+- ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 
 ## Improvements
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.

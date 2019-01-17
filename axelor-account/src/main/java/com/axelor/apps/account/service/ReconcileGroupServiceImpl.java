@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -66,7 +65,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
     reconcileGroup.setDateOfLettering(Beans.get(AppBaseService.class).getTodayDate());
-    
+
     Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
   }
 
