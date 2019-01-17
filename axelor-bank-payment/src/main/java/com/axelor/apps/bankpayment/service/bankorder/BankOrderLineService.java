@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,16 +21,21 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
+import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -50,13 +55,17 @@ public class BankOrderLineService {
 
   protected BankDetailsRepository bankDetailsRepo;
   protected CurrencyService currencyService;
+  protected BankOrderLineOriginService bankOrderLineOriginService;
 
   @Inject
   public BankOrderLineService(
-      BankDetailsRepository bankDetailsRepo, CurrencyService currencyService) {
+      BankDetailsRepository bankDetailsRepo,
+      CurrencyService currencyService,
+      BankOrderLineOriginService bankOrderLineOriginService) {
 
     this.bankDetailsRepo = bankDetailsRepo;
     this.currencyService = currencyService;
+    this.bankOrderLineOriginService = bankOrderLineOriginService;
   }
 
   /**
@@ -76,7 +85,8 @@ public class BankOrderLineService {
       Currency currency,
       LocalDate bankOrderDate,
       String receiverReference,
-      String receiverLabel)
+      String receiverLabel,
+      Model origin)
       throws AxelorException {
 
     BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner);
@@ -90,7 +100,8 @@ public class BankOrderLineService {
         currency,
         bankOrderDate,
         receiverReference,
-        receiverLabel);
+        receiverLabel,
+        origin);
   }
 
   /**
@@ -110,7 +121,8 @@ public class BankOrderLineService {
       Currency currency,
       LocalDate bankOrderDate,
       String receiverReference,
-      String receiverLabel)
+      String receiverLabel,
+      Model origin)
       throws AxelorException {
 
     return this.createBankOrderLine(
@@ -122,7 +134,8 @@ public class BankOrderLineService {
         currency,
         bankOrderDate,
         receiverReference,
-        receiverLabel);
+        receiverLabel,
+        origin);
   }
 
   /**
@@ -146,7 +159,8 @@ public class BankOrderLineService {
       Currency currency,
       LocalDate bankOrderDate,
       String receiverReference,
-      String receiverLabel)
+      String receiverLabel,
+      Model origin)
       throws AxelorException {
 
     BankOrderLine bankOrderLine = new BankOrderLine();
@@ -167,12 +181,32 @@ public class BankOrderLineService {
     bankOrderLine.setReceiverReference(receiverReference);
     bankOrderLine.setReceiverLabel(receiverLabel);
 
-    bankOrderLine.setBankOrderEconomicReason(bankOrderFileFormat.getBankOrderEconomicReason());
-    bankOrderLine.setReceiverCountry(bankOrderFileFormat.getReceiverCountry());
-    bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
-    bankOrderLine.setFeesImputationModeSelect(bankOrderFileFormat.getFeesImputationModeSelect());
+    if (origin != null) {
+      bankOrderLine.addBankOrderLineOriginListItem(
+          bankOrderLineOriginService.createBankOrderLineOrigin(origin));
+    }
+
+    if (bankOrderFileFormat
+        .getOrderFileFormatSelect()
+        .equals(BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT)) {
+      bankOrderLine.setBankOrderEconomicReason(bankOrderFileFormat.getBankOrderEconomicReason());
+      bankOrderLine.setReceiverCountry(bankOrderFileFormat.getReceiverCountry());
+      Bank bank = bankDetails.getBank();
+      if (bank != null && bank.getCountry() != null) {
+        bankOrderLine.setReceiverCountry(bank.getCountry());
+      }
+      bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
+      bankOrderLine.setFeesImputationModeSelect(bankOrderFileFormat.getFeesImputationModeSelect());
+      bankOrderLine.setReceiverAddressStr(getReceiverAddress(partner));
+    }
 
     return bankOrderLine;
+  }
+
+  public String getReceiverAddress(Partner partner) {
+
+    Address receiverAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
+    return receiverAddress != null ? receiverAddress.getFullName() : "";
   }
 
   public void checkPreconditions(BankOrderLine bankOrderLine) throws AxelorException {

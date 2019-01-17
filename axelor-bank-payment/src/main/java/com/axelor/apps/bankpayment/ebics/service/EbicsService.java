@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -288,7 +288,7 @@ public class EbicsService {
     Preconditions.checkNotNull(transportUser.getEbicsPartner());
     Preconditions.checkNotNull(format);
     List<EbicsPartnerService> ebicsPartnerServiceList =
-        transportUser.getEbicsPartner().getEbicsPartnerServiceList();
+        transportUser.getEbicsPartner().getBoEbicsPartnerServiceList();
     String ebicsCodification;
 
     if (ebicsPartnerServiceList == null || ebicsPartnerServiceList.isEmpty()) {
@@ -305,8 +305,8 @@ public class EbicsService {
     Preconditions.checkNotNull(ebicsPartner);
     Preconditions.checkNotNull(format);
 
-    if (ebicsPartner.getEbicsPartnerServiceList() != null) {
-      for (EbicsPartnerService service : ebicsPartner.getEbicsPartnerServiceList()) {
+    if (ebicsPartner.getBoEbicsPartnerServiceList() != null) {
+      for (EbicsPartnerService service : ebicsPartner.getBoEbicsPartnerServiceList()) {
         if (format.equals(service.getBankOrderFileFormat())) {
           return service.getEbicsCodification();
         }
@@ -458,7 +458,10 @@ public class EbicsService {
 
       userService.getNextOrderId(user);
 
-    } catch (IOException | AxelorException e) {
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      throw e;
+    } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
     }

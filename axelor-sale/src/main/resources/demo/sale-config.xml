@@ -24,7 +24,7 @@
 	
 	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
-		<bind to="confirmationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(confirmationDate)" column="confirmationDate"/>
+		<bind to="confirmationDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)" column="confirmationDateTime"/>
 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	
@@ -34,7 +34,7 @@
 	
 	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder" call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder">
         <bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
-        <bind to="confirmationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(confirmationDate)" column="confirmationDate"/>
+        <bind to="confirmationDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)" column="confirmationDateTime"/>
         <bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	

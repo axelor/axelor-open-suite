@@ -24,38 +24,38 @@
                 hideIf="publicationDate" readonlyIf="!paymentVoucherList" prompt="Are you sure you want to publish this deposit slip?" />
         </toolbar>
 
-        <panel colSpan="12" if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+        <panel name="paymentVouchersOnInvoicePanel" colSpan="12" if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
             <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
         </panel>
 
-        <panel title="Period" readonlyIf="publicationDate">
+        <panel name="periodPanel" title="Period" readonlyIf="publicationDate">
             <field name="fromDate" />
             <field name="toDate" />
         </panel>
 
-        <panel readonlyIf="publicationDate">
+        <panel name="companyDetailsPanel" readonlyIf="publicationDate">
             <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false" colSpan="4" />
             <field name="currency" canEdit="false" colSpan="4" />
             <field name="depositDate" colSpan="4" />
             <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
                 <field name="companyBankDetails" canEdit="false" canNew="false"
                     onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4" />
-                <panel showIf="companyBankDetails" colSpan="8">
+                <panel name="subCompanyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
                     <field name="companyBankDetails.bank.bankName" title="Bank name" />
                     <field name="companyBankDetails.accountNbr" />
                 </panel>
             </panel>
         </panel>
 
-        <panel showIf="depositNumber">
+        <panel name="depositDetailsPanel" showIf="depositNumber">
             <field name="depositNumber" />
             <field name="publicationDate" />
         </panel>
 
-        <panel-related field="paymentVoucherList" grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
+        <panel-related name="paymentVoucherListPanel" field="paymentVoucherList" grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
             readonlyIf="publicationDate" canNew="false" canRemove="false" />
 
-        <panel showIf="paymentVoucherList">
+        <panel name="paymentDetailsPanel" showIf="paymentVoucherList">
             <field name="totalAmount" />
             <field name="chequeCount" />
         </panel>
@@ -117,13 +117,13 @@
     </grid>
 
     <form title="Payment voucher" name="payment-voucher-deposit-slip-form" model="com.axelor.apps.account.db.PaymentVoucher">
-        <panel colSpan="12" readonly="true">
+        <panel name="mainPanel" colSpan="12" readonly="true">
             <field name="partner" />
             <field name="paymentDate" />
             <field name="paidAmount" />
 	        <field name="currency" />
         </panel>
-        <panel title="Cheque" colSpan="12">
+        <panel name="chequeDetailsPanel" title="Cheque" colSpan="12">
             <field name="chequeNumber" />
             <field name="chequeBank" />
             <field name="chequeOwner" />

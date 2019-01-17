@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,11 +72,12 @@ public class MoveExcessPaymentService {
           moveLineRepository
               .all()
               .filter(
-                  "self.move.company = ?1 AND self.move.statusSelect = ?2 AND self.move.ignoreInAccountingOk IN (false,null)"
-                      + " AND self.account.useForPartnerBalance = ?3 AND self.credit > 0 and self.amountRemaining > 0"
-                      + " AND self.partner = ?4 ORDER BY self.date ASC",
+                  "self.move.company = ?1 AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) AND self.move.ignoreInAccountingOk IN (false,null)"
+                      + " AND self.account.useForPartnerBalance = ?4 AND self.credit > 0 and self.amountRemaining > 0"
+                      + " AND self.partner = ?5 ORDER BY self.date ASC",
                   company,
                   MoveRepository.STATUS_VALIDATED,
+                  MoveRepository.STATUS_DAYBOOK,
                   true,
                   invoice.getPartner())
               .fetch();

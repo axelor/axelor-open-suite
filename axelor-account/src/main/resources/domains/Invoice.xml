@@ -12,13 +12,14 @@
     <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
 	<integer name="operationTypeSelect" title="Document Type" required="true" selection="iinvoice.operation.type.select"/>
     <integer name="operationSubTypeSelect" title="Document Subtype" required="true" default="1" selection="iinvoice.operation.sub.type.select"/>
+    <string name="partnerTaxNbr" title="Customer tax number"/>
     
     <!-- Legal information -->
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" required="true" title="Partner" />
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
- 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" required="true" />
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true" />
+  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" />
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
@@ -31,6 +32,7 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
+    <date name="originDate" title="Origin date"/>
     
     <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>
@@ -39,7 +41,7 @@
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
     <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+  	<many-to-one name="currency" required="true" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>
@@ -125,7 +127,7 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
-
+	
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[

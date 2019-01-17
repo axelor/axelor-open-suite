@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -110,13 +109,7 @@ public class ActionViewBuilderService {
 
   private void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
 
-    views.sort(
-        new Comparator<ActionBuilderView>() {
-          @Override
-          public int compare(ActionBuilderView action1, ActionBuilderView action2) {
-            return action1.getSequence().compareTo(action2.getSequence());
-          }
-        });
+    views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
     for (ActionBuilderView view : views) {
       xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
       xml.append("name=\"" + view.getViewName() + "\" />");

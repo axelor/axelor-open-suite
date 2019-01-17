@@ -22,7 +22,7 @@
     </grid>
 
     <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
-    	<panel name="main">
+    	<panel name="mainPanel">
     		<field name="employee" canNew="false" canEdit="false" canView="false"/>
 			<field name="amount" />
 			<field name="coef" />
@@ -32,7 +32,7 @@
     </form>
     
     <form name="employee-bonus-mgt-line-employee-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
-    	<panel name="main">
+    	<panel name="mainPanel">
 			<field name="amount" />
 			<field name="coef" />
 			<field name="employeeBonusMgt.payPeriod" />

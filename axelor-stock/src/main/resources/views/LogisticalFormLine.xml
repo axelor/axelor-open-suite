@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging lines" name="logistical-form-line-grid"
+    <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines" name="logistical-form-line-grid"
         orderBy="sequence">
         <hilite strong="true" color="default" if="$contains([1, 2], typeSelect)" />
         <field name="typeSelect" width="65" onChange="sync,action-logistical-form-line-type-change" required="false" />
@@ -15,7 +15,7 @@
         <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" width="100" title="Internal number" if="__config__.app.isApp('supplychain')" />
         <field name="stockMoveLine.stockMove.saleOrder.orderNumber" width="120" title="Order number" if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netMass" title="Unit net mass" /> --> <!-- Should be null when stockMoveLine is null -->
-        <field name="unitNetMass" width="75"/>
+        <field name="unitNetMass" width="75" x-scale="3"/>
         <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
         <field name="parcelPalletNumber" width="75" readonlyIf="typeSelect == 3" onChange="sync" />
         <field name="grossMass" width="75" readonlyIf="typeSelect == 3" />
@@ -24,9 +24,9 @@
         <field name="sequence" hidden="true" />
     </grid>
 
-    <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packaging line" name="logistical-form-line-form"
+    <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing line" name="logistical-form-line-form"
         width="large" canCopy="true">
-        <panel>
+        <panel name="mainPanel">
             <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
             <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
                 hideIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"

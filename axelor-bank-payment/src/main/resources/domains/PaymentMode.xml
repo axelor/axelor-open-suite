@@ -8,11 +8,13 @@
   <entity name="PaymentMode" lang="java" cachable="true">
   
     <boolean name="generateBankOrder" title="Generate Bank order"/>
+    <boolean name="autoConfirmBankOrder" title="Confirm auto. the bank orders"/>
   	<boolean name="automaticTransmission" title="Transmit automatically to Bank"/>
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<string name="bankOrderExportFolderPath"/>
   	<many-to-one name="bankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
     <boolean name="generateMoveAutoFromBankOrder" title="Generate account move from the bank order"/>
+	<boolean name="consoBankOrderLinePerPartner" title="Consolidate bank order lines per partner"/>
 
     <extra-code><![CDATA[
         public static final int ORDER_TYPE_SEPA_CREDIT_TRANSFER = 1;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -218,11 +218,11 @@ public class PartnerController {
     Map<String, String> urlMap =
         partnerService.getSocialNetworkUrl(
             partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
-    response.setAttr("google", "title", urlMap.get("google"));
-    response.setAttr("facebook", "title", urlMap.get("facebook"));
-    response.setAttr("twitter", "title", urlMap.get("twitter"));
-    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
-    response.setAttr("youtube", "title", urlMap.get("youtube"));
+    response.setAttr("googleLabel", "title", urlMap.get("google"));
+    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
+    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
+    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
   public void findPartnerMails(ActionRequest request, ActionResponse response) {

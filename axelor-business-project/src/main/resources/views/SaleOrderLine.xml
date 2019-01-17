@@ -10,13 +10,14 @@
         <field name="project" />
         <field name="saleOrder.saleOrderSeq" title="Reference"/>
         <field name="saleOrder.creationDate"/>
+        <field name="product.code"/>
         <field name="productName" readonly="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="amountInvoiced" />
         <field name="saleOrder.currency"/>
         <field name="toInvoice"/>
-        <button name="updateToInvoice" title="Update to invoice" readonlyIf="amountInvoiced >= exTaxTotal" icon="fa-check-circle" onClick="action-sale-order-line-method-update-to-invoice" />
+        <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="amountInvoiced >= exTaxTotal" icon="fa-check-circle" onClick="action-sale-order-line-method-update-to-invoice" />
         <field name="saleOrder.statusSelect" hidden="true"/>
         <field name="invoiced" hidden="true" />
     </grid>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,9 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Optional;
 
 public interface PurchaseProductService {
 
@@ -29,9 +29,10 @@ public interface PurchaseProductService {
       SupplierCatalog supplierCatalog, BigDecimal price);
 
   /**
+   * Search for the last shipping coef in purchase order line.
+   *
    * @param product a product
-   * @return An optional with the shippingCoef for the company and the partner of the product. An
-   *     empty optional if nothing was found
+   * @return An optional with the shippingCoef
    */
-  public Optional<BigDecimal> getShippingCoefFromPartners(Product product);
+  BigDecimal getLastShippingCoef(Product product) throws AxelorException;
 }

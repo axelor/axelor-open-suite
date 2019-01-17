@@ -11,15 +11,15 @@
   </grid>
   
   <form title="Group Menu Assistant" name="meta-group-menu-assistant-form" model="com.axelor.meta.db.MetaGroupMenuAssistant" width="large">
-    <panel name="main" >
-      <panel-related field="groupSet" colSpan="6" />
-      <panel-related field="roleSet" colSpan="6" />
-      <panel-related field="menuSet" grid-view="simple-meta-menu-grid" colSpan="12"/>
+    <panel name="mainPanel" >
+      <panel-related name="groupSetPanel" field="groupSet" colSpan="6" />
+      <panel-related name="roleSetPanel" field="roleSet" colSpan="6" />
+      <panel-related name="menuSetPanel" field="menuSet" grid-view="simple-meta-menu-grid" colSpan="12"/>
       <field name="metaFile" colSpan="6" widget="binary-link" />
       <field name="language" readonlyIf="metaFile"/>
-      <button name="createFile" title="Create file" colSpan="3" onClick="save,action-meta-method-create-group-menu-file"/>
-      <button name="importFile" title="Import" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-meta-method-import-group-menu,save"/>
-      <panel name="details" title="Details" colSpan="12">
+      <button name="createFileBtn" title="Create file" colSpan="3" onClick="save,action-meta-method-create-group-menu-file"/>
+      <button name="importFileBtn" title="Import" readonlyIf="metaFile == null" colSpan="3" onClick="save,action-meta-method-import-group-menu,save"/>
+      <panel name="detailsPanel" title="Details" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>
         <field name="updatedBy" colSpan="4"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,6 +105,8 @@ public interface IExceptionMessage {
       "Please fill the sender bank details currency." /*)*/;
   static final String BANK_ORDER_NOT_PROPERLY_SIGNED = /*$$(*/
       "The bank order is not properly signed. Please correct it and sign it again." /*)*/;
+  static final String BANK_ORDER_CANNOT_REMOVE = /*$$(*/
+      "Bank orders can only be deleted at draft or canceled status." /*)*/;
 
   String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;
@@ -133,6 +135,8 @@ public interface IExceptionMessage {
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
+  static final String BANK_ORDER_LINE_NO_RECEIVER_ADDRESS = /*$$(*/
+      "No address has been defined in the receiver %s" /*)*/;
 
   /** BankOrder merge */
   static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/

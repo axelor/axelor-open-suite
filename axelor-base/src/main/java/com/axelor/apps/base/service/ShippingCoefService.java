@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,21 +36,31 @@ public class ShippingCoefService {
   }
 
   /**
+   * Get the shipping coefficient of a product using the supplier catalog
+   *
    * @param product
    * @param partner
    * @param company
+   * @param qty
    * @return the shipping coefficient for the given product, partner and company.
    */
-  public BigDecimal getShippingCoef(Product product, Partner partner, Company company) {
-    BigDecimal shippingCoef = BigDecimal.ZERO;
+  public BigDecimal getShippingCoefDefByPartner(
+      Product product, Partner partner, Company company, BigDecimal qty) {
+    BigDecimal shippingCoef = BigDecimal.ONE;
+    if (partner == null || company == null) {
+      return shippingCoef;
+    }
     List<ShippingCoef> shippingCoefList =
         shippingCoefRepo
             .all()
             .filter(
-                "self.supplierCatalog.product = ?1"
-                    + " AND self.supplierCatalog.supplierPartner = ?2",
-                product,
-                partner)
+                "self.supplierCatalog.product.id = :productId"
+                    + " AND self.supplierCatalog.supplierPartner.id = :partnerId"
+                    + " AND self.supplierCatalog.minQty <= :qty")
+            .bind("productId", product.getId())
+            .bind("partnerId", partner.getId())
+            .bind("qty", qty)
+            .order("supplierCatalog.minQty")
             .fetch();
 
     if (shippingCoefList == null || shippingCoefList.isEmpty()) {
@@ -63,6 +73,31 @@ public class ShippingCoefService {
       }
     }
 
+    return shippingCoef;
+  }
+
+  /**
+   * Get the shipping coefficient of a product according to the product configuration
+   *
+   * @param product
+   * @param supplierPartner
+   * @param company
+   * @param qty
+   * @return the shipping coefficient for a product
+   */
+  public BigDecimal getShippingCoef(
+      Product product, Partner supplierPartner, Company company, BigDecimal qty) {
+    BigDecimal shippingCoef;
+
+    if (product.getDefShipCoefByPartner()) {
+      shippingCoef = getShippingCoefDefByPartner(product, supplierPartner, company, qty);
+    } else {
+      shippingCoef = product.getShippingCoef();
+    }
+
+    if (shippingCoef.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ONE;
+    }
     return shippingCoef;
   }
 }

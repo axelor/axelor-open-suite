@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,8 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
@@ -70,6 +72,9 @@ public class InventoryController {
           ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
               .addParam("InventoryId", inventory.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "activateBarCodeGeneration",
+                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
               .addFormat(inventory.getFormatSelect())
               .generate()
               .getFileLink();
@@ -158,8 +163,9 @@ public class InventoryController {
     try {
 
       Inventory inventory = request.getContext().asType(Inventory.class);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
 
-      if (inventory.getInventorySeq() == null) {
+      if (sequenceService.isEmptyOrDraftSequenceNumber(inventory.getInventorySeq())) {
 
         StockLocation stockLocation = inventory.getStockLocation();
 

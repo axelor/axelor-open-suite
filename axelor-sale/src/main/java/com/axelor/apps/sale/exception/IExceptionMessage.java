@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,10 @@ public interface IExceptionMessage {
       "The client Partner is required and must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all sale orders" /*)*/;
+
+  static final String SALE_ORDER_PRINT = /*$$(*/ "Please select the sale order(s) to print." /*)*/;
+  static final String SALE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
+      "Please fill printing settings on sale order %s." /*)*/;
 
   /** Configurator creator */
   String CONFIGURATOR_CREATOR_SCRIPT_ERROR = /*$$(*/

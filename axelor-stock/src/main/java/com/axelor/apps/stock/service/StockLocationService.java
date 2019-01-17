@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -44,15 +46,21 @@ public interface StockLocationService {
    */
   StockLocation getPickupDefaultStockLocation(Company company);
 
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType);
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException;
 
-  public BigDecimal getRealQty(Long productId, Long locationId);
+  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException;
 
-  public BigDecimal getFutureQty(Long productId, Long locationId);
+  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException;
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void computeAvgPriceForProduct(Product product);
 
   public List<Long> getBadStockLocationLineId();
 
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
+
+  public List<StockLocation> getAllLocationAndSubLocation(
+      StockLocation stockLocation, boolean isVirtualInclude);
+
+  public BigDecimal getStockLocationValue(StockLocation stockLocation);
 }

@@ -437,4 +437,14 @@
 		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
 	  </selection>
 
+	<selection name="select.language" id="base.language.select">
+		<option value="de">German Beta</option>
+		<option value="es">Spanish Beta</option>
+		<option value="pt">Portuguese Beta</option>
+		<option value="it">Italian Beta</option>
+		<option value="nl">Dutch Beta</option>
+		<option value="pl">Polish Beta</option>
+		<option value="ru">Russian Beta</option>
+	</selection>
+	
 </object-views>

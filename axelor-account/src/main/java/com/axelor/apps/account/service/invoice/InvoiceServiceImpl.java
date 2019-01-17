@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,13 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -29,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -36,7 +40,6 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
-import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -129,6 +132,53 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (alarm != null) {
 
       alarm.setInvoice(invoice);
+    }
+  }
+
+  @Override
+  public Account getPartnerAccount(Invoice invoice) throws AxelorException {
+    if (invoice.getCompany() == null
+        || invoice.getOperationTypeSelect() == null
+        || invoice.getOperationTypeSelect() == 0
+        || invoice.getPartner() == null) return null;
+    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
+    return InvoiceToolService.isPurchase(invoice)
+        ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
+        : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+  }
+
+  public Journal getJournal(Invoice invoice) throws AxelorException {
+
+    Company company = invoice.getCompany();
+    if (company == null) return null;
+
+    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    // Taken from legacy JournalService but negative cases seem rather strange
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
+            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
+            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
+            : accountConfigService.getCustomerSalesJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerSalesJournal(accountConfig)
+            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
+      default:
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.JOURNAL_1),
+            invoice.getInvoiceId());
     }
   }
 
@@ -227,6 +277,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    if (invoice.getPaymentCondition() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+    }
+    if (invoice.getPaymentMode() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
@@ -244,10 +307,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-
-    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    }
+    // FIXME: Disabled temporary due to RM#14505
+    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
+    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    //    }
   }
 
   /**

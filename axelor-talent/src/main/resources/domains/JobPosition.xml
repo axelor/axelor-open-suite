@@ -18,6 +18,11 @@
 		<integer name="statusSelect" title="Status" selection="job.position.status.select" />
 		<integer name="nbOpenJob" title="Nb of open jobs" />
 		<integer name="nbPeopleHired" title="Nb of people hired" readonly="true" />
+		<date name="publicationDate" title="Publication Date"/>
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+		<string name="positionStatusSelect" title="Position Status" selection="job.position.position.status"/>
+		<date name="startingDate" title="Starting date"/>
+		<string name="profileWanted" title="Profile wanted"/>
 		
 		<extra-code>
 	   		<![CDATA[

@@ -5,8 +5,8 @@
     
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 	    <toolbar>
-	    	<button name="exportCreators" title="Export" onClick="action-configurator-creator-export"/>
-	    	<button name="importCreators" title="Import" onClick="action-configurator-creator-view-import"/>
+	    	<button name="exportCreatorsBtn" title="Export" onClick="action-configurator-creator-export"/>
+	    	<button name="importCreatorsBtn" title="Import" onClick="action-configurator-creator-view-import"/>
 	    </toolbar>
     	<field name="name"/>
 		<field name="isActive"/>
@@ -14,7 +14,7 @@
 
 
     <form name="configurator-creator-form" title="ConfiguratorCreator" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-        <panel showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
+        <panel name="mainPanel" showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
 			<!--it does not matter which field is used here, as long as it is not a boolean-->
             <field name="name" readonly="true" showTitle="false">
 				<viewer><![CDATA[
@@ -27,39 +27,39 @@
 			</field>
 		</panel>
 
-    	<panel>
+    	<panel name="otherDetailsPanel">
     		<field name="name"/>
-    		<button name="configure" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
-    		<panel-related field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+    		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
+    		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
 
-		<panel sidebar="true" title="Actions" hideIf="id == null">
-			<button name="activate" title="Activate" onClick="action-configurator-creator-group-activate"
+		<panel name="actionsPanel" sidebar="true" title="Actions" hideIf="id == null">
+			<button name="activateBtn" title="Activate" onClick="action-configurator-creator-group-activate"
 				readonlyIf="isActive || !(attributes.length &gt; 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0) || (generateProduct &amp;&amp; configuratorProductFormulaList.length == 0)"/>
-			<button name="test" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
+			<button name="testBtn" title="Test this creator" showIf="generateProduct" readonlyIf="!isActive" onClick="action-configurator-creator-view-test"/>
 			<field name="generateProduct" widget="boolean-switch"/>
 			<field name="isActive" hidden="true"/>
 		</panel>
 
-    <panel-related field="configuratorProductFormulaList" hideIf="id == null || !generateProduct"
+    <panel-related name="configuratorProductFormulaListPanel" field="configuratorProductFormulaList" hideIf="id == null || !generateProduct"
       onChange="action-configurator-creator-record-desactivate,save"
       form-view="configurator-product-formula-form" grid-view="configurator-product-formula-grid"/>
 
-    <panel-related field="configuratorSOLineFormulaList" hideIf="id == null || generateProduct"
+    <panel-related name="configuratorSOLineFormulaListPanel" field="configuratorSOLineFormulaList" hideIf="id == null || generateProduct"
       onChange="action-configurator-creator-record-desactivate,save"
       form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
-		<panel title="Authorizations" hideIf="id == null">
+		<panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
 			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
             <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
-		<panel title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
+		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
             <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12">
                 <editor>
                     <field name="company"/>
-                    <panel title="Label">
+                    <panel name="labelPanel" title="Label">
                         <field name="defNameAsFormula" colSpan="6"/>
                         <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
                         <field name="nameFormula" colSpan="12" height="120"
@@ -68,7 +68,7 @@
                     </panel>
                     <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
                            x-code-syntax="groovy"/>
-                    <panel title="Product">
+                    <panel name="productPanel" title="Product">
                         <field name="defProductFromConfigurator" colSpan="6" showIf="!defProductAsFormula"/>
                         <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
                         <field name="product" colSpan="12"
@@ -77,20 +77,20 @@
                         <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                                x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
                     </panel>
-                    <panel title="Qty">
+                    <panel name="qtyPanel" title="Qty">
                         <field name="defQtyAsFormula" colSpan="6" type="boolean"/>
                         <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
                         <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
                                showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
                     </panel>
-                    <panel title="Unit">
+                    <panel name="unitPanel" title="Unit">
                         <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
                         <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
                         form-view="unit-view" grid-view="unit-grid"/>
                         <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
                                showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
                     </panel>
-                    <panel title="Production process">
+                    <panel name="productionProcessPanel" title="Production process">
                         <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator" colSpan="6" type="boolean"/>
                         <field name="defProdProcessAsConfigurator" readonlyIf="defProdProcessAsFormula" colSpan="6" type="boolean"/>
                         <field name="prodProcess" form-view="prod-process-form" grid-view="prod-process-form"
@@ -107,9 +107,9 @@
     </form>
     
     <form name="import-configurator-creator-form" title="Import Configurator Creator" model="com.axelor.apps.sale.db.ConfiguratorCreator" >
-		<panel>
+		<panel name="mainPanel">
 			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
-			<button name="importCreators" title="Import Configurator Creators" onClick="action-configurator-creator-method-import-configurator-creators" showIf="dataFile != null" colSpan="6" />
+			<button name="importCreatorsBtn" title="Import Configurator Creators" onClick="action-configurator-creator-method-import-configurator-creators" showIf="dataFile != null" colSpan="6" />
 			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
 		</panel>	
 	</form>

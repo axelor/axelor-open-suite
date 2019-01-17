@@ -14,27 +14,42 @@
 	
 	<form name="job-position-form" title="Job position" model="com.axelor.apps.talent.db.JobPosition" width="large">
 		<toolbar>
-			<button name="createJobApplication" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
+			<button name="createJobApplicationBtn" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
 		</toolbar>
 		
-		<panel title="Status">
-			<field name="statusSelect" widget="NavSelect" colSpan="6" showTitle="false"/>			
+		<panel name="statusPanel" title="Status">
+			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
+			<field name="jobReference" colSpan="4" showTitle="false"/>
 		</panel>		
-		<panel>
-			<field name="jobTitle" colSpan="8" />
-			<field name="jobReference" colSpan="4"/>
+		<panel name="detailPanel" readonlyIf="statusSelect == 4">
+			<field name="jobTitle" colSpan="6" />
+			<spacer name="jobTitleSpacer"/>
+			<field name="company" />
+			<field name="location" />
 			<field name="companyDepartment" />
 			<field name="employee" />
-			<field name="contractType" />
-			<field name="experienceSelect" />
-			<field name="salary" />
-			<field name="location" />
-			<field name="jobDescription" widget="html" colSpan="12" />
-			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
-			<spacer/>
-			<panel-dashlet action="action-job-position-all-applications" colSpan="12" title="All applications"/>
 			<field name="nbOpenJob" />
 			<field name="nbPeopleHired" />
+			<field name="mailAccount" domain="self.isValid = true and self.serverTypeSelect &gt; 1" />
+			<field name="publicationDate" colSpan="6"/>
+			<field name="jobDescription" widget="html" colSpan="6" />
+			<field name="profileWanted" widget="html" colSpan="6" />
+			<spacer name="profileWantedSpacer" />
+			<panel-dashlet name="allApplicationsPanel" action="action-job-position-all-applications" colSpan="12" title="All applications"/>
+		</panel>
+		<panel name="buttonPanel" sidebar="true">
+			<button name="statusDraftBtn" title="Draft" onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4" colSpan="12"/>
+			<button name="statusOpenBtn" title="Open" onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0 || statusSelect == 2" colSpan="12"/>
+			<button name="statusOnHoldBtn" title="On hold" onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1" colSpan="12"/>
+			<button name="statusClosedBtn" title="Closed" onClick="save,action-job-position-record-status-closed,save" showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
+			<button name="cancelBtn" title="Cancel" onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+		</panel>
+		<panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
+			<field name="contractType" colSpan="6"/>
+			<field name="positionStatusSelect" colSpan="6"/>
+			<field name="experienceSelect" colSpan="6"/>
+			<field name="salary" colSpan="6"/>
+			<field name="startingDate" colSpan="6"/>
 		</panel>
 	</form>
 	
@@ -67,5 +82,25 @@
 		<context name="_jobPositionId" expr="eval:id"/>
 		<context name="_responsibleId" expr="eval:employee.id"/>
 	</action-view>
+	
+	<action-record name="action-job-position-record-status-draft" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="statusSelect" expr="eval: 0"/>
+	</action-record>
+	
+	<action-record name="action-job-position-record-status-open" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="statusSelect" expr="eval: 1"/>
+	</action-record>
+	
+	<action-record name="action-job-position-record-status-onhold" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="statusSelect" expr="eval: 2"/>
+	</action-record>
+
+	<action-record name="action-job-position-record-status-closed" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="statusSelect" expr="eval: 3"/>
+	</action-record>
+	
+	<action-record name="action-job-position-record-status-cancel" model="com.axelor.apps.talent.db.JobPosition">
+		<field name="statusSelect" expr="eval: 4"/>
+	</action-record>
 	
 </object-views>

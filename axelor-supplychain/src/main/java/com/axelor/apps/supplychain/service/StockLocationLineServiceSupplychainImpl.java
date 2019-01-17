@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,12 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -36,75 +37,58 @@ import java.time.LocalDate;
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
 
   @Override
-  public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
-      throws AxelorException {
-    super.checkStockMin(stockLocationLine, isDetailLocationLine);
-    if (!isDetailLocationLine
-        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-        && stockLocationLine.getStockLocation().getTypeSelect()
-            != StockLocationRepository.TYPE_VIRTUAL) {
-      throw new AxelorException(
-          stockLocationLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_1),
-          stockLocationLine.getProduct().getName(),
-          stockLocationLine.getProduct().getCode());
-
-    } else if (isDetailLocationLine
-        && stockLocationLine.getCurrentQty().compareTo(stockLocationLine.getReservedQty()) < 0
-        && ((stockLocationLine.getStockLocation() != null
-                && stockLocationLine.getStockLocation().getTypeSelect()
-                    != StockLocationRepository.TYPE_VIRTUAL)
-            || (stockLocationLine.getDetailsStockLocation() != null
-                && stockLocationLine.getDetailsStockLocation().getTypeSelect()
-                    != StockLocationRepository.TYPE_VIRTUAL))) {
-
-      String trackingNumber = "";
-      if (stockLocationLine.getTrackingNumber() != null) {
-        trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
-      }
-
-      throw new AxelorException(
-          stockLocationLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCATION_LINE_2),
-          stockLocationLine.getProduct().getName(),
-          stockLocationLine.getProduct().getCode(),
-          trackingNumber);
-    }
-  }
-
-  @Override
   public StockLocationLine updateLocation(
       StockLocationLine stockLocationLine,
+      Unit stockMoveLineUnit,
+      Product product,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty) {
+      BigDecimal requestedReservedQty)
+      throws AxelorException {
 
     stockLocationLine =
         super.updateLocation(
             stockLocationLine,
+            stockMoveLineUnit,
+            product,
             qty,
             current,
             future,
             isIncrement,
             lastFutureStockMoveDate,
-            reservedQty);
+            requestedReservedQty);
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Unit stockLocationLineUnit = stockLocationLine.getUnit();
+    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
+      requestedReservedQty =
+          unitConversionService.convert(
+              stockMoveLineUnit,
+              stockLocationLineUnit,
+              requestedReservedQty,
+              requestedReservedQty.scale(),
+              product);
+    }
+
     if (current) {
       if (isIncrement) {
-        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
       } else {
-        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
       }
     }
     if (future) {
       if (isIncrement) {
-        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().subtract(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
       } else {
-        stockLocationLine.setReservedQty(stockLocationLine.getReservedQty().add(reservedQty));
+        stockLocationLine.setRequestedReservedQty(
+            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
       }
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
@@ -116,7 +100,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       throws AxelorException {
     super.checkIfEnoughStock(stockLocation, product, qty);
 
-    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()) {
+    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()
+        && product.getStockManaged()) {
       StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null
           && stockLocationLine
@@ -127,7 +112,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         throw new AxelorException(
             stockLocationLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LOCATION_LINE_1),
+            I18n.get(IExceptionMessage.LOCATION_LINE_RESERVED_QTY),
             stockLocationLine.getProduct().getName(),
             stockLocationLine.getProduct().getCode());
       }
@@ -142,5 +127,34 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     }
     return availableQty;
+  }
+
+  @Override
+  public StockLocationLine updateLocationFromProduct(
+      StockLocationLine stockLocationLine, Product product) throws AxelorException {
+    Unit productUnit = product.getUnit();
+    Unit stockLocationUnit = stockLocationLine.getUnit();
+
+    if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+      BigDecimal reservedQty =
+          unitConversionService.convert(
+              stockLocationUnit,
+              productUnit,
+              stockLocationLine.getReservedQty(),
+              stockLocationLine.getReservedQty().scale(),
+              product);
+      stockLocationLine.setReservedQty(reservedQty);
+      BigDecimal requestedReservedQty =
+          unitConversionService.convert(
+              stockLocationUnit,
+              productUnit,
+              stockLocationLine.getRequestedReservedQty(),
+              stockLocationLine.getRequestedReservedQty().scale(),
+              product);
+      stockLocationLine.setRequestedReservedQty(requestedReservedQty);
+    }
+
+    return super.updateLocationFromProduct(stockLocationLine, product);
   }
 }

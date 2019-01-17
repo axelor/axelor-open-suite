@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,24 +18,24 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class ImportStockMove {
 
-  protected StockMoveService stockMoveService;
+  protected StockMoveToolService stockMoveToolService;
 
   @Inject
-  public ImportStockMove(StockMoveService stockMoveService) {
-    this.stockMoveService = stockMoveService;
+  public ImportStockMove(StockMoveToolService stockMoveToolService) {
+    this.stockMoveToolService = stockMoveToolService;
   }
 
   public Object importAddressStr(Object bean, Map<String, Object> values) {
     assert bean instanceof StockMove;
 
     StockMove stockMove = (StockMove) bean;
-    stockMoveService.computeAddressStr(stockMove);
+    stockMoveToolService.computeAddressStr(stockMove);
     return stockMove;
   }
 }

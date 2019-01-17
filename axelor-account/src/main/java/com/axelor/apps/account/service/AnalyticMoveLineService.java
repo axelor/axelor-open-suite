@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,26 +23,24 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AnalyticMoveLineService {
-  public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine);
-
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
   public List<AnalyticMoveLine> generateLines(
-      Partner partner, Product product, Company company, BigDecimal total) throws AxelorException;
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date);
 
-  public List<AnalyticMoveLine> generateLinesFromPartner(Partner partner, BigDecimal total);
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Partner partner, Product product, Company company);
 
-  public List<AnalyticMoveLine> generateLinesFromProduct(
-      Product product, Company company, BigDecimal total) throws AxelorException;
-
-  public List<AnalyticMoveLine> generateLinesWithTemplate(
-      AnalyticDistributionTemplate template, BigDecimal total);
+  public void updateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
 
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
 }

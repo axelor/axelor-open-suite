@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,18 +88,9 @@ public class ExpenseController {
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    Expense expense = expenseLine.getExpense();
-    if (expense == null) {
-      setExpense(request, expenseLine);
-    }
-    if (expenseLine.getAnalyticDistributionTemplate() != null) {
-      expenseLine =
-          expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
-      response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
-    }
+
+    expenseLine = expenseServiceProvider.get().createAnalyticDistributionWithTemplate(expenseLine);
+    response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
   }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)

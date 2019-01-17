@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,9 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -57,5 +59,15 @@ public class BankOrderManagementRepository extends BankOrderRepository {
     copy.setBankOrderSeq(null);
 
     return copy;
+  }
+
+  @Override
+  public void remove(BankOrder entity) {
+    if (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT
+        || entity.getStatusSelect() == BankOrderRepository.STATUS_CANCELED) {
+      super.remove(entity);
+      return;
+    }
+    throw new PersistenceException(I18n.get(IExceptionMessage.BANK_ORDER_CANNOT_REMOVE));
   }
 }

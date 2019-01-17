@@ -6,12 +6,14 @@
     <grid name="move-template-type-grid" title="Move template type" model="com.axelor.apps.account.db.MoveTemplateType">
     	<field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+        <field name="typeSelect"/>
     </grid>
     
     <form name="move-template-type-form" title="Move template type" model="com.axelor.apps.account.db.MoveTemplateType">
-        <panel name="main" >
+        <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+        	<field name="typeSelect"/>
         </panel>
         
     </form>

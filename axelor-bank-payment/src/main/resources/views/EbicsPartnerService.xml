@@ -2,22 +2,40 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-    <grid model="com.axelor.apps.bankpayment.db.EbicsPartnerService" title="Ebics partner services" name="ebics-partner-service-grid">
-        <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-codification"
-            canNew="false" canEdit="false" />
-        <field name="ebicsCodification" />
+    <grid name="bo-ebics-partner-service-grid" title="Ebics partner B.O. services" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+        <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-bank-order-codification"
+            canNew="false" canEdit="false" required="true"/>
+        <field name="ebicsCodification" required="true"/>
     </grid>
 
-    <form model="com.axelor.apps.bankpayment.db.EbicsPartnerService" title="Ebics partner service" name="ebics-partner-service-form">
-        <panel>
-            <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-codification"
-                canNew="false" canEdit="false" />
-            <field name="ebicsCodification" />
+    <form name="ebics-partner-service-form" title="Ebics partner B.O. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+        <panel name="mainPanel">
+            <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-bank-order-codification"
+                canNew="false" canEdit="false" required="true"/>
+            <field name="ebicsCodification" required="true"/>
+        </panel>
+    </form>
+    
+    <grid name="bs-ebics-partner-service-grid" title="Ebics partner B.S. services" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+        <field name="bankStatementFileFormat" onChange="action-ebics-partner-service-record-default-bank-statement-codification"
+            canNew="false" canEdit="false" required="true"/>
+        <field name="ebicsCodification" required="true"/>
+    </grid>
+
+    <form name="bs-ebics-partner-service-form" title="Ebics partner B.S. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+        <panel name="mainPanel">
+            <field name="bankStatementFileFormat" onChange="action-ebics-partner-service-record-default-bank-statement-codification"
+                canNew="false" canEdit="false" required="true"/>
+            <field name="ebicsCodification" required="true"/>
         </panel>
     </form>
 
-    <action-record name="action-ebics-partner-service-record-default-codification" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+    <action-record name="action-ebics-partner-service-record-default-bank-order-codification" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <field name="ebicsCodification" expr="eval: bankOrderFileFormat?.orderFileFormatSelect" />
+    </action-record>
+    
+    <action-record name="action-ebics-partner-service-record-default-bank-statement-codification" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+        <field name="ebicsCodification" expr="eval: bankStatementFileFormat?.statementFileFormatSelect" />
     </action-record>
 
 </object-views>

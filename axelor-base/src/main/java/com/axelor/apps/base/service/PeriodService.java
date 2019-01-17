@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,9 +33,9 @@ public interface PeriodService {
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company) throws AxelorException;
+  public Period rightPeriod(LocalDate date, Company company, int typeSelect) throws AxelorException;
 
-  public Period getPeriod(LocalDate date, Company company);
+  public Period getPeriod(LocalDate date, Company company, int typeSelect);
 
   public Period getNextPeriod(Period period) throws AxelorException;
 

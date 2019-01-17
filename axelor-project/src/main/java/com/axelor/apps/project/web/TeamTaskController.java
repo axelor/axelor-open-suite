@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,9 +46,9 @@ public class TeamTaskController {
         hideCancel = timer.getTimerHistoryList().isEmpty();
       }
 
-      response.setAttr("btnStartTimer", HIDDEN_ATTR, hideStart);
-      response.setAttr("btnStopTimer", HIDDEN_ATTR, !hideStart);
-      response.setAttr("btnCancelTimer", HIDDEN_ATTR, hideCancel);
+      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
+      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
+      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

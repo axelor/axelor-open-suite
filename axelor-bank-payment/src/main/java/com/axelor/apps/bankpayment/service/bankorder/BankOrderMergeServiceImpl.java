@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,27 +17,40 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +61,25 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderService bankOrderService;
+  protected InvoiceRepository invoiceRepository;
+  protected PaymentScheduleLineRepository paymentScheduleLineRepository;
 
   @Inject
   public BankOrderMergeServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      BankOrderService bankOrderService) {
+      BankOrderService bankOrderService,
+      InvoiceRepository invoiceRepository,
+      PaymentScheduleLineRepository paymentScheduleLineRepository) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderService = bankOrderService;
+    this.invoiceRepository = invoiceRepository;
+    this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
 
     if (bankOrders == null || bankOrders.size() <= 1) {
@@ -74,6 +93,14 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     BankOrder bankOrder = bankOrders.iterator().next();
 
     bankOrders.remove(bankOrder);
+
+    bankOrder.setSenderLabel(null);
+    bankOrder.setSenderReference(null);
+    bankOrder.setBankOrderDate(Beans.get(AppBaseService.class).getTodayDate());
+    bankOrder.setSignatoryUser(null);
+    bankOrder.setSignatoryEbicsUser(null);
+
+    PaymentMode paymentMode = bankOrder.getPaymentMode();
 
     for (BankOrderLine bankOrderLine : this.getAllBankOrderLineList(bankOrders)) {
 
@@ -91,6 +118,10 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
 
       bankOrderRepo.remove(bankOrderToRemove);
+    }
+
+    if (paymentMode.getConsoBankOrderLinePerPartner()) {
+      consolidatePerPartner(bankOrder);
     }
 
     bankOrderService.updateTotalAmounts(bankOrder);
@@ -187,6 +218,104 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     return bankOrderLineList;
   }
 
+  public void consolidatePerPartner(BankOrder bankOrder) {
+
+    Map<List<Object>, BankOrderLine> bankOrderLineMap = new HashMap<List<Object>, BankOrderLine>();
+
+    int counter = 1;
+
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+
+      List<Object> keys = new ArrayList<Object>();
+      keys.add(bankOrderLine.getPartner());
+      keys.add(bankOrderLine.getBankOrderCurrency());
+      keys.add(bankOrderLine.getBankOrderDate());
+      keys.add(bankOrderLine.getBankOrderEconomicReason());
+      keys.add(bankOrderLine.getFeesImputationModeSelect());
+      keys.add(bankOrderLine.getPaymentModeSelect());
+      keys.add(bankOrderLine.getReceiverBankDetails());
+      keys.add(bankOrderLine.getReceiverCompany());
+
+      if (bankOrderLineMap.containsKey(keys)) {
+        BankOrderLine consolidateBankOrderLine = bankOrderLineMap.get(keys);
+        if (consolidateBankOrderLine.getBankOrderLineOriginList() == null) {
+          consolidateBankOrderLine.setBankOrderLineOriginList(new ArrayList<>());
+        }
+        if (bankOrderLine.getBankOrderLineOriginList() != null) {
+          bankOrderLine
+              .getBankOrderLineOriginList()
+              .stream()
+              .forEach(consolidateBankOrderLine::addBankOrderLineOriginListItem);
+        }
+        consolidateBankOrderLine.setBankOrderAmount(
+            consolidateBankOrderLine.getBankOrderAmount().add(bankOrderLine.getBankOrderAmount()));
+        consolidateBankOrderLine.setCompanyCurrencyAmount(
+            consolidateBankOrderLine
+                .getCompanyCurrencyAmount()
+                .add(bankOrderLine.getCompanyCurrencyAmount()));
+      } else {
+        bankOrderLine.setCounter(counter++);
+        bankOrderLineMap.put(keys, bankOrderLine);
+      }
+    }
+
+    bankOrder.getBankOrderLineList().clear();
+
+    for (BankOrderLine bankOrderLine : bankOrderLineMap.values()) {
+
+      Pair<String, LocalDate> lastReferences = getLastReferences(bankOrderLine);
+
+      bankOrderLine.setReceiverReference(lastReferences.getLeft());
+      bankOrderLine.setBankOrderDate(lastReferences.getRight());
+      bankOrder.addBankOrderLineListItem(bankOrderLine);
+    }
+  }
+
+  protected Pair<String, LocalDate> getLastReferences(BankOrderLine bankOrderLine) {
+
+    String lastReferenceId = "";
+    LocalDate lastReferenceDate = null;
+
+    for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
+      LocalDate originDate = null;
+      String originReferenceId = null;
+
+      switch (bankOrderLineOrigin.getRelatedToSelect()) {
+        case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
+          Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+            originReferenceId = invoice.getSupplierInvoiceNb();
+          } else {
+            originReferenceId = invoice.getInvoiceId();
+          }
+          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+            originDate = invoice.getOriginDate();
+          } else {
+            originDate = invoice.getInvoiceDate();
+          }
+          break;
+
+        case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
+          PaymentScheduleLine paymentScheduleLine =
+              paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+          originReferenceId = paymentScheduleLine.getName();
+          originDate = paymentScheduleLine.getScheduleDate();
+          break;
+
+        default:
+          break;
+      }
+
+      if (originDate != null
+          && (lastReferenceDate == null || lastReferenceDate.isBefore(originDate))) {
+        lastReferenceDate = originDate;
+        lastReferenceId = originReferenceId;
+      }
+    }
+
+    return Pair.of(lastReferenceId, lastReferenceDate);
+  }
+
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)
@@ -211,7 +340,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     }
 
     if (bankOrders.size() > 1) {
+      LocalDate bankOrderDate = bankOrders.iterator().next().getBankOrderDate();
       BankOrder mergedBankOrder = mergeBankOrders(bankOrders);
+      mergedBankOrder.setBankOrderDate(bankOrderDate);
 
       for (InvoicePayment invoicePayment : invoicePaymentsWithBankOrders) {
         invoicePayment.setBankOrder(mergedBankOrder);

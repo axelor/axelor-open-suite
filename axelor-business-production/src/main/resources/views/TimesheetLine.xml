@@ -4,57 +4,58 @@
 
 	<grid name="timesheet-line-timesheet-manuf-order-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 		  onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
-		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
-		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
+		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid" canEdit="false" canView="false"/>
+		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid" canEdit="false" canView="false"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
-		<field name="toInvoice" width="100"/>
+		<field name="toInvoice" width="100" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
 		<field name="comments" width="400"/>
-		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canEdit="false" canView="false"/>
 	</grid>
 
 	<grid name="timesheet-line-timesheet-operation-order-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 		onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
 		<hilite if="$get('timesheet.statusSelect') == 5" color="danger" />
-		<field name="timesheet.statusSelect"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
+		<field name="user" form-view="user-form" grid-view="user-grid" canEdit="false" canView="false"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
-		<field name="toInvoice" width="100"/>
+		<field name="toInvoice" width="100" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
 		<field name="comments" width="400"/>
-		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
+		<field name="timesheet.statusSelect"/>
 	</grid>
 
 	<grid name="timesheet-line-timesheet-readonly-manuf-order-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine"
 		  onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
-		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
-		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
-		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
+  		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
+		<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid" canEdit="false" canView="false"/>
+		<field name="operationOrder"  width="200" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid" canEdit="false" canView="false"/>
+		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
-		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
-		<field name="comments" />
+		<field name="toInvoice" width="100" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
-		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true"/>
+		<field name="comments" width="400"/>
+		<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canEdit="false" canView="false"/>
+		<field name="timesheet.statusSelect"/>
 	</grid>
 
 	<form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine"
 		  onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
 		  onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project" width="large">
-		<panel name="overview" title="Overview">
-			<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid"/>
-			<field name="date" />
-			<field name="operationOrder" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid"/>
+		<panel name="overviewPanel" title="Overview">
+			<field name="date" onChange="action-timesheet-line-validate-date"/>
+			<field name="manufOrder" width="200" onChange="action-timesheet-line-group-manuf-order-onchange" form-view="manuf-order-form" grid-view="manuf-order-grid" canEdit="false" canView="false"/>
+			<field name="operationOrder" domain="self.manufOrder = :manufOrder" form-view="operation-order-form" grid-view="operation-order-grid" canEdit="false" canView="false"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />
 			<field name="toInvoice"/>
 			<field name="enableEditor" />
 			<field name="comments" />
-			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canEdit="false" canView="false"/>
 		</panel>
 	</form>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -158,6 +158,46 @@ public class TimesheetController {
               .param("popup-save", "false")
               .map());
     }
+  }
+
+  public void allTimesheet(ActionRequest request, ActionResponse response) {
+
+    User user = AuthUtils.getUser();
+    Employee employee = user.getEmployee();
+
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("Timesheets"))
+            .model(Timesheet.class.getName())
+            .add("grid", "all-timesheet-grid")
+            .add("form", "timesheet-form");
+
+    if (employee == null || !employee.getHrManager()) {
+      if (employee == null || employee.getManagerUser() == null) {
+        actionView
+            .domain("self.user = :_user OR self.user.employee.managerUser = :_user")
+            .context("_user", user);
+      } else {
+        actionView.domain("self.user.employee.managerUser = :_user").context("_user", user);
+      }
+    }
+
+    response.setView(actionView.map());
+  }
+
+  public void allTimesheetLine(ActionRequest request, ActionResponse response) {
+
+    User user = AuthUtils.getUser();
+    Employee employee = user.getEmployee();
+
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("See timesheet lines"))
+            .model(TimesheetLine.class.getName())
+            .add("grid", "timesheet-line-grid")
+            .add("form", "timesheet-line-form");
+
+    timesheetServiceProvider.get().createDomainAllTimesheetLine(user, employee, actionView);
+
+    response.setView(actionView.map());
   }
 
   public void validateTimesheet(ActionRequest request, ActionResponse response) {

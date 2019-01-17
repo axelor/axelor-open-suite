@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,8 +45,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Service class handle bpmn xml processing of workflow. It create/remove workflow nodes and
- * transitions using bpmn xml. *
+ * Handles bpmn xml processing of work-flow. Creates/removes work-flow nodes and transitions using
+ * bpmn xml.
  *
  * @author axelor
  */
@@ -81,14 +81,14 @@ public class WkfDesignerService {
   @Inject private WkfService wkfService;
 
   /**
-   * Method parse xml doc to create workflow nodes from it. It set incoming and outgoing transitions
-   * of node.
+   * Parses xml doc to create workflow nodes from it. Sets incoming and outgoing transitions of
+   * node.
    *
    * @param doc
    */
   public void traverseXMLElement(Document doc) {
 
-    nodeSequences = new ArrayList<Integer>();
+    nodeSequences = new ArrayList<>();
 
     NodeList list = doc.getElementsByTagName("*");
 
@@ -124,7 +124,7 @@ public class WkfDesignerService {
         else if (elementName.equals("endEvent")) node.setEndNode(true);
       } else {
         node.setName(element.getAttribute("name"));
-        nodeMap.remove(node);
+        nodeMap.remove(node.getXmlId());
       }
 
       wkfService.clearNodes(nodeMap.values());
@@ -173,7 +173,7 @@ public class WkfDesignerService {
 
     WkfNodeRepository wkfNodeRepository = Beans.get(WkfNodeRepository.class);
 
-    Map<String, WkfNode> nodeMap = new HashMap<String, WkfNode>();
+    Map<String, WkfNode> nodeMap = new HashMap<>();
     if (instance != null) {
       List<WkfNode> nodes =
           wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
@@ -190,7 +190,7 @@ public class WkfDesignerService {
 
     WkfTransitionRepository wkfTransitionRepo = Beans.get(WkfTransitionRepository.class);
 
-    Map<String, WkfTransition> transitionMap = new HashMap<String, WkfTransition>();
+    Map<String, WkfTransition> transitionMap = new HashMap<>();
     if (instance != null) {
       List<WkfTransition> transitions =
           wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
@@ -203,8 +203,8 @@ public class WkfDesignerService {
   }
 
   /**
-   * Method fetch bpmn xml from workflow. It generate document from xml using dom parser. From dom
-   * document generates transitions and call method to creat nodes. *
+   * Fetches bpmn xml from workflow. Generates document from xml using dom parser. Generates
+   * transitions from dom document and calls method to create nodes.
    *
    * @param instance Workflow instance
    * @throws ParserConfigurationException
@@ -250,7 +250,7 @@ public class WkfDesignerService {
 
       List<WkfNode> allRemoveNodes = instance.getNodes();
 
-      if (allRemoveNodes.size() > 0) {
+      if (!allRemoveNodes.isEmpty()) {
         for (WkfNode tempNode : allRemoveNodes) {
           tempNode.getIncomming().clear();
           tempNode.getOutgoing().clear();

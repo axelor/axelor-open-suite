@@ -11,7 +11,7 @@
 
   <form name="workshop-sequence-config-line-form" title="Sequence by workshop"
     model="com.axelor.apps.production.db.WorkshopSequenceConfigLine">
-    <panel name="main">
+    <panel name="mainPanel">
       <field name="sequence" canEdit="true" canNew="true"
         onSelect="action-workshop-sequence-config-line-attrs-seq-domain"
         form-view="sequence-form" grid-view="sequence-grid"/>

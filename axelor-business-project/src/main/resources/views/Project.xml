@@ -112,10 +112,10 @@
 	</action-view>
 	
 	<action-attrs name="action-project-attrs-sales-order-line-select-lines">
-		<attribute name="readonly" for="selectNewSOLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageSOLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedSOLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewSOLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageSOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
@@ -123,10 +123,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-sales-order-line-manage-lines">
-		<attribute name="readonly" for="selectNewSOLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageSOLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedSOLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageSOLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewSOLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageSOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:null"/>
 		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
@@ -135,11 +135,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-sales-order-line-cancel-manage-lines">
-		<attribute name="readonly" for="selectNewSOLines" expr="eval:false"/>
-		<attribute name="readonly" for="manageSOLines" expr="eval:false"/>
-		<attribute name="hidden" for="unlinkSelectedSOLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedSOLines" expr="eval:true"/>
-		<attribute name="hidden" for="cancelManageSOLines" expr="eval:true"/>
+		<attribute name="readonly" for="selectNewSOLinesBtn" expr="eval:false"/>
+		<attribute name="readonly" for="manageSOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedSOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:true"/>
 	</action-attrs>
 	
@@ -196,10 +196,10 @@
     
     
     <action-attrs name="action-project-attrs-purchase-order-line-select-lines">
-		<attribute name="readonly" for="selectNewPOLines" expr="eval:true"/>
-		<attribute name="readonly" for="managePOLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedPOLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewPOLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="managePOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedPOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManagePOLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
 		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
@@ -207,10 +207,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-purchase-order-line-manage-lines">
-		<attribute name="readonly" for="selectNewPOLines" expr="eval:true"/>
-		<attribute name="readonly" for="managePOLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedPOLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManagePOLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewPOLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="managePOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedPOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManagePOLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$purchaseOrderLineSet" expr="eval:null"/>
 		<attribute name="title" for="$purchaseOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
@@ -219,11 +219,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-purchase-order-line-cancel-manage-lines">
-		<attribute name="readonly" for="selectNewPOLines" expr="eval:false"/>
-		<attribute name="readonly" for="managePOLines" expr="eval:false"/>
-		<attribute name="hidden" for="addSelectedPOLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedPOLines" expr="eval:true"/>
-		<attribute name="hidden" for="cancelManagePOLines" expr="eval:true"/>
+		<attribute name="readonly" for="selectNewPOLinesBtn" expr="eval:false"/>
+		<attribute name="readonly" for="managePOLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="addSelectedPOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedPOLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManagePOLinesBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$purchaseOrderLineSet" expr="eval:true"/>
 	</action-attrs>
     
@@ -269,10 +269,10 @@
     </action-view>
     
     <action-attrs name="action-project-attrs-expense-line-select-lines">
-		<attribute name="readonly" for="selectNewExpenseLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageExpenseLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedExpenseLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedExpenseLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageExpenseLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
 		<attribute name="value" for="$expenseLineSet" expr="eval:null"/>
 		<attribute name="title" for="$expenseLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
@@ -280,10 +280,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-expense-line-manage-lines">
-		<attribute name="readonly" for="selectNewExpenseLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageExpenseLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedExpenseLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedExpenseLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageExpenseLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$expenseLineSet" expr="eval:false"/>
 		<attribute name="value" for="$expenseLineSet" expr="eval:false"/>
 		<attribute name="title" for="$expenseLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
@@ -292,11 +292,11 @@
 	</action-attrs>
     
     <action-attrs name="action-project-attrs-expense-line-cancel-manage-lines">
-    	<attribute name="readonly" for="selectNewExpenseLines" expr="eval:false"/>
-		<attribute name="readonly" for="manageExpenseLines" expr="eval:false"/>
-		<attribute name="hidden" for="unlinkSelectedExpenseLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedExpenseLines" expr="eval:true"/>
-		<attribute name="hidden" for="cancelManageExpenseLines" expr="eval:true"/>
+    	<attribute name="readonly" for="selectNewExpenseLinesBtn" expr="eval:false"/>
+		<attribute name="readonly" for="manageExpenseLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedExpenseLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageExpenseLinesBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$expenseLineSet" expr="eval:true"/>
     </action-attrs>
     
@@ -330,6 +330,7 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="$isReadOnly" expr="true"/>
     </action-view>
     
 	<action-view name="action-project-dashlet-supplier-invoices" title="Supplier invoices"  model="com.axelor.apps.account.db.Invoice">
@@ -350,6 +351,7 @@
         <context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  		<context name="$isReadOnly" expr="true"/>
     </action-view>
     
 	<action-view name="action-project-dashlet-advance-payment-invoices" title="Advance payment invoices"  model="com.axelor.apps.account.db.Invoice">
@@ -363,10 +365,10 @@
 	</action-view>
 	
 	<action-attrs name="action-project-attrs-customer-invoice-line-select-lines">
-		<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedCustomerInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedCustomerInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
 		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
@@ -374,10 +376,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-customer-invoice-line-manage-lines">
-		<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
 		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
@@ -386,19 +388,19 @@
 	</action-attrs>
     
     <action-attrs name="action-project-attrs-customer-invoice-line-cancel-manage-lines">
-    	<attribute name="readonly" for="selectNewCustomerInvoiceLines" expr="eval:false"/>
-		<attribute name="readonly" for="manageCustomerInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedCustomerInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="cancelManageCustomerInvoiceLines" expr="eval:true"/>
+    	<attribute name="readonly" for="selectNewCustomerInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="readonly" for="manageCustomerInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="unlinkSelectedCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedCustomerInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageCustomerInvoiceLinesBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:true"/>
     </action-attrs>
     
     <action-attrs name="action-project-attrs-supplier-invoice-line-select-lines">
-		<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="addSelectedSupplierInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="addSelectedSupplierInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
 		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
@@ -406,10 +408,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-supplier-invoice-line-manage-lines">
-		<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:false"/>
+		<attribute name="readonly" for="selectNewSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLinesBtn" expr="eval:false"/>
 		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$supplierInvoiceLineSet" expr="eval:null"/>
 		<attribute name="title" for="$supplierInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to unlink')"/>
@@ -418,11 +420,11 @@
 	</action-attrs>
     
     <action-attrs name="action-project-attrs-supplier-invoice-line-cancel-manage-lines">
-    	<attribute name="readonly" for="selectNewSupplierInvoiceLines" expr="eval:false"/>
-		<attribute name="readonly" for="manageSupplierInvoiceLines" expr="eval:false"/>
-		<attribute name="hidden" for="addSelectedSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLines" expr="eval:true"/>
-		<attribute name="hidden" for="cancelManageSupplierInvoiceLines" expr="eval:true"/>
+    	<attribute name="readonly" for="selectNewSupplierInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="readonly" for="manageSupplierInvoiceLinesBtn" expr="eval:false"/>
+		<attribute name="hidden" for="addSelectedSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="unlinkSelectedSupplierInvoiceLinesBtn" expr="eval:true"/>
+		<attribute name="hidden" for="cancelManageSupplierInvoiceLinesBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$supplierInvoiceLineSet" expr="eval:true"/>
     </action-attrs>
 	

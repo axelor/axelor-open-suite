@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,16 +65,14 @@ public interface IExceptionMessage {
       "WARNING : To Date must be after or equals to From Date" /*)*/;
 
   /** Account management service */
-  public static final String ACCOUNT_MANAGEMENT_1 = /*$$(*/
-      "Tax configuration is missing for Product: %s (company: %s)" /*)*/;
-
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_3 = /*$$(*/
-      "Tax is missing for Product: %s (company: %s)" /*)*/;
+      "Tax configuration is missing for Product: %s (company: %s)" /*)*/;
 
   /** Period service */
   public static final String PERIOD_1 = /*$$(*/
-      "No period found or it has been closed for the company %s" /*)*/;
+      "No period found or it has been closed for the company %s for the date %s" /*)*/;
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;

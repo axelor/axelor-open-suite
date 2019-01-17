@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
@@ -50,7 +51,6 @@ import java.util.List;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected TemplateRepository templateRepo;
@@ -60,14 +60,12 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
   @Inject
   public StockRulesServiceSupplychainImpl(
       StockRulesRepository stockRuleRepo,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       TemplateRepository templateRepo,
       TemplateMessageService templateMessageService,
       MessageRepository messageRepo) {
     super(stockRuleRepo);
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.templateRepo = templateRepo;
@@ -135,6 +133,9 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
           Company company = stockLocation.getCompany();
           LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
+          PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
+              Beans.get(PurchaseOrderServiceSupplychainImpl.class);
+
           PurchaseOrder purchaseOrder =
               purchaseOrderRepo.save(
                   purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
@@ -172,11 +173,13 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    */
   private BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
-    List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
-    if (defaultSupplierPartner != null && supplierCatalogList != null) {
-      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-        if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
-          return supplierCatalog.getMinQty();
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
+      List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();
+      if (defaultSupplierPartner != null && supplierCatalogList != null) {
+        for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+          if (supplierCatalog.getSupplierPartner().equals(defaultSupplierPartner)) {
+            return supplierCatalog.getMinQty();
+          }
         }
       }
     }

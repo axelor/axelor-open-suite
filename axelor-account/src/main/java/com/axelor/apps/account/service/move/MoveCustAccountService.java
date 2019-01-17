@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -38,33 +39,41 @@ public class MoveCustAccountService {
     this.accountCustomerService = accountCustomerService;
   }
 
-  public void flagPartners(Move move) throws AxelorException {
-
-    accountCustomerService.flagPartners(this.getPartnerOfMove(move), move.getCompany());
-  }
-
   /**
-   * Mise à jour du compte client
+   * Update the partner balances linked to the move
    *
    * @param move
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateCustomerAccount(Move move) throws AxelorException {
+
+    this.updateCustomerAccount(this.getPartnerOfMove(move), move.getCompany());
+  }
+
+  /**
+   * Update the partner balances for the company and partner list
+   *
+   * @param partnerList
+   * @param company
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateCustomerAccount(List<Partner> partnerList, Company company)
+      throws AxelorException {
 
     if (AccountingService.getUpdateCustomerAccount()) {
       accountCustomerService.updatePartnerAccountingSituation(
-          this.getPartnerOfMove(move), move.getCompany(), true, true, false);
+          partnerList, company, true, true, false);
     } else {
-      this.flagPartners(move);
+      this.flagPartners(partnerList, company);
     }
   }
 
   /**
-   * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
+   * Get the distinct partners of an account move that impact the partner balances
    *
-   * @param move Une écriture
-   * @return
+   * @param move
+   * @return A list of partner
    */
   public List<Partner> getPartnerOfMove(Move move) {
     List<Partner> partnerList = new ArrayList<Partner>();
@@ -77,5 +86,10 @@ public class MoveCustAccountService {
       }
     }
     return partnerList;
+  }
+
+  public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
+
+    accountCustomerService.flagPartners(partnerList, company);
   }
 }

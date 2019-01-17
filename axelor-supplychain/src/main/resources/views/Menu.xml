@@ -12,23 +12,7 @@
 	</action-view>
 
 
-	<menuitem name="stock-multi-purchase-invoicing" parent="stock-root"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" order="35"/>
 	
-	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
-	</action-view>
-		
-	<menuitem name="stock-multi-sale-invoicing" parent="stock-root" if="__config__.app.isApp('supplychain')"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"  order="36"/>
-		
-		
-	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
-	</action-view>	
-
 	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch" if="__config__.app.isApp('supplychain')"
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
@@ -85,6 +69,18 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
+	<menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
+      parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
+
+    <action-view name="supplychain.declarations.of.exchanges" title="Declarations of exchanges"
+      model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
+      <view type="grid" name="declaration-of-exchanges-grid"/>
+      <view type="form" name="declaration-of-exchanges-form"/>
+      <context name="YEAR_TYPE_FISCAL" expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL"/>
+      <context name="STOCK_MOVE_TYPE_OUTGOING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING"/>
+      <context name="STOCK_MOVE_TYPE_INCOMING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
+    </action-view>
+	
 	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
 		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 
@@ -110,6 +106,35 @@
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
+	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
+		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
+	
+	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+	</action-view>
+	
+	<menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="26" if="__config__.app.isApp('supplychain')"
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"/>
+		
+	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
+	</action-view>
+	
+	<menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
+		title="Availability requests" action="stock.root.availabilityreq" 
+		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
+	
+	<action-view name="stock.root.availabilityreq" title="Availability requests"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-availability-req-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+	</action-view>
 	
 </object-views>
 

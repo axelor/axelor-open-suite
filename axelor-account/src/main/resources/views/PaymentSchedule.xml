@@ -9,7 +9,7 @@
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
-    <field name="typeSelect"/>
+    	<field name="typeSelect"/>
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="nbrTerm" />
 		<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -22,19 +22,19 @@
 		onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
 		onSave="action-payment-schedule-payment-schedule-id">
 		
-		<panel name="main">
+		<panel name="mainPanel">
 		    <field name="statusSelect" widget="NavSelect" colSpan="12" />
 		    <field name="paymentScheduleSeq" />
 			<field name="typeSelect" readonlyIf="statusSelect != 1" />
 			<field name="creationDate" readonlyIf="statusSelect != 1" />
 			<field name="startDate" readonlyIf="statusSelect != 1" required="true" />
-			<panel colSpan="12">
-				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner" domain="self.isContact = false" />
-				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" onChange="action-payment-schedule-method-fill-company-bank-details" />
-			</panel>
-			<panel colSpan="12">
+			<panel colSpan="12" name="companyPanel">
 				<field name="company" canEdit="false" readonlyIf="statusSelect != 1" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
 				<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-company-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()" />
+			</panel>
+			<panel colSpan="12" name="partnerDetailPanel">
+				<field name="partner" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner" domain="self.isContact = false AND :company member of self.companySet" />
+				<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-payment-schedule-attrs-bank-details-domain" onChange="action-payment-schedule-method-fill-company-bank-details" />
 			</panel>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" readonlyIf="statusSelect != 1" onChange="action-payment-schedule-method-fill-company-bank-details"/>
 			<field name="currency" canEdit="false" readonlyIf="statusSelect != 1" form-view="currency-form" grid-view="currency-grid"/>
@@ -42,23 +42,23 @@
             <field name="nbrTerm" readonlyIf="statusSelect != 1" />
 		</panel>
 		
-		<panel-related title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
+		<panel-related name="invoiceSetPanel" title="Invoices" field="invoiceSet" grid-view="invoice-account-grid" form-view="invoice-form" 
 			domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency AND self.operationTypeSelect = 3"
 			readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount" hideIf="typeSelect == 2" canNew="false" />
 			
-		<panel-related title="Payment schedule lines" field="paymentScheduleLineList" editable="true" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
+		<panel-related name="paymentScheduleLineListPanel" title="Payment schedule lines" field="paymentScheduleLineList" editable="true" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form"
 			readonlyIf="statusSelect != 1" />
 
-		<panel name="actions" sidebar="true">
-			<button name="validate" title="Validate" onClick="action-group-account-payment-schedule-validate-click" hideIf="!paymentScheduleLineList || paymentScheduleLineList.length == 0 || statusSelect != 1" colSpan="12" />
-			<button name="cancel" title="Cancel" onClick="save,action-payment-schedule-method-cancel,save" hideIf="statusSelect == 4" colSpan="12" />
-			<button name="createPaymentScheduleLines" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
+		<panel name="actionsPanel" sidebar="true">
+			<button name="validateBtn" title="Validate" onClick="action-group-account-payment-schedule-validate-click" hideIf="!paymentScheduleLineList || paymentScheduleLineList.length == 0 || statusSelect != 1" colSpan="12" />
+			<button name="cancelBtn" title="Cancel" onClick="save,action-payment-schedule-method-cancel,save" hideIf="statusSelect == 4" colSpan="12" />
+			<button name="createPaymentScheduleLinesBtn" title="Create schedule lines" onClick="action-group-account-payment-schedule-create-click" showIf="statusSelect == 1" colSpan="12" />
 		</panel>
-		<panel name="irrecoverable" title="Irrecoverable" sidebar="true">
+		<panel name="irrecoverablePanel" title="Irrecoverable" sidebar="true">
 			<field name="irrecoverableStatusSelect" />
 			<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" />
-			<button name="passInIrrecoverable" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable" colSpan="6" />
-			<button name="notPassInIrrecoverable" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable" colSpan="6" />
+			<button name="passInIrrecoverableBtn" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable" colSpan="6" />
+			<button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable" colSpan="6" />
 		</panel>
 
 	</form>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,4 +20,9 @@ package com.axelor.apps.base.translation;
 public interface ITranslation {
 
   public static final String BASE_APP_NAME = /*$$(*/ "value:Base"; /*)*/
+
+  public static final String BASE_DURATION_MONTH = /*$$(*/ "month"; /*)*/
+  public static final String BASE_DURATION_MONTHS = /*$$(*/ "months"; /*)*/
+  public static final String BASE_DURATION_DAY = /*$$(*/ "day"; /*)*/
+  public static final String BASE_DURATION_DAYS = /*$$(*/ "days"; /*)*/
 }

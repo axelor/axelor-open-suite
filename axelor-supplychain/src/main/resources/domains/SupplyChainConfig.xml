@@ -14,6 +14,7 @@
   	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products"/>
   	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products"/>
 
+    <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
   </entity>
   
 </domain-models>

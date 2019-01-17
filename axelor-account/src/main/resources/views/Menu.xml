@@ -104,6 +104,16 @@
 		<view-param name="search-filters" value="move-filters"/>
 	</action-view>
 
+	<menuitem name="account-root-move-move-line" parent="account-root-move"
+		title="Move lines" action="account.root.move.move.line" />
+
+	<action-view name="account.root.move.move.line" title="Move lines"
+		model="com.axelor.apps.account.db.MoveLine" >
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
+	</action-view>
+
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5"/>
 
@@ -197,8 +207,10 @@
 		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 
+    <menuitem title="Factoring" name="debt-recovery-root-factoring" parent="account-root-debt-recovery" order="1"/>
+
 	<menuitem title="Subrogation releases" name="debt-recovery-root-subrogation-releases"
-		parent="account-root-debt-recovery" action="debt.recovery.root.subrogation.releases" order="2" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.subrogation.releases" order="1" />
 
 	<action-view name="debt.recovery.root.subrogation.releases"
 		title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">
@@ -207,7 +219,7 @@
 	</action-view>
 
 	<menuitem title="Notifications" name="debt-recovery-root-notifications"
-		parent="account-root-debt-recovery" action="debt.recovery.root.notifications" order="3" />
+		parent="debt-recovery-root-factoring" action="debt.recovery.root.notifications" order="2" />
 
 	<action-view name="debt.recovery.root.notifications"
 		title="Notifications" model="com.axelor.apps.account.db.Notification">
@@ -268,7 +280,7 @@
 		title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-grid" />
 		<view type="form" name="accounting-report-form" />
-		<domain>self.typeSelect &lt; 1000</domain>
+		<domain>self.typeSelect &lt; 1000 or self.typeSelect &gt;= 2000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -278,7 +290,7 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-export-grid" />
 		<view type="form" name="accounting-report-export-form" />
-		<domain>self.typeSelect &gt;= 1000</domain>
+		<domain>self.typeSelect &gt;= 1000 and self.typeSelect &lt; 2000</domain>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"
@@ -303,8 +315,38 @@
 		<view type="grid" name="budget-grid"/>
 		<view type="form" name="budget-form"/>
 	</action-view>
+	
+	
+	<menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root" order="30"/>
+	
+	<menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets" parent="account-root-asset-management" 
+		action="account.root.asset.management.fixed.assets"/>
+		
+	<action-view name="account.root.asset.management.fixed.assets" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset">
+		<view type="grid" name="fixed-asset-grid"/>
+		<view type="form" name="fixed-asset-form"/>
+	</action-view>
+	
+	<menuitem title="Configurations" name="account-root-asset-management-conf" parent="account-root-asset-management" icon="fa-cog"/>
+	
+	<menuitem title="Fixed asset categories" name="account-root-asset-management-conf-asset-categories" parent="account-root-asset-management-conf" 
+		action="accont.root.asset.management.conf.asset.categories"/>
+	
+	<action-view name="accont.root.asset.management.conf.asset.categories" title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory">
+		<view type="grid" name="fixed-asset-category-grid"/>
+		<view type="form" name="fixed-asset-category-form"/>
+	</action-view>
+	
+	<menuitem title="Fixed asset types" name="account-root-asset-management-conf-asset-type" parent="account-root-asset-management-conf" 
+		action="accont.root.asset.management.conf.asset.types" order="1"/>
+	
+	<action-view name="accont.root.asset.management.conf.asset.types" title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
+		<view type="grid" name="fixed-asset-type-grid"/>
+		<view type="form" name="fixed-asset-type-form"/>
+	</action-view>
+	
 
-	<menuitem name="account-root-report" parent="account-root" title="Reportings" order="30" icon="fa-bar-chart"/>
+	<menuitem name="account-root-report" parent="account-root" title="Reportings" order="35" icon="fa-bar-chart"/>
 	
 	
 	<menuitem name="account-conf" parent="account-root" title="Configuration" order="50" icon="fa-cog"/>
@@ -523,7 +565,7 @@
 		<view type="grid" name="accounting-batch-grid"/>
 		<view type="form" name="accounting-batch-form"/>
 	</action-view>
-	
+		
 	<!-- Top Menus -->
 	
 	<menuitem name="top-invoicing" title="Invoicing" order="5" top="true" if="__config__.app.isApp('invoice')" left="false"/>
@@ -648,14 +690,6 @@
 		<context name="_activeCompanyId" expr="eval:__user__.activeCompany?.id" />
 	</action-view>
 
-	<menuitem name="move-template-line" title="Move Templates Lines" parent="move-template-root" action="move.template.line"  top="true" />
-	
-	<action-view name="move.template.line"
-		title="Move Templates Lines" model="com.axelor.apps.account.db.MoveTemplateLine">
-		<view type="grid" name="move-template-line-grid" />
-		<view type="form" name="move-template-line-form"  />
-	</action-view>
-	
 	<menuitem name="move-template-type" title="Move Template Types" parent="move-template-root" action="move.template.type"  top="true" />
 	
 	<action-view name="move.template.type"

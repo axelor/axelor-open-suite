@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,6 @@ package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -40,7 +39,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 @Singleton
@@ -187,32 +185,21 @@ public class ContractController {
     response.setReload(true);
   }
 
-  @Transactional
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      ContractTemplate template =
+          ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
+      template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 
-    ContractTemplate template =
-        ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
-    template = Beans.get(ContractTemplateRepository.class).find(template.getId());
+      Contract contract =
+          Beans.get(ContractRepository.class)
+              .find(request.getContext().asType(Contract.class).getId());
+      Beans.get(ContractService.class).copyFromTemplate(contract, template);
 
-    Contract copy = Beans.get(ContractService.class).createContractFromTemplate(template);
-
-    // TODO: move in service
-    if (request.getContext().asType(Contract.class).getPartner() != null) {
-      copy.setPartner(
-          Beans.get(PartnerRepository.class)
-              .find(request.getContext().asType(Contract.class).getPartner().getId()));
-      Beans.get(ContractRepository.class).save(copy);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setCanClose(true);
-
-    response.setView(
-        ActionView.define(I18n.get("Contract"))
-            .model(Contract.class.getName())
-            .add("form", "contract-form")
-            .add("grid", "contract-grid")
-            .param("forceTitle", "true")
-            .context("_showRecord", copy.getId().toString())
-            .map());
   }
 
   public void changeProduct(ActionRequest request, ActionResponse response) {

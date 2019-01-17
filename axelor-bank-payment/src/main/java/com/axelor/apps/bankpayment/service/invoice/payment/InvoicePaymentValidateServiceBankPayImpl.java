@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -98,7 +98,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if ((typeSelect == PaymentModeRepository.TYPE_DD
             || typeSelect == PaymentModeRepository.TYPE_TRANSFER)
-        && inOutSelect == PaymentModeRepository.OUT) {
+        && inOutSelect == PaymentModeRepository.OUT
+        && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
@@ -129,6 +130,25 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     invoicePaymentRepository.save(invoicePayment);
   }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
+      throws AxelorException {
+
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+
+    Company company = invoicePayment.getInvoice().getCompany();
+
+    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class)
+          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+    }
+
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePaymentRepository.save(invoicePayment);
+  }
+
   /**
    * Method to create a bank order for an invoice Payment
    *
@@ -144,8 +164,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 
-    bankOrderService.confirm(bankOrder);
-
+    if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
+      bankOrderService.confirm(bankOrder);
+    }
     invoicePayment.setBankOrder(bankOrder);
 
     invoicePaymentRepository.save(invoicePayment);

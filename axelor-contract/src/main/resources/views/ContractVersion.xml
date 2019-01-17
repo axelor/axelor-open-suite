@@ -3,9 +3,9 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <form name="contract-version-next-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion" width="large" onLoad="action-contract-version-attrs-load" onSave="save,action-contract-version-method-save" onNew="action-contract-version-method-new-draft,action-contract-version-attrs-load">
-        <panel>
-            <panel colSpan="9">
-                <panel name="hiddenFields" hidden="true" colSpan="12">
+        <panel name="mainPanel">
+            <panel name="generalInfoPanel" colSpan="9">
+                <panel name="hiddenFieldsPanel" hidden="true" colSpan="12">
                     <field name="nextContract.contractId"/>
                     <field name="nextContract.statusSelect"/>
                     <field name="nextContract.targetTypeSelect"/>
@@ -29,69 +29,71 @@
                 <field name="nextContract.partner" colSpan="4"/>
                 <field if="__config__.app.getApp('contract').isInvoicingManagement" name="nextContract.currency" colSpan="4"/>
                 <field name="nextContract.name" css="highlight" colSpan="12"/>
-                <panel title="Contract Dates" hidden="true" showIf="id" colSpan="12">
+                <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="nextContract.createdOn" colSpan="3"/>
                     <field name="nextContract.createdBy" colSpan="3"/>
                     <field name="nextContract.startDate" readonly="true" showIf="nextContract.statusSelect >= 2" colSpan="3"/>
                     <field name="nextContract.endDate" hidden="true" showIf="nextContract.statusSelect == 3" colSpan="3"/>
                 </panel>
-                <panel title="Current version" colSpan="12">
-                    <panel colSpan="6">
-                        <panel hideIf="statusSelect >= 3" colSpan="12">
+                <panel name="currentVersionPanel" title="Current version" colSpan="12">
+                    <panel colSpan="6" name="datesPanel">
+                        <panel name="supposedDatesPanel" hideIf="statusSelect >= 3" colSpan="12">
                             <field name="supposedActivationDate"/>
                             <field name="supposedEndDate"/>
                         </panel>
-                        <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                        <panel name="activationDatesPanel" hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
                             <field name="activatedByUser" colSpan="4"/>
                             <field name="activationDate" colSpan="4"/>
-                            <panel colSpan="4">
+                            <panel colSpan="4" name="endDatesPanel">
                                 <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
                                 <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
                             </panel>
                         </panel>
                     </panel>
-                    <panel showIf="id" colSpan="6">
+                    <panel name="creationDetailsPanel" showIf="id" colSpan="6">
                         <field name="createdOn"/>
                         <field name="createdBy"/>
                     </panel>
                 </panel>
             </panel>
-            <panel colSpan="3" stacked="true">
-                <panel stacked="true">
+            <panel colSpan="3" stacked="true" name="actionsPanel">
+                <panel name="subActionsPanel" stacked="true">
                     <button name="cancelBtn" title="Cancel" hidden="true" showIf="!id" onClick="action.contract.view.contract,close"/>
                     <button name="showBtn" title="Show contract" showIf="id" onClick="action.contract.view.contract,close"/>
                     <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; statusSelect == 1" onClick="save,action-contract-version-method-waiting"/>
                     <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; statusSelect == 2" onClick="save,action-contract-version-method-active,close"/>
                 </panel>
-                <panel title="Notes" stacked="true">
+                <panel title="Notes" stacked="true" name="notePanel">
                     <field name="nextContract.note" showTitle="false"/>
                 </panel>
             </panel>
         </panel>
-        <panel-tabs>
-            <panel title="Content">
-                <field if="__config__.app.getApp('contract').isInvoicingManagement" name="contractLineList" colSpan="12"/>
+        <panel-tabs name="mainPanelTab">
+            <panel title="Content" name="contentPanel">
+                <field if="__config__.app.getApp('contract').isInvoicingManagement" hidden="true"
+                  showIf="nextContract.isInvoicingManagement" name="contractLineList"
+                  colSpan="12"/>
                 <field name="description" colSpan="9" widget="html"/>
-                <field name="metaField" colSpan="3" widget="binary-link"/>
+                <field name="metaFile" colSpan="3" widget="binary-link"/>
             </panel>
-            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config.">
-                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12">
+            <panel if="__config__.app.getApp('contract').isConfigContract" title="Config." name="configPanel">
+                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12" name="configSubPanel">
                     <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
-                    <panel hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="6">
+                    <panel name="managementPanel" hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="6">
                         <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
                         <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
                     </panel>
                     <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true" showIf="nextContract.isConsumptionManagement" colSpan="6"/>
                     <panel name="invoicingSubPanel" hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="12">
-                        <panel colSpan="12">
+                        <panel name="paymentPanel" colSpan="12">
                             <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
                             <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                             <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
-                            <field name="invoicingMoment" showIf="automaticInvoicing" colSpan="3"/>
+                            <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
                         </panel>
-                        <panel colSpan="12">
+                        <panel name="invoicingDetailsPanel" colSpan="12">
                             <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
-                            <panel showIf="isPeriodicInvoicing" colSpan="9">
+                            <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
                                 <field name="invoicingDuration" colSpan="4"/>
                                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
@@ -99,26 +101,30 @@
                         </panel>
                     </panel>
                 </panel>
-                <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12">
+                <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal" colSpan="12" name="renewalDetailsPanel">
                     <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
                     <field name="renewalDuration" colSpan="3" requiredIf="isTacitRenewal"/>
                     <field name="isAutoEnableVersionOnRenew" colSpan="6" hidden="true" showIf="isTacitRenewal" widget="boolean-switch"/>
                 </panel>
-                <panel title="Engagement" colSpan="6">
+                <panel title="Engagement" colSpan="6" name="engagementPanel">
                     <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
                     <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
                     <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
                 </panel>
-                <panel title="Prior notice" colSpan="6">
+                <panel title="Prior notice" colSpan="6" name="priorNoticePanel">
                     <field name="isWithPriorNotice" widget="boolean-switch"/>
                     <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
                 </panel>
             </panel>
         </panel-tabs>
-        <panel hidden="true">
+        <panel hidden="true" name="nextContractPanel">
             <field name="nextContract"/>
             <field name="$_xIsNext" type="Boolean"/>
         </panel>
+        <panel-mail name="mailPanel">
+            <mail-messages limit="4"/>
+            <mail-followers/>
+        </panel-mail>
     </form>
 
     <action-attrs name="action-contract-version-attrs-load">

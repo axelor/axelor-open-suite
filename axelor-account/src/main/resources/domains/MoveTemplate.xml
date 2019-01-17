@@ -13,7 +13,7 @@
   	<many-to-one name="journal" ref="Journal" title="Journal" />
   	<boolean name="isValid" title="Valid" />
   	<one-to-many name="moveTemplateLineList" ref="MoveTemplateLine" mappedBy="moveTemplate" title="Template Move Lines"/>
-  	<integer name="partnerInputSelect"/>
+  	<date name="endOfValidityDate" title="End of validity date"/>
   	<string name="fullName" namecolumn="true" search="code,name">
 	    <![CDATA[
     		return code+" - " + name;

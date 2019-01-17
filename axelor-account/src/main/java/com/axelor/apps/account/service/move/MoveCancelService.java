@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -64,7 +65,9 @@ public class MoveCancelService {
       }
     }
 
-    Period period = Beans.get(PeriodService.class).getPeriod(move.getDate(), move.getCompany());
+    Period period =
+        Beans.get(PeriodService.class)
+            .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
     if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
           move,
@@ -74,7 +77,11 @@ public class MoveCancelService {
 
     try {
 
-      if (accountConfigService.getAccountConfig(move.getCompany()).getAllowRemovalValidatedMove()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+              && accountConfigService
+                  .getAccountConfig(move.getCompany())
+                  .getAllowRemovalValidatedMove())) {
         moveRepository.remove(move);
       } else {
         move.setStatusSelect(MoveRepository.STATUS_CANCELED);

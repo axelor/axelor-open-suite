@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid id="project-team-task-form" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -15,23 +15,23 @@
 		<field name="projectCategory"/>
 	</grid>
 	
-	<form title="Task" id="project-team-task-grid" name="team-task-form"
+	<form title="Task" id="project-team-task-form" name="team-task-form"
 		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
 		onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
-			<button name="start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
-			<button name="accept" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
-			<button name="stop" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
+			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
+			<button name="startBtn" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
+			<button name="acceptBtn" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
+			<button name="stopBtn" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
 	        <menu title="Tools">   
 	            <item title="Book resource" action="save,action-task-book-resource"/>
 	        </menu>
 	    </menubar>
-		<panel name="main" colSpan="12">
+		<panel name="mainPanel" colSpan="12">
 			<field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
-			<panel colSpan="12">
+			<panel name="projectDetailsPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12">
 					<viewer depends="name">
 					<![CDATA[
@@ -49,7 +49,7 @@
 				<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 				<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
 			</panel>
-			<panel name="caracteristics" title="Caracteristics" colSpan="12">
+			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4"/>
@@ -58,11 +58,11 @@
 				<field name="progressSelect" colSpan="4" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
 		</panel>
-		<panel-tabs>
-			<panel title="Content" colSpan="12">
+		<panel-tabs name="mainPanelTab">
+			<panel name="contentPanel" title="Content" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="html"/>
 			</panel>
-			<panel name="planning" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
 				<field name="totalPlannedHrs" readonly="true">
 				<viewer><![CDATA[
                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
@@ -74,16 +74,16 @@
        			]]></viewer>
 				</field>
 				<field name="projectPlanningTimeList" grid-view="project-planning-time-grid" form-view="project-planning-time-form" colSpan="12" onChange="action-planning-time-attr-update-planned-hours"/>
-				<button name="addMultipleLines" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"  hideIf="$popup()"/>
+				<button name="addMultipleLinesBtn" title="Add multiple lines" onClick="action-project-planning-time-open" colSpan="3"  hideIf="$popup()"/>
 				<field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
 			</panel>
-			<panel name="treeView" title="Tree view" colSpan="12">
-				<panel-dashlet title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>
-				<panel-related field="finishToStartSet" colSpan="12">
+			<panel name="treeViewPanel" title="Tree view" colSpan="12">
+				<panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>
+				<panel-related name="finishToStartSetPanel" field="finishToStartSet" colSpan="12">
 					<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialData" title="Financial Data" colSpan="12">
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
 				<field name="toInvoice" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="4" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 					<viewer><![CDATA[
@@ -95,35 +95,35 @@
 					</viewer>
 				</field>
 				<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
-				<spacer colSpan="6"/>
+				<spacer name="productSpacer" colSpan="6"/>
 				<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
 				<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 				<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
 				<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>
-				<panel name="discount" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<panel name="discountPanel" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-attrs-discountamount-title"/>
 					<field name="discountAmount" colSpan="3"/>
 					<field name="priceDiscounted" colSpan="3"/>
 				</panel>
 				<field name="exTaxTotal" readonly="true" colSpan="3"/>
 			</panel>
-			<panel title="Timer" showIf="id" hidden="true">
-				<panel title="Actions">
-					<button name="btnStartTimer" title="Start" icon="fa-play" colSpan="12" hidden="true"
+			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
+				<panel name="actionsPanel" title="Actions">
+					<button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
 						onClick="action-team-task-method-start-timer"/>
-					<button name="btnStopTimer" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+					<button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
 						onClick="action-team-task-method-stop-timer"/>
-					<button name="btnCancelTimer" title="Cancel" icon="fa-times-circle" colSpan="12"
+					<button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
 						hidden="true" onClick="action-team-task-method-cancel-timer"/>
 				</panel>
-				<panel>
+				<panel name="durationPanel">
 					<field name="$_totalTimerDuration" type="decimal" readonly="true"
 						title="Total duration (Hours)"
 						colSpan="12"/>
 				</panel>
 			</panel>
 		</panel-tabs>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 			<mail-messages/>
 			<mail-followers/>
 		</panel-mail>
@@ -277,9 +277,8 @@
 		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="parentTask" expr="eval: null"/>
 		<field name="membersUserSet" expr="eval: null"/>
-		<field name="team" expr="eval: project?.team" if="project?.synchronize"/>
-        <field name="team" expr="eval: project?.parentProject?.team"
-            if="project?.team == null &amp;&amp; project?.synchronize"/>
+		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
+        <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">

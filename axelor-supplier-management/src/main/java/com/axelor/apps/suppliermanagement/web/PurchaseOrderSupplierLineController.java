@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierLineService;
@@ -85,7 +86,8 @@ public class PurchaseOrderSupplierLineController {
     Company company = purchaseOrder.getCompany();
 
     String domain = "";
-    if (purchaseOrderLine.getProduct() != null
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        && purchaseOrderLine.getProduct() != null
         && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
       domain +=
           "self.id != "
@@ -111,6 +113,8 @@ public class PurchaseOrderSupplierLineController {
     } else {
       domain += "self.id = 0";
     }
+
+    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
 
     response.setAttr("supplierPartner", "domain", domain);
   }

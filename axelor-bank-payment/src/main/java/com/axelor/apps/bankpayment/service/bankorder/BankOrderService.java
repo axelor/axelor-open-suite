@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -61,13 +62,13 @@ public interface BankOrderService {
   public void checkLines(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePayment(BankOrder bankOrder);
+  public void validatePayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelPayment(BankOrder bankOrder);
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelBankOrder(BankOrder bankOrder);
+  public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;
 
   @Transactional
   public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
@@ -82,4 +83,9 @@ public interface BankOrderService {
       BankDetails bankDetails, BankOrderFileFormat bankOrderFileFormat);
 
   public boolean checkBankDetailsCurrencyCompatible(BankDetails bankDetails, BankOrder bankOrder);
+
+  public void resetReceivers(BankOrder bankOrder);
+
+  public ActionViewBuilder buildBankOrderLineView(
+      String gridViewName, String formViewName, String viewDomain);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,6 +79,13 @@ public interface IExceptionMessage {
   static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
 
+  /** Stock move line service */
+  static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
+      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
+
+  static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
+      "Missing purchase order with id %s for stock move line %s" /*)*/;
+
   /** Batch Invoicing */
   static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 
@@ -120,6 +127,14 @@ public interface IExceptionMessage {
   static final String SO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the sale order %s." /*)*/;
 
+  /** Sale order Stock Service Implement */
+  static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
+      "No delivery stock move to generate for this purchase order" /*)*/;
+
+  /** Purchase Order Stock Service Implement */
+  static final String PO_MISSING_STOCK_LOCATION = /*$$(*/
+      "Stock location is missing for the purchase order %s." /*)*/;
+
   /** Timetable Controller */
   static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/
       "The invoice has already been generated." /*)*/;
@@ -149,4 +164,32 @@ public interface IExceptionMessage {
 
   /** Interco Service */
   static final String INVOICE_MISSING_TYPE = /*$$(*/ "Invoice %s type is not filled." /*)*/;
+
+  /** Stock location line service supplychain impl */
+  static final String LOCATION_LINE_RESERVED_QTY = /*$$(*/
+      "Not enough quantity are available for reservation for product %s (%s)" /*)*/;
+
+  /** Reserved qty service */
+  static final String LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY = /*$$(*/
+      "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate." /*)*/;
+
+  static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
+      "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
+
+  static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
+      "This quantity is not available in stock." /*)*/;
+
+  /** Account config supplychain service */
+  static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
+      "You must configure a forecasted invoiced customer account for the company %s" /*)*/;
+
+  static final String FORECASTED_INVOICE_SUPPLIER_ACCOUNT = /*$$(*/
+      "You must configure a forecasted invoiced supplier account for the company %s" /*)*/;
+
+  /** Accounting cut off service */
+  static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
+      "Accounting cut off generation report :" /*)*/;
+
+  static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
+      "Stock move(s) processed" /*)*/;
 }

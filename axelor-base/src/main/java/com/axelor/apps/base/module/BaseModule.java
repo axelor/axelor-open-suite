@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TaxBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -150,5 +152,6 @@ public class BaseModule extends AxelorModule {
     bind(ConvertDemoDataFileService.class).to(ConvertDemoDataFileServiceImpl.class);
     bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
     bind(MapRestService.class).to(MapRestServiceImpl.class);
+    bind(TaxRepository.class).to(TaxBaseRepository.class);
   }
 }

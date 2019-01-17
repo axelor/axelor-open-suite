@@ -3,43 +3,69 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-    <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" editable="true">
         <field name="effectDate"/>
         <field name="name"/>
         <field name="reference"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="typeSelect"/>
-        <field name="account" form-view="account-form" grid-view="account-grid"/>
-        <field name="amount" aggregate="sum"/>
+        <field name="debit" aggregate="sum"/>
+        <field name="credit" aggregate="sum"/>
+        <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
+        <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
+        <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form" grid-view="account-grid"/>
+        <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"  onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>
+   	    <field name="moveLine" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
+  	    <field name="isPosted"/>
     </grid>
   
      <form name="bank-reconciliation-line-form" title="Bank reconciliation Line" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
-	  <panel name="main" >
+	  <panel name="bankStatementPanel" title="Bank statement details">
+	  	<field name="bankStatementLine" canEdit="false" onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
+   	    <field name="effectDate"/>
 	    <field name="name"/>
 	    <field name="reference"/>
-	    <field name="effectDate"/>
-	    <field name="partner" onChange="action-bank-reconciliation-line-set-account" form-view="partner-form" grid-view="partner-grid"/>
-	    <field name="typeSelect" onChange="action-bank-reconciliation-line-set-account"/>
-	    <field name="account" form-view="account-form" grid-view="account-grid"/>
-	    <field name="amount"/>
+   	    <field name="debit"/>
+   	    <field name="credit"/>
+        <field name="bankStatementLine.amountRemainToReconcile"/>
 	  </panel>
-  
-	  <panel name="associatedMoveLine" title="Associated MoveLine">
-	    <field name="moveLine" onSelect="action-bank-reconciliation-line-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
+	  <panel name="accountingPanel" title="Accounting details">
+	    <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
+   	    <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form" grid-view="account-grid"/>
+	    <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain" onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>
+	  </panel>
+	  <panel name="associatedMoveLinePanel" title="Associated MoveLine">
+	    <field name="moveLine" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
 	    <field name="isPosted"/>
 	  </panel>
 	</form>
 
-	<action-attrs name="action-bank-reconciliation-line-move-line-domain">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${_parent?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="_parent"/>
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.move.company.id = ${bankReconciliation?.company?.id} AND self.partner.id = ${partner?.id} AND self.account = ${account?.id}&quot;" if="bankReconciliation"/>
+	<action-record name="action-bank-reconciliation-line-record-fill-bank-statement-details" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+		<field name="effectDate" expr="eval: bankStatementLine?.valueDate"/>
+		<field name="name" expr="eval: bankStatementLine?.description"/>
+		<field name="reference" expr="eval: bankStatementLine?.reference"/>
+		<field name="debit" expr="eval: bankStatementLine?.debit"/>
+		<field name="credit" expr="eval: bankStatementLine?.credit"/>
+	</action-record>
+	
+	<action-attrs name="action-bank-reconciliation-line-attrs-account-domain">
+		<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND self.id != ${__parent__?.cashAccount?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;" if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+		<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${bankReconciliation?.company?.id} AND self.id != ${bankReconciliation?.cashAccount?.id} AND (self.accountType.id IN (${(bankReconciliation?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(bankReconciliation?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;" if="__parent__ == null || __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
 	</action-attrs>
+	
+	<action-attrs name="action-bank-reconciliation-line-attrs-move-line-domain">
+		<attribute name="domain" for="moveLine" expr="eval: &quot;(self.bankReconciledAmount &lt; self.debit or self.bankReconciledAmount &lt; self.credit) and ((self.debit &gt; 0 and ${credit} &gt; 0) or (self.credit &gt; 0 and ${debit} &gt; 0)) and self.move.company.id = ${__parent__?.company?.id} AND self.account.id = ${__parent__?.cashAccount?.id} AND self.move.journal.id = ${__parent__?.journal?.id}&quot;" if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+		<attribute name="domain" for="moveLine" expr="eval: &quot;(self.bankReconciledAmount &lt; self.debit or self.bankReconciledAmount &lt; self.credit) and ((self.debit &gt; 0 and ${credit} &gt; 0) or (self.credit &gt; 0 and ${debit} &gt; 0)) and self.move.company.id = ${bankReconciliation?.company?.id} AND self.account.id = ${bankReconciliation?.cashAccount?.id} AND self.move.journal.id = ${bankReconciliation?.journal?.id}&quot;" if="__parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+	</action-attrs>
+	
+	<action-attrs name="action-bank-payment-attrs-bank-reconciliation-line-partner-domain">
+    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;" if="_parent != null"/>
+    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false" if="_parent == null"/>
+    </action-attrs>
     
-   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliationLine" name="action-bank-reconciliation-line-set-account">
-       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, _parent?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; _parent"/>
-       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; bankReconciliation"/>
-       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; bankReconciliation"/>
+   <action-record name="action-bank-reconciliation-line-record-set-account" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, __parent__?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, __parent__?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+       <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
    </action-record>
     
 </object-views>

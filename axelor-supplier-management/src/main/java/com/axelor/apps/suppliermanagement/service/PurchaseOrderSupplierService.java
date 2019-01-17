@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -97,7 +98,9 @@ public class PurchaseOrderSupplierService {
     Product product = purchaseOrderLine.getProduct();
     Company company = purchaseOrder.getCompany();
 
-    if (product != null && product.getSupplierCatalogList() != null) {
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        && product != null
+        && product.getSupplierCatalogList() != null) {
 
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
         Partner supplierPartner = supplierCatalog.getSupplierPartner();

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<form name="app-timesheet-config-form" title="App Timesheet" model="com.axelor.apps.base.db.AppTimesheet" canDelete="false" canNew="false" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="invoicingTypeLogTimesSelect"/>
 			<field name="consolidateTSLine" widget="boolean-switch"/>
 			<field name="enableTimer" widget="boolean-switch"/>

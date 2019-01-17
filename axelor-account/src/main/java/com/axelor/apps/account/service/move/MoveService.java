@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,8 +39,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +54,6 @@ public class MoveService {
   protected MoveLineService moveLineService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
-  protected MoveAccountService moveAccountService;
   protected MoveRemoveService moveRemoveService;
   protected MoveToolService moveToolService;
   protected ReconcileService reconcileService;
@@ -69,7 +71,6 @@ public class MoveService {
       MoveLineService moveLineService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveAccountService moveAccountService,
       MoveToolService moveToolService,
       MoveRemoveService moveRemoveService,
       ReconcileService reconcileService,
@@ -82,7 +83,6 @@ public class MoveService {
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveAccountService = moveAccountService;
     this.moveRemoveService = moveRemoveService;
     this.moveToolService = moveToolService;
     this.reconcileService = reconcileService;
@@ -105,10 +105,6 @@ public class MoveService {
 
   public MoveValidateService getMoveValidateService() {
     return moveValidateService;
-  }
-
-  public MoveAccountService getMoveAccountService() {
-    return moveAccountService;
   }
 
   public MoveRemoveService getMoveRemoveService() {
@@ -181,7 +177,7 @@ public class MoveService {
         invoice.setMove(move);
 
         invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
-        moveValidateService.validateMove(move);
+        moveValidateService.validate(move);
       }
     }
 
@@ -336,7 +332,7 @@ public class MoveService {
               invoice.getInvoiceDate(),
               invoice.getDueDate());
 
-          moveValidateService.validateMove(move);
+          moveValidateService.validate(move);
 
           // Création de la réconciliation
           Reconcile reconcile =
@@ -410,7 +406,7 @@ public class MoveService {
           account,
           appAccountService.getTodayDate());
 
-      moveValidateService.validateMove(oDmove);
+      moveValidateService.validate(oDmove);
 
       // Création de la réconciliation
       Reconcile reconcile =
@@ -422,15 +418,18 @@ public class MoveService {
     return oDmove;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move) throws AxelorException {
+
+    LocalDate todayDate = appAccountService.getTodayDate();
+
     Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
             move.getCompany(),
             move.getCurrency(),
             move.getPartner(),
-            appAccountService.getTodayDate(),
+            todayDate,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
@@ -449,11 +448,11 @@ public class MoveService {
       MoveLine newMoveLine =
           moveLineService.createMoveLine(
               newMove,
-              newMove.getPartner(),
+              moveLine.getPartner(),
               moveLine.getAccount(),
               moveLine.getCurrencyAmount(),
               isDebit,
-              null,
+              todayDate,
               moveLine.getCounter(),
               moveLine.getName(),
               null);
@@ -475,5 +474,30 @@ public class MoveService {
                     I18n.get("%s account not found in move %s"),
                     account.getName(),
                     move.getReference()));
+  }
+
+  public Map<String, Object> computeTotals(Move move) {
+
+    Map<String, Object> values = new HashMap<>();
+    values.put("$totalLines", move.getMoveLineList().size());
+
+    BigDecimal totalDebit =
+        move.getMoveLineList()
+            .stream()
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalDebit", totalDebit);
+
+    BigDecimal totalCredit =
+        move.getMoveLineList()
+            .stream()
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCredit", totalCredit);
+
+    BigDecimal difference = totalDebit.subtract(totalCredit);
+    values.put("$difference", difference);
+
+    return values;
   }
 }

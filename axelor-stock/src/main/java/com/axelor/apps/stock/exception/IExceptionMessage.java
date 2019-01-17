@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,7 +50,7 @@ public interface IExceptionMessage {
       "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery" /*)*/;
 
   static final String LOCATION_LINE_2 = /*$$(*/
-      "Product's stocks %s (%s), tracking number {} are not in sufficient quantity to realize the delivery" /*)*/;
+      "Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the delivery" /*)*/;
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
@@ -81,7 +81,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_17 = /*$$(*/
       "Must set mass unit in stock configuration for customs." /*)*/;
   static final String STOCK_MOVE_18 = /*$$(*/
-      "All storable products must have net mass and mass unit information for customs." /*)*/;
+      "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
   static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
@@ -105,6 +105,8 @@ public interface IExceptionMessage {
    */
   String STOCK_MOVES_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following stock moves: %s" /*)*/;
+
+  String STOCK_MOVE_PRINT = /*$$(*/ "Please select the stock move(s) to print" /*)*/;
 
   /** Tracking Number Service */
   static final String TRACKING_NUMBER_1 = /*$$(*/
@@ -131,13 +133,19 @@ public interface IExceptionMessage {
 
   static final String LOCATION_2 = /*$$(*/ "Please select the Stock Location(s) to print." /*)*/;
 
+  static final String STOCK_LOCATION_PRINT_WIZARD_TITLE = /*$$(*/ "Select format to Export" /*)*/;
+
   /** Stock Move Line Service */
   static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
       /*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
 
+  static final String STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER =
+      /*$$(*/ "Please fill the tracking number for the product(s) : %s" /*)*/;
+
   static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/ "Expired product(s): %s" /*)*/;
+
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
-      "Please configure mass units for this product packaging : %s" /*)*/;
+      "Please configure mass units for this product packing : %s" /*)*/;
 
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
@@ -149,7 +157,7 @@ public interface IExceptionMessage {
       "Missing logistical form sequence for company %s" /*)*/;
   String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/ "Partner mismatch: %s" /*)*/;
   String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid dimensions on packaging line No. %d" /*)*/;
+      "Invalid dimensions on packing line No. %d" /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/ "Type is required on line %d." /*)*/;
   String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/
       "Stock move line is required on line %d." /*)*/;

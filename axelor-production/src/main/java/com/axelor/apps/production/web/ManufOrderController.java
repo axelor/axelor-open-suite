@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,15 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.CostSheetService;
-import com.axelor.apps.production.service.ManufOrderService;
-import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -33,12 +35,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -140,11 +144,25 @@ public class ManufOrderController {
   public void plan(ActionRequest request, ActionResponse response) {
 
     try {
-      Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
-
-      manufOrderWorkflowService.plan(manufOrder);
-
+      Context context = request.getContext();
+      List<ManufOrder> manufOrders = new ArrayList<>();
+      if (context.get("id") != null) {
+        Long manufOrderId = (Long) request.getContext().get("id");
+        manufOrders.add(manufOrderRepo.find(manufOrderId));
+      } else if (context.get("_ids") != null) {
+        manufOrders =
+            manufOrderRepo
+                .all()
+                .filter(
+                    "self.id in ?1 and self.statusSelect in (?2,?3)",
+                    context.get("_ids"),
+                    ManufOrderRepository.STATUS_DRAFT,
+                    ManufOrderRepository.STATUS_CANCELED)
+                .fetch();
+      }
+      for (ManufOrder manufOrder : manufOrders) {
+        manufOrderWorkflowService.plan(manufOrder);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -198,6 +216,9 @@ public class ManufOrderController {
             ReportFactory.createReport(IReport.MANUF_ORDER, name + "-${date}")
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
                 .addParam("ManufOrderId", manufOrderIds)
+                .addParam(
+                    "activateBarCodeGeneration",
+                    Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
                 .generate()
                 .getFileLink();
 
@@ -367,7 +388,12 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-      Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+
+      Beans.get(CostSheetService.class)
+          .computeCostPrice(
+              manufOrder,
+              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+              Beans.get(AppBaseService.class).getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

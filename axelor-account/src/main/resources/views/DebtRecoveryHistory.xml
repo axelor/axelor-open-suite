@@ -2,92 +2,67 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
-
-	<grid name="debt-recovery-history-line-grid" title="Debt recovery history"
-		model="com.axelor.apps.account.db.DebtRecoveryHistory">
-		<field name="debtRecovery" form-view="debt-recovery-form"
-			grid-view="debt-recovery-grid" />
-		<field name="debtRecovery.accountingSituation.partner"
-			form-view="partner-form" grid-view="partner-grid" />
-		<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid"
-			form-view="debt-recovery-method-form" />
-		<field name="setToIrrecoverableOK" />
-		<field name="unknownAddressOK" />
-		<field name="balanceDue" />
-		<field name="balanceDueDebtRecovery" />
-		<field name="referenceDate" />
-		<field name="userDebtRecovery" grid-view="user-grid" form-view="user-form" />
-		<field name="debtRecoveryDate" />
-		<field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid"
-			form-view="debt-recovery-method-line-form" />
-	</grid>
-
-	<form name="debt-recovery-history-form" title="Debt recovery history"
-		model="com.axelor.apps.account.db.DebtRecoveryHistory" width="large">
-		<panel name="partnerInformation" title="Partner information">
-			<field name="debtRecovery.accountingSituation.partner"
-				form-view="partner-form" grid-view="partner-grid" />
-			<spacer />
-			<field name="balanceDue" colSpan="3"/>
-			<field name="balanceDueDebtRecovery" colSpan="3"/>
-			<field name="referenceDate" colSpan="3"/>
-			<field name="debtRecoveryDate" colSpan="3"/>
-		</panel>
-		<panel name="debtRecoverySettings">
-			<field name="unknownAddressOK" widget="boolean-switch" colSpan="3"/>
-			<field name="setToIrrecoverableOK" widget="boolean-switch" colSpan="3"/>
-		</panel>
-		<panel name="debtRecoveryContent" title="Debt recovery content">
-			<panel-dashlet action="action.message.view.messages"
-				colSpan="12" title="Messages"/>
-		</panel>
-		<panel sidebar="true" canCollapse="true" name="caracteristics"
-			title="Caracteristics">
-			<field name="debtRecovery" form-view="debt-recovery-form"
-				grid-view="debt-recovery-grid" colSpan="6" />
-			<field name="userDebtRecovery" canNew="false" canEdit="false"
-				canView="false" grid-view="user-grid" form-view="user-form" colSpan="6" />
-			<field name="debtRecoveryMethod" widget="SuggestBox"
-				grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
-			<field name="debtRecoveryMethodLine" readonlyIf="debtRecoveryMethod == null"
-				domain="self.debtRecoveryMethod = :debtRecoveryMethod" grid-view="debt-recovery-method-line-grid"
-				form-view="debt-recovery-method-line-form" />
-		</panel>
+	
+    <grid name="debt-recovery-history-line-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
+    	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
+    	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
+    	<field name="setToIrrecoverableOK"/>
+    	<field name="unknownAddressOK"/>
+    	<field name="balanceDue"/>
+    	<field name="balanceDueDebtRecovery"/>
+    	<field name="referenceDate"/>
+        <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
+    	<field name="debtRecoveryDate"/>
+        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
+    </grid>
+    
+	<form name="debt-recovery-history-form" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" width="large">
+		<panel name="debtRecoverySettingsPanel" title="Debt recovery settings">
+        	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
+        	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
+        	<field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
+        	<field name="unknownAddressOK"/>
+        	<field name="setToIrrecoverableOK"/>
+    	</panel>
+    	<panel name="partnerInformationPanel" title="Partner information">
+        	<field name="debtRecovery.accountingSituation.partner" form-view="partner-form" grid-view="partner-grid"/>
+        	<field name="balanceDue"/>
+        	<field name="balanceDueDebtRecovery"/>
+        	<field name="referenceDate"/>
+        	<field name="debtRecoveryMethodLine" readonlyIf="debtRecoveryMethod == null" domain="self.debtRecoveryMethod = :debtRecoveryMethod" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
+        	<field name="debtRecoveryDate"/>
+    	</panel>
+    	<panel name="debtRecoveryContentPanel" title="Debt recovery content">
+			<panel-dashlet name="viewMessagesPanel" action="action.message.view.messages" colSpan="12"/>
+    	</panel>
 	</form>
-
-	<grid name="debt-recovery-history-contract-line-grid" title="Debt recovery history"
-		model="com.axelor.apps.account.db.DebtRecoveryHistory">
-		<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid"
-			form-view="debt-recovery-method-form" />
-		<field name="setToIrrecoverableOK" />
-		<field name="unknownAddressOK" />
-		<field name="balanceDue" />
-		<field name="balanceDueDebtRecovery" />
-		<field name="referenceDate" />
-		<field name="userDebtRecovery" grid-view="user-grid" form-view="user-form" />
-		<field name="debtRecoveryDate" />
-		<field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid"
-			form-view="debt-recovery-method-line-form" />
-	</grid>
-	<form name="debt-recovery-history-contract-line-form" title="Debt recovery history"
-		model="com.axelor.apps.account.db.DebtRecoveryHistory">
-		<panel name="main">
-			<field name="debtRecoveryMethod" widget="SuggestBox"
-				grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form" />
-			<field name="referenceDate" />
-			<field name="balanceDue" />
-			<field name="setToIrrecoverableOK" />
-			<field name="balanceDueDebtRecovery" />
-			<field name="unknownAddressOK" />
-			<field name="userDebtRecovery" canNew="false" canEdit="false"
-				canView="false" grid-view="user-grid" form-view="user-form" />
-			<field name="debtRecoveryDate" />
-			<field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid"
-				form-view="debt-recovery-method-line-form" />
-			<field name="debtRecoveryMessageSet" grid-view="message-grid"
-				form-view="message-form" />
-		</panel>
-
-	</form>
-
+    
+    <grid name="debt-recovery-history-contract-line-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
+       	<field name="debtRecoveryMethod"  grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
+    	<field name="setToIrrecoverableOK"/>
+    	<field name="unknownAddressOK"/>
+    	<field name="balanceDue"/>
+    	<field name="balanceDueDebtRecovery"/>
+    	<field name="referenceDate"/>
+        <field name="userDebtRecovery" grid-view="user-grid" form-view="user-form"/>
+    	<field name="debtRecoveryDate"/>
+        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
+    </grid>
+    <form name="debt-recovery-history-contract-line-form" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory"  >
+	    <panel name="mainPanel" >
+	    	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
+	        <field name="referenceDate"/>
+	        <field name="balanceDue"/>
+	        <field name="setToIrrecoverableOK"/>
+	        <field name="balanceDueDebtRecovery"/>
+	        <field name="unknownAddressOK"/>
+	        <field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
+	        <field name="debtRecoveryDate"/>
+	        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
+	        <field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form"/>
+	    </panel>
+	    
+    </form>
+    
 </object-views>

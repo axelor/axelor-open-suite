@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InventoryLineService {
 
@@ -41,13 +42,14 @@ public class InventoryLineService {
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    this.compute(inventoryLine, inventory);
 
     return inventoryLine;
   }
 
-  public InventoryLine updateInventoryLine(InventoryLine inventoryLine) {
+  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory) {
 
-    StockLocation stockLocation = inventoryLine.getInventory().getStockLocation();
+    StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
@@ -61,6 +63,33 @@ public class InventoryLineService {
       } else {
         inventoryLine.setCurrentQty(null);
         inventoryLine.setRack(null);
+      }
+    }
+
+    return inventoryLine;
+  }
+
+  public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory) {
+
+    StockLocation stockLocation = inventory.getStockLocation();
+    Product product = inventoryLine.getProduct();
+
+    if (product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+
+      BigDecimal gap =
+          inventoryLine.getRealQty() != null
+              ? inventoryLine
+                  .getCurrentQty()
+                  .subtract(inventoryLine.getRealQty())
+                  .setScale(2, RoundingMode.HALF_EVEN)
+              : BigDecimal.ZERO;
+      inventoryLine.setGap(gap);
+
+      if (stockLocationLine != null) {
+        inventoryLine.setGapValue(
+            stockLocationLine.getAvgPrice().multiply(gap).setScale(2, RoundingMode.HALF_EVEN));
       }
     }
 

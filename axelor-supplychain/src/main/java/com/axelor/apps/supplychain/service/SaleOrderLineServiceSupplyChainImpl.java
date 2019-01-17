@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -25,19 +26,20 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -56,105 +58,92 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       throws AxelorException {
     super.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
+
+    this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
   }
 
-  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public SaleOrderLine getAndComputeAnalyticDistribution(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
 
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+
+    saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (saleOrderLine.getAnalyticMoveLineList() != null) {
+      saleOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(saleOrderLine);
+
+    return saleOrderLine;
+  }
+
+  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) {
+
     List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
+
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      analyticMoveLineList =
-          analyticMoveLineService.generateLines(
-              saleOrder.getClientPartner(),
-              saleOrderLine.getProduct(),
-              saleOrder.getCompany(),
-              saleOrderLine.getExTaxTotal());
-      saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+      createAnalyticDistributionWithTemplate(saleOrderLine);
     }
     if (analyticMoveLineList != null) {
+      LocalDate date = appAccountService.getTodayDate();
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        this.updateAnalyticMoveLine(analyticMoveLine, saleOrderLine);
+        analyticMoveLineService.updateAnalyticMoveLine(
+            analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
       }
     }
     return saleOrderLine;
   }
 
-  public void updateAnalyticMoveLine(
-      AnalyticMoveLine analyticMoveLine, SaleOrderLine saleOrderLine) {
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
+        analyticMoveLineService.generateLines(
+            saleOrderLine.getAnalyticDistributionTemplate(),
+            saleOrderLine.getCompanyExTaxTotal(),
+            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
+            appAccountService.getTodayDate());
 
-    analyticMoveLine.setSaleOrderLine(saleOrderLine);
-    analyticMoveLine.setAmount(analyticMoveLineService.computeAmount(analyticMoveLine));
-    analyticMoveLine.setDate(appAccountService.getTodayDate());
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
-  }
-
-  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine)
-      throws AxelorException {
-    List<AnalyticMoveLine> analyticMoveLineList = null;
-    analyticMoveLineList =
-        analyticMoveLineService.generateLinesWithTemplate(
-            saleOrderLine.getAnalyticDistributionTemplate(), saleOrderLine.getExTaxTotal());
-    if (analyticMoveLineList != null) {
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLine.setSaleOrderLine(saleOrderLine);
-      }
-    }
     saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return saleOrderLine;
   }
 
   @Override
-  public BigDecimal getAvailableStock(SaleOrderLine saleOrderLine) {
-    QueryBuilder<StockLocationLine> queryBuilder = QueryBuilder.of(StockLocationLine.class);
-    queryBuilder.add("self.stockLocation = :stockLocation");
-    queryBuilder.add("self.product = :product");
-    queryBuilder.bind("stockLocation", saleOrderLine.getSaleOrder().getStockLocation());
-    queryBuilder.bind("product", saleOrderLine.getProduct());
-    StockLocationLine stockLocationLine = queryBuilder.build().fetchOne();
+  public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+
     if (stockLocationLine == null) {
       return BigDecimal.ZERO;
     }
-
     return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-  }
-
-  @Transactional
-  public void changeReservedQty(SaleOrderLine saleOrderLine, BigDecimal reservedQty) {
-    saleOrderLine.setReservedQty(reservedQty);
-    Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
   }
 
   @Override
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    Preconditions.checkNotNull(saleOrder);
-    Product product = saleOrderLine.getProduct();
-    BigDecimal deliveredQty =
-        product != null
-            ? saleOrder
-                .getSaleOrderLineList()
-                .stream()
-                .filter(line -> product.equals(line.getProduct()))
-                .reduce(
-                    BigDecimal.ZERO,
-                    (qty, line) -> qty.add(line.getDeliveredQty()),
-                    BigDecimal::add)
-            : BigDecimal.ZERO;
 
-    return saleOrderLine.getQty().subtract(deliveredQty);
+    BigDecimal undeliveryQty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
+
+    if (undeliveryQty.signum() > 0) {
+      return undeliveryQty;
+    }
+    return BigDecimal.ZERO;
   }
 
   @Override
   public List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine) {
     Product product = saleOrderLine.getProduct();
-    if (product == null || product.getSupplierCatalogList() == null) {
+    if (!Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        || product == null
+        || product.getSupplierCatalogList() == null) {
       return new ArrayList<>();
     }
     return product

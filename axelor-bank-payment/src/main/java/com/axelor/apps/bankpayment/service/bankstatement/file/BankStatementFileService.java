@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankstatement.file;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
@@ -31,11 +31,11 @@ public abstract class BankStatementFileService {
   protected File file;
   protected String bankStatementFileFormat;
 
-  protected BankStatementRepository bankStatementRepository;
+  protected final BankStatementService bankStatementService;
 
   @Inject
-  public BankStatementFileService(BankStatementRepository bankStatementRepository) {
-    this.bankStatementRepository = bankStatementRepository;
+  public BankStatementFileService(BankStatementService bankStatementService) {
+    this.bankStatementService = bankStatementService;
   }
 
   public void setBankStatement(BankStatement bankStatement) {
@@ -58,5 +58,10 @@ public abstract class BankStatementFileService {
     if (bankStatement == null) {
       throw new IllegalStateException("Bank statement is not set.");
     }
+  }
+
+  protected BankStatement findBankStatement() {
+    bankStatement = bankStatementService.find(bankStatement);
+    return bankStatement;
   }
 }

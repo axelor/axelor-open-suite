@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -149,7 +149,7 @@ public class AdvancedExportController {
         response.setValue("metaField", null);
       } else {
         response.setAttr("metaField", "readonly", true);
-        response.setAttr("validateFieldSelection", "readonly", true);
+        response.setAttr("validateFieldSelectionBtn", "readonly", true);
         response.setAttr("$viewerMessage", "hidden", false);
         response.setAttr("$isValidate", "value", true);
       }

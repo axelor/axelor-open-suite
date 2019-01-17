@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -41,19 +41,24 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -64,6 +69,8 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -78,9 +85,10 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
   protected EbicsService ebicsService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
+  protected BankOrderLineOriginService bankOrderLineOriginService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -88,17 +96,19 @@ public class BankOrderServiceImpl implements BankOrderService {
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
       EbicsService ebicsService,
-      InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      BankOrderLineOriginService bankOrderLineOriginService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderLineService = bankOrderLineService;
     this.ebicsService = ebicsService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
+    this.bankOrderLineOriginService = bankOrderLineOriginService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -249,22 +259,38 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePayment(BankOrder bankOrder) {
+  public void validatePayment(BankOrder bankOrder) throws AxelorException {
 
-    InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
-    if (invoicePayment != null) {
-      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-      invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
+    List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
+
+    InvoicePaymentValidateServiceBankPayImpl invoicePaymentValidateServiceBankPayImpl =
+        Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
+
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (invoicePayment != null
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
+          && invoicePayment.getInvoice() != null) {
+
+        if (bankOrderLineOriginService.existBankOrderLineOrigin(
+            bankOrder, invoicePayment.getInvoice())) {
+
+          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+        }
+      }
     }
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelPayment(BankOrder bankOrder) {
-    InvoicePayment invoicePayment = invoicePaymentRepo.findByBankOrder(bankOrder).fetchOne();
-    if (invoicePayment != null) {
-      invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
-      invoicePaymentToolService.updateHasPendingPayments(invoicePayment.getInvoice());
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
+
+    List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
+
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (invoicePayment != null
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+        invoicePaymentCancelService.cancel(invoicePayment);
+      }
     }
   }
 
@@ -311,6 +337,12 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+
+    if (bankPaymentConfigService
+        .getBankPaymentConfig(bankOrder.getSenderCompany())
+        .getGenerateMoveOnBankOrderValidation()) {
+      validatePayment(bankOrder);
+    }
 
     bankOrderRepo.save(bankOrder);
   }
@@ -422,8 +454,12 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void cancelBankOrder(BankOrder bankOrder) {
+  public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
+
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
+
+    this.cancelPayment(bankOrder);
+
     bankOrderRepo.save(bankOrder);
   }
 
@@ -444,28 +480,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   public String createDomainForBankDetails(BankOrder bankOrder) {
-    String domain = "";
-    if (bankOrder.getSenderCompany() != null) {
 
-      String bankDetailsIds =
-          StringTool.getIdListString(bankOrder.getSenderCompany().getBankDetailsSet());
+    String domain =
+        Beans.get(BankDetailsService.class)
+            .getActiveCompanyBankDetails(bankOrder.getSenderCompany());
 
-      if (bankOrder.getSenderCompany().getDefaultBankDetails() != null) {
-        bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
-        bankDetailsIds += bankOrder.getSenderCompany().getDefaultBankDetails().getId().toString();
-      }
-      if (bankDetailsIds.equals("")) {
-        return "";
-      }
-      domain = "self.id IN(" + bankDetailsIds + ")";
-    }
-
-    if (domain.equals("")) {
-      return domain;
-    }
-
-    // filter the result on active bank details
-    domain += " AND self.active = true";
     // filter on the bank details identifier type from the bank order file
     // format
     if (bankOrder.getBankOrderFileFormat() != null) {
@@ -712,5 +731,89 @@ public class BankOrderServiceImpl implements BankOrderService {
       User signatoryUser = ebicsUser.getAssociatedUser();
       Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
     }
+  }
+
+  @Override
+  public void resetReceivers(BankOrder bankOrder) {
+    if (ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())) {
+      return;
+    }
+
+    resetPartners(bankOrder);
+    resetBankDetails(bankOrder);
+  }
+
+  private void resetPartners(BankOrder bankOrder) {
+    if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        bankOrderLine.setPartner(null);
+      }
+
+      return;
+    }
+
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      bankOrderLine.setReceiverCompany(null);
+      Partner partner = bankOrderLine.getPartner();
+
+      if (partner == null) {
+        continue;
+      }
+
+      boolean keep;
+
+      switch (bankOrder.getPartnerTypeSelect()) {
+        case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
+          keep = partner.getIsSupplier();
+          break;
+        case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
+          keep = partner.getIsEmployee();
+          break;
+        case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
+          keep = partner.getIsCustomer();
+          break;
+        default:
+          keep = false;
+      }
+
+      if (!keep) {
+        bankOrderLine.setPartner(null);
+      }
+    }
+  }
+
+  private void resetBankDetails(BankOrder bankOrder) {
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      if (bankOrderLine.getReceiverBankDetails() == null) {
+        continue;
+      }
+
+      Collection<BankDetails> bankDetailsCollection;
+
+      if (bankOrderLine.getReceiverCompany() != null) {
+        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+      } else if (bankOrderLine.getPartner() != null) {
+        bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
+      } else {
+        bankDetailsCollection = Collections.emptyList();
+      }
+
+      if (ObjectUtils.isEmpty(bankDetailsCollection)
+          || !bankDetailsCollection.contains(bankOrderLine.getReceiverBankDetails())) {
+        bankOrderLine.setReceiverBankDetails(null);
+      }
+    }
+  }
+
+  @Override
+  public ActionViewBuilder buildBankOrderLineView(
+      String gridViewName, String formViewName, String viewDomain) {
+    ActionViewBuilder actionViewBuilder =
+        ActionView.define(I18n.get("Bank Order Lines"))
+            .model(BankOrderLine.class.getName())
+            .add("grid", gridViewName)
+            .add("form", formViewName)
+            .domain(viewDomain);
+    return actionViewBuilder;
   }
 }

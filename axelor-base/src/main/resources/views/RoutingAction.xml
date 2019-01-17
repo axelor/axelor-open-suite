@@ -10,7 +10,7 @@
 	</grid>
 	
 	<form name="routing-action-form" title="Routing action" model="com.axelor.apps.base.db.RoutingAction">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="relatedToFilter1" colSpan="12"/>
 			<field name="relatedToFilter2" colSpan="12"/>
 			<field name="routingActionCreate" colSpan="12" form-view="routing-action-create-form" grid-view="routing-action-create-grid"/>

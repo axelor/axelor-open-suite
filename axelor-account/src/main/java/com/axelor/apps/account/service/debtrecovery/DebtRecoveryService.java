@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -464,7 +464,7 @@ public class DebtRecoveryService {
           debtRecoverySessionService.debtRecoverySession(debtRecovery);
         }
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
-          // Si le niveau de relance à évolué
+          // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel() != null
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()

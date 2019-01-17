@@ -19,6 +19,12 @@
 		<option value="4">Canceled</option>
 	</selection>
 	
+	<selection name="stock.stock.move.available.status.select">
+		<option value="1">Available</option>
+		<option value="2">Partially available</option>
+		<option value="3">Unavailable</option>
+	</selection>
+	
 	<selection name="inventory.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Planned</option>
@@ -54,6 +60,12 @@
 		<option value="1"></option>
 		<option value="2">Compliant</option>
 		<option value="3">Non-compliant</option>
+	</selection>
+	
+	<selection name="stock.move.line.available.status.select">
+		<option value="1">Available</option>
+		<option value="2">Av. for product</option>
+		<option value="3">Missing</option>
 	</selection>
 	
 	<selection name="rating.icon.select">
@@ -108,11 +120,11 @@
 	</selection>
 
 	<selection name="stockmove.origin.select">
-		<option value="com.axelor.apps.stock.db.Inventory">Inventory</option>
-		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
-		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-		<option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+		<option value="com.axelor.apps.stock.db.Inventory" data-grid="inventory-grid" data-form="inventory-form">Inventory</option>
+		<option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid" data-form="sale-order-form">Sale order</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
+		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
+		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
 	</selection>
 
 </object-views>

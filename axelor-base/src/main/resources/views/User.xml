@@ -16,42 +16,42 @@
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
     onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode">
-    	<panel name="main" sidebar="true">
+    	<panel name="mainPanel" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
-	        <button name="createEmployee"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
+	        <button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
         </panel>
-		<panel name="testing" title="Testing" sidebar="true" hidden="true">
+		<panel name="testingPanel" title="Testing" sidebar="true" hidden="true">
 			<field name="today"/>
 		</panel>
 
         <!-- from axelor-core -->
-        <panel title="Overview">
+        <panel name="overviewPanel" title="Overview">
           <field name="name" placeholder="user name" onChange="action-condition-user-validName" validIf="name.length >= 2"/>
           <field name="code" placeholder="login name" onChange="action-condition-user-validCode" validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
           <field name="group" placeholder="user group"/>
           <field name="email" widget="Email" hidden="true"/>
           <field name="language"/>
           <field name="theme" widget="theme-select"/>
-          <panel stacked="true">
+          <panel name="actionsPanel" stacked="true">
             <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
             <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false" target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.home = true"/>
           </panel>
           <field name="singleTab" widget="inline-checkbox" />
           <field name="noHelp" widget="inline-checkbox" />
         </panel>
-        <panel title="Authorization">
+        <panel name="authorizationPanel" title="Authorization">
           <field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
           <field name="expiresOn" validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
           <field name="blocked"/>
           <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
-          <panel showIf="change || !id" colSpan="12" itemSpan="12">
+          <panel showIf="change || !id" colSpan="12" itemSpan="12" name="allPasswordsPanel">
             <field name="oldPassword" title="Your password" placeholder="your password" widget="password" requiredIf="change || !id"/>
             <panel name="passwordPanel" itemSpan="12">
               <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change || !id" validIf="(!change &amp;&amp; id) || newPassword.length >= 4" onChange="action-user-validate-password"/>
               <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
-              <label name="passwordPatternDescription" css="label-danger"/>
+              <label name="passwordPatternDescriptionLabel" css="label-danger"/>
             </panel>
             <panel name="passwordOptionsPanel" showIf="code != $user">
               <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -59,16 +59,16 @@
             </panel>
           </panel>
         </panel>
-        <panel-tabs>
-          <panel-related field="roles" form-view="role-form" grid-view="role-grid"/>
-          <panel-related field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
-          <panel-related field="metaPermissions"/>
+        <panel-tabs name="PermisionsPanelTab">
+          <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid"/>
+          <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
+          <panel-related name="metaPermissionsPanel" field="metaPermissions"/>
         </panel-tabs>
         <!-- /from axelor-core -->
 
-        <panel-tabs>
-    		<panel name="contactInformation" title="Contact Information" showIf="id">
-      			<button name="partner" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
+        <panel-tabs name="mainPanelTab">
+    		<panel name="contactInformationPanel" title="Contact Information" showIf="id">
+      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
       			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true" form-view="partner-employee-form" grid-view="partner-employee-grid">
         			<editor x-viewer="true">
           				<field name="fullName" readonly="true"/>
@@ -79,43 +79,43 @@
         			</editor>
       			</field>
     		 </panel>
-        	 <panel-related title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
-        	 <panel name="teams" title="Teams" if="__config__.app.getApp('base').getTeamManagement()">
-        		<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+        	 <panel-related name="companySetPanel" title="Internal companies" field="companySet" showTitle="false" canNew="false"/>
+        	 <panel name="teamsPanel" title="Teams" if="__config__.app.getApp('base').getTeamManagement()">
+				<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid" onSelect="action-user-attrs-domain-active-team"/>
         		<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
-        	<panel name="calendarsConfiguration" title="Calendars Configuration">
-        		<panel-related field="followersCalUserSet" canEdit="false" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
-        		<panel-related field="calendarManagementList" colSpan="12"/>
+        	<panel name="calendarsConfigPanel" title="Calendars Configuration">
+        		<panel-related name="followersCalUserSetPanel" field="followersCalUserSet" canEdit="false" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
+        		<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
-		    <panel name="electronicSignature" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')">
+		    <panel name="electronicSignaturePanel" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')">
 		    	<field name="electronicSignature" widget="Image" />
 					<field name="useSignatureForQuotations" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')"/>
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
-		    <panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
+		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         </panel-tabs>
 
-        <panel hidden="true" colSpan="12">
+        <panel name="transientPasswordPanel" hidden="true" colSpan="12">
           <field name="transientPassword"/>
         </panel>
     </form>
 
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User" 
         onSave="com.axelor.apps.base.web.UserController:validate" onNew="action-user-attrs" onLoad="action-user-attrs">
-		<panel name="userPreferences" title="User preferences" itemSpan="12">
+		<panel name="userPreferencesPanel" title="User preferences" itemSpan="12">
 			<field name="image" showTitle="false"/>
 			<field name="language"/>
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<field name="singleTab" widget="inline-checkbox"/>
 			<field name="change" title="Change password?" widget="inline-checkbox"/>
-			<panel showIf="change" itemSpan="12">
+			<panel name="allPasswordsPanel" showIf="change" itemSpan="12">
 				<field name="oldPassword" title="Current password" placeholder="current password" widget="password" requiredIf="change" />
                 <panel name="passwordPanel" itemSpan="12">
                   <field name="newPassword" title="New password" placeholder="new password" widget="password" requiredIf="change" validIf="!change || newPassword.length >= 4"/>
                   <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change" validIf="chkPassword === newPassword"/>
-                  <label name="passwordPatternDescription" css="label-italic"/>
+                  <label name="passwordPatternDescriptionLabel" css="label-italic"/>
                 </panel>
                 <panel name="passwordOptionsPanel" hidden="true">
                   <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
@@ -126,15 +126,15 @@
 			<field name="theme" widget="theme-select"/>
 			<field name="noHelp"/>
 			<field name="iCalendar" canNew="true" canEdit="true"/>
-			<panel-related title="Internal companies" field="companySet" hidden="true"/>
+			<panel-related name="companySetPanel" title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
-			<panel-related field="calendarManagementList" colSpan="12"/>
+			<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
 			<field name="receiveEmails"/>
 			<field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
-			<panel-related field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
+			<panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
 		</panel>
 
-        <panel hidden="true" colSpan="12">
+        <panel hidden="true" colSpan="12" name="transientPasswordPanel">
           <field name="transientPassword"/>
         </panel>
 	</form>
@@ -152,12 +152,16 @@
   		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany" if="companySet ?: false" />
     </action-attrs>
 
+    <action-attrs name="action-user-attrs-domain-active-team">
+		<attribute name="domain" expr="eval: &quot; self.id IN (${(teamSet?.collect{it.id}+[0]).join(',')}) &quot; " for="activeTeam" />
+    </action-attrs>
+
     <action-attrs name="action-user-attrs">
       <attribute name="hidden" for="email" expr="partner"/>
       <attribute name="hidden" for="passwordPanel" expr="false"/>
       <attribute name="required" for="partner.emailAddress" expr="sendEmailUponPasswordChange"/>
       <attribute name="value" for="$generateRandomPassword" expr="false"/>
-      <attribute name="title" for="passwordPatternDescription"
+      <attribute name="title" for="passwordPatternDescriptionLabel"
         expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     </action-attrs>
 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
+    	<field name="depreciationDate"/>
+    	<field name="depreciation"/>
+    	<field name="cumulativeDepreciation"/>
+    	<field name="residualValue"/>
+    	<field name="statusSelect"/>
+    	<field name="fixedAsset.statusSelect" hidden="true"/>
+    	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    </grid>
+    
+    <form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" 
+    	onNew="action-fixed-asset-line-record-default,action-fixed-asset-line-attrs-onnew-onload" onLoad="action-fixed-asset-line-attrs-onnew-onload">
+    	<panel>
+    		<panel name="statusSelectPanel" colSpan="12">
+				<field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false" colSpan="12"/>
+			</panel>
+	        <panel name="mainPanel" colSpan="12">
+	        	<field name="depreciationDate"/>
+	        	<field name="depreciation"/>
+	        	<field name="cumulativeDepreciation"/>
+	        	<field name="residualValue"/>
+	        	<field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	        </panel>
+	        <panel name="actionsPanel" hideIf="statusSelect == 2">
+		    	<button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>	
+		    </panel>
+        </panel>
+    </form>
+    
+    <action-record name="action-fixed-asset-line-record-default" model="com.axelor.apps.account.db.FixedAssetLine">
+    	<field name="statusSelect" expr="1"/>
+    	<field name="depreciationDate" expr="eval: __date__"/>
+    </action-record>
+    
+    <action-attrs name="action-fixed-asset-line-attrs-onnew-onload">
+    	<attribute name="readonly" for="realizeBtn" expr="eval: _parent?.statusSelect &lt; 2"/>
+    </action-attrs>
+    
+    <action-method name="action-fixed-asset-line-method-realize">
+    	<call class="com.axelor.apps.account.web.FixedAssetLineController" method="realize"/>
+    </action-method>
+    
+</object-views>

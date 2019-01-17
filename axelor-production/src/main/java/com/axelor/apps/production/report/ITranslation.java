@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -57,9 +57,15 @@ public interface ITranslation {
       "OperationOrder.trackingNumber"; /*)*/
   public static final String OPERATION_ORDER_NUM = /*$$(*/ "OperationOrder.num"; /*)*/
 
+  public static final String WORK_IN_PROGRESS_VALUATION_TITLE = /*$$(*/
+      "WorkInProgressValuation.title"; /*)*/
+
+  public static final String MANUF_ORDER_COMPANY = /*$$(*/ "ManufOrder.company"; /*)*/
   public static final String MANUF_ORDER_TITLE = /*$$(*/ "ManufOrder.title"; /*)*/
   public static final String MANUF_ORDER_PLANNED_START_DATE = /*$$(*/
       "ManufOrder.plannedStartDate"; /*)*/
+  public static final String MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+      "ManufOrder.plannedEndDate"; /*)*/
   public static final String MANUF_ORDER_PRODUCT = /*$$(*/ "ManufOrder.product"; /*)*/
   public static final String MANUF_ORDER_QUANTITY = /*$$(*/ "ManufOrder.quantity"; /*)*/
   public static final String MANUF_ORDER_ORIGIN = /*$$(*/ "ManufOrder.origin"; /*)*/
@@ -73,10 +79,12 @@ public interface ITranslation {
   public static final String MANUF_ORDER_FORECAST = /*$$(*/ "ManufOrder.forecast"; /*)*/
   public static final String MANUF_ORDER_EFFECTIVE = /*$$(*/ "ManufOrder.effective"; /*)*/
   public static final String MANUF_ORDER_NUM = /*$$(*/ "ManufOrder.num"; /*)*/
+  public static final String MANUF_ORDER_SEQ = /*$$(*/ "ManufOrder.seq"; /*)*/
   public static final String MANUF_ORDER_MACHINE = /*$$(*/ "ManufOrder.machine"; /*)*/
   public static final String MANUF_ORDER_OPERATION = /*$$(*/ "ManufOrder.operation"; /*)*/
   public static final String MANUF_ORDER_START_DATE = /*$$(*/ "ManufOrder.startDate"; /*)*/
   public static final String MANUF_ORDER_END_DATE = /*$$(*/ "ManufOrder.endDate"; /*)*/
+  public static final String MANUF_ORDER_EDITION_DATE = /*$$(*/ "ManufOrder.editionDate"; /*)*/
   public static final String MANUF_ORDER_STATUS = /*$$(*/ "ManufOrder.status"; /*)*/
   public static final String MANUF_ORDER_PRODUCTS_TO_PREPARE = /*$$(*/
       "ManufOrder.productsToPrepare"; /*)*/
@@ -90,7 +98,13 @@ public interface ITranslation {
   public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
   public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
   public static final String MANUF_ORDER_STOCK_LOCATION = /*$$(*/ "ManufOrder.stockLocation"; /*)*/
+  public static final String MANUF_ORDER_NO_LOCATION = /*$$(*/ "ManufOrder.noLocation"; /*)*/
   public static final String MANUF_ORDER_RACK = /*$$(*/ "ManufOrder.rack"; /*)*/
+  public static final String MANUF_ORDER_WORK_CENTER = /*$$(*/ "ManufOrder.workCenter"; /*)*/
+  public static final String MANUF_COST_PRICE = /*$$(*/ "ManufOrder.costPrice"; /*)*/
+  public static final String MANUF_ORDER_IN_PROGRESS = /*$$(*/ "ManufOrder.inProgress"; /*)*/
+  public static final String MANUF_ORDER_STANDBY = /*$$(*/ "ManufOrder.standBy"; /*)*/
+  public static final String MANUF_ORDER_COMPANY_TOTAL = /*$$(*/ "ManufOrder.total"; /*)*/
 
   public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
   public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
@@ -145,4 +159,39 @@ public interface ITranslation {
   String RAW_MATERIAL_REQUIREMENT_MISSING_QUANTITY = /*$$(*/
       "RawMaterialRequirement.missingQuantity"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_AVAILABLE = /*$$(*/ "RawMaterialRequirement.available"; /*)*/
+
+  public static final String COST_SHEET_TITLE = /*$$(*/ "CostSheet.title"; /*)*/
+  public static final String COST_SHEET_COST_PRICE = /*$$(*/ "CostSheet.costPrice"; /*)*/
+  public static final String COST_SHEET_COMPANY = /*$$(*/ "CostSheet.company"; /*)*/
+  public static final String COST_SHEET_MANUF_ORDER = /*$$(*/ "CostSheet.manufOrder"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINES = /*$$(*/ "CostSheet.costSheetLines"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_CODE = /*$$(*/
+      "CostSheet.costSheetLineCode"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_NAME = /*$$(*/
+      "CostSheet.costSheetLineName"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_BOM_LEVEL = /*$$(*/
+      "CostSheet.costSheetLineBomLevel"; /*)*/
+  public static final String COST_SHEET_GROUP = /*$$(*/
+      "CostSheet.costSheetLineCostSheetGroup"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_CONSUMPTION_QTY = /*$$(*/
+      "CostSheet.costSheetLineConsumptionQty"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_UNIT = /*$$(*/
+      "CostSheet.costSheetLineUnit"; /*)*/
+  public static final String COST_SHEET_CREATED_ON = /*$$(*/ "CostSheet.createdOn"; /*)*/
+  public static final String COST_SHEET_CREATED_BY = /*$$(*/ "CostSheet.createdBy"; /*)*/
+  public static final String COST_SHEET_DATE_OF_EDITION = /*$$(*/ "CostSheet.dateOfEdition"; /*)*/
+  public static final String COST_SHEET_MO_NUMBER = /*$$(*/ "CostSheet.ManufOrderNumber"; /*)*/
+  public static final String COST_SHEET_BILL_OF_MATERIAL = /*$$(*/ "CostSheet.billOfMaterial"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE = /*$$(*/ "CostSheet.lineType"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_PRODUCE_PRODUCT = /*$$(*/
+      "CostSheet.lineTypeProduceProduct"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_CONSUME_PRODUCT = /*$$(*/
+      "CostSheet.lineTypeConsumeProduct"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_WORK_CENTER = /*$$(*/
+      "CostSheet.lineTypeWorkCenter"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_INDIRECT_COST = /*$$(*/
+      "CostSheet.lineTypeIndirectCost"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_CONSUME_PRODUCT_WASTE = /*$$(*/
+      "CostSheet.lineTypeConsumeProductWaste"; /*)*/
+  public static final String COST_SHEET_CURRENCY = /*$$(*/ "CostSheet.currency"; /*)*/
 }

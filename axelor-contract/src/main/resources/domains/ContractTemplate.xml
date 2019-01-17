@@ -29,6 +29,7 @@
 		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
 		<boolean name="isWithPriorNotice" title="With prior notice"/>
 		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		<boolean name="isAutoEnableVersionOnRenew" title="Auto enable version on renew"/>
 
 		<date name="firstPeriodEndDate" title="First period end date"/>
 
@@ -42,6 +43,7 @@
 
 		<one-to-many name="additionalBenefitContractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
 		<one-to-many name="contractLineList" ref="com.axelor.apps.contract.db.ContractLine" title="Invoicing content"/>
+		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
 
 	</entity>
 

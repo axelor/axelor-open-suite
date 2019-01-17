@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,11 +21,13 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -73,21 +75,17 @@ public class PurchaseOrderLineController {
       PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
       Product product = purchaseOrderLine.getProduct();
 
+      this.resetProductInformation(response);
+      response.setValues(service.reset(purchaseOrderLine));
+
       if (purchaseOrder == null || product == null) {
-        response.setValues(service.reset(purchaseOrderLine));
-        this.resetProductInformation(response);
         return;
       }
 
-      try {
-        purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-        service.fill(purchaseOrderLine, product);
-        response.setValues(purchaseOrderLine);
-      } catch (Exception e) {
-        response.setValues(service.reset(purchaseOrderLine));
-        this.resetProductInformation(response);
-        TraceBackService.trace(response, e);
-      }
+      purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+      service.fill(purchaseOrderLine, purchaseOrder);
+      response.setValues(purchaseOrderLine);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -119,7 +117,7 @@ public class PurchaseOrderLineController {
                 purchaseOrderLine.getTaxLine().getTax()));
   }
 
-  public void getDiscount(ActionRequest request, ActionResponse response) {
+  public void updateProductInformation(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
@@ -134,36 +132,74 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
 
-      Map<String, Object> discounts;
-      if (purchaseOrderLine.getProduct().getInAti()) {
-        discounts =
-            purchaseOrderLineService.getDiscount(
-                purchaseOrder, purchaseOrderLine, purchaseOrderLine.getInTaxPrice());
-      } else {
-        discounts =
-            purchaseOrderLineService.getDiscount(
-                purchaseOrder, purchaseOrderLine, purchaseOrderLine.getPrice());
-      }
+      BigDecimal price =
+          purchaseOrderLine.getProduct().getInAti()
+              ? purchaseOrderLineService.getInTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine())
+              : purchaseOrderLineService.getExTaxUnitPrice(
+                  purchaseOrder, purchaseOrderLine, purchaseOrderLine.getTaxLine());
 
-      if (discounts != null) {
-        response.setValue("discountAmount", discounts.get("discountAmount"));
-        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-        if (discounts.get("price") != null) {
-          if (purchaseOrderLine.getProduct().getInAti()) {
-            response.setValue("inTaxPrice", discounts.get("price"));
-            response.setValue(
-                "price",
-                purchaseOrderLineService.convertUnitPrice(
-                    true, purchaseOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          } else {
-            response.setValue("price", discounts.get("price"));
-            response.setValue(
-                "inTaxPrice",
-                purchaseOrderLineService.convertUnitPrice(
-                    false, purchaseOrderLine.getTaxLine(), (BigDecimal) discounts.get("price")));
-          }
+      Map<String, Object> catalogInfo =
+          purchaseOrderLineService.updateInfoFromCatalog(purchaseOrder, purchaseOrderLine);
+
+      if (catalogInfo != null) {
+        if (catalogInfo.get("price") != null) {
+          price = (BigDecimal) catalogInfo.get("price");
+        }
+        response.setValue("productName", catalogInfo.get("productName"));
+        response.setValue("productCode", catalogInfo.get("productCode"));
+      } else {
+        Product product = purchaseOrderLine.getProduct();
+        if (product != null) {
+          price = product.getPurchasePrice();
+          response.setValue("productName", product.getName());
+          response.setValue("productCode", product.getCode());
         }
       }
+
+      Map<String, Object> discounts =
+          purchaseOrderLineService.getDiscountsFromPriceLists(
+              purchaseOrder, purchaseOrderLine, price);
+
+      if (discounts != null) {
+        if (discounts.get("price") != null) {
+          price = (BigDecimal) discounts.get("price");
+        }
+        if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()
+            && (Integer) discounts.get("discountTypeSelect")
+                != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+          response.setValue(
+              "discountAmount",
+              purchaseOrderLineService.convertUnitPrice(
+                  purchaseOrderLine.getProduct().getInAti(),
+                  purchaseOrderLine.getTaxLine(),
+                  (BigDecimal) discounts.get("discountAmount")));
+        } else {
+          response.setValue("discountAmount", discounts.get("discountAmount"));
+        }
+        response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+      }
+
+      if (price.compareTo(
+              purchaseOrderLine.getProduct().getInAti()
+                  ? purchaseOrderLine.getInTaxPrice()
+                  : purchaseOrderLine.getPrice())
+          != 0) {
+        if (purchaseOrderLine.getProduct().getInAti()) {
+          response.setValue("inTaxPrice", price);
+          response.setValue(
+              "price",
+              purchaseOrderLineService.convertUnitPrice(
+                  true, purchaseOrderLine.getTaxLine(), price));
+        } else {
+          response.setValue("price", price);
+          response.setValue(
+              "inTaxPrice",
+              purchaseOrderLineService.convertUnitPrice(
+                  false, purchaseOrderLine.getTaxLine(), price));
+        }
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -226,7 +262,8 @@ public class PurchaseOrderLineController {
     if (purchaseOrder == null
         || purchaseOrderLine.getProduct() == null
         || purchaseOrderLine.getPrice() == null
-        || purchaseOrderLine.getInTaxPrice() == null) {
+        || purchaseOrderLine.getInTaxPrice() == null
+        || purchaseOrderLine.getTaxLine() == null) {
       return;
     }
 
@@ -310,7 +347,8 @@ public class PurchaseOrderLineController {
     Company company = purchaseOrder.getCompany();
 
     String domain = "";
-    if (purchaseOrderLine.getProduct() != null
+    if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
+        && purchaseOrderLine.getProduct() != null
         && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
       domain +=
           "self.id != "
@@ -336,6 +374,8 @@ public class PurchaseOrderLineController {
     } else {
       domain += "self.id = 0";
     }
+
+    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
 
     response.setAttr("supplierPartner", "domain", domain);
   }

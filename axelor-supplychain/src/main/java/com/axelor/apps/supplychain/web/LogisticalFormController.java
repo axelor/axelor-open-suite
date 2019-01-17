@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,10 +36,10 @@ public class LogisticalFormController {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 
       String name =
-          String.format("%s %s", I18n.get("Packaging list"), logisticalForm.getDeliveryNumber());
+          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumber());
 
       String fileLink =
-          ReportFactory.createReport(IReport.PACKAGING_LIST, name + " - ${date}")
+          ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
               .addParam("LogisticalFormId", logisticalForm.getId())
               .addParam(
                   "Locale",

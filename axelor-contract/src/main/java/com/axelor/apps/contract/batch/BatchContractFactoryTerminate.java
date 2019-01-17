@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
         .all()
         .filter(
             "(self.terminatedDate <= :date "
-                + " OR self.currentVersion.supposedEndDate <= :date)"
+                + " OR self.currentContractVersion.supposedEndDate <= :date)"
                 + " AND self.statusSelect = :status"
                 + " AND :batch NOT MEMBER of self.batchSet")
         .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,22 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -34,6 +44,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -44,30 +55,33 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
     SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
-
+    Company intercoCompany = findIntercoCompany(purchaseOrder.getSupplierPartner());
     // create sale order
     SaleOrder saleOrder =
         saleOrderCreateService.createSaleOrder(
             null,
-            findIntercoCompany(purchaseOrder.getSupplierPartner()),
+            intercoCompany,
             purchaseOrder.getContactPartner(),
             purchaseOrder.getCurrency(),
             purchaseOrder.getDeliveryDate(),
@@ -77,6 +91,9 @@ public class IntercoServiceImpl implements IntercoService {
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
             null);
+
+    // in ati
+    saleOrder.setInAti(purchaseOrder.getInAti());
 
     // copy date
     saleOrder.setOrderDate(purchaseOrder.getOrderDate());
@@ -89,9 +106,12 @@ public class IntercoServiceImpl implements IntercoService {
 
     // copy delivery info
     saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
-    saleOrder.setStockLocation(purchaseOrder.getStockLocation());
     saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
     saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
+
+    // get stock location
+    saleOrder.setStockLocation(
+        Beans.get(StockLocationService.class).getPickupDefaultStockLocation(intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -106,6 +126,8 @@ public class IntercoServiceImpl implements IntercoService {
       }
     }
 
+    saleOrder.setPrintingSettings(intercoCompany.getPrintingSettings());
+
     // compute the sale order
     saleOrderComputeService.computeSaleOrder(saleOrder);
 
@@ -114,17 +136,18 @@ public class IntercoServiceImpl implements IntercoService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException {
 
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
 
+    Company intercoCompany = findIntercoCompany(saleOrder.getClientPartner());
     // create purchase order
     PurchaseOrder purchaseOrder;
     purchaseOrder =
         purchaseOrderService.createPurchaseOrder(
             null,
-            findIntercoCompany(saleOrder.getClientPartner()),
+            intercoCompany,
             saleOrder.getContactPartner(),
             saleOrder.getCurrency(),
             saleOrder.getDeliveryDate(),
@@ -134,6 +157,9 @@ public class IntercoServiceImpl implements IntercoService {
             saleOrder.getPriceList(),
             saleOrder.getCompany().getPartner(),
             saleOrder.getTradingName());
+
+    // in ati
+    purchaseOrder.setInAti(saleOrder.getInAti());
     // copy date
     purchaseOrder.setOrderDate(saleOrder.getOrderDate());
 
@@ -145,7 +171,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // copy delivery info
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
-    purchaseOrder.setStockLocation(saleOrder.getStockLocation());
+    purchaseOrder.setStockLocation(
+        Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
@@ -161,6 +188,7 @@ public class IntercoServiceImpl implements IntercoService {
         this.createIntercoPurchaseLineFromSaleLine(saleOrderLine, purchaseOrder);
       }
     }
+    purchaseOrder.setPrintingSettings(intercoCompany.getPrintingSettings());
 
     // compute the purchase order
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
@@ -195,6 +223,12 @@ public class IntercoServiceImpl implements IntercoService {
     // delivery
     purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
 
+    // compute price discounted
+    BigDecimal priceDiscounted =
+        Beans.get(PurchaseOrderLineService.class)
+            .computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
+    purchaseOrderLine.setPriceDiscounted(priceDiscounted);
+
     // tax
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
@@ -226,6 +260,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setDiscountTypeSelect(purchaseOrderLine.getDiscountTypeSelect());
     saleOrderLine.setDiscountAmount(purchaseOrderLine.getDiscountAmount());
 
+    // compute price discounted
+    BigDecimal priceDiscounted =
+        Beans.get(SaleOrderLineService.class).computeDiscount(saleOrderLine, saleOrder.getInAti());
+    saleOrderLine.setPriceDiscounted(priceDiscounted);
+
     // delivery
     saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
 
@@ -241,6 +280,8 @@ public class IntercoServiceImpl implements IntercoService {
     PartnerService partnerService = Beans.get(PartnerService.class);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     InvoiceService invoiceService = Beans.get(InvoiceService.class);
+
+    boolean isPurchase;
     // set the status
     int generatedOperationTypeSelect;
     int priceListRepositoryType;
@@ -248,18 +289,22 @@ public class IntercoServiceImpl implements IntercoService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
+        isPurchase = false;
         break;
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
+        isPurchase = false;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
+        isPurchase = true;
         break;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
+        isPurchase = true;
         break;
       default:
         throw new AxelorException(
@@ -299,18 +344,111 @@ public class IntercoServiceImpl implements IntercoService {
     intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
+
+    intercoInvoice.setPrintingSettings(intercoCompany.getPrintingSettings());
+
     if (intercoInvoice.getInvoiceLineList() != null) {
-      intercoInvoice
-          .getInvoiceLineList()
-          .forEach(invoiceLine -> invoiceLine.setInvoice(intercoInvoice));
+      for (InvoiceLine invoiceLine : intercoInvoice.getInvoiceLineList()) {
+        invoiceLine.setInvoice(intercoInvoice);
+        createIntercoInvoiceLine(invoiceLine, isPurchase);
+      }
     }
-    if (intercoInvoice.getInvoiceLineTaxList() != null) {
-      intercoInvoice
-          .getInvoiceLineTaxList()
-          .forEach(invoiceTaxLine -> invoiceTaxLine.setInvoice(intercoInvoice));
-    }
+    calculateInvoiceAmounts(intercoInvoice);
 
     return invoiceRepository.save(intercoInvoice);
+  }
+
+  private InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
+      throws AxelorException {
+    AccountManagementAccountService accountManagementAccountService =
+        Beans.get(AccountManagementAccountService.class);
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    Invoice intercoInvoice = invoiceLine.getInvoice();
+    Partner partner = intercoInvoice.getPartner();
+    if (intercoInvoice.getCompany() != null) {
+      Account account =
+          accountManagementAccountService.getProductAccount(
+              invoiceLine.getProduct(),
+              intercoInvoice.getCompany(),
+              partner.getFiscalPosition(),
+              isPurchase,
+              false);
+      invoiceLine.setAccount(account);
+
+      TaxLine taxLine = invoiceLineService.getTaxLine(intercoInvoice, invoiceLine, isPurchase);
+      invoiceLine.setTaxLine(taxLine);
+      invoiceLine.setTaxRate(taxLine.getValue());
+      invoiceLine.setTaxCode(taxLine.getTax().getCode());
+      Tax tax =
+          accountManagementAccountService.getProductTax(
+              invoiceLine.getProduct(), intercoInvoice.getCompany(), null, isPurchase);
+      TaxEquiv taxEquiv =
+          Beans.get(FiscalPositionService.class)
+              .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
+      invoiceLine.setTaxEquiv(taxEquiv);
+      invoiceLine.setPrice(
+          invoiceLineService.getExTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
+      invoiceLine.setInTaxPrice(
+          invoiceLineService.getInTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
+      invoiceLine.setPriceDiscounted(
+          invoiceLineService.computeDiscount(invoiceLine, intercoInvoice.getInAti()));
+      BigDecimal exTaxTotal, inTaxTotal;
+      if (!intercoInvoice.getInAti()) {
+        exTaxTotal =
+            InvoiceLineManagement.computeAmount(
+                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
+        inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxRate()));
+      } else {
+        inTaxTotal =
+            InvoiceLineManagement.computeAmount(
+                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
+        exTaxTotal =
+            inTaxTotal.divide(
+                invoiceLine.getTaxRate().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      }
+      invoiceLine.setExTaxTotal(exTaxTotal);
+      invoiceLine.setInTaxTotal(inTaxTotal);
+      invoiceLine.setCompanyExTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(exTaxTotal, intercoInvoice));
+      invoiceLine.setCompanyInTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(inTaxTotal, intercoInvoice));
+    }
+    return invoiceLine;
+  }
+
+  private void calculateInvoiceAmounts(Invoice invoice) throws AxelorException {
+    invoice.setExTaxTotal(BigDecimal.ZERO);
+    invoice.setTaxTotal(BigDecimal.ZERO);
+    invoice.setInTaxTotal(BigDecimal.ZERO);
+    invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
+    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
+    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
+
+    invoice.setInvoiceLineTaxList(
+        (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates());
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
+      invoice.setCompanyExTaxTotal(
+          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
+    }
+
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
+      invoice.setCompanyTaxTotal(
+          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+    }
+
+    invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));
+    invoice.setCompanyExTaxTotal(
+        invoice.getCompanyExTaxTotal().setScale(2, BigDecimal.ROUND_HALF_EVEN));
+    invoice.setCompanyInTaxTotal(
+        invoice
+            .getCompanyExTaxTotal()
+            .add(invoice.getCompanyTaxTotal())
+            .setScale(2, BigDecimal.ROUND_HALF_EVEN));
+    invoice.setAmountRemaining(invoice.getInTaxTotal());
+    invoice.setHasPendingPayments(false);
   }
 
   @Override

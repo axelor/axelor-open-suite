@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.studio.service.builder.MenuBuilderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MenuBuilderController {
 
@@ -53,7 +54,7 @@ public class MenuBuilderController {
 
   private Map<String, Object> getMenu(MetaMenu menu) {
 
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     values.put("name", menu.getName());
     values.put("title", menu.getTitle());
     values.put("icon", menu.getIcon());
@@ -74,12 +75,14 @@ public class MenuBuilderController {
     values.put("mobile", menu.getMobile());
     values.put("hidden", menu.getHidden());
 
-    if (menu.getAction() != null && menu.getAction().getType().equals("action-view")) {
-      ActionBuilder actionBuilder = menuBuilderService.createActionBuilder(menu.getAction());
-      if (actionBuilder != null) {
-        values.put("actionBuilder", actionBuilder);
-        values.put("showAction", true);
-      }
+    if (menu.getAction() != null && menu.getAction().getType().contentEquals("action-view")) {
+      Optional<ActionBuilder> actionBuilderOpt =
+          menuBuilderService.createActionBuilder(menu.getAction());
+      actionBuilderOpt.ifPresent(
+          actionBuilder -> {
+            values.put("actionBuilder", actionBuilder);
+            values.put("showAction", true);
+          });
     }
 
     return values;
@@ -87,7 +90,7 @@ public class MenuBuilderController {
 
   private Map<String, Object> getEmptyMenu() {
 
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     values.put("name", null);
     values.put("title", null);
     values.put("icon", null);

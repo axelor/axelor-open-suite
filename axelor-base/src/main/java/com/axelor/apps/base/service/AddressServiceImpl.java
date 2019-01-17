@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -172,8 +172,7 @@ public class AddressServiceImpl implements AddressService {
   private static boolean checkAddressUsedBase(Long addressId) {
     return JPA.all(PartnerAddress.class).filter("self.address.id = ?1", addressId).fetchOne()
             != null
-        || JPA.all(Partner.class).filter("self.contactAddress.id = ?1", addressId).fetchOne()
-            != null
+        || JPA.all(Partner.class).filter("self.mainAddress.id = ?1", addressId).fetchOne() != null
         || JPA.all(PickListEntry.class).filter("self.address.id = ?1", addressId).fetchOne()
             != null;
   }

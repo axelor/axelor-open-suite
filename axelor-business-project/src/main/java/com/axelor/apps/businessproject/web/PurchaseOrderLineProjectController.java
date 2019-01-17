@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -75,13 +75,13 @@ public class PurchaseOrderLineProjectController {
               .collect(Collectors.toList());
       purchaseOrderLineProjectService.setProject(lineIds, project);
       response.setAttr("$purchaseOrderLineSet", "hidden", true);
-      response.setAttr("addSelectedPOLines", "hidden", true);
-      response.setAttr("unlinkSelectedPOLines", "hidden", true);
-      response.setAttr("cancelManagePOLines", "hidden", true);
-      response.setAttr("purchaseOrderLineDashlet", "refresh", true);
-      response.setAttr("purchaseOrderDashlet", "refresh", true);
-      response.setAttr("selectNewPOLines", "readonly", false);
-      response.setAttr("managePOLines", "readonly", false);
+      response.setAttr("addSelectedPOLinesBtn", "hidden", true);
+      response.setAttr("unlinkSelectedPOLinesBtn", "hidden", true);
+      response.setAttr("cancelManagePOLinesBtn", "hidden", true);
+      response.setAttr("purchaseOrderLinePanel", "refresh", true);
+      response.setAttr("purchaseOrderPanel", "refresh", true);
+      response.setAttr("selectNewPOLinesBtn", "readonly", false);
+      response.setAttr("managePOLinesBtn", "readonly", false);
     }
   }
 

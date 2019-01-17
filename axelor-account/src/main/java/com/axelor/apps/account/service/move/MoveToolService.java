@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -267,6 +267,49 @@ public class MoveToolService {
       totalDebit = totalDebit.add(moveLine.getAmountRemaining());
     }
     return totalDebit;
+  }
+
+  /**
+   * Compute the balance amount : total debit - total credit
+   *
+   * @param moveLineList
+   * @return
+   */
+  public BigDecimal getBalanceAmount(List<MoveLine> moveLineList) {
+    BigDecimal balance = BigDecimal.ZERO;
+
+    if (moveLineList == null) {
+      return balance;
+    }
+
+    for (MoveLine moveLine : moveLineList) {
+      balance = balance.add(moveLine.getDebit());
+      balance = balance.subtract(moveLine.getCredit());
+    }
+    return balance;
+  }
+
+  /**
+   * Compute the balance amount in currency origin : total debit - total credit
+   *
+   * @param moveLineList
+   * @return
+   */
+  public BigDecimal getBalanceCurrencyAmount(List<MoveLine> moveLineList) {
+    BigDecimal balance = BigDecimal.ZERO;
+
+    if (moveLineList == null) {
+      return balance;
+    }
+
+    for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
+        balance = balance.add(moveLine.getCurrencyAmount());
+      } else {
+        balance = balance.subtract(moveLine.getCurrencyAmount());
+      }
+    }
+    return balance;
   }
 
   public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {

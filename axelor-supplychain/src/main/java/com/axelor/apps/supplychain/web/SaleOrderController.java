@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -85,18 +85,26 @@ public class SaleOrderController {
       if (saleOrder.getId() != null) {
 
         SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
-        StockMove stockMove =
+        List<Long> stockMoveList =
             saleOrderStockService.createStocksMovesFromSaleOrder(
                 saleOrderRepo.find(saleOrder.getId()));
 
-        if (stockMove != null) {
+        if (stockMoveList != null && stockMoveList.size() == 1) {
+          response.setView(
+              ActionView.define(I18n.get("Stock move"))
+                  .model(StockMove.class.getName())
+                  .add("form", "stock-move-form")
+                  .add("grid", "stock-move-grid")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .map());
+        } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(stockMove.getId()))
+                  .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
@@ -276,12 +284,14 @@ public class SaleOrderController {
     SaleOrderLine saleOrderLine = saleOrderLineRepo.find(soLineId);
 
     if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-      BigDecimal qtyPercent = BigDecimal.ZERO;
-      if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-        qtyPercent = qtyToInvoiceItem.divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
-      }
       for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-        BigDecimal qty = subLine.getQty().multiply(qtyPercent);
+        BigDecimal qty = BigDecimal.ZERO;
+        if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+          qty =
+              qtyToInvoiceItem
+                  .multiply(subLine.getQty())
+                  .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
+        }
         qty = qty.setScale(2, RoundingMode.HALF_EVEN);
         qtyToInvoiceMap.put(subLine.getId(), qty);
       }
@@ -552,6 +562,10 @@ public class SaleOrderController {
 
     if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
       domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+    }
+
+    if (saleOrder.getCompany() != null) {
+      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
     }
     response.setAttr("supplierPartnerSelect", "domain", domain);
   }

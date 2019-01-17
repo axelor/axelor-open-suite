@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
@@ -50,25 +51,27 @@ import java.util.Map;
 
 public class ImportSupplyChain {
 
-  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
 
-  @Inject private InvoiceService invoiceService;
+  @Inject protected PurchaseOrderStockServiceImpl purchaseOrderStockServiceImpl;
 
-  @Inject private SaleOrderStockService saleOrderStockService;
+  @Inject protected InvoiceService invoiceService;
 
-  @Inject private StockMoveRepository stockMoveRepo;
+  @Inject protected SaleOrderStockService saleOrderStockService;
 
-  @Inject private SaleOrderRepository saleOrderRepo;
+  @Inject protected StockMoveRepository stockMoveRepo;
 
-  @Inject private SaleConfigRepository saleConfigRepo;
+  @Inject protected SaleOrderRepository saleOrderRepo;
 
-  @Inject private SupplychainSaleConfigService configService;
+  @Inject protected SaleConfigRepository saleConfigRepo;
 
-  @Inject private StockConfigService stockConfigService;
+  @Inject protected SupplychainSaleConfigService configService;
 
-  @Inject private ImportPurchaseOrder importPurchaseOrder;
+  @Inject protected StockConfigService stockConfigService;
 
-  @Inject private ImportSaleOrder importSaleOrder;
+  @Inject protected ImportPurchaseOrder importPurchaseOrder;
+
+  @Inject protected ImportSaleOrder importSaleOrder;
 
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
@@ -103,7 +106,7 @@ public class ImportSupplyChain {
       }
 
       if (status == IPurchaseOrder.STATUS_FINISHED) {
-        purchaseOrderServiceSupplychainImpl.createStocksMove(purchaseOrder);
+        purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         StockMove stockMove =
             stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
         if (stockMove != null) {
@@ -159,20 +162,23 @@ public class ImportSupplyChain {
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
         // Generate invoice from sale order
         Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
-        if (saleOrder.getConfirmationDate() != null) {
-          invoice.setInvoiceDate(saleOrder.getConfirmationDate());
+        if (saleOrder.getConfirmationDateTime() != null) {
+          invoice.setInvoiceDate(saleOrder.getConfirmationDateTime().toLocalDate());
 
         } else {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove = stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
+        StockMove stockMove =
+            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
         if (stockMove != null
             && stockMove.getStockMoveLineList() != null
             && !stockMove.getStockMoveLineList().isEmpty()) {
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.validate(stockMove);
-          stockMove.setRealDate(saleOrder.getConfirmationDate());
+          if (saleOrder.getConfirmationDateTime() != null) {
+            stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+          }
         }
       }
       saleOrderRepo.save(saleOrder);

@@ -9,7 +9,7 @@
     </grid>
     
     <form name="keyword-form" title="Keyword" model="com.axelor.apps.base.db.Keyword">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
 	        <field name="typeSelect"/>
 	        <field name="keyWord"/>
 	    </panel>
@@ -21,7 +21,7 @@
     </grid>
     <form name="keyword-tool-form" title="Tool Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-tool-record-new">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="keyWord" />
 		</panel>
 	</form>
@@ -32,7 +32,7 @@
     </grid>
 	<form name="keyword-area-form" title="Sector Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-area-record-new">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="keyWord" />
 		</panel>
 	</form>
@@ -43,7 +43,7 @@
     </grid>
 	<form name="keyword-profession-form" title="Jobtitle Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-profession-record-new">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="keyWord" />
 		</panel>
 	</form>

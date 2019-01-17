@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,102 +18,103 @@
 package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSchedule;
 import com.axelor.meta.db.repo.MetaScheduleRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class BatchJob implements Job {
-  private final Logger log = LoggerFactory.getLogger(getClass());
-  private final MetaScheduleRepository metaScheduleRepository;
-
-  @Inject
-  public BatchJob(MetaScheduleRepository metaScheduleRepository) {
-    this.metaScheduleRepository = metaScheduleRepository;
-  }
+public class BatchJob extends ThreadedJob {
 
   @Override
-  @Transactional
-  public void execute(JobExecutionContext context) throws JobExecutionException {
+  public void executeInThread(JobExecutionContext context) {
     JobDetail jobDetail = context.getJobDetail();
-    MetaSchedule metaSchedule = metaScheduleRepository.findByName(jobDetail.getKey().getName());
+    MetaSchedule metaSchedule =
+        Beans.get(MetaScheduleRepository.class).findByName(jobDetail.getKey().getName());
     String batchServiceClassName = metaSchedule.getBatchServiceSelect();
-    String batchCode = metaSchedule.getBatchCode();
     Class<? extends AbstractBatchService> batchServiceClass;
 
     try {
       batchServiceClass =
           Class.forName(batchServiceClassName).asSubclass(AbstractBatchService.class);
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      throw new JobExecutionException(e);
+      throw new UncheckedJobExecutionException(e);
     }
 
     AbstractBatchService batchService = Beans.get(batchServiceClass);
+    String batchCode = metaSchedule.getBatchCode();
+
     Model batchModel = batchService.findModelByCode(batchCode);
 
     if (batchModel == null) {
       String msg =
           String.format("Batch %s not found with service %s", batchCode, batchServiceClassName);
-      log.error(msg);
-      throw new JobExecutionException(msg);
+      throw new UncheckedJobExecutionException(msg);
     }
 
-    Context scriptContext = new Context(Mapper.toMap(batchModel), batchModel.getClass());
-    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-    JobDataMap jobDataMap = jobDetail.getJobDataMap();
-    Map<String, Object> originalValues = new HashMap<>();
+    // Apply job's parameters to the batch.
+    Map<String, Object> originalProperties =
+        applyBeanPropertiesWithScriptHelper(batchModel, jobDetail.getJobDataMap());
 
     try {
-      // Apply job's parameters to the batch.
-      for (Map.Entry<String, Object> entry : jobDataMap.entrySet()) {
-        String key = entry.getKey();
-        if (PropertyUtils.isWriteable(batchModel, key)) {
-          try {
-            originalValues.put(key, BeanUtils.getProperty(batchModel, key));
-            Object value = scriptHelper.eval(entry.getValue().toString());
-            BeanUtils.setProperty(batchModel, key, value);
-          } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-          }
-        }
+      batchService.run(batchModel);
+    } catch (Exception e) {
+      throw new UncheckedJobExecutionException(e);
+    } finally {
+      if (!JPA.em().contains(batchModel)) {
+        batchModel = batchService.findModelByCode(batchCode);
       }
 
-      // Run the batch.
-      try {
-        batchService.run(batchModel);
-      } catch (AxelorException e) {
-        e.printStackTrace();
-        throw new JobExecutionException(e);
-      }
-    } finally {
       // Restore original values on the batch.
-      for (Map.Entry<String, Object> entry : originalValues.entrySet()) {
-        try {
-          BeanUtils.setProperty(batchModel, entry.getKey(), entry.getValue());
-        } catch (IllegalAccessException | InvocationTargetException e) {
-          e.printStackTrace();
-        }
-      }
+      applyBeanProperties(batchModel, originalProperties);
     }
+  }
+
+  private Map<String, Object> applyBeanPropertiesWithScriptHelper(
+      Object bean, Map<String, Object> properties) {
+    Context scriptContext = new Context(Mapper.toMap(bean), bean.getClass());
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+    return applyBeanProperties(bean, properties, value -> scriptHelper.eval(value.toString()));
+  }
+
+  private Map<String, Object> applyBeanProperties(Object bean, Map<String, Object> properties) {
+    return applyBeanProperties(bean, properties, value -> value);
+  }
+
+  private Map<String, Object> applyBeanProperties(
+      Object bean, Map<String, Object> properties, Function<Object, Object> evalFunc) {
+    Map<String, Object> originalProperties = new HashMap<>();
+
+    JPA.runInTransaction(
+        () -> {
+          for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            if (PropertyUtils.isWriteable(bean, key)) {
+              try {
+                originalProperties.put(key, BeanUtils.getProperty(bean, key));
+                Object value = evalFunc.apply(entry.getValue());
+                BeanUtils.setProperty(bean, key, value);
+              } catch (IllegalAccessException
+                  | InvocationTargetException
+                  | NoSuchMethodException e) {
+                throw new UncheckedJobExecutionException(e);
+              }
+            }
+          }
+        });
+
+    return originalProperties;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,6 +47,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -59,6 +60,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,6 +87,8 @@ public class InventoryService {
   @Inject private InventoryRepository inventoryRepo;
 
   @Inject private StockMoveRepository stockMoveRepo;
+
+  @Inject private StockLocationLineService stockLocationLineService;
 
   public Inventory createInventory(
       LocalDate date,
@@ -375,6 +380,14 @@ public class InventoryService {
 
       if (currentQty.compareTo(realQty) != 0) {
         BigDecimal diff = realQty.subtract(currentQty);
+        BigDecimal avgPrice;
+        StockLocationLine stockLocationLine =
+            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+        if (stockLocationLine != null) {
+          avgPrice = stockLocationLine.getAvgPrice();
+        } else {
+          avgPrice = BigDecimal.ZERO;
+        }
 
         StockMoveLine stockMoveLine =
             stockMoveLineService.createStockMoveLine(
@@ -382,7 +395,8 @@ public class InventoryService {
                 product.getName(),
                 product.getDescription(),
                 diff,
-                product.getCostPrice(),
+                avgPrice,
+                avgPrice,
                 product.getUnit(),
                 stockMove,
                 StockMoveLineService.TYPE_NULL,
@@ -473,8 +487,9 @@ public class InventoryService {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null",
-                      stockLocationLine.getProduct())
+                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
+                      stockLocationLine.getProduct(),
+                      inventory.getStockLocation())
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
@@ -517,6 +532,21 @@ public class InventoryService {
       params.add(inventory.getProductCategory());
     }
 
+    if (inventory.getProduct() != null) {
+      query += " and self.product = ?";
+      params.add(inventory.getProduct());
+    }
+
+    if (!Strings.isNullOrEmpty(inventory.getFromRack())) {
+      query += " and self.rack >= ?";
+      params.add(inventory.getFromRack());
+    }
+
+    if (!Strings.isNullOrEmpty(inventory.getToRack())) {
+      query += " and self.rack <= ?";
+      params.add(inventory.getToRack());
+    }
+
     return Beans.get(StockLocationLineRepository.class)
         .all()
         .filter(query, params.toArray())
@@ -549,22 +579,43 @@ public class InventoryService {
     List<String[]> list = new ArrayList<>();
 
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-      String[] item = new String[7];
+      String[] item = new String[9];
       String realQty = "";
 
       item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
       item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
-      item[2] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
-      item[3] =
+      item[2] =
+          (inventoryLine.getProduct() == null)
+              ? ""
+              : ((inventoryLine.getProduct().getProductCategory() == null)
+                  ? ""
+                  : inventoryLine.getProduct().getProductCategory().getName());
+      item[3] = (inventoryLine.getRack() == null) ? "" : inventoryLine.getRack();
+      item[4] =
           (inventoryLine.getTrackingNumber() == null)
               ? ""
               : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
-      item[4] = inventoryLine.getCurrentQty().toString();
-      if (inventory.getStatusSelect() > InventoryRepository.STATUS_DRAFT) {
+      item[5] = inventoryLine.getCurrentQty().toString();
+      if (inventoryLine.getRealQty() != null
+          && inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT
+          && inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
         realQty = inventoryLine.getRealQty().toString();
       }
-      item[5] = realQty;
-      item[6] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+      item[6] = realQty;
+      item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
+
+      String lastInventoryDateTString = "";
+      StockLocationLine stockLocationLine =
+          stockLocationLineService.getStockLocationLine(
+              inventory.getStockLocation(), inventoryLine.getProduct());
+      if (stockLocationLine != null) {
+        ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();
+        lastInventoryDateTString =
+            lastInventoryDateT == null
+                ? ""
+                : lastInventoryDateT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+      }
+      item[8] = lastInventoryDateTString;
       list.add(item);
     }
 
@@ -587,11 +638,13 @@ public class InventoryService {
     String[] headers = {
       I18n.get("Product Name"),
       I18n.get("Product Code"),
+      I18n.get("Product category"),
       I18n.get("Rack"),
       I18n.get("Tracking Number"),
       I18n.get("Current Quantity"),
       I18n.get("Real Quantity"),
-      I18n.get("Description")
+      I18n.get("Description"),
+      I18n.get("Last Inventory date")
     };
     CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 

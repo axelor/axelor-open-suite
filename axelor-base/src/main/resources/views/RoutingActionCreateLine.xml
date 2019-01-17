@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="routing-action-create-line-form" title="Creation" model="com.axelor.apps.base.db.RoutingActionCreateLine" >
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="metaField" colSpan="12" form-view="meta-field-form" grid-view="meta-field-grid"/>
 			<field name="value" colSpan="12"/>
 		</panel>

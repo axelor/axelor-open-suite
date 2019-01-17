@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.db.repo;
 
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
@@ -34,19 +35,14 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Override
   public MenuBuilder save(MenuBuilder menuBuilder) {
-
     if (menuBuilder.getName() == null) {
       menuBuilder.setName("studio-menu-" + menuBuilder.getId());
     }
-
     if (menuBuilder.getActionBuilder() != null) {
       menuBuilder.getActionBuilder().setMenuAction(true);
     }
-
     menuBuilder = super.save(menuBuilder);
-
-    menuBuilderService.build(menuBuilder);
-
+    menuBuilder.setMetaMenu(menuBuilderService.build(menuBuilder));
     return menuBuilder;
   }
 
@@ -67,8 +63,7 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Override
   public void remove(MenuBuilder menuBuilder) {
-
-    metaService.removeMetaMenu(menuBuilder.getName());
+    metaService.removeMetaMenu(menuBuilder.getMetaMenu());
 
     ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
 
@@ -76,7 +71,9 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
     if (actionBuilder != null) {
       try {
         actionBuilderRepo.remove(actionBuilder);
-      } catch (Exception e) {
+      } catch (RuntimeException e) {
+        TraceBackService.trace(e);
+        throw e;
       }
     }
 

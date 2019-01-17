@@ -7,10 +7,14 @@
   </grid>
   
   <form name="pack-line-form" title="Pack line" model="com.axelor.apps.sale.db.PackLine" width="large">
-    <panel colSpan="12">
-      <field name="product"/>
+    <panel name="mainPanel" colSpan="12">
+      <field name="product" onSelect="action-pack-line-attrs-set-product-domain"/>
       <field name="quantity"/>
     </panel>
   </form>
+  
+  <action-attrs name="action-pack-line-attrs-set-product-domain">
+  	<attribute name="domain" for="product" expr="eval: &quot; self.id != ${_parent?.id} and self.productTypeSelect != 'pack' &quot;"/>
+  </action-attrs>
   
 </object-views>

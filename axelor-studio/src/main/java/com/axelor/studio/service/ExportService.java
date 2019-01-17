@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,12 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
+import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +34,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class ExportService {
 
+  private ExportService() {
+    throw new IllegalStateException("Should not be instantiated.");
+  }
+
   public static String getImage(MetaFile metaFile) {
 
     if (metaFile != null) {
@@ -41,7 +47,7 @@ public class ExportService {
           byte[] img = IOUtils.toByteArray(new FileInputStream(file));
           return Base64.getEncoder().encodeToString(img);
         } catch (IOException e) {
-          e.printStackTrace();
+          TraceBackService.trace(e);
         }
       }
     }
@@ -63,7 +69,7 @@ public class ExportService {
         ActionBuilder builder = line.getActionBuilder();
         target = builder.getTargetModel();
         source = builder.getModel();
-        if (builder.getTypeSelect() == 1) {
+        if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_UPDATE) {
           target = builder.getModel();
         }
       } else {

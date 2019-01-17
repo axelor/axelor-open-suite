@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,7 +40,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.clearBatchSet();
     copy.setImportId(null);
     copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate());
-    copy.setConfirmationDate(null);
+    copy.setConfirmationDateTime(null);
     copy.setConfirmedByUser(null);
     copy.setOrderDate(null);
     copy.setOrderNumber(null);
@@ -52,7 +52,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setDeliveryDate(null);
 
     for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDeliveryDate(null);
+      saleOrderLine.setDesiredDelivDate(null);
+      saleOrderLine.setEstimatedDelivDate(null);
     }
 
     return copy;

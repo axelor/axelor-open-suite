@@ -10,7 +10,7 @@
     
   <form name="wkf-tracking-total-form" title="Nb of passes per status" model="com.axelor.studio.db.WkfTrackingTotal" width="large"
     canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
-      <panel>
+      <panel name="mainPanel">
         <field name="status"/>
         <field name="totalCount"/>
       </panel>

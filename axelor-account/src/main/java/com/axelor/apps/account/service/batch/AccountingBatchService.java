@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,13 +28,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
-/**
- * InvoiceBatchService est une classe implémentant l'ensemble des batchs de comptabilité et
- * assimilé.
- *
- * @author Geoffrey DUBAUX
- * @version 0.1
- */
 public class AccountingBatchService extends AbstractBatchService {
 
   @Override
@@ -73,6 +66,9 @@ public class AccountingBatchService extends AbstractBatchService {
         break;
       case AccountingBatchRepository.ACTION_CREDIT_TRANSFER:
         batch = creditTransfer(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES:
+        batch = realizeFixedAssetLines(accountingBatch);
         break;
       default:
         throw new AxelorException(
@@ -149,5 +145,10 @@ public class AccountingBatchService extends AbstractBatchService {
   public Batch directDebit(AccountingBatch accountingBatch) {
     throw new UnsupportedOperationException(
         I18n.get("This batch requires the bank payment module."));
+  }
+
+  public Batch realizeFixedAssetLines(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchRealizeFixedAssetLine.class).run(accountingBatch);
   }
 }

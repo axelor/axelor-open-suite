@@ -13,6 +13,9 @@
       <integer name="sequence" title="Sequence to order MRP results"/>
 
       <string name="statusSelect" title="Statuses to take into account" />
+      
+      <boolean name="includeElementWithoutDate" title="Include element without date" 
+      help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
 
       <extra-code><![CDATA[
 	

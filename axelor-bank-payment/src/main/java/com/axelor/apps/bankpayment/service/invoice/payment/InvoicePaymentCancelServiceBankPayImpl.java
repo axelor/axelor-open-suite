@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,10 +18,7 @@
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -34,7 +31,6 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -79,9 +75,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
-    Move paymentMove = invoicePayment.getMove();
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
-    Reconcile reconcile = invoicePayment.getReconcile();
 
     if (paymentBankOrder != null) {
       if (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
@@ -90,32 +84,12 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
             invoicePayment,
             TraceBackRepository.TYPE_FUNCTIONNAL,
             I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
-      } else {
+      } else if (paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         bankOrderService.cancelBankOrder(paymentBankOrder);
         this.updateCancelStatus(invoicePayment);
       }
-    } else {
-
-      log.debug("cancel : reconcile : {}", reconcile);
-
-      if (reconcile != null
-          && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-        reconcileService.unreconcile(reconcile);
-        if (accountConfigService
-            .getAccountConfig(invoicePayment.getInvoice().getCompany())
-            .getAllowRemovalValidatedMove()) {
-          invoicePayment.setReconcile(null);
-          Beans.get(ReconcileRepository.class).remove(reconcile);
-        }
-      }
-
-      if (paymentMove != null
-          && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT) {
-        invoicePayment.setMove(null);
-        moveCancelService.cancel(paymentMove);
-      } else {
-        this.updateCancelStatus(invoicePayment);
-      }
     }
+
+    super.cancel(invoicePayment);
   }
 }

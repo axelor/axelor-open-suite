@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -74,21 +75,22 @@ public class PartnerService {
 
     partner.setName(name);
     partner.setFirstName(firstName);
-    partner.setFullName(this.computeFullName(partner));
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
     partner.setIsProspect(true);
     partner.setFixedPhone(fixedPhone);
     partner.setMobilePhone(mobilePhone);
     partner.setEmailAddress(emailAddress);
     partner.setCurrency(currency);
+    this.setPartnerFullName(partner);
+
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     contact.setIsContact(true);
     contact.setName(name);
     contact.setFirstName(firstName);
     contact.setMainPartner(partner);
-    contact.setFullName(this.computeFullName(partner));
     partner.addContactPartnerSetItem(contact);
+    this.setPartnerFullName(contact);
 
     if (deliveryAddress == mainInvoicingAddress) {
       addPartnerAddress(partner, mainInvoicingAddress, true, true, true);
@@ -101,26 +103,28 @@ public class PartnerService {
   }
 
   public void setPartnerFullName(Partner partner) {
-
+    partner.setSimpleFullName(this.computeSimpleFullName(partner));
     partner.setFullName(this.computeFullName(partner));
   }
 
   public String computeFullName(Partner partner) {
-    String fullName = "";
+    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
+      return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
+    }
+    return partner.getSimpleFullName();
+  }
+
+  public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
-      fullName = partner.getName() + " " + partner.getFirstName();
+      return partner.getName() + " " + partner.getFirstName();
     } else if (!Strings.isNullOrEmpty(partner.getName())) {
-      fullName = partner.getName();
+      return partner.getName();
     } else if (!Strings.isNullOrEmpty(partner.getFirstName())) {
-      fullName = partner.getFirstName();
+      return partner.getFirstName();
     } else {
-      fullName = "" + partner.getId();
+      return "" + partner.getId();
     }
-    if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
-      return partner.getPartnerSeq() + " - " + fullName;
-    }
-    return fullName;
   }
 
   public Map<String, String> getSocialNetworkUrl(
@@ -361,8 +365,8 @@ public class PartnerService {
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    addPartnerAddress(partner, partner.getContactAddress(), true, false, false);
-    partner.setContactAddress(null);
+    addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
+    partner.setMainAddress(null);
   }
 
   /**
@@ -372,7 +376,7 @@ public class PartnerService {
    * @return if there is a duplicate partner
    */
   public boolean isThereDuplicatePartner(Partner partner) {
-    String newName = this.computeFullName(partner);
+    String newName = this.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
       return false;
     }
@@ -382,7 +386,7 @@ public class PartnerService {
           partnerRepo
               .all()
               .filter(
-                  "lower(self.fullName) = lower(:newName) "
+                  "lower(self.simpleFullName) = lower(:newName) "
                       + "and self.partnerTypeSelect = :_partnerTypeSelect")
               .bind("newName", newName)
               .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
@@ -393,7 +397,7 @@ public class PartnerService {
           partnerRepo
               .all()
               .filter(
-                  "lower(self.fullName) = lower(:newName) "
+                  "lower(self.simpleFullName) = lower(:newName) "
                       + "and self.id != :partnerId "
                       + "and self.partnerTypeSelect = :_partnerTypeSelect")
               .bind("newName", newName)
@@ -494,5 +498,20 @@ public class PartnerService {
   public String getPhoneNumberFieldName(String actionName) {
     Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
     return actionName.substring(actionName.lastIndexOf('-') + 1);
+  }
+
+  public void setCompanyStr(Partner partner) {
+    partner.setCompanyStr(this.computeCompanyStr(partner));
+  }
+
+  public String computeCompanyStr(Partner partner) {
+    String companyStr = "";
+    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
+      for (Company company : partner.getCompanySet()) {
+        companyStr += company.getCode() + ",";
+      }
+      return companyStr.substring(0, companyStr.length() - 1);
+    }
+    return null;
   }
 }

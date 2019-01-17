@@ -13,10 +13,9 @@
   
   	<decimal name="qty" title="Qty" initParam="true"/>
   
-<!--   	Not display -->
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Client Partner" />
-	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale Order" />
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
+	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
 
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
     <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/><boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
@@ -34,6 +33,7 @@
     
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations" initParam="true"/>
     
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>
     <one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet" mappedBy="manufOrder"/>
@@ -60,6 +60,8 @@
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
+    <string name="note" large="true"/>
+    
     <unique-constraint columns="manufOrderSeq,company"/>
 
 	<extra-code><![CDATA[
@@ -71,6 +73,16 @@
 		public static final int STATUS_STANDBY = 5;
 		public static final int STATUS_FINISHED = 6;
 	]]></extra-code>
+    
+    <track>
+	  <field name="qty" />
+	  <field name="prioritySelect" />
+	  <field name="plannedStartDateT" />
+	  <field name="plannedEndDateT" />
+	  <field name="clientPartner" />
+	  <field name="saleOrder" />
+	  <field name="statusSelect" />
+	</track>
     
   </entity>
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -39,7 +40,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
-      UserService userService) {
+      UserService userService,
+      FixedAssetService fixedAssetService) {
     super(
         sequenceService,
         moveService,
@@ -47,7 +49,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
         appAccountService,
         invoiceRepo,
         workflowService,
-        userService);
+        userService,
+        fixedAssetService);
   }
 
   @Override

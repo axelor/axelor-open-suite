@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,18 +24,24 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
 
-  @Inject private JobApplicationRepository jobApplicationRepo;
+  @Inject protected JobApplicationRepository jobApplicationRepo;
 
-  @Inject private AppBaseService appBaseService;
+  @Inject protected AppBaseService appBaseService;
 
-  @Inject private PartnerService partnerSerivce;
+  @Inject protected PartnerService partnerService;
+
+  @Inject private MetaFiles metaFiles;
 
   @Transactional
   @Override
@@ -56,7 +62,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     return employee;
   }
 
-  private Employee createEmployee(JobApplication jobApplication) {
+  protected Employee createEmployee(JobApplication jobApplication) {
 
     Employee employee = new Employee();
     employee.setDateOfHire(appBaseService.getTodayDate());
@@ -73,7 +79,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     return employee;
   }
 
-  private Partner createContact(JobApplication jobApplication) {
+  protected Partner createContact(JobApplication jobApplication) {
 
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(2);
@@ -84,7 +90,15 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     contact.setFixedPhone(jobApplication.getFixedPhone());
     contact.setMobilePhone(jobApplication.getMobilePhone());
     contact.setEmailAddress(jobApplication.getEmailAddress());
-    contact.setFullName(partnerSerivce.computeFullName(contact));
+    if (jobApplication.getPicture() != null) {
+      File file = MetaFiles.getPath(jobApplication.getPicture()).toFile();
+      try {
+        contact.setPicture(metaFiles.upload(file));
+      } catch (IOException e) {
+        TraceBackService.trace(e);
+      }
+    }
+    partnerService.setPartnerFullName(contact);
 
     return contact;
   }

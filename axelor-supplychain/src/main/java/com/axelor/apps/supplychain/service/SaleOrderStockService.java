@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,8 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface SaleOrderStockService {
 
@@ -35,9 +36,10 @@ public interface SaleOrderStockService {
    * @return
    * @throws AxelorException
    */
-  public StockMove createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
+  public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public StockMove createStockMove(SaleOrder saleOrder, Company company) throws AxelorException;
+  public StockMove createStockMove(
+      SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate) throws AxelorException;
 
   public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine)
       throws AxelorException;
@@ -49,14 +51,6 @@ public interface SaleOrderStockService {
 
   boolean isStockMoveProduct(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
-
-  /**
-   * Find active stock move for sale order.
-   *
-   * @param saleOrder
-   * @return
-   */
-  Optional<StockMove> findActiveStockMoveForSaleOrder(SaleOrder saleOrder);
 
   /**
    * Update delivery state by checking delivery states on the sale order lines.

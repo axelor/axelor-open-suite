@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
-	    <panel colSpan="12">
+	    <panel name="mainPanel" colSpan="12">
 	    	<field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
 	        <field name="invoicesCopySelect" hideIf="!isCustomer || isEmployee"/>
 	        <field name="inPaymentMode" canEdit="false" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
@@ -14,12 +14,12 @@
 	        <field name="fiscalPosition" canEdit="false" form-view="fiscal-position-form" grid-view="fiscal-position-grid" onChange="action-partner-attrs-show-specific-tax-note"/>
             <field name="specificTaxNote" colSpan="12" hidden="true"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
-	        <panel colSpan="6" hideIf="isEmployee">
-	    		<button name="showAllInvoices" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
-        		<button name="showUnpaidInvoice" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
+	        <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
+	    		<button name="showAllInvoicesBtn" title="Show invoices"  onClick="save,action-partner-view-partner-invoice"/>
+        		<button name="showUnpaidInvoiceBtn" title="View all unpaid invoices"  onClick="save,action-partner-view-show-unpaid-invoice"/>
 	    	</panel>
 	    </panel>
-	    <panel name="bankDetails" title="Bank details" colSpan="12">
+	    <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
 	        <field name="bankDetailsList" colSpan="12" showTitle="false" >
                 <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
                     <dl>
@@ -44,7 +44,7 @@
 	</form>
 	
 	<form name="incl-customer-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-		<panel title="Accounting balance" colSpan="12">
+		<panel name="accountingBalancePanel" title="Accounting balance" colSpan="12">
 			<field name="accountingSituationList" colSpan="12" widget="MasterDetail" title="Customer balance" hideIf="isContact"
 					grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
 					onSelect="action-account-accounting-situation-method-update-customer-account"/>
@@ -52,7 +52,7 @@
 	</form>
 
     <form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-        <panel title="Blockings" colSpan="12" showIf="isSupplier || isCustomer">
+        <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer">
             <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
 				<editor colSpan="12" x-viewer="true" x-show-on-new="false">
 					<field name="companySet" colSpan="3" widget="TagSelect"/>
@@ -77,7 +77,7 @@
     </form>
 
 	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-		<panel title="Reported balance" colSpan="12">
+		<panel title="Reported balance" colSpan="12" name="reportedBalancePanel">
 			<field name="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
 		</panel>
 	</form>
@@ -102,9 +102,9 @@
 <!--              </form> -->
 	
 	<form name="incl-sepa-direct-debit-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-         <panel name="sepaDirectDebit" title="SEPA Direct Debit" colSpan="12" >
+         <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12" >
 		 	<field name="activeUmr" colSpan="3" canNew="false" domain="self.partner.id = :id"/>
-         	<panel-related field="umrList" title="History" colSpan="12"/>
+         	<panel-related name="umrListPanel" field="umrList" title="History" colSpan="12"/>
          </panel>
 	</form>
 

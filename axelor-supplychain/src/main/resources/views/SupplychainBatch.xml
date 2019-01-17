@@ -14,25 +14,25 @@
 
 	<form name="supplychain-batch-form" title="Supplychain Batch"
 		model="com.axelor.apps.supplychain.db.SupplychainBatch" onNew="action-supplychain-batch-record-on-new">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 			<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="archived" title="Archived"/>
 		</panel>
-		<panel-tabs>
-			<panel name="invoiceOrdersConfiguration" title="Invoice orders configuration" showIf="actionSelect == 3">
+		<panel-tabs name="mainPanelTab">
+			<panel name="invoiceOrdersConfigurationPanel" title="Invoice orders configuration" showIf="actionSelect == 3">
 				<field name="invoiceOrdersTypeSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" />
 				<field name="invoiceOrdersTypeSelect" selection="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" />
-				<panel showIf="invoiceOrdersTypeSelect == 1" colSpan="12">
+				<panel name="subInvoiceOrderConfig1Panel" showIf="invoiceOrdersTypeSelect == 1" colSpan="12">
 					<field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons" />
 					<field name="team" />
 					<field name="orderUpToDate" />
 					<field name="deliveryOrReceiptState" widget="MultiSelect" selection="sale.order.delivery.state" title="Delivery state" />
 					<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" readonly="true" />
 				</panel>
-				<panel showIf="invoiceOrdersTypeSelect == 2" colSpan="12">
+				<panel name="subInvoiceOrderConfig2Panel" showIf="invoiceOrdersTypeSelect == 2" colSpan="12">
 					<field name="salespersonOrBuyerSet" widget="TagSelect" title="Buyers" />
 					<field name="team" />
 					<field name="orderUpToDate" />
@@ -40,20 +40,29 @@
 					<field name="statusSelect" widget="MultiSelect" selection="purchase.purchase.order.status.select" readonly="true" />
 				</panel>
 			</panel>
-			<panel name="information" title="Information"  >
+			<panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration" showIf="actionSelect == 1" colSpan="12">
+				<field name="accountingCutOffTypeSelect"/>
+				<field name="moveDescription" requiredIf="actionSelect == 1"/>
+				<field name="moveDate" requiredIf="actionSelect == 1"/>
+				<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
+				<field name="recoveredTax"/>
+				<field name="ati" showIf="!recoveredTax"/>
+				<field name="includeNotStockManagedProduct"/>
+			</panel>	
+			<panel name="informationPanel" title="Information"  >
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by"  form-view="user-form" grid-view="user-grid"/>
 				<field name="description" showTitle="false"  />
-		      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+		      	<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 			</panel>
 		</panel-tabs>
-		<panel sidebar="true" name="actions" title="Actions">
-		    <button name="invoiceOutgoingStockMoveBatch" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
-		    <button name="invoiceOrdersBatch" title="Invoice orders" showIf="actionSelect == 3" onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
+		<panel sidebar="true" name="actionsPanel" title="Actions">
+		    <button name="accountingCutOffBatchBtn" title="Run accounting cut-off" showIf="actionSelect == 1" onClick="save,action-supplychain-batch-method-accounting-cut-off" colSpan="12"/>
+		    <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+		    <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3" onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
 		</panel>
 	</form>
-
-    
+	
     <!-- ACTION RECORD -->
     <action-record name="action-supplychain-batch-record-on-new" model="com.axelor.apps.base.db.MailBatch">
 		<field name="createdOn" expr="eval:__config__.app.getTodayDate()"/>
@@ -71,5 +80,23 @@
 	<action-method name="action-supplychain-batch-method-invoice-orders">
 		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="invoiceOrders"/>
 	</action-method>
+	
+	<action-method name="action-supplychain-batch-method-accounting-cut-off">
+		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="accountingCutOff"/>
+	</action-method>
+
+
+	<!-- BATCH -->
+	
+	<action-view name="action-batch-show-stock-move" title="Stock moves"
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-in-grid" if="supplychainBatch.accountingCutOffTypeSelect == 1"/>
+		<view type="grid" name="stock-move-out-grid" if="supplychainBatch.accountingCutOffTypeSelect == 2"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: __self__"/>
+	</action-view>
+	
+	
 
 </object-views>

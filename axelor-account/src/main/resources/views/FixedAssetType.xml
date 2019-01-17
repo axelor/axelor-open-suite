@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="fixed-asset-type-grid" title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType" orderBy="code,name">
+    	<field name="name"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+    </grid>
+    
+    <form name="fixed-asset-type-form" title="Fixed asset type" model="com.axelor.apps.account.db.FixedAssetType">
+        <panel name="mainPanel" >
+        	<field name="name"/>
+        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+        </panel>
+        
+    </form>
+    
+    
+</object-views>

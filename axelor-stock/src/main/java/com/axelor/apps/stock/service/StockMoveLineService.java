@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,7 @@ public interface StockMoveLineService {
       String description,
       BigDecimal quantity,
       BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -75,15 +76,18 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   /**
-   * Méthode générique permettant de créer une ligne de mouvement de stock
+   * Allow the creation of a stock move line managing tracking numbers with operation type.
    *
-   * @param product
-   * @param quantity
-   * @param unit
-   * @param price
-   * @param stockMove
-   * @param trackingNumber
-   * @return
+   * @param product the line product
+   * @param productName the line product name
+   * @param description description of the line
+   * @param quantity the line quantity
+   * @param unitPriceUntaxed price untaxed of the line
+   * @param unitPriceTaxed price taxed of the line
+   * @param unit Unit of the line
+   * @param stockMove parent stock move
+   * @param trackingNumber tracking number used in the line
+   * @return the created stock move line
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
@@ -93,10 +97,21 @@ public interface StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
+      BigDecimal companyUnitPriceUntaxed,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
       throws AxelorException;
+
+  public StockMoveLine assignOrGenerateTrackingNumber(
+      StockMoveLine stockMoveLine,
+      StockMove stockMove,
+      Product product,
+      TrackingNumberConfiguration trackingNumberConfiguration,
+      int type)
+      throws AxelorException;
+
+  public void checkTrackingNumber(StockMove stockMove) throws AxelorException;
 
   public void assignTrackingNumber(
       StockMoveLine stockMoveLine, Product product, StockLocation stockLocation)
@@ -129,11 +144,12 @@ public interface StockMoveLineService {
       int toStatus,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int toStatus);
+      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      throws AxelorException;
 
   /**
    * Check in the product if the stock move line needs to have a conformity selected.
@@ -163,6 +179,11 @@ public interface StockMoveLineService {
    */
   public void checkExpirationDates(StockMove stockMove) throws AxelorException;
 
+  /**
+   * Return unit found in stock move line, or if the unit is empty, take the unit from the product.
+   */
+  Unit getStockUnit(StockMoveLine stockMoveLine);
+
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
@@ -172,16 +193,6 @@ public interface StockMoveLineService {
    * @param stockMoveLineList List of StockMoveLines on which to operate
    */
   public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
-
-  /**
-   * Get a merged stock move line.
-   *
-   * @param stockMoveLineList
-   * @return
-   * @throws AxelorException
-   */
-  StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
 
   /**
    * Check whether a stock move line is fully spread over logistical form lines.
@@ -221,6 +232,14 @@ public interface StockMoveLineService {
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException;
 
+  /**
+   * Check whether mass information is required.
+   *
+   * @param stockMove
+   * @return
+   */
+  boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
+
   @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
@@ -233,4 +252,11 @@ public interface StockMoveLineService {
    * @return
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
+
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
+
+  public void setAvailableStatus(StockMoveLine stockMoveLine);
+
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove);
 }

@@ -20,7 +20,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
   </grid>
 
-    <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" orderBy="product.code">
     	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
     	<field name="qty" aggregate="sum" required="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
@@ -39,7 +39,7 @@
     
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
     onNew="action-product-record-default" onLoad="action-prod-product-attrs-on-load">
-    	<panel name="main">
+    	<panel name="mainPanel">
 	    	<field name="product" canEdit="false" domain="self.productTypeSelect = 'storable'" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
 	    	<field name="qty" required="true"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>

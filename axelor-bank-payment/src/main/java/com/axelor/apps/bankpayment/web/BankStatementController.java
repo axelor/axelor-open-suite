@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,21 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class BankStatementController {
@@ -59,6 +65,38 @@ public class BankStatementController {
       TraceBackService.trace(response, e);
     }
 
+    response.setReload(true);
+  }
+
+  public void runBankReconciliation(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+      bankStatement = bankStatementRepository.find(bankStatement.getId());
+      List<BankReconciliation> bankReconciliationList =
+          Beans.get(BankReconciliationCreateService.class)
+              .createAllFromBankStatement(bankStatement);
+
+      if (bankReconciliationList != null) {
+        response.setView(
+            ActionView.define(I18n.get("Bank reconciliations"))
+                .model(BankReconciliation.class.getName())
+                .add("grid", "bank-reconciliation-grid")
+                .add("form", "bank-reconciliation-form")
+                .domain(
+                    "self.id in ("
+                        + Joiner.on(",")
+                            .join(
+                                bankReconciliationList
+                                    .stream()
+                                    .map(BankReconciliation::getId)
+                                    .toArray())
+                        + ")")
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
     response.setReload(true);
   }
 }

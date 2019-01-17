@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -32,15 +33,19 @@ import java.util.Map;
 
 public class ImportPartner {
 
-  @Inject private PartnerRepository partnerRepo;
+  @Inject protected PartnerRepository partnerRepo;
 
-  @Inject private MetaFiles metaFiles;
+  @Inject protected MetaFiles metaFiles;
+
+  @Inject protected PartnerService partnerService;
 
   public Object importPartner(Object bean, Map<String, Object> values) {
 
     assert bean instanceof Partner;
 
     Partner partner = (Partner) bean;
+
+    partnerService.setPartnerFullName(partner);
 
     final Path path = (Path) values.get("__path__");
     String fileName = (String) values.get("picture_fileName");

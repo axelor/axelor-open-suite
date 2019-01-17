@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,6 +65,6 @@ public class JobApplicationController {
     Map<String, String> urlMap =
         partnerService.getSocialNetworkUrl(
             application.getFirstName(), application.getLastName(), 2);
-    response.setAttr("linkedin", "title", urlMap.get("linkedin"));
+    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 }

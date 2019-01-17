@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -112,6 +113,7 @@ public class BankOrderCreateService {
     }
     bankOrder.setCompanyCurrency(senderCompany.getCurrency());
 
+    bankOrder.setSenderReference(senderReference);
     bankOrder.setSenderLabel(senderLabel);
     bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
     bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
@@ -138,6 +140,11 @@ public class BankOrderCreateService {
             ? invoicePayment.getCompanyBankDetails()
             : this.getSenderBankDetails(invoice);
 
+    String reference =
+        InvoiceToolService.isPurchase(invoice)
+            ? invoice.getSupplierInvoiceNb()
+            : invoice.getInvoiceId();
+
     BankOrder bankOrder =
         this.createBankOrder(
             paymentMode,
@@ -146,8 +153,8 @@ public class BankOrderCreateService {
             company,
             companyBankDetails,
             currency,
-            invoice.getInvoiceId(),
-            invoice.getInvoiceId());
+            reference,
+            null);
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =
@@ -159,9 +166,11 @@ public class BankOrderCreateService {
             amount,
             currency,
             paymentDate,
-            invoice.getInvoiceId(),
-            null);
+            reference,
+            null,
+            invoice);
     bankOrder.addBankOrderLineListItem(bankOrderLine);
+
     bankOrder = bankOrderRepo.save(bankOrder);
 
     return bankOrder;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,9 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,14 +36,22 @@ public class CompanyBankDetailsController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+  public void fillCompanyBankDetailsDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Partner partner = (Partner) request.getContext().get("partner");
     Company company = (Company) request.getContext().get("company");
     PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+    Integer operationTypeSelect = null;
+    if (request.getContext().get("_operationTypeSelect") != null) {
+      operationTypeSelect =
+          Integer.valueOf(request.getContext().get("_operationTypeSelect").toString());
+    }
     response.setAttr(
         "companyBankDetails",
         "domain",
         Beans.get(BankDetailsServiceImpl.class)
-            .createCompanyBankDetailsDomain(company, paymentMode));
+            .createCompanyBankDetailsDomain(partner, company, paymentMode, operationTypeSelect));
   }
 }

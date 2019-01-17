@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,16 +36,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface StockMoveService {
-
-  /**
-   * Méthode permettant d'obtenir la séquence du StockMove.
-   *
-   * @param stockMoveType Type de mouvement de stock
-   * @param company la société
-   * @return la chaine contenant la séquence du StockMove
-   * @throws AxelorException Aucune séquence de StockMove n'a été configurée
-   */
-  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
 
   /**
    * Generic method to create any stock move
@@ -119,8 +109,6 @@ public interface StockMoveService {
       int typeSelect)
       throws AxelorException;
 
-  public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
-
   public void validate(StockMove stockMove) throws AxelorException;
 
   public void goBackToDraft(StockMove stockMove) throws AxelorException;
@@ -166,8 +154,6 @@ public interface StockMoveService {
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException;
 
-  public BigDecimal compute(StockMove stockMove);
-
   public List<Map<String, Object>> getStockPerDate(
       Long locationId, Long productId, LocalDate fromDate, LocalDate toDate);
 
@@ -186,13 +172,6 @@ public interface StockMoveService {
    * @return
    */
   Integer changeConformityStockMoveLine(StockMove stockMove);
-
-  /**
-   * Fill {@link StockMove#fromAddressStr} and {@link StockMove#toAddressStr}
-   *
-   * @param stockMove
-   */
-  void computeAddressStr(StockMove stockMove);
 
   /**
    * Called from {@link com.axelor.apps.stock.web.StockMoveController#viewDirection}
@@ -221,62 +200,7 @@ public interface StockMoveService {
    */
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-  /**
-   * Compute stock move name.
-   *
-   * @param stockMove
-   * @return
-   */
-  String computeName(StockMove stockMove);
+  void setAvailableStatus(StockMove stockMove);
 
-  /**
-   * Compute stock move name with the given name.
-   *
-   * @param stockMove
-   * @param name
-   * @return
-   */
-  String computeName(StockMove stockMove, String name);
-
-  /**
-   * Get from address from stock move or stock location.
-   *
-   * @param stockMove
-   * @return
-   */
-  Address getFromAddress(StockMove stockMove);
-
-  /**
-   * Get to address from stock move or stock location.
-   *
-   * @param stockMove
-   * @return
-   */
-  Address getToAddress(StockMove stockMove);
-
-  /**
-   * Check whether mass information is required.
-   *
-   * @param stockMove
-   * @return
-   */
-  boolean checkMassesRequired(StockMove stockMove);
-
-  /**
-   * Get partner address.
-   *
-   * @param stockMove
-   * @return
-   * @throws AxelorException
-   */
-  Address getPartnerAddress(StockMove stockMove) throws AxelorException;
-
-  /**
-   * Get company address.
-   *
-   * @param stockMove
-   * @return
-   * @throws AxelorException
-   */
-  Address getCompanyAddress(StockMove stockMove) throws AxelorException;
+  void checkExpirationDates(StockMove stockMove) throws AxelorException;
 }

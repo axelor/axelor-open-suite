@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -46,6 +47,8 @@ public class BankStatementService {
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
       throws IOException, AxelorException {
 
+    bankStatement = find(bankStatement);
+
     if (bankStatement.getBankStatementFile() == null) {
       throw new AxelorException(
           I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
@@ -63,8 +66,6 @@ public class BankStatementService {
     switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
         Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
         updateStatus(bankStatement);
         break;
@@ -80,7 +81,7 @@ public class BankStatementService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateStatus(BankStatement bankStatement) {
-
+    bankStatement = find(bankStatement);
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }
@@ -98,8 +99,6 @@ public class BankStatementService {
     switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_0BY:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM_EUR:
         reportName = IReport.BANK_STATEMENT_AFB120;
         break;
       default:
@@ -115,5 +114,17 @@ public class BankStatementService {
         .toAttach(bankStatement)
         .generate()
         .getFileLink();
+  }
+
+  /**
+   * Finds bank statement.
+   *
+   * @param bankStatement
+   * @return
+   */
+  public BankStatement find(BankStatement bankStatement) {
+    return JPA.em().contains(bankStatement)
+        ? bankStatement
+        : bankStatementRepository.find(bankStatement.getId());
   }
 }

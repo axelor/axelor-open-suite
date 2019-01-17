@@ -10,9 +10,9 @@
 		<field name="ebicsBank"/>
 	</grid>
 	
-	<form name="ebics-partner-form" title="Ebics partner" onSave="action-ebics-partner-method-onsave" model="com.axelor.apps.bankpayment.db.EbicsPartner">
+	<form name="ebics-partner-form" title="Ebics partner" onSave="action-ebics-partner-method-onsave" model="com.axelor.apps.bankpayment.db.EbicsPartner" width="large">
 	
-		<panel title="General information">
+		<panel name="generalInformationPanel" title="General information">
 			<field name="partnerId" help="Name of the contract/subscription" max="35" x-bind="{{partnerId|uppercase}}" pattern='^[A-Z0-9]+$'/>
 			<field name="ebicsBank" />
 			<field name="ebicsTypeSelect" widget="RadioSelect"/>
@@ -21,33 +21,34 @@
 			<field name="defaultSignatoryEbicsUser" domain="self.ebicsPartner.id = :id AND self.userTypeSelect = 1"/>
 		</panel>
 		
-		<panel title="Bank statements" colSpan="12">
-			<field name="bankStatementFileFormatSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="6" form-view="bank-statement-file-format-form" grid-view="bank-statement-file-format-grid"/>
+		<panel name="bankStatementsPanel" title="Bank statements" colSpan="12">
+			<panel-related name="bsEbicsPartnerServiceListPanel" field="bsEbicsPartnerServiceList" colSpan="12" canNew="true" grid-view="bs-ebics-partner-service-grid"
+            form-view="bs-ebics-partner-service-form" editable="true" />
 			<field name="bankStatementGetModeSelect" colSpan="6" widget="radio-select" x-direction="horizontal"/>
 			<field name="bankStatementLastExeDateT" readonly="true" colSpan="6"/>
 			<field name="bankStatementStartDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
 			<field name="bankStatementEndDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
-			<button name="getBankStatementButton" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bankStatementFileFormatSet"/>
-			<button name="showBankStatementButton" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
+			<button name="getBankStatementBtn" title="Get the bank statements" colSpan="6" onClick="save,action-ebics-partner-method-get-bank-statement" readonlyIf="!bsEbicsPartnerServiceList"/>
+			<button name="showBankStatementBtn" title="Show the bank statements" onClick="action-ebics-partner-view-show-bank-statement"/>
 		</panel>
 
-		<panel title="Filter Receiver Bank Details">
+		<panel name="filterReceiverBankDetailsPanel" title="Filter Receiver Bank Details">
 			<field name="filterReceiverBD"/>
 			<field name="orderTypeSelect" showIf="filterReceiverBD"/>
 			<field name="receiverBankDetailsSet" colSpan="12" showIf="filterReceiverBD"/>
 		</panel>
 		
-		<panel title="Payment Status Report">
+		<panel name="paymentStatusReportPanel" title="Payment Status Report">
 			<field name="usePSR" widget="boolean-switch"/>
 			<field name="pSRBankStatementFileFormat" showIf="usePSR"/>
 		</panel>
 		
-		<panel-related field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
+		<panel-related name="bankDetailsSetPanel" field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
 
-        <panel-related field="ebicsPartnerServiceList" colSpan="12" canNew="true" grid-view="ebics-partner-service-grid"
-            form-view="ebics-partner-service-form" editable="true" />
+        <panel-related name="boEbicsPartnerServiceListPanel" field="boEbicsPartnerServiceList" colSpan="12" canNew="true" grid-view="bo-ebics-partner-service-grid"
+            form-view="bo-ebics-partner-service-form" editable="true" />
 
-		<panel-dashlet action="action-ebics-partner-view-ebics-users"/>
+		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-partner-view-ebics-users"/>
 
 	</form>
 	

@@ -8,26 +8,29 @@
     </grid>
 
     <form name="bank-payment-config-form" title="Bank payment configuration" model="com.axelor.apps.bankpayment.db.BankPaymentConfig" onNew="action-bank-payment-config-record-default" width="large">
-        <panel name="bankOrder" title="Bank Order">
-            <panel colSpan="12">
+        <panel name="bankOrderDetailsPanel" title="Bank Order">
+            <panel name="mainPanel">
+				<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+            </panel>
+            <panel colSpan="12" name="detailsPanel">
                 <field name="generateMoveOnBankOrderValidation"/>
                 <field name="icsNumber" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
                 <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                 <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
             </panel>
-            <panel name="creditTransferBankOrderSequences" title="Credit transfer bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageCreditTransferPayment">
+            <panel name="creditTransferBankOrderSequencesPanel" title="Credit transfer bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageCreditTransferPayment">
                 <field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
                 <field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
-            <panel name="directDebitBankOrderSequences" title="Direct debit bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageDirectDebitPayment">
+            <panel name="directDebitBankOrderSequencesPanel" title="Direct debit bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageDirectDebitPayment">
                 <field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
                 <field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
-            <panel name="treasuryTransferBankOrderSequences" title="Treasury transfer Bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageBankToBankTransferPayment">
+            <panel name="treasuryTransferBankOrderSequencesPanel" title="Treasury transfer Bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageBankToBankTransferPayment">
                 <field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
                 <field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
-            <panel name="other" title="Other" colSpan="12">
+            <panel name="otherPanel" title="Other" colSpan="12">
                 <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
         </panel>

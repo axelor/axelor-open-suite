@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,7 +63,7 @@ public class UserController {
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
-      response.setAttr("testing", "hidden", false);
+      response.setAttr("testingPanel", "hidden", false);
     }
   }
 
@@ -108,7 +108,7 @@ public class UserController {
           MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
       boolean valid = userService.matchPasswordPattern(newPassword);
 
-      response.setAttr("passwordPatternDescription", "hidden", valid);
+      response.setAttr("passwordPatternDescriptionLabel", "hidden", valid);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

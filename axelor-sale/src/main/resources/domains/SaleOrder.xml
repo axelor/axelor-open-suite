@@ -13,7 +13,7 @@
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
-  	<date name="confirmationDate" title="Confirmation date" readonly="true"/>
+  	<datetime name="confirmationDateTime" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
@@ -52,9 +52,11 @@
     <integer name="statusSelect" title="Status" selection="sale.order.status.select" readonly="true"/>
     
 <!-- 	Margins -->
+	<decimal name="accountedRevenue" title="Accounted Revenue"/>
 	<decimal name="totalCostPrice" title="Total cost price"/>
-	<decimal name="totalGrossMargin" title="Total gross margin"/>
-	<decimal name="marginRate" title="Margin rate"/>
+	<decimal name="totalGrossMargin" title="Gross Profit"/>
+	<decimal name="marginRate" title="Margin (%)"/>
+	<decimal name="markup" title="Markup (%)"/>
   	
 <!--   	Onglet Autres informations -->
 	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
@@ -133,7 +135,7 @@
       <field name="clientPartner" />
       <field name="statusSelect"/>
       <field name="creationDate" on="CREATE" />
-      <field name="confirmationDate" on="UPDATE"/>
+      <field name="confirmationDateTime" on="UPDATE"/>
       <field name="inTaxTotal" />
       <message if="true" on="CREATE">Quotation/sale order created</message>
       <message if="statusSelect == 1" tag="important">Draft quotation</message>

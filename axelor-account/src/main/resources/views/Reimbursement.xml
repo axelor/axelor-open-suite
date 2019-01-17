@@ -10,34 +10,34 @@
     </grid>
     
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  onNew="action-reimbursement-set-default">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="ref" colSpan="12"/>
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company member of self.companySet"/>
 		</panel>
 		
-		<panel name="reimbursementDetails" title="Reimbursement details">
+		<panel name="reimbursementDetailsPanel" title="Reimbursement details">
 			<field name="amountToReimburse"/>
 			<field name="amountReimbursed"/>
 			<field name="bankDetails" domain="self.active = true" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 		
-		<panel name="reason" title="Reason">
+		<panel name="reasonPanel" title="Reason">
 			<field name="description" colSpan="12" showTitle="false"/>
 		</panel>
 		
-		<panel  name="rejectInformation" title="Reject Information" showIf="rejectedOk">
+		<panel  name="rejectInformationPanel" title="Reject Information" showIf="rejectedOk">
 			<field name="rejectedOk"/>
 			<field name="interbankCodeLine" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			<field name="rejectDate"/>
 			<field name="rejectMoveLine" grid-view="move-line-grid" form-view="move-line-form"/>
 		</panel> 
 		
-		<panel-related field="moveLineSet" hideIf="statusSelect == 1" colSpan="12" grid-view="move-line-grid" form-view="move-line-form"/>
+		<panel-related name="moveLineSetPanel" field="moveLineSet" hideIf="statusSelect == 1" colSpan="12" grid-view="move-line-grid" form-view="move-line-form"/>
 		
-		<panel sidebar="true" name="info" title="Info">
+		<panel sidebar="true" name="infoPanel" title="Info">
 			<field name="statusSelect"/>
-			<button name="validateReimbursement" title="Validate" onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save" showIf="statusSelect == 2"/>
+			<button name="validateReimbursementBtn" title="Validate" onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
     

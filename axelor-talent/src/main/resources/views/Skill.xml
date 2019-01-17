@@ -8,7 +8,7 @@
 	</grid>
 	
 	<form name="tag-skill-form" title="Tag skill" model="com.axelor.apps.talent.db.Skill" width="large">
-		<panel>
+		<panel name="namePanel">
 			<field name="name" />
 		</panel>
 	</form>

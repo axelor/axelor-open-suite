@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,16 +28,12 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.StockMoveLineSupplychainServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -57,14 +53,11 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    if (saleOrder == null) {
-      saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-      saleOrderLine.setSaleOrder(saleOrder);
-    }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
           saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
+      response.setValue(
+          "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
     }
   }
@@ -72,19 +65,9 @@ public class SaleOrderLineController {
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-    if (saleOrder == null) {
-      saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
-      saleOrderLine.setSaleOrder(saleOrder);
-    }
-    if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
-      saleOrderLine =
-          saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("No template selected"));
-    }
+    saleOrderLine =
+        saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
+    response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 
   public void checkStocks(ActionRequest request, ActionResponse response) {
@@ -104,7 +87,8 @@ public class SaleOrderLineController {
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             Beans.get(UnitConversionService.class)
-                .convertWithProduct(saleOrderLine.getUnit(), unit, qty, saleOrderLine.getProduct());
+                .convert(
+                    saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
       Beans.get(StockLocationLineService.class)
           .checkIfEnoughStock(saleOrder.getStockLocation(), saleOrderLine.getProduct(), qty);
@@ -114,14 +98,16 @@ public class SaleOrderLineController {
   }
 
   public void fillAvailableStock(ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    if (saleOrderLine.getSaleOrder() == null) {
-      return;
-    }
-    if (saleOrderLine.getProduct() != null
-        && saleOrderLine.getSaleOrder().getStockLocation() != null) {
-      response.setValue(
-          "$availableStock", saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrderLine));
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
+
+    if (saleOrder != null) {
+      if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
+        response.setValue(
+            "$availableStock",
+            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine));
+      }
     }
   }
 
@@ -130,17 +116,18 @@ public class SaleOrderLineController {
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineRepository.class)
-              .all()
-              .filter("self.saleOrderLine = :saleOrderLine")
-              .bind("saleOrderLine", saleOrderLine)
-              .fetchOne();
-      saleOrderLineServiceSupplyChainImpl.changeReservedQty(saleOrderLine, newReservedQty);
-      if (stockMoveLine != null) {
-        Beans.get(StockMoveLineSupplychainServiceImpl.class)
-            .updateReservedQty(stockMoveLine, newReservedQty);
-      }
+      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void changeRequestedReservedQty(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    BigDecimal newReservedQty = saleOrderLine.getRequestedReservedQty();
+    try {
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -192,6 +179,11 @@ public class SaleOrderLineController {
     if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
       domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
     }
+
+    if (saleOrder.getCompany() != null) {
+      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+    }
+
     response.setAttr("supplierPartner", "domain", domain);
   }
 

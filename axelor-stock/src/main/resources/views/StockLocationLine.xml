@@ -5,32 +5,39 @@
     
     <grid name="stock-location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
+        <field name="requestedReservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
         <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
-    	<panel name="main">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload">
+    	<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	        <field name="currentQty"/>
-	        <field name="futureQty"/>
-	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-            <field name="avgPrice" x-scale="2"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
+            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
-		<panel name="lastInventory" title="Last inventory">
+		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
-		<panel>
-        	<button name="plannedStockMoveLineBtn" title="Planned stock move lines" onClick="action-stock-location-line-view-planned-stock-move-lines"/>
-        	<button name="realizedStockMoveLineBtn" title="Realized stock move lines" onClick="action-stock-location-line-view-realized-stock-move-lines"/>
+		<panel name="actionPanel">
+        	<button name="$realQtyBtn" title="Real qty" icon="fa-building-o" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes" onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3" widget="info-button" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
         </panel>
+        <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
+        <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -38,20 +45,23 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
-        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
 
-    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
-        <panel name="main">
+    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-atts-avg-price-scale">
+        <panel name="mainPanel">
             <field name="product" form-view="product-form" grid-view="product-grid"/>
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
-            <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2" colSpan="4"/>
+            <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
     </form>
     
@@ -59,34 +69,43 @@
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
-        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
-		<panel name="main">
+    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload"> 
+		<panel name="mainPanel">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	        <field name="currentQty"/>
-	        <field name="futureQty"/>
-	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
+            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
-		<panel name="lastInventory" title="Last inventory">
+		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+		<panel name="actionPanel">
+        	<button name="$realQtyBtn" title="Real qty" icon="fa-building-o" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3" widget="info-button"/>
+        	<button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes" onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3" widget="info-button" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
+        </panel>
+        <panel-dashlet name="productQtyInOtherStockLocationPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
     </form>
     
      <grid name="stock-location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" groupBy="product">
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
-        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
@@ -94,30 +113,43 @@
     
     <grid name="stock-location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
+        <field name="detailsStockLocation" title="Stock location" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="currentQty" aggregate="sum"/>
         <field name="futureQty" aggregate="sum"/>
-        <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine">
-		<panel name="main">
+    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
+		<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
-	        <field name="product.unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" x-scale="2"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+            <field name="avgPrice"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
         </panel>
-		<panel name="lastInventory" title="Last inventory">
+		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
     </form>
+    
+    <action-group name="action-stock-location-line-group-onload">
+    	<action name="action-stock-location-line-atts-avg-price-scale"/>
+    	<action name="action-stock-location-line-record-total-quantities"/>
+    </action-group>
+    
+    <action-view name="action-stock-location-line-view-product-qty" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="stock-location-line-product-grid"/>
+    	<view type="form" name="stock-location-line-product-form"/>
+    	<domain>self.product.id = :productId AND self.stockLocation.id != :locationId AND self.stockLocation.typeSelect != 3</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id"/>
+    </action-view>
     
     <action-view name="action-stock-location-line-view-planned-stock-move-lines" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     	<view type="grid" name="stock-move-line-all-grid-planned"/>
@@ -132,6 +164,41 @@
     	<view type="form" name="stock-move-line-all-form"/>
     	<domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
     	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id "/>
+    </action-view>
+    
+    <action-view name="action-stock-location-line-view-show-detailed-stock" title="Detailed stock" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="stock-location-line-details-grid"/>
+    	<view type="form" name="stock-location-line-details-form"/>
+    	<domain>self.detailsStockLocation.id = :stockLocationId AND self.product.id = :productId</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="stockLocationId" expr="eval: stockLocation?.id "/>
+    </action-view>
+
+    <action-attrs name="action-stock-location-line-atts-avg-price-scale">
+    	<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
+    	<attribute name="value" for="$isAvgPriceEditable" expr="eval:false"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-location-line-attrs-update-avg-price">
+    	<attribute name="value" for="$isAvgPriceEditable" expr="eval:true"/>
+    </action-attrs>
+    
+    <action-record name="action-stock-location-line-record-is-avg-price-changed" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<field name="isAvgPriceChanged" expr="eval:__self__.avgPrice.compareTo(__this__.avgPrice) != 0"/>
+    </action-record>
+        
+    <action-record name="action-stock-location-line-record-total-quantities" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id)"/>
+        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id)"/>
+        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id)" if="__config__.app.isApp('supplychain')" />
+    </action-record>
+    
+    <action-view name="action-stock-location-line-view-stock-rule" title="Stock Rules" model="com.axelor.apps.stock.db.StockRules">
+    	<view type="grid" name="stock-rules-grid"/>
+    	<view type="form" name="stock-rules-form"/>
+    	<domain>self.product.id = :productId AND self.stockLocation.id = :locationId</domain>
+    	<context name="productId" expr="eval: product?.id"/> 
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
     

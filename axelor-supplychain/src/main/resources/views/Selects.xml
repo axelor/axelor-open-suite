@@ -7,10 +7,12 @@
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
 	<selection name="supplychain.batch.action.select">
+		<option value="1">Accounting cut-off</option>
 		<option value="3">Invoice orders</option>
 	</selection>
 
 	<selection name="supplychain.batch.invoice.stock.moves.action.select">
+		<option value="1">Accounting cut-off</option>
 		<option value="2">Invoice outgoing stock moves</option>
 		<option value="3">Invoice orders</option>
 	</selection>
@@ -76,6 +78,11 @@
 	
 	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
 		<option value="6">Subscription</option>
+	</selection>
+	
+	<selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
+		<option value="1">Forecasted supplier invoices</option>
+		<option value="2">Forecasted customer invoices</option>
 	</selection>
 
 </object-views>

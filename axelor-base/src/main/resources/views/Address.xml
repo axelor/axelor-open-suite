@@ -5,16 +5,16 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
-			<button name="checkDuplicate" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
 		</toolbar>
 		<field name="fullName" />
-		<button name="map" icon="fa-map-marker" onClick="action-base-address-method-view-map" />
-		<button name="directions" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" />
+		<button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map" />
+		<button name="directionsBtn" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"  onNew="default-address-record" width="large" >
-		<panel name="main" title="Address details" colSpan="12">
+		<panel name="mainPanel" title="Address details" colSpan="12">
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -24,30 +24,30 @@
 			<field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
 			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
 			<static name="addressL6Text" colSpan="12">Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.</static>
-			<button-group colSpan="6" hideIf="$popup()">
-				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
-				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
+			<button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()">
+				<button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
+				<button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
 			</button-group>
-            <spacer colSpan="6"/>
-            <button-group colSpan="6" showIf="$popup()">
-                <button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
-                <button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
+            <spacer name="btnGrpSpacer" colSpan="6"/>
+            <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()">
+                <button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
+                <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
+		<panel name="qasCertificationPanel" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
-			<panel colSpan="4">
-				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+			<panel name="actionsPanel" colSpan="4">
+				<button name="validateBtn" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+				<button name="selectBtn" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 			</panel>
-			<panel-related field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+			<panel-related name="pickListPanel" field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
 		</panel>
 	</form>
 	
 	<form name="address-partner-address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-update-lat-long"  onNew="default-address-record" width="large" >
-		<panel name="main" title="Address details" colSpan="12">
+		<panel name="mainPanel" title="Address details" colSpan="12">
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
@@ -61,23 +61,23 @@
 			<field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Delivery address" />
 			<field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Default" />
 			<button-group colSpan="6" hideIf="$popup()">
-				<button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
-				<button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
+				<button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
+				<button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
 			</button-group>
-            <spacer colSpan="6"/>
+            <spacer name="btnGrpSpacer" colSpan="6"/>
             <button-group colSpan="6" showIf="$popup()">
-                <button name="map" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
-                <button name="directions" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
+                <button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
+                <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
 		</panel>
-		<panel name="qasCertification" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
+		<panel name="qasCertificationPanel" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
-			<panel colSpan="4">
-				<button name="validate" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-				<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+			<panel name="actionsPanel" colSpan="4">
+				<button name="validateBtn" title="Validate"  onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+				<button name="selectBtn" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save"/>
 			</panel>
-			<panel-related field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+			<panel-related name="pickListPanel" field="pickList" title="Pick list" colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
 		</panel>
 	</form>
 	

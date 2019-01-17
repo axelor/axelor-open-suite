@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
@@ -247,5 +248,56 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     return invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber) {
+    InvoicePayment invoicePayment =
+        createInvoicePayment(
+            invoice,
+            invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+            paymentDate,
+            invoice.getCurrency(),
+            paymentMode,
+            InvoicePaymentRepository.TYPE_PAYMENT);
+    invoicePayment.setCompanyBankDetails(companyBankDetails);
+    invoicePayment.setBankDepositDate(bankDepositDate);
+    invoicePayment.setChequeNumber(chequeNumber);
+    return invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public List<InvoicePayment> createMassInvoicePayment(
+      List<Long> invoiceList,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber)
+      throws AxelorException {
+
+    List<InvoicePayment> invoicePaymentList = new ArrayList<>();
+
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+
+    for (Long invoiceId : invoiceList) {
+
+      invoicePaymentList.add(
+          this.createInvoicePayment(
+              invoiceRepository.find(invoiceId),
+              paymentMode,
+              companyBankDetails,
+              paymentDate,
+              bankDepositDate,
+              chequeNumber));
+    }
+
+    return invoicePaymentList;
   }
 }

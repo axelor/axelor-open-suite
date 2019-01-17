@@ -6,7 +6,7 @@
     <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
@@ -18,6 +18,7 @@
         <field name="endOfValidityDate" hidden="true"/>
         <field name="saleOrderSeq"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="externalReference"/>
@@ -26,15 +27,15 @@
         <field name="inTaxTotal" aggregate="sum"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
-        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
 	<grid name="sale-order-grid" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
@@ -47,17 +48,21 @@
 		<field name="endOfValidityDate" hidden="true" />
 		<field name="saleOrderSeq" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
+		<field name="amountInvoiced" hidden="true" aggregate="sum" if="__config__.app.isApp('supplychain')"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
+		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
-		<button name="print" title="Print" icon="fa-print"
+		<field name="salemanUser"/>
+		<button name="printBtn" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
-		<button name="sendByEmail" title="Send email" icon="fa-envelope"
+		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
 			onClick="action-send-by-email-with-template" />
 	</grid>
 
@@ -65,7 +70,7 @@
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-placeholder-print"/>
+                <item title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
@@ -80,8 +85,8 @@
         <field name="inTaxTotal" aggregate="sum"/>
 		<field name="externalReference"/>
 		<field name="statusSelect"/>
-        <button name="print" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
-        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
 
     <grid name="sale-order-opportunity-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -94,9 +99,9 @@
         <field name="inTaxTotal" aggregate="sum"/>
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="statusSelect" />
-		<button name="print" title="Print" icon="fa-print"
+		<button name="printBtn" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
-		<button name="sendByEmail" title="Send email" icon="fa-envelope"
+		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
 			onClick="action-send-by-email-with-template" />
 	</grid>
 
@@ -106,36 +111,36 @@
     </calendar>
 
     <form name="sale-order-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge sale orders" width="large">
-		<panel-related field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
-		<panel sidebar="true" title="Actions">
-			<button name="generateMergedSaleOrder" title="Merge into single sale order" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>
+		<panel-related name="saleOrderToMergePanel" field="$saleOrderToMerge" form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-grid"/>
+		<panel name="actionsPanel" sidebar="true" title="Actions">
+			<button name="generateMergedSaleOrderBtn" title="Merge into single sale order" onClick="action-validate-sale-order-check-selection,action-group-sale-order-merge-action"/>
 	  	</panel>
     </form>
 
     <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard" title="Merge quotations" width="large">
-		<panel-related field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
-		<panel sidebar="true" title="Actions">
-			<button name="generateMergedSaleOrder" title="Merge into single quotation" onClick="action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
+		<panel-related name="saleQuotationToMergePanel" field="$saleQuotationToMerge" form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many" target="com.axelor.apps.sale.db.SaleOrder" domain="self.statusSelect = 1" canNew="false" canEdit="false" grid-view="sale-order-quotation-grid"/>
+		<panel name="actionsPanel" sidebar="true" title="Actions">
+			<button name="generateMergedSaleOrderBtn" title="Merge into single quotation" onClick="action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
 	  	</panel>
     </form>
 
     <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard" title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
-		<panel colSpan="6" colOffset="3">
+		<panel name="mainPanel" colSpan="6" colOffset="3">
             <field name="priceListToCheck" hidden="true" colSpan="12" />
             <field name="locationToCheck" hidden="true" colSpan="12" />
             <field name="contactPartnerToCheck" hidden="true" colSpan="12" />
 			<field name="$priceList" title="Price List" type="many-to-one" target="com.axelor.apps.base.db.PriceList" domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3" width="200px" showIf="priceListToCheck" canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
-			<field name="$stockLocation" title="Stock location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.StockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
+			<field name="$stockLocation" canEdit="false" title="Stock location" showIf="locationToCheck" if-module="axelor-supplychain" colSpan="6" colOffset="3" width="200px" type="many-to-one" canSelect="true" target="com.axelor.apps.stock.db.StockLocation" domain="self.company = company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 			<field name="$contactPartner" title="Contact partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<button name="confirm" title="Confirmer" onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
+			<button name="confirmBtn" title="Confirmer" onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
 
     <form name="sale-order-cancel-wizard-form" model="com.axelor.apps.sale.db.SaleOrder" title="Cancellation confirmation" >
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
 			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
-			<button name="cancelConfirm" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colOffset="4" colSpan="4"/>
+			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-sale-order-method-confirm-cancel" colOffset="4" colSpan="4"/>
 		</panel>
     </form>
 
@@ -167,8 +172,8 @@
 	      <item title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
 	    </menu>
 	  </menubar>
-	  <panel>
-	    <panel colSpan="12">
+	  <panel name="mainPanel">
+	    <panel name="blockedCustCreditExceedPanel" colSpan="12">
 	      <field name="blockedOnCustCreditExceed" showTitle="false" readonly="true" showIf="blockedOnCustCreditExceed &amp;&amp; !manualUnblock" colSpan="4">
 	        <viewer depends="blockedOnCustCreditExceed"><![CDATA[
 	          <h5>
@@ -176,7 +181,7 @@
 	          </h5>
 	        ]]></viewer>
 	      </field>
-	      <button name="manualUnblockButton" title="Manual Unblock" showIf="blockedOnCustCreditExceed == true &amp;&amp; manualUnblock == false" colSpan="4" css="btn-custom" onClick="action-sale-order-manual-unblock"/>
+	      <button name="manualUnblockBtn" title="Manual Unblock" showIf="blockedOnCustCreditExceed == true &amp;&amp; manualUnblock == false" colSpan="4" css="btn-custom" onClick="action-sale-order-manual-unblock"/>
 	      <field name="manualUnblock" hidden="true"/>
 	      <field name="orderBeingEdited" hidden="true"/>
 	      <field name="$viewerOrderBeingEdited" showTitle="false" readonly="true" showIf="orderBeingEdited" colSpan="9">
@@ -197,7 +202,7 @@
 		      </h3>
 		    ]]></viewer>
 		  </field>
-	    <panel>
+	    <panel name="detailsPanel">
 	      <field name="$invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3" css="label-bold bold" colSpan="4">
 	        <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
 	        <div>
@@ -238,47 +243,50 @@
 	        ]]></viewer>
 	      </field>
 	  	</panel>
-	    <panel colSpan="12">
+	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
+	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
 	      <field name="currency" readonlyIf="statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
-	      <field name="contactPartner" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
+	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
-	      <panel colSpan="3">
+	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
+	      <panel name="otherInfoPanel" colSpan="3">
 	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
-	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="interco" widget="boolean-switch"/>
+	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
 	    	</panel>
 	    </panel>
-	    <panel colSpan="12" hideIf="company == null">
-	      <panel stacked="true">
-	        <field name="mainInvoicingAddress" hideIf="$readonly() || statusSelect > 1" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-	        <field name="mainInvoicingAddressStr" readonlyIf="statusSelect > 1" height="5">
+	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
+	      <panel name="mainInvoicingAddressPanel" stacked="true">
+	        <field name="mainInvoicingAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="mainInvoicingAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.mainInvoicingAddressStr}}]]></viewer>
 	        </field>
 	      </panel>
-	      <panel stacked="true">
-	        <field name="deliveryAddress" hideIf="$readonly() || statusSelect > 1" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1" height="5">
+	      <panel name="deliveryAddressPanel" stacked="true">
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
 	      </panel>
 	    </panel>
 	    <field name="clientPartner.saleOrderInformation" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null" colSpan="12" css="bold red"/>
 	  </panel>
-	  <panel-tabs hideIf="clientPartner == null">
-	    <panel name="content" title="Content">
-	      <panel-related title="Details Lines" readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true"/>
-	      <panel title="Description to display" colSpan="12">
+	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null">
+	    <panel name="contentPanel" title="Content">
+	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
+                     canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true"/>
+	      <panel name="descriptionPanel" title="Description to display" colSpan="12">
 	        <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	      </panel>
 	    </panel>
-	    <panel name="tax" title="Tax">
-	      <panel-related colSpan="12" field="saleOrderLineTaxList" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
+	    <panel name="taxPanel" title="Tax">
+	      <panel-related name="saleOrderLineTaxListPanel" colSpan="12" field="saleOrderLineTaxList" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
-	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformation" title="Delivery information" colSpan="12">
+	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
-	      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="deliveryDate"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
@@ -286,59 +294,66 @@
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <panel-dashlet title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-view-show-stock-move-line"/>
+	      <field name="isNeedingConformityCertificate"/>
+	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
+	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	    </panel>
-	    <panel-dashlet if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
+	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
+	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
+		  	<field name="productionNote" widget="Html" colSpan="12"/>
+		  	<panel-dashlet name="manufOrdersPanel" action="action-sale-order-view-manuf-orders" colSpan="12"/>
+	    </panel>
 		<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 			<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType" colSpan="6"/>
 			<field name="$_elementStartDate" title="Start date" widget="date-time" colSpan="6" type="datetime"/>
 			<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
-			<panel colSpan="6">
-				<button name="updateLines" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
-				<button name="fillProject" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project" colSpan="12"/>
-				<button name="generateProject" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project" colSpan="12"/>
+			<panel name="projectDetailsPanel" colSpan="6">
+				<button name="updateLinesBtn" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
+				<button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project" colSpan="12"/>
+				<button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project" colSpan="12"/>
 			</panel>
 		</panel>
-	    <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetable" title="Timetable">
+	    <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
-	      <label title="OR"/>
+	      <label name="orLabel" title="OR"/>
 	      <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
-	      <panel-related if-module="axelor-supplychain" colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
+	      <panel-related name="timetableListPanel"  if-module="axelor-supplychain" colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
 	    </panel>
-	    <panel-related if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList" form-view="advance-payment-form" grid-view="advance-payment-grid"/>
-	    <panel if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()" name="printing" title="Printing">
+	    <panel-related name="advancePaymentListPanel" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList" form-view="advance-payment-form" grid-view="advance-payment-grid"/>
+	    <panel if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()" name="printingPanel" title="Printing">
 	      <field name="printingSettings" canEdit="false" onSelect="action-sale-method-filter-printing-settings"/>
 	      <field name="hideDiscount"/>
 	      <field name="specificNotes" readonly="true" showIf="specificNotes" colSpan="12"/>
 	    </panel>
 	    <panel-include if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
+			<panel-dashlet if="__config__.app.isApp('supplychain')" name="generatedPurchaseOrderPanel" title="Generated purchase orders" action="action-sale-order-view-show-generated-po"/>
 	  </panel-tabs>
-	  <panel>
+	  <panel name="attrsPanel">
 	    <field name="attrs" colSpan="12"/>
 	  </panel>
-	  <panel name="actions" hideIf="clientPartner == null" sidebar="true" stacked="true">
-	    <button name="finalize" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize-quotation"/>
-	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrder" title="Complete manually sale order" showIf="statusSelect == 3" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
-	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersion" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
-	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrder" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
-	    <button name="validateChanges" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
-	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMove" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
-	    <button name="confirmOrder" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
-	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" if-module="axelor-supplychain" name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-view-invoicing-wizard"/>
-	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" name="generatePO" title="Generate purchase order" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrder" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
-	    <spacer/>
-	    <button name="cancel" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
-	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePayment" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
+	  <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true">
+	    <button name="finalizeBtn" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="save,action-sale-order-method-finalize-quotation"/>
+	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrderBtn" title="Complete manually sale order" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
+	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
+	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrderBtn" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
+	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
+	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMoveBtn" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
+	    <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-view-invoicing-wizard"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" name="generatePOBtn" title="Generate purchase order" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
+	    <spacer name="btnSpacer"/>
+	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
-	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfigurator" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
+	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfiguratorBtn" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
 	  </panel>
-	  <panel readonly="true" hideIf="clientPartner == null" colSpan="4" sidebar="true">
+	  <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4" sidebar="true">
 	    <separator/>
 	    <field name="inTaxTotal" showTitle="false" colSpan="12" css="order-subtotal">
 	      <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
-	
+
 	                  <dl class="dl-horizontal">
 	                      <dt x-translate>Total W.T.</dt>
 	                      <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
@@ -351,36 +366,46 @@
 	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
 	                      <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
 	                  </dl>
-	
+
 	              ]]></viewer>
 	    </field>
 	  </panel>
-	  <panel name="salesFollowUp" title="Sales follow-up" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
+	  <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
 	    <field name="salemanUser" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 	    <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
-	    <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
 	  </panel>
-	  <panel name="caracteristics" title="Caracteristics" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
-	    <panel colSpan="12" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain">
-	      <field name="paymentMode" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-		    <field name="paymentCondition" readonlyIf="statusSelect >= 2" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+	  <panel name="characteristicsPanel" title="Characteristics" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
+	    <panel name="paymentDetailsPanel" colSpan="12" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain">
+	      <field name="paymentMode" readonlyIf="statusSelect > 2" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+		    <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	    </panel>
 	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	  </panel>
-	  <panel title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
 	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid"/>
-	    <field name="externalReference" hideIf="company == null"/>
+	    <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
 	  </panel>
-	  <panel title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	  <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
+	  	<field name="accountedRevenue">
+	  		<hilite if="accountedRevenue &lt; companyExTaxTotal" color="warning"/>
+	  	</field>
 	    <field name="totalCostPrice"/>
-	    <field name="totalGrossMargin"/>
-	    <field name="marginRate"/>
-	    <field name="company.currency" title="Company Currency" readonly="true"/>
+	    <field name="totalGrossMargin">
+	    	<hilite if="totalGrossMargin &lt; 0" color="danger"/>
+	    </field>
+	    <field name="marginRate">
+	    	<hilite if="marginRate &lt; 0" color="danger"/>
+	    </field>
+	    <field name="markup">
+	    	<hilite if="markup &lt; 0" color="danger"/>
+	    </field>
+	    <field name="company.currency" title="Company currency" readonly="true"/>
 	  </panel>
-	  <panel name="dates" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
+	  <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDate" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
+	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
@@ -395,10 +420,10 @@
 	    </field>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="standardDelay" hidden="true" readonly="true" showIf="standardDelay > 0"/>
 	  </panel>
-	  <panel title="Internal Note" colSpan="12" sidebar="true">
+	  <panel name="internalNotePanel" title="Internal Note" colSpan="12" sidebar="true">
 	    <field name="internalNote" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	  </panel>
-	  <panel-mail>
+	  <panel-mail name="mailPanel">
 	    <mail-messages limit="4"/>
 	    <mail-followers/>
 	  </panel-mail>
@@ -426,7 +451,7 @@
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
 		onNew="action-group-sale-saleorder-onnew"
 		onLoad="action-group-sale-saleorder-onload">
-	  <panel>
+	  <panel name="overviewPanel">
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
 	    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect == 3"/>
@@ -434,10 +459,10 @@
 	    <field name="templateUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	  </panel>
 
-	  <panel name="customerInformation" title="Customer information">
+	  <panel name="customerInformationPanel" title="Customer information">
 	      <field name="clientPartner" onChange="action-sale-order-group-partner-change" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
    	      <field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-          <panel stacked="true">
+          <panel name="mainInvoicingAddressPanel" stacked="true">
               <field name="mainInvoicingAddress" canNew="true"
 					 hideIf="$readonly() || statusSelect &gt; 1"
 					 onChange="action-sale-order-method-address-str"
@@ -448,7 +473,7 @@
 				  <viewer>{{record.mainInvoicingAddressStr}}</viewer>
 			  </field>
           </panel>
-          <panel stacked="true">
+          <panel name="deliveryAddressPanel" stacked="true">
               <field name="deliveryAddress" canNew="true"
 					 hideIf="$readonly() || statusSelect &gt; 1"
 					 onChange="action-sale-order-method-address-str"
@@ -461,26 +486,27 @@
           </panel>
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
-      	  <field name="externalReference"/>
+      	  <field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
+      	  <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
       </panel>
-	  <panel-tabs>
-	    <panel name="content" title="Content">
-	    	<panel-related field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
-	    	<panel-related field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
+	  <panel-tabs name="mainPanelTab">
+	    <panel name="contentPanel" title="Content">
+	    	<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
-	    <panel name="otherInformations" title="Other informations" showTitle="false">
-	      <panel name="salesFollowUp" title="Sales follow-up" colSpan="12">
+	    <panel name="otherInformationsPanel" title="Other informations" showTitle="false">
+	      <panel name="salesFollowUpPanel" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
-	      <panel name="financialTerms" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 	        <field name="paymentMode" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
-	      <panel name="stockLocation" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-   		      <field name="stockLocation" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <panel name="stockLocationPanel" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+   		      <field name="stockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      </panel>
-	      <panel name="description" title="Description" colSpan="12">
+	      <panel name="descriptionPanel" title="Description" colSpan="12">
 	        <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
 	      </panel>
 	    </panel>
@@ -490,21 +516,21 @@
        	</panel>
 	  </panel-tabs>
 
-	  <panel sidebar="true" name="actions" title="Actions">
-	  	<button name="createOrder" title="Create Order from this Template" onClick="save,action-sale-order-method-generate-order"/>
+	  <panel sidebar="true" name="actionsPanel" title="Actions">
+	  	<button name="createOrderBtn" title="Create Order from this Template" onClick="save,action-sale-order-method-generate-order"/>
 	  </panel>
 
-	  <panel sidebar="true" name="info" title="Info.">
+	  <panel sidebar="true" name="infoPanel" title="Info.">
 	    <field name="creationDate"  readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="confirmedByUser" canNew="false" canEdit="false" canView="false" readonly="true" colSpan="6" showIf="statusSelect == 3" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDate" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
+	    <field name="confirmationDateTime" readonly="true" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	  </panel>
 
-        <panel sidebar="true" readonly="true"  colSpan="4">
+        <panel name="inTaxTotalPanel" sidebar="true" readonly="true"  colSpan="4">
             <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
                 <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
@@ -538,7 +564,7 @@
         <field name="inTaxTotal" aggregate="sum" />
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect" />
-		<button name="print" title="Print" icon="fa-print"
+		<button name="printBtn" title="Print" icon="fa-print"
 			onClick="action-sale-order-method-show-sale-order" />
 	</grid>
 
@@ -548,18 +574,18 @@
 		onLoad="action-group-sale-saleorder-onload" onSave="save,action-sale-order-method-compute,save"
 		onNew="action-group-sale-saleorder-onnew" width="large">
 	  <toolbar>
-	    <button name="print" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
+	    <button name="printBtn" title="Print" icon="fa-print" onClick="save,action-sale-order-method-show-sale-order"/>
 	  </toolbar>
-	  <panel name="main" readonly="true">
+	  <panel name="mainPanel" readonly="true">
 	    <field name="saleOrderSeq" css="highlight"/>
 	    <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 	    <field name="externalReference"/>
 	    <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 	  </panel>
-		<panel-tabs readonly="true">
-			<panel name="customerInformation" title="Customer information" showTitle="false">
-				<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" canView="false"/>
-				<panel stacked="true">
+		<panel-tabs readonly="true" name="mainPanelTab">
+			<panel name="customerInformationPanel" title="Customer information" showTitle="false">
+				<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" canView="false" domain=":company member of self.companySet"/>
+				<panel stacked="true" name="mainInvoicingAddressPanel">
 					<field name="mainInvoicingAddress" canNew="true"
 						   hideIf="$readonly() || statusSelect &gt; 1"
 						   onChange="action-sale-order-method-address-str"
@@ -571,8 +597,8 @@
 					</field>
 				</panel>
 
-	      <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" canView="false"/>
-				<panel stacked="true">
+	      <field name="contactPartner" domain="self.isContact = true AND :company member of self.companySet" form-view="partner-contact-form" grid-view="partner-contact-grid" canView="false"/>
+				<panel stacked="true" name="deliveryAddressPanel">
 					<field name="deliveryAddress" canNew="true"
 						   hideIf="$readonly() || statusSelect &gt; 1"
 						   onChange="action-sale-order-method-address-str"
@@ -583,8 +609,8 @@
 						<viewer>{{record.deliveryAddressStr}}</viewer>
 					</field>
 				</panel>
-	      <panel colSpan="8">
-	        <field name="confirmationDate"/>
+	      <panel name="detailsPanel" colSpan="8">
+	        <field name="confirmationDateTime"/>
 	        <field name="creationDate"/>
 	        <field name="orderDate"/>
 	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -595,7 +621,7 @@
 	        <field name="salemanUser" canNew="false" canEdit="false" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>
-            <panel readonly="true"  css="order-subtotal" colSpan="4">
+            <panel name="inTaxTotalPanel" readonly="true"  css="order-subtotal" colSpan="4">
                 <field name="inTaxTotal" showTitle="false" colSpan="12">
                     <viewer depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
@@ -616,16 +642,16 @@
                 </field>
             </panel>
 	    </panel>
-	    <panel-related field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
-	    <panel-related field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
-	    <panel-dashlet action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
+	    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    <panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
+	    <panel-dashlet name="invoicesFromSOPanel" action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	  </panel-tabs>
 	</form>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
-			<button name="mergeSaleOrders" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
-    		<button name="seeSaleOrderLines" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
+			<button name="mergeSaleOrdersBtn" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
+    		<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
 		</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
@@ -638,6 +664,9 @@
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
         <field name="orderBeingEdited" />
+        <field name="company"/>
+        <field name="tradingName"/>
+        <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -680,6 +709,11 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -695,6 +729,9 @@
 		<field name="statusSelect"/>
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
+		<field name="company"/>
+		<field name="tradingName"/>
+		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -734,6 +771,11 @@
 				  </div>
 			  </div>
 			</div>
+			<div class="span12" style="margin-left:0px;">
+			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
+			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
+			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -744,7 +786,7 @@
 
 	<action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
 
-		<attribute name="readonly" for="generateCustomerStockMove" expr="eval: !saleOrderLineList"/>
+		<attribute name="readonly" for="generateCustomerStockMoveBtn" expr="eval: !saleOrderLineList"/>
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-other-reason">
@@ -791,6 +833,7 @@
     	<action name="action-sale-order-attrs-in-ati"/>
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
+        <action name="action-sale-order-attrs-external-reference"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -799,6 +842,7 @@
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
+		<action name="action-sale-order-attrs-external-reference"/>
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -809,15 +853,14 @@
 
     <action-group name="action-sale-order-line-change-group">
 		<action name="action-sale-order-method-remove-subline"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />    	
+    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />    	
+    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
 		<action name="action-sale-order-record-partner"/>
-        <action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-validate-information"/>
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
@@ -828,6 +871,7 @@
 		<action name="action-sale-order-record-set-contact-partner"/>
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-partner-attrs-hide-contact-partner"/>
 	</action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -956,7 +1000,8 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="salemanUser" expr="eval:__user__"/>
+    	<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+    	<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
@@ -977,6 +1022,8 @@
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
 			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
+		<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+		<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
@@ -990,7 +1037,7 @@
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
     </action-method>
-    
+
     <action-method name="action-sale-order-method-remove-subline">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="removeSubLines"/>
 	</action-method>
@@ -1010,7 +1057,7 @@
 	<action-attrs name="action-sale-order-domain-on-contact-partner">
 		<attribute for="contactPartner" if="clientPartner != null &amp;&amp; !clientPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (${clientPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
  		<attribute for="contactPartner" if="clientPartner != null &amp;&amp; clientPartner.contactPartnerSet.empty" name="domain" expr="eval: &quot;self.id IN (0)&quot;"/>
- 		<attribute for="contactPartner" if="clientPartner == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
+ 		<attribute for="contactPartner" if="clientPartner == null" name="domain" expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
 	</action-attrs>
 
     <action-attrs name="action-sale-order-attrs-domain-main-invoicing-address">
@@ -1026,7 +1073,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-set-client-partner-domain">
- 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true)&quot;"/>
+ 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true) AND :company member of self.companySet&quot;"/>
  	</action-attrs>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
@@ -1064,11 +1111,19 @@
 
 	<action-view name="action-view-show-stock-move-line" title="Customer deliveries" model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-sale-order-grid"/>
-		<view type="form" name="stock-move-line-form"/>
+		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__.id"/>
 	</action-view>
-
+	
+	<action-view name="action-sale-order-view-stock-moves" title="Stock moves" model="com.axelor.apps.stock.db.StockMove">
+  		<view type="grid" name="stock-move-sale-order-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = :saleOrder</domain>
+		<context name="saleOrder" expr="eval: __self__.id"/>
+  	</action-view>
+    
+    
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
 		<view type="form" name="sale-order-line-form"/>
@@ -1089,6 +1144,18 @@
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false"/>
         <context name="_saleOrderId" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-sale-order-view-manuf-orders" title="Manufacturing Orders" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
+		<domain>self.saleOrder.id = :id</domain>
+	</action-view>
+
+	<action-view name="action-sale-order-view-show-generated-po" title="Generated purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+    <domain>self.generatedSaleOrderId = :id</domain>
 	</action-view>
 
 	<action-validate name="action-sale-order-validate-information">
@@ -1164,6 +1231,11 @@
 
 	<action-attrs name="action-sale-order-record-project-default-fields" if-module="axelor-business-project">
 		<attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-external-reference">
+		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
+                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
 
 </object-views>

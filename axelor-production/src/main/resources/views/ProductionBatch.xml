@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="production-batch-grid" title="Production batches" model="com.axelor.apps.production.db.ProductionBatch">
+    	<field name="actionSelect" />
+    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="workshopStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" />
+		<field name="createdOn"/>
+		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+    </grid>
+ 
+	<form name="production-batch-form" title="Production Batch" model="com.axelor.apps.production.db.ProductionBatch" onNew="action-production-batch-record-on-new" width="large">
+		<toolbar>
+			<button name="printBtn" title="Work in progress valuation" hideIf="!batchList" onClick="save,action-production-batch-method-show-valuation"/>
+		</toolbar>
+		<panel name="mainPanel" >
+		  <field name="actionSelect"/>
+		  <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
+		  <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
+		  <field name="workshopStockLocation" onSelect="action-production-batch-attrs-domain-stock-location" onChange="action-production-batch-record-set-company" form-view="stock-location-form" grid-view="stock-location-grid" />
+		</panel>
+		<panel name="creationDetailsPanel">
+		  <field name="createdOn" title="Created on"/>
+		  <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+		  <field name="valuationDate" showIf="batchList"/>
+		  <spacer name="valuationDateSpacer" colSpan="6"/>
+		  <button name="computeValutionBatchBtn" title="Compute work in progress valuation" onClick="save,action-production-batch-method-compute-valuation"/>
+		</panel>
+		<panel-tabs>    
+		  <panel name="descriptionPanel" title="Description">
+		    <field name="description" showTitle="false" colSpan="12"/>      
+		  </panel>
+		  <panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
+		</panel-tabs>
+	</form>
+    
+    <action-record name="action-production-batch-record-on-new" model="com.axelor.apps.production.db.ProductionBatch">
+    	<field name="actionSelect" expr="1"/>
+		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+	</action-record>
+	
+	<action-record name="action-production-batch-record-set-company" model="com.axelor.apps.production.db.ProductionBatch">
+	  <field name="company" expr="eval: workshopStockLocation?.company" if="!company"/>
+	</action-record>
+    
+	<action-method name="action-production-batch-method-compute-valuation">
+		<call class="com.axelor.apps.production.web.ProductionBatchController" method="computeValuation"/>
+	</action-method>
+	
+	<action-method name="action-production-batch-method-show-valuation">
+		<call class="com.axelor.apps.production.web.ProductionBatchController" method="showValuation"/>
+	</action-method>
+	
+	<action-attrs name="action-production-batch-attrs-domain-stock-location">
+		<attribute name="domain" for="workshopStockLocation" expr="eval: company != null ? &quot; self.company = :company &quot; : null"/>
+	</action-attrs>
+	
+</object-views>

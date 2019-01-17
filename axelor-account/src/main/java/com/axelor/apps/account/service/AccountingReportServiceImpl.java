@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -111,6 +111,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   public String buildQuery(AccountingReport accountingReport) throws AxelorException {
+    query = "";
+    paramNumber = 1;
+    params = new ArrayList<Object>();
 
     this.query = "";
     this.params.clear();

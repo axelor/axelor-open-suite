@@ -15,7 +15,7 @@
 
 	<form name="debt-recovery-form" title="Debt Recovery"
 		model="com.axelor.apps.account.db.DebtRecovery">
-		<panel name="overview">
+		<panel name="mainPanel" title="Overview">
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name">
 					<![CDATA[
@@ -38,16 +38,22 @@
 			<field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
 		</panel>
 		<panel-tabs>
-			<panel-related field="debtRecoveryHistoryList"
-				form-view="debt-recovery-history-form" grid-view="debt-recovery-history-grid" />
-			<panel-related field="invoiceDebtRecoverySet"
-				form-view="invoice-form" grid-view="invoice-grid" />
-			<panel-related field="paymentScheduleLineDebtRecoverySet"
-				form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid" />
+			<panel-related  name="debtRecoveryHistoryListPanel"
+          field="debtRecoveryHistoryList"
+                grid-view="debt-recovery-history-grid"
+                form-view="debt-recovery-history-form"/>
+      <panel-related 	name="invoiceDebtRecoverySetPanel" 
+          field="invoiceDebtRecoverySet" 
+                grid-view="invoice-grid"
+                form-view="invoice-form"/>
+      <panel-related 	name="paymentScheduleLineDebtRecoverySetPanel" 
+          field="paymentScheduleLineDebtRecoverySet"
+                grid-view="payment-schedule-line-grid"
+                form-view="payment-schedule-line-form"/>
 		</panel-tabs>
 		<panel sidebar="true" name="actions">
-			<button name="validateDebtRecovery" title="Validate Debt Recovery"
-				onClick="save,action-debt-recovery-method-validate-debtRecovery" />
+      <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
+        onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
 		</panel>
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">

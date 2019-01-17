@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -76,6 +77,11 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
         Mapper.toBean(BankStatementLineAFB120.class, Mapper.toMap(bankStatementLine));
 
     bankStatementLineAFB120.setLineTypeSelect(lineType);
+
+    if (lineType != BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT) {
+      bankStatementLineAFB120.setAmountRemainToReconcile(BigDecimal.ZERO);
+    }
+
     if (!Strings.isNullOrEmpty(unavailabilityIndexSelect)) {
       bankStatementLineAFB120.setUnavailabilityIndexSelect(
           Integer.parseInt(unavailabilityIndexSelect));

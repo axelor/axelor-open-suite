@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,22 +70,28 @@ public class ITranslation {
   public static final String MRP_LIST_RELATED_TO = /*$$(*/ "MrpList.relatedTo"; /*)*/
 
   /*
-   * Packaging list
+   * Packing list
    */
-  public static final String PACKAGING_LIST_PACKAGING_NUMBER = /*$$(*/ "Packaging number:" /*)*/;
-  public static final String PACKAGING_LIST_DATE = /*$$(*/ "Date:" /*)*/;
-  public static final String PACKAGING_LIST_CUSTOMER_CODE = /*$$(*/ "Customer code:" /*)*/;
-  public static final String PACKAGING_LIST_CUSTOMER_NAME = /*$$(*/ "Customer name:" /*)*/;
-  public static final String PACKAGING_LIST_ITEM = /*$$(*/ "Item" /*)*/;
-  public static final String PACKAGING_LIST_ITEM_DESCRIPTION = /*$$(*/ "Item description" /*)*/;
-  public static final String PACKAGING_LIST_PARCEL_LINE_FORMAT = /*$$(*/
+  public static final String PACKING_LIST_PACKAGING_NUMBER = /*$$(*/ "Packaging number:" /*)*/;
+  public static final String PACKING_LIST_DATE = /*$$(*/ "Date:" /*)*/;
+  public static final String PACKING_LIST_CUSTOMER_CODE = /*$$(*/ "Customer code:" /*)*/;
+  public static final String PACKING_LIST_CUSTOMER_NAME = /*$$(*/ "Customer name:" /*)*/;
+  public static final String PACKING_LIST_ITEM = /*$$(*/ "Item" /*)*/;
+  public static final String PACKING_LIST_ITEM_DESCRIPTION = /*$$(*/ "Item description" /*)*/;
+  public static final String PACKING_LIST_PARCEL_LINE_FORMAT = /*$$(*/
       "Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
-  public static final String PACKAGING_LIST_PALLET_LINE_FORMAT = /*$$(*/
+  public static final String PACKING_LIST_PALLET_LINE_FORMAT = /*$$(*/
       "Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
-  public static final String PACKAGING_LIST_DETAIL_LINE_FORMAT = /*$$(*/
+  public static final String PACKING_LIST_DETAIL_LINE_FORMAT = /*$$(*/
       "Stock move No. {0} / Ref. No. {1}" /*)*/;
-  public static final String PACKAGING_LIST_TOTAL_NET_MASS = /*$$(*/ "Total net mass" /*)*/;
-  public static final String PACKAGING_LIST_TOTAL_FORMAT = /*$$(*/
+  public static final String PACKING_LIST_TOTAL_NET_MASS = /*$$(*/ "Total net mass" /*)*/;
+  public static final String PACKING_LIST_TOTAL_FORMAT = /*$$(*/
       "Number of parcels/pallets: {0} - Total gross mass ({1}): {2}" /*)*/;
-  public static final String PACKAGING_LIST_SHIPPING_COMMENTS = /*$$(*/ "Shipping comments" /*)*/;
+  public static final String PACKING_LIST_SHIPPING_COMMENTS = /*$$(*/ "Shipping comments" /*)*/;
+
+  public static final String DECLARATION_OF_EXCHANGES_INTRODUCTION = /*$$(*/ "Introduction"; /*)*/
+  public static final String DECLARATION_OF_EXCHANGES_EXPEDITION = /*$$(*/ "Expedition"; /*)*/
+  public static final String
+      DECLARATION_OF_EXCHANGES_OF_GOODS_BETWEEN_MEMBER_STATES_OF_THE_EUROPEAN_COMMUNITY = /*$$(*/
+          "DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY"; /*)*/
 }

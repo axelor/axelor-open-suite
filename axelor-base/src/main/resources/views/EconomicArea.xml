@@ -8,11 +8,11 @@
   </grid>
 
   <form name="economic-area-form" title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
-    <panel name="main">
+    <panel name="mainPanel">
       <field name="code" x-bind="{{code|uppercase}}"/>
       <field name="name"/>
     </panel>
-    <panel-related field="countryList" grid-view="country-grid" form-view="country-form"
+    <panel-related name="countryListPanel" field="countryList" grid-view="country-grid" form-view="country-form"
       canNew="false" canEdit="false" canSelect="true" height="30"/>
   </form>
 

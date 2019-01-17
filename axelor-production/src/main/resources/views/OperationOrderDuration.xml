@@ -11,7 +11,7 @@
 	</grid>
 
 	<form name="operation-order-duration-form" title="Operation Order Duration" model="com.axelor.apps.production.db.OperationOrderDuration">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="operationOrder" colSpan="12"/>
 			<field name="startedBy"/>
 			<field name="startingDateTime"/>

@@ -11,7 +11,9 @@
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="accountType" />
         <field name="date"/>
+        <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount" aggregate="sum"/>
         <field name="typeSelect"/>
     </grid>
@@ -20,7 +22,9 @@
         <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
+         <field name="accountType" />
         <field name="percentage"/>
+        <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount"/>
         <field name="date"/>
         <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
@@ -29,12 +33,13 @@
     
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
     	onLoad="action-analytic-move-line-attrs-title-project" width="large">
-       <panel name="main" >
+       <panel name="mainPanel" >
        		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
        		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 	        <field name="date"/>
 	        <field name="percentage"/>
+            <field name="originalPieceAmount" aggregate="sum"/>
 	        <field name="amount"/>
 	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
 	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
@@ -47,11 +52,13 @@
     </form>
     
     <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine"  >
-        <panel name="main" >
+        <panel name="mainPanel" >
    	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
+	        <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
 	        <field name="percentage" colSpan="4" onChange="action-analytic-move-line-method-compute-amount"/>
+            <field name="originalPieceAmount" aggregate="sum"/>
 	        <field name="amount" colSpan="4" readonly="true"/>
 	        <field name="date" colSpan="4"/>
 	        <field name="project" grid-view="project-grid" form-view="project-form" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>

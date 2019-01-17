@@ -160,6 +160,7 @@
 		<option value="17">Update customer account</option>
 		<option value="18">Move export</option>
 		<option value="19">Credit Transfer</option>
+		<option value="20">Realize fixed asset lines</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -352,4 +353,30 @@
 		<option value="subrogationRelease">Subrogation release</option>
 	</selection>
 
+	<selection name="account.notification.item.type.select">
+		<option value="1">Payment to the factor</option>
+		<option value="2">Payment to the factor after factor return</option>
+	</selection>
+	
+	<selection name="account.fixed.type.category.computation.method.select">
+		<option value="linear">Linear</option>
+		<option value="degressive">Degressive</option>
+	</selection>
+
+	<selection name="account.fixed.asset.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+		<option value="3">Depreciated</option>
+		<option value="4">Transferred</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.line.status.select">
+		<option value="1">Planned</option>
+		<option value="2">Realized</option>
+	</selection>
+	
+	<selection name="account.move.template.type.type.select">
+		<option value="1">%</option>
+		<option value="2">Amount</option>
+	</selection>
 </object-views>

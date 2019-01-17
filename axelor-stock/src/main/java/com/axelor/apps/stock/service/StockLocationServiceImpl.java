@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,10 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -31,15 +33,17 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Query;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -92,8 +96,12 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType) {
+  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException {
     if (productId != null) {
+      Product product = productRepo.find(productId);
+      Unit productUnit = product.getUnit();
+      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       if (locationId == null) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
@@ -104,11 +112,18 @@ public class StockLocationServiceImpl implements StockLocationService {
                     stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
 
             if (stockLocationLine != null) {
+              Unit stockLocationLineUnit = stockLocationLine.getUnit();
               qty =
                   qty.add(
                       qtyType.equals("real")
                           ? stockLocationLine.getCurrentQty()
                           : stockLocationLine.getFutureQty());
+
+              if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+                qty =
+                    unitConversionService.convert(
+                        stockLocationLineUnit, productUnit, qty, qty.scale(), product);
+              }
             }
           }
           return qty;
@@ -119,9 +134,20 @@ public class StockLocationServiceImpl implements StockLocationService {
                 stockLocationRepo.find(locationId), productRepo.find(productId));
 
         if (stockLocationLine != null) {
-          return qtyType.equals("real")
-              ? stockLocationLine.getCurrentQty()
-              : stockLocationLine.getFutureQty();
+          Unit stockLocationLineUnit = stockLocationLine.getUnit();
+          BigDecimal qty = BigDecimal.ZERO;
+
+          qty =
+              qtyType.equals("real")
+                  ? stockLocationLine.getCurrentQty()
+                  : stockLocationLine.getFutureQty();
+
+          if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
+            qty =
+                unitConversionService.convert(
+                    stockLocationLineUnit, productUnit, qty, qty.scale(), product);
+          }
+          return qty;
         }
       }
     }
@@ -130,16 +156,17 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getRealQty(Long productId, Long locationId) {
+  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException {
     return getQty(productId, locationId, "real");
   }
 
   @Override
-  public BigDecimal getFutureQty(Long productId, Long locationId) {
+  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException {
     return getQty(productId, locationId, "future");
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void computeAvgPriceForProduct(Product product) {
     Long productId = product.getId();
     String query =
@@ -209,44 +236,69 @@ public class StockLocationServiceImpl implements StockLocationService {
     return idList;
   }
 
-  private void findLocationIds(List<StockLocation> childStockLocations) {
-
-    Long id;
-
-    childStockLocations =
-        Beans.get(StockLocationRepository.class)
-            .all()
-            .filter("self.parentStockLocation IN ?", childStockLocations)
-            .fetch();
-
-    Iterator<StockLocation> it = childStockLocations.iterator();
-
-    while (it.hasNext()) {
-
-      id = it.next().getId();
-      if (locationIdSet.contains(id)) {
-        it.remove();
-      } else {
-        locationIdSet.add(id);
-      }
-    }
-
-    if (!childStockLocations.isEmpty()) findLocationIds(childStockLocations);
-  }
-
   @Override
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
-
-    List<StockLocation> stockLocations = new ArrayList<>();
-
+    locationIdSet = new HashSet<>();
     if (stockLocation != null) {
-      stockLocations.add(stockLocation);
-      locationIdSet.add(stockLocation.getId());
-      findLocationIds(stockLocations);
+      List<StockLocation> stockLocations = getAllLocationAndSubLocation(stockLocation, true);
+      for (StockLocation item : stockLocations) {
+        locationIdSet.add(item.getId());
+      }
     } else {
       locationIdSet.add(0L);
     }
 
     return locationIdSet;
+  }
+
+  public List<StockLocation> getAllLocationAndSubLocation(
+      StockLocation stockLocation, boolean isVirtualInclude) {
+
+    List<StockLocation> resultList = new ArrayList<>();
+
+    if (isVirtualInclude) {
+      for (StockLocation subLocation :
+          stockLocationRepo
+              .all()
+              .filter("self.parentStockLocation.id = :stockLocationId")
+              .bind("stockLocationId", stockLocation.getId())
+              .fetch()) {
+
+        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+      }
+    } else {
+      for (StockLocation subLocation :
+          stockLocationRepo
+              .all()
+              .filter(
+                  "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
+              .bind("stockLocationId", stockLocation.getId())
+              .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
+              .fetch()) {
+
+        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+      }
+    }
+    resultList.add(stockLocation);
+
+    return resultList;
+  }
+
+  @Override
+  public BigDecimal getStockLocationValue(StockLocation stockLocation) {
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM( self.currentQty * CASE WHEN (product.costTypeSelect = 3) THEN "
+                    + "(self.avgPrice) ELSE (self.product.costPrice) END ) AS value "
+                    + "FROM StockLocationLine AS self "
+                    + "WHERE self.stockLocation.id =:id");
+    query.setParameter("id", stockLocation.getId());
+
+    List<?> result = query.getResultList();
+    return result.get(0) == null
+        ? BigDecimal.ZERO
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
 }

@@ -47,7 +47,7 @@
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 		
-		<panel name="main" title="Main">
+		<panel name="mainPanel" title="Main">
 			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
 			<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
 			<field name="expenseProduct" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
@@ -73,13 +73,12 @@
     		<field name="expense.multipleUsers" hidden="true"/>
 		</panel>
 				
-		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
+			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 
-		<panel>
+		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
 		</panel>
 
@@ -89,13 +88,13 @@
 		onNew="action-expense-line-default,action-expense-line-method-fill-kilometric-expense-product"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 
-			<panel name="kilometricAllowance" title="Kilometric Allowance">
+			<panel name="kilometricAllowancePanel" title="Kilometric Allowance">
 				<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
 		        <field name="expenseDate"/>
 				<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute"/>
 		        <field name="kilometricTypeSelect" required="true"/>
 		        <field name="distance" onChange="action-kilometric-allowance-method-compute" required="true"/>
-		        <panel colSpan="12">
+		        <panel name="cityDetailsPanel" colSpan="12">
 			        <field name="fromCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
 					<field name="toCity" required="true" onChange="action-kilometric-allowance-method-compute-distance"/>
 		        </panel>
@@ -106,10 +105,9 @@
 				<field name="expenseProduct" hidden="true"/>
 			</panel>
 		
-		<panel name="analyticDistribution" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<button name="generateDistributionLinesButton" onClick="action-expense-line-method-create-distribution" title="Generate distribution lines" showIf="analyticDistributionTemplate != null" if="__config__.app.getApp('account').getAnalyticDistributionTypeSelect() == 1"/>
-			<panel-related field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
+			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 	</form>
 	

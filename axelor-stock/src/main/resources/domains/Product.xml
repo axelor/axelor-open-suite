@@ -5,9 +5,12 @@
  
   <entity name="Product" lang="java">
       <decimal name="avgPrice" readonly="true" precision="20" scale="10" title="Average Price"/>
-      <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.stock.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."/>
-	  <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature" title="Customs code"/>
-      <boolean name="controlOnReceipt" title="Control on Receipt"/>
+      <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.stock.db.TrackingNumberConfiguration" title="Tracking Nbr. Config." massUpdate="true"/>
+	  <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature" title="Customs code" massUpdate="true"/>
+      <boolean name="controlOnReceipt" title="Control on Receipt" massUpdate="true"/>
+      <boolean name="usedInDEB" title="Used in DEB/DES" massUpdate="true"/>
+	  <many-to-one name="countryOfOrigin" ref="com.axelor.apps.base.db.Country" title="Country of origin" massUpdate="true"/>		
+	  <boolean name="stockManaged" default="true" massUpdate="true"/>
 
     <track on="UPDATE">
         <field name="trackingNumberConfiguration"/>

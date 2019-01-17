@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -119,5 +119,12 @@ public class ProductStockRepository extends ProductBaseRepository {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public Product copy(Product product, boolean deep) {
+    Product copy = super.copy(product, deep);
+    copy.setAvgPrice(BigDecimal.ZERO);
+    return copy;
   }
 }

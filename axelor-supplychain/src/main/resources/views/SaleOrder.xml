@@ -20,9 +20,9 @@
 	</form>
 
 	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onLoad="action-record-load-dummy-supplier-partner">
-		<panel name="main" >
+		<panel name="mainPanel" >
 			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
-			<button name="generatePOConfirm" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+			<button name="generatePOConfirmBtn" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 		</panel>
     </form>
 
@@ -62,7 +62,7 @@
 			<field name="nextInvoicingEndPeriodDate" />
 			<field name="subscriptionComment" colSpan="12"/>
 			<field name="subscriptionText" colSpan="12"/>
-			<panel-dashlet action="action-sale-order-view-subscription-invoices" colSpan="12"/>
+			<panel-dashlet name="subscriptionIsnvoicesPanel" action="action-sale-order-view-subscription-invoices" colSpan="12"/>
 		</panel>
 	</form>
 	
@@ -126,6 +126,11 @@
             &amp;&amp; !createdByInterco &amp;&amp; clientPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne()"/>
 	</action-record>
 
+  <action-record name="action-sale-order-record-direct-order-location-onchange" model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="stockLocation" expr="eval: company?.stockConfig?.directOrderStockLocation" if="directOrderLocation"/>
+    <field name="stockLocation" expr="eval: null" if="!directOrderLocation"/>
+  </action-record>
+
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
 				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
@@ -145,6 +150,12 @@
 	<action-attrs name="action-sale-order-attrs-subscription-contract-period-change">
 		<attribute name="value" for="contractEndDate" expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)" if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
 	</action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
+    <attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+    <attribute name="domain" for="stockLocation" if="directOrderLocation"
+      expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
+  </action-attrs>
 	
 	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-light-grid" />

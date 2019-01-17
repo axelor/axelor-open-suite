@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -25,6 +26,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface StockLocationLineService {
 
@@ -32,25 +34,27 @@ public interface StockLocationLineService {
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
+      Unit stockMoveLineUnit,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
+      Unit stockMoveLineUnit,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   public void minStockRules(
@@ -65,13 +69,14 @@ public interface StockLocationLineService {
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
+      Unit stockMoveLineUnit,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
       TrackingNumber trackingNumber,
-      BigDecimal reservedQty)
+      BigDecimal requestedReservedQty)
       throws AxelorException;
 
   public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
@@ -90,12 +95,22 @@ public interface StockLocationLineService {
 
   public StockLocationLine updateLocation(
       StockLocationLine stockLocationLine,
+      Unit stockMoveLineUnit,
+      Product product,
       BigDecimal qty,
       boolean current,
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      BigDecimal reservedQty);
+      BigDecimal requestedReservedQty)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
+      throws AxelorException;
+
+  public StockLocationLine updateLocationFromProduct(
+      StockLocationLine stockLocationLine, Product product) throws AxelorException;
 
   /**
    * Getting the stock location line : We check if the location has a detailed line for a given
@@ -129,6 +144,14 @@ public interface StockLocationLineService {
    * @return The stock location line if found, else null
    */
   public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product);
+
+  /**
+   * Allow to get the location lines of a given product.
+   *
+   * @param product
+   * @return
+   */
+  public List<StockLocationLine> getStockLocationLines(Product product);
 
   /**
    * Allow to get the detailed location line of a given product, product variant and tracking number

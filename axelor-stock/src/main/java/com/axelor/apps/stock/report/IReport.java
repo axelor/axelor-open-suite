@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,4 @@ public interface IReport {
   public static final String CONFORMITY_CERTIFICATE = "ConformityCertificate.rptdesign";
   public static final String INVENTORY = "Inventory.rptdesign";
   public static final String STOCK_LOCATION = "StockLocation.rptdesign";
-  public static final String DECLARATION_OF_EXCHANGES_OF_GOODS =
-      "DeclarationOfExchangesOfGoods.rptdesign";
-  public static final String DECLARATION_OF_SERVICES = "DeclarationOfServices.rptdesign";
 }

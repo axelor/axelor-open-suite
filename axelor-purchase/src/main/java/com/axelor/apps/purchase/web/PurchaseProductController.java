@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,15 +24,13 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Singleton
 public class PurchaseProductController {
 
   /**
    * Called from product form view, on {@link Product#defShipCoefByPartner} change. Call {@link
-   * PurchaseProductService#getShippingCoefFromPartners(Product)}.
+   * PurchaseProductService#getLastShippingCoef(Product)}.
    *
    * @param request
    * @param response
@@ -43,9 +41,8 @@ public class PurchaseProductController {
       if (!product.getDefShipCoefByPartner()) {
         return;
       }
-      Optional<BigDecimal> productShippingCoef =
-          Beans.get(PurchaseProductService.class).getShippingCoefFromPartners(product);
-      response.setValue("shippingCoef", productShippingCoef.orElse(BigDecimal.ONE));
+      response.setValue(
+          "shippingCoef", Beans.get(PurchaseProductService.class).getLastShippingCoef(product));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

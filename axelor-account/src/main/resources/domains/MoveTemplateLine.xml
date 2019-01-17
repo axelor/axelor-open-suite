@@ -8,12 +8,17 @@
   <entity name="MoveTemplateLine" lang="java" cachable="true">
   	<many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate" />
   	<string name="name" title="Label"/>
-  	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select" required="true"/>
+  	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select"/>
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
   	<many-to-one name="account" title="Accounting.Account" ref="Account" required="true"/>
+    <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <decimal name="debit" title="Debit"/>
+    <decimal name="credit" title="Credit"/>
 	<decimal name="percentage" title="Percentage" precision="20" scale="2"  min="0" max="100"/>
 	<boolean name="hasPartnerToDebit" title="Partner to debit" />
 	<boolean name="hasPartnerToCredit" title="Partner to credit" />
+	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
 	<boolean name="isValid" title="Valid"/>  	
   	<extra-code><![CDATA[
 

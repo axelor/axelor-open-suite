@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,12 +31,15 @@ import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.service.wkf.WkfTrackingService;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +58,7 @@ public class StudioMetaService {
   @Inject private MenuBuilderRepository menuBuilderRepo;
 
   /**
-   * Remove MetaActions from comma separated names in string.
+   * Removes MetaActions from comma separated names in string.
    *
    * @param actionNames Comma separated string of action names.
    */
@@ -111,7 +114,7 @@ public class StudioMetaService {
   }
 
   /**
-   * Create or Update metaView from AbstractView.
+   * Creates or Updates metaView from AbstractView.
    *
    * @param viewIterator ViewBuilder iterator
    */
@@ -161,7 +164,7 @@ public class StudioMetaService {
     }
 
     String viewXml = XMLViews.toXml(view, true);
-    metaView.setXml(viewXml.toString());
+    metaView.setXml(viewXml);
     return metaViewRepo.save(metaView);
   }
 
@@ -180,7 +183,7 @@ public class StudioMetaService {
       oldAction = oldAction + "," + newAction;
     }
 
-    oldAction.replace(",,", ",");
+    oldAction = oldAction.replace(",,", ",");
     if (oldAction.isEmpty()) {
       return null;
     }
@@ -189,7 +192,6 @@ public class StudioMetaService {
   }
 
   public MetaMenu createMenu(MenuBuilder builder) {
-
     String xmlId = XML_ID_PREFIX + builder.getName();
     MetaMenu menu = metaMenuRepo.findByID(xmlId);
 
@@ -198,6 +200,8 @@ public class StudioMetaService {
       menu.setXmlId(xmlId);
       Integer priority = getPriority(MetaMenu.class.getSimpleName(), menu.getName());
       menu.setPriority(priority);
+      menu.setTitle(builder.getTitle());
+      menu = metaMenuRepo.save(menu);
     }
 
     menu.setTitle(builder.getTitle());
@@ -207,13 +211,13 @@ public class StudioMetaService {
     menu.setParent(builder.getParentMenu());
 
     if (builder.getGroups() != null) {
-      Set<Group> groups = new HashSet<Group>();
+      Set<Group> groups = new HashSet<>();
       groups.addAll(builder.getGroups());
       menu.setGroups(groups);
     }
 
     if (builder.getRoles() != null) {
-      Set<Role> roles = new HashSet<Role>();
+      Set<Role> roles = new HashSet<>();
       roles.addAll(builder.getRoles());
       menu.setRoles(roles);
     }
@@ -252,13 +256,8 @@ public class StudioMetaService {
   }
 
   @Transactional
-  public void removeMetaMenu(String name) {
-
-    MetaMenu metaMenu = metaMenuRepo.findByID(XML_ID_PREFIX + name);
-
-    if (metaMenu == null) {
-      return;
-    }
+  public void removeMetaMenu(MetaMenu metaMenu) {
+    Preconditions.checkNotNull(metaMenu, "metaMenu cannot be null.");
 
     List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent = ?1", metaMenu).fetch();
     for (MetaMenu subMenu : subMenus) {
@@ -275,18 +274,19 @@ public class StudioMetaService {
   }
 
   private Integer getPriority(String object, String name) {
+    String query =
+        String.format("SELECT MAX(obj.priority) FROM %s obj WHERE obj.name = :name", object);
 
-    Integer priority =
-        (Integer)
-            JPA.em()
-                .createQuery("SELECT MAX(obj.priority) FROM " + object + " obj WHERE obj.name = ?1")
-                .setParameter(1, name)
-                .getSingleResult();
-
-    if (priority == null) {
-      priority = -1;
+    try {
+      Optional<Integer> priorityOpt =
+          Optional.ofNullable(
+              JPA.em()
+                  .createQuery(query, Integer.class)
+                  .setParameter("name", name)
+                  .getSingleResult());
+      return priorityOpt.orElse(0) + 1;
+    } catch (NoResultException e) {
+      return 0;
     }
-
-    return priority + 1;
   }
 }

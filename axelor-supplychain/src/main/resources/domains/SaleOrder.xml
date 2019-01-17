@@ -33,6 +33,7 @@
 
       <boolean name="isNeedingConformityCertificate" title="Is certificate of conformity required"/>
 
+        <boolean name="directOrderLocation" title="Direct order"/>
         <extra-code>
             <![CDATA[
                 // INVOICE

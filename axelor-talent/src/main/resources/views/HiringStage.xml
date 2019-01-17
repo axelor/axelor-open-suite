@@ -9,7 +9,7 @@
 	</grid>
 	
 	<form name="hiring-stage-form" title="Hiring Stage" model="com.axelor.apps.talent.db.HiringStage" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="sequence" />
 			<field name="name" />
 		</panel>

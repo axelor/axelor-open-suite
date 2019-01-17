@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,9 @@ public interface IExceptionMessage {
   /** Manuf order service */
   static final String MANUF_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for fabrication's orders" /*)*/;
+
+  /** Batch Compute work in progress valuation */
+  static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
 
   static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
@@ -110,4 +113,10 @@ public interface IExceptionMessage {
 
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
+
+  /** Raw Material RequirementService */
+  String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
+      "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
+
+  static final String ORDER_REMOVE_NOT_OK = /*$$(*/ "You can't remove this record" /*)*/;
 }

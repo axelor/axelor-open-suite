@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,24 +17,21 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.AppAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,126 +40,94 @@ import java.util.Map;
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
-  protected AccountManagementService accountManagementService;
+  protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
-      AppAccountService appAccountService, AccountManagementService accountManagementService) {
+      AppAccountService appAccountService,
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
 
     this.appAccountService = appAccountService;
-    this.accountManagementService = accountManagementService;
+    this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
   }
 
   @Override
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine) {
-    BigDecimal amount = BigDecimal.ZERO;
-    if (analyticMoveLine.getInvoiceLine() != null) {
-      amount =
-          analyticMoveLine
-              .getPercentage()
-              .multiply(
-                  analyticMoveLine
-                      .getInvoiceLine()
-                      .getExTaxTotal()
-                      .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-    }
-    if (analyticMoveLine.getMoveLine() != null) {
-      if (analyticMoveLine.getMoveLine().getCredit().compareTo(BigDecimal.ZERO) != 0) {
-        amount =
-            analyticMoveLine
-                .getPercentage()
-                .multiply(
-                    analyticMoveLine
-                        .getMoveLine()
-                        .getCredit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-      } else {
-        amount =
-            analyticMoveLine
-                .getPercentage()
-                .multiply(
-                    analyticMoveLine
-                        .getMoveLine()
-                        .getDebit()
-                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-      }
-    }
-    return amount;
-  }
 
-  @Override
-  public BigDecimal chooseComputeWay(Context context, AnalyticMoveLine analyticMoveLine) {
-    if (analyticMoveLine.getInvoiceLine() == null && analyticMoveLine.getMoveLine() == null) {
-      if (context.getParent().getContextClass() == InvoiceLine.class) {
-        analyticMoveLine.setInvoiceLine(context.getParent().asType(InvoiceLine.class));
-      } else {
-        analyticMoveLine.setMoveLine(context.getParent().asType(MoveLine.class));
-      }
-    }
-    return this.computeAmount(analyticMoveLine);
+    return analyticMoveLine
+        .getPercentage()
+        .multiply(analyticMoveLine.getOriginalPieceAmount())
+        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
   }
 
   @Override
   public List<AnalyticMoveLine> generateLines(
-      Partner partner, Product product, Company company, BigDecimal total) throws AxelorException {
-    List<AnalyticMoveLine> analyticDistributionLineList = new ArrayList<AnalyticMoveLine>();
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PARTNER) {
-      analyticDistributionLineList = this.generateLinesFromPartner(partner, total);
-    } else if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      analyticDistributionLineList = this.generateLinesFromProduct(product, company, total);
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date) {
+
+    List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
+    if (analyticDistributionTemplate != null) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        analyticMoveLineList.add(
+            this.createAnalyticMoveLine(analyticDistributionLine, total, typeSelect, date));
+      }
     }
-    return analyticDistributionLineList;
+
+    return analyticMoveLineList;
+  }
+
+  @Override
+  public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
+      Partner partner, Product product, Company company) {
+
+    AppAccount appAccount = appAccountService.getAppAccount();
+
+    if (appAccount.getAnalyticDistributionTypeSelect()
+            == AppAccountRepository.DISTRIBUTION_TYPE_PARTNER
+        && partner != null) {
+      return partner.getAnalyticDistributionTemplate();
+    } else if (appAccount.getAnalyticDistributionTypeSelect()
+        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
+    }
+    return null;
   }
 
   public AnalyticMoveLine createAnalyticMoveLine(
-      AnalyticDistributionLine analyticDistributionLine, BigDecimal total) {
+      AnalyticDistributionLine analyticDistributionLine,
+      BigDecimal total,
+      int typeSelect,
+      LocalDate date) {
 
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    analyticMoveLine.setAmount(
-        analyticDistributionLine
-            .getPercentage()
-            .multiply(total)
-            .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+    analyticMoveLine.setOriginalPieceAmount(total);
     analyticMoveLine.setAnalyticAccount(analyticDistributionLine.getAnalyticAccount());
     analyticMoveLine.setAnalyticAxis(analyticDistributionLine.getAnalyticAxis());
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
-    analyticMoveLine.setDate(appAccountService.getTodayDate());
+
+    AnalyticJournal analyticJournal = analyticDistributionLine.getAnalyticJournal();
+    Company company = analyticJournal == null ? null : analyticJournal.getCompany();
+    if (company != null) {
+      analyticMoveLine.setCurrency(company.getCurrency());
+    }
+    analyticMoveLine.setDate(date);
     analyticMoveLine.setPercentage(analyticDistributionLine.getPercentage());
+    analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
+    analyticMoveLine.setTypeSelect(typeSelect);
 
     return analyticMoveLine;
   }
 
   @Override
-  public List<AnalyticMoveLine> generateLinesFromPartner(Partner partner, BigDecimal total) {
+  public void updateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date) {
 
-    return this.generateLinesWithTemplate(partner.getAnalyticDistributionTemplate(), total);
-  }
-
-  @Override
-  public List<AnalyticMoveLine> generateLinesFromProduct(
-      Product product, Company company, BigDecimal total) throws AxelorException {
-    AnalyticDistributionTemplate analyticDistributionTemplate = null;
-    AccountManagement accountManagement =
-        accountManagementService.getAccountManagement(product, company);
-    if (accountManagement != null) {
-      analyticDistributionTemplate = accountManagement.getAnalyticDistributionTemplate();
-    }
-    return this.generateLinesWithTemplate(analyticDistributionTemplate, total);
-  }
-
-  @Override
-  public List<AnalyticMoveLine> generateLinesWithTemplate(
-      AnalyticDistributionTemplate template, BigDecimal total) {
-    List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
-    if (template != null) {
-      for (AnalyticDistributionLine analyticDistributionLine :
-          template.getAnalyticDistributionLineList()) {
-        analyticMoveLineList.add(this.createAnalyticMoveLine(analyticDistributionLine, total));
-      }
-    }
-    return analyticMoveLineList;
+    analyticMoveLine.setOriginalPieceAmount(total);
+    analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
+    analyticMoveLine.setDate(date);
   }
 
   @Override

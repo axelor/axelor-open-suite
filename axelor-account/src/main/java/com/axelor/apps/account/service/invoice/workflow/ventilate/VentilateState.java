@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
@@ -67,6 +68,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
+  protected FixedAssetService fixedAssetService;
+
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -75,7 +78,8 @@ public class VentilateState extends WorkflowInvoice {
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
-      UserService userService) {
+      UserService userService,
+      FixedAssetService fixedAssetService) {
     this.sequenceService = sequenceService;
     this.moveService = moveService;
     this.accountConfigService = accountConfigService;
@@ -83,6 +87,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
+    this.fixedAssetService = fixedAssetService;
   }
 
   @Override
@@ -101,6 +106,7 @@ public class VentilateState extends WorkflowInvoice {
     setInvoiceId();
     updatePaymentSchedule();
     setMove();
+    generateFixedAsset();
     setStatus();
     setVentilatedLog();
 
@@ -120,13 +126,9 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setPartnerAccount() throws AxelorException {
-
+    // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-      Account account =
-          InvoiceToolService.isPurchase(invoice)
-              ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
-              : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
 
       if (account == null) {
         throw new AxelorException(
@@ -134,27 +136,48 @@ public class VentilateState extends WorkflowInvoice {
             I18n.get(IExceptionMessage.VENTILATE_STATE_5));
       }
 
+      if (invoice.getPartner() != null) {
+        account =
+            Beans.get(FiscalPositionAccountService.class)
+                .getAccount(invoice.getPartner().getFiscalPosition(), account);
+      }
       invoice.setPartnerAccount(account);
     }
   }
 
   protected void setJournal() throws AxelorException {
+    // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(Beans.get(JournalService.class).getJournal(invoice));
+      invoice.setJournal(Beans.get(InvoiceService.class).getJournal(invoice));
     }
   }
 
   protected void setDate() throws AxelorException {
 
+    LocalDate todayDate = appAccountService.getTodayDate();
+
     if (invoice.getInvoiceDate() == null) {
-      invoice.setInvoiceDate(appAccountService.getTodayDate());
-    } else if (invoice.getInvoiceDate().isAfter(appAccountService.getTodayDate())) {
+      invoice.setInvoiceDate(todayDate);
+    } else if (invoice.getInvoiceDate().isAfter(todayDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
     }
 
-    if (!invoice.getPaymentCondition().getIsFree() || invoice.getDueDate() == null) {
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    if (isPurchase && invoice.getOriginDate() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+    }
+    if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
+    }
+
+    if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
+        || invoice.getDueDate() == null) {
       invoice.setDueDate(this.getDueDate());
     }
   }
@@ -209,7 +232,12 @@ public class VentilateState extends WorkflowInvoice {
     }
   }
 
-  protected LocalDate getDueDate() {
+  protected LocalDate getDueDate() throws AxelorException {
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+
+      return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getOriginDate());
+    }
 
     return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getInvoiceDate());
   }
@@ -227,6 +255,17 @@ public class VentilateState extends WorkflowInvoice {
 
       moveService.createMoveUseExcessPaymentOrDue(invoice);
     }
+  }
+
+  protected void generateFixedAsset() throws AxelorException {
+
+    if (invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
+
+    log.debug("Generate fixed asset");
+    // Create fixed asset
+    fixedAssetService.createFixedAsset(invoice);
   }
 
   /**

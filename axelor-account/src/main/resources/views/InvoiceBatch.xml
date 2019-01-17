@@ -14,27 +14,27 @@
     <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch"  
     onLoad="action-account-invoice-batch-onload-group" 
     onNew="action-account-invoice-batch-onnew-group">
-    	<panel name="main" >
+    	<panel name="mainPanel" >
     		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
     		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
     	</panel>
-    	<panel-tabs>
-    		<panel name="statusOptionPage" title="Options">
+    	<panel-tabs name="mainPanelTab">
+    		<panel name="statusOptionPanel" title="Options">
 				<field name="toStatusSelect" />
 				<field name="fromStatusSelect"/>
 				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
     		</panel>
-    		<panel-related field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
-    		<panel name="informations" title="Informations"  >
+    		<panel-related name="invoiceSetPanel" field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
+    		<panel name="informationsPanel" title="Informations"  >
     			<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" />
 		    	<field name="description" showTitle="false" colSpan="12"/>
     		</panel>
-	      	<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+	      	<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
     	</panel-tabs>
-    	<panel sidebar="true" name="actions" title="Actions">
-    		<button name="statusBatch" title="Run"  onClick="save,action-invoice-batch-method-action-status" colSpan="12"/>
+    	<panel sidebar="true" name="actionsPanel" title="Actions">
+    		<button name="statusBatchBtn" title="Run"  onClick="save,action-invoice-batch-method-action-status" colSpan="12"/>
     	</panel>
     </form>
     
@@ -69,9 +69,9 @@
 				
     <!-- ACTION ATTRS -->
     <action-attrs name="action-invoice-batch-attrs-action-select">
-	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 3, 4]" for="statusOptionPage"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 3, 4]" for="statusOptionPanel"/>
 	    <attribute name="hidden" expr="eval: actionSelect in [null, 1, 2, 3, 4]" for="invoiceBatch"/>
-	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]" for="statusBatch"/>
+	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]" for="statusBatchBtn"/>
 	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]" for="alarmBatch"/>
 	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]" for="memoryBatch"/>
 	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]" for="confirmMemoryBatch"/>

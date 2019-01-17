@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,11 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
-import com.axelor.apps.bankpayment.service.batch.BatchBankPayment;
+import com.axelor.apps.bankpayment.service.batch.BatchBankStatement;
+import com.axelor.apps.bankpayment.service.batch.BatchEbicsCertificate;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -30,19 +32,29 @@ public class BankPaymentBatchController {
 
   @Inject private BankPaymentBatchRepository bankPaymentBatchRepo;
 
-  @Inject private BatchBankPayment batchBankPayment;
+  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response) {
 
-  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+    BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
+    bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
 
-    BankPaymentBatch ebicsCertificateBatch = request.getContext().asType(BankPaymentBatch.class);
-
-    Batch batch = null;
-
-    batch =
-        batchBankPayment.ebicsCertificate(bankPaymentBatchRepo.find(ebicsCertificateBatch.getId()));
+    Batch batch = Beans.get(BatchEbicsCertificate.class).ebicsCertificate(bankPaymentBatch);
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
+  }
+
+  public void actionBankStatement(ActionRequest request, ActionResponse response) {
+    try {
+      BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
+      bankPaymentBatch = bankPaymentBatchRepo.find(bankPaymentBatch.getId());
+
+      Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
+
+      if (batch != null) response.setFlash(batch.getComments());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 }

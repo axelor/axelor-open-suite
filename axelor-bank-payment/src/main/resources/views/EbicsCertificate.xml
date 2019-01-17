@@ -13,12 +13,12 @@
 	</grid>
 	
 	<form name="ebics-certificate-form" title="Ebics certificate" model="com.axelor.apps.bankpayment.db.EbicsCertificate" onNew="action-ebics-certificate-record-default">
-		<panel>
+		<panel name="mainPanel">
 			<field name="typeSelect" />
 			<field name="ebicsBank" hideIf="typeSelect == 'signature'"/>
 			<field name="certificate" colSpan="3"/>
-			<button name="loadCertificate"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3"/>
-			<panel title="Information" readonly="true" colSpan="12">
+			<button name="loadCertificateBtn"  onClick="save,action-ebics-certificate-method-load-certificate,save" title="Load certificate" colSpan="3"/>
+			<panel name="informationPanel" title="Information" readonly="true" colSpan="12">
 				<field name="subject" colSpan="12" />
 				<field name="issuer" colSpan="12" />
 				<field name="validFrom" />
@@ -36,12 +36,12 @@
 	
 	<form name="ebics-certificate-confirmation-form" title="Certificate confirmation" model="com.axelor.apps.bankpayment.db.EbicsCertificate"
 		editable="false" onNew="action-ebics-certificate-confirmation-set-default">
-		<panel>
+		<panel name="mainPanel">
 			<field name="url" type="string" title="URL" />
 			<field name="hostId" type="string" title="Host Id" />
 			<field name="e002Hash" type="string" widget="text" title="Hash E002" />
 			<field name="x002Hash" type="string" widget="text" title="Hash X002" />
-			<button name="addCertificates" title="OK" onClick="action-ebics-certificate-method-add-certificates" colSpan="2" />
+			<button name="addCertificatesBtn" title="OK" onClick="action-ebics-certificate-method-add-certificates" colSpan="2" />
 			<field name="certificateE002" type="string" hidden="true" />
 			<field name="certificateX002" type="string" hidden="true" />
 			<field name="ebicsBank" type="many-to-one" target="com.axelor.apps.bankpayment.db.EbicsBank" hidden="true" />

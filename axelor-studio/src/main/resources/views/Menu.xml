@@ -1,90 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-  <menuitem name="app-builder-root" title="App Builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
-  
-  <!-- Model menus -->
-  
-  
-  <menuitem name="app-builder-models-views" title="Models &amp; Views" parent="app-builder-root" order="5"/>
-  
-  <menuitem name="app-builder-models-views-model-studio" title="Model Studio" parent="app-builder-models-views" action="app.builder.models.views.model.studio" order="5"/>
-  
-  <action-view name="app.builder.models.views.model.studio" title="Model Studio">
-    <view type="html" name="studio/custom-model"/>
-  </action-view>
+    <menuitem name="app-builder-root" title="App Builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
 
-  <menuitem name="app-builder-models-views-custom-models" title="Custom models" parent="app-builder-models-views" action="custom.models.all" order="10"/>
-  
-  <menuitem name="app-builder-models-views-custom-fields" title="Custom fields" parent="app-builder-models-views" action="custom.fields.all" order="11"/>
-  
-  <menuitem name="app-builder-models-views-custom-field-creators" title="Custom field creators" parent="app-builder-models-views" action="app.builder.models.views.custom.field.creators" order="15"/>
-  
-  <action-view name="app.builder.models.views.custom.field.creators" title="Custom field creators" model="com.axelor.studio.db.JsonCreator">
-    <view type="grid" name="json-creator-grid"/>
-    <view type="form" name="json-creator-form"/>
-  </action-view>
-  
-  
- 
- 
-  <!-- Workflow menus -->
-  <menuitem name="app-builder-bpm" title="BPM" parent="app-builder-root"  order="10"/>
-  
-  <menuitem name="app-builder-bpm-process-studio" title="Process studio" parent="app-builder-bpm" action="app.builder.bpm.process.studio" order="5"/>
-  
-  <action-view name="app.builder.bpm.process.studio" title="Process studio" model="com.axelor.studio.db.Wkf">
-    <view type="grid" name="wkf-grid"/>
-    <view type="form" name="wkf-form"/>
-  </action-view>
-  
-  <menuitem name="app-builder-bpm-process-tracking" title="Process tracking" parent="app-builder-bpm" action="app.builder.bpm.process.tracking" order="10"/>
-  
-  <action-view name="app.builder.bpm.process.tracking" title="Process tracking" model="com.axelor.studio.db.WkfTracking">
-    <view type="grid" name="wkf-tracking-grid"/>
-    <view type="form" name="wkf-tracking-form"/>
-  </action-view>
-   	
-  <menuitem name="app-builder-bpm-actions-reporting" title="Actions &amp; reporting" parent="app-builder-bpm" order="10"/>
-  
-  <menuitem name="app-builder-bpm-actions-reporting-chart-builders" title="Chart builders" parent="app-builder-bpm-actions-reporting" action="app.builder.bpm.actions.reporting.chart.builders" order="5"/>
-  
-  <action-view name="app.builder.bpm.actions.reporting.chart.builders" title="Chart builders" model="com.axelor.studio.db.ChartBuilder">
-    <view type="grid" name="chart-builder-grid"/>
-    <view type="form" name="chart-builder-form"/>
-  </action-view>
-  
-  <menuitem name="app-builder-bpm-actions-reporting-dashboard-builders" title="Dashboard builders" parent="app-builder-bpm-actions-reporting" action="app.builder.bpm.actions.reporting.dashboard.builders" order="10"/>
-  
-  <action-view name="app.builder.bpm.actions.reporting.dashboard.builders" title="Dashboard builders" model="com.axelor.studio.db.DashboardBuilder">
-    <view type="grid" name="dashboard-builder-grid"/>
-    <view type="form" name="dashboard-builder-form"/>
-  </action-view>
-  
-  <menuitem name="app-builder-bpm-actions-reporting-action-builders" title="Action builders" parent="app-builder-bpm-actions-reporting" action="app.builder.bpm.actions.reporting.action.builders" order="15"/>
-  
-  <action-view name="app.builder.bpm.actions.reporting.action.builders" title="Action builders" model="com.axelor.studio.db.ActionBuilder">
-    <view type="grid" name="action-builder-grid"/>
-    <view type="form" name="action-builder-form"/>
-    <domain>self.menuAction = false</domain>
-  </action-view>
-  
-  <menuitem name="app-builder-bpm-actions-reporting-menu-builders" title="Menu builders" parent="app-builder-bpm-actions-reporting" action="app.builder.bpm.actions.reporting.menu.builders" order="20"/>
-  
-  <action-view name="app.builder.bpm.actions.reporting.menu.builders" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
-    <view type="grid" name="menu-builder-grid"/>
-    <view type="form" name="menu-builder-form"/>
-  </action-view>
- 
-  
-  <menuitem name="app-builder-bpm-apps-configurator" title="Apps configurator" parent="app-builder-root"  order="15" action="app.builder.bpm.apps.configurator"/>
-  
-  <action-view name="app.builder.bpm.apps.configurator" title="Apps configurator" model="com.axelor.studio.db.AppBuilder">
-    <view type="grid" name="app-builder-grid"/>
-    <view type="form" name="app-builder-form"/>
-  </action-view>
-  
-  
+    <menuitem name="app-builder-studio" title="Studio" parent="app-builder-root" action="action.studio.view" order="10" />
+
+    <action-view name="action.studio.view" title="Studio">
+        <view type="html" name="studio/custom-model" />
+    </action-view>
+
+    <menuitem name="app-builder-bpm" title="BPM" parent="app-builder-root" action="action.bpm.view" order="20" />
+
+    <action-view name="action.bpm.view" title="BPM" model="com.axelor.studio.db.Wkf">
+        <view type="grid" name="wkf-grid" />
+        <view type="form" name="wkf-form" />
+    </action-view>
+
+
+    <!-- Reporting menu -->
+
+    <menuitem name="app-builder-reporting" title="Reporting" parent="app-builder-root" order="30" />
+
+    <menuitem name="app-builder-chart-builders" title="Chart builders" parent="app-builder-reporting" action="action.chart.builders.view" order="31" />
+
+    <action-view name="action.chart.builders.view" title="Chart builders" model="com.axelor.studio.db.ChartBuilder">
+        <view type="grid" name="chart-builder-grid" />
+        <view type="form" name="chart-builder-form" />
+    </action-view>
+
+    <menuitem name="app-builder-dashboard-builders" title="Dashboard builders" parent="app-builder-reporting" action="action.dashboard.builders.view" order="32" />
+
+    <action-view name="action.dashboard.builders.view" title="Dashboard builders" model="com.axelor.studio.db.DashboardBuilder">
+        <view type="grid" name="dashboard-builder-grid" />
+        <view type="form" name="dashboard-builder-form" />
+    </action-view>
+
+    <menuitem name="app-builder-process-tracking" title="Process tracking" parent="app-builder-reporting" action="action.process.tracking.view" order="33" />
+
+    <action-view name="action.process.tracking.view" title="Process tracking" model="com.axelor.studio.db.WkfTracking">
+        <view type="grid" name="wkf-tracking-grid" />
+        <view type="form" name="wkf-tracking-form" />
+    </action-view>
+
+    <!-- Configuration menu -->
+
+    <menuitem name="app-builder-config" title="Configuration" parent="app-builder-root" order="40" />
+
+    <menuitem name="app-builder-app-builders" title="App builders" parent="app-builder-config" order="0" action="action.app.builders.view" />
+
+    <action-view name="action.app.builders.view" title="App builders" model="com.axelor.studio.db.AppBuilder">
+        <view type="grid" name="app-builder-grid" />
+        <view type="form" name="app-builder-form" />
+    </action-view>
+
+    <menuitem name="app-builder-custom-models" title="Custom models" parent="app-builder-config" action="custom.models.all" order="41" />
+
+    <menuitem name="app-builder-custom-fields" title="Custom fields" parent="app-builder-config" action="custom.fields.all" order="42" />
+
+    <menuitem name="app-builder-base-models" title="Base models" parent="app-builder-config" action="action.base.models.view" order="43" />
+
+    <action-view name="action.base.models.view" title="Base models" model="com.axelor.studio.db.JsonCreator">
+        <view type="grid" name="json-creator-grid" />
+        <view type="form" name="json-creator-form" />
+    </action-view>
+
+    <menuitem name="app-builder-menu-builders" title="Menu builders" parent="app-builder-config" action="action.menu.builders.view" order="44" />
+
+    <action-view name="action.menu.builders.view" title="Menu builders" model="com.axelor.studio.db.MenuBuilder">
+        <view type="grid" name="menu-builder-grid" />
+        <view type="form" name="menu-builder-form" />
+    </action-view>
+
+    <menuitem name="app-builder-actions-builders" title="Action builders" parent="app-builder-config" action="action.actions.builders.view" order="45" />
+
+    <action-view name="action.actions.builders.view" title="Action builders" model="com.axelor.studio.db.ActionBuilder">
+        <view type="grid" name="action-builder-grid" />
+        <view type="form" name="action-builder-form" />
+        <domain>self.menuAction = false</domain>
+    </action-view>
+
 </object-views>

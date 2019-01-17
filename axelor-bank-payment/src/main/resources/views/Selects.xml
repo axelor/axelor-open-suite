@@ -121,8 +121,6 @@
 		<option value="camt.xxx.cfonb240.cai">camt.xxx.cfonb240.cai</option>
 		<option value="camt.053.001.02.stm">camt.053.001.02.stm</option>
 		<option value="camt.xxx.cfonb120.stm">camt.xxx.cfonb120.stm</option>
-		<option value="camt.xxx.cfonb120.stm.0by">camt.xxx.cfonb120.stm.0by</option>
-		<option value="camt.xxx.cfonb120.stm.eur">camt.xxx.cfonb120.stm.eur</option>
 		<option value="camt.xxx.cfonb120.rep">camt.xxx.cfonb120.rep</option>
 		<option value="camt.fin.mt940.stm">camt.fin.mt940.stm</option>
 		<option value="camt.fin.mt942.rep">camt.fin.mt942.rep</option>
@@ -177,7 +175,6 @@
 
 	<selection name="iaccounting.batch.action.select" id="bankpayment.iaccounting.batch.action.select">
 		<option value="12">Direct debit</option>
-		<option value="20">Bank statement</option>
 	</selection>
 
 	<selection name="iaccount.account.batch.direct.debit.data.type.select">
@@ -215,10 +212,22 @@
     
     <selection name="bank.payment.batch.action.select">
 		<option value="1">Check the ebics certificate validation date</option>
+		<option value="2">Bank statement</option>
+	</selection>
+	
+	<selection name="bank.payment.bank.order.line.origin.related.to.select">
+		<option value="com.axelor.apps.account.db.Invoice">Invoice</option>
+		<option value="com.axelor.apps.account.db.PaymentScheduleLine">Payment schedule line</option>
+		<option value="com.axelor.apps.account.db.Reimbursement">Reimbursement</option>
+		<option value="com.axelor.apps.hr.db.Expense">Expense</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select" id="bankpayment.sequence.generic.code.select">
 		<option value="bankOrder">Bank order</option>
+	</selection>
+	
+	<selection name="meta.schedule.batch.service.select" id="bank.payment.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService">com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService</option>
 	</selection>
 
 </object-views>

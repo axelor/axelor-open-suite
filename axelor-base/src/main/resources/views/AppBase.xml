@@ -5,19 +5,19 @@
 	
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large">
 		<toolbar>
-		    <button name="new" title="New" hidden="true"/>
-		    <button name="delete" title="Delete" hidden="true"/>
-		    <button name="back" title="Back" hidden="true"/>
-		    <button name="copy" title="Copy" hidden="true"/>
-		    <button name="search" title="Search" hidden="true"/>
-		    <button name="exportObjects" title="Export Object" onClick="action-base-general-export-objects"/>
-		    <button name="remindTimesheets" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
+		    <button name="newBtn" title="New" hidden="true"/>
+		    <button name="deleteBtn" title="Delete" hidden="true"/>
+		    <button name="backBtn" title="Back" hidden="true"/>
+		    <button name="copyBtn" title="Copy" hidden="true"/>
+		    <button name="searchBtn" title="Search" hidden="true"/>
+		    <button name="exportObjectsBtn" title="Export Object" onClick="action-base-general-export-objects"/>
+		    <button name="remindTimesheetsBtn" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
-		<panel>
+		<panel name="todayPanel">
 			<field name="today"/>
 		</panel>
-		<panel-tabs>
-			<panel name="configuration" title="Configuration" colSpan="12">
+		<panel-tabs name="mainPanelTab">
+			<panel name="configurationPanel" title="Configuration" colSpan="12">
 		    	<field name="defaultPartnerLanguage" />
 				<field name="enableTradingNamesManagement" widget="boolean-switch"/>
 		    	<field name="activateSendingEmail" widget="boolean-switch"/>
@@ -31,10 +31,10 @@
 		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
 		    	<field name="teamManagement" widget="boolean-switch"/>
-		    	<panel name="productBarCode" title="Product BarCode">
+		    	<panel name="productBarCodePanel" title="Product BarCode">
 		    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
 		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
-     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="editProductBarcodeType==false"/>
+     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
 				</panel>
                 <field name="generatePartnerSequence" widget="boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
@@ -45,23 +45,23 @@
 				<field name="document" widget="boolean-switch"/>
                 <field name="passwordChangedTemplate"/>
 			</panel>
-		    <panel name="interfaces" title="Interfaces"  colSpan="12">
-				<panel name="map" title="Mapping"  colSpan="12">
+		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
+				<panel name="mapPanel" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
-					<button name="checkMapApi" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
+					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
 					<field name="googleMapsApiKey" widget="password"/>
 				</panel>
-				<panel name="qas" title="Addresses validation"  colSpan="12">
+				<panel name="qasPanel" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
-					<button name="checkQasWsdl" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
+					<button name="checkQasWsdlBtn" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
 					<field name="hasQasValidation" widget="boolean-switch"/>
 				</panel>
-				<panel name="ws" title="Webservices"  colSpan="12">
+				<panel name="wsPanel" title="Webservices"  colSpan="12">
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
 		    </panel>
-		    <panel name="currencyConversion" title="Currency conversion" colSpan="12">
-				<button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
+		    <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">
+				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
 				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 			</panel>
 		</panel-tabs>

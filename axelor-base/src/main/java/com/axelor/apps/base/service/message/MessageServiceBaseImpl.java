@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -194,5 +194,20 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
     }
 
     return "";
+  }
+
+  @Override
+  public String getFullEmailAddress(EmailAddress emailAddress) {
+    String partnerName = "";
+    if (emailAddress.getPartner() != null) {
+
+      try {
+        partnerName = new String(emailAddress.getPartner().getName().getBytes(), "ISO-8859-1");
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
   }
 }

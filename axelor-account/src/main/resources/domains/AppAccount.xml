@@ -25,6 +25,7 @@
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />
+        
 		<extra-code><![CDATA[
 	
 	   

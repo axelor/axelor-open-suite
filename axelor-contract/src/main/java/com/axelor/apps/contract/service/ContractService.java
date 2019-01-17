@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,8 +47,8 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional
-  void waitingCurrentVersion(Contract contract, LocalDate date);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * On going current version. It : - Active the contrat if not yet active - Set current version
@@ -66,8 +66,8 @@ public interface ContractService {
    * @param contract
    * @param date
    */
-  @Transactional
-  void waitingNextVersion(Contract contract, LocalDate date);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Active the next version. It : - Terminate currentVersion - Archive current version - Ongoing
@@ -131,8 +131,8 @@ public interface ContractService {
    *
    * @param template
    */
-  @Transactional
-  Contract createContractFromTemplate(ContractTemplate template);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Contract copyFromTemplate(Contract contract, ContractTemplate template) throws AxelorException;
 
   Contract increaseInvoiceDates(Contract contract);
 

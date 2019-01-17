@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.studio.service.builder;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -36,7 +37,6 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class ActionScriptBuilderService {
     String lang = "js";
     String transactional = "true";
 
-    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SCRIPT) {
+    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_SCRIPT) {
       code = "\n" + builder.getScriptText();
       if (builder.getScriptType() == 1) {
         lang = "groovy";
@@ -103,18 +103,14 @@ public class ActionScriptBuilderService {
   private String generateScriptCode(ActionBuilder builder) {
 
     StringBuilder stb = new StringBuilder();
-    fbuilder = new ArrayList<StringBuilder>();
+    fbuilder = new ArrayList<>();
     varCount = 1;
     int level = 1;
 
     stb.append(format("var ctx = $request.context;", level));
-
-    String targetModel =
-        builder.getTypeSelect() == ActionBuilderRepository.TYPE_CREATE
-            ? builder.getTargetModel()
-            : builder.getModel();
-
-    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_CREATE) {
+    String targetModel;
+    if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_CREATE) {
+      targetModel = builder.getTargetModel();
       isCreate = true;
       addCreateCode(builder.getIsJson(), stb, level, targetModel);
       if (builder.getOpenRecord()) {
@@ -125,6 +121,7 @@ public class ActionScriptBuilderService {
         stb.append(format("$response.setFlash('" + builder.getDisplayMsg() + "')", level));
       }
     } else {
+      targetModel = builder.getModel();
       isCreate = false;
       addUpdateCode(builder.getIsJson(), stb, level, targetModel);
     }
@@ -172,7 +169,7 @@ public class ActionScriptBuilderService {
       stb.append(format(".context('_showRecord', target.id)", level + 1));
       stb.append(format(".map())", level + 1));
     } else {
-      String title = inflector.humanize(targetModel.substring(targetModel.lastIndexOf(".") + 1));
+      String title = inflector.humanize(targetModel.substring(targetModel.lastIndexOf('.') + 1));
       stb.append(
           format(
               "$response.setView(com.axelor.meta.schema.actions.ActionView.define('" + title + "')",
@@ -216,18 +213,14 @@ public class ActionScriptBuilderService {
     StringBuilder stb = new StringBuilder();
 
     lines.sort(
-        new Comparator<ActionBuilderLine>() {
-
-          @Override
-          public int compare(ActionBuilderLine l1, ActionBuilderLine l2) {
-            if (l1.getDummy() && !l2.getDummy()) {
-              return -1;
-            }
-            if (!l1.getDummy() && l2.getDummy()) {
-              return 1;
-            }
-            return 0;
+        (l1, l2) -> {
+          if (l1.getDummy() && !l2.getDummy()) {
+            return -1;
           }
+          if (!l1.getDummy() && l2.getDummy()) {
+            return 1;
+          }
+          return 0;
         });
 
     for (ActionBuilderLine line : lines) {
@@ -310,6 +303,8 @@ public class ActionScriptBuilderService {
       case "json-one-to-many":
         subCode = addJsonO2MBinding(line);
         break;
+      default:
+        throw new IllegalArgumentException("Unknown type");
     }
 
     return subCode + "($," + line.getValue() + ", _$)";
@@ -319,7 +314,7 @@ public class ActionScriptBuilderService {
 
     MetaJsonField jsonField = line.getMetaJsonField();
 
-    String targetModel = null;
+    String targetModel = "";
     if (jsonField != null && jsonField.getTargetModel() != null) {
       targetModel = jsonField.getTargetModel();
     }
@@ -340,7 +335,7 @@ public class ActionScriptBuilderService {
       return jsonField.getTargetJsonModel().getName();
     }
 
-    return null;
+    return "";
   }
 
   private String getRootSourceModel(ActionBuilderLine line) {
@@ -381,7 +376,7 @@ public class ActionScriptBuilderService {
         }
       }
     } catch (AxelorException e) {
-
+      TraceBackService.trace(e);
     }
 
     if (sourceModel == null && line.getValue() != null && line.getValue().equals("$")) {
@@ -414,14 +409,14 @@ public class ActionScriptBuilderService {
     StringBuilder stb = new StringBuilder();
     fbuilder.add(stb);
     if (tModel.contains(".")) {
-      tModel = tModel.substring(tModel.lastIndexOf(".") + 1);
+      tModel = tModel.substring(tModel.lastIndexOf('.') + 1);
     }
     stb.append(format("", 1));
     stb.append(format("function " + fname + "($$, $, _$){", 1));
     stb.append(format("var val = null;", 2));
     if (srcModel != null) {
       stb.append(format("if ($ != null && $.id != null){", 2));
-      srcModel = srcModel.substring(srcModel.lastIndexOf(".") + 1);
+      srcModel = srcModel.substring(srcModel.lastIndexOf('.') + 1);
       stb.append(format("$ = $em.find(" + srcModel + ".class, $.id);", 3));
       log.debug("src model: {}, Target model: {}", srcModel, tModel);
       if (srcModel.contentEquals(tModel)) {
@@ -524,7 +519,8 @@ public class ActionScriptBuilderService {
     }
     // stb.append(format("}",2));
     if (filter && line.getFilter() != null) {
-      stb.append(format("val = " + getQuery(model, line.getFilter(), true, false), 2));
+      String query = getQuery(model, line.getFilter(), true, false);
+      stb.append(format("val = " + query, 2));
     }
     List<ActionBuilderLine> lines = line.getSubLines();
     if (lines != null && !lines.isEmpty()) {
@@ -591,7 +587,7 @@ public class ActionScriptBuilderService {
   private String getQuery(String model, String filter, boolean json, boolean all) {
 
     if (model.contains(".")) {
-      model = model.substring(model.lastIndexOf(".") + 1);
+      model = model.substring(model.lastIndexOf('.') + 1);
     }
 
     String nRecords = "fetchOne()";

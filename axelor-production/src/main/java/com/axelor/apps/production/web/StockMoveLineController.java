@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
@@ -91,11 +91,17 @@ public class StockMoveLineController {
           company = operationOrder.getManufOrder().getCompany();
         } else {
           throw new AxelorException(
-              TraceBackRepository.TYPE_TECHNICAL,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
               IExceptionMessage.STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT);
         }
       } else {
         company = stockMove.getCompany();
+      }
+
+      if (stockMoveLine.getProduct() == null) {
+        stockMoveLine = new StockMoveLine();
+        response.setValues(Mapper.toMap(stockMoveLine));
+        return;
       }
 
       Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);

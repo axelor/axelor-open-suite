@@ -497,7 +497,7 @@ this.queryText = this.queryText.replace("@VALUES", str);]]></method>
     Unit.name as "unitName",
     MrpLineType.name as "typeName",
     MrpLineType.sequence as "typeSeq",
-    Product.name as "productName",
+    Product.full_name as "productName",
     Location.name as "locationName",
     Product.code
 

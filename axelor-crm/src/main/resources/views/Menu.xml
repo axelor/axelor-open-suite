@@ -20,6 +20,7 @@
 		<context name="user_id" expr="eval:__user__" />
 		<context name="_isCustomer" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND self.isCustomer = true OR self.isProspect = true"/>
+		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
 	<menuitem name="crm-root-contacts" parent="crm-root"
@@ -78,28 +79,15 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 			
-	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
-		title="My Calendar" action="crm.root.meeting.my.calendar" order="30"/>
-	
+	<menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
+		title="My CRM events" action="crm.root.meeting.my.calendar" order="2"/>
 	
 	<action-method name="crm.root.meeting.my.calendar">
 		<call class="com.axelor.apps.crm.web.CalendarController" method="showMyEvents"/>
 	</action-method>
 	
-	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Team Calendar" action="crm.root.meeting.team.calendar" order="35"/>
-		
-	<action-method name="crm.root.meeting.team.calendar">
-		<call class="com.axelor.apps.crm.web.CalendarController" method="showTeamEvents"/>
-	</action-method>
-	
-	<menuitem name="crm-root-meeting-sharedm-calendar" parent="crm-root"
-		title="Shared Calendar" action="crm.root.meeting.shared.calendar" order="40"/>
-		
-	<action-method name="crm.root.meeting.shared.calendar">
-		<call class="com.axelor.apps.crm.web.CalendarController" method="showSharedEvents"/>
-	</action-method>
-	
+	<menuitem name="crm-conf-target" parent="crm-root" order="30"
+		title="Objectives" action="crm.conf.target" />
 	
 	<menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 				
@@ -132,9 +120,6 @@
 		<view type="form" name="target-configuration-form"/>
 	</action-view>
 	
-	<menuitem name="crm-conf-target" parent="crm-conf"
-		title="Objectives" action="crm.conf.target" />
-
 	<action-view name="crm.conf.target" title="Objectives"
 		model="com.axelor.apps.crm.db.Target" >
 		<view type="grid" name="target-grid"/>

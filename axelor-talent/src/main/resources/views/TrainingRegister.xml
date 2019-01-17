@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="training-register-grid" title="Training registers" model="com.axelor.apps.talent.db.TrainingRegister">
-		<field name="trainingSession" />
 		<field name="training" />
+		<field name="trainingSession" />
 		<field name="employee" />
 		<field name="fromDate" />
 		<field name="toDate" />
@@ -15,21 +15,21 @@
 	
 	<form name="training-register-form" title="Training register" model="com.axelor.apps.talent.db.TrainingRegister" width="large" 
 		onNew="action-training-register-default" onSave="action-training-register-update-old-rating">
-		<panel title="Status">
+		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
 		</panel>
-		<panel>
-			<field name="trainingSession" onChange="action-training-session-change" onSelect="action-training-register-training-session-domain"/>
+		<panel name="detailPanel">
 			<field name="training" />
+			<field name="trainingSession" onChange="action-training-session-change" onSelect="action-training-register-training-session-domain"/>
 			<field name="employee" />
-			<spacer/>
+			<spacer name="employeeSpacer"/>
 			<field name="fromDate" />
 			<field name="toDate" />
 		</panel>
-		<panel itemSpan="12" sidebar="true">
-			<button name="plan" title="Accept/plan" showIf="statusSelect == 0" onClick="save,action-training-register-method-plan"/>
-			<button name="complete" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
-			<button name="cancel" title="Cancel" onClick="save,action-training-register-method-cancel"/>
+		<panel name="actionPanel" itemSpan="12" sidebar="true">
+			<button name="planBtn" title="Accept/plan" showIf="statusSelect == 0" onClick="save,action-training-register-method-plan"/>
+			<button name="completeBtn" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
+			<button name="cancelBtn" title="Cancel" onClick="save,action-training-register-method-cancel"/>
 			<field name="ratingSelect" widget="SelectProgress"/>
 		</panel>
 	</form>

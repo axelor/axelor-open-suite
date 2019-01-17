@@ -63,11 +63,11 @@
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
 		<toolbar>
-			<button name="grabEvent" icon="fa-suitcase" help="Take charge" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
-			<button name="viewOnMap" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
-			<button name="start" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
-			<button name="pause" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
-			<button name="accept" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
+			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="viewOnMapBtn" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
+			<button name="startBtn" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
+			<button name="pauseBtn" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
+			<button name="acceptBtn" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
@@ -75,7 +75,7 @@
 			  <item title="Create event" action="save,action-event-view-create-event"/>
 			</menu>
 		</menubar>
-		<panel colSpan="12" name="meetingGeneral">
+		<panel colSpan="12" name="meetingGeneralPanel">
 			<field name="typeSelect" domain="self.value IN ('0','1','2','3')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
 	        	<viewer depends="typeSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
@@ -121,27 +121,27 @@
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
 		</panel>
 
-		<panel-tabs>
-			<panel name="description" title="Description">
+		<panel-tabs name="mainPanelTab">
+			<panel name="descriptionPanel" title="Description">
 				<field name="description" showTitle="false" widget="html" colSpan="12"/>
 			</panel>
 			<panel name="organizationPanel" title="Organization">
 				<field name="location" css="highlight"/>
 				<field name="geo" colSpan="5"/>
-				<button name="viewOnMap" colSpan="1" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
+				<button name="viewOnMapBtn" colSpan="1" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 				<field name="organizer"/>
 			</panel>
-			<panel title="Information">
+			<panel name="informationPanel" title="Information">
 				<field name="visibilitySelect" readonlyIf="calendar != null"/>
 				<field name="disponibilitySelect" readonlyIf="calendar != null"/>
 				<field name="status"/>
 				<field name="subjectTeam" hidden="true"/>
 				<field name="computedAttendeeList" hidden="true"/>
 			</panel>
-			<panel-related field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
+			<panel-related name="eventReminderListPanel" field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
 		</panel-tabs>
 
-		<panel title="Guests" name="addGuests" sidebar="true" canCollapse="true">
+		<panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true">
 			<field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true" onChange="action-event-method-add-email-guest"/>
 			<field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
 				<editor layout="table" x-show-titles="false">
@@ -151,20 +151,20 @@
 			</field>
 		</panel>
 
-		<panel sidebar="true" name="follow-up" title="Follow up" canCollapse="true">
+		<panel sidebar="true" name="followupPanel" title="Follow up" canCollapse="true">
 			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6"/>
 			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator" colSpan="6"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 		</panel>
 
-		<panel sidebar="true" title="Caracteristics" name="meetingAttributes" canCollapse="true">
+		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" domain="self.typeSelect = :typeSelect" colSpan="6"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
 			<field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
 		</panel>
 		
-		<panel sidebar="true" title="References" name="meetingLinked" canCollapse="true">
+		<panel sidebar="true" title="References" name="meetingLinkedPanel" canCollapse="true">
 			<field name="partner" colSpan="6" onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" colSpan="6" hideIf="partner.partnerTypeSelect == 2" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<field name="lead" colSpan="6" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
@@ -174,11 +174,11 @@
 			<field name="partner.partnerTypeSelect" hidden="true"/>
 		</panel>
 
-		<panel>
+		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
 		</panel>
 		
-		<panel-mail>
+		<panel-mail name="mailPanel">
 			<mail-messages/>
 			<mail-followers/>
 		</panel-mail>
@@ -235,10 +235,10 @@
     </action-group>
     
     <action-attrs name="action-event-hide-private">
-    	<attribute name="hidden" for="meetingGeneral" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingAttributes" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingGeneralPanel" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingAttributesPanel" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     	<attribute name="hidden" for="meetingGuests" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
-    	<attribute name="hidden" for="meetingLinked" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
+    	<attribute name="hidden" for="meetingLinkedPanel" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     	<attribute name="hidden" for="panelMail" expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
     </action-attrs>
 
@@ -291,9 +291,9 @@
     </action-view>
 
 	<form model="com.axelor.apps.base.db.Wizard" title="Apply modifications" name="modifications-assistant-form">
-		<panel>
-			<button name="applyToThis" title="Apply changes to this event only" onClick="close" colSpan="12"/>
-			<button name="applyToAll" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12"/>
+		<panel name="wizardPanel">
+			<button name="applyToThisBtn" title="Apply changes to this event only" onClick="close" colSpan="12"/>
+			<button name="applyToAllBtn" title="Apply changes to all recurrence's events" onClick="action-event-method-apply-changes-to-all" colSpan="12"/>
 		</panel>
 	</form>
 
@@ -393,9 +393,9 @@
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
-    	<field name="partner" expr="eval: _partner" if="_partner.isContact == false &amp;&amp; _partner.isCustomer == true &amp;&amp; _parentPartner == null"/>
+    	<field name="partner" expr="eval: _partner" if="_partner != null &amp;&amp; _partner.isContact == false &amp;&amp; _partner.isCustomer == true"/>
     	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
-    	<field name="partner" expr="eval: _parentPartner" if="_parentPartner != null"/>
+    	<field name="partner" expr="eval: _parentPartner" if="_parentPartner != null  &amp;&amp; _partner == null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
@@ -407,7 +407,7 @@
 	</action-record>
 
 	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:contactPartner?.contactAddress?.fullName"/>
+		<field name="location" expr="eval:contactPartner?.mainAddress?.fullName"/>
 	</action-record>
 
 	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -51,6 +50,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
+import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,8 +62,6 @@ import org.slf4j.LoggerFactory;
 public abstract class InvoiceGenerator {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected JournalService journalService;
 
   protected int operationType;
   protected Company company;
@@ -114,7 +112,6 @@ public abstract class InvoiceGenerator {
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   /**
@@ -148,12 +145,10 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected InvoiceGenerator() {
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected int inverseOperationType(int operationType) throws AxelorException {
@@ -210,22 +205,10 @@ public abstract class InvoiceGenerator {
     if (paymentCondition == null) {
       paymentCondition = InvoiceToolService.getPaymentCondition(invoice);
     }
-    if (paymentCondition == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
-    }
     invoice.setPaymentCondition(paymentCondition);
 
     if (paymentMode == null) {
       paymentMode = InvoiceToolService.getPaymentMode(invoice);
-    }
-    if (paymentMode == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
     invoice.setPaymentMode(paymentMode);
 
@@ -285,14 +268,19 @@ public abstract class InvoiceGenerator {
       invoice.setInAti(false);
     }
 
-    // Set Company bank details
-    if (companyBankDetails == null) {
-      if (accountingSituation != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
+    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList
+              .stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode.equals(partner.getOutPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+      } else if (paymentMode.equals(partner.getInPaymentMode())) {
+        companyBankDetails = accountingSituation.getCompanyInBankDetails();
       }
       if (companyBankDetails == null) {
         companyBankDetails = company.getDefaultBankDetails();
@@ -304,6 +292,11 @@ public abstract class InvoiceGenerator {
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);
+
+    if (companyBankDetails != null
+        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
+    }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 

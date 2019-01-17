@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,18 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.db.Wizard;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -39,18 +42,26 @@ public class MoveLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    Move move = moveLine.getMove();
-
-    if (move == null) {
-      move = request.getContext().getParent().asType(Move.class);
-      moveLine.setMove(move);
-    }
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
         moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -105,7 +116,8 @@ public class MoveLineController {
       if (idList != null) {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
+          if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
+                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
               && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
             moveLineList.add(moveLine);
           }
@@ -114,6 +126,44 @@ public class MoveLineController {
 
       if (!moveLineList.isEmpty()) {
         Beans.get(MoveLineService.class).reconcileMoveLines(moveLineList);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showCalculatedBalance(ActionRequest request, ActionResponse response) {
+    BigDecimal totalCredit = new BigDecimal(0), totalDebit = new BigDecimal(0), finalBalance;
+    @SuppressWarnings("unchecked")
+    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+
+    try {
+      if (idList != null) {
+        for (Integer id : idList) {
+          MoveLine moveLine = Beans.get(MoveLineRepository.class).find(id.longValue());
+          if (moveLine != null) {
+            totalCredit = totalCredit.add(moveLine.getCredit());
+            totalDebit = totalDebit.add(moveLine.getDebit());
+          }
+        }
+        finalBalance = totalDebit.subtract(totalCredit);
+
+        response.setView(
+            ActionView.define("Calculation")
+                .model(Wizard.class.getName())
+                .add("form", "account-move-line-calculation-wizard-form")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("width", "500")
+                .param("popup-save", "false")
+                .context("_credit", totalCredit)
+                .context("_debit", totalDebit)
+                .context("_balance", finalBalance)
+                .map());
+      } else {
+        response.setAlert(IExceptionMessage.NO_MOVE_LINE_SELECTED);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -8,7 +8,7 @@
 	</grid>
 
 	<form name="other-costs-employee-form" title="Employee's other costs" model="com.axelor.apps.hr.db.OtherCostsEmployee" cols="12" width="large">
-		<panel name="main">
+		<panel name="mainPanel">
 			<field name="amount" required="true"/>
 			<field name="description" required="true"/>
 		</panel>

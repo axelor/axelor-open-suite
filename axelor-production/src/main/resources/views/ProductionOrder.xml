@@ -9,22 +9,20 @@
     <hilite color="primary" if="prioritySelect == 1"/>
         <field name="productionOrderSeq"/>
         <field name="prioritySelect"/>
-        <!--  TODO: this field is commented in domain
-        <field name="businessProject"/>
-         -->
         <field name="createdBy"/>
         <field name="createdOn"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+		<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
         <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
     </grid>
 
     <form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project"
         onLoad="action-production-order-attrs-title-project" width="large">
         <toolbar>
-            <button name="showManufOrderWizard" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
+            <button name="showManufOrderWizardBtn" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
         </toolbar>
-        <panel name="main">
+        <panel name="mainPanel">
             <field name="productionOrderSeq"/>
-            <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
             <field name="prioritySelect">
                 <viewer>
                 <![CDATA[
@@ -34,10 +32,13 @@
                 ]]>
                 </viewer>
             </field>
+            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
+            <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
         </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-        <panel-tabs>
-            <panel-related field="manufOrderList" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
+        <panel-tabs name="mainPanelTab">
+            <panel-related name="manufOrderListPanel" field="manufOrderList" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
                 <field name="manufOrderSeq"/>
                 <field name="product" form-view="product-form" grid-view="product-grid"/>
                 <field name="qty"/>
@@ -49,19 +50,19 @@
                 <field name="createdOn"/>
                 <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
             </panel-related>
-            <panel-dashlet action="action-production-order-view-operation-order" title="Operation order"/>
+            <panel-dashlet name="operationOrderDetailsPanel" action="action-production-order-view-operation-order" title="Operation order"/>
         </panel-tabs>
     </form>
     
     <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard">
-    	<panel>
+    	<panel name="wizardPanel">
      		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
         	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
         	<field name="$qty" title="Quantity" type="decimal"/>
         	<field name="$_startDate" widget="dateTime" title="Planned start date"/>
-        	<button name="AddManufOrder" title="Add Manuf. Order" onClick="action-production-order-method-add-manuf-order"/>
+        	<button name="AddManufOrderBtn" title="Add Manuf. Order" onClick="action-production-order-method-add-manuf-order"/>
         </panel>
-        <panel hidden="true">
+        <panel name="productDefaultBomPanel" hidden="true">
           <field name="$product.defaultBillOfMaterial" />
         </panel>
     </form>
@@ -83,6 +84,19 @@
 		<field name="$qty" expr="eval: 1.0"/>
 		<field name="$_startDate" expr="eval: __datetime__"/>
 	</action-record>
+	
+	<action-attrs name="action-production-order-atts-sale-order-onchange-client-partner">
+	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
+	</action-attrs>
+	
+	<action-record name="action-production-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ProductionOrder">
+	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
+	</action-record>
+	
+	<action-attrs name="action-production-order-attrs-sale-order-onselect">
+	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
+	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
+	</action-attrs>
     
     <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
   		<view type="grid" name="operation-order-group-grid"/>

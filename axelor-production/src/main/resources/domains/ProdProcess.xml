@@ -17,10 +17,10 @@
   	
   	<boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
   	
-  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location"/>
-  	<many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"/>
+  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" massUpdate="true"/>
+  	<many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product" massUpdate="true"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-		<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+	<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
 
   	<integer name="versionNumber" title="Version number" default="1"/>
     <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />

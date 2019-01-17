@@ -33,6 +33,7 @@
     <date name="validationDate" title="Validation date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true" readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
+   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
     <unique-constraint columns="reference,company"/>
     
@@ -51,6 +52,23 @@
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
 	
 	]]></extra-code>
+    
+    <track>
+    	<field name="statusSelect"/>
+    	<field name="journal"/>
+    	<field name="reference"/>
+    	<field name="period"/>
+    	<field name="partner"/>
+    	<field name="currency"/>
+    	<field name="companyCurrency"/>
+    	<field name="ignoreInAccountingOk"/>
+    	<field name="ignoreInDebtRecoveryOk"/>
+    	<message if="true" on="CREATE">Move created</message>
+    	<message if="statusSelect == 1" tag="important">New move</message>
+	    <message if="statusSelect == 2" tag="info">Daybook move</message>
+	    <message if="statusSelect == 3" tag="success">Move validated</message>
+	    <message if="statusSelect == 4" tag="warning">Move canceled</message>
+    </track>
     
   </entity>
 </domain-models>

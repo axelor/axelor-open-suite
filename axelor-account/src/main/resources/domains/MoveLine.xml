@@ -28,7 +28,8 @@
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" massUpdate="true"/>
+    <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine" title="Source Tax"/>
    
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
@@ -47,11 +48,16 @@
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>
     
     <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="moveLine"/>
+    <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
     <string name="accountCode" readonly="true"/>
     <string name="accountName" readonly="true"/>
     <string name="partnerFullName" readonly="true"/>
     <string name="partnerSeq" readonly="true"/>
+    
+<!--     Used for update partner balances when we change the partner of a move line in daybook mode -->
+    <long name="partnerId"/>
+    <long name="accountId"/>
     
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
@@ -60,7 +66,9 @@
 
     <many-to-one name="reconcileGroup" title="Reconcile Group"
                  ref="com.axelor.apps.account.db.ReconcileGroup"/>
-
+	
+	<date name="originDate" title="Origin date" initParam="true"/>
+	
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
     	if (move != null && move.getReference() != null){
@@ -73,7 +81,7 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use" >
     	<![CDATA[
-    	if (account != null && account.getUseForPartnerBalance()){
+    	if (account != null && account.getReconcileOk()){
 		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
 		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
 		    else return BigDecimal.ZERO;
@@ -98,7 +106,17 @@
 	
 	]]></extra-code>
 
-
+	<track>
+		 <field name="date"/>
+		 <field name="partner"/>
+		 <field name="account"/>
+		 <field name="debit"/>
+		 <field name="credit"/>
+		 <field name="origin"/>
+		 <field name="description"/>
+		 <message if="true" on="CREATE">Move line created</message>
+	</track>
+	
   </entity>
 
 </domain-models>

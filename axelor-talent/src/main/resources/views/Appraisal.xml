@@ -20,16 +20,16 @@
 	</grid>
 	
 	<form name="appraisal-form" title="Appraisal" model="com.axelor.apps.talent.db.Appraisal" width="large">
-		<panel>
+		<panel name="actionPanel">
 			<field name="statusSelect" colSpan="8"  widget="NavSelect" showTitle="false" />
-			<panel colSpan="4" stacked="true">
-				<button name="sendAppraisal" title="Send" showIf="statusSelect == 0" onClick="save,action-appraisal-method-send-appraisal"/>
-				<button name="realizeAppraisal" title="Realize" showIf="statusSelect == 1" css="btn-success" onClick="save,action-appraisal-method-realize-appraisal"/>
-				<button name="cancelAppraisal" title="Cancel" showIf="statusSelect &lt; 2" css="btn-danger" onClick="save,action-appraisal-method-cancel-appraisal"/>
-				<button name="draftAppraisal" title="Draft" showIf="statusSelect == 3" onClick="save,action-appraisal-method-draft-appraisal"/>
+			<panel name="subActionPanel" colSpan="4" stacked="true">
+				<button name="sendAppraisalBtn" title="Send" showIf="statusSelect == 0" onClick="save,action-appraisal-method-send-appraisal"/>
+				<button name="realizeAppraisalBtn" title="Realize" showIf="statusSelect == 1" css="btn-success" onClick="save,action-appraisal-method-realize-appraisal"/>
+				<button name="cancelAppraisalBtn" title="Cancel" showIf="statusSelect &lt; 2" css="btn-danger" onClick="save,action-appraisal-method-cancel-appraisal"/>
+				<button name="draftAppraisalBtn" title="Draft" showIf="statusSelect == 3" onClick="save,action-appraisal-method-draft-appraisal"/>
 			</panel>
 		</panel>
-		<panel>
+		<panel name="detailPanel">
 			<field name="employee" required="true" canEdit="false" canNew="false"/>
 			<field name="company" canEdit="false" canNew="false"/>
 			<field name="appraisalType" canEdit="false" canNew="false"/>
@@ -38,31 +38,31 @@
 			<field name="description" colSpan="12" widget="html"/>
 			<field name="attrs" colSpan="12"/>
 		</panel>
-		<panel-mail>
+		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 	    </panel-mail>
 	</form>
 	
 	<form name="appraisal-template-form" title="Appraisal template" model="com.axelor.apps.talent.db.Appraisal" width="large" onNew="action-appraisal-template-defaults">
-		<panel>
+		<panel name="mainPanel">
 			<field name="company" />
 			<field name="appraisalType" />
 			<field name="toDate" />
 			<field name="reviewerEmployee" />
 			<field name="description" colSpan="12" widget="html"/>
 			<field name="attrs" colSpan="12"/>
-			<button name="openEmployeeSelect" title="Create Appraisals" onClick="save,action-appraisal-template-open-employee-selection" colSpan="3" />
+			<button name="openEmployeeSelectBtn" title="Create Appraisals" onClick="save,action-appraisal-template-open-employee-selection" colSpan="3" />
 			<field name="isTemplate" hidden="true" />
 		</panel>
 	</form>
 	
 	<form name="appraisal-employee-select-form" title="Create Appraisals(Select Employees)" model="com.axelor.apps.talent.db.Appraisal"
 		onNew="action-appraisal-employee-select-default" width="large">
-		<panel>
+		<panel name="mainPanel">
 			<field name="$employeeSet" type="many-to-many" colSpan="12" target="com.axelor.apps.hr.db.Employee" title="Employees"/>
 			<field name="sendAppraisals" type="boolean" title="Send" colSpan="2"/>
-			<button name="createAppraisals" title="Create" onClick="action-appraisal-template-method-create-appraisals" showIf="$employeeSet.length > 0" colSpan="3"/>
+			<button name="createAppraisalsBtn" title="Create" onClick="action-appraisal-template-method-create-appraisals" showIf="$employeeSet.length > 0" colSpan="3"/>
 			<field name="templateId" type="long" hidden="true" />
 		</panel>
 	</form>

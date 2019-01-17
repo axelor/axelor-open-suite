@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,36 +32,40 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
   @Override
   public void computeMarginSaleOrder(SaleOrder saleOrder) {
 
-    if (saleOrder.getSaleOrderLineList() == null) {
+    BigDecimal accountedRevenue = BigDecimal.ZERO;
+    BigDecimal totalCostPrice = BigDecimal.ZERO;
+    BigDecimal totalGrossProfit = BigDecimal.ZERO;
+    BigDecimal marginRate = BigDecimal.ZERO;
+    BigDecimal markup = BigDecimal.ZERO;
 
-      saleOrder.setTotalCostPrice(BigDecimal.ZERO);
-      saleOrder.setTotalGrossMargin(BigDecimal.ZERO);
-      saleOrder.setMarginRate(BigDecimal.ZERO);
-    } else {
-
-      BigDecimal totalCostPrice = BigDecimal.ZERO;
-      BigDecimal totalGrossMargin = BigDecimal.ZERO;
-      BigDecimal marginRate = BigDecimal.ZERO;
+    if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
 
       for (SaleOrderLine saleOrderLineList : saleOrder.getSaleOrderLineList()) {
 
         if (saleOrderLineList.getProduct() == null
             || saleOrderLineList.getSubTotalCostPrice().compareTo(BigDecimal.ZERO) == 0
             || saleOrderLineList.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
-          continue;
         } else {
 
+          accountedRevenue = accountedRevenue.add(saleOrderLineList.getCompanyExTaxTotal());
           totalCostPrice = totalCostPrice.add(saleOrderLineList.getSubTotalCostPrice());
-          totalGrossMargin = totalGrossMargin.add(saleOrderLineList.getSubTotalGrossMargin());
+          totalGrossProfit = totalGrossProfit.add(saleOrderLineList.getSubTotalGrossMargin());
           marginRate =
-              totalGrossMargin
+              totalGrossProfit
+                  .divide(accountedRevenue, RoundingMode.HALF_EVEN)
+                  .multiply(new BigDecimal(100));
+          markup =
+              totalGrossProfit
                   .divide(totalCostPrice, RoundingMode.HALF_EVEN)
                   .multiply(new BigDecimal(100));
         }
       }
-      saleOrder.setTotalCostPrice(totalCostPrice);
-      saleOrder.setTotalGrossMargin(totalGrossMargin);
-      saleOrder.setMarginRate(marginRate);
     }
+
+    saleOrder.setAccountedRevenue(accountedRevenue);
+    saleOrder.setTotalCostPrice(totalCostPrice);
+    saleOrder.setTotalGrossMargin(totalGrossProfit);
+    saleOrder.setMarginRate(marginRate);
+    saleOrder.setMarkup(markup);
   }
 }

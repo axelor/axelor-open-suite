@@ -40,21 +40,6 @@
 		<view type="form" name="team-task-form"/>
 		<domain>self.project.statusSelect IN (1,2)</domain>
 	</action-view>
-	
-	<menuitem name="project-planning" title="Project planning" order="25" parent="menu-project-root" action="project.planning" />
-	<action-view name="project.planning" title="Project planning" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="form" name="project-planning-user-select-form"/>
-		<view-param name="show-confirm" value="false"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="popup" value="true"/>
-	</action-view>
-	
-	<menuitem name="project-planning-calendar" title="Planning Calendar" order="26" parent="menu-project-root" action="project.planning.calendar" />
-	<action-view name="project.planning.calendar" title="Planning Calendar" model="com.axelor.apps.project.db.ProjectPlanning">
-		<view type="calendar" name="project-planning-calendar" />
-		<view type="grid" name="project-planning-grid" />
-		<view type="form" name="project-planning-form" />
-	</action-view>
 
 	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>
 	<action-view name="all.wiki" title="Project Wiki" model="com.axelor.apps.project.db.Wiki">
@@ -70,12 +55,13 @@
 		<view type="form" name="team-task-form"/>
 	</action-view>
 
-	<menuitem name="project-dasbhoard" parent="menu-project-root" order="31" title="Dashboard" action="project.dashboard" icon="fa-bar-chart"/>
+  <menuitem name="project-reporting" parent="menu-project-root" order="39" title="Reportings" icon="fa-bar-chart"/>
 
-	<action-view name="project.dashboard" title="Dashboard">
-		<view type="dashboard" name="project-dashboard"/>
+	<menuitem name="project-reporting-my-projects" parent="project-reporting" order="31" title="My projects" action="project.my.projects"/>
+	<action-view name="project.my.projects" title="My projects">
+		<view type="dashboard" name="project-my-projects"/>
 	</action-view>
-	
+
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource.booking" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
 		<view type="grid" name="resource-booking-grid" />

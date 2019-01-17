@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,15 +20,22 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
+import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
+import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -36,8 +43,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,9 +57,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class StockMoveController {
+
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private StockMoveService stockMoveService;
 
@@ -111,15 +126,41 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printStockMove(ActionRequest request, ActionResponse response) {
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+    Context context = request.getContext();
+    String fileLink;
+    String title;
 
     try {
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.STOCK_MOVE);
-      response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
+      StockMovePrintService stockMovePrintService = Beans.get(StockMovePrintService.class);
+
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) request.getContext().get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = stockMovePrintService.printStockMoves(ids);
+        title = I18n.get("Stock Moves");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = request.getContext().asType(StockMove.class);
+        title = stockMovePrintService.getFileName(stockMove);
+        fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -131,15 +172,44 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printPickingStockMove(ActionRequest request, ActionResponse response) {
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+    Context context = request.getContext();
+    String fileLink;
+    String title;
 
     try {
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, lstSelectedMove, IReport.PICKING_STOCK_MOVE);
-      response.setView(ActionView.define(I18n.get("Stock move")).add("html", fileLink).map());
+
+      PickingStockMovePrintService pickingstockMovePrintService =
+          Beans.get(PickingStockMovePrintService.class);
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = pickingstockMovePrintService.printStockMoves(ids);
+        title = I18n.get("Stock Moves");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = context.asType(StockMove.class);
+        title = pickingstockMovePrintService.getFileName(stockMove);
+        fileLink =
+            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -151,13 +221,45 @@ public class StockMoveController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void printConformityCertificate(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    String fileLink;
+    String title;
+
     try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      String fileLink =
-          stockMoveService.printStockMove(stockMove, null, IReport.CONFORMITY_CERTIFICATE);
-      response.setView(
-          ActionView.define(I18n.get("Certificate of conformity")).add("html", fileLink).map());
+
+      ConformityCertificatePrintService conformityCertificatePrintService =
+          Beans.get(ConformityCertificatePrintService.class);
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> ids =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+        fileLink = conformityCertificatePrintService.printConformityCertificates(ids);
+        title = I18n.get("Conformity Certificates");
+      } else if (context.get("id") != null) {
+
+        StockMove stockMove = context.asType(StockMove.class);
+        title = conformityCertificatePrintService.getFileName(stockMove);
+        fileLink =
+            conformityCertificatePrintService.printConformityCertificate(
+                stockMove, ReportSettings.FORMAT_PDF);
+
+        logger.debug("Printing " + title);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -303,7 +405,7 @@ public class StockMoveController {
   public void compute(ActionRequest request, ActionResponse response) {
 
     StockMove stockMove = request.getContext().asType(StockMove.class);
-    response.setValue("exTaxTotal", stockMoveService.compute(stockMove));
+    response.setValue("exTaxTotal", Beans.get(StockMoveToolService.class).compute(stockMove));
   }
 
   public void openStockPerDay(ActionRequest request, ActionResponse response) {
@@ -342,7 +444,7 @@ public class StockMoveController {
 
   public void fillAddressesStr(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
-    stockMoveService.computeAddressStr(stockMove);
+    Beans.get(StockMoveToolService.class).computeAddressStr(stockMove);
 
     response.setValues(stockMove);
   }
@@ -384,6 +486,23 @@ public class StockMoveController {
               .getDefaultPrintingSettings(stockMove.getTradingName(), stockMove.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAvailableStatus(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    stockMoveService.setAvailableStatus(stockMove);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void updateMoveLineFilterOnAvailableproduct(
+      ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        stockMoveLine.setFilterOnAvailableProducts(stockMove.getFilterOnAvailableProducts());
+      }
+      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
     }
   }
 }

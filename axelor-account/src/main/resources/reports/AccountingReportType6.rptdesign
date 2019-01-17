@@ -1770,6 +1770,7 @@ else  {  0.00 }</expression>
                             </structure>
                         </list-property>
                         <structure name="toc"/>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4147">
                             <property name="width">0.5in</property>
                         </column>
