@@ -13,7 +13,6 @@
       <boolean name="imputable"/>
       <!-- Readonly in timesheet line editor -->
 	  <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor" />
-	  <one-to-many name="projectPlanningTimeList" ref="com.axelor.apps.project.db.ProjectPlanningTime" title="Planned time" mappedBy="project"/>
 
   </entity>
   

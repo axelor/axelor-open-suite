@@ -8,7 +8,7 @@
 		<option value="2">Prestataire</option>
 	</selection>
 	
-	<selection name="support.version.status.select">
+	<selection name="support.project.version.status.select">
 		<option value="1">On hold</option>
 		<option value="2">In progress</option>
 		<option value="3">In test</option>

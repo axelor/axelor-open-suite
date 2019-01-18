@@ -32,6 +32,12 @@
 - Business Support module / Objet TeamTask : Menu entries for customers.Added new role(role.customer) in data-init.
 - Employee:Company(Employee) Phonebook 
 - User Form : Provide step wise view.
+- TeamTask : Update teamtask client view. 
+- Project : Default value for project on Wiki/Version/Announcement.
+- Project : Divide planned and spent time project planning lines in seprate dashlets.
+- Team Task : Add new field 'customerReferral'.
+- TeamTask : Assign default value to fields and change in track of object.
+- MANUF. APP : new boolean manageCostSheetGroup
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
@@ -44,6 +50,8 @@
 - TeamTask : Change in team-task-form view. 
 - TeamTask object : Change label "Task assigned to the provider".
 - BillOfMaterial : Replaced M2M 'billOfMaterialSet' with O2M 'billOfMaterialLineList' and added new entity 'BillOfMaterialLine'
+- MENUS : new organisation in CRM and Sales modules
+- Team Task : Change in team-task-form view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -108,6 +116,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - INVENTORY LINES : some products don't display
 - Partner : Do not clean contacts on partner type change but clean on save
 - Partner : Resolve error on save when modify fields and contactSet at same time. 
+- Project : Fix NPE on invoice generation.
 
 ## [5.1.0] - 2018-12-13
 ## Features

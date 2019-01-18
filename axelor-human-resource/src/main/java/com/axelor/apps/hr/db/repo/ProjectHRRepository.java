@@ -21,26 +21,50 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class ProjectHRRepository extends ProjectManagementRepository {
 
   @Inject private ProjectPlanningTimeService projectPlanningTimeService;
 
+  @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+
   @Override
   public Project save(Project project) {
     super.save(project);
 
+    List<ProjectPlanningTime> projectPlanningTimeList =
+        planningTimeRepo
+            .all()
+            .filter("self.project = ?1 OR self.project.parentProject = ?1", project)
+            .fetch();
+
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
     project.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(project));
 
-    if (project.getProjectPlanningTimeList() != null) {
-      for (ProjectPlanningTime planningTime : project.getProjectPlanningTimeList()) {
+    Project parentProject = project.getParentProject();
+    if (parentProject != null) {
+      parentProject.setTotalPlannedHrs(
+          projectPlanningTimeService.getProjectPlannedHrs(parentProject));
+      parentProject.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(parentProject));
+    }
+
+    if (projectPlanningTimeList != null) {
+      for (ProjectPlanningTime planningTime : projectPlanningTimeList) {
         TeamTask task = planningTime.getTask();
         if (task != null) {
-          task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
-          task.setTotalRealHrs(projectPlanningTimeService.getTaskRealHrs(task));
+          if (planningTime
+              .getTypeSelect()
+              .equals(ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)) {
+            task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
+          } else if (planningTime
+              .getTypeSelect()
+              .equals(ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)) {
+            task.setTotalRealHrs(projectPlanningTimeService.getTaskRealHrs(task));
+          }
         }
       }
     }

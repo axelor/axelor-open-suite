@@ -10,7 +10,7 @@
 			<field name="lastProductionPrice" readonly="true"/>
 		   	<field name="realOrEstimatedPriceSelect" onChange="action-product-group-cost-type-select-onchange"/>
 		   	<field name="componentsValuationMethod" showIf="realOrEstimatedPriceSelect == 2"/>
-		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
 			<button name="createProductionOrderBtn" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
 			<panel-dashlet name="showBOMPanel" action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>
@@ -41,7 +41,7 @@
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">
     	<field name="procurementMethodSelect" expr="produce" if="_fromProduction"/>
-    	<field name="costSheetGroup" expr="eval: __config__.app.getApp('production')?.getProductCostSheetGroup()"  />
+    	<field name="costSheetGroup" expr="eval: __config__.app.getApp('production')?.getProductCostSheetGroup()" if="__config__.app.getApp('production')?.getManageCostSheetGroup()" />
     </action-record>
     
     <action-attrs name="action-product-attrs-scale-and-precision-production" if-module="axelor-production">

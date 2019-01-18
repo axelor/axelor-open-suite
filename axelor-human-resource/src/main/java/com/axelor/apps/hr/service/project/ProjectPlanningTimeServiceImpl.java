@@ -65,7 +65,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
-      List<ProjectPlanningTime> plannings = task.getProjectPlanningTimeList();
+      List<ProjectPlanningTime> plannings =
+          planningTimeRepo
+              .all()
+              .filter(
+                  "self.task = ?1 AND self.typeSelect = ?2",
+                  task,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
+              .fetch();
       if (plannings != null) {
         totalPlanned =
             plannings
@@ -83,7 +90,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     BigDecimal totalRealHrs = BigDecimal.ZERO;
     if (task != null) {
-      List<ProjectPlanningTime> plannings = task.getProjectPlanningTimeSpentList();
+      List<ProjectPlanningTime> plannings =
+          planningTimeRepo
+              .all()
+              .filter(
+                  "self.task = ?1 AND self.typeSelect = ?2",
+                  task,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
+              .fetch();
       if (plannings != null) {
         totalRealHrs =
             plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -99,7 +113,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (project != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.project = ?1", project).fetch();
+          planningTimeRepo
+              .all()
+              .filter(
+                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
+                  project,
+                  true,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
+              .fetch();
       if (plannings != null) {
         totalPlanned =
             plannings
@@ -118,7 +139,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalRealHrs = BigDecimal.ZERO;
     if (project != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.project = ?1", project).fetch();
+          planningTimeRepo
+              .all()
+              .filter(
+                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
+                  project,
+                  true,
+                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
+              .fetch();
       if (plannings != null) {
         totalRealHrs =
             plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -193,11 +221,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 
         ProjectPlanningTime planningTime = new ProjectPlanningTime();
-        if (isTimeSpent) {
-          planningTime.setTimeSpentTask(teamTask);
-        } else {
-          planningTime.setTask(teamTask);
-        }
+
+        planningTime.setTask(teamTask);
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
         planningTime.setUser(user);
@@ -205,6 +230,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setProject(project);
         planningTime.setIsIncludeInTurnoverForecast(
             (Boolean) datas.get("isIncludeInTurnoverForecast"));
+        planningTime.setTypeSelect((Integer) datas.get("_typeSelect"));
 
         BigDecimal totalHours = BigDecimal.ZERO;
         if (timePercent > 0) {
@@ -220,6 +246,17 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       }
 
       fromDate = fromDate.plusDays(1);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines) {
+
+    for (Map<String, Object> line : projectPlanningLines) {
+      ProjectPlanningTime projectPlanningTime =
+          planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
+      planningTimeRepo.remove(projectPlanningTime);
     }
   }
 }

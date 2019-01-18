@@ -21,15 +21,38 @@
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
 		<field name="projectCategory"/>
+		<field name="customerReferral"/>
 		<field name="targetVersion"/>
 	</grid>
+	
+    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Planning Time Spent" name="project-planning-time-spent-client-grid">
+		<field name="realHours"/>		
+		<field name="project"/>
+		<field name="task"/>
+		<field name="date"/>
+    </grid>
 
 	<form name="team-task-client-form" title="Task" model="com.axelor.team.db.TeamTask"
 		onNew="action-team-task-group-onnew" onLoad="action-team-task-group-timer-process" width="large">
 		<panel name="mainPanel">
-			<panel name="statusSelectPanel" colSpan="12">
-				<field name="status" colSpan="8" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<panel name="statusSelectPanel" colSpan="8">
+				<field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
 			</panel>
+			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="4">
+				<viewer>
+					<![CDATA[
+						<h4 class="text-right">
+							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
+							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
+							
+							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
+							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
+			<field name="$provider" hidden="true" type="string"/>
 			<panel name="detailsPanel" colSpan="8" readonlyIf="id">
 				<field name="fullName" showTitle="false" colSpan="12">
 					<viewer depends="name">
@@ -45,15 +68,21 @@
 				</field>
 				<field name="project" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 				<field name="parentTask" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
+				<field name="isOrderAccepted" hidden="true"/>
+				<field name="isOrderProposed" hidden="true"/>
 			</panel>
 			<panel name="actionsPanel" colSpan="4">
-				<button name="acceptOrderBtn" title="Accept Order" hideIf="!invoicingType || isOrderAccepted" onClick="action-task-attrs-set-isOrderAccepted-onclick,save" colSpan="12" if-module="axelor-business-support"/>
+				<button name="acceptOrderBtn" title="Accept Order" hideIf="!invoicingType || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12"/>
+				<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" showIf="assignment == 1"/>
+				<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" showIf="assignment == 2"/>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12" readonlyIf="id">
 				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true"/>
 				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations"/>
-				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="version-form" grid-view="version-grid"/>
-				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid"/>
+				<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
+				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="assignment" hidden="true"/>
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab" readonlyIf="id">
@@ -67,22 +96,30 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="timeInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing"/>
+				<field name="timeInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" readonly="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" readonly="true" showIf="timeInvoicing"/>
 				<panel name="pricingPanel" showIf="timeInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
 					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
 					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-related field="projectPlanningTimeSpentList" colSpan="12" showIf="timeInvoicing &amp;&amp; invoicingType == 1" readonly="true">
-					<field name="project"/>
-					<field name="task"/>
-					<field name="date"/>
-					<field name="realHours"/>
-				</panel-related>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="timeInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
+		<panel-mail name="mailPanel">
+			<mail-messages/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+	
+	<form name="project-planning-time-spent-client-form" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<panel name="mainPanel" readonly="true">
+			<field name="realHours"/>	
+			<field name="project"/>
+			<field name="task"/>
+			<field name="date"/>
+		</panel>
 	</form>
 
 	<action-view name="action-dashlet-version-view-show-task" title="Ticket associated" model="com.axelor.team.db.TeamTask">
@@ -90,6 +127,13 @@
 		<view type="form" name="team-task-form"/>
 		<view-param name="popup" value="true"/>
 		<domain>self.targetVersion.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-team-task-client-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<view type="grid" name="project-planning-time-spent-client-grid"/>
+		<view type="form" name="project-planning-time-spent-client-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.task.id = :id AND self.typeSelect = 2</domain>
 	</action-view>
 
 </object-views>

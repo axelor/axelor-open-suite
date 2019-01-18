@@ -21,6 +21,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface ProjectPlanningTimeService {
@@ -34,4 +35,6 @@ public interface ProjectPlanningTimeService {
   public BigDecimal getProjectRealHrs(Project project);
 
   public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
+
+  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines);
 }

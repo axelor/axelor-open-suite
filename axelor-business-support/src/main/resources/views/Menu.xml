@@ -4,21 +4,30 @@
   
   <menuitem name="project-announcement" title="Announcement" order="37" parent="menu-project-root" action="project.announcement" if="__config__.app.isApp('business-support')"/>
   
-  <action-view name="project.announcement" title="Announcement" model="com.axelor.apps.businesssupport.db.Announcement">
-    <view type="grid" name="announcement-grid" />
-	<view type="form" name="announcement-form" />
+  <action-view name="project.announcement" title="Announcement" model="com.axelor.apps.businesssupport.db.ProjectAnnouncement">
+    <view type="grid" name="project-announcement-grid" />
+	<view type="form" name="project-announcement-form" />
   </action-view>
   
-  <menuitem title="Versions" name="project-versions" parent="menu-project-root" action="action.version.view.all.versions" order="36" if="__config__.app.isApp('business-support')"/>
+  <menuitem title="Project.version" name="project-versions" parent="menu-project-root" action="action.project.version.view.all.versions" order="36" if="__config__.app.isApp('business-support')"/>
  
-  <action-view name="action.version.view.all.versions" title="Versions" model="com.axelor.apps.businesssupport.db.Version">
-	<view type="grid" name="version-grid"/>
-	<view type="form" name="version-form"/>
+  <action-view name="action.project.version.view.all.versions" title="Project.version" model="com.axelor.apps.businesssupport.db.ProjectVersion">
+	<view type="grid" name="project-version-grid"/>
+	<view type="form" name="project-version-form"/>
   </action-view>
   
   <menuitem name="project-task-customer" title="Tasks" parent="menu-project-root" order="12" if="__config__.app.isApp('business-support')"/>
 
-  <menuitem name="project-task-customer-new" title="New tasks" parent="project-task-customer" action="project.task.customer.new" />
+  <menuitem name="project-task-customer-my-task" title="My Tasks" parent="project-task-customer" action="project.task.customer.my.task" order="1"/>
+  
+  <action-view name="project.task.customer.my.task" title="My Tasks" model="com.axelor.team.db.TeamTask">
+	<view type="grid" name="team-task-client-grid"/>
+	<view type="form" name="team-task-client-form"/>
+	<domain>self.customerReferral = :user</domain>
+	<context name="user" expr="eval: __user__"/>
+  </action-view>
+
+  <menuitem name="project-task-customer-new" title="New tasks" parent="project-task-customer" action="project.task.customer.new" order="2"/>
 
   <action-view name="project.task.customer.new" title="New tasks" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
@@ -28,7 +37,7 @@
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-customer" title="Tasks to be treated by customer" parent="project-task-customer"
-	action="project.task.customer.treated.by.customer"/>
+	action="project.task.customer.treated.by.customer" order="3"/>
 
   <action-view name="project.task.customer.treated.by.customer" title="Tasks to be treated by customer" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
@@ -38,7 +47,7 @@
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-provider" title="Tasks to be treated by provider" parent="project-task-customer"
-	action="project.task.customer.treated.by.provider"/>
+	action="project.task.customer.treated.by.provider" order="4"/>
 
   <action-view name="project.task.customer.treated.by.provider" title="Tasks to be treated by provider" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
@@ -48,7 +57,7 @@
   </action-view>
 
   <menuitem name="project-task-customer-open-all" title="All open tasks" parent="project-task-customer"
-	action="project.task.customer.open.all"/>
+	action="project.task.customer.open.all" order="5"/>
 
   <action-view name="project.task.customer.open.all" title="All open tasks" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
@@ -58,7 +67,7 @@
   </action-view>
 
   <menuitem name="project-task-customer-all" title="All tickets" parent="project-task-customer"
-	action="project.task.customer.all"/>
+	action="project.task.customer.all" order="6"/>
 
   <action-view name="project.task.customer.all" title="All tickets" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
