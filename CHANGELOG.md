@@ -3,11 +3,15 @@
 ## [Unreleased 5.1.2]
 ## Features
 ## Improvements
+- BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
+- BPM: list of custom models is filtered accordingly the selected appBuilder.
+- BPM - WkfNode : use a RadioSelect with following values: "startNode, taskNode, endNode".
 - BPM - WkfTransition: alertTypeSelect uses a RadioSelect widget.
 - BPM - WkfTransition: logic operator is displayed in first column.
 - BPM - WkfTransition: "Restricted roles" has been renamed into "Roles".
 
 ## Bug Fixes
+- AppBuilder: fix export/import of a MetaJsonModel.
 
 
 ## [5.1.1] - 2019-01-18

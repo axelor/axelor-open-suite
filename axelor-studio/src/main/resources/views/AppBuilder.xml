@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<grid name="app-builder-grid" title="App Builder" model="com.axelor.studio.db.AppBuilder">
+	<grid name="app-builder-grid" title="App builder" model="com.axelor.studio.db.AppBuilder">
 		<toolbar>
 	 		<button name="exportAppBuildersBtn" title="Export" onClick="action-export-studio-app-builders" />
 	   		<button name="importAppBuildersBtn" title="Import" onClick="action-studio-open-import-bpm-form" />
@@ -12,7 +12,7 @@
 		<field name="code" />
 	</grid>
 	
-	<form name="app-builder-form" title="App Builder" model="com.axelor.studio.db.AppBuilder" width="large">
+	<form name="app-builder-form" title="App builder" model="com.axelor.studio.db.AppBuilder" width="large">
 		<panel name="mainPanel">
 			<field name="image" widget="Image" colSpan="2"/>
 			<panel name="detailPanel" colSpan="8">
@@ -35,7 +35,7 @@
 	
 	<action-export name="action-export-studio-app-builders" output="${date}${time}" download="true">
 	  <export name="BPM-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
-	    	  template="data-export/export-bpm.txt"
+	    	  template="data-export/export-bpm.tmpl"
 	          engine="groovy"/>
   	</action-export>
   	
