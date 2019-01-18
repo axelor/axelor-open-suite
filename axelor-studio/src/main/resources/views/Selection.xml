@@ -56,10 +56,11 @@
     	<option value="0">AND</option>
     	<option value="1">OR</option>
     </selection>
-    
+
     <selection name="studio.condition.alert.type.select">
-    	<option value="1">Blocking</option>
-    	<option value="2">Alert</option>
+      <option value="0">None</option>
+      <option value="1">Blocking</option>
+      <option value="2">Alert</option>
     </selection>
     
     <selection name="studio.action.builder.type.select">
