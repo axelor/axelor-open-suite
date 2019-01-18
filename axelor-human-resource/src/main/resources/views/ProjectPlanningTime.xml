@@ -3,21 +3,21 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="project-planning-time-grid" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" />
 		<field name="project"/>
-		<field name="task"/>		
+		<field name="task"/>
+		<field name="user"/>		
 		<field name="date"/>
-        <field name="user"/>
-        <field name="plannedHours" />
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
     
     <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Time spent" name="project-planning-time-spent-grid">
+		<field name="realHours"/>	
     	<field name="project"/>
         <field name="task"/>
+		<field name="user"/> 
 		<field name="date"/>
-        <field name="user"/>
-        <field name="realHours"/>
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
@@ -31,12 +31,12 @@
     
     <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default">
 		<panel name="mainPanel">
+			<field name="plannedHours" showIf="typeSelect == 1"/>
+			<field name="realHours" showIf="typeSelect == 2"/>
 			<field name="project" readonly="true"/>
 			<field name="task" domain="self.project = :project" canEdit="false" />
-			<field name="date" />
-			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>		
-			<field name="plannedHours" showIf="typeSelect ==1"/>
-			<field name="realHours" showIf="typeSelect == 2"/>
+			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>
+			<field name="date" />		
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
@@ -66,22 +66,24 @@
 		</panel>
 	</form>	
 	
-	<action-view name="action-project-view-add-multiple-project-planning-time" title="Project planning time" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-project-view-add-multiple-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="project-planning-time-wizard-form"/>
 		<view-param name="show-confirm" value="false"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="popup" value="reload"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
 		<context name="_typeSelect" expr="eval:1"/>
 	</action-view>
 	
-	<action-view name="action-project-view-add-multiple-project-planning-spent-time" title="Project planning time spent" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-project-view-add-multiple-project-planning-spent-time" title="Project Planning Time Spent" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="project-planning-time-wizard-form"/>
 		<view-param name="show-confirm" value="false"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="popup" value="reload"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
@@ -89,7 +91,7 @@
 		<context name="_typeSelect" expr="eval:2"/>
 	</action-view>
 	
-	<action-view name="action-project-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-dashlet-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
@@ -99,7 +101,7 @@
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-project-dashlet-project-planning-time-spent" title="Project planning time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-spent-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
@@ -109,18 +111,20 @@
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-project-view-project-planning-time-add-new" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-view-project-planning-time-add-new" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_project" expr="eval:__self__"/>
 		<context name="_timePlannedPopup" expr="eval: true"/>
 	</action-view>
 	
-	<action-view name="action-project-view-project-planning-time-spent-add-new" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-view-project-planning-time-spent-add-new" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_project" expr="eval:__self__"/>
 		<context name="_timeSpentPopup" expr="eval: true"/>
 	</action-view>

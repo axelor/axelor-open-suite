@@ -118,7 +118,7 @@
 				<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"  hideIf="$popup()"/>
 				<button name="projectPlanningTimeLineBtn" title="New line" colSpan="3" css="btn-custom text-left" onClick="save,action-team-task-view-time-planned,save"/>
 				<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-team-task-attrs-project-planning-time-remove,save" />
-				<field name="$projectPlanningTimeSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time"
+				<field name="$projectPlanningTimeSet" hidden="true" type="many-to-many" widget="TagSelect" title="Planned Time Planning"
 				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
 				<button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 				<button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
@@ -133,7 +133,7 @@
 				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
 				<button name="removeSelectedPlanningTimeSpentBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
 				<button name="cancelRemovePlanningTimeSpentBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
-				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project planning time spent" action="action-team-task-dashlet-project-planning-time-spent" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-dashlet-project-planning-time-spent" colSpan="12" canSearch="true"/>
 				
 				<field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
 			</panel>
@@ -337,21 +337,23 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     
-    <action-view name="action-team-task-view-time-spent" title="Time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <action-view name="action-team-task-view-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
       <view type="form" name="project-planning-time-form"/>
       <view-param name="popup" value="reload"/>
       <view-param name="show-toolbar" value="false"/>
       <view-param name="forceEdit" value="true" />
+      <view-param name="forceTitle" value="true"/>
        <context name="_timeSpentPopup" expr="eval: true"/>
       <context name="_task" expr="eval: __self__"/>
       <context name="_project" expr="eval: project"/>
     </action-view>
     
-    <action-view name="action-team-task-view-time-planned" title="Time planned" model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <action-view name="action-team-task-view-time-planned" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
       <view type="form" name="project-planning-time-form"/>
       <view-param name="popup" value="reload"/>
       <view-param name="show-toolbar" value="false"/>
       <view-param name="forceEdit" value="true"/>
+      <view-param name="forceTitle" value="true"/>
       <context name="_timePlannedPopup" expr="eval: true"/>
       <context name="_task" expr="eval: __self__"/>
       <context name="_project" expr="eval: project"/>
@@ -503,14 +505,14 @@
 		<attribute name="value" for="assignment" expr="eval: 2"/>
 	</action-attrs>
 	
-	<action-view name="action-team-task-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-team-task-dashlet-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
 		<domain>self.task.id = :id AND self.typeSelect = 1</domain>
 	</action-view>
 	
-	<action-view name="action-team-task-dashlet-project-planning-time-spent" title="Project planning time spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-team-task-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-spent-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
