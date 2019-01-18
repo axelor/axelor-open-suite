@@ -35,7 +35,7 @@
 	
 	<action-export name="action-export-studio-app-builders" output="${date}${time}" download="true">
 	  <export name="BPM-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
-	    	  template="data-export/export-bpm.txt"
+	    	  template="data-export/export-bpm.tmpl"
 	          engine="groovy"/>
   	</action-export>
   	
