@@ -81,6 +81,21 @@ public class StockMoveController {
     }
   }
 
+  public void manageBackorder(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+
+    response.setView(
+        ActionView.define(I18n.get("Manage backorder?"))
+            .model(StockMove.class.getName())
+            .add("form", "popup-stock-move-backorder-form")
+            .param("popup", "true")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .context("_showRecord", stockMove.getId())
+            .map());
+  }
+
   public void realize(ActionRequest request, ActionResponse response) {
 
     StockMove stockMoveFromRequest = request.getContext().asType(StockMove.class);
