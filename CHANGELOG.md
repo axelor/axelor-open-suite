@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.1]
 ## Features
+- Budget form: added company currency
 - Sale Order report: added option to display product picture
 - Subrogation Release : add change tracking on status and add new fields.
 - MO printing : new design
@@ -26,6 +27,7 @@ Add sale order and client partner fields on production order.
 - ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 
 ## Improvements
+- Budget: When computing budget lines, take into account `companyExTaxTotal` amounts instead of `exTaxTotal` amounts
 - Move: check if balance is correct before saving (when daybook is enabled)
 - FINANCIAL ACCOUNT : New boolean 'Analytic Distribution Authorized' added to make Analytic fields required on Invoice Line.
 - COSTSHEET : add new Field Currency and Fix Information on CostSheet Report Printing
