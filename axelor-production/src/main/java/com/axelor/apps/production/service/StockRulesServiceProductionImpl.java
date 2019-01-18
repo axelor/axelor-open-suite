@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -149,6 +149,7 @@ public interface IExceptionMessage {
   static final String MOVE_7 = /*$$(*/
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/;
+  static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/

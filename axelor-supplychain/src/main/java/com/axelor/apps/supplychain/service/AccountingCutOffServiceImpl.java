@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -456,19 +456,21 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
-    TaxLine taxLine =
-        accountManagementAccountService.getTaxLine(
-            originDate, product, company, partner.getFiscalPosition(), isPurchase);
-    if (taxLine != null) {
-      moveLine.setTaxLine(taxLine);
-      moveLine.setTaxRate(taxLine.getValue());
-      moveLine.setTaxCode(taxLine.getTax().getCode());
-    }
-
     move.addMoveLineListItem(moveLine);
 
-    if (recoveredTax && taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
-      generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+    if (recoveredTax) {
+      TaxLine taxLine =
+          accountManagementAccountService.getTaxLine(
+              originDate, product, company, partner.getFiscalPosition(), isPurchase);
+      if (taxLine != null) {
+        moveLine.setTaxLine(taxLine);
+        moveLine.setTaxRate(taxLine.getValue());
+        moveLine.setTaxCode(taxLine.getTax().getCode());
+
+        if (taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
+          generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+        }
+      }
     }
 
     return moveLine;

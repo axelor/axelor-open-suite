@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,8 +93,8 @@ public class SaleOrderController {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
-                  .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());

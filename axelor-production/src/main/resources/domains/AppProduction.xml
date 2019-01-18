@@ -7,6 +7,8 @@
 	<entity name="AppProduction" lang="java" extends="App">
 		<boolean name="prodOrderMgtOnSO" title="Production order management from sale order" default="false"/>
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
+		<boolean name="oneProdOrderPerSO" title="One production order per sale order" default="true"/>
+		<boolean name="autoPlanManufOrderFromSO" title="Automatically plan the manuf. orders generated from sale order"/>
     	
     	<many-to-one name="workCenterProduct" ref="com.axelor.apps.base.db.Product" title="Default work center product"/>
    		<many-to-one name="workCenterCostSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group for work center"/>

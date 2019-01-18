@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class MoveController {
@@ -217,6 +218,23 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    Map<String, Object> values = moveService.computeTotals(move);
+    response.setValues(values);
+  }
+
+  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    if (move.getMoveLineList() != null
+        && !move.getMoveLineList().isEmpty()
+        && move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+      moveService.getMoveLineService().autoTaxLineGenerate(move);
+      response.setValue("moveLineList", move.getMoveLineList());
     }
   }
 }

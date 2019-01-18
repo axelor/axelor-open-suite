@@ -11,7 +11,6 @@
 			<field name="manageFactors" widget="Boolean-switch"/>
 			<field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
             <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
-            <field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" showIf="manageAnalyticAccounting"/>
 			<panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list" colSpan="12">
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>

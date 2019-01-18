@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface StockMoveInvoiceService {
 
@@ -44,18 +45,34 @@ public interface StockMoveInvoiceService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
 
-  @Transactional
-  public Map<String, Object> createInvoiceFromMultiOutgoingStockMove(
+  Map<String, Object> areFieldsConflictedToGenerateCustInvoice(List<StockMove> stockMoveList)
+      throws AxelorException;
+
+  Map<String, Object> areFieldsConflictedToGenerateSupplierInvoice(List<StockMove> stockMoveList)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentCondition,
       PaymentMode paymentMode,
-      Partner contactPartner,
-      boolean isFromWizard)
+      Partner contactPartner)
       throws AxelorException;
 
-  @Transactional
-  public Map<String, Object> createInvoiceFromMultiIncomingStockMove(
-      List<StockMove> stockMoveList, Partner contactPartnerIn, boolean isFromWizard)
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Optional<Invoice> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  Optional<Invoice> createInvoiceFromMultiIncomingStockMove(
+      List<StockMove> stockMoveList,
+      PaymentCondition paymentConditionIn,
+      PaymentMode paymentModeIn,
+      Partner contactPartnerIn)
       throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);

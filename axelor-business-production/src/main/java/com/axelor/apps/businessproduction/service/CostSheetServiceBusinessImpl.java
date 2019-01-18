@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,9 +22,9 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.service.CostSheetLineService;
-import com.axelor.apps.production.service.CostSheetServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.costsheet.CostSheetLineService;
+import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -283,8 +283,8 @@ public class MessageServiceImpl implements MessageService {
 
     if (message.getFromEmailAddress() != null) {
       if (!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
-        log.debug("Override from :::  {}", message.getFromEmailAddress().getAddress());
-        mailBuilder.from(message.getFromEmailAddress().getAddress());
+        log.debug("Override from :::  {}", this.getFullEmailAddress(message.getFromEmailAddress()));
+        mailBuilder.from(this.getFullEmailAddress(message.getFromEmailAddress()));
       } else {
         throw new AxelorException(
             message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_5);
@@ -357,7 +357,7 @@ public class MessageServiceImpl implements MessageService {
         if (Strings.isNullOrEmpty(emailAddress.getAddress())) {
           continue;
         }
-        recipients.add(emailAddress.getAddress());
+        recipients.add(this.getFullEmailAddress(emailAddress));
       }
     }
 
@@ -386,5 +386,10 @@ public class MessageServiceImpl implements MessageService {
     newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
     message.setArchived(true);
     return newMessage;
+  }
+
+  @Override
+  public String getFullEmailAddress(EmailAddress emailAddress) {
+    return emailAddress.getAddress();
   }
 }

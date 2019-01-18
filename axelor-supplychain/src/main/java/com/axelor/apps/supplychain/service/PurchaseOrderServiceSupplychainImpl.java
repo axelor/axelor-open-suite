@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -143,7 +143,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(purchaseOrderLine.getBudget());
-          budgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+          budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -221,7 +221,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-      newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+      newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
@@ -229,8 +229,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     // budget control
     if (appAccountService.isApp("budget")
         && appAccountService.getAppBudget().getCheckAvailableBudget()) {

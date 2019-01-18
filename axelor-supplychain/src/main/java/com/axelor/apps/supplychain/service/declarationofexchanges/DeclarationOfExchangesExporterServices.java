@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,33 +41,25 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class DeclarationOfExchangesExporterServices extends DeclarationOfExchangesExporter {
   private static final String NAME_SERVICES = /*$$(*/ "European declaration of services" /*)*/;
 
-  private enum Column implements DeclarationOfExchangesColumnHeader {
-    LINE_NUM(/*$$(*/ "Line number" /*$$(*/),
-    FISC_VAL(/*$$(*/ "Fiscal value" /*$$(*/),
-    TAKER(/*$$(*/ "Taker" /*$$(*/);
-
-    private final String title;
-
-    private Column(String title) {
-      this.title = title;
-    }
-
-    @Override
-    public String getTitle() {
-      return title;
-    }
-  }
+  protected static final String LINE_NUM = /*$$(*/ "Line number" /*$$(*/;
+  protected static final String FISC_VAL = /*$$(*/ "Fiscal value" /*$$(*/;
+  protected static final String TAKER = /*$$(*/ "Taker" /*$$(*/;
 
   @Inject
   public DeclarationOfExchangesExporterServices(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
-    super(declarationOfExchanges, bundle, NAME_SERVICES, Column.values());
+    super(
+        declarationOfExchanges,
+        bundle,
+        NAME_SERVICES,
+        new ArrayList<>(Arrays.asList(LINE_NUM, FISC_VAL, TAKER)));
   }
 
   // TODO: factorize code to parent.
@@ -91,7 +83,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
     int lineNum = 1;
 
     for (StockMoveLine stockMoveLine : stockMoveLines) {
-      String[] data = new String[Column.values().length];
+      String[] data = new String[columnHeadersList.size()];
 
       StockMove stockMove = stockMoveLine.getStockMove();
 
@@ -123,9 +115,9 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
         taxNbr = "";
       }
 
-      data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum++);
-      data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
-      data[Column.TAKER.ordinal()] = taxNbr;
+      data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum++);
+      data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
+      data[columnHeadersList.indexOf(TAKER)] = taxNbr;
       dataList.add(data);
     }
 

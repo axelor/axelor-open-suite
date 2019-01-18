@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	  
-	<chart onInit="action.general.default.month.value" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
+	<chart onInit="action.base.default.month.value" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 		</search-fields>
@@ -32,7 +32,7 @@
 		<series key="_moves" type="bar" title="Stock Moves"/>
 	</chart>	
 	
-	<chart onInit="action.general.default.month.value" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
+	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 		</search-fields>
@@ -63,7 +63,7 @@
 		<series key="_qty" type="bar" title="Quantity"/>
 	</chart>
 
-	<chart onInit="action.general.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
+	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
 	       title="Product deliveries in qty by country by family" stacked="true">
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
@@ -98,7 +98,7 @@
 		<series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
 	</chart>
 
-	<chart onInit="action.general.default.month.value" name="chart.stockMove.deliveries.time.delay.in.nbr" 
+	<chart onInit="action.base.default.month.value" name="chart.stockMove.deliveries.time.delay.in.nbr" 
 	       title="Customer deliveries statistics" >
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
@@ -131,7 +131,7 @@
 		<series key="moves" type="donut" title="Stock Moves" />
 	</chart>
 
-	<chart onInit="action.general.default.month.value" name="chart.stockMove.average.delivery.time.delay" 
+	<chart onInit="action.base.default.month.value" name="chart.stockMove.average.delivery.time.delay" 
 	       title="Customer average delivery delay" >
 		<search-fields>	    
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>

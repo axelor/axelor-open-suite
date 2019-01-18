@@ -24,7 +24,7 @@
 
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
-          onLoad="action-move-attrs-adjusting-move,action-move-attrs-hide-move-line-name-in-draft-status,action-move-attrs-validate-button-title" 
+          onLoad="action-account-move-group-onload" 
           onSave="save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
@@ -42,7 +42,7 @@
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
@@ -68,11 +68,45 @@
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" prompt="The validation of a move brings irrevocable integration of a move in Moves book"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
-		<panel-related name="moveLineListPanel"   field="moveLineList" editable="true" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
-		<panel-related name="moveLineListPanel"  field="moveLineList" editable="false" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form"/>
+		<panel>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
+				<viewer>
+					<![CDATA[
+						<h3>{{record.$totalLines}}</h3>
+					]]>
+				</viewer>				
+			</field>
+	   		<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
+				<viewer>
+					<![CDATA[
+						<h3>{{record.$totalDebit}}</h3>
+					]]>
+				</viewer>				
+			</field>
+	   		<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
+				<viewer>
+					<![CDATA[
+						<h3>{{record.$totalCredit}}</h3>
+					]]>
+				</viewer>				
+			</field>
+	   		<field name="$difference" title="Difference" colSpan="3" readonly="true">
+				<viewer>
+					<![CDATA[
+						<h3>
+							<span ng-show="record.$difference == 0">{{record.$difference}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{record.$difference}}</span>
+						</h3>
+					]]>
+				</viewer>
+			</field>
+		</panel>
 
         <panel-tabs name="mainPanelTab">
             <panel name="relatedToPanel" title="Related to" readonly="true">
@@ -119,6 +153,13 @@
 		<action name="action-move-attrs-validate-button-title"/>
 	</action-group>
 	
+	<action-group name="action-account-move-group-onload">
+		<action name="action-move-attrs-adjusting-move"/>
+		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
+		<action name="action-move-attrs-validate-button-title"/>
+		<action name="action-account-move-method-compute-totals"/>
+	</action-group>
+	
 	<action-group name="action-group-account-move-validate-click">
 		<action name="save"/>
 		<action name="action-move-method-validate"/>
@@ -148,7 +189,6 @@
     </action-record>
     
 	<!-- ACTION ATTRS -->
-
 	<action-attrs name="action-move-attrs-set-domain-payment-mode">
 	  <attribute name="domain" for="paymentMode" expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
 	</action-attrs>
@@ -204,7 +244,15 @@
 	<action-method name="action-account-move-method-print-move">
 		<call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
 	</action-method>
-
+	
+	<action-method name="action-account-move-method-compute-totals">
+		<call class="com.axelor.apps.account.web.MoveController" method="computeTotals"/>
+	</action-method>
+	
+	<action-method name="action-account-move-method-automatic-taxline-generation">
+		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
+	</action-method>
+	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

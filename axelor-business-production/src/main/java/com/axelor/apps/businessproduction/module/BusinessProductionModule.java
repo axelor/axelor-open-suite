@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,13 +35,13 @@ import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBu
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
-import com.axelor.apps.production.service.CostSheetServiceImpl;
-import com.axelor.apps.production.service.ManufOrderServiceImpl;
-import com.axelor.apps.production.service.OperationOrderServiceImpl;
-import com.axelor.apps.production.service.OperationOrderWorkflowService;
-import com.axelor.apps.production.service.ProductionOrderSaleOrderServiceImpl;
-import com.axelor.apps.production.service.ProductionOrderServiceImpl;
-import com.axelor.apps.production.service.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
+import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 
 public class BusinessProductionModule extends AxelorModule {
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
+import com.axelor.apps.base.db.EconomicArea;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.exception.AxelorException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface DeclarationOfExchangesService {
@@ -31,4 +33,13 @@ public interface DeclarationOfExchangesService {
    * @throws AxelorException
    */
   Pair<Path, String> export(DeclarationOfExchanges declarationOfExchanges) throws AxelorException;
+
+  /**
+   * Override this method to use custom class for export.
+   *
+   * @param economicArea
+   * @return
+   */
+  Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
+      getExportServiceClassMap(EconomicArea economicArea);
 }

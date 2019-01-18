@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,12 +24,10 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -41,7 +39,6 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -49,8 +46,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +96,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      updateSaleOrderLinesDeliveryState(stockMove, true);
+      updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       // Update linked saleOrder delivery state depending on BackOrder's existence
       SaleOrder saleOrder = saleOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
@@ -109,15 +104,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       } else {
         Beans.get(SaleOrderStockService.class).updateDeliveryState(saleOrder);
 
-        if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED
-            && appSupplychain.getTerminateSaleOrderOnDelivery()) {
-          Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
+        if (appSupplychain.getTerminateSaleOrderOnDelivery()) {
+          terminateOrConfirmSaleOrderStatus(saleOrder);
         }
       }
 
       Beans.get(SaleOrderRepository.class).save(saleOrder);
     } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      updatePurchaseOrderLines(stockMove, true);
+      updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
@@ -125,9 +119,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       } else {
         Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
-        if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED
-            && appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
-          Beans.get(PurchaseOrderServiceImpl.class).finishPurchaseOrder(purchaseOrder);
+        if (appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
+          finishOrValidatePurchaseOrderStatus(purchaseOrder);
         }
       }
 
@@ -173,33 +166,31 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter(
-                "self.originId = ?1 AND self.originTypeSelect = ?2",
-                so.getId(),
-                StockMoveRepository.ORIGIN_SALE_ORDER)
-            .fetch();
-    so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
-    for (StockMove stock : stockMoveList) {
-      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
-          && !stock.getId().equals(stockMove.getId())) {
-        so.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
-        break;
-      }
-    }
+    updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
+    Beans.get(SaleOrderStockService.class).updateDeliveryState(so);
 
-    if (so.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED
-        && Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getTerminateSaleOrderOnDelivery()) {
-      so.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getTerminateSaleOrderOnDelivery()) {
+      terminateOrConfirmSaleOrderStatus(so);
     }
-    updateSaleOrderLinesDeliveryState(stockMove, false);
   }
 
-  protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean realize)
+  /**
+   * Update saleOrder status from or to terminated status, from or to confirm status, depending on
+   * its delivery state. Should be called only if we terminate sale order on receipt.
+   *
+   * @param saleOrder
+   */
+  protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) {
+    if (saleOrder.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    } else {
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    }
+  }
+
+  protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getSaleOrderLine() != null) {
@@ -213,7 +204,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
-        if (realize) {
+        if (qtyWasDelivered) {
           saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
         } else {
           saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
@@ -234,33 +225,31 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
     PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
 
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter(
-                "self.originId = ?1 AND self.originTypeSelect = ?2",
-                po.getId(),
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER)
-            .fetch();
-    po.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
-    for (StockMove stock : stockMoveList) {
-      if (stock.getStatusSelect() != StockMoveRepository.STATUS_CANCELED
-          && !stock.getId().equals(stockMove.getId())) {
-        po.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
-        break;
-      }
+    updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
+    Beans.get(PurchaseOrderStockService.class).updateReceiptState(po);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getTerminatePurchaseOrderOnReceipt()) {
+      finishOrValidatePurchaseOrderStatus(po);
     }
-
-    if (po.getStatusSelect() == IPurchaseOrder.STATUS_FINISHED
-        && Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getTerminatePurchaseOrderOnReceipt()) {
-      po.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
-    }
-    updatePurchaseOrderLines(stockMove, false);
   }
 
-  protected void updatePurchaseOrderLines(StockMove stockMove, boolean realize)
+  /**
+   * Update purchaseOrder status from or to finished status, from or to validated status, depending
+   * on its state. Should be called only if we terminate purchase order on receipt.
+   *
+   * @param purchaseOrder a purchase order.
+   */
+  protected void finishOrValidatePurchaseOrderStatus(PurchaseOrder purchaseOrder) {
+
+    if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
+      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    } else {
+      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+    }
+  }
+
+  protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getPurchaseOrderLine() != null) {
@@ -274,7 +263,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 purchaseOrderLine.getProduct());
 
-        if (realize) {
+        if (qtyWasReceived) {
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().add(realQty));
         } else {
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
@@ -373,50 +362,5 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     return newStockMoveLine;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void updateReservedQty(StockMove stockMove) throws AxelorException {
-    cancel(stockMove);
-    plan(stockMove);
-  }
-
-  @Override
-  public boolean hasReservedQtyChanged(StockMove oldStockMove, StockMove newStockMove)
-      throws AxelorException {
-    List<StockMoveLine> oldStockMoveLineList =
-        MoreObjects.firstNonNull(oldStockMove.getStockMoveLineList(), new ArrayList<>());
-    List<StockMoveLine> newStockMoveLineList =
-        MoreObjects.firstNonNull(newStockMove.getStockMoveLineList(), new ArrayList<>());
-
-    for (StockMoveLine oldStockMoveLine : oldStockMoveLineList) {
-      Optional<StockMoveLine> newStockMoveLine =
-          newStockMoveLineList
-              .stream()
-              .filter(stockMoveLine -> stockMoveLine.getId().equals(oldStockMoveLine.getId()))
-              .findAny();
-      if (newStockMoveLine.isPresent()) {
-        if (newStockMoveLine.get().getReservedQty().compareTo(oldStockMoveLine.getReservedQty())
-            != 0) {
-          return true;
-        }
-      } else if (oldStockMoveLine.getReservedQty().signum() != 0) {
-        return true;
-      }
-    }
-    // get added lines
-    List<StockMoveLine> newStockMoveLineListFiltered =
-        newStockMoveLineList
-            .stream()
-            .filter(stockMoveLine -> !oldStockMoveLineList.contains(stockMoveLine))
-            .collect(Collectors.toList());
-    for (StockMoveLine filteredNewStockMoveLine : newStockMoveLineListFiltered) {
-      if (filteredNewStockMoveLine.getReservedQty().signum() != 0) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

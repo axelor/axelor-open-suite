@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,13 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -29,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -131,6 +135,53 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  @Override
+  public Account getPartnerAccount(Invoice invoice) throws AxelorException {
+    if (invoice.getCompany() == null
+        || invoice.getOperationTypeSelect() == null
+        || invoice.getOperationTypeSelect() == 0
+        || invoice.getPartner() == null) return null;
+    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
+    return InvoiceToolService.isPurchase(invoice)
+        ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
+        : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+  }
+
+  public Journal getJournal(Invoice invoice) throws AxelorException {
+
+    Company company = invoice.getCompany();
+    if (company == null) return null;
+
+    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    // Taken from legacy JournalService but negative cases seem rather strange
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
+            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
+            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
+            : accountConfigService.getCustomerSalesJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerSalesJournal(accountConfig)
+            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
+      default:
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.JOURNAL_1),
+            invoice.getInvoiceId());
+    }
+  }
+
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
    *
@@ -210,7 +261,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
+          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
           invoiceLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
