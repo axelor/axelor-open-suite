@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@
 		if (!key) {
 			throw 'Google Maps API key is missing.';
 		}
-    	var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
+    var url = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=' + key;
         var script = document.createElement('script');
         script.src = url;
         script.onload = callback;
@@ -40,6 +40,7 @@
     }
     function loadMap() {
         var mapElement = document.getElementById('map');
+        var sbElement = document.getElementById('pac-input');
         var loadingImage = document.getElementById('loadingImage');
         var minZoom = 3;
         mapElement.style.visibility = "hidden";
@@ -120,6 +121,69 @@
                         markers.push(marker);
                         bounds.extend(marker.getPosition());
                     } //end loop
+
+                    // Create the search box and link it to the UI element.
+                    var input = document.getElementById('pac-input');
+                    var searchBox = new google.maps.places.SearchBox(input);
+                    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+                    // Bias the SearchBox results towards current map's viewport.
+                    map.addListener('bounds_changed', function() {
+                        searchBox.setBounds(map.getBounds());
+                    });
+
+
+                    var smarkers = [];
+                    // Listen for the event fired when the user selects a prediction and retrieve
+                    // more details for that place.
+                    searchBox.addListener('places_changed', function() {
+                        var places = searchBox.getPlaces();
+
+                        if (places.length == 0) {
+                            return;
+                        }
+
+                        // Clear out the old markers.
+                        smarkers.forEach(function(marker) {
+                            marker.setMap(null);
+                        });
+                        smarkers = [];
+
+                        // For each place, get the icon, name and location.
+                        var bounds = new google.maps.LatLngBounds();
+                        places.forEach(function(place) {
+                            if (!place.geometry) {
+                                console.log("Returned place contains no geometry");
+                                return;
+                            }
+                            var icon = {
+                                url: place.icon,
+                                size: new google.maps.Size(71, 71),
+                                origin: new google.maps.Point(0, 0),
+                                anchor: new google.maps.Point(17, 34),
+                                scaledSize: new google.maps.Size(25, 25)
+                            };
+
+                            // Create a marker for each place.
+                            smarkers.push(new google.maps.Marker({
+                                map: map,
+                                icon: icon,
+                                title: place.name,
+                                position: place.geometry.location
+                            }));
+
+                            if (place.geometry.viewport) {
+                                // Only geocodes have viewport.
+                                bounds.union(place.geometry.viewport);
+                            } else {
+                                bounds.extend(place.geometry.location);
+                            }
+                        });
+                        map.fitBounds(bounds);
+                    });
+
+                    addYourLocationButton(map, markers, bounds);
+
                     if (markers.length < 2) {
                         var latLng;
                         if (markers.length) {
@@ -147,11 +211,14 @@
             });
             requestP.complete(function() {
                 mapElement.style.visibility = "visible";
+                sbElement.style.display = "inline";
+                sbElement.style.marginTop = "15px";
+                sbElement.style.marginRight = "15px";
                 loadingImage.style.display = "none";
             });
             var markerclusterer = new MarkerClusterer(map, markers);
         });
-    };
+    }
     window.onload = function() {
 		try {
 	        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
