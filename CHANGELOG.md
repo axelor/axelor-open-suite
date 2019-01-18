@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.2]
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
+- FACTOR : new menu in accounting
 
 ## Improvements
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
