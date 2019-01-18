@@ -12,6 +12,7 @@
 - BPM - WkfTransition: logic operator is displayed in first column.
 - BPM - WkfTransition: "Restricted roles" has been renamed into "Roles".
 - QUALITY : Change quality-control-form, control-point-form and quality-alert-form views
+- Product Activities : Added Card view.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
@@ -84,7 +85,6 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
-- Product Activities : Added Card view.
 
 ## Bug Fixes
 - Payroll preparation: changed export file name which was causing error
