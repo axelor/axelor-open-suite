@@ -157,7 +157,7 @@
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
-		title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group" />
+		title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
 
 	<action-view name="manufacturing.conf.cost.sheet.group" title="Cost sheet group"
 		model="com.axelor.apps.production.db.CostSheetGroup" >
