@@ -123,6 +123,18 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="manageCostSheetGroup" id="5278">
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">true</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="46">
@@ -2420,6 +2432,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <structure name="toc"/>
             <column id="5258">
                 <property name="width">1.15in</property>
             </column>
@@ -2433,6 +2446,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 <property name="width">0.6in</property>
             </column>
             <column id="405">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!params["manageCostSheetGroup"].value</expression>
+                    </structure>
+                </list-property>
                 <property name="width">1.15in</property>
             </column>
             <column id="406">
@@ -2932,6 +2951,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </footer>
         </table>
         <table id="461">
+            <property name="width">7.948in</property>
             <property name="dataSet">CostSheetLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -2996,6 +3016,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 <property name="width">0.6in</property>
             </column>
             <column id="496">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!params["manageCostSheetGroup"].value</expression>
+                    </structure>
+                </list-property>
                 <property name="width">1.15in</property>
             </column>
             <column id="497">
