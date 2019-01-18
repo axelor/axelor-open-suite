@@ -36,14 +36,11 @@
 		
 		<decimal name="budgetedTime" title="Budgeted time"/>
 
-	 <track>
-	 	<field name="sequence"/>
-	 	<field name="project"/>
-	 	<field name="parentTask"/>
+	 <track replace="true">
+	 	<field name="status"/>
 	 	<field name="projectCategory"/>
 	 	<field name="progressSelect"/>
-	 	<field name="membersUserSet"/>
-	 	<field name="description"/>
+	 	<field name="assignedTo"/>
 	 	<message if="true" on="UPDATE">Task updated</message>
 	 </track>
 	  

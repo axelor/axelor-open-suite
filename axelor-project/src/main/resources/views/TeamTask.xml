@@ -41,7 +41,7 @@
 							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
 							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
 							
-							<span class="label label-important" ng-show="!record.isOrderAccepted && record.isOrderProposed" x-translate>Order Proposed</span>
+							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
 							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
 						</h4>
 					]]>
@@ -69,8 +69,8 @@
 					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
 					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
 					<field name="isPrivate"  colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<field name="isOrderProposed" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderAccepted" colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
 					<button name="acceptOrderBtn" title="Accept Order" hideIf="!timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -376,6 +376,7 @@
     	<field name="taskDate" expr="#{__date__}" />
     	<field name="project" expr="eval:_project" />
     	<field name="customerReferral" expr="eval: __user__" if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
+    	<field name="assignment" expr="eval:2"/>
 	</action-record>
 	
 	<action-record name="action-team-task-business-support-provider" model="com.axelor.team.db.TeamTask">
@@ -534,6 +535,6 @@
 		<attribute name="value" for="$projectPlanningTimeSpentSet" expr="eval:null"/>
 		<attribute name="title" for="$projectPlanningTimeSpentSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
 		<attribute name="domain" for="$projectPlanningTimeSpentSet" expr="eval:&quot;self.typeSelect = 2 AND self.task.id = :id&quot;"/>
-	</action-attrs>
-	
+	</action-attrs>	
 </object-views>
+
