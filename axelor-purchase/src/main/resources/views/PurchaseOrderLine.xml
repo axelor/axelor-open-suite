@@ -8,14 +8,14 @@
     	<field name="purchaseOrder.purchaseOrderSeq"/>
     	<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
-    	<field name="desiredDelivDate"/>
-    	<field name="estimatedDelivDate"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="purchaseOrder.currency"/>
         <field name="purchaseOrder.buyerUser"/>
+	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
     </grid>
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -26,8 +26,6 @@
 		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
     	<field name="productCode"/>
-    	<field name="desiredDelivDate"/>
-    	<field name="estimatedDelivDate"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" x-scale="2"/>
@@ -35,6 +33,8 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
         <field name="isTitleLine" hidden="true"/>
+	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
     </grid>
     
     <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
@@ -128,7 +128,7 @@
 				<field name="estimatedDelivDate"/>
 				<field name="receivedQty" readonly="true"/>
 				<field name="supplierComment" colSpan="12"/>
-				<panel-dashlet name="POLineStockMoveLinePanel" action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
+				<panel-dashlet title="In Stock Moves" name="POLineStockMoveLinePanel" action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="amountInvoiced"/>

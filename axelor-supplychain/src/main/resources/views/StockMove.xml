@@ -17,7 +17,7 @@
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
-    
+
     <grid name="stock-move-sale-order-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
         <field name="stockMoveSeq"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -42,7 +42,7 @@
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
 		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 2 AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-out-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
-			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
+			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-cust-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
     </form>
@@ -50,20 +50,29 @@
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
 		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND self.typeSelect = 3 AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-in-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
-			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-invoice"/>
+			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-invoice"/>
 	  	</panel>
     </form>
     
-    <form name="stock-move-supplychain-concat-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-attrs-set-is-from-wizard-true,action-record-load-dummy-field-generate-invoice">
+    <form name="stock-move-supplychain-concat-cust-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-attrs-set-is-from-wizard-true,action-record-load-dummy-field-generate-invoice">
 		<panel name="mainPanel" >
 			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
 			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
 			<field name="$contactPartner" title="Contact partner" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
-			<button name="confirmBtn" title="Confirm" onClick="action-supplychain-stock-move-method-generate-concat-invoice" colSpan="12" width="200px"/>
+			<button name="confirmBtn" title="Confirm" onClick="action-supplychain-stock-move-method-generate-concat-cust-invoice" colSpan="12" width="200px"/>
 			<field name="$isFromWizard" hidden="true"/>
 		</panel>
     </form>
+
+	<form name="stock-move-supplychain-concat-suppl-invoice-confirm-form" model="com.axelor.apps.stock.db.StockMove" title="Confirmation" onNew="action-record-load-dummy-field-generate-invoice">
+		<panel name="main" >
+			<field name="$paymentCondition" title="Payment condition" target="com.axelor.apps.account.db.PaymentCondition" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentConditionToCheck"/>
+			<field name="$paymentMode" title="Payment mode" target="com.axelor.apps.account.db.PaymentMode" colSpan="12" width="200px" widget="SuggestBox" showIf="paymentModeToCheck"/>
+			<field name="$contactPartner" title="Contact partner" target="com.axelor.apps.base.db.Partner" domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))" colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
+			<button name="confirm" title="Confirm" onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-suppl-invoice" colSpan="12" width="200px"/>
+		</panel>
+	</form>
 
 	<action-method name="action-supplychain-stock-move-method-generate-invoice">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoice"/>
@@ -73,18 +82,22 @@
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateMultiInvoice"/>
 	</action-method>
 	
-	<action-method name="action-supplychain-stock-move-method-generate-concat-invoice">
-		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatStockMove"/>
+	<action-method name="action-supplychain-stock-move-method-generate-concat-cust-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatOutStockMove"/>
+	</action-method>
+
+	<action-method name="action-supplychain-stock-move-method-generate-concat-suppl-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatInStockMove"/>
+	</action-method>
+
+	<action-method name="action-supplychain-stock-move-method-generate-concat-cust-invoice-check-fields">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatOutStockMoveCheckMissingFields"/>
+	</action-method>
+
+	<action-method name="action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatInStockMoveCheckMissingFields"/>
 	</action-method>
 	
-	<action-method name="action-method-supplychain-stock-move-reserved-qty">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="updateReservedQty"/>
-	</action-method>
-
-	<action-method name="action-method-supplychain-stock-move-check-reserved-qty-change">
-		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="checkReservedQtyChange"/>
-	</action-method>
-
 	<action-validate name="action-validate-supplychain-outgoing-stock-move-check-selection">
 		<error message="You have to choose at least one outgoing stock move" if="customerStockMoveToInvoice == null || customerStockMoveToInvoice.size() == 0"/>
 	</action-validate>
@@ -92,14 +105,14 @@
 	<action-validate name="action-validate-supplychain-incoming-stock-move-check-selection">
 		<error message="You have to choose at least one incoming stock move" if="supplierStockMoveToInvoice == null || supplierStockMoveToInvoice.size() == 0"/>
 	</action-validate>
-	
+
 	<action-record name="action-record-load-dummy-field-generate-invoice" model="com.axelor.apps.stock.db.StockMove">
 		<field name="paymentConditionToCheck" expr="eval: contextPaymentConditionToCheck"/>
 		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
 	</action-record>
-	
+
 	<action-view name="action-stock-move-view-account-moves" title="Moves" model="com.axelor.apps.account.db.Move" if-module="axelor-supplychain">
 		<view type="grid" name="move-grid"/>
 		<view type="form" name="move-form"/>
@@ -110,4 +123,4 @@
 		<attribute for="$isFromWizard" name="value" expr="eval:true"/>
 	</action-attrs>
 
-</object-views>	
+</object-views>

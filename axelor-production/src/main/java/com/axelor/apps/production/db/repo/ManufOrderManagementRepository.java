@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,15 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
@@ -69,6 +73,15 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
   @Override
   public ManufOrder save(ManufOrder entity) {
     entity = super.save(entity);
+
+    try {
+      if (Strings.isNullOrEmpty(entity.getManufOrderSeq())
+          && entity.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT) {
+        entity.setManufOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e);
+    }
 
     for (OperationOrder operationOrder : entity.getOperationOrderList()) {
       if (operationOrder.getBarCode() == null) {

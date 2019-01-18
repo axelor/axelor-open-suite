@@ -41,7 +41,7 @@
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move" readonly="true"/>
     <many-to-one name="oldMove" ref="com.axelor.apps.account.db.Move" title="Previous Move" readonly="true"/>
     <boolean name="doubtfulCustomerOk" title="Doubtful Customer" default="false"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+  	<many-to-one name="currency" required="true" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>

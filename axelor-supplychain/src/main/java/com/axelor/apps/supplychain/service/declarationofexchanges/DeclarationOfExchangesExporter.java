@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.tuple.Pair;
@@ -55,18 +56,19 @@ public abstract class DeclarationOfExchangesExporter {
   protected final DeclarationOfExchanges declarationOfExchanges;
   protected final ResourceBundle bundle;
   protected final String name;
-  protected final DeclarationOfExchangesColumnHeader[] columnHeaders;
+
+  protected List<String> columnHeadersList;
 
   public DeclarationOfExchangesExporter(
       DeclarationOfExchanges declarationOfExchanges,
       ResourceBundle bundle,
       String name,
-      DeclarationOfExchangesColumnHeader[] columnHeaders) {
+      List<String> columnHeadersList) {
     exportFuncMap = ImmutableMap.of("csv", this::exportToCSV, "pdf", this::exportToPDF);
     this.declarationOfExchanges = declarationOfExchanges;
     this.bundle = bundle;
     this.name = name;
-    this.columnHeaders = columnHeaders;
+    this.columnHeadersList = columnHeadersList;
   }
 
   public Pair<Path, String> export() throws AxelorException {
@@ -92,10 +94,10 @@ public abstract class DeclarationOfExchangesExporter {
   }
 
   protected String[] getTranslatedHeaders() {
-    String[] headers = new String[columnHeaders.length];
+    String[] headers = new String[columnHeadersList.size()];
 
-    for (int i = 0; i < columnHeaders.length; ++i) {
-      headers[i] = getTranslation(columnHeaders[i].getTitle());
+    for (int i = 0; i < columnHeadersList.size(); ++i) {
+      headers[i] = getTranslation(columnHeadersList.get(i));
     }
 
     return headers;

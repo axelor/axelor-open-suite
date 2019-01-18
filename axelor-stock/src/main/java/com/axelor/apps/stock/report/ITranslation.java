@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,6 +56,14 @@ public interface ITranslation {
   public static final String INVENTORY_RACK = /*$$(*/ "Inventory.rack"; /*)*/
   public static final String INVENTORY_TRACKING_NUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
   public static final String INVENTORY_COMPANY = /*$$(*/ "Inventory.company"; /*)*/
+  public static final String INVENTORY_PRODUCT_CATEGORY = /*$$(*/ "Inventory.productCategory"; /*)*/
+  public static final String INVENTORY_LAST_INVENTORY_DATE = /*$$(*/
+      "Inventory.lastInventoryDate"; /*)*/
+  public static final String INVENTORY_PRODUCT = /*$$(*/ "Inventory.product"; /*)*/
+  public static final String INVENTORY_PRODUCT_FAMILY = /*$$(*/ "Inventory.productFamily"; /*)*/
+  public static final String INVENTORY_FROM_RACK = /*$$(*/ "Inventory.fromRack"; /*)*/
+  public static final String INVENTORY_TO_RACK = /*$$(*/ "Inventory.toRack"; /*)*/
+  public static final String INVENTORY_CATEGORY = /*$$(*/ "Inventory.category"; /*)*/
 
   public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
   public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/

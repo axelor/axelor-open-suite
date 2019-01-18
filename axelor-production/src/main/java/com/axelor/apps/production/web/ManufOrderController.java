@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,13 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.CostSheetService;
-import com.axelor.apps.production.service.ManufOrderService;
-import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -387,7 +388,12 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-      Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+
+      Beans.get(CostSheetService.class)
+          .computeCostPrice(
+              manufOrder,
+              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+              Beans.get(AppBaseService.class).getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

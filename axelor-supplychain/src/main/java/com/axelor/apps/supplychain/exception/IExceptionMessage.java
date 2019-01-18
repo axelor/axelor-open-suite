@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -171,7 +171,7 @@ public interface IExceptionMessage {
 
   /** Reserved qty service */
   static final String LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY = /*$$(*/
-      "You cannot change the stock move status: please lower the allocated quantity" /*)*/;
+      "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate." /*)*/;
 
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;

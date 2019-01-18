@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.AppAccount;
@@ -107,7 +108,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setAnalyticAxis(analyticDistributionLine.getAnalyticAxis());
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
 
-    Company company = analyticDistributionLine.getAnalyticJournal().getCompany();
+    AnalyticJournal analyticJournal = analyticDistributionLine.getAnalyticJournal();
+    Company company = analyticJournal == null ? null : analyticJournal.getCompany();
     if (company != null) {
       analyticMoveLine.setCurrency(company.getCurrency());
     }

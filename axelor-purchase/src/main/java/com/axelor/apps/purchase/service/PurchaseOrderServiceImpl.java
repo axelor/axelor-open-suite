@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -280,8 +280,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
     Partner partner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
@@ -297,7 +297,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }
-    if (purchaseOrder.getVersionNumber() == 1) {
+    if (purchaseOrder.getVersionNumber() == 1
+        && sequenceService.isEmptyOrDraftSequenceNumber(purchaseOrder.getPurchaseOrderSeq())) {
       purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
     }
     purchaseOrderRepo.save(purchaseOrder);

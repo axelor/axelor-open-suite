@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,11 +30,12 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,8 +43,29 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import javax.persistence.TypedQuery;
 
 public class NotificationServiceImpl implements NotificationService {
+
+  protected MoveService moveService;
+  protected ReconcileService reconcileService;
+  protected AccountConfigService accountConfigService;
+  protected SubrogationReleaseService subrogationReleaseService;
+  protected MoveRepository moveRepository;
+
+  @Inject
+  public NotificationServiceImpl(
+      MoveService moveService,
+      ReconcileService reconcileService,
+      AccountConfigService accountConfigService,
+      SubrogationReleaseService subrogationReleaseService,
+      MoveRepository moveRepository) {
+    this.moveService = moveService;
+    this.reconcileService = reconcileService;
+    this.accountConfigService = accountConfigService;
+    this.subrogationReleaseService = subrogationReleaseService;
+    this.moveRepository = moveRepository;
+  }
 
   @Override
   public void populateNotificationItemList(Notification notification) {
@@ -71,138 +93,148 @@ public class NotificationServiceImpl implements NotificationService {
     }
   }
 
-  private NotificationItem createNotificationItem(Invoice invoice) {
+  protected NotificationItem createNotificationItem(Invoice invoice) {
     return new NotificationItem(invoice, invoice.getAmountRemaining());
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validate(Notification notification) throws AxelorException {
-    MoveService moveService = Beans.get(MoveService.class);
-    ReconcileService reconcileService = Beans.get(ReconcileService.class);
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-
-    SubrogationRelease subrogationRelease = notification.getSubrogationRelease();
-    Company company = notification.getCompany();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
-    boolean allCleared = true;
 
     for (NotificationItem notificationItem : notification.getNotificationItemList()) {
-      Invoice invoice = notificationItem.getInvoice();
-      BigDecimal amountRemaining = invoice.getAmountRemaining();
-
-      if (amountRemaining.signum() > 0) {
-        BigDecimal amountPaid = notificationItem.getAmountPaid();
-
-        if (amountRemaining.compareTo(amountPaid) > 0) {
-          allCleared = false;
-        }
-
-        Move paymentMove =
-            moveService
-                .getMoveCreateService()
-                .createMove(
-                    journal,
-                    company,
-                    company.getCurrency(),
-                    invoice.getPartner(),
-                    notification.getPaymentDate(),
-                    null,
-                    MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-        MoveLine creditMoveLine, debitMoveLine;
-        boolean isOutPayment = InvoiceToolService.isOutPayment(invoice);
-
-        if (!isOutPayment) {
-          Account account = accountConfig.getFactorCreditAccount();
-          if (notificationItem.getTypeSelect()
-              == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE_AFTER_FACTORE_RETURN) {
-            account = accountConfig.getFactorDebitAccount();
-          }
-
-          creditMoveLine =
-              moveService
-                  .getMoveLineService()
-                  .createMoveLine(
-                      paymentMove,
-                      invoice.getPartner(),
-                      invoice.getPartnerAccount(),
-                      amountPaid,
-                      false,
-                      notification.getPaymentDate(),
-                      null,
-                      1,
-                      subrogationRelease.getSequenceNumber(),
-                      invoice.getInvoiceId());
-          debitMoveLine =
-              moveService
-                  .getMoveLineService()
-                  .createMoveLine(
-                      paymentMove,
-                      invoice.getPartner(),
-                      account,
-                      amountPaid,
-                      true,
-                      notification.getPaymentDate(),
-                      null,
-                      2,
-                      subrogationRelease.getSequenceNumber(),
-                      invoice.getInvoiceId());
-        } else {
-          creditMoveLine =
-              moveService
-                  .getMoveLineService()
-                  .createMoveLine(
-                      paymentMove,
-                      invoice.getPartner(),
-                      accountConfig.getFactorDebitAccount(),
-                      amountPaid,
-                      false,
-                      notification.getPaymentDate(),
-                      null,
-                      1,
-                      subrogationRelease.getSequenceNumber(),
-                      invoice.getInvoiceId());
-          debitMoveLine =
-              moveService
-                  .getMoveLineService()
-                  .createMoveLine(
-                      paymentMove,
-                      invoice.getPartner(),
-                      invoice.getPartnerAccount(),
-                      amountPaid,
-                      true,
-                      notification.getPaymentDate(),
-                      null,
-                      2,
-                      subrogationRelease.getSequenceNumber(),
-                      invoice.getInvoiceId());
-        }
-
-        paymentMove.addMoveLineListItem(debitMoveLine);
-        paymentMove.addMoveLineListItem(creditMoveLine);
-        paymentMove = Beans.get(MoveRepository.class).save(paymentMove);
-
-        moveService.getMoveValidateService().validate(paymentMove);
-
-        if (!isOutPayment) {
-          reconcileService.reconcile(
-              findInvoiceAccountMoveLine(invoice), creditMoveLine, true, true);
-        } else {
-          reconcileService.reconcile(
-              debitMoveLine, findInvoiceAccountMoveLine(invoice), true, true);
-        }
-      }
-    }
-
-    if (allCleared) {
-      subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_CLEARED);
+      this.createPaymentMove(notificationItem);
     }
 
     notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
   }
 
-  private MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
+  protected Journal getJournal(AccountConfig accountConfig) throws AxelorException {
+    return accountConfigService.getAutoMiscOpeJournal(accountConfig);
+  }
+
+  protected Account getAccount(AccountConfig accountConfig, NotificationItem notificationItem) {
+    Account account = accountConfig.getFactorCreditAccount();
+    if (notificationItem.getTypeSelect()
+        == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE_AFTER_FACTORE_RETURN) {
+      account = accountConfig.getFactorDebitAccount();
+    }
+    return account;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  protected Move createPaymentMove(NotificationItem notificationItem) throws AxelorException {
+
+    Notification notification = notificationItem.getNotification();
+    Invoice invoice = notificationItem.getInvoice();
+    Company company = invoice.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Journal journal = getJournal(accountConfig);
+
+    SubrogationRelease subrogationRelease = getSubrogationRelease(notificationItem);
+
+    String origin = computeOrigin(subrogationRelease, invoice);
+
+    BigDecimal amountPaid = notificationItem.getAmountPaid();
+
+    if (amountPaid.compareTo(BigDecimal.ZERO) == 0) {
+      return null;
+    }
+
+    Move paymentMove =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                company,
+                company.getCurrency(),
+                invoice.getPartner(),
+                notification.getPaymentDate(),
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    MoveLine creditMoveLine, debitMoveLine;
+
+    Account account = getAccount(accountConfig, notificationItem);
+
+    debitMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                paymentMove,
+                invoice.getPartner(),
+                account,
+                amountPaid,
+                true,
+                notification.getPaymentDate(),
+                null,
+                1,
+                origin,
+                invoice.getInvoiceId());
+
+    creditMoveLine =
+        moveService
+            .getMoveLineService()
+            .createMoveLine(
+                paymentMove,
+                invoice.getPartner(),
+                invoice.getPartnerAccount(),
+                amountPaid,
+                false,
+                notification.getPaymentDate(),
+                null,
+                2,
+                origin,
+                invoice.getInvoiceId());
+
+    paymentMove.addMoveLineListItem(debitMoveLine);
+    paymentMove.addMoveLineListItem(creditMoveLine);
+    paymentMove = moveRepository.save(paymentMove);
+
+    moveService.getMoveValidateService().validate(paymentMove);
+
+    MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
+
+    if (invoiceMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
+      reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
+    }
+
+    notificationItem.setMove(paymentMove);
+
+    if (subrogationRelease != null) {
+      subrogationReleaseService.clear(subrogationRelease);
+    }
+
+    return paymentMove;
+  }
+
+  protected String computeOrigin(SubrogationRelease subrogationRelease, Invoice invoice) {
+
+    return subrogationRelease != null
+        ? subrogationRelease.getSequenceNumber()
+        : I18n.get("Payment notification") + " " + invoice.getInvoiceId();
+  }
+
+  protected SubrogationRelease getSubrogationRelease(NotificationItem notificationItem) {
+
+    Invoice invoice = notificationItem.getInvoice();
+
+    TypedQuery<SubrogationRelease> query =
+        JPA.em()
+            .createQuery(
+                "SELECT self FROM SubrogationRelease self JOIN self.invoiceSet invoices WHERE self.statusSelect = :statusSelect AND invoices.id IN (:invoiceId)",
+                SubrogationRelease.class);
+    query.setParameter("statusSelect", SubrogationReleaseRepository.STATUS_ACCOUNTED);
+    query.setParameter("invoiceId", invoice.getId());
+
+    List<SubrogationRelease> subrogationReleaseResultList = query.getResultList();
+
+    if (subrogationReleaseResultList != null && !subrogationReleaseResultList.isEmpty()) {
+      return subrogationReleaseResultList.get(0);
+    }
+
+    return null;
+  }
+
+  protected MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
     for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
       if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
         return moveLine;

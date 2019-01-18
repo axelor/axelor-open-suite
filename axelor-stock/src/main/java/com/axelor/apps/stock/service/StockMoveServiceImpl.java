@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -205,12 +205,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setToStockLocation(toStockLocation);
     stockMove.setDescription(description);
-
     stockMove.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
     stockMove.setTypeSelect(typeSelect);
-
+    stockMove.setIsWithBackorder(company.getStockConfig().getIsWithBackorder());
+    if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
+      stockMove.setIsWithReturnSurplus(company.getStockConfig().getIsWithReturnSurplus());
+    }
     return stockMove;
   }
 
@@ -702,6 +704,9 @@ public class StockMoveServiceImpl implements StockMoveService {
                 + " )"));
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
     newStockMove.setIsReversion(true);
+    newStockMove.setOrigin(stockMove.getOrigin());
+    newStockMove.setOriginId(stockMove.getOriginId());
+    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
 
     plan(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Query;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -281,5 +282,23 @@ public class StockLocationServiceImpl implements StockLocationService {
     resultList.add(stockLocation);
 
     return resultList;
+  }
+
+  @Override
+  public BigDecimal getStockLocationValue(StockLocation stockLocation) {
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM( self.currentQty * CASE WHEN (product.costTypeSelect = 3) THEN "
+                    + "(self.avgPrice) ELSE (self.product.costPrice) END ) AS value "
+                    + "FROM StockLocationLine AS self "
+                    + "WHERE self.stockLocation.id =:id");
+    query.setParameter("id", stockLocation.getId());
+
+    List<?> result = query.getResultList();
+    return result.get(0) == null
+        ? BigDecimal.ZERO
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
 }
