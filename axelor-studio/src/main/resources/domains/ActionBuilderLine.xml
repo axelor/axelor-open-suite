@@ -14,7 +14,7 @@
      <string name="value" title="Value Expr"/>
      <string name="conditionText" title="Condition" />
      <string name="filter" title="Filter" />
-     <string name="validationTypeSelect" title="Validation type" selection="studio.action.builder.line.validation.type.select" />
+     <string name="validationTypeSelect" title="Validation type"/>
   	 <string name="validationMsg" title="Message" />
   	 <one-to-many name="subLines" ref="ActionBuilderLine" mappedBy="parent"/>
   	 <many-to-one name="parent" ref="ActionBuilderLine" />
