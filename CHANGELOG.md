@@ -5,6 +5,7 @@
 - Workflow: Allow creation of a new field for the object related to the workflow
 
 ## Improvements
+- StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
 - BPM - WkfNode : use a RadioSelect with following values: "startNode, taskNode, endNode".
