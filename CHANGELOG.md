@@ -36,6 +36,7 @@
 - Project : Default value for project on Wiki/Version/Announcement.
 - Project : Divide planned and spent time project planning lines in seprate dashlets.
 - Team Task : Add new field 'customerReferral'.
+- TeamTask : Assign default value to fields and change in track of object.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
@@ -48,6 +49,7 @@
 - TeamTask : Change in team-task-form view. 
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
+- Team Task : Change in team-task-form view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
