@@ -11,6 +11,7 @@
 - BPM - WkfTransition: alertTypeSelect uses a RadioSelect widget.
 - BPM - WkfTransition: logic operator is displayed in first column.
 - BPM - WkfTransition: "Restricted roles" has been renamed into "Roles".
+- QUALITY : Change quality-control-form, control-point-form and quality-alert-form views
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
