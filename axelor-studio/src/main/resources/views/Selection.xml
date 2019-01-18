@@ -80,5 +80,11 @@
 		<option value="0">Send directly</option>
 		<option value="1">Edit before send</option>
 	</selection>
+
+    <selection name="studio.node.type.select">
+      <option value="0">Start node</option>
+      <option value="1">Task node</option>
+      <option value="2">End node</option>
+    </selection>
     
 </object-views>
