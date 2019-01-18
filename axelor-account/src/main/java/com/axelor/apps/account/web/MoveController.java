@@ -226,4 +226,15 @@ public class MoveController {
     Map<String, Object> values = moveService.computeTotals(move);
     response.setValues(values);
   }
+
+  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    if (move.getMoveLineList() != null
+        && !move.getMoveLineList().isEmpty()
+        && move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+      moveService.getMoveLineService().autoTaxLineGenerate(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    }
+  }
 }

@@ -704,6 +704,9 @@ public class StockMoveServiceImpl implements StockMoveService {
                 + " )"));
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
     newStockMove.setIsReversion(true);
+    newStockMove.setOrigin(stockMove.getOrigin());
+    newStockMove.setOriginId(stockMove.getOriginId());
+    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
 
     plan(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));

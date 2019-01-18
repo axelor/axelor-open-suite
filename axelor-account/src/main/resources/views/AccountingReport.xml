@@ -43,7 +43,7 @@
 
 		<panel-tabs name="mainPanelTab">
 			<panel name="filterPanel" title="Filter">
-				<field name="year" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15" grid-view="year-account-grid" form-view="year-account-form" />
+				<field name="year" canEdit="false" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15" grid-view="year-account-grid" form-view="year-account-form" />
 				<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="dateTo" requiredIf="typeSelect == 12 || typeSelect == 15" />

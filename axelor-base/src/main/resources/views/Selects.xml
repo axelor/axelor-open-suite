@@ -89,11 +89,6 @@
 		<option value='12'>December</option>
 	</selection>
 
-	<selection name='title.type.select'>
-		<option value='1'>Civility</option>
-		<option value='2'>Legal form</option>
-	</selection>
-
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
@@ -446,4 +441,14 @@
 		<option value="5">Complete</option>
     </selection>
 
+	<selection name="select.language" id="base.language.select">
+		<option value="de">German Beta</option>
+		<option value="es">Spanish Beta</option>
+		<option value="pt">Portuguese Beta</option>
+		<option value="it">Italian Beta</option>
+		<option value="nl">Dutch Beta</option>
+		<option value="pl">Polish Beta</option>
+		<option value="ru">Russian Beta</option>
+	</selection>
+	
 </object-views>

@@ -71,7 +71,7 @@
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!(__config__.app.getApp('sale')?.getProductPackMgt())"/>
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"
 			        	onChange="action-product-record-product-sub-type-select-onchange,action-product-attrs-hidden-is-shipping-costs-product"/>
-                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect == 'service' || productTypeSelect =='pack'"/>
+                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect==null || productTypeSelect == 'service' || productTypeSelect =='pack'"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"

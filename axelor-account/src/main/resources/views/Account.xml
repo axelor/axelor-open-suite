@@ -55,6 +55,8 @@
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
 				<field name="analyticDistributionAuthorized" widget="boolean-switch"/>
 				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" showIf="analyticDistributionAuthorized"/>
+				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch"/>
+				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      

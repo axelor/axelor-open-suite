@@ -142,6 +142,18 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      Account account = moveLine.getAccount();
+      if (account.getIsTaxAuthorizedOnMoveLine()
+          && account.getIsTaxRequiredOnMoveLine()
+          && moveLine.getTaxLine() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            IExceptionMessage.MOVE_9,
+            account.getName());
+      }
+    }
+
     this.validateWellBalancedMove(move);
   }
 
