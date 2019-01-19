@@ -21,7 +21,8 @@
 	       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true"/>
 	       <field name="fromDate"/>
 	       <field name="toDate"/>
-	       <field name="company" canEdit="false"/>
+         <field name="company" canEdit="false" colSpan="3"/>
+         <field name="company.currency" readonly="true" colSpan="3"/>
 	       <field name="inChargeUser" canNew="false" canEdit="false" canView="false"/>
        </panel>
        <panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>

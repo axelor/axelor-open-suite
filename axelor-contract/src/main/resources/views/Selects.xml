@@ -2,10 +2,6 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<selection name="app.type.select" id="contract.app.type.select">
-		<option order="24" value="contract">Contract</option>
-	</selection>
-
 	<selection name="contract.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Active</option>

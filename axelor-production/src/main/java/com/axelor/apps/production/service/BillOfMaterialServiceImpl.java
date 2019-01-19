@@ -323,15 +323,17 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (rawMaterials != null && !rawMaterials.isEmpty()) {
       BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
       int priority = 0;
-      if (billOfMaterial.getBillOfMaterialSet() != null && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
-          priority = Collections.max(
-              billOfMaterial
-                  .getBillOfMaterialSet()
-                  .stream()
-                  .map(it -> it.getPriority())
-                  .collect(Collectors.toSet()));
+      if (billOfMaterial.getBillOfMaterialSet() != null
+          && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+        priority =
+            Collections.max(
+                billOfMaterial
+                    .getBillOfMaterialSet()
+                    .stream()
+                    .map(it -> it.getPriority())
+                    .collect(Collectors.toSet()));
       }
-  
+
       for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
         priority += 10;
         BillOfMaterial newComponent =
