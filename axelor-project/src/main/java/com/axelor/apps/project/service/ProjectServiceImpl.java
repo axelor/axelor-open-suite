@@ -54,7 +54,12 @@ public class ProjectServiceImpl implements ProjectService {
       User assignedTo,
       Company company,
       Partner clientPartner) {
-    Project project = new Project();
+    Project project;
+    project = projectRepository.findByName(fullName);
+    if (project != null) {
+      return project;
+    }
+    project = new Project();
     project.setStatusSelect(ProjectRepository.STATE_NEW);
     project.setParentProject(parentProject);
     if (parentProject != null) {

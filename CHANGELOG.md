@@ -56,6 +56,7 @@
 - TeamTask : Resolve NPE on save of new team task.
 - Studio: Fix import app without image. 
 - TeamTask : Resolve NPE by updating action of HR module.
+- Generation of Project/Phase from SaleOrder
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

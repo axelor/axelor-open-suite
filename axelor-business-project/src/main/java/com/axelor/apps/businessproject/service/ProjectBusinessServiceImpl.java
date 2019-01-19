@@ -152,13 +152,16 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    */
   @Override
   public Project generateProject(SaleOrder saleOrder) {
-    Project project =
-        this.generateProject(
-            null,
-            saleOrder.getFullName() + "_project",
-            saleOrder.getSalemanUser(),
-            saleOrder.getCompany(),
-            saleOrder.getClientPartner());
+    Project project = projectRepo.findByName(saleOrder.getFullName() + "_project");
+    project =
+        project == null
+            ? this.generateProject(
+                null,
+                saleOrder.getFullName() + "_project",
+                saleOrder.getSalemanUser(),
+                saleOrder.getCompany(),
+                saleOrder.getClientPartner())
+            : project;
     saleOrder.setProject(project);
     return project;
   }

@@ -77,6 +77,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         TeamTask task =
             teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
         task.setTaskDate(startDate.toLocalDate());
+        task.setUnitPrice(product.getSalePrice());
         teamTaskRepository.save(task);
         tasks.add(task);
       }
