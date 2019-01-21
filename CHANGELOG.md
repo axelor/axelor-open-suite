@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.2]
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
+- FACTOR : new menu in accounting
 
 ## Improvements
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
@@ -14,9 +15,16 @@
 - QUALITY : Change quality-control-form, control-point-form and quality-alert-form views
 - Product Activities : Added Card view.
 - AccountConfig: Allow user to add a new account chart.
+- VEHICLE : Mandatory field
+- FINANCIAL ACCOUNT : Add new boolean 'analyticDistributionRequiredOnMoveLines' to make Analytic fields required on Move Lines.
+- APP : when click on "Configure" App, open view in edit mode.
+- FIXED ASSET : Disable canEdit for fields in form view
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
+- STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
+- Bank Reconciliation: Default toDate value is now filled.
+- DEMA DATA : fix display only english and french at Import selection
 - Base : Resolve Email PDF printing issue.
 
 ## [5.1.1] - 2019-01-18
