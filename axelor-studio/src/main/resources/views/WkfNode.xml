@@ -18,7 +18,7 @@
       </panel>
       <panel-related name="metaActionSetPanel" field="metaActionSet" colSpan="12" orderBy="sequence" canMove="true"/>
       <panel-related name="roleSetPanel" field="roleSet" colSpan="12" />
-      <panel-related name="incommingPanel" field="incomming" colSpan="12" readonly="true" />
+      <panel-related name="incomingPanel" field="incoming" colSpan="12" readonly="true" />
       <panel-related name="outgoingPanel" field="outgoing" colSpan="12"  readonly="true" />
   </form>
   
