@@ -17,7 +17,7 @@
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
-
+- DEMA DATA : fix display only english and french at Import selection
 
 ## [5.1.1] - 2019-01-18
 ## Features
