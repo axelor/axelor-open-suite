@@ -15,6 +15,7 @@
 - Product Activities : Added Card view.
 - AccountConfig: Allow user to add a new account chart.
 - VEHICLE : Mandatory field
+- CostSheet : new printing design
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
