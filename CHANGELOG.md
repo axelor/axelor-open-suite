@@ -14,6 +14,7 @@
 - QUALITY : Change quality-control-form, control-point-form and quality-alert-form views
 - Product Activities : Added Card view.
 - AccountConfig: Allow user to add a new account chart.
+- APP : when click on "Configure" App, open view in edit mode.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
