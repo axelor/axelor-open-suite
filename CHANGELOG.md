@@ -51,6 +51,7 @@
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
+- PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
