@@ -345,7 +345,8 @@ InvoiceSet.length > 0))"
 			</panel>
 		</panel-stack>
 
-		<panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6"  hideIf="partner == null">
+
+		<panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"  hideIf="partner == null">
 			<field name="currency.code" hidden="true"/>
 			<field name="currency.symbol" hidden="true"/>
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
@@ -393,7 +394,7 @@ InvoiceSet.length > 0))"
 				</viewer>
 			</field>
 		</panel>
-		<panel name="totalsCompanyCurrencyPanel" title="Totals company currency" itemSpan="6" sidebar="true" hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
+		<panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false" itemSpan="6" sidebar="true" hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
 			<field name="company.currency.code" hidden="true"/>
 			<field name="company.currency.symbol" hidden="true"/>
 			<field name="companyInTaxTotalRemaining" hidden="true"/>
