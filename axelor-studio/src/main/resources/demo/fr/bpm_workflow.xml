@@ -115,42 +115,42 @@
   <transition wkf="Commande produit" name="Réinitialiser" source="Annulé" target="Brouillon" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
   
   <node wkf="Commande produit" name="Brouillon">
-  		<incommings>
-  			<incomming name="Réinitialiser" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Réinitialiser" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Confirmer" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Confirmé">
-  		<incommings>
-  			<incomming name="Confirmer" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Confirmer" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Valider" />
   			<outgoing name="Annuler" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Validé">
-  		<incommings>
-  			<incomming name="Valider" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Valider" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Terminer" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Annulé">
-  		<incommings>
-  			<incomming name="Annuler" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Annuler" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Réinitialiser" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Terminé">
-  		<incommings>
-  			<incomming name="Terminer" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Terminer" />
+  		</incomings>
   </node>
   
   <workflow name="Commande produit" />
