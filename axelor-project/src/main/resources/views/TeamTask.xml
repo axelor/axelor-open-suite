@@ -382,7 +382,7 @@
 	</action-record>
 	
 	<action-record name="action-team-task-business-support-provider" model="com.axelor.team.db.TeamTask">
-		<field name="$provider" expr="eval: __config__.app.getApp('business-support').provider.name" if="__config__.app.getApp('business-support').provider"/>
+		<field name="$provider" expr="eval: __config__.app.getApp('business-support').providerCompany.name" if="__config__.app.getApp('business-support').providerCompany"/>
 	</action-record>
 	
 	<action-record name="action-task-update-planned-progress" model="com.axelor.team.db.TeamTask">

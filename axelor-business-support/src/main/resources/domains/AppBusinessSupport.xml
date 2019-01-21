@@ -5,7 +5,7 @@
   	<module name="base" package="com.axelor.apps.base.db"/>
  
   	<entity name="AppBusinessSupport" lang="java" extends="App">
-   		<many-to-one name="provider" title="Provider" ref="com.axelor.apps.base.db.Company"/>
+   		<many-to-one name="providerCompany" title="Provider Company" ref="com.axelor.apps.base.db.Company"/>
   	</entity>
  
 </domain-models>
