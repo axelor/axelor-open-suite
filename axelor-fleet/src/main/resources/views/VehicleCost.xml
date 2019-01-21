@@ -10,7 +10,7 @@
 	
 	<form name="vehicle-cost-form" title="Vehicle Cost" model="com.axelor.apps.fleet.db.VehicleCost" width="large">
 		<panel name="mainPanel">
-			<field name="vehicle" />
+			<field name="vehicle" required="true"/>
 			<field name="serviceType" />
 			<field name="totalPrice" />
 			<field name="date" />
