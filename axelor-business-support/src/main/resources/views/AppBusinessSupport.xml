@@ -5,7 +5,7 @@
  
   	<form name="app-business-support-config-form" title="App Business Support" model="com.axelor.apps.base.db.AppBusinessSupport" canDelete="false" canNew="false" width="large">
  		<panel name="mainPanel" title="Configuration">
- 			<field name="provider"/>
+ 			<field name="providerCompany" form-view="company-form" grid-view="company-grid"/>
  		</panel>
  	</form>
  
