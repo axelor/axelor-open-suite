@@ -15,6 +15,7 @@
 - Product Activities : Added Card view.
 - AccountConfig: Allow user to add a new account chart.
 - VEHICLE : Mandatory field
+- FINANCIAL ACCOUNT : Add new boolean 'analyticDistributionRequiredOnMoveLines' to make Analytic fields required on Move Lines.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
