@@ -10,3 +10,4 @@
 "perm.project.projectPlanningTime.r";"com.axelor.apps.project.db.ProjectPlanningTime";"x";;;;;;;"role.customer"
 "perm.base.timer.r";"com.axelor.apps.base.db.Timer";"x";;;;;;;"role.customer"
 "perm.meta.menu.r";"com.axelor.meta.db.MetaMenu";"x";;;;;;;"role.customer"
+"perm.businessproject.invoicingProject.all";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";"x";"x";"self.project IN (SELECT p FROM Project p WHERE ? MEMBER OF p.membersUserSet)";"__user__";"role.customer"

@@ -22,4 +22,11 @@
 	     <context name="_fromProject" expr="eval:false"/>
 	</action-view>
 	
+	<menuitem name="business-project-root-invoicing-project" parent="menu-project-root" order="39" title="Invoicing project" action="business.project.root.invoicing.project"/>
+
+	<action-view name="business.project.root.invoicing.project" title="Invoicing project" model="com.axelor.apps.businessproject.db.InvoicingProject">
+		<view type="grid" name="invoicing-project-grid"/>
+		<view type="form" name="invoicing-project-form"/>
+	</action-view>
+	
 </object-views>
