@@ -17,7 +17,7 @@
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
-
+- Base : Resolve Email PDF printing issue.
 
 ## [5.1.1] - 2019-01-18
 ## Features
