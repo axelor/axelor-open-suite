@@ -192,4 +192,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
+
+  static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
+      "No stockMoveLine remains to invoice" /*)*/;
 }

@@ -38,6 +38,7 @@
 - Team Task : Add new field 'customerReferral'.
 - TeamTask : Assign default value to fields and change in track of object.
 - MANUF. APP : new boolean manageCostSheetGroup
+- Stock Move : Partial Invoice.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.

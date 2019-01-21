@@ -84,5 +84,10 @@
 		<option value="1">Forecasted supplier invoices</option>
 		<option value="2">Forecasted customer invoices</option>
 	</selection>
+	
+	<selection name="supplychain.stock.move.invoicing.wizard.select">
+      <option value="1">Invoice all</option>
+      <option value="2">Invoice partially stock move</option>
+    </selection>
 
 </object-views>

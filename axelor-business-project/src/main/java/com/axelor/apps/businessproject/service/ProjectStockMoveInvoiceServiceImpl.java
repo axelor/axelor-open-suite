@@ -32,6 +32,7 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
@@ -56,10 +57,10 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine)
-      throws AxelorException {
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException {
 
-    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine);
+    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine, qty);
     for (InvoiceLine invoiceLine : invoiceLines) {
       SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
       if (saleOrderLine != null) {

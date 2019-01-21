@@ -308,6 +308,7 @@ InvoiceSet.length > 0))"
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
+				<panel-related field="stockMoveSet" colSpan="12" grid-view="stock-move-grid" form-view="stock-move-form" onNew="action-group-stock-stockmove-onnew" onSelect="action-invoice-attrs-domain-stock-move" domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1"/>
 				<panel-dashlet name="showStockMovePanel" action="action-invoice-view-show-stock-move" colSpan="12" />
 			</panel>
 		</panel-tabs>
@@ -726,6 +727,11 @@ InvoiceSet.length > 0))"
     	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
+    
+    <action-attrs name="action-invoice-attrs-domain-stock-move">
+      <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 2&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+      <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 3&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+    </action-attrs>
 
 	<!-- ACTION RECORD -->
 
@@ -1045,8 +1051,8 @@ InvoiceSet.length > 0))"
 	<action-view name="action-invoice-view-show-stock-move" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">	
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
-		<domain>self.invoice.id=:invoiceId</domain>
-		<context name="invoiceId" expr="eval:id" />
+		<domain>:_invoice MEMBER OF self.invoiceSet</domain>
+		<context name="_invoice" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="action-invoice-view-show-subrogation-release" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">	

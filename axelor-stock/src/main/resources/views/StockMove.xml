@@ -173,7 +173,7 @@
             <panel name="actionPanel" colSpan="3" itemSpan="12">
                 <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
                 <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-                <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+                <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
                 <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
                 <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
@@ -284,7 +284,7 @@
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
             	<field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
-                <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
+                <field name="invoiceSet" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" colSpan="12"/>
                 <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
             </panel>
             <panel name="configPanel" title="Configuration">
@@ -383,6 +383,8 @@
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-record-supply-chain-stock-move-onnew"  if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<action name="action-attrs-supply-chain-stock-move-onnew" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">

@@ -92,24 +92,21 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
+  public Invoice createInvoiceFromSaleOrder(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
 
-    if (stockMove.getInvoice() != null
-        && stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS),
-          stockMove.getName());
-    }
     InvoiceGenerator invoiceGenerator =
         saleOrderInvoiceService.createInvoiceGenerator(saleOrder, stockMove.getIsReversion());
 
     Invoice invoice = invoiceGenerator.generate();
 
     invoiceGenerator.populate(
-        invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+        invoice,
+        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
       invoice.setSaleOrder(saleOrder);
@@ -128,7 +125,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       invoiceRepository.save(invoice);
 
-      stockMove.setInvoice(invoice);
+      stockMove.getInvoiceSet().add(invoice);
+
       stockMoveRepo.save(stockMove);
     }
 
@@ -137,17 +135,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder)
+  public Invoice createInvoiceFromPurchaseOrder(
+      StockMove stockMove,
+      PurchaseOrder purchaseOrder,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
 
-    if (stockMove.getInvoice() != null
-        && stockMove.getInvoice().getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS),
-          stockMove.getName());
-    }
     InvoiceGenerator invoiceGenerator =
         purchaseOrderInvoiceService.createInvoiceGenerator(
             purchaseOrder, stockMove.getIsReversion());
@@ -155,7 +149,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Invoice invoice = invoiceGenerator.generate();
 
     invoiceGenerator.populate(
-        invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+        invoice,
+        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
 
@@ -164,7 +159,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
       invoiceRepository.save(invoice);
 
-      stockMove.setInvoice(invoice);
+      stockMove.getInvoiceSet().add(invoice);
+
       stockMoveRepo.save(stockMove);
     }
     return invoice;
@@ -172,10 +168,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException {
+  public Invoice createInvoiceFromStockMove(
+      StockMove stockMove, int operationSelect, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException {
 
     int stockMoveType = stockMove.getTypeSelect();
-    Invoice invoice = stockMove.getInvoice();
     int invoiceOperationType;
 
     if (stockMove.getIsReversion()) {
@@ -196,22 +193,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
 
-    if (invoice != null && invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
-      if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
-        throw new AxelorException(
-            stockMove,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS),
-            stockMove.getName());
-      } else {
-        throw new AxelorException(
-            stockMove,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS),
-            stockMove.getName());
-      }
-    }
-
     InvoiceGenerator invoiceGenerator =
         new InvoiceGeneratorSupplyChain(stockMove, invoiceOperationType) {
 
@@ -222,10 +203,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           }
         };
 
-    invoice = invoiceGenerator.generate();
+    Invoice invoice = invoiceGenerator.generate();
 
     invoiceGenerator.populate(
-        invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+        invoice,
+        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
       saleOrderInvoiceService.fillInLines(invoice);
@@ -234,7 +216,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
       invoiceRepository.save(invoice);
 
-      stockMove.setInvoice(invoice);
+      stockMove.getInvoiceSet().add(invoice);
+
       stockMoveRepo.save(stockMove);
     }
 
@@ -503,11 +486,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     for (StockMove stockMoveLocal : stockMoveList) {
       invoiceLineList.addAll(
-          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList()));
+          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList(), null));
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
-    stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+    stockMoveList.forEach(stockMove -> stockMove.getInvoiceSet().add(invoice));
     invoiceRepository.save(invoice);
     return Optional.of(invoice);
   }
@@ -585,11 +568,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     for (StockMove stockMoveLocal : stockMoveList) {
       invoiceLineList.addAll(
-          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList()));
+          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList(), null));
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
-    stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+    stockMoveList.forEach(stockMove -> stockMove.getInvoiceSet().add(invoice));
     invoiceRepository.save(invoice);
     return Optional.of(invoice);
   }
@@ -680,8 +663,15 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     String message;
 
     for (StockMove stockMove : stockMoveList) {
-      if (stockMove.getInvoice() != null
-          && stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+      if (stockMove.getInvoiceSet() != null
+          && stockMove
+                  .getStockMoveLineList()
+                  .stream()
+                  .map(StockMoveLine::getQtyInvoiced)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO)
+                  .compareTo(BigDecimal.ZERO)
+              == 0) {
         String templateMessage;
         if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
           templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
@@ -861,14 +851,30 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException {
+      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
     Map<StockMoveLine, InvoiceLine> packLineMap = Maps.newHashMap();
     boolean setPack = Beans.get(AppSaleService.class).getAppSale().getProductPackMgt();
     for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
-      List<InvoiceLine> invoiceLineListCreated = this.createInvoiceLine(invoice, stockMoveLine);
+
+      List<InvoiceLine> invoiceLineListCreated = null;
+      Long id = stockMoveLine.getId();
+      if (qtyToInvoiceMap != null) {
+        if (qtyToInvoiceMap.containsKey(id)) {
+          invoiceLineListCreated =
+              this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
+        }
+      } else {
+        invoiceLineListCreated =
+            this.createInvoiceLine(
+                invoice,
+                stockMoveLine,
+                stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()));
+      }
+
       if (invoiceLineListCreated != null) {
         invoiceLineList.addAll(invoiceLineListCreated);
         if (setPack
@@ -910,8 +916,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine)
-      throws AxelorException {
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException {
 
     Product product = stockMoveLine.getProduct();
     boolean isTitleLine = false;
@@ -948,7 +954,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             product,
             stockMoveLine.getProductName(),
             stockMoveLine.getDescription(),
-            stockMoveLine.getRealQty(),
+            qty,
             stockMoveLine.getUnit(),
             sequence,
             false,
@@ -969,7 +975,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           }
         };
 
-    return invoiceLineGenerator.creates();
+    List<InvoiceLine> invoiceLines = invoiceLineGenerator.creates();
+    for (InvoiceLine invoiceLine : invoiceLines) {
+      invoiceLine.setStockMoveLine(stockMoveLine);
+    }
+    return invoiceLines;
   }
 
   /**
@@ -1015,5 +1025,31 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
     }
     return resultList;
+  }
+
+  @Override
+  public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove) {
+    List<Map<String, Object>> stockMoveLines = new ArrayList<Map<String, Object>>();
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+      if (stockMoveLine.getIsSubLine()) {
+        continue;
+      }
+      BigDecimal qty = stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced());
+      if (qty.compareTo(BigDecimal.ZERO) != 0) {
+        Map<String, Object> stockMoveLineMap = new HashMap<>();
+        stockMoveLineMap.put("productCode", stockMoveLine.getProduct().getCode());
+        stockMoveLineMap.put("productName", stockMoveLine.getProductName());
+        stockMoveLineMap.put("remainingQty", qty);
+        stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
+        stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
+        stockMoveLineMap.put("invoiceAll", false);
+        stockMoveLineMap.put("isSubline", stockMoveLine.getIsSubLine());
+        stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
+        stockMoveLines.add(stockMoveLineMap);
+      }
+    }
+    return stockMoveLines;
   }
 }

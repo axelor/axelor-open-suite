@@ -28,6 +28,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,15 +36,25 @@ import java.util.Optional;
 public interface StockMoveInvoiceService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
+  public Invoice createInvoiceFromSaleOrder(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder)
+  public Invoice createInvoiceFromPurchaseOrder(
+      StockMove stockMove,
+      PurchaseOrder purchaseOrder,
+      int operationSelect,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
+  public Invoice createInvoiceFromStockMove(
+      StockMove stockMove, int operationSelect, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException;
 
   Map<String, Object> areFieldsConflictedToGenerateCustInvoice(List<StockMove> stockMoveList)
       throws AxelorException;
@@ -78,8 +89,11 @@ public interface StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList) throws AxelorException;
-
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine)
+      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
+
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException;
+
+  public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove);
 }
