@@ -15,12 +15,7 @@
 	<form name="vehicle-fuel-log-form" title="Vehicle Fuel" model="com.axelor.apps.fleet.db.VehicleFuelLog" width="large" >
 		 <panel name="mainPanel">
 		  	<panel name="vehicleDetailsPanel" colSpan="12">
-    			<field name="vehicle" title="Vehicle">
-      			<editor>
-        			<field name="name" colSpan="12"/>
-        			<field name="vehicleOdometer"/>
-      			</editor>
-    		</field>
+    			<field name="vehicle" title="Vehicle" required="true"/>
       		</panel>
     		<panel name="informationPanel" title="Information">
 		  		<field name="purchasePartner"/>
