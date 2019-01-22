@@ -8,7 +8,7 @@
        <field name="company"/>
     </grid>
 
-    <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate" width="large" onNew="action-record-contract-default-record" readonlyIf="statusSelect == 3">
+    <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate" width="large" onNew="action-contract-template-record-default-record-onnew" readonlyIf="statusSelect == 3">
         <panel name="mainPanel">
             <panel colSpan="9" name="subMainPanel">
                 <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
@@ -99,7 +99,11 @@
             <mail-followers/>
         </panel-mail>
     </form>
-
+	
+	 <action-record name="action-contract-template-record-default-record-onnew" model="com.axelor.apps.contract.db.Contract">
+        <field name="company"  expr="eval: __user__.activeCompany"/>
+    </action-record>
+	
     <action-method name="action-contract-template-method-change-product">
         <call class="com.axelor.apps.contract.web.ContractTemplateController" method="changeProduct"/>
     </action-method>

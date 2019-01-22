@@ -19,6 +19,7 @@
 - FINANCIAL ACCOUNT : Add new boolean 'analyticDistributionRequiredOnMoveLines' to make Analytic fields required on Move Lines.
 - APP : when click on "Configure" App, open view in edit mode.
 - FIXED ASSET : Disable canEdit for fields in form view
+- CONTRACT MODEL : set default company in contract-template-form
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
