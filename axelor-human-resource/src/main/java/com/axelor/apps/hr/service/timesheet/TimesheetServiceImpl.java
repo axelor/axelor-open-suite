@@ -276,7 +276,6 @@ public class TimesheetServiceImpl implements TimesheetService {
       Product product)
       throws AxelorException {
 
-    TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
 
