@@ -130,12 +130,14 @@
 					<button name="updateAllocatedQtyBtn" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-sale-order-line-allocated-qty-wizard"/>
 				</panel>
 				<spacer/>
-				<field name="$isReadOnly" hidden="true"/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly || $isNotEditable">
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
+				<field name="$isReadOnly" hidden="true"/>
 			</panel>
 			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0 || $isReadOnly || $isNotEditable" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
 				<panel-related name="subLineListPanel" field="subLineList" onChange="action-sale-order-line-compute-total-pack" colSpan="12" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" canRemove="false"/>
@@ -336,7 +338,7 @@
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
     	<action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     	<action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
-		<action name="action-method-sale-order-line-available-stock"/>
+		<action name="action-method-sale-order-line-available-and-allocated-stock"/>
     	<action name="action-sale-order-line-attrs-set-company-currency" />
     	<action name="action-sale-order-line-attrs-type-select"/>
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
@@ -356,7 +358,7 @@
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action if="__config__.app.isApp('supplychain')" name="action-sale-order-line-attrs-show-delivery-panel"/>
 		<action name="action-sale-order-line-compute-total-pack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
-		<action name="action-method-sale-order-line-available-stock" />
+      <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
     </action-group>
