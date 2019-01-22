@@ -33,7 +33,7 @@
 
 
 	<action-record id="supplychain-action-sale-order-line-record-is-form-readonly" name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || invoiced) || saleOrder?.statusSelect == 4 || isSubLine"/>
+		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || amountInvoiced == exTaxTotal) || saleOrder?.statusSelect == 4 || isSubLine"/>
 	</action-record>
 
 	<action-method name="action-method-sale-order-line-available-and-allocated-stock" model="com.axelor.apps.sale.db.SaleOrderLine">

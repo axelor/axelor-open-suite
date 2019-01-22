@@ -102,6 +102,7 @@
          <bind node="showIf" to="showIf"/>
          <bind node="hideIf" to="hideIf"/>
          <bind node="requiredIf" to="requiredIf"/>
+         <bind node="readonlyIf" to="readonlyIf"/>
          <bind node="hidden" to="hidden"/>
          <bind node="required" to="required"/>
          <bind node="nameField" to="nameField"/>
@@ -126,9 +127,7 @@
        </bind>
 
        <bind node="configuratorProductFormulaList/configuratorProductFormula" to="configuratorProductFormulaList">
-         <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
-           <bind node="text()" to="id" alias="metaField"/>
-         </bind>
+         <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'Product'" />
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="configuratorCreatorImportId" to="productCreator" search="self.importId = :configCreatorImportId" create="false">
@@ -137,9 +136,7 @@
        </bind>
 
        <bind node="configuratorSOLineFormulaList/configuratorSOLineFormula" to="configuratorSOLineFormulaList">
-         <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
-           <bind node="text()" to="id" alias="metaField"/>
-         </bind>
+         <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'SaleOrderLine'"/>
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="updateFromSelect" to="updateFromSelect"/>

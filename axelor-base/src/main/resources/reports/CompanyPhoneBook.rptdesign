@@ -874,7 +874,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     </page-setup>
     <body>
         <table id="262">
-            <property name="marginLeft">5pt</property>
+            <property name="marginLeft">0pt</property>
             <property name="canShrink">false</property>
             <property name="width">7.99in</property>
             <property name="dataSet">PhoneBookDS</property>

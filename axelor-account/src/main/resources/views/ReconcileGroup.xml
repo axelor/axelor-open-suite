@@ -26,6 +26,7 @@
     </panel>
     <panel name="companyPanel" showTitle="false">
       <field name="company"/>
+      <field name="dateOfLettering" showIf="statusSelect==2" readonly="true"/>
     </panel>
     <panel name="mainPanel" showIf="company">
       <panel-dashlet name="viewReconcilePanel" action="action-reconcile-group-view-reconcile" colSpan="12"/>

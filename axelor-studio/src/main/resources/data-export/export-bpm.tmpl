@@ -16,8 +16,14 @@
 		model -> models += """\n\t\t<model>
 				\n\t\t\t<name>${model.name}</name>
 				\n\t\t\t<title>${model.title}</title>
+                \n\t\t\t<onNew>${model.onNew}</onNew>
 				\n\t\t\t<onSave>${model.onSave}</onSave>
-				\n\t\t\t<onNew>${model.onNew}</onNew>
+                \n\t\t\t<menuTitle>${model.menuTitle}</menuTitle>
+                \n\t\t\t<menuIcon>${model.menuIcon}</menuIcon>
+                \n\t\t\t<menuBackground>${model.menuBackground}</menuBackground>
+                \n\t\t\t<menuOrder>${model.menuOrder}</menuOrder>
+                \n\t\t\t<menuTop>${model.menuTop}</menuTop>
+                \n\t\t\t<menuParent>${model.menuParent?.id}</menuParent>
 				\n\t\t\t<appBuilder>${model.appBuilder?.code}</appBuilder>
 				\n\t\t</model>"""
 	})
@@ -341,8 +347,7 @@
 						\n\t\t\t<metaActionSet>$metaActions
 						\n\t\t\t</metaActionSet>
 						\n\t\t\t<sequence>${node.sequence}</sequence>
-						\n\t\t\t<startNode>${node.startNode}</startNode>
-						\n\t\t\t<endNode>${node.endNode}</endNode>
+						\n\t\t\t<nodeType>${node.nodeType}</nodeType>
 						\n\t\t\t</node>"""
 				}
 				

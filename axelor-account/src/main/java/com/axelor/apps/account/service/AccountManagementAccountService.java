@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -57,4 +58,14 @@ public interface AccountManagementAccountService extends AccountManagementServic
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
       Product product, Company company);
+
+  /**
+   * Get the product fixed asset category
+   *
+   * @param product
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company);
 }

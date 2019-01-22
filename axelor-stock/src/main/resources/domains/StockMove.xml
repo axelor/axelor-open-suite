@@ -32,7 +32,7 @@
     <one-to-many name="plannedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="plannedStockMove" orderBy="sequence"/>
 
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
-    <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
+    <boolean name="isWithBackorder" title="Manage backorder" default="false"/>
     
     <string name="trackingNumber" title="Tracking Number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>

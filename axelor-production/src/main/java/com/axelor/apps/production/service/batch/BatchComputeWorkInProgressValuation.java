@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,6 +38,8 @@ import java.util.Map;
 public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
   private CostSheetService costSheetService;
+
+  protected static final int FETCH_LIMIT = 1;
 
   @Inject
   public BatchComputeWorkInProgressValuation(CostSheetService costSheetService) {
@@ -71,13 +74,15 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
-    manufOrderList =
-        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues).fetch();
+    Query<ManufOrder> manufOrderQuery =
+        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues);
 
-    for (ManufOrder manufOrder : manufOrderList) {
+    int offset = 0;
+
+    while (!(manufOrderList = manufOrderQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       try {
         costSheetService.computeCostPrice(
-            manufOrder,
+            manufOrderList.get(0),
             CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
             productionBatch.getValuationDate());
         incrementDone();
@@ -85,6 +90,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
         incrementAnomaly();
         TraceBackService.trace(e, IExceptionMessage.MANUF_ORDER_NO_GENERATION, batch.getId());
       }
+      offset++;
     }
   }
 

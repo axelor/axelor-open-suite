@@ -35,6 +35,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,6 +185,31 @@ public class BillOfMaterialController {
       billOfMaterialService.setBillOfMaterialAsDefault(billOfMaterial);
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void computeName(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+
+    if (billOfMaterial.getName() == null) {
+      response.setValue("name", billOfMaterialService.computeName(billOfMaterial));
+    }
+  }
+
+  public void addRawMaterials(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      @SuppressWarnings("unchecked")
+      ArrayList<LinkedHashMap<String, Object>> rawMaterials =
+          (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
+
+      if (rawMaterials != null && !rawMaterials.isEmpty()) {
+        billOfMaterialService.addRawMaterials(billOfMaterial.getId(), rawMaterials);
+
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

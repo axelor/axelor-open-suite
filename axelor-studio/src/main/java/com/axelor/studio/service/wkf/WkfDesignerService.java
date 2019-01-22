@@ -120,8 +120,8 @@ public class WkfDesignerService {
         }
         node.setSequence(nodeCount);
         nodeCount += 10;
-        if (elementName.equals("startEvent")) node.setStartNode(true);
-        else if (elementName.equals("endEvent")) node.setEndNode(true);
+        if (elementName.equals("startEvent")) node.setNodeType(WkfNodeRepository.START_NODE);
+        else if (elementName.equals("endEvent")) node.setNodeType(WkfNodeRepository.END_NODE);
       } else {
         node.setName(element.getAttribute("name"));
         nodeMap.remove(node.getXmlId());
