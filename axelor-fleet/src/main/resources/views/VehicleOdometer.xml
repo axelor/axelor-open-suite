@@ -14,7 +14,7 @@
        <panel name="mainPanel">
        	   <field name="name"/>
      	   <field name="date" />
-	       <field name="vehicle"/>
+	       <field name="vehicle" required="true"/>
 	       <field name="value" />
 	       <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
 	   </panel>

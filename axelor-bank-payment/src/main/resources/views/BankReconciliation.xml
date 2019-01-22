@@ -85,7 +85,7 @@
    
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
        <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
-       <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
+       <field name="toDate" expr="eval: LocalDate.parse(todayDate).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
    </action-record>
      
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
