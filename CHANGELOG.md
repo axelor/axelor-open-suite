@@ -20,6 +20,7 @@
 - APP : when click on "Configure" App, open view in edit mode.
 - FIXED ASSET : Disable canEdit for fields in form view
 - CONTRACT MODEL : set default company in contract-template-form
+- PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
