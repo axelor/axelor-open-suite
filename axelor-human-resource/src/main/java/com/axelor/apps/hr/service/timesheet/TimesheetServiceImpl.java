@@ -57,6 +57,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -125,29 +126,11 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
-
-    this.validToDate(timesheet);
+    this.fillToDate(timesheet);
+    this.validateDates(timesheet);
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
     timesheet.setSentDate(appHumanResourceService.getTodayDate());
-
-    if (timesheet.getToDate() == null) {
-      List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-      if (timesheetLineList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
-      }
-      LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
-      for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
-        LocalDate timesheetLineDate = timesheetLine.getDate();
-        if (timesheetLineDate != null && timesheetLineDate.compareTo(timesheetLineLastDate) > 0) {
-          timesheetLineLastDate = timesheetLine.getDate();
-        }
-      }
-
-      timesheet.setToDate(timesheetLineLastDate);
-    }
   }
 
   @Override
@@ -609,8 +592,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       }
     }
 
-    String description = user.getFullName(),
-        productName = product.getName() + " " + "(" + date + ")";
+    String description = user.getFullName();
+    String productName = product.getName() + " " + "(" + date + ")";
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -728,35 +711,109 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
   }
 
-  public void validToDate(Timesheet timesheet) throws AxelorException {
+  /**
+   * Checks validity of dates related to the timesheet.
+   *
+   * @param timesheet
+   * @throws AxelorException if
+   *     <ul>
+   *       <li>fromDate of the timesheet is null
+   *       <li>toDate of the timesheet is null
+   *       <li>timesheetLineList of the timesheet is null or empty
+   *       <li>date of a timesheet line is null
+   *       <li>date of a timesheet line is before fromDate or after toDate of the timesheet
+   *     </ul>
+   */
+  protected void validateDates(Timesheet timesheet) throws AxelorException {
 
     List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-    List<Integer> listId = new ArrayList<>();
-    int count = 0;
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
 
-    if (timesheet.getFromDate() == null) {
+    if (fromDate == null) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
-    } else if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        count++;
-        if (timesheetLine.getDate() != null
-            && ((timesheet.getToDate() != null
-                    && (timesheetLine.getDate().isAfter(timesheet.getToDate())
-                        || (timesheetLine.getDate().isBefore(timesheet.getFromDate()))))
-                || (timesheetLine.getDate().isBefore(timesheet.getFromDate())))) {
-          listId.add(count);
-        }
-      }
-    }
-    if (!listId.isEmpty()) {
+
+    } else if (toDate == null) {
       throw new AxelorException(
           timesheet,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
-          I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
-          Joiner.on(",").join(listId));
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.TIMESHEET_NULL_TO_DATE));
+
+    } else if (ObjectUtils.isEmpty(timesheetLineList)) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
+
+    } else {
+      List<Integer> timesheetLineIndexes = new ArrayList<>();
+
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        LocalDate timesheetLineDate = timesheetLine.getDate();
+        if (timesheetLineDate == null) {
+          throw new AxelorException(
+              timesheetLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+              timesheetLineList.indexOf(timesheetLine) + 1);
+        }
+        if (timesheetLineDate.isAfter(toDate) || timesheetLineDate.isBefore(fromDate)) {
+          timesheetLineIndexes.add(timesheetLineList.indexOf(timesheetLine) + 1);
+        }
+      }
+
+      if (!timesheetLineIndexes.isEmpty()) {
+        throw new AxelorException(
+            timesheet,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
+            Joiner.on(",").join(timesheetLineIndexes));
+      }
+    }
+  }
+
+  /**
+   * If the toDate field of the timesheet is empty, fill it with the last timesheet line date.
+   *
+   * @param timesheet
+   * @throws AxelorException
+   */
+  protected void fillToDate(Timesheet timesheet) throws AxelorException {
+    if (timesheet.getToDate() == null) {
+
+      List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+      if (timesheetLineList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
+      }
+
+      LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
+      if (timesheetLineLastDate == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+            1);
+      }
+
+      for (TimesheetLine timesheetLine : timesheetLineList.subList(1, timesheetLineList.size())) {
+        LocalDate timesheetLineDate = timesheetLine.getDate();
+        if (timesheetLineDate == null) {
+          throw new AxelorException(
+              timesheetLine,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+              timesheetLineList.indexOf(timesheetLine) + 1);
+        }
+        if (timesheetLineDate.isAfter(timesheetLineLastDate)) {
+          timesheetLineLastDate = timesheetLineDate;
+        }
+      }
+
+      timesheet.setToDate(timesheetLineLastDate);
     }
   }
 

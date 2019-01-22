@@ -22,6 +22,7 @@
 - CONTRACT MODEL : set default company in contract-template-form
 - PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
 - Sale Order Line: allow edition of partially invoiced line.
+- Timesheet: Improve process to check validity of dates.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
