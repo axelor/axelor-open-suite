@@ -39,6 +39,7 @@
 - TeamTask : Assign default value to fields and change in track of object.
 - MANUF. APP : new boolean manageCostSheetGroup
 - Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root 
+- Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
