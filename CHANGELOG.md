@@ -5,6 +5,7 @@
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
 - SALEORDER : grid view replace creationDate with confirmationDateTime
+- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
