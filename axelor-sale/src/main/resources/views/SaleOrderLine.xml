@@ -35,6 +35,7 @@
 	    <field name="price" x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
    		<field name="estimatedDelivDate"/>
+   		<field name="saleOrder.confirmationDateTime"/>
 	</grid>
     
     <grid name="sale-order-line-invoice-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
