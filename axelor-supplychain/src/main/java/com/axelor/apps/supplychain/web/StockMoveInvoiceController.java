@@ -167,6 +167,8 @@ public class StockMoveInvoiceController {
                         .add("grid", "invoice-grid")
                         .add("form", "invoice-form")
                         .param("forceEdit", "true")
+                        .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                        .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .map()));
       }
@@ -236,6 +238,8 @@ public class StockMoveInvoiceController {
                       .add("form", "invoice-form")
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
+                      .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                      .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                       .map()));
       response.setCanClose(true);
     } catch (Exception e) {
@@ -317,6 +321,8 @@ public class StockMoveInvoiceController {
                         .add("form", "invoice-form")
                         .param("forceEdit", "true")
                         .context("_showRecord", String.valueOf(inv.getId()))
+                        .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                        .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                         .map()));
       }
     } catch (Exception e) {
@@ -381,6 +387,8 @@ public class StockMoveInvoiceController {
                       .add("form", "invoice-form")
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
+                      .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                      .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                       .map()));
       response.setCanClose(true);
     } catch (Exception e) {
