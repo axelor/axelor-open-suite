@@ -193,9 +193,12 @@
 
             <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
-
-            <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
-            <field name="realDate" colSpan="3"/>
+			
+			<panel name="datesPanel" colSpan="6">
+				<field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="4"/>
+	            <field name="realDate" colSpan="4"/>
+	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+			</panel>
 
             <panel name="addressPanel" stacked="true">
                 <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
@@ -310,7 +313,33 @@
 	    	<mail-followers/>
 	  	</panel-mail>
     </form>
-    
+
+	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
+		<panel name="mainPanel" colSpan="12">
+			<field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
+				<viewer depends="typeSelect,fromStockLocation.typeSelect">
+					<![CDATA[
+            <h5 class="text-left">
+              <span ng-show="record.typeSelect == 2 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 1)" x-translate>Do you want to generate backorder for not delivered quantities?</span>
+              <span ng-show="record.typeSelect == 3 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 3)" x-translate>Do you want to generate backorder for not received quantities?</span>
+            </h5>
+          ]]>
+				</viewer>
+			</field>
+
+      <button name="yesBtn" title="Yes" onClick="action-stock-move-popup-backorder-record-set-backorder,save,action-stock-move-method-realize,close" icon="fa-check" colOffset="3" colSpan="3"/>
+      <button name="noBtn" title="No" onClick="action-stock-move-method-realize,close" icon="fa-times" css="btn-danger" colSpan="3"/>
+
+      <field name="typeSelect" hidden="true"/>
+      <field name="fromStockLocation" hidden="true"/>
+      <field name="isWithBackorder" hidden="true"/>
+		</panel>
+	</form>
+
+	<action-record name="action-stock-move-popup-backorder-record-set-backorder" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isWithBackorder" expr="true"/>
+	</action-record>
+
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
@@ -417,9 +446,14 @@
 	<action-group name="action-group-stock-stockmove-realize-click">
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
-    	<action name="action-stock-move-method-realize"/>
+    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
+
+  <action-method name="action-stock-move-method-manage-backorder">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="manageBackorder"/>
+  </action-method>
 
   	<action-group name="action-group-stock-stockmove-draft-click">
 	  	<action name="save"/>
