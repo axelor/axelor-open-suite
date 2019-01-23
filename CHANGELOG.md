@@ -6,6 +6,7 @@
 - FACTOR : new menu in accounting
 - SALEORDER : grid view replace creationDate with confirmationDateTime
 - STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
