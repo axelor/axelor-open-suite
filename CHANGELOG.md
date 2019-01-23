@@ -29,6 +29,7 @@
 - Added dummy fields to show allocated and total stocks in SaleOrderLine
 - MOVE : Tax management - massUpdate
 - Account Chart : upload metaFile from data-init.
+- MOVE : Disable canEdit on journal
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
