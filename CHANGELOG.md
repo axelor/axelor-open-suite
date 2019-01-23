@@ -32,6 +32,7 @@
 - Account Chart : upload metaFile from data-init.
 - MOVE : Disable canEdit on journal
 - STOCKRULE : Remove canEdit on stockLocation.
+- PRODPROCESS : add attribute massUpdate in field name.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
