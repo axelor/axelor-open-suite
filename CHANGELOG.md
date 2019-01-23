@@ -27,6 +27,7 @@
 - Sale Order Line: allow edition of partially invoiced line.
 - Added dummy fields to show allocated and total stocks in SaleOrderLine
 - MOVE : Tax management - massUpdate
+- Account Chart : upload metaFile from data-init.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
