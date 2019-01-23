@@ -192,9 +192,12 @@
 
             <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
-
-            <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
-            <field name="realDate" colSpan="3"/>
+			
+			<panel name="datesPanel" colSpan="6">
+				<field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="4"/>
+	            <field name="realDate" colSpan="4"/>
+	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+			</panel>
 
             <panel name="addressPanel" stacked="true">
                 <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
