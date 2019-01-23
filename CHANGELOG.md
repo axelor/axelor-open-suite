@@ -5,6 +5,8 @@
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
 - SALEORDER : grid view replace creationDate with confirmationDateTime
+- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
@@ -25,6 +27,9 @@
 - PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
 - Sale Order Line: allow edition of partially invoiced line.
 - Added dummy fields to show allocated and total stocks in SaleOrderLine
+- MOVE : Tax management - massUpdate
+- Account Chart : upload metaFile from data-init.
+- MOVE : Disable canEdit on journal
 - STOCKRULE : Remove canEdit on stockLocation.
 
 ## Bug Fixes
