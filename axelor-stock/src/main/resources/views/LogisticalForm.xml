@@ -4,6 +4,7 @@
 
     <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-grid"
         orderBy="-deliveryNumber,-collectionDate">
+        <field name="tracking" />
         <field name="deliveryNumber" />
         <field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" />
         <field name="deliverToCustomerPartner" form-view="partner-customer-form" grid-view="partner-customer-grid"
