@@ -107,6 +107,7 @@ public class ModuleExportJsonModelService {
 
   public void addJsonModels(String modulePrefix, ZipOutputStream zipOut, CSVConfig csvConfig)
       throws IOException {
+
     List<MetaJsonModel> jsonModels = metaJsonModelRepo.all().filter("self.isReal = false").fetch();
 
     if (jsonModels.isEmpty()) {
@@ -242,5 +243,51 @@ public class ModuleExportJsonModelService {
     csvConfig.getInputs().add(input);
 
     moduleExportDataInitService.addCsv(zipOut, fileName, JSON_FIELD_HEADER, data);
+  }
+
+  public void addJsonModelsFromExcel(
+      String modulePrefix,
+      List<String[]> jsonModelData,
+      ZipOutputStream zipOut,
+      CSVConfig csvConfig)
+      throws IOException {
+
+    if (!jsonModelData.isEmpty()) {
+      String fileName = modulePrefix + MetaJsonModel.class.getSimpleName() + ".csv";
+      CSVInput input =
+          moduleExportDataInitService.createCSVInput(
+              fileName, MetaJsonModel.class.getName(), null, "self.name = :name");
+      csvConfig.getInputs().add(input);
+
+      moduleExportDataInitService.addCsv(zipOut, fileName, JSON_HEADER, jsonModelData);
+    }
+  }
+
+  public void addJsonFieldsFromExcel(
+      String module, List<String[]> jsonFieldData, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
+
+    String fileName =
+        moduleExportDataInitService.getModulePrefix(module)
+            + MetaJsonField.class.getSimpleName()
+            + ".csv";
+
+    CSVInput input =
+        moduleExportDataInitService.createCSVInput(
+            fileName,
+            MetaJsonField.class.getName(),
+            null,
+            "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
+    CSVBind bind =
+        moduleExportDataInitService.createCSVBind(
+            "roleNames", "roles", "self.name in :roleNames", "roleNames.split('|') as List", true);
+    input.getBindings().add(bind);
+    bind =
+        moduleExportDataInitService.createCSVBind(
+            "jsonModelName", "jsonModel", "self.name = :jsonModelName", null, true);
+    input.getBindings().add(bind);
+    csvConfig.getInputs().add(input);
+
+    moduleExportDataInitService.addCsv(zipOut, fileName, JSON_FIELD_HEADER, jsonFieldData);
   }
 }

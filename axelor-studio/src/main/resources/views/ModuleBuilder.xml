@@ -16,9 +16,10 @@
 		</toolbar>
   		<panel>
       		<field name="name" pattern="axelor(-[a-z]+)+$" />
-      		<field name="metaFile" widget="binary-link" onChange="action-module-builder-record-meta-file-change"/>
+      		<field name="fileTypeSelect"/>
+      		<field name="metaFile" widget="binary-link" onChange="action-module-builder-record-meta-file-change" colSpan="12"/>
       		<button name="exportModule" title="Export module" onClick="save,action-module-builder-method-export-module,save"/>
-      		<button showIf="metaFile != null" name="importModule" title="Import module" onClick="save,action-module-builder-method-import-module"/>
+      		<button name="importModule" title="Import module" onClick="save,action-module-builder-method-import-module" showIf="metaFile != null"/>
       	</panel>
   	</form>
   	

@@ -22,7 +22,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.ObjectViews;
+import com.google.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class ModelBuilderService {
   private static final String REMOTE_SCHEMA = "domain-models_" + ObjectViews.VERSION + ".xsd";
 
   private static final String PACKAGE_PREFIX = "com.axelor.apps";
+
+  @Inject private MetaModelRepository metaModelRepo;
 
   public String build(MetaJsonModel model, String module) throws AxelorException {
 
@@ -97,6 +101,35 @@ public class ModelBuilderService {
     return prepareXML(builder.toString());
   }
 
+  public String buildFromExcel(String module, String model, StringBuilder fieldBuilder) {
+
+    if (module == null) {
+      return null;
+    }
+
+    String fieldsTxt = fieldBuilder.toString();
+    if (fieldsTxt.isEmpty()) {
+      return null;
+    }
+
+    String packageName = getPackageName(module);
+    String modelName = model;
+
+    MetaModel metaModel = metaModelRepo.findByName(model);
+    if (metaModel != null) {
+      packageName = metaModel.getPackageName();
+      modelName = metaModel.getName();
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder.append("\t<module name=\"" + module + "\" package=\"" + packageName + "\"/>\n\n");
+    builder.append("\t<entity name=\"" + modelName + "\">\n");
+    builder.append(fieldsTxt);
+    builder.append("\t</entity>\n");
+
+    return prepareXML(builder.toString());
+  }
+
   private String createFields(List<MetaJsonField> fields, String module) throws AxelorException {
 
     sortJsonFields(fields);
@@ -122,6 +155,12 @@ public class ModelBuilderService {
       if (field.getSelection() != null) {
         builder.append(" selection=\"" + field.getSelection() + "\"");
       }
+      if (field.getRequired()) {
+        builder.append(" required=\"" + field.getRequired() + "\"");
+      }
+      if (field.getReadonly()) {
+        builder.append(" readonly=\"" + field.getReadonly() + "\"");
+      }
       builder.append(" />");
       fieldBuilder.append("\t\t");
       fieldBuilder.append(builder.toString());
@@ -131,7 +170,7 @@ public class ModelBuilderService {
     return fieldBuilder.toString();
   }
 
-  private String getType(String type) {
+  public String getType(String type) {
 
     switch (type) {
       case "button":

@@ -62,7 +62,6 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,12 +71,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ModuleExportService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static final String DOMAIN_DIR = "src/main/resources/domains/";
 
@@ -158,7 +153,7 @@ public class ModuleExportService {
     return metaFile;
   }
 
-  private void addBuildGradle(String module, ZipOutputStream zipOut) throws IOException {
+  public void addBuildGradle(String module, ZipOutputStream zipOut) throws IOException {
 
     StringBuilder builder = new StringBuilder();
     builder.append("apply plugin: \"com.axelor.app-module\"\n\n");
@@ -240,7 +235,7 @@ public class ModuleExportService {
     }
   }
 
-  private void updateViewMap(String model, Map<String, ObjectViews> viewMap, AbstractView view) {
+  public void updateViewMap(String model, Map<String, ObjectViews> viewMap, AbstractView view) {
 
     if (view == null) {
       return;
@@ -314,7 +309,7 @@ public class ModuleExportService {
     }
   }
 
-  private void addMenu(
+  public void addMenu(
       String module, String simpleModel, MetaMenu metaMenu, Map<String, ObjectViews> viewMap)
       throws JAXBException {
 
