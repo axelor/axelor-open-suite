@@ -25,6 +25,7 @@
 - PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
 - Sale Order Line: allow edition of partially invoiced line.
 - Added dummy fields to show allocated and total stocks in SaleOrderLine
+- STOCKRULE : Remove canEdit on stockLocation.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
