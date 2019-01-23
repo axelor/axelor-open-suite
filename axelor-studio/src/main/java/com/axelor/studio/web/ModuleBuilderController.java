@@ -29,6 +29,12 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ModuleBuilder;
 import com.axelor.studio.db.repo.ModuleBuilderRepository;
 import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.service.excel.exporter.DataWriter;
+import com.axelor.studio.service.excel.exporter.ExcelExporterService;
+import com.axelor.studio.service.excel.exporter.ExcelWriter;
+import com.axelor.studio.service.excel.importer.DataReaderService;
+import com.axelor.studio.service.excel.importer.ExcelImporterService;
+import com.axelor.studio.service.excel.importer.ExcelReaderService;
 import com.axelor.studio.service.module.ModuleExportService;
 import com.axelor.studio.service.module.ModuleImportService;
 import com.axelor.studio.service.module.ModuleInstallService;
@@ -46,16 +52,36 @@ public class ModuleBuilderController {
 
   @Inject private ModuleInstallService moduleInstallService;
 
+  @Inject private ExcelExporterService excelExporterService;
+
+  @Inject private ExcelImporterService excelImporterService;
+
   @Inject private ModuleBuilderRepository moduleBuilderRepo;
 
   public void exportModule(ActionRequest request, ActionResponse response) {
-
     try {
       ModuleBuilder moduleBuilder = request.getContext().asType(ModuleBuilder.class);
       moduleBuilder = moduleBuilderRepo.find(moduleBuilder.getId());
-      MetaFile metaFile =
-          moduleExportService.export(moduleBuilder.getName(), moduleBuilder.getMetaFile());
-      response.setValue("metaFile", metaFile);
+      MetaFile exportFile = null;
+
+      if (moduleBuilder.getFileTypeSelect().equals(ModuleBuilderRepository.FILE_TYPE_ZIP)) {
+
+        exportFile =
+            moduleExportService.export(moduleBuilder.getName(), moduleBuilder.getMetaFile());
+
+      } else if (moduleBuilder
+          .getFileTypeSelect()
+          .equals(ModuleBuilderRepository.FILE_TYPE_EXCEL)) {
+
+        DataWriter writer = new ExcelWriter();
+        DataReaderService reader = new ExcelReaderService();
+
+        exportFile = excelExporterService.export(moduleBuilder.getName(), writer, reader);
+
+      } else {
+        response.setError("Please select type");
+      }
+      response.setValue("metaFile", exportFile);
     } catch (Exception e) {
       response.setError(e.getMessage());
       TraceBackService.trace(e);
@@ -66,7 +92,22 @@ public class ModuleBuilderController {
     try {
       ModuleBuilder moduleBuilder = request.getContext().asType(ModuleBuilder.class);
       moduleBuilder = moduleBuilderRepo.find(moduleBuilder.getId());
-      moduleImportService.importModule(moduleBuilder);
+
+      if (moduleBuilder.getFileTypeSelect().equals(ModuleBuilderRepository.FILE_TYPE_ZIP)) {
+
+        moduleImportService.importModule(moduleBuilder);
+
+      } else if (moduleBuilder
+          .getFileTypeSelect()
+          .equals(ModuleBuilderRepository.FILE_TYPE_EXCEL)) {
+
+        DataReaderService reader = new ExcelReaderService();
+        MetaFile importFile = moduleBuilder.getMetaFile();
+
+        MetaFile moduleFile =
+            excelImporterService.importExcel(moduleBuilder.getName(), reader, importFile);
+        response.setValue("metaFile", moduleFile);
+      }
       response.setFlash(I18n.get(IExceptionMessage.MODULE_IMPORTED));
     } catch (Exception e) {
       response.setError(e.getMessage());
