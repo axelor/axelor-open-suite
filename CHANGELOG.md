@@ -33,6 +33,7 @@
 - MOVE : Disable canEdit on journal
 - STOCKRULE : Remove canEdit on stockLocation.
 - PRODPROCESS : add attribute massUpdate in field name.
+- LOGISCTICAL FORM : add tracking field in grid view.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
