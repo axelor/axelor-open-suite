@@ -40,6 +40,7 @@
 - DEMA DATA : fix display only english and french at Import selection
 - Base : Resolve Email PDF printing issue.
 - Stock Move mass invoicing: correct context on generated invoice.
+- Studio: Fix translations of 'order' in MenuBuilder.
 
 ## [5.1.1] - 2019-01-18
 ## Features
