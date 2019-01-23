@@ -88,6 +88,26 @@ public class ModuleExportDataInitService {
   //    }
   //  }
 
+  public void exportExcelDataInit(
+      String module,
+      List<String[]> jsonFieldData,
+      List<String[]> jsonModelData,
+      ZipOutputStream zipOut)
+      throws IOException {
+
+    String modulePrefix = getModulePrefix(module);
+
+    CSVConfig csvConfig = new CSVConfig();
+    csvConfig.setInputs(new ArrayList<>());
+
+    Beans.get(ModuleExportJsonModelService.class)
+        .addJsonModelsFromExcel(modulePrefix, jsonModelData, zipOut, csvConfig);
+    Beans.get(ModuleExportJsonModelService.class)
+        .addJsonFieldsFromExcel(module, jsonFieldData, zipOut, csvConfig);
+
+    addInputConfig(csvConfig, zipOut);
+  }
+
   public CSVInput createCSVInput(String fileName, String typeName, String callable, String search) {
 
     CSVInput input = new CSVInput();

@@ -90,7 +90,7 @@ public class ModuleImportService {
     zipInputStream.close();
   }
 
-  private void validateFile(File file) throws AxelorException, ZipException, IOException {
+  public void validateFile(File file) throws AxelorException, ZipException, IOException {
 
     String extension = FilenameUtils.getExtension(file.getName());
     if (extension == null || !extension.equals("zip")) {
@@ -143,7 +143,7 @@ public class ModuleImportService {
         I18n.get(IExceptionMessage.NO_SOURCE_DIR));
   }
 
-  private File getModuleDir() throws AxelorException {
+  public File getModuleDir() throws AxelorException {
 
     File moduleDir = new File(getSourceDir(), "modules");
 

@@ -41,9 +41,19 @@ public interface IExceptionMessage {
   /** No module related views or models to export * */
   static final String NO_MODULE_DATA = /*$$(*/ "No module related views or model found" /*)*/;
 
+  /** Input is not exist * */
+  static final String NO_INPUT_FILE = /*$$(*/ "Input file not exist" /*)*/;
+
+  /** Input is not exist * */
+  static final String NOT_CUSTOM_MODEL = /*$$(*/ "'%s' model is not a custom model" /*)*/;
+
   /** Invalid zip * */
   static final String INVALID_ZIP = /*$$(*/
       "Uploaded file is not a zip file, please upload only zip file" /*)*/;
+
+  /** Invalid zip * */
+  static final String INVALID_EXCEL = /*$$(*/
+      "Uploaded file is not a excel file, please upload only excel file" /*)*/;
 
   /** Invalid module zip * */
   static final String INVALID_MODULE_ZIP = /*$$(*/

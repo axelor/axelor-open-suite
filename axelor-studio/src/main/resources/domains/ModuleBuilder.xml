@@ -8,6 +8,15 @@
 	<entity name="ModuleBuilder" cachable="true">
 	    <string name="name" title="Name" required="true"/>
 	    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File" />
+	    <string name="fileTypeSelect" title="Type" selection="studio.module.builder.file.type.select" required="true"/>
+	    
+	    <extra-code><![CDATA[
+			    
+	    	public static final String FILE_TYPE_ZIP = "zip";
+	    	public static final String FILE_TYPE_EXCEL = "excel";
+	    	
+	    ]]></extra-code>
+	    
 	</entity>
 
 </domain-models>

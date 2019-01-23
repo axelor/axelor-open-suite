@@ -135,7 +135,7 @@ public class ActionBuilderService {
     return actions;
   }
 
-  private void addActions(String module, String actionNames, List<Action> actions)
+  public void addActions(String module, String actionNames, List<Action> actions)
       throws JAXBException {
 
     if (actionNames == null) {
