@@ -99,6 +99,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
+        <field name="supplierShipmentRef"/>
         <field name="origin"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -209,7 +210,16 @@
             </panel>
             
             <field name="filterOnAvailableProducts" onChange="action-stock-move-method-update-stock-move-line"/>
-            
+			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3">
+				<panel name="SupplierShipmentDatePanel" itemSpan="12">
+					<field name="supplierShipmentDate" />
+					<label css="label-danger" title="Required" showIf="!supplierShipmentDate &amp;&amp; statusSelect == 3"/>
+				</panel>
+				<panel name="SupplierShipmentRefPanel" itemSpan="12">
+					<field name="supplierShipmentRef"/>
+					<label css="label-danger" title="Required" showIf="!supplierShipmentRef  &amp;&amp; statusSelect == 3"/>
+				</panel>
+			</panel>
             <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
                 <viewer>
@@ -711,6 +721,5 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
-		
 
 </object-views>

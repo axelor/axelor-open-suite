@@ -4,7 +4,7 @@
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
-
+- STOCK : add 2 field of supplier shipment informations (date and ref) and update views.
 ## Improvements
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.

@@ -15,6 +15,9 @@
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
 
+	<date name="supplierShipmentDate" title="Supplier Shipment Date"/>
+	<string name="supplierShipmentRef" title="Supplier Shipment Ref"/>
+
     <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
     <integer name="availableStatusSelect" title="Available status" transient="true" selection="stock.stock.move.available.status.select"/>
