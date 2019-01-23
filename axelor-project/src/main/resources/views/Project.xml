@@ -141,7 +141,7 @@
 					colSpan="2" widget="boolean-switch" />
 				<field name="extendsMembersFromParent" hidden="true"
 					showIf="projectTypeSelect == 2" colSpan="3" widget="boolean-switch" />
-				<field name="membersUserSet" showTitle="false" colSpan="12"
+				<field name="membersUserSet" colSpan="12"
 					widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" />
 				<button name="importMemberBtn" title="Import all members"
 					showIf="team != null" readonlyIf="extendsMembersFromParent" colSpan="3"
