@@ -5,6 +5,7 @@
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
 - SALEORDER : grid view replace creationDate with confirmationDateTime
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
