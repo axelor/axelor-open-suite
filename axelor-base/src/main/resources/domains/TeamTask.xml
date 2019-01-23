@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="project" package="com.axelor.team.db"/>
+
+  <entity name="TeamTask">
+    <many-to-one name="frequency" title="Frequency" ref="com.axelor.apps.base.db.Frequency"/>
+    <many-to-one name="nextTeamTask" title="Next task" ref="com.axelor.team.db.TeamTask" readonly="true"/>
+    <boolean name="isFirst" readonly="true" default="false"/> <!-- if first, on save, it can generate reccurent tasks -->
+    <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
+    <boolean name="hasDateOrFrequencyChanged" readonly="true" default="false"/>
+  </entity>
+
+</domain-models>
