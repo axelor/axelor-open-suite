@@ -30,6 +30,7 @@
 - MOVE : Tax management - massUpdate
 - Account Chart : upload metaFile from data-init.
 - MOVE : Disable canEdit on journal
+- STOCKRULE : Remove canEdit on stockLocation.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
