@@ -37,6 +37,7 @@
 - LOGISCTICAL FORM : add tracking field in grid view.
 - CostSheet : new printing design
 - Allow reversion stock move in mass invoicing.
+- Improve translations in AppBuilder.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
@@ -48,6 +49,7 @@
 - PAYROLL : spelling problem
 - MANUF ORDER : cost sheet with tracking number
 - Studio: Fix translations of 'order' in MenuBuilder.
+- Fix typo of 'incoming' in workflow nodes.
 
 ## [5.1.1] - 2019-01-18
 ## Features
