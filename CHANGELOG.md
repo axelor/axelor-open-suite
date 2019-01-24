@@ -3,8 +3,15 @@
 ## [Unreleased 5.1.2]
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
+- FACTOR : new menu in accounting
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref) and update views.
+- SALEORDER : grid view replace creationDate with confirmationDateTime
+- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- Product Category : Add tree view.
 
 ## Improvements
+- StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
 - BPM - WkfNode : use a RadioSelect with following values: "startNode, taskNode, endNode".
@@ -15,12 +22,31 @@
 - Product Activities : Added Card view.
 - AccountConfig: Allow user to add a new account chart.
 - VEHICLE : Mandatory field
+- FINANCIAL ACCOUNT : Add new boolean 'analyticDistributionRequiredOnMoveLines' to make Analytic fields required on Move Lines.
+- APP : when click on "Configure" App, open view in edit mode.
+- FIXED ASSET : Disable canEdit for fields in form view
+- CONTRACT MODEL : set default company in contract-template-form
+- PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
+- Sale Order Line: allow edition of partially invoiced line.
+- Added dummy fields to show allocated and total stocks in SaleOrderLine
+- MOVE : Tax management - massUpdate
+- Account Chart : upload metaFile from data-init.
+- MOVE : Disable canEdit on journal
+- STOCKRULE : Remove canEdit on stockLocation.
+- PRODPROCESS : add attribute massUpdate in field name.
+- LOGISCTICAL FORM : add tracking field in grid view.
 - CostSheet : new printing design
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
 - STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
-
+- Bank Reconciliation: Default toDate value is now filled.
+- DEMA DATA : fix display only english and french at Import selection
+- Base : Resolve Email PDF printing issue.
+- Stock Move mass invoicing: correct context on generated invoice.
+- PAYROLL : spelling problem
+- MANUF ORDER : cost sheet with tracking number
+- Studio: Fix translations of 'order' in MenuBuilder.
 
 ## [5.1.1] - 2019-01-18
 ## Features

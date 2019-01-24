@@ -97,16 +97,21 @@ public class SaleOrderLineController {
     }
   }
 
-  public void fillAvailableStock(ActionRequest request, ActionResponse response) {
+  public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
 
     if (saleOrder != null) {
       if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
-        response.setValue(
-            "$availableStock",
-            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine));
+        BigDecimal availableStock =
+            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine);
+        BigDecimal allocatedStock =
+            saleOrderLineServiceSupplyChainImpl.getAllocatedStock(saleOrder, saleOrderLine);
+
+        response.setValue("$availableStock", availableStock);
+        response.setValue("$allocatedStock", allocatedStock);
+        response.setValue("$totalStock", availableStock.add(allocatedStock));
       }
     }
   }

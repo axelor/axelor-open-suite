@@ -354,6 +354,7 @@
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !_parent?.inAti"/>
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; _parent?.inAti"/>
 		
+		<attribute name="readonly" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; !account.analyticDistributionAuthorized"/>
 		<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
 		
 	</action-attrs>

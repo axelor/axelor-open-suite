@@ -94,6 +94,7 @@
 	
 	<action-record name="action-prod-process-record-set-default-company" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="company" expr="eval: __user__.getActiveCompany()"/>
+		<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
 	</action-record>
 
     <action-record name="action-prod-process-record-count-number-of-phases" model="com.axelor.apps.production.db.ProdProcess">

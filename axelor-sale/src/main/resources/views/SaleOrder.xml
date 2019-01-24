@@ -52,7 +52,7 @@
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
-		<field name="creationDate" />
+		<field name="confirmationDateTime" />
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
 		<field name="amountInvoiced" hidden="true" aggregate="sum" if="__config__.app.isApp('supplychain')"/>
