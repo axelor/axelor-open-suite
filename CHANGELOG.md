@@ -4,6 +4,7 @@
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref) and update views.
 - SALEORDER : grid view replace creationDate with confirmationDateTime
 - STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
@@ -32,6 +33,8 @@
 - Account Chart : upload metaFile from data-init.
 - MOVE : Disable canEdit on journal
 - STOCKRULE : Remove canEdit on stockLocation.
+- PRODPROCESS : add attribute massUpdate in field name.
+- LOGISCTICAL FORM : add tracking field in grid view.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
@@ -39,6 +42,8 @@
 - Bank Reconciliation: Default toDate value is now filled.
 - DEMA DATA : fix display only english and french at Import selection
 - Base : Resolve Email PDF printing issue.
+- Stock Move mass invoicing: correct context on generated invoice.
+- PAYROLL : spelling problem
 - MANUF ORDER : cost sheet with tracking number
 
 ## [5.1.1] - 2019-01-18
