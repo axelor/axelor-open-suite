@@ -115,7 +115,9 @@
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
-                <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
+                <item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
+                <item title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
+                <item title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
                 <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 							<item title="Print certificate of conformity"
 								action="save,action-method-print-conformity-certificate"
