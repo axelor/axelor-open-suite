@@ -45,6 +45,7 @@
 - Stock Move mass invoicing: correct context on generated invoice.
 - PAYROLL : spelling problem
 - MANUF ORDER : cost sheet with tracking number
+- Studio: Fix translations of 'order' in MenuBuilder.
 
 ## [5.1.1] - 2019-01-18
 ## Features
