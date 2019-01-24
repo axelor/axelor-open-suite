@@ -44,6 +44,7 @@
 - Base : Resolve Email PDF printing issue.
 - Stock Move mass invoicing: correct context on generated invoice.
 - PAYROLL : spelling problem
+- MANUF ORDER : cost sheet with tracking number
 
 ## [5.1.1] - 2019-01-18
 ## Features

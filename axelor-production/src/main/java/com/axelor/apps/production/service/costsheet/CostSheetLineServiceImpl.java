@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,6 +201,24 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
+
+    List<CostSheetLine> costSheetLineList =
+        parentCostSheetLine.getCostSheetLineList() != null
+            ? parentCostSheetLine.getCostSheetLineList()
+            : new ArrayList<CostSheetLine>();
+    for (CostSheetLine costSheetLine : costSheetLineList) {
+      if (product.equals(costSheetLine.getProduct()) && unit.equals(costSheetLine.getUnit())) {
+        BigDecimal qty = costSheetLine.getConsumptionQty().add(consumptionQty);
+        costSheetLine.setConsumptionQty(qty);
+        costSheetLine.setCostPrice(
+            costPrice
+                .add(costSheetLine.getCostPrice())
+                .setScale(
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN));
+        return costSheetLine;
+      }
+    }
 
     return this.createCostSheetLine(
         product.getName(),
