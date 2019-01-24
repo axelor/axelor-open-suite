@@ -19,9 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
@@ -29,8 +26,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public interface StockMoveInvoiceService {
 
@@ -44,36 +39,6 @@ public interface StockMoveInvoiceService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
-
-  Map<String, Object> areFieldsConflictedToGenerateCustInvoice(List<StockMove> stockMoveList)
-      throws AxelorException;
-
-  Map<String, Object> areFieldsConflictedToGenerateSupplierInvoice(List<StockMove> stockMoveList)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(
-      List<StockMove> stockMoveList,
-      PaymentCondition paymentCondition,
-      PaymentMode paymentMode,
-      Partner contactPartner)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  Optional<Invoice> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  Optional<Invoice> createInvoiceFromMultiIncomingStockMove(
-      List<StockMove> stockMoveList,
-      PaymentCondition paymentConditionIn,
-      PaymentMode paymentModeIn,
-      Partner contactPartnerIn)
-      throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 

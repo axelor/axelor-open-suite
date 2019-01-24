@@ -21,9 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -42,17 +40,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
-      StockMoveRepository stockMoveRepo,
-      SaleOrderRepository saleOrderRepository,
-      PurchaseOrderRepository purchaseOrderRepository) {
+      StockMoveRepository stockMoveRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         stockMoveLineServiceSupplychain,
         invoiceRepository,
-        stockMoveRepo,
-        saleOrderRepository,
-        purchaseOrderRepository);
+        stockMoveRepo);
   }
 
   @Override

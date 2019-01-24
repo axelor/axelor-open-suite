@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
+import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -95,8 +96,8 @@ public class StockMoveInvoiceController {
   /**
    * Called from mass invoicing out stock move form view. Call method to check for missing fields.
    * If there are missing fields, show a wizard. Else call {@link
-   * StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the generated
-   * invoice.
+   * StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the
+   * generated invoice.
    *
    * @param request
    * @param response
@@ -117,7 +118,8 @@ public class StockMoveInvoiceController {
       }
 
       Map<String, Object> mapResult =
-          stockMoveInvoiceService.areFieldsConflictedToGenerateCustInvoice(stockMoveList);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .areFieldsConflictedToGenerateCustInvoice(stockMoveList);
       boolean paymentConditionToCheck =
           (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
       boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
@@ -158,7 +160,8 @@ public class StockMoveInvoiceController {
         response.setView(confirmView.map());
       } else {
         Optional<Invoice> invoice =
-            stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(stockMoveList);
+            Beans.get(StockMoveMultiInvoiceService.class)
+                .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
         invoice.ifPresent(
             inv ->
                 response.setView(
@@ -180,7 +183,7 @@ public class StockMoveInvoiceController {
 
   /**
    * Called from mass invoicing in stock move confirm view. Get parameters entered by the user, then
-   * call {@link StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List,
+   * call {@link StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List,
    * PaymentCondition, PaymentMode, Partner)} and show the generated invoice.
    *
    * @param request
@@ -227,8 +230,9 @@ public class StockMoveInvoiceController {
                         (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
       }
       Optional<Invoice> invoice =
-          stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(
-              stockMoveList, paymentCondition, paymentMode, contactPartner);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .createInvoiceFromMultiOutgoingStockMove(
+                  stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
           inv ->
               response.setView(
@@ -250,8 +254,8 @@ public class StockMoveInvoiceController {
   /**
    * Called from mass invoicing out stock move form view. Call method to check for missing fields.
    * If there are missing fields, show a wizard. Else call {@link
-   * StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the generated
-   * invoice.
+   * StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the
+   * generated invoice.
    *
    * @param request
    * @param response
@@ -270,7 +274,8 @@ public class StockMoveInvoiceController {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
       Map<String, Object> mapResult =
-          stockMoveInvoiceService.areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
       boolean paymentConditionToCheck =
           (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
       boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
@@ -311,7 +316,8 @@ public class StockMoveInvoiceController {
         response.setView(confirmView.map());
       } else {
         Optional<Invoice> invoice =
-            stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(stockMoveList);
+            Beans.get(StockMoveMultiInvoiceService.class)
+                .createInvoiceFromMultiIncomingStockMove(stockMoveList);
         invoice.ifPresent(
             inv ->
                 response.setView(
@@ -332,7 +338,7 @@ public class StockMoveInvoiceController {
 
   /**
    * Called from mass invoicing in stock move confirm view. Get parameters entered by the user, then
-   * call {@link StockMoveInvoiceService#createInvoiceFromMultiIncomingStockMove(List,
+   * call {@link StockMoveMultiInvoiceService#createInvoiceFromMultiIncomingStockMove(List,
    * PaymentCondition, PaymentMode, Partner)} and show the generated invoice.
    *
    * @param request
@@ -376,8 +382,9 @@ public class StockMoveInvoiceController {
                         (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
       }
       Optional<Invoice> invoice =
-          stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(
-              stockMoveList, paymentCondition, paymentMode, contactPartner);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .createInvoiceFromMultiIncomingStockMove(
+                  stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
           inv ->
               response.setView(
