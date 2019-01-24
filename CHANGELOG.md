@@ -36,6 +36,7 @@
 - PRODPROCESS : add attribute massUpdate in field name.
 - LOGISCTICAL FORM : add tracking field in grid view.
 - CostSheet : new printing design
+- Allow reversion stock move in mass invoicing.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
