@@ -55,6 +55,7 @@
 	<menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf" title="Product Activities" action="conf.product.activity"/>
 
 	<action-view name="conf.product.activity" title="Product Activities" model="com.axelor.apps.base.db.Product">
+		<view type="cards" name="product-activity-cards"/>
     	<view type="grid" name="product-activity-grid"/>
 	    <view type="form" name="product-activity-form"/>
 	    <domain>self.isActivity = true</domain>

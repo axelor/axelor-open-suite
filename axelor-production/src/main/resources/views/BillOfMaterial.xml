@@ -15,7 +15,7 @@
     </grid>
 
 	<form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
-          onSave="save,action-bill-of-material-record-name,action-bill-of-material-method-validate-prod-process"
+          onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
           onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components"
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
 
@@ -79,6 +79,11 @@
                     </viewer>
   				</field>
 				<panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet" title="Components" colSpan="12" height="15" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid" onChange="action-bill-of-material-record-count-number-of-components"/>
+				<button name="addComponentsEnMasseBtn" title="Add components en masse" onClick="action-bill-of-material-attrs-show-component-panel"/>
+				<panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
+					<button name="addToComponents" title="Add to components" colSpan="3" css="btn-custom" onClick="save,action-bill-of-material-method-add-raw-materials"/>
+					<field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false" canSelect="true" form-view="product-form" grid-view="product-grid"/>
+				</panel>
 			</panel>
 
 			<panel-related name="prodResidualProductListPanel" field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>
@@ -117,7 +122,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial"
 		onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits" 
 		onLoad="action-bill-of-material-attrs-product-def-sub-bom,action-bill-of-material-attrs-price-and-qty-digits"
-		onSave="save,action-bill-of-material-record-name" width="large">
+		onSave="save,action-bill-of-material-method-name" width="large">
 		<panel name="mainPanel">
 			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
@@ -156,6 +161,7 @@
     	<field name="defineSubBillOfMaterial" expr="true"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
     </action-record>
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -171,9 +177,9 @@
     	<field name="unit" expr="eval: product?.unit"/>
     </action-record>
     
-     <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.name + ' - ' + id" if="name == null"/>
-    </action-record>
+    <action-method name="action-bill-of-material-method-name">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeName"/>
+    </action-method>
 
     <action-record name="action-bill-of-material-record-count-number-of-components" model="com.axelor.apps.production.db.BillOfMaterial">
   		<field name="$numberOfComponents" expr="eval: billOfMaterialSet?.size() ?: 0"/>
@@ -210,6 +216,10 @@
     <action-method name="action-bill-of-material-method-set-bill-of-material-as-default-on-product">
         <call class="com.axelor.apps.production.web.BillOfMaterialController" method="setBillOfMaterialAsDefault"/>
     </action-method>
+    
+    <action-method name="action-bill-of-material-method-add-raw-materials">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="addRawMaterials"/>
+    </action-method>
 
     <action-attrs name="action-bill-of-material-attrs-price-and-qty-digits">
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
@@ -218,6 +228,11 @@
     
 	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
         <attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: product.productSubTypeSelect == 3" if="product"/>
+	</action-attrs>
+	
+	<action-attrs name="action-bill-of-material-attrs-show-component-panel">
+		<attribute name="hidden" for="addComponentsEnMassePanel" expr="false"/>
+		<attribute name="hidden" for="addComponentsEnMasseBtn" expr="true"/>
 	</action-attrs>
 	
 	

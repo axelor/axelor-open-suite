@@ -52,7 +52,7 @@
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
-		<field name="creationDate" />
+		<field name="confirmationDateTime" />
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
 		<field name="amountInvoiced" hidden="true" aggregate="sum" if="__config__.app.isApp('supplychain')"/>
@@ -384,7 +384,15 @@
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
 	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid"/>
-	    <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
+	    <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
+        <viewer>
+          <![CDATA[
+            <h5>
+              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
+            </h5>
+          ]]>
+        </viewer>
+      </field>
 	  </panel>
 	  <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	  	<field name="accountedRevenue">
@@ -486,8 +494,16 @@
           </panel>
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
-      	  <field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
-      	  <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
+      	<field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
+      	<field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
+          <viewer>
+            <![CDATA[
+	            <h5>
+	              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
+	            </h5>
+            ]]>
+          </viewer>
+        </field>
       </panel>
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="contentPanel" title="Content">

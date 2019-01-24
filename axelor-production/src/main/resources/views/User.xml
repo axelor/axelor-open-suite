@@ -13,6 +13,13 @@
         </panel>
         <panel-dashlet name="durationOnMOsPanel" title="Duration on MOs" showIf="$user &amp;&amp; $dateFrom &amp;&amp; $dateTo" action="action-production-view-duration-on-mos"/>
     </form>
+	
+     <form id="production-user-form-extension" name="user-form" title="User" model="com.axelor.auth.db.User" extension="true">
+    	<panel name="mainPanel" sidebar="true" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()">
+    		<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location"/>
+    	</panel>
+    </form>
+	
 
     <action-view name="action-production-view-duration-on-mos" title="">
         <view name="chart.duration.on.mos" type="chart"/>
@@ -20,5 +27,9 @@
         <context name="dateFrom" expr="eval: dateFrom"/>
         <context name="dateTo" expr="eval: dateTo"/>
     </action-view>
-
+	
+	<action-attrs name="action-user-attrs-domain-workshop-stock-location">
+		<attribute name="domain" for="workshopStockLocation" expr="eval: activeCompany != null ? &quot; self.company = :activeCompany &quot; : null"/>
+	</action-attrs>
+	
 </object-views>
