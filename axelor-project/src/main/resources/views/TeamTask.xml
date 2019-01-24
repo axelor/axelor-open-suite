@@ -17,9 +17,9 @@
         <button name="timeSpentBtn" title="Enter Time spent" icon="fa-clock-o" onClick="action-team-task-view-time-spent" />
 	</grid>
 	
-	<form title="Task" id="project-team-task-form" name="team-task-form"
-		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
-		onLoad="action-team-task-group-timer-process" width="large">
+	<form name="team-task-form" id="project-team-task-form" title="Task" model="com.axelor.team.db.TeamTask"
+				onNew="action-team-task-group-onnew"
+				onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
 			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
 			<button name="startBtn" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
@@ -31,6 +31,11 @@
 	            <item title="Book resource" action="save,action-task-book-resource"/>
 	        </menu>
 	    </menubar>
+
+		<panel showIf="nextTeamTask">
+			<field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+		</panel>
+
 		<panel name="mainPanel" colSpan="12">
 			<field name="status" colSpan="6" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
 			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="4" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
@@ -83,7 +88,7 @@
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
 				<field name="assignment" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
-				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration" required="true"/>
+				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
 				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
@@ -173,6 +178,15 @@
 				</panel>
 				<field if="__config__.app.getApp('project').isEnableSignature" name="metaFile"  width="120" widget="Image" />
 			</panel>
+
+			<panel name="frequencyPanel" title="Frequency">
+				<field name="frequency" onChange="action-team-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1" canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
+				<field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
+				<field name="isFirst" hidden="true"/>
+				<field name="doUpdateNextTasks" hidden="true"/>
+				<field name="hasDateOrFrequencyChanged" hidden="true"/>
+			</panel>
+
 			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
 				<panel name="actionsPanel" title="Actions">
 					<button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
@@ -290,8 +304,9 @@
 		</template>
 	</kanban>
 	
-	<action-group name="action-team-task-group-onnew">
+	<action-group name="action-team-task-group-onnew" id="action-team-task-group-project-onnew">
 		<action name="action-task-defaults"/>
+		<action name="action-team-task-record-set-default"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-task-record-project-configurations" if="project != null"/>
 		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>

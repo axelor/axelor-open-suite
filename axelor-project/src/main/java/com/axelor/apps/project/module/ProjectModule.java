@@ -18,6 +18,8 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
+import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.project.db.repo.AbstractResourceBookingRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -26,14 +28,13 @@ import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
-import com.axelor.apps.project.service.TeamTaskService;
-import com.axelor.apps.project.service.TeamTaskServiceImpl;
+import com.axelor.apps.project.service.TeamTaskProjectService;
+import com.axelor.apps.project.service.TeamTaskServiceProjectImpl;
 import com.axelor.apps.project.service.TimerTeamTaskService;
 import com.axelor.apps.project.service.TimerTeamTaskServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 import com.axelor.team.db.repo.TeamRepository;
-import com.axelor.team.db.repo.TeamTaskRepository;
 
 public class ProjectModule extends AxelorModule {
 
@@ -41,9 +42,10 @@ public class ProjectModule extends AxelorModule {
   protected void configure() {
     bind(ProjectRepository.class).to(ProjectManagementRepository.class);
     bind(AppProjectService.class).to(AppProjectServiceImpl.class);
-    bind(TeamTaskRepository.class).to(TeamTaskProjectRepository.class);
+    bind(TeamTaskBaseRepository.class).to(TeamTaskProjectRepository.class);
     bind(ProjectService.class).to(ProjectServiceImpl.class);
-    bind(TeamTaskService.class).to(TeamTaskServiceImpl.class);
+    bind(TeamTaskProjectService.class).to(TeamTaskServiceProjectImpl.class);
+    bind(TeamTaskServiceImpl.class).to(TeamTaskServiceProjectImpl.class);
     bind(TeamRepository.class).to(TeamProjectRepository.class);
     bind(TimerTeamTaskService.class).to(TimerTeamTaskServiceImpl.class);
     bind(AbstractResourceBookingRepository.class).to(ResourceBookingRepository.class);

@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.project.db.repo;
 
+import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,7 +28,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TeamTaskProjectRepository extends TeamTaskRepository {
+public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

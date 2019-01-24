@@ -17,22 +17,11 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
-import java.time.LocalDate;
 
-public class TeamTaskServiceImpl implements TeamTaskService {
-
-  @Override
-  public TeamTask create(String subject, Project project, User assignedTo) {
-    TeamTask task = new TeamTask();
-    task.setName(subject);
-    task.setAssignedTo(assignedTo);
-    task.setTaskDate(LocalDate.now());
-    task.setStatus("new");
-    task.setPriority("normal");
-    project.addTeamTaskListItem(task);
-    return task;
-  }
+public interface TeamTaskProjectService extends TeamTaskService {
+  TeamTask create(String subject, Project project, User assignedTo);
 }
