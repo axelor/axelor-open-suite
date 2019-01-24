@@ -35,6 +35,7 @@
 - STOCKRULE : Remove canEdit on stockLocation.
 - PRODPROCESS : add attribute massUpdate in field name.
 - LOGISCTICAL FORM : add tracking field in grid view.
+- CostSheet : new printing design
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
