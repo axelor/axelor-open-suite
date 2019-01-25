@@ -43,6 +43,7 @@
 - SALE ORDER : New label if availabilityRequest = true in linked stock moves
 - PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
 - AccountMangaement : Fix domain for sequence in form view
+- RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
