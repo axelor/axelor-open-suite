@@ -49,14 +49,7 @@ public class TeamTaskServiceImpl implements TeamTaskService {
     TeamTask lastTask = teamTask;
     for (LocalDate date : taskDates) {
       TeamTask newTeamTask = teamTaskRepo.copy(teamTask, false);
-      newTeamTask.setIsFirst(false);
-      newTeamTask.setHasDateOrFrequencyChanged(false);
-      newTeamTask.setDoApplyToAllNextTasks(false);
-      newTeamTask.setFrequency(
-          Beans.get(FrequencyRepository.class).copy(teamTask.getFrequency(), false));
-      newTeamTask.setTaskDate(date);
-      newTeamTask.setTaskDeadline(date);
-      newTeamTask.setNextTeamTask(null);
+      setModuleFields(teamTask, date, newTeamTask);
       teamTaskRepo.save(newTeamTask);
 
       lastTask.setNextTeamTask(newTeamTask);
@@ -65,22 +58,37 @@ public class TeamTaskServiceImpl implements TeamTaskService {
     }
   }
 
+  protected void setModuleFields(TeamTask teamTask, LocalDate date, TeamTask newTeamTask) {
+    newTeamTask.setIsFirst(false);
+    newTeamTask.setHasDateOrFrequencyChanged(false);
+    newTeamTask.setDoApplyToAllNextTasks(false);
+    newTeamTask.setFrequency(
+        Beans.get(FrequencyRepository.class).copy(teamTask.getFrequency(), false));
+    newTeamTask.setTaskDate(date);
+    newTeamTask.setTaskDeadline(date);
+    newTeamTask.setNextTeamTask(null);
+  }
+
   @Override
   @Transactional
   public void updateNextTask(TeamTask teamTask) {
     TeamTask nextTeamTask = teamTask.getNextTeamTask();
     if (nextTeamTask != null) {
-      nextTeamTask.setName(teamTask.getName());
-      nextTeamTask.setTeam(teamTask.getTeam());
-      nextTeamTask.setPriority(teamTask.getPriority());
-      nextTeamTask.setStatus(teamTask.getStatus());
-      nextTeamTask.setTaskDuration(teamTask.getTaskDuration());
-      nextTeamTask.setAssignedTo(teamTask.getAssignedTo());
-      nextTeamTask.setDescription(teamTask.getDescription());
+      updateModuleFields(teamTask, nextTeamTask);
 
       teamTaskRepo.save(nextTeamTask);
       updateNextTask(nextTeamTask);
     }
+  }
+
+  protected void updateModuleFields(TeamTask teamTask, TeamTask nextTeamTask) {
+    nextTeamTask.setName(teamTask.getName());
+    nextTeamTask.setTeam(teamTask.getTeam());
+    nextTeamTask.setPriority(teamTask.getPriority());
+    nextTeamTask.setStatus(teamTask.getStatus());
+    nextTeamTask.setTaskDuration(teamTask.getTaskDuration());
+    nextTeamTask.setAssignedTo(teamTask.getAssignedTo());
+    nextTeamTask.setDescription(teamTask.getDescription());
   }
 
   @Override
