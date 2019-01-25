@@ -67,13 +67,13 @@
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
-                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" prompt="The validation of a move brings irrevocable integration of a move in Moves book"/>
+                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
 				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals,action-move-line-attrs-analytic-distribution-template"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
 			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
 			<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
 				<viewer>
@@ -159,11 +159,16 @@
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-account-move-method-compute-totals"/>
 	</action-group>
-	
-	<action-group name="action-group-account-move-validate-click">
-		<action name="save"/>
-		<action name="action-move-method-validate"/>
-	</action-group>
+
+    <action-group name="action-group-account-move-validate-click">
+      <action name="action-account-validate-prompt"/>
+      <action name="save"/>
+      <action name="action-move-method-validate"/>
+    </action-group>
+
+    <action-validate name="action-account-validate-prompt">
+      <alert message="The validation of a move brings irrevocable integration of a move in Moves book"/>
+    </action-validate>
 
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">

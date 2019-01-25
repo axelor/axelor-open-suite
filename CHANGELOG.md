@@ -47,17 +47,18 @@
 - Changed a button title in product form.
 
 ## Bug Fixes
-- AppBuilder: fix export/import of a MetaJsonModel.
-- STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
-- Bank Reconciliation: Default toDate value is now filled.
-- DEMA DATA : fix display only english and french at Import selection
-- Base : Resolve Email PDF printing issue.
-- Stock Move mass invoicing: correct context on generated invoice.
-- PAYROLL : spelling problem
-- MANUF ORDER : cost sheet with tracking number
-- Studio: Fix translations of 'order' in MenuBuilder.
-- Fix typo of 'incoming' in workflow nodes.
-- TICKET : Fix NPE
+- App builder: export/import of a MetaJsonModel.
+- Stock management: CanEdit false on productSet in Stock Availability.
+- Bank reconciliation: default toDate value is now filled.
+- Demo data: display only English and French at Import selection.
+- Base: Email PDF printing.
+- Stock Move mass invoicing: context on generated invoice.
+- Payroll: spelling problem.
+- Manuf order: cost sheet with tracking number.
+- Studio: translations of 'order' in MenuBuilder.
+- Workflow nodes: mistyped 'incoming'.
+- Ticket: NPE.
+- Move: required analytic distribution template.
 
 ## [5.1.1] - 2019-01-18
 ## Features
