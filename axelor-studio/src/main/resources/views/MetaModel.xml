@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  <form id="studio-meta-model-form" name="meta-model-form" title="Model" model="com.axelor.meta.db.MetaModel" canNew="false" canDelete="false" canCopy="false" canAttach="false">
+	  <panel title="Overview">
+	    <field name="name" readonly="true"/>
+	    <field name="tableName" readonly="true"/>
+	    <field name="packageName" readonly="true"/>
+	    <field name="isReal" />
+	  </panel>
+	  <panel-related field="metaFields" orderBy="id" readonly="true"/>
+   </form>
+  
+</object-views>

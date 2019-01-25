@@ -40,7 +40,7 @@
   	</action-validate>
 	
 	<action-record name="action-module-builder-record-meta-file-change" model="com.axelor.studio.db.ModuleBuilder">
-		<field name="name" expr="eval: metaFile.fileName.replace('.zip','')" if="metaFile != null"/>
+		<field name="name" expr="eval: metaFile.fileName.replace('.zip','')" if="metaFile != null &amp;&amp; metaFile.fileName.endsWith('.zip')"/>
 	</action-record>
 	
 </object-views>
