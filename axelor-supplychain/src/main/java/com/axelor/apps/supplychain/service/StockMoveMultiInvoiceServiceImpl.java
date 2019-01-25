@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -34,16 +35,20 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +70,46 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
+  }
+
+  @Override
+  public Entry<List<Long>, String> generateMultipleInvoices(List<Long> stockMoveIdList) {
+    StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
+    List<Long> invoiceIdList = new ArrayList<>();
+
+    StringBuilder stockMovesInError = new StringBuilder();
+    List<StockMove> stockMoveList;
+    Query<StockMove> stockMoveQuery =
+        stockMoveRepository
+            .all()
+            .filter("self.id IN :stockMoveIdList")
+            .bind("stockMoveIdList", stockMoveIdList);
+    int offset = 0;
+
+    while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+      for (StockMove stockMove : stockMoveList) {
+        offset++;
+        try {
+          Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove);
+          if (invoice != null) {
+            invoiceIdList.add(invoice.getId());
+          }
+        } catch (Exception e) {
+          if (stockMovesInError.length() > 0) {
+            stockMovesInError.append("<br/>");
+          }
+          stockMovesInError.append(
+              String.format(
+                  I18n.get(IExceptionMessage.STOCK_MOVE_GENERATE_INVOICE),
+                  stockMove.getName(),
+                  e.getLocalizedMessage()));
+          break;
+        }
+      }
+      JPA.clear();
+    }
+
+    return new SimpleImmutableEntry<>(invoiceIdList, stockMovesInError.toString());
   }
 
   @Override
@@ -513,28 +558,37 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
-    String message;
 
     for (StockMove stockMove : stockMoveList) {
-      if (stockMove.getInvoice() != null
-          && stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
-        String templateMessage;
-        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-          templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
-        } else {
-          templateMessage = IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS;
-        }
-        message = String.format(I18n.get(templateMessage), stockMove.getName());
+      try {
+        checkIfAlreadyInvoiced(stockMove);
+      } catch (AxelorException e) {
         if (invoiceAlreadyGeneratedMessage.length() > 0) {
           invoiceAlreadyGeneratedMessage.append("<br/>");
         }
-        invoiceAlreadyGeneratedMessage.append(message);
+        invoiceAlreadyGeneratedMessage.append(e.getMessage());
       }
     }
-
     if (invoiceAlreadyGeneratedMessage.length() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, invoiceAlreadyGeneratedMessage.toString());
+    }
+  }
+
+  /** This method will throw an exception if the given stock move is already invoiced. */
+  protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
+    if (stockMove.getInvoice() != null
+        && stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+      String templateMessage;
+      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+        templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
+      } else {
+        templateMessage = IExceptionMessage.INCOMING_STOCK_MOVE_INVOICE_EXISTS;
+      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(templateMessage),
+          stockMove.getName());
     }
   }
 

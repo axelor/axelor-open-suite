@@ -26,9 +26,18 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public interface StockMoveMultiInvoiceService {
+
+  /**
+   * Generate multiple invoices and manage JPA cache from stock moves.
+   *
+   * @param stockMoveIdList a list of stock move ids.
+   * @return an entry with the list of id of generated invoices as key, and error message as key.
+   */
+  Entry<List<Long>, String> generateMultipleInvoices(List<Long> stockMoveIdList);
 
   Map<String, Object> areFieldsConflictedToGenerateCustInvoice(List<StockMove> stockMoveList)
       throws AxelorException;

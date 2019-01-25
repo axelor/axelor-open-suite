@@ -27,9 +27,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -59,6 +61,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   private InvoiceRepository invoiceRepository;
   private StockMoveRepository stockMoveRepo;
+  private SaleOrderRepository saleOrderRepo;
+  private PurchaseOrderRepository purchaseOrderRepo;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -66,12 +70,31 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
-      StockMoveRepository stockMoveRepo) {
+      StockMoveRepository stockMoveRepo,
+      SaleOrderRepository saleOrderRepo,
+      PurchaseOrderRepository purchaseOrderRepo) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.invoiceRepository = invoiceRepository;
     this.stockMoveRepo = stockMoveRepo;
+    this.saleOrderRepo = saleOrderRepo;
+    this.purchaseOrderRepo = purchaseOrderRepo;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public Invoice createInvoice(StockMove stockMove) throws AxelorException {
+
+    Long origin = stockMove.getOriginId();
+
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      return createInvoiceFromSaleOrder(stockMove, saleOrderRepo.find(origin));
+    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      return createInvoiceFromPurchaseOrder(stockMove, purchaseOrderRepo.find(origin));
+    } else {
+      return createInvoiceFromOrderlessStockMove(stockMove);
+    }
   }
 
   @Override
@@ -155,7 +178,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException {
+  public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException {
 
     int stockMoveType = stockMove.getTypeSelect();
     Invoice invoice = stockMove.getInvoice();

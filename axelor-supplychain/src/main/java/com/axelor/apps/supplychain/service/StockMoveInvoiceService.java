@@ -29,6 +29,8 @@ import java.util.List;
 
 public interface StockMoveInvoiceService {
 
+  Invoice createInvoice(StockMove stockMove) throws AxelorException;
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
       throws AxelorException;
@@ -38,7 +40,7 @@ public interface StockMoveInvoiceService {
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
+  public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 
