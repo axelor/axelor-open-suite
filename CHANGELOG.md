@@ -51,6 +51,7 @@
 - MANUF ORDER : cost sheet with tracking number
 - Studio: Fix translations of 'order' in MenuBuilder.
 - Fix typo of 'incoming' in workflow nodes.
+- TICKET : Fix NPE
 
 ## [5.1.1] - 2019-01-18
 ## Features
