@@ -39,6 +39,7 @@
 - Allow reversion stock move in mass invoicing.
 - Improve translations in AppBuilder.
 - INVENTORY : Change report design
+- RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
