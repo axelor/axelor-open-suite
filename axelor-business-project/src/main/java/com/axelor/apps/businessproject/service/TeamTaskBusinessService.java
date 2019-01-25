@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.service.TeamTaskService;
+import com.axelor.apps.project.service.TeamTaskProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TeamTaskBusinessService extends TeamTaskService {
+public interface TeamTaskBusinessService extends TeamTaskProjectService {
 
   TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 
@@ -43,6 +43,6 @@ public interface TeamTaskBusinessService extends TeamTaskService {
   List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TeamTask> teamTaskList, int priority)
       throws AxelorException;
 
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
+  List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
       throws AxelorException;
 }

@@ -20,27 +20,33 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.service.TeamTaskServiceImpl;
+import com.axelor.apps.project.service.TeamTaskServiceProjectImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
+public class TeamTaskBusinessServiceImpl extends TeamTaskServiceProjectImpl
     implements TeamTaskBusinessService {
 
   private PriceListLineRepository priceListLineRepository;
@@ -49,7 +55,10 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
 
   @Inject
   public TeamTaskBusinessServiceImpl(
-      PriceListLineRepository priceListLineRepository, PriceListService priceListService) {
+      TeamTaskRepository teamTaskRepo,
+      PriceListLineRepository priceListLineRepository,
+      PriceListService priceListService) {
+    super(teamTaskRepo);
     this.priceListLineRepository = priceListLineRepository;
     this.priceListService = priceListService;
   }
@@ -220,5 +229,85 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  @Override
+  public void generateTasks(TeamTask teamTask, Frequency frequency) {
+    List<LocalDate> taskDates =
+        Beans.get(FrequencyService.class)
+            .getDates(frequency, teamTask.getTaskDate(), frequency.getEndDate());
+
+    taskDates.removeIf(date -> date.equals(teamTask.getTaskDate()));
+
+    TeamTask lastTask = teamTask;
+    for (LocalDate date : taskDates) {
+      TeamTask newTeamTask = teamTaskRepo.copy(teamTask, false);
+      newTeamTask.setIsFirst(false);
+      newTeamTask.setHasDateOrFrequencyChanged(false);
+      newTeamTask.setDoApplyToAllNextTasks(false);
+      newTeamTask.setFrequency(
+          Beans.get(FrequencyRepository.class).copy(teamTask.getFrequency(), false));
+      newTeamTask.setTaskDate(date);
+      newTeamTask.setTaskDeadline(date);
+      newTeamTask.setNextTeamTask(null);
+
+      // Module 'project' fields
+      newTeamTask.setProgressSelect(0);
+      newTeamTask.setTaskEndDate(date);
+
+      // Module 'business project' fields
+      // none
+
+      teamTaskRepo.save(newTeamTask);
+
+      lastTask.setNextTeamTask(newTeamTask);
+      teamTaskRepo.save(lastTask);
+      lastTask = newTeamTask;
+    }
+  }
+
+  @Override
+  public void updateNextTask(TeamTask teamTask) {
+    TeamTask nextTeamTask = teamTask.getNextTeamTask();
+    if (nextTeamTask != null) {
+      nextTeamTask.setName(teamTask.getName());
+      nextTeamTask.setTeam(teamTask.getTeam());
+      nextTeamTask.setPriority(teamTask.getPriority());
+      nextTeamTask.setStatus(teamTask.getStatus());
+      nextTeamTask.setTaskDuration(teamTask.getTaskDuration());
+      nextTeamTask.setAssignedTo(teamTask.getAssignedTo());
+      nextTeamTask.setDescription(teamTask.getDescription());
+
+      // Module 'project' fields
+      nextTeamTask.setFullName(teamTask.getFullName());
+      nextTeamTask.setProject(teamTask.getProject());
+      nextTeamTask.setProjectCategory(teamTask.getProjectCategory());
+      nextTeamTask.setProgressSelect(0);
+
+      teamTask.getMembersUserSet().forEach(nextTeamTask::addMembersUserSetItem);
+
+      nextTeamTask.setTeam(teamTask.getTeam());
+      nextTeamTask.setParentTask(teamTask.getParentTask());
+      nextTeamTask.setProduct(teamTask.getProduct());
+      nextTeamTask.setUnit(teamTask.getUnit());
+      nextTeamTask.setQuantity(teamTask.getQuantity());
+      nextTeamTask.setUnitPrice(teamTask.getUnitPrice());
+      nextTeamTask.setTaskEndDate(teamTask.getTaskEndDate());
+      nextTeamTask.setBudgetedTime(teamTask.getBudgetedTime());
+      nextTeamTask.setCurrency(teamTask.getCurrency());
+
+      // Module 'business project' fields
+      nextTeamTask.setToInvoice(teamTask.getToInvoice());
+      nextTeamTask.setExTaxTotal(teamTask.getExTaxTotal());
+      nextTeamTask.setDiscountTypeSelect(teamTask.getDiscountTypeSelect());
+      nextTeamTask.setDiscountAmount(teamTask.getDiscountAmount());
+      nextTeamTask.setPriceDiscounted(teamTask.getPriceDiscounted());
+      nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
+      nextTeamTask.setTimeInvoicing(teamTask.getTimeInvoicing());
+      nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
+
+      teamTaskRepo.save(nextTeamTask);
+      updateNextTask(nextTeamTask);
+    }
   }
 }
