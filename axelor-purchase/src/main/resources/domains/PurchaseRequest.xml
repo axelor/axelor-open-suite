@@ -18,7 +18,7 @@
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address" />
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select" default="1"/>
-  	
+  	<many-to-many name="purchaseOrderSet" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase orders"/>
   </entity>
   
 </domain-models>
