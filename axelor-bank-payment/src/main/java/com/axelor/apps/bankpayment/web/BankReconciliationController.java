@@ -52,6 +52,19 @@ public class BankReconciliationController {
     }
   }
 
+  public void loadOtherBankStatement(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliation = bankReconciliationRepo.find(bankReconciliation.getId());
+      bankReconciliation.setIncludeOtherBankStatements(true);
+      bankReconciliationService.loadBankStatement(bankReconciliation, false);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void compute(ActionRequest request, ActionResponse response) {
 
     try {

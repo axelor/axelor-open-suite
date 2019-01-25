@@ -10,6 +10,7 @@
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 - Product Category : Add tree view.
 - MANUF. ORDER : cancel reasons
+- Add button in bank reconciliation form to load other bank statements.
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
