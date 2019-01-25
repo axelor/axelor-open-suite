@@ -40,6 +40,7 @@
 - Improve translations in AppBuilder.
 - INVENTORY : Change report design
 - SALE ORDER : New label if availabilityRequest = true in linked stock moves
+- AccountMangaement : Fix domain for sequence in form view
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
