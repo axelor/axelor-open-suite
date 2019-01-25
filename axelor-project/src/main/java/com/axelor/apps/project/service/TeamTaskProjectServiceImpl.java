@@ -30,11 +30,11 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TeamTaskServiceProjectImpl extends TeamTaskServiceImpl
+public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     implements TeamTaskProjectService {
 
   @Inject
-  public TeamTaskServiceProjectImpl(TeamTaskRepository teamTaskRepo) {
+  public TeamTaskProjectServiceImpl(TeamTaskRepository teamTaskRepo) {
     super(teamTaskRepo);
   }
 

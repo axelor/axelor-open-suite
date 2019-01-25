@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.service.TeamTaskServiceProjectImpl;
+import com.axelor.apps.project.service.TeamTaskProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
@@ -46,15 +46,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TeamTaskBusinessServiceImpl extends TeamTaskServiceProjectImpl
-    implements TeamTaskBusinessService {
+public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceImpl
+    implements TeamTaskBusinessProjectService {
 
   private PriceListLineRepository priceListLineRepository;
 
   private PriceListService priceListService;
 
   @Inject
-  public TeamTaskBusinessServiceImpl(
+  public TeamTaskBusinessProjectServiceImpl(
       TeamTaskRepository teamTaskRepo,
       PriceListLineRepository priceListLineRepository,
       PriceListService priceListService) {

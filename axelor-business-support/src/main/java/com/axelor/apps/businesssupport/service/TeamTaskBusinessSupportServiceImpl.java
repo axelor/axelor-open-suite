@@ -5,7 +5,7 @@ import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 
-public class TeamTaskBusinessSupportServiceImpl extends TeamTaskBusinessServiceImpl {
+public class TeamTaskBusinessSupportServiceImpl extends TeamTaskBusinessProjectServiceImpl {
 
   @Inject
   public TeamTaskBusinessSupportServiceImpl(

@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TeamTaskBusinessService extends TeamTaskProjectService {
+public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
 
   TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo);
 
