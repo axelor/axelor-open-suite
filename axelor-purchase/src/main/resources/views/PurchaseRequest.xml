@@ -69,6 +69,7 @@
 			<field name="unit" colSpan="3" canEdit="false"/>
 			<field name="quantity" colSpan="3" />
 			<field name="price" colSpan="3" />
+			<panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>
 			<field name="$product" hidden="true" />
 		</panel>
 		<panel-tabs name="descriptionPanelTab">
