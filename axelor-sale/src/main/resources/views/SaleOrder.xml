@@ -202,8 +202,21 @@
 		      </h3>
 		    ]]></viewer>
 		  </field>
-	    <panel name="detailsPanel">
-	      <field name="$invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3" css="label-bold bold" colSpan="4">
+	    <panel name="detailsPanel" colSpan="12">
+	      <field name="saleOrderTypeSelect" colSpan="3" css="label-bold bold" showTitle="false" readonlyIf="statusSelect >= 2" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain">
+	        <viewer><![CDATA[
+	          <div>
+	            <div class="span7">
+	              <h5>
+	                <span class="label label-info">
+	                <span ng-show="record.saleOrderTypeSelect == 1" x-translate>Standard</span>
+	                <span ng-show="record.saleOrderTypeSelect == 2" x-translate>Subscription</span>
+	              </h5>
+	            </div>
+	          </div>
+	        ]]></viewer>
+	      </field>
+	      <field name="$invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
 	        <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
 	        <div>
 	        <div class="span7">
@@ -216,7 +229,7 @@
 	      </div>
 	      ]]></viewer>
 	      </field>
-	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" showTitle="false" name="deliveryState" showIf="statusSelect >= 3" css="label-bold bold" colSpan="4">
+	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" showTitle="false" name="deliveryState" showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
 	        <viewer><![CDATA[
 	        <div>
 	        <div class="span7">
@@ -229,14 +242,13 @@
 	      </div>
 	      ]]></viewer>
 	      </field>
-	      <field name="saleOrderTypeSelect" colSpan="4" css="label-bold bold" showTitle="false" readonlyIf="statusSelect >= 2" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain">
+	      <field name="availabilityRequestLabel" colSpan="3" css="label-bold bold" showTitle="false" readonly="true" hidden="true">
 	        <viewer><![CDATA[
 	          <div>
 	            <div class="span7">
 	              <h5>
-	                <span class="label label-info">
-	                <span ng-show="record.saleOrderTypeSelect == 1" x-translate>Standard</span>
-	                <span ng-show="record.saleOrderTypeSelect == 2" x-translate>Subscription</span>
+	                <span class="label label-important">
+	                <span x-translate>Availability Request</span>
 	              </h5>
 	            </div>
 	          </div>
@@ -850,6 +862,7 @@
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
+        <action name="action-sale-order-attrs-availability-request-label"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -859,6 +872,7 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
+		<action name="action-sale-order-attrs-availability-request-label"/>
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -1252,6 +1266,10 @@
 	<action-attrs name="action-sale-order-attrs-external-reference">
 		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
+	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-availability-request-label">
+		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 	</action-attrs>
 
 </object-views>

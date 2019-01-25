@@ -130,12 +130,15 @@ public class ManufOrderController {
   public void cancel(ActionRequest request, ActionResponse response) {
 
     try {
-      Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      Context context = request.getContext();
+      ManufOrder manufOrder = context.asType(ManufOrder.class);
 
-      manufOrderWorkflowService.cancel(manufOrder);
-
-      response.setReload(true);
+      manufOrderWorkflowService.cancel(
+          manufOrderRepo.find(manufOrder.getId()),
+          manufOrder.getCancelReason(),
+          manufOrder.getCancelReasonStr());
+      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

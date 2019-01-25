@@ -29,7 +29,7 @@
         <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
    		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
    		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
@@ -53,7 +53,7 @@
         <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
    		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
    		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
@@ -130,7 +130,7 @@
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
 			<button name="finishBtn" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
 			<button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
-			<button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-method-cancel"/>
+			<button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel"/>
 		</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab" colSpan="4" >
@@ -139,6 +139,10 @@
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
+					<field name="cancelReason" hidden="true"/>
+					<field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
+						<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+					</field>
 				</panel>
 				<panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
@@ -209,6 +213,14 @@
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
 		</panel>
 	</form>
+	
+	<form name="manuf-order-cancel-wizard-form" model="com.axelor.apps.production.db.ManufOrder" title="Cancellation confirmation" >
+		<panel name="mainPanel">
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
+			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
+			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-manuf-order-method-cancel" colOffset="4" colSpan="4"/>
+		</panel>
+    </form>
 
 	<action-view name="action-manuf-order-update-planned-qty-popup-form-view" title="Update planned quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-planned-qty"/>
@@ -228,6 +240,17 @@
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false"/>
 		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-manuf-order-view-cancel" title="Cancellation" model="com.axelor.apps.production.db.ManufOrder">
+	  	<view type="form" name="manuf-order-cancel-wizard-form"/>
+	  	<view-param name="popup" value="reload"/>
+	  	<view-param name="show-toolbar" value="false"/>
+	  	<view-param name="show-confirm" value="false" />
+  	  	<view-param name="popup-save" value="false"/>
+	  	<view-param name="forceEdit" value="true" />
+	  	<context name="_showRecord" expr="eval: __this__.id" />
+        <context name="_xApplicationType" expr="eval: _model"/>
 	</action-view>
 
 	<action-method name="action-manuf-order-method-update-planned-qty">
