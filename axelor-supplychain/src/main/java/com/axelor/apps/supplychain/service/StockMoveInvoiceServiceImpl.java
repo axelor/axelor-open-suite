@@ -501,8 +501,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
-      invoiceLineList.addAll(
-          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList()));
+      List<InvoiceLine> createdInvoiceLines =
+          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList());
+      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+        createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
+      }
+      invoiceLineList.addAll(createdInvoiceLines);
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
@@ -583,8 +587,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
-      invoiceLineList.addAll(
-          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList()));
+      List<InvoiceLine> createdInvoiceLines =
+          this.createInvoiceLines(invoice, stockMoveLocal.getStockMoveLineList());
+      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+        createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
+      }
+      invoiceLineList.addAll(createdInvoiceLines);
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
@@ -1014,5 +1022,24 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
     }
     return resultList;
+  }
+
+  /**
+   * Negate all price fields in invoice line.
+   *
+   * @param invoiceLine
+   */
+  protected void negateInvoiceLinePrice(InvoiceLine invoiceLine) {
+    // price
+    invoiceLine.setPrice(invoiceLine.getPrice().negate());
+    invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
+    invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
+    invoiceLine.setDiscountAmount(invoiceLine.getDiscountAmount().negate());
+
+    // totals
+    invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
+    invoiceLine.setCompanyInTaxTotal(invoiceLine.getCompanyInTaxTotal().negate());
+    invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
+    invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
   }
 }

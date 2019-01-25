@@ -13,16 +13,15 @@
 		</toolbar>
 		<panel name="mainPanel">
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-
-			<field name="accountChart" readonlyIf="hasChartImported" colSpan="8" form-view="account-chart-form" grid-view="account-chart-grid"/>
-			<button name="installTemplateBtn" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" colSpan="4" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+			<spacer/>
+			<field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form" grid-view="account-chart-grid" canNew="true" />
+			<button name="installTemplateBtn" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" icon="fa-import" onClick="action-group-account-config-installchart-click" />
 
 			<field name="hasChartImported"/>
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
-
 		</panel>
 
 		<panel-tabs name="mainPanelTab">

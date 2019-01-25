@@ -32,7 +32,13 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -136,12 +142,12 @@ public class WkfDesignerService {
 
         for (WkfTransition trn : transitions) {
           if (trn.getXmlId().equals(innerText)) {
-            Set<WkfTransition> existIncomings = node.getIncomming();
+            Set<WkfTransition> existIncomings = node.getIncoming();
 
             if (existIncomings == null) existIncomings = new HashSet<>();
 
             existIncomings.add(trn);
-            node.setIncomming(existIncomings);
+            node.setIncoming(existIncomings);
             trn.setTarget(node);
           }
         }
@@ -252,7 +258,7 @@ public class WkfDesignerService {
 
       if (!allRemoveNodes.isEmpty()) {
         for (WkfNode tempNode : allRemoveNodes) {
-          tempNode.getIncomming().clear();
+          tempNode.getIncoming().clear();
           tempNode.getOutgoing().clear();
         }
       }

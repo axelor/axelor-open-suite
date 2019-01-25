@@ -127,6 +127,18 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
+  public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
+    }
+    return stockLocationLine.getReservedQty();
+  }
+
+  @Override
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
 

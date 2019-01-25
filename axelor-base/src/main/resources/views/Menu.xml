@@ -295,6 +295,14 @@
 		<view type="form" name="product-category-form"/>
 	</action-view>
 
+	<menuitem name="referential-conf-product-category-tree" title="Categories tree" 
+        parent="referential-conf" action="referential.conf.product.category.tree" order="171"/>
+    
+    <action-view name="referential.conf.product.category.tree" title="Product category" model="com.axelor.apps.base.db.ProductCategory">
+      <view type="tree" name="product-category-tree"/>
+      <view-param name="forceTitle" value="true"/>
+    </action-view>
+
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
 		title="Product families" action="referential.conf.product.family" order="180"/>
 
