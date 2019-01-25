@@ -9,6 +9,7 @@
 - STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 - Product Category : Add tree view.
+- MANUF. ORDER : cancel reasons
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
@@ -39,6 +40,9 @@
 - Allow reversion stock move in mass invoicing.
 - Improve translations in AppBuilder.
 - INVENTORY : Change report design
+- SALE ORDER : New label if availabilityRequest = true in linked stock moves
+- PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
+- AccountMangaement : Fix domain for sequence in form view
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 
 ## Bug Fixes

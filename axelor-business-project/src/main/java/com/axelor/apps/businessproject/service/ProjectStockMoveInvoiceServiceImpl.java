@@ -43,16 +43,16 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
       StockMoveRepository stockMoveRepo,
-      SaleOrderRepository saleOrderRepository,
-      PurchaseOrderRepository purchaseOrderRepository) {
+      SaleOrderRepository saleOrderRepo,
+      PurchaseOrderRepository purchaseOrderRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         stockMoveLineServiceSupplychain,
         invoiceRepository,
         stockMoveRepo,
-        saleOrderRepository,
-        purchaseOrderRepository);
+        saleOrderRepo,
+        purchaseOrderRepo);
   }
 
   @Override

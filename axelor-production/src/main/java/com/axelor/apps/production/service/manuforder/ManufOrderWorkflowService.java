@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
@@ -37,6 +38,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -109,6 +111,8 @@ public class ManufOrderWorkflowService {
 
     manufOrderStockMoveService.createToProduceStockMove(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
+    manufOrder.setCancelReason(null);
+    manufOrder.setCancelReasonStr(null);
 
     return manufOrderRepo.save(manufOrder);
   }
@@ -274,7 +278,8 @@ public class ManufOrderWorkflowService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void cancel(ManufOrder manufOrder) throws AxelorException {
+  public void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
+      throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
@@ -300,6 +305,12 @@ public class ManufOrderWorkflowService {
     }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
+    manufOrder.setCancelReason(cancelReason);
+    if (Strings.isNullOrEmpty(cancelReasonStr)) {
+      manufOrder.setCancelReasonStr(cancelReason.getName());
+    } else {
+      manufOrder.setCancelReasonStr(cancelReasonStr);
+    }
     manufOrderRepo.save(manufOrder);
   }
 

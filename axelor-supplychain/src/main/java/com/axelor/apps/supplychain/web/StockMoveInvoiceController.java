@@ -20,18 +20,17 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
+import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -43,6 +42,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 @Singleton
@@ -56,21 +56,10 @@ public class StockMoveInvoiceController {
 
     StockMove stockMove = request.getContext().asType(StockMove.class);
     Invoice invoice = null;
-    Long origin = stockMove.getOriginId();
     try {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-      if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        invoice =
-            stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleRepo.find(origin));
-      } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(
-          stockMove.getOriginTypeSelect())) {
-        invoice =
-            stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                stockMove, purchaseRepo.find(origin));
-      } else {
-        invoice = stockMoveInvoiceService.createInvoiceFromStockMove(stockMove);
-      }
+      Beans.get(StockMoveInvoiceService.class).createInvoice(stockMove);
 
       if (invoice != null) {
         // refresh stockMove context
@@ -95,8 +84,8 @@ public class StockMoveInvoiceController {
   /**
    * Called from mass invoicing out stock move form view. Call method to check for missing fields.
    * If there are missing fields, show a wizard. Else call {@link
-   * StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the generated
-   * invoice.
+   * StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the
+   * generated invoice.
    *
    * @param request
    * @param response
@@ -117,7 +106,8 @@ public class StockMoveInvoiceController {
       }
 
       Map<String, Object> mapResult =
-          stockMoveInvoiceService.areFieldsConflictedToGenerateCustInvoice(stockMoveList);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .areFieldsConflictedToGenerateCustInvoice(stockMoveList);
       boolean paymentConditionToCheck =
           (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
       boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
@@ -158,7 +148,8 @@ public class StockMoveInvoiceController {
         response.setView(confirmView.map());
       } else {
         Optional<Invoice> invoice =
-            stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(stockMoveList);
+            Beans.get(StockMoveMultiInvoiceService.class)
+                .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
         invoice.ifPresent(
             inv ->
                 response.setView(
@@ -180,7 +171,7 @@ public class StockMoveInvoiceController {
 
   /**
    * Called from mass invoicing in stock move confirm view. Get parameters entered by the user, then
-   * call {@link StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List,
+   * call {@link StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List,
    * PaymentCondition, PaymentMode, Partner)} and show the generated invoice.
    *
    * @param request
@@ -227,8 +218,9 @@ public class StockMoveInvoiceController {
                         (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
       }
       Optional<Invoice> invoice =
-          stockMoveInvoiceService.createInvoiceFromMultiOutgoingStockMove(
-              stockMoveList, paymentCondition, paymentMode, contactPartner);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .createInvoiceFromMultiOutgoingStockMove(
+                  stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
           inv ->
               response.setView(
@@ -250,8 +242,8 @@ public class StockMoveInvoiceController {
   /**
    * Called from mass invoicing out stock move form view. Call method to check for missing fields.
    * If there are missing fields, show a wizard. Else call {@link
-   * StockMoveInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the generated
-   * invoice.
+   * StockMoveMultiInvoiceService#createInvoiceFromMultiOutgoingStockMove(List)} and show the
+   * generated invoice.
    *
    * @param request
    * @param response
@@ -270,7 +262,8 @@ public class StockMoveInvoiceController {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
       Map<String, Object> mapResult =
-          stockMoveInvoiceService.areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
       boolean paymentConditionToCheck =
           (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
       boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
@@ -311,7 +304,8 @@ public class StockMoveInvoiceController {
         response.setView(confirmView.map());
       } else {
         Optional<Invoice> invoice =
-            stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(stockMoveList);
+            Beans.get(StockMoveMultiInvoiceService.class)
+                .createInvoiceFromMultiIncomingStockMove(stockMoveList);
         invoice.ifPresent(
             inv ->
                 response.setView(
@@ -332,7 +326,7 @@ public class StockMoveInvoiceController {
 
   /**
    * Called from mass invoicing in stock move confirm view. Get parameters entered by the user, then
-   * call {@link StockMoveInvoiceService#createInvoiceFromMultiIncomingStockMove(List,
+   * call {@link StockMoveMultiInvoiceService#createInvoiceFromMultiIncomingStockMove(List,
    * PaymentCondition, PaymentMode, Partner)} and show the generated invoice.
    *
    * @param request
@@ -376,8 +370,9 @@ public class StockMoveInvoiceController {
                         (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
       }
       Optional<Invoice> invoice =
-          stockMoveInvoiceService.createInvoiceFromMultiIncomingStockMove(
-              stockMoveList, paymentCondition, paymentMode, contactPartner);
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .createInvoiceFromMultiIncomingStockMove(
+                  stockMoveList, paymentCondition, paymentMode, contactPartner);
       invoice.ifPresent(
           inv ->
               response.setView(
@@ -397,98 +392,78 @@ public class StockMoveInvoiceController {
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public void generateMultiInvoice(ActionRequest request, ActionResponse response) {
-    List<Map> stockMoveMap = null;
+  public void generateMultiCustomerInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
 
-    boolean isCustomerStockMove = true;
-    if (request.getContext().get("customerStockMoveToInvoice") != null) {
-      stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
-    } else {
-      stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
-      isCustomerStockMove = false;
-    }
+      List<Long> stockMoveIdList = new ArrayList<>();
 
-    StringBuilder stockMovesInError = new StringBuilder();
-    List<Long> invoiceIdList = new ArrayList<Long>();
-    Invoice invoice = null;
-    StockMove stockMove = null;
-
-    if (isCustomerStockMove) {
       for (Map map : stockMoveMap) {
-        try {
-          stockMove = JPA.em().find(StockMove.class, new Long((Integer) map.get("id")));
-          if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-            invoice =
-                stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                    stockMove, saleRepo.find(stockMove.getOriginId()));
-            invoiceIdList.add(invoice.getId());
-          }
-        } catch (AxelorException ae) {
-          if (stockMovesInError.length() > 0) {
-            stockMovesInError.append("<br/>");
-          }
-          stockMovesInError.append(
-              String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_GENERATE_INVOICE),
-                  stockMove.getName(),
-                  ae.getLocalizedMessage()));
-        } catch (Exception e) {
-          TraceBackService.trace(e);
-        } finally {
-          if (invoiceIdList.size() % 10 == 0) {
-            JPA.clear();
-          }
-        }
+        stockMoveIdList.add(((Number) map.get("id")).longValue());
       }
-    } else {
-      for (Map map : stockMoveMap) {
-        try {
-          stockMove = JPA.em().find(StockMove.class, new Long((Integer) map.get("id")));
-          if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-            invoice =
-                stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                    stockMove, purchaseRepo.find(stockMove.getOriginId()));
-            invoiceIdList.add(invoice.getId());
-          }
-        } catch (AxelorException ae) {
-          if (stockMovesInError.length() > 0) {
-            stockMovesInError.append("<br/>");
-          }
-          stockMovesInError.append(
-              String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_GENERATE_INVOICE),
-                  stockMove.getName(),
-                  ae.getLocalizedMessage()));
-        } catch (Exception e) {
-          TraceBackService.trace(e);
-        } finally {
-          if (invoiceIdList.size() % 10 == 0) {
-            JPA.clear();
-          }
-        }
-      }
-    }
 
-    if (!invoiceIdList.isEmpty()) {
-      ActionViewBuilder viewBuilder = null;
+      Entry<List<Long>, String> result =
+          Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
+      List<Long> invoiceIdList = result.getKey();
+      String warningMessage = result.getValue();
+      if (!invoiceIdList.isEmpty()) {
+        ActionViewBuilder viewBuilder;
 
-      if (isCustomerStockMove) {
         viewBuilder = ActionView.define("Cust. Invoices");
-      } else {
-        viewBuilder = ActionView.define("Suppl. Invoices");
+
+        viewBuilder
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-grid")
+            .add("form", "invoice-form")
+            .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
+            .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate());
+
+        response.setView(viewBuilder.map());
+      }
+      if (warningMessage != null && !warningMessage.isEmpty()) {
+        response.setFlash(warningMessage);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public void generateMultiSupplierInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
+
+      List<Long> stockMoveIdList = new ArrayList<>();
+
+      for (Map map : stockMoveMap) {
+        stockMoveIdList.add(((Number) map.get("id")).longValue());
       }
 
-      viewBuilder
-          .model(Invoice.class.getName())
-          .add("grid", "invoice-grid")
-          .add("form", "invoice-form")
-          .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")");
+      Entry<List<Long>, String> result =
+          Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
+      List<Long> invoiceIdList = result.getKey();
+      String warningMessage = result.getValue();
+      if (!invoiceIdList.isEmpty()) {
+        ActionViewBuilder viewBuilder;
 
-      response.setView(viewBuilder.map());
-    }
+        viewBuilder = ActionView.define("Suppl. Invoices");
 
-    if (stockMovesInError.length() > 0) {
-      response.setFlash(stockMovesInError.toString());
+        viewBuilder
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-grid")
+            .add("form", "invoice-form")
+            .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
+            .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate());
+
+        response.setView(viewBuilder.map());
+      }
+      if (warningMessage != null && !warningMessage.isEmpty()) {
+        response.setFlash(warningMessage);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
