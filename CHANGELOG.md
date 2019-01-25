@@ -38,6 +38,7 @@
 - CostSheet : new printing design
 - Allow reversion stock move in mass invoicing.
 - Improve translations in AppBuilder.
+- INVENTORY : Change report design
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
