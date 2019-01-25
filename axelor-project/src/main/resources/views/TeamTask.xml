@@ -93,6 +93,8 @@
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
 				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
+
+			<field name="typeSelect" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contentPanel" title="Description" colSpan="12">

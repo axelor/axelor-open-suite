@@ -26,6 +26,8 @@
       <field name="taskDuration"/>
       <field name="assignedTo"/>
       <field name="description" colSpan="12"/>
+
+      <field name="typeSelect" hidden="true"/>
     </panel>
 
     <panel-tabs>
@@ -51,6 +53,7 @@
 
   <action-record name="action-team-task-record-set-default" model="com.axelor.team.db.TeamTask">
     <field name="isFirst" expr="true"/>
+    <field name="typeSelect" expr="eval: _typeSelect"/>
   </action-record>
 
   <action-record name="action-team-task-record-set-date-or-frequency-changed" model="com.axelor.team.db.TeamTask">

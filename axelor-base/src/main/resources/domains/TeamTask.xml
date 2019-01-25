@@ -11,6 +11,13 @@
     <boolean name="isFirst" readonly="true" default="false"/> <!-- if first, on save, it can generate reccurent tasks -->
     <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
     <boolean name="hasDateOrFrequencyChanged" readonly="true" default="false"/>
+
+    <string name="typeSelect" title="Type" selection="team.task.type.select"/>
+
+    <extra-code>
+      // TYPE SELECT
+      public static final String TYPE_TASK = "task";
+    </extra-code>
   </entity>
 
 </domain-models>
