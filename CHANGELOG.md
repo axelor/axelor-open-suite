@@ -39,6 +39,7 @@
 - Allow reversion stock move in mass invoicing.
 - Improve translations in AppBuilder.
 - INVENTORY : Change report design
+- PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.

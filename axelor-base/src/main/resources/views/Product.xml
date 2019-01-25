@@ -209,7 +209,7 @@
 				        <field name="checkExpirationDateAtStockMoveRealization" showIf="hasWarranty || isPerishable"/>
 	      			</panel>
 	      			<panel colSpan="12" name="trackingConfigPanel">
-	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
+	        			<field name="trackingNumberConfiguration" requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
 	    		<panel name="variantsPanel" title="Variants" showTitle="false" if="__config__.app.getApp('base').getManageProductVariants()">
