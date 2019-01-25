@@ -71,9 +71,6 @@ public class ModuleInstallService {
     ENV.put(
         "GRADLE_OPTS",
         "-Dfile.encoding=utf-8 -Djava.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
-
-    ENV.put("CATALINA_HOME", "/home/axelor/opt/tomcat");
-    ENV.put("JAVA_HOME", "/home/axelor/opt/jdk");
   }
 
   public String buildApp() throws AxelorException {
