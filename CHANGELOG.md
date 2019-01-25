@@ -13,6 +13,7 @@
 - BPM - WkfTransition: "Restricted roles" has been renamed into "Roles".
 - QUALITY : Change quality-control-form, control-point-form and quality-alert-form views
 - Product Activities : Added Card view.
+- INVENTORY : Change report design
 
 ## Bug Fixes
 - AppBuilder: fix export/import of a MetaJsonModel.
