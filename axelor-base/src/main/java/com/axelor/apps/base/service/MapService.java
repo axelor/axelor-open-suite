@@ -302,7 +302,8 @@ public class MapService {
     LOG.debug("arrivalString = {}", aString);
     Map<String, Object> result = new HashMap<>();
     try {
-      if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
+      if ((dLat != null && BigDecimal.ZERO.compareTo(dLat) == 0)
+          || (dLon != null && BigDecimal.ZERO.compareTo(dLon) == 0)) {
         Map<String, Object> googleResponse = geocodeGoogle(dString);
         if (googleResponse != null) {
           dLat = new BigDecimal(googleResponse.get("lat").toString());

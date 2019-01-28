@@ -60,6 +60,6 @@
 - Studio: Fix import app without image. 
 - TeamTask : Resolve NPE by updating action of HR module.
 - Generation of Project/Phase from SaleOrder
-
+- Base : Resolve NPE on fetching latitude and longitude.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
