@@ -307,17 +307,22 @@
 		  	<field name="productionNote" widget="Html" colSpan="12"/>
 		  	<panel-dashlet name="manufOrdersPanel" action="action-sale-order-view-manuf-orders" colSpan="12"/>
 	    </panel>
-		<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
-			<field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType" colSpan="6"/>
-			<field name="$_elementStartDate" title="Start date" widget="date-time" colSpan="6" type="datetime"/>
-			<field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid" colSpan="6"/>
-			<panel name="projectDetailsPanel" colSpan="6">
-				<button name="updateLinesBtn" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
-				<button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project" colSpan="12"/>
-				<button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project" colSpan="12"/>
-			</panel>
-		</panel>
-	    <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
+
+      <panel name="businessProjectPanel" title="Business project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" if-module="axelor-business-project">
+        <field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
+        <field name="$_elementStartDate" title="Start date" widget="date-time" type="datetime"/>
+        <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid"/>
+        <field name="toInvoiceViaTask" hidden="true" showIf="$_projectGeneratorType == 'TASK_BY_LINE'"/>
+        <panel name="projectDetailsPanel" colSpan="12">
+          <button name="updateLinesBtn" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
+          <panel name="fillOrGenerateProjectPanel" stacked="true">
+            <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType" title="Fill project" if="__config__.app.getApp('business-project').projectSaleOrderLines" showIf="project != null" hidden="true" onClick="save,action-business-project-method-fill-project"/>
+            <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType" title="Generate Project/Business" if="!__config__.app.getApp('business-project').automaticProject" showIf="project == null" hidden="true" onClick="save,action-business-project-method-generate-project"/>
+          </panel>
+        </panel>
+      </panel>
+
+      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
 	      <label name="orLabel" title="OR"/>
 	      <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
