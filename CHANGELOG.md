@@ -47,6 +47,7 @@
 - AccountMangaement : Fix domain for sequence in form view
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
+- USER View : changes on some fields in form view.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
