@@ -29,7 +29,7 @@
     </action-view>
 	
 	<action-attrs name="action-user-attrs-domain-workshop-stock-location">
-		<attribute name="domain" for="workshopStockLocation" expr="eval: activeCompany != null ? &quot; self.company = :activeCompany &quot; : null"/>
+		<attribute name="domain" for="workshopStockLocation" expr="eval: activeCompany != null ? &quot; self.company = :activeCompany and self.isWorkshop = true &quot; : null"/>
 	</action-attrs>
 	
 </object-views>
