@@ -13,6 +13,7 @@
 - Base : Updation of type in demo-data in Birt Template Parameter.
 - MOVE : Disable canEdit on journal
 - SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
+- RECONCILE : Update missing sequence alert
 
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
