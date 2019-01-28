@@ -39,7 +39,7 @@
 		       		<field name="vehicleOdometer" colSpan="8"/>
 		       		<field name="acquisitionDate" />
 		       		<field name="carValue" />
-		       		<field name="isArchived"/>
+					<field name="archived"/>
 	       		</panel>
 	       </panel>
 	       <panel colSpan="12" title="Additional Properties">

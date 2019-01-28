@@ -14,6 +14,7 @@
 - MOVE : Disable canEdit on journal
 - SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
 - RECONCILE : Update missing sequence alert
+- VEHICLE : removed isArchived field.
 
 ## Bug Fixes
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
