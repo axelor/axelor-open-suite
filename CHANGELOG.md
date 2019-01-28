@@ -11,6 +11,7 @@
 - Product Category : Add tree view.
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
+- PartnerStockSettings : Added new field 'incoterm'.
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary

@@ -197,6 +197,7 @@
     	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
     </action-record>
 
 </object-views>
