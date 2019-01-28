@@ -39,7 +39,7 @@
     </grid>
     
    	<form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
-		onLoad="action-group-crm-lead-onload"
+		onLoad="action-group-crm-lead-onload,action-lead-method-compute-estimatedBudget,save"
 		onNew="action-group-crm-lead-onnew"
 		onSave="action-crm-lead-method-check-name">
 
@@ -174,7 +174,7 @@
 		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
-			<field name="estimatedBudget" colSpan="6"/>
+			<field name="estimatedBudget" colSpan="6" readonly="true"/>
 		</panel>
  		
  		<panel-mail name="mailPanel">
@@ -266,6 +266,10 @@
     	<field name="statusSelect" expr="3"/>
     	<field name="isRecycled" expr="true"/>
     </action-record>
+    
+    <action-record name="action-lead-method-compute-estimatedBudget" model="com.axelor.apps.crm.db.Lead">
+		<field name="estimatedBudget" expr="eval: opportunitiesList?.amount.sum()"/>
+	</action-record>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">
 	  	<view type="form" name="lead-lose-wizard-form"/>
