@@ -14,26 +14,31 @@
 			<field name="unit" as="unit"/>
 			<field name="prodProcess" as="prodProcess"/>
 		</node>    	
-		<node model="com.axelor.apps.production.db.TempBomTree" parent="parent" draggable="true" onClick="action-bill-of-material-method-open-bom-line-form-view">
+		<node model="com.axelor.apps.production.db.TempBomTree" parent="parent" draggable="true" onClick="action-bill-of-material-line-view" orderBy="priority">
 			<field name="product" as="product"/>
 			<field name="qty" as="qty"/>
 			<field name="unit" as="unit"/>
 			<field name="prodProcess" as="prodProcess"/>
 		</node>
 	</tree>
-    
-    <action-view name="action-bill-of-material-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-    	<view type="form" name="bill-of-material-form"/>
+	
+	<action-view name="action-bill-of-material-view" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
+		<view type="form" name="bill-of-material-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
  	  	<view-param name="popup-save" value="false"/>
-    	<context name="_showRecord" expr="eval: bom.id"/>
-    </action-view>
+    	<context name="_showRecord" expr="eval: bomId"/>
+	</action-view>
     
-    <action-method name="action-bill-of-material-method-show-bom-line-form-view">
-        <call class="com.axelor.apps.production.web.BillOfMaterialController" method="showBomLineFormView"/>
-    </action-method>
+	<action-view name="action-bill-of-material-line-view" title="Bill of materials component" model="com.axelor.apps.production.db.BillOfMaterialLine">
+    	<view type="form" name="bill-of-material-line-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+    	<context name="_showRecord" expr="eval: bomLineId"/>
+    </action-view>
     
 </object-views>
 

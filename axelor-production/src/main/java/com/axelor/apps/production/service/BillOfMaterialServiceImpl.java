@@ -52,8 +52,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Inject private TempBomTreeRepository tempBomTreeRepo;
 
-  private List<Long> processedBom;
-
   @Override
   public List<BillOfMaterial> getBillOfMaterialSet(Product product) {
 
@@ -123,7 +121,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + ")");
       personalizedBOM.setPersonalized(true);
 
-      ArrayList<BillOfMaterialLine> personalizedBOMLineList = new ArrayList<>();
+      ArrayList<BillOfMaterialLine> BOMLineList = new ArrayList<>();
 
       for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
         BillOfMaterialLine bomLine = new BillOfMaterialLine();
@@ -132,12 +130,17 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         bomLine.setPriority(billOfMaterialLine.getPriority());
         bomLine.setParent(personalizedBOM);
         bomLine.setQty(billOfMaterialLine.getQty());
+        bomLine.setUnit(billOfMaterialLine.getUnit());
 
-        bomLine.setBillOfMaterial(
-            customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
-        personalizedBOMLineList.add(bomLine);
+        if (bomLine.getBillOfMaterial() != null && bomLine.getBillOfMaterial().getIsSpecific()) {
+          bomLine.setBillOfMaterial(
+              customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
+        } else {
+          bomLine.setBillOfMaterial(billOfMaterialLine.getBillOfMaterial());
+        }
+        BOMLineList.add(bomLine);
       }
-      personalizedBOM.setBillOfMaterialLineList(personalizedBOMLineList);
+      personalizedBOM.setBillOfMaterialLineList(BOMLineList);
       return personalizedBOM;
     }
 
@@ -217,108 +220,121 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
+  @Transactional
   public TempBomTree generateTree(BillOfMaterial billOfMaterial) {
 
-    processedBom = new ArrayList<>();
-
-    return getBomTree(billOfMaterial, null, null);
-  }
-
-  @Transactional
-  public TempBomTree getBomTree(BillOfMaterial bom, BillOfMaterial parentBom, TempBomTree parent) {
-
     TempBomTree bomTree;
-    if (parentBom == null) {
-      bomTree =
-          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom = null", bom).fetchOne();
-    } else {
-      bomTree =
-          tempBomTreeRepo
-              .all()
-              .filter("self.bom = ?1 and self.parentBom = ?2", bom, parentBom)
-              .fetchOne();
-    }
+    bomTree =
+        tempBomTreeRepo
+            .all()
+            .filter("self.bomId = ?1 and self.parent = null", billOfMaterial.getId())
+            .fetchOne();
 
     if (bomTree == null) {
       bomTree = new TempBomTree();
     }
-    bomTree.setProdProcess(bom.getProdProcess());
-    bomTree.setProduct(bom.getProduct());
-    bomTree.setQty(bom.getQty());
-    bomTree.setUnit(bom.getUnit());
-    bomTree.setParentBom(parentBom);
-    bomTree.setParent(parent);
-    bomTree.setBom(bom);
+    bomTree.setProdProcess(billOfMaterial.getProdProcess());
+    bomTree.setProduct(billOfMaterial.getProduct());
+    bomTree.setQty(billOfMaterial.getQty());
+    bomTree.setUnit(billOfMaterial.getUnit());
+    bomTree.setParent(null);
+    bomTree.setBomId(billOfMaterial.getId());
+    bomTree.setBomLineId(null);
     bomTree = tempBomTreeRepo.save(bomTree);
 
-    processedBom.add(bom.getId());
+    List<Long> validBomLineIds = processChildBom(billOfMaterial, bomTree);
 
-    List<Long> validBomIds = processChildBom(bom, bomTree);
+    validBomLineIds.add(0L);
 
-    validBomIds.add(0L);
-
-    removeInvalidTree(validBomIds, bom);
+    removeInvalidTree(validBomLineIds, bomTree);
 
     return bomTree;
   }
 
   @Transactional
-  public TempBomTree getBomTree(
-      BillOfMaterialLine bomLine, BillOfMaterial parentBom, TempBomTree bomTree) {
+  public TempBomTree getSubBomTree(BillOfMaterialLine bomLine, TempBomTree parent) {
 
-    TempBomTree tempBomTree = new TempBomTree();
-    tempBomTree.setProduct(bomLine.getProduct());
-    tempBomTree.setQty(bomLine.getQty());
-    tempBomTree.setParentBom(parentBom);
-    tempBomTree.setParent(bomTree);
+    TempBomTree bomTree;
+    bomTree =
+        tempBomTreeRepo
+            .all()
+            .filter("self.bomLineId = ?1 and self.parent = ?2", bomLine.getId(), parent)
+            .fetchOne();
 
-    return tempBomTreeRepo.save(tempBomTree);
+    if (bomTree == null) {
+      bomTree = new TempBomTree();
+    }
+
+    BillOfMaterial bom = bomLine.getBillOfMaterial();
+    bomTree.setBomLineId(bomLine.getId());
+    bomTree.setProduct(bomLine.getProduct());
+    bomTree.setQty(bomLine.getQty());
+    bomTree.setUnit(bomLine.getUnit());
+    bomTree.setPriority(bomLine.getPriority());
+    if (bom != null) {
+      bomTree.setBomId(bom.getId());
+      bomTree.setProdProcess(bom.getProdProcess());
+    } else {
+      bomTree.setBomId(null);
+    }
+    bomTree.setParent(parent);
+
+    bomTree = tempBomTreeRepo.save(bomTree);
+
+    if (bom != null) {
+      List<Long> validBomLineIds = processChildBom(bom, bomTree);
+
+      validBomLineIds.add(0L);
+
+      removeInvalidTree(validBomLineIds, bomTree);
+    }
+
+    return bomTree;
   }
 
   private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree) {
 
-    List<Long> validBomIds = new ArrayList<Long>();
+    List<Long> validBomLineIds = new ArrayList<Long>();
 
     for (BillOfMaterialLine bomLine : bom.getBillOfMaterialLineList()) {
-
-      if (bomLine.getBillOfMaterial() != null) {
-        if (!processedBom.contains(bomLine.getBillOfMaterial().getId())) {
-          getBomTree(bomLine.getBillOfMaterial(), bom, bomTree);
-        } else {
-          log.debug("Already processed: {}", bomLine.getBillOfMaterial().getId());
-        }
-        validBomIds.add(bomLine.getBillOfMaterial().getId());
-      } else {
-        getBomTree(bomLine, bom, bomTree);
-      }
+      getSubBomTree(bomLine, bomTree);
+      validBomLineIds.add(bomLine.getId());
     }
-    return validBomIds;
+
+    return validBomLineIds;
   }
 
-  @Transactional
-  public void removeInvalidTree(List<Long> validBomIds, BillOfMaterial bom) {
+  public void removeInvalidTree(List<Long> validBomLineIds, TempBomTree bomTree) {
 
     List<TempBomTree> invalidBomTrees =
         tempBomTreeRepo
             .all()
-            .filter("self.bom.id not in (?1) and self.parentBom = ?2", validBomIds, bom)
+            .filter("self.parent = ?1 and self.bomLineId not in (?2)", bomTree, validBomLineIds)
             .fetch();
 
     log.debug("Invalid bom trees: {}", invalidBomTrees);
 
-    if (!invalidBomTrees.isEmpty()) {
-      List<TempBomTree> childBomTrees =
-          tempBomTreeRepo.all().filter("self.parent in (?1)", invalidBomTrees).fetch();
+    for (TempBomTree invalidBomTree : invalidBomTrees) {
+      this.tempBomTreeRecursiveRemove(invalidBomTree);
+    }
+  }
 
+  /**
+   * Removes the tempBomTree from the database along will all its subTrees recursively.
+   *
+   * @param tempBomTree
+   */
+  @Transactional
+  protected void tempBomTreeRecursiveRemove(TempBomTree tempBomTree) {
+    List<TempBomTree> childBomTrees =
+        tempBomTreeRepo.all().filter("self.parent = ?1", tempBomTree).fetch();
+    if (!childBomTrees.isEmpty()) {
       for (TempBomTree childBomTree : childBomTrees) {
-        childBomTree.setParent(null);
-        tempBomTreeRepo.save(childBomTree);
+        this.tempBomTreeRecursiveRemove(childBomTree);
       }
     }
 
-    for (TempBomTree invalidBomTree : invalidBomTrees) {
-      tempBomTreeRepo.remove(invalidBomTree);
-    }
+    tempBomTreeRepo.remove(tempBomTree);
   }
 
   @Override

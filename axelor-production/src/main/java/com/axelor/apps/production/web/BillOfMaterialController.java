@@ -18,7 +18,6 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
@@ -131,7 +130,7 @@ public class BillOfMaterialController {
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")
-            .domain("self.defineSubBillOfMaterial = true AND self.personalized = false")
+            .domain("self.personalized = false")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
   }
@@ -190,28 +189,5 @@ public class BillOfMaterialController {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
-  }
-
-  public void showBomLineFormView(ActionRequest request, ActionResponse response) {
-    TempBomTree tempBomTree = request.getContext().asType(TempBomTree.class);
-    BillOfMaterialLine bomLine =
-        billOfMaterialLineRepo
-            .all()
-            .filter(
-                "self.parent=? AND self.product=?",
-                tempBomTree.getParentBom(),
-                tempBomTree.getProduct())
-            .fetchOne();
-    response.setView(
-        ActionView.define(I18n.get("BOM Line"))
-            .model(BillOfMaterialLine.class.getName())
-            .add("form", "bill-of-material-line-form")
-            .param("popup", "true")
-            .param("show-toolbar", "false")
-            .param("show-confirm", "false")
-            .param("popup-save", "false")
-            .param("forceEdit", "false")
-            .context("_showRecord", String.valueOf(bomLine.getId()))
-            .map());
   }
 }

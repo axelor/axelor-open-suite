@@ -224,14 +224,13 @@ public class CostSheetServiceImpl implements CostSheetService {
 
         if (product != null) {
 
-          Unit unit =
-              billOfMaterialLine.getBillOfMaterial() != null
-                  ? billOfMaterialLine.getBillOfMaterial().getUnit()
-                  : product.getUnit();
-
           CostSheetLine costSheetLine =
               costSheetLineService.createConsumedProductCostSheetLine(
-                  product, unit, bomLevel, parentCostSheetLine, billOfMaterialLine.getQty());
+                  product,
+                  billOfMaterialLine.getUnit(),
+                  bomLevel,
+                  parentCostSheetLine,
+                  billOfMaterialLine.getQty());
 
           if (billOfMaterialLine.getBillOfMaterial() != null) {
 
@@ -240,17 +239,14 @@ public class CostSheetServiceImpl implements CostSheetService {
             if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
               costSheetLineService.createConsumedProductWasteCostSheetLine(
                   product,
-                  unit,
+                  billOfMaterialLine.getUnit(),
                   bomLevel,
                   parentCostSheetLine,
                   billOfMaterialLine.getQty(),
                   wasteRate);
             }
 
-            if (billOfMaterialLine.getBillOfMaterial().getDefineSubBillOfMaterial()) {
-              this._computeCostPrice(
-                  billOfMaterialLine.getBillOfMaterial(), bomLevel, costSheetLine);
-            }
+            this._computeCostPrice(billOfMaterialLine.getBillOfMaterial(), bomLevel, costSheetLine);
           }
         }
       }

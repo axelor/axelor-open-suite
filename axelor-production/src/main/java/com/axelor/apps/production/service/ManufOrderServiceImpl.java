@@ -116,11 +116,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
-    BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty(), 2, RoundingMode.HALF_EVEN);
-
     ManufOrder manufOrder =
         this.createManufOrder(
-            product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
+            product,
+            qtyRequested,
+            priority,
+            IS_TO_INVOICE,
+            company,
+            billOfMaterial,
+            plannedStartDateT);
 
     if (originType == ORIGIN_TYPE_SALE_ORDER
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
@@ -156,8 +160,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           BigDecimal qty =
               computeToConsumeProdProductLineQuantity(
                   bomQty, manufOrderQty, billOfMaterialLine.getQty());
-          ProdProduct prodProduct =
-              new ProdProduct(product, qty, billOfMaterialLine.getBillOfMaterial().getUnit());
+          ProdProduct prodProduct = new ProdProduct(product, qty, billOfMaterialLine.getUnit());
           manufOrder.addToConsumeProdProductListItem(prodProduct);
           prodProductRepo.persist(prodProduct); // id by order of creation
         }
@@ -184,10 +187,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   private List<BillOfMaterialLine> getSortedBillsOfMaterialLines(
-      Collection<BillOfMaterialLine> billsOfMaterialLines) {
+      Collection<BillOfMaterialLine> billsOfMaterialsLines) {
 
-    billsOfMaterialLines = MoreObjects.firstNonNull(billsOfMaterialLines, Collections.emptyList());
-    return billsOfMaterialLines
+    billsOfMaterialsLines =
+        MoreObjects.firstNonNull(billsOfMaterialsLines, Collections.emptyList());
+    return billsOfMaterialsLines
         .stream()
         .sorted(
             Comparator.comparing(BillOfMaterialLine::getPriority)

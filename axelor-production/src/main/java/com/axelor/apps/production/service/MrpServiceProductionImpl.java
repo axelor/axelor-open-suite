@@ -375,7 +375,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    */
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level) {
 
-    if (billOfMaterial.getBillOfMaterialLineList() == null
+    if (billOfMaterial == null
+        || billOfMaterial.getBillOfMaterialLineList() == null
         || billOfMaterial.getBillOfMaterialLineList().isEmpty()
         || level > 100) {
 
@@ -392,7 +393,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (billOfMaterialLine.getBillOfMaterial() != null && this.isMrpProduct(subProduct)) {
+        if (this.isMrpProduct(subProduct)) {
           this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
 
           if (subProduct.getDefaultBillOfMaterial() != null) {
