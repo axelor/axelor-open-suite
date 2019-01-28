@@ -76,6 +76,7 @@
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
+- RECONCILE : Update missing sequence alert
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
