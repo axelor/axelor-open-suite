@@ -12,6 +12,7 @@
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
+- Budget: convention applied to form view.
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
