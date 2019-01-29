@@ -15,6 +15,7 @@
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 
 ## Improvements
+- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
