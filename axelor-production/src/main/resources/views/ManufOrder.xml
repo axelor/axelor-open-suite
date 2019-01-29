@@ -139,10 +139,12 @@
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
+					<field name="$totalPlannedDuration" title="Total Planned Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 				</panel>
 				<panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
 					<field name="realEndDateT" title="End date"/>
+					<field name="$totalRealDuration" title="Total Real Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 				</panel>
 			</panel>
 			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
@@ -427,6 +429,8 @@
 
 	<action-attrs name="action-manuf-order-attrs-price-digits">
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="value" for="$totalPlannedDuration" expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+		<attribute name="value" for="$totalRealDuration" expr="eval: operationOrderList.collect{it->it.realDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
 	</action-attrs>
 
 	<action-validate name="action-manuf-order-validate-planned-end-date"
