@@ -41,6 +41,7 @@
 - Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root 
 - Project : Addition of M2M 'projectSet' in User object. 
 - Purchase Request : Addition of M2M 'purchaseOrderSet'
+- Invoicing project : Menu organisation
 
 ## Improvements
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
