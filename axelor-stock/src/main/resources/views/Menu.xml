@@ -47,6 +47,7 @@
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="stockIsRequiredShipmentOperations" expr="eval: __config__.app.getApp('stock').isRequiredShipmentOperations"/>
 	</action-view>
 
     <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
