@@ -12,6 +12,7 @@
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
+- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 - Budget: convention applied to form view.
 
 ## Improvements
