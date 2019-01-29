@@ -66,9 +66,9 @@
 					<field name="project" colSpan="6" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form"/>
+					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form" if="!__config__.app.isApp('business-support')"/>
 					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
-					<field name="isPrivate"  colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isPrivate"  colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderAccepted" colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>

@@ -39,6 +39,8 @@
 - TeamTask : Assign default value to fields and change in track of object.
 - MANUF. APP : new boolean manageCostSheetGroup
 - Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root 
+- Project : Addition of M2M 'projectSet' in User object. 
+- Purchase Request : Addition of M2M 'purchaseOrderSet'
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 
 ## Improvements
