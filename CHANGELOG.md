@@ -1,4 +1,5 @@
 # Changelog
+- BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 
 ## [Unreleased 5.1.1]
 ## Features

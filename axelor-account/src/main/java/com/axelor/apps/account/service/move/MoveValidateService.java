@@ -148,7 +148,9 @@ public class MoveValidateService {
           && account.getIsTaxRequiredOnMoveLine()
           && moveLine.getTaxLine() == null) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD, IExceptionMessage.MOVE_9, account.getName());
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            IExceptionMessage.MOVE_9,
+            account.getName());
       }
     }
 
