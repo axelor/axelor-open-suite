@@ -47,6 +47,7 @@
 				<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="emailAccount" showIf="emailing"/>
+				<panel-dashlet name="generatedEmailsPanel" action="dashlet.generated.emails" height="350" colSpan="12"/>
 			</panel>
 			<panel name="eventsPanel" title="Events" showIf="manageAnEventPerTarget" colSpan="12">
 				<field name="generateEventPerPartnerOrLead" widget="inline-checkbox" colSpan="12"/>
@@ -165,6 +166,12 @@
 		<view type="form" name="event-form" />
 		<domain>self.campaign.id = :_id AND self.statusSelect IN (2,3)</domain>
 	</action-view>
+	
+	 <action-view name="dashlet.generated.emails" title="Generated emails" model="com.axelor.apps.message.db.Message">
+    	<view type="grid" name="message-grid"/>
+    	<view type="form" name="message-form"/>
+    	<domain>self.relatedTo1SelectId = :id</domain>
+    </action-view>
 	
 	<action-method name="action-campaign-generate-targets"  model="com.axelor.apps.marketing.db.Campaign">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="generateTargets"/>

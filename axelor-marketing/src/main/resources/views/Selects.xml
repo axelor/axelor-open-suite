@@ -31,4 +31,9 @@
 		<option value="0">Guided</option>
 		<option value="1">Manual</option>
 	</selection>
+	
+	<selection name="message.related.to.select" id="marketing.message.related.to.select">
+	    <option value="com.axelor.apps.marketing.db.Campaign">Campaign</option>
+	</selection>
+	
 </object-views>

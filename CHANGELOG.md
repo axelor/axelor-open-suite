@@ -15,6 +15,7 @@
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
+- Marketing : added a panel-dashlet showing the generated emails in campaign.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 

@@ -23,7 +23,9 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -58,11 +60,12 @@ public class CampaignServiceImpl implements CampaignService {
     templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerTemplate() != null) {
-      errorPartners = sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate());
+      errorPartners =
+          sendToPartners(campaign.getPartnerSet(), campaign.getPartnerTemplate(), campaign);
     }
 
     if (campaign.getLeadTemplate() != null) {
-      errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate());
+      errorLeads = sendToLeads(campaign.getLeadSet(), campaign.getLeadTemplate(), campaign);
     }
 
     if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
@@ -72,14 +75,15 @@ public class CampaignServiceImpl implements CampaignService {
     return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
   }
 
-  protected String sendToPartners(Set<Partner> partnerSet, Template template) {
+  protected String sendToPartners(Set<Partner> partnerSet, Template template, Campaign campaign) {
 
     StringBuilder errors = new StringBuilder();
 
     for (Partner partner : partnerSet) {
 
       try {
-        templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
+        //        templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
+        generateAndSendMessage(campaign, partner, template);
       } catch (ClassNotFoundException
           | InstantiationException
           | IllegalAccessException
@@ -94,14 +98,15 @@ public class CampaignServiceImpl implements CampaignService {
     return errors.toString();
   }
 
-  protected String sendToLeads(Set<Lead> leadSet, Template template) {
+  protected String sendToLeads(Set<Lead> leadSet, Template template, Campaign campaign) {
 
     StringBuilder errors = new StringBuilder();
 
     for (Lead lead : leadSet) {
 
       try {
-        templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
+        //        templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
+        generateAndSendMessage(campaign, lead, template);
       } catch (ClassNotFoundException
           | InstantiationException
           | IllegalAccessException
@@ -114,6 +119,16 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     return errors.toString();
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException {
+    Message message = templateMessageServiceMarketingImpl.generateAndSendMessage(model, template);
+    message.setRelatedTo1Select(Campaign.class.getCanonicalName());
+    message.setRelatedTo1SelectId(campaign.getId());
+
   }
 
   protected MetaFile generateLog(
