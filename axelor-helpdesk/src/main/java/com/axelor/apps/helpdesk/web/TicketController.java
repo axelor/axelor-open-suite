@@ -150,7 +150,9 @@ public class TicketController {
     try {
       Ticket ticket = request.getContext().asType(Ticket.class);
       TimerTicketService service = Beans.get(TimerTicketService.class);
-
+      if (ticket.getId() == null) {
+        return;
+      }
       Timer timer = service.find(ticket);
 
       boolean hideStart = false;

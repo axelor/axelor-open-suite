@@ -62,6 +62,7 @@
 - Workflow nodes: mistyped 'incoming'.
 - Ticket: NPE.
 - Move: required analytic distribution template.
+- TICKET : Fix timer NPE
 
 ## [5.1.1] - 2019-01-18
 ## Features
