@@ -30,7 +30,6 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
@@ -123,10 +122,7 @@ public class ManufOrderWorkflowService {
     manufOrder.setRealStartDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 
-    int beforeOrAfterConfig =
-        Beans.get(ProductionConfigService.class)
-            .getProductionConfig(manufOrder.getCompany())
-            .getStockMoveRealizeOrderSelect();
+    int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
       manufOrder.addInStockMoveListItem(
           realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList()));

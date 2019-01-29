@@ -13,6 +13,7 @@
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Prod process: add stock move realize order select.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
