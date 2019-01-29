@@ -39,8 +39,8 @@
   <action-view name="project.task.customer.treated.by.customer" title="Tasks to be treated by customer" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status = :status AND self.isPrivate = false AND self.assignment = 1</domain>
-	<context name="status" expr="#{['new', 'in-progress']}"/>
+	<domain>self.status IN :statusCustomer AND self.isPrivate = false AND self.assignment = 1</domain>
+	<context name="statusCustomer" expr="#{['new', 'in-progress']}"/>
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-provider" title="Tasks to be treated by provider" parent="project-task-customer"
@@ -49,8 +49,8 @@
   <action-view name="project.task.customer.treated.by.provider" title="Tasks to be treated by provider" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status = :status AND self.isPrivate = false AND self.assignment = 2</domain>
-	<context name="status" expr="#{['new', 'in-progress']}"/>
+	<domain>self.status IN :statusProvider AND self.isPrivate = false AND self.assignment = 2</domain>
+	<context name="statusProvider" expr="#{['new', 'in-progress']}"/>
   </action-view>
 
   <menuitem name="project-task-customer-open-all" title="All open tasks" parent="project-task-customer"
