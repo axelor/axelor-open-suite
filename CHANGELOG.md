@@ -48,6 +48,7 @@
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
 - USER View : changes on some fields in form view.
+- LOGISTICAL FORM : changes in design.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
