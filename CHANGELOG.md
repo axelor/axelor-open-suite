@@ -14,6 +14,7 @@
 - PartnerStockSettings : Added new field 'incoterm'.
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 - Prod process: add stock move realize order select.
+- Manuf Order: Add button to consume in stock moves.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
