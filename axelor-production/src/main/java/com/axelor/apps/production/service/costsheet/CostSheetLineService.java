@@ -37,6 +37,7 @@ public interface CostSheetLineService {
       CostSheetGroup costSheetGroup,
       Product product,
       int typeSelect,
+      int typeSelectIcon,
       Unit unit,
       WorkCenter workCenter,
       CostSheetLine parentCostSheetLine);

@@ -15,6 +15,9 @@
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
 
+	<date name="supplierShipmentDate" title="Supplier Shipment Date"/>
+	<string name="supplierShipmentRef" title="Supplier Shipment Ref"/>
+
     <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
     <integer name="availableStatusSelect" title="Available status" transient="true" selection="stock.stock.move.available.status.select"/>
@@ -32,7 +35,7 @@
     <one-to-many name="plannedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="plannedStockMove" orderBy="sequence"/>
 
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
-    <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
+    <boolean name="isWithBackorder" title="Manage backorder" default="false"/>
     
     <string name="trackingNumber" title="Tracking Number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>

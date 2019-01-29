@@ -48,7 +48,7 @@ public interface ITranslation {
   public static final String EDITOR_MAX_SIZE = /*$$(*/ "Max Size"; /*)*/
   public static final String EDITOR_REGEX = /*$$(*/ "Regex"; /*)*/
   public static final String EDITOR_ONCHANGE = /*$$(*/ "On Change"; /*)*/
-  public static final String EDITOR_COLSPAN = /*$$(*/ "Col Span"; /*)*/
+  public static final String EDITOR_COLSPAN = /*$$(*/ "Colspan"; /*)*/
   public static final String EDITOR_NAMEFIELD = /*$$(*/ "Name Field"; /*)*/
   public static final String EDITOR_ONCLICK = /*$$(*/ "On Click"; /*)*/
   public static final String EDITOR_HIDDEN_GRID = /*$$(*/ "Hidden In Grid"; /*)*/

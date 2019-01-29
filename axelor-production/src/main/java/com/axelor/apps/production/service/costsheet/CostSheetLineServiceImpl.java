@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       CostSheetGroup costSheetGroup,
       Product product,
       int typeSelect,
+      int typeSelectIcon,
       Unit unit,
       WorkCenter workCenter,
       CostSheetLine parentCostSheetLine) {
@@ -86,6 +88,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     costSheetLine.setCostSheetGroup(costSheetGroup);
     costSheetLine.setProduct(product);
     costSheetLine.setTypeSelect(typeSelect);
+    costSheetLine.setTypeSelectIcon(typeSelectIcon);
     if (unit != null) {
       costSheetLine.setUnit(unitRepo.find(unit.getId()));
     }
@@ -120,6 +123,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         product.getCostSheetGroup(),
         product,
         CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
+        CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
         unit,
         null,
         null);
@@ -150,6 +154,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         costPrice,
         product.getCostSheetGroup(),
         product,
+        CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
         CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
         unit,
         null,
@@ -197,6 +202,24 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 product)
             .multiply(consumptionQty);
 
+    List<CostSheetLine> costSheetLineList =
+        parentCostSheetLine.getCostSheetLineList() != null
+            ? parentCostSheetLine.getCostSheetLineList()
+            : new ArrayList<CostSheetLine>();
+    for (CostSheetLine costSheetLine : costSheetLineList) {
+      if (product.equals(costSheetLine.getProduct()) && unit.equals(costSheetLine.getUnit())) {
+        BigDecimal qty = costSheetLine.getConsumptionQty().add(consumptionQty);
+        costSheetLine.setConsumptionQty(qty);
+        costSheetLine.setCostPrice(
+            costPrice
+                .add(costSheetLine.getCostPrice())
+                .setScale(
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN));
+        return costSheetLine;
+      }
+    }
+
     return this.createCostSheetLine(
         product.getName(),
         product.getCode(),
@@ -205,6 +228,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         costPrice,
         product.getCostSheetGroup(),
         product,
+        CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
         CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
         unit,
         null,
@@ -248,6 +272,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         product.getCostSheetGroup(),
         product,
         CostSheetLineRepository.TYPE_CONSUMED_PRODUCT_WASTE,
+        CostSheetLineRepository.TYPE_CONSUMED_PRODUCT_WASTE,
         unit,
         null,
         parentCostSheetLine);
@@ -271,7 +296,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         consumptionQty,
         costPrice,
         unit,
-        prodHumanResource.getCostSheetGroup());
+        prodHumanResource.getCostSheetGroup(),
+        CostSheetLineRepository.TYPE_HUMAN);
   }
 
   public CostSheetLine createWorkCenterMachineCostSheetLine(
@@ -291,7 +317,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         consumptionQty,
         costPrice,
         unit,
-        workCenter.getCostSheetGroup());
+        workCenter.getCostSheetGroup(),
+        CostSheetLineRepository.TYPE_WORK_CENTER);
   }
 
   protected CostSheetLine createWorkCenterCostSheetLine(
@@ -302,7 +329,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal consumptionQty,
       BigDecimal costPrice,
       Unit unit,
-      CostSheetGroup costSheetGroup) {
+      CostSheetGroup costSheetGroup,
+      int typeSelectIcon) {
 
     return this.createCostSheetLine(
         workCenter.getName(),
@@ -313,6 +341,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         costSheetGroup,
         null,
         CostSheetLineRepository.TYPE_WORK_CENTER,
+        typeSelectIcon,
         unit,
         workCenter,
         parentCostSheetLine);
@@ -362,6 +391,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               null,
               costSheetGroup,
               null,
+              CostSheetLineRepository.TYPE_INDIRECT_COST,
               CostSheetLineRepository.TYPE_INDIRECT_COST,
               null,
               null,

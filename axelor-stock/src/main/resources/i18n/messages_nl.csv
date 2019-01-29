@@ -281,6 +281,7 @@
 "Inventory.trackingNumber","Het volgen n°",,
 "Inventory.unit","Veronderstelde hoeveelheid",,
 "Is ISPM15 required","Is ISPM15 vereist",,
+"Is avg price changed",,,
 "Is certificate of conformity required","Is een certificaat van overeenstemming vereist",,
 "Is certificate of conformity signed","Is het certificaat van overeenstemming ondertekend",,
 "Is reversion","Is reversion",,

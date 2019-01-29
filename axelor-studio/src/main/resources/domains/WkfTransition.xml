@@ -15,7 +15,7 @@
       <string name="xmlId" title="xmlId" />
       <boolean name="isButton" title="Button" />
       <string name="buttonTitle" title="Button title" />
-      <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="Restricted Roles"/>
+      <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="Roles" />
       <one-to-many name="conditions" ref="Filter" title="Conditions" mappedBy="wkfTransition"/>
       <many-to-one name="wkf" ref="Wkf" />
       <many-to-one name="source" ref="WkfNode" title="From"  />

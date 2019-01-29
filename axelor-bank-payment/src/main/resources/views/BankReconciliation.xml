@@ -37,6 +37,7 @@
 			</panel>
 			<panel colSpan="12" name="actionsPanel">
 				<button name="loadBankStatementBtn" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
+				<button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3"/>
 				<button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="save,action-group-bankreconciliation-validate-click" colSpan="3"/>
 				<button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3"/>
 			</panel>
@@ -108,7 +109,7 @@
    
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
        <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
-       <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
+       <field name="toDate" expr="eval: LocalDate.parse(todayDate).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
    </action-record>
      
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
@@ -121,6 +122,10 @@
    
    <action-method name="action-bank-reconciliation-method-load-bank-statement">
      <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="loadBankStatement"/>
+   </action-method>
+   
+   <action-method name="action-bank-reconciliation-method-load-other-bank-statement">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="loadOtherBankStatement"/>
    </action-method>
 	
    <action-method name="action-bank-reconciliation-method-compute">

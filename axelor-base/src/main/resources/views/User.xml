@@ -19,6 +19,7 @@
     	<panel name="mainPanel" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
+			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
 	        <button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
         </panel>
@@ -61,7 +62,10 @@
         </panel>
         <panel-tabs name="PermisionsPanelTab">
           <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid"/>
-          <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
+          <panel name="parentPermissionsPanel" title="Permissions">
+    		<field name="appPermissions" widget="MultiSelect" if="__config__.app.isApp('mobile')"/>
+	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
+    	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions"/>
         </panel-tabs>
         <!-- /from axelor-core -->
