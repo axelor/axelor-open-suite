@@ -332,4 +332,85 @@ public interface ITranslation {
   public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/
       "ChequeDepositSlip.chequeDate"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_16_TITLE =
+      /*$$(*/ "AccountingReportType16.title"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_16_COMPANY =
+      /*$$(*/ "AccountingReportType16.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_CURRENCY =
+      /*$$(*/ "AccountingReportType16.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_END_DATE =
+      /*$$(*/ "AccountingReportType16.endDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_YEAR =
+      /*$$(*/ "AccountingReportType16.year"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_PERIOD =
+      /*$$(*/ "AccountingReportType16.period"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_FROM_DATE =
+      /*$$(*/ "AccountingReportType16.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_TO_DATE =
+      /*$$(*/ "AccountingReportType16.to"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_16_REFERENCE =
+      /*$$(*/ "AccountingReportType16.reference"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_ASSET_NAME =
+      /*$$(*/ "AccountingReportType16.asset_name"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_ACCOUNT_NAME =
+      /*$$(*/ "AccountingReportType16.account_name"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_COMPUTATION_METHOD =
+      /*$$(*/ "AccountingReportType16.computaion_method"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_DURATION =
+      /*$$(*/ "AccountingReportType16.duration"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_ACQISITION_DATE =
+      /*$$(*/ "AccountingReportType16.acquisition_date"; /*)*/
+  public static final String ACCOUNTING_REPORT_16_GROSS_VALUE =
+      /*$$(*/ "AccountingReportType16.gross_value"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_17_TITLE =
+      /*$$(*/ "AccountingReportType17.title"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_17_COMPANY =
+      /*$$(*/ "AccountingReportType17.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_CURRENCY =
+      /*$$(*/ "AccountingReportType17.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_END_DATE =
+      /*$$(*/ "AccountingReportType17.endDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_YEAR =
+      /*$$(*/ "AccountingReportType17.year"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_PERIOD =
+      /*$$(*/ "AccountingReportType17.period"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_FROM_DATE =
+      /*$$(*/ "AccountingReportType17.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_TO_DATE =
+      /*$$(*/ "AccountingReportType17.to"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_17_REFERENCE =
+      /*$$(*/ "AccountingReportType17.reference"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_NAME =
+      /*$$(*/ "AccountingReportType17.asset_name"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_COMPUTATION_METHOD =
+      /*$$(*/ "AccountingReportType17.computation_method"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_DURATION =
+      /*$$(*/ "AccountingReportType17.duration"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ACQISITION_DATE =
+      /*$$(*/ "AccountingReportType17.acquisition_date"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_RESIDUAL_VALUE =
+      /*$$(*/ "AccountingReportType17.residual_value"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_17_GROSS_VALUES =
+      /*$$(*/ "AccountingReportType17.gross_values"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ORIGINAL_VALUE =
+      /*$$(*/ "AccountingReportType17.original_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ACQISITION =
+      /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
+      /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
+      /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
+      /*$$(*/ "AccountingReportType17.depreciation"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_YEAR_START_VALUE =
+      /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
+      /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
 }
