@@ -90,6 +90,8 @@
 	    <field name="typeSelect" expr="1"/>
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="usableOnProduction" expr="eval:_productionWorkshop"/>
+    	<field name="isWorkshop" expr="eval:_productionWorkshop"/>
 	</action-record>
     
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">

@@ -12,6 +12,7 @@
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
+- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 
 ## Improvements
 - StockMove: ask if the user wants to manage backorder, if necessary
@@ -48,6 +49,7 @@
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
 - USER View : changes on some fields in form view.
+- LOGISTICAL FORM : changes in design.
 - SALE ORDER : Change title to shipping date instead of delivery date.
 
 ## Bug Fixes
