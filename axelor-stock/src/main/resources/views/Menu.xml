@@ -90,7 +90,7 @@
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect = :_statusSelect AND self.availabilityRequest = TRUE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
 		<context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
-		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
+		<context name="_userType" expr="Sender"/>
 	</action-view>
 
 		

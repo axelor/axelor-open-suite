@@ -209,12 +209,12 @@ public interface StockMoveService {
    *
    * @param stockMove
    */
-  void setOneStockMoveEditDate(StockMove stockMove);
+  void setPickingStockMoveEditDate(StockMove stockMove);
 
   /**
    * Update editDate of a list of Outgoing Stock Move
    *
    * @param ids
    */
-  void setStockMovesEditDate(List<Long> ids);
+  void setPickingStockMovesEditDate(List<Long> ids);
 }

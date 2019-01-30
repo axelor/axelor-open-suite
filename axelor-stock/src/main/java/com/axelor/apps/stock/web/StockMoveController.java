@@ -163,8 +163,8 @@ public class StockMoveController {
                   }
                 });
         fileLink = stockMovePrintService.printStockMoves(ids);
-        if (Integer.parseInt(userType) == StockMoveRepository.USER_TYPE_SENDER) {
-          stockMoveService.setStockMovesEditDate(ids);
+        if (userType.equals("Sender")) {
+          stockMoveService.setPickingStockMovesEditDate(ids);
         }
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -172,8 +172,8 @@ public class StockMoveController {
         stockMove = stockMoveRepo.find(stockMove.getId());
         title = stockMovePrintService.getFileName(stockMove);
         fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        if (Integer.parseInt(userType) == StockMoveRepository.USER_TYPE_SENDER) {
-          stockMoveService.setOneStockMoveEditDate(stockMove);
+        if (userType.equals("Sender")) {
+          stockMoveService.setPickingStockMoveEditDate(stockMove);
         }
         logger.debug("Printing " + title);
       } else {
@@ -218,8 +218,8 @@ public class StockMoveController {
                   }
                 });
         fileLink = pickingstockMovePrintService.printStockMoves(ids);
-        if (Integer.parseInt(userType) == StockMoveRepository.USER_TYPE_SENDER) {
-          stockMoveService.setStockMovesEditDate(ids);
+        if (userType.equals("Sender")) {
+          stockMoveService.setPickingStockMovesEditDate(ids);
         }
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -228,8 +228,8 @@ public class StockMoveController {
         title = pickingstockMovePrintService.getFileName(stockMove);
         fileLink =
             pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        if (Integer.parseInt(userType) == StockMoveRepository.USER_TYPE_SENDER) {
-          stockMoveService.setOneStockMoveEditDate(stockMove);
+        if (userType.equals("Sender")) {
+          stockMoveService.setPickingStockMoveEditDate(stockMove);
         }
         logger.debug("Printing " + title);
       } else {

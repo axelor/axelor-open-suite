@@ -1176,20 +1176,20 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void setOneStockMoveEditDate(StockMove stockMove) {
-    if (!stockMove.getOsmIsEdited()
+  public void setPickingStockMoveEditDate(StockMove stockMove) {
+    if (!stockMove.getPickingIsEdited()
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
-      stockMove.setOsmEditDate(LocalDate.now());
-      stockMove.setOsmIsEdited(true);
+      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingIsEdited(true);
     }
   }
 
   @Override
-  public void setStockMovesEditDate(List<Long> ids) {
+  public void setPickingStockMovesEditDate(List<Long> ids) {
     if (ids != null) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setOneStockMoveEditDate(stockMove);
+        setPickingStockMoveEditDate(stockMove);
       }
     }
   }

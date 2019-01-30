@@ -78,8 +78,8 @@
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
-	<boolean name="osmIsEdited" title="Outgoing Stock Move is edited"/>
-	<date name="osmEditDate" title="Outgoing Stock Move edit date"/>
+	<boolean name="pickingIsEdited" title="Outgoing Stock Move is edited"/>
+	<date name="pickingEditDate" title="Outgoing Stock Move edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>
@@ -95,10 +95,6 @@
 		public static final int STATUS_PLANNED = 2;
 		public static final int STATUS_REALIZED = 3;
 		public static final int STATUS_CANCELED = 4;
-		
-		// USER TYPE SELECT
-		public static final int USER_TYPE_SALESPERSON = 1;
-		public static final int USER_TYPE_SENDER = 2;
 		
 		// AVAILABLE STATUS SELECT
 		public static final int STATUS_AVAILABLE = 1;
@@ -128,7 +124,7 @@
       <field name="estimatedDate" />
       <field name="cancelReason" />
       <field name="realDate" if="statusSelect == 3" />
-      <field name="osmIsEdited" />
+      <field name="pickingIsEdited" />
       <field name="availabilityRequest" />
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">Draft move</message>

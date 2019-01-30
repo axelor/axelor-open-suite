@@ -61,7 +61,7 @@
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
         <field name="stockMoveSeq">
-			<hilite color="warning" strong="true" if="availabilityRequest || osmIsEdited"/>
+			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
 		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
@@ -195,7 +195,7 @@
                                     <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
                                     <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
                                		
-                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.osmIsEdited && record.statusSelect == 2" x-translate>Edited</span>
+                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Edited</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Available</span>
                                		
                                 </h4>
@@ -263,9 +263,9 @@
 				</panel>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="osmIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 1"/>
-				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 2 || ( osmIsEdited &amp;&amp; availabilityRequest)" />
-           		<field name="osmEditDate" showIf="osmEditDate" readonly="true"/>
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Salesperson'" />
+				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+           		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
