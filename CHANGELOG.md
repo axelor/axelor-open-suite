@@ -77,6 +77,7 @@
 - Ticket: NPE.
 - Move: required analytic distribution template.
 - CURRENCY CONVERSION : Exception ECB
+- Invoice: fix rounding error while computing totals.
 
 ## [5.1.1] - 2019-01-18
 ## Features
