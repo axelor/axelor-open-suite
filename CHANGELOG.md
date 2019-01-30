@@ -4,7 +4,7 @@
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
-- STOCKMOVE : add 2 field of supplier shipment informations (date and ref) and update views.
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref), update views and add config of Stock Move.
 - SALEORDER : grid view replace creationDate with confirmationDateTime
 - STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
