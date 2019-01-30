@@ -59,6 +59,7 @@
 - LOGISTICAL FORM : changes in design.
 - SALE ORDER : Change title to shipping date instead of delivery date.
 - Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
+- COST SHEET : On cost sheed computed from a Bill of material, for component product, if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
