@@ -40,11 +40,6 @@
 		<option value="3">Incoming move</option>
 	</selection>
 	
-	<selection name="stock.move.user.type.select">
-		<option value="1">Salesperson</option>
-		<option value="2">Sender</option>
-	</selection>
-
 	<selection name="stock.stock.rules.use.case.select">
 		<option value="1">Used for MRP</option>
 		<option value="2">Stock control</option>
