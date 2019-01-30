@@ -30,10 +30,7 @@
   <menuitem name="project-task-customer-new" title="New tasks" parent="project-task-customer" action="project.task.customer.new" order="2"/>
 
   <action-view name="project.task.customer.new" title="New tasks" model="com.axelor.team.db.TeamTask">
-	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status = :status AND self.isPrivate = false</domain>
-	<context name="status" expr="eval: 'new'"/>
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-customer" title="Tasks to be treated by customer" parent="project-task-customer"

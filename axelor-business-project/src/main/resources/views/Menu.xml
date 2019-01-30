@@ -22,7 +22,7 @@
 	     <context name="_fromProject" expr="eval:false"/>
 	</action-view>
 	
-	<menuitem name="business-project-root-invoicing-project" parent="menu-project-root" order="38" title="Invoicing project" action="business.project.root.invoicing.project"/>
+	<menuitem name="business-project-root-invoicing-project" order="-102" title="Invoicing project" action="business.project.root.invoicing.project"  icon="fa-tasks" icon-background="#3f6bb9" if="__config__.app.isApp('business-project')"/>
 
 	<action-view name="business.project.root.invoicing.project" title="Invoicing project" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<view type="grid" name="invoicing-project-grid"/>
