@@ -110,6 +110,38 @@
         eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">
         <field name="name" />
     </calendar>
+    
+    <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-customer-returns-form" title="Customer return" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-supplier-returns-form" title="Supplier return" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-internal-move-form" title="Internal Stock Move" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	
+	<form name="stock-move-availability-requests-form" title="Availability request" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+       
+       
+	<form name="stock-move-supplier-arrivals-form" title="Supplier Arrival" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">

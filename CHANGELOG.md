@@ -13,10 +13,12 @@
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Specific note on fiscal position.
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - INVOICES : alert message if no bank details in partner-form.
+- STOCK MOVE: rename stock move's title form according to its type.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -51,11 +53,13 @@
 - SALE ORDER : New label if availabilityRequest = true in linked stock moves
 - PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
 - AccountMangaement : Fix domain for sequence in form view
+- TimesheetLine: date is required.
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
 - USER View : changes on some fields in form view.
 - LOGISTICAL FORM : changes in design.
 - SALE ORDER : Change title to shipping date instead of delivery date.
+- Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
