@@ -146,7 +146,6 @@ public class StockMoveController {
     Context context = request.getContext();
     String fileLink;
     String title;
-    String userType = (String) context.get("_userType");
 
     try {
       StockMovePrintService stockMovePrintService = Beans.get(StockMovePrintService.class);
@@ -163,18 +162,12 @@ public class StockMoveController {
                   }
                 });
         fileLink = stockMovePrintService.printStockMoves(ids);
-        if (userType.equals("Sender")) {
-          stockMoveService.setPickingStockMovesEditDate(ids);
-        }
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
         StockMove stockMove = request.getContext().asType(StockMove.class);
         stockMove = stockMoveRepo.find(stockMove.getId());
         title = stockMovePrintService.getFileName(stockMove);
         fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        if (userType.equals("Sender")) {
-          stockMoveService.setPickingStockMoveEditDate(stockMove);
-        }
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
