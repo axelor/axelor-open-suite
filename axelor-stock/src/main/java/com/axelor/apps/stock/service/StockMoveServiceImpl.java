@@ -1173,4 +1173,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.checkExpirationDates(stockMove);
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void setOneStockMoveEditDate(StockMove stockMove) {
+    if (!stockMove.getOsmIsEdited()
+        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+      stockMove.setOsmEditDate(LocalDate.now());
+      stockMove.setOsmIsEdited(true);
+    }
+  }
+
+  @Override
+  public void setStockMovesEditDate(List<Long> ids) {
+    if (ids != null) {
+      for (Long id : ids) {
+        StockMove stockMove = stockMoveRepo.find(id);
+        setOneStockMoveEditDate(stockMove);
+      }
+    }
+  }
 }
