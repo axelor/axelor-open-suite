@@ -18,6 +18,7 @@
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - INVOICES : alert message if no bank details in partner-form.
+- STOCK MOVE: rename stock move's title form according to its type.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
