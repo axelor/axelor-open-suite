@@ -4,7 +4,7 @@
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
-- STOCKMOVE : add 2 field of supplier shipment informations (date and ref) and update views.
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref), update views and add config of Stock Move.
 - SALEORDER : grid view replace creationDate with confirmationDateTime
 - STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
@@ -18,6 +18,9 @@
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - INVOICES : alert message if no bank details in partner-form.
+- STOCK MOVE: rename stock move's title form according to its type.
+- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
+- MANUF. ORDER : cancel reasons.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -60,6 +63,8 @@
 - SALE ORDER : Change title to shipping date instead of delivery date.
 - Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
 - COST SHEET : On cost sheed computed from a Bill of material, for component product, if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
+- Rename Print button of Stock Move
+- SALE ORDER LINE: fix readonly issues.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -75,6 +80,7 @@
 - Ticket: NPE.
 - Move: required analytic distribution template.
 - CURRENCY CONVERSION : Exception ECB
+- Invoice: fix rounding error while computing totals.
 
 ## [5.1.1] - 2019-01-18
 ## Features

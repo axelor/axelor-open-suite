@@ -220,7 +220,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoice.getCompany().getCurrency(),
             exTaxTotal,
             invoice.getInvoiceDate())
-        .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override
