@@ -61,6 +61,7 @@
 - SALE ORDER : Change title to shipping date instead of delivery date.
 - Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
 - Rename Print button of Stock Move
+- SALE ORDER LINE: fix readonly issues.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
