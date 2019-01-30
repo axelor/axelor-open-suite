@@ -83,6 +83,7 @@
     	<panel name="mainPanel" sidebar="true" showIf="stepStatusSelect == 5">
 			<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<!--	<field name="timesheetPeriodConfig"/> -->
+			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
 			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
 			<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
 		</panel>
@@ -127,7 +128,10 @@
         
         <panel-tabs name="PermisionsPanelTab" showIf="[1,5].indexOf(stepStatusSelect) > -1">
           <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
-          <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
+          <panel name="parentPermissionsPanel" title="Permissions" showIf="[1,5].indexOf(stepStatusSelect) > -1">
+    		<field name="appPermissions" widget="MultiSelect" if="__config__.app.isApp('mobile')"/>
+	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
+    	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
           <panel-related name="projectSetPanel" field="projectSet" canEdit="false" showIf="stepStatusSelect == 1" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         </panel-tabs>

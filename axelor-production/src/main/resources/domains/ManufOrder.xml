@@ -61,6 +61,8 @@
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
     <string name="note" large="true"/>
+    <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     
     <unique-constraint columns="manufOrderSeq,company"/>
 
@@ -82,6 +84,7 @@
 	  <field name="clientPartner" />
 	  <field name="saleOrder" />
 	  <field name="statusSelect" />
+	  <field name="cancelReasonStr"/>
 	</track>
     
   </entity>

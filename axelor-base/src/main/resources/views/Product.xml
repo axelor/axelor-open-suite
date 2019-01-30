@@ -48,7 +48,7 @@
       			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="9" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
-       	 			<button name="$reservedQtyBtn" title="Reserved qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+       	 			<button name="$reservedQtyBtn" title="Allocated qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     	  			<field name="isModel" hidden="true"/>
 			</panel>
       		</panel>
@@ -69,9 +69,8 @@
       			<panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable','pack']" if="__config__.app.getApp('sale')?.getProductPackMgt()"/>
 			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!(__config__.app.getApp('sale')?.getProductPackMgt())"/>
-			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"
-			        	onChange="action-product-record-product-sub-type-select-onchange,action-product-attrs-hidden-is-shipping-costs-product"/>
-                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect==null || productTypeSelect == 'service' || productTypeSelect =='pack'"/>
+			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')" onChange="action-product-record-product-sub-type-select-onchange"/>
+                    <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
@@ -210,7 +209,7 @@
 				        <field name="checkExpirationDateAtStockMoveRealization" showIf="hasWarranty || isPerishable"/>
 	      			</panel>
 	      			<panel colSpan="12" name="trackingConfigPanel">
-	        			<field name="trackingNumberConfiguration" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
+	        			<field name="trackingNumberConfiguration" requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true" form-view="tracking-number-configuration-form" grid-view="tracking-number-configuration-grid"/>
 	      			</panel>
 	    		</panel>
 	    		<panel name="variantsPanel" title="Variants" showTitle="false" if="__config__.app.getApp('base').getManageProductVariants()">
@@ -346,7 +345,6 @@
     	<action name="action-product-record-sellable"/>
     	<action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     	<action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
-    	<action name="action-product-attrs-hidden-is-shipping-costs-product"/>
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
@@ -356,7 +354,6 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
-    	<action name="action-product-attrs-hidden-is-shipping-costs-product"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
@@ -383,7 +380,6 @@
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
-        <action name="action-product-attrs-hidden-is-shipping-costs-product"/>
 		<action name="action-product-attrs-cost-price-variant"/>
     </action-group>
 
@@ -391,10 +387,6 @@
 		<action name="action-product-attrs-update-cost-price"/>
 		<action name="action-product-record-compute-sale-price"/>
 	</action-group>
-	
-	<action-attrs name="action-product-attrs-hidden-is-shipping-costs-product">
-		<attribute name="hidden" for="isShippingCostsProduct" expr="eval: (_fromProduction || _fromStock || _fromSale || _fromPurchase) || (_isModel &amp;&amp; (productTypeSelect == 'service' || productSubTypeSelect))"/>
-	</action-attrs>
 
     <action-record name="action-product-record-sellable" model="com.axelor.apps.base.db.Product">
     	<field name="sellable" expr="eval: false" if="_fromProduction || _fromStock || _isShippingCostsProduct || _fromPurchase"/>

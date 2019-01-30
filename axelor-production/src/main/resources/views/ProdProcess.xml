@@ -14,7 +14,7 @@
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
-          onNew="action-prod-process-record-set-default-company"
+          onNew="action-prod-process-group-on-new"
           onLoad="action-prod-process-record-count-number-of-phases"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
@@ -47,8 +47,9 @@
 	        <field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
           <field name="launchQty"/>
 	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
-	        <field name="outsourcing" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
-	        <field name="isEnabledForAllProducts"/>
+	        <field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+	        <field name="isEnabledForAllProducts" colSpan="4"/>
+          <field name="stockMoveRealizeOrderSelect" colSpan="4"/>
         </panel>
 
         <panel-related name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
@@ -58,6 +59,11 @@
             <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
  		</panel>            
     </form>
+
+  <action-group name="action-prod-process-group-on-new">
+    <action name="action-prod-process-record-set-default-company"/>
+    <action name="action-prod-process-record-set-realize-order-select"/>
+  </action-group>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
@@ -94,7 +100,12 @@
 	
 	<action-record name="action-prod-process-record-set-default-company" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="company" expr="eval: __user__.getActiveCompany()"/>
+		<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
 	</action-record>
+
+  <action-record name="action-prod-process-record-set-realize-order-select" model="com.axelor.apps.production.db.ProdProcess">
+    <field name="stockMoveRealizeOrderSelect" expr="__config__.app.getApp('production').getStockMoveRealizeOrderSelect()"/>
+  </action-record>
 
     <action-record name="action-prod-process-record-count-number-of-phases" model="com.axelor.apps.production.db.ProdProcess">
         <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>

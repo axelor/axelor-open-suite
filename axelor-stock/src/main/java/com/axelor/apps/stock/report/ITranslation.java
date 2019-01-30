@@ -115,6 +115,8 @@ public interface ITranslation {
   public static final String PICKING_STOCK_MOVE_QTY = /*$$(*/ "PickingStockMove.qty"; /*)*/
   public static final String PICKING_STOCK_MOVE_WITH_WITHOUT = /*$$(*/
       "PickingStockMove.withWithout"; /*)*/
+  public static final String PICKING_STOCK_MOVE_CUSTOMER_CODE = /*$$(*/
+      "PickingStockMove.customerCode"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/

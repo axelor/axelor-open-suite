@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
@@ -43,11 +44,15 @@ public class CostSheetController {
           ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam("CostSheetId", costSheetId)
+<<<<<<< HEAD
               .addParam(
                   "manageCostSheetGroup",
                   Beans.get(AppProductionService.class)
                       .getAppProduction()
                       .getManageCostSheetGroup())
+=======
+              .addParam("BaseUrl", AppSettings.get().getBaseURL())
+>>>>>>> dev
               .generate()
               .getFileLink();
 

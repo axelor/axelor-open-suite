@@ -46,9 +46,9 @@
 			<field name="preventiveActions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
 		<panel sidebar="true" name="actionsPanel" title="Actions" hideIf="statusSelect == 4">
-			<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-quality-alert-record-status-confirm,save"/>
-			<button name="proposeActionBtn" title="Propose action" showIf="statusSelect == 2" onClick="action-quality-alert-record-status-proposed,save"/>
-			<button name="solveBtn" title="Solve" showIf="statusSelect == 3" onClick="action-quality-alert-record-status-solved,save"/>
+			<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="save,action-quality-alert-record-status-confirm,save"/>
+			<button name="proposeActionBtn" title="Propose action" showIf="statusSelect == 2" onClick="save,action-quality-alert-record-status-proposed,save"/>
+			<button name="solveBtn" title="Solve" showIf="statusSelect == 3" onClick="save,action-quality-alert-record-status-solved,save"/>
 		</panel>
 		<panel-mail name="mailPanel">
 		  <mail-messages />

@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -750,5 +751,29 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     public double doubleValue() {
       return Double.valueOf(count);
     }
+  }
+
+  @Override
+  public Boolean checkPartnerBankDetailsList(Invoice invoice) {
+    PaymentMode paymentMode = invoice.getPaymentMode();
+    Partner partner = invoice.getPartner();
+
+    if (partner == null || paymentMode == null) {
+      return true;
+    }
+
+    int paymentModeInOutSelect = paymentMode.getInOutSelect();
+    int paymentModeTypeSelect = paymentMode.getTypeSelect();
+
+    if ((paymentModeInOutSelect == PaymentModeRepository.IN
+            && (paymentModeTypeSelect == PaymentModeRepository.TYPE_IPO
+                || paymentModeTypeSelect == PaymentModeRepository.TYPE_IPO_CHEQUE
+                || paymentModeTypeSelect == PaymentModeRepository.TYPE_DD))
+        || (paymentModeInOutSelect == PaymentModeRepository.OUT
+            && paymentModeTypeSelect == PaymentModeRepository.TYPE_TRANSFER)) {
+      return partner.getBankDetailsList().stream().anyMatch(bankDetails -> bankDetails.getActive());
+    }
+
+    return true;
   }
 }
