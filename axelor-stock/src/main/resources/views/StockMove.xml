@@ -60,7 +60,9 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq"/>
+        <field name="stockMoveSeq">
+			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
+		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
@@ -189,9 +191,13 @@
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
-
+                                    
                                     <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
                                     <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
+                               		
+                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Edited</span>
+                                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Available</span>
+                               		
                                 </h4>
                             ]]>
                         </viewer>
@@ -245,8 +251,7 @@
                     <viewer>{{record.toAddressStr}}</viewer>
                 </field>
             </panel>
-            
-            <field name="filterOnAvailableProducts" onChange="action-stock-move-method-update-stock-move-line"/>
+            <field name="filterOnAvailableProducts" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
 			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3">
 				<panel name="SupplierShipmentDatePanel" itemSpan="12">
 					<field name="supplierShipmentDate" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
@@ -257,6 +262,11 @@
 					<label css="label-danger" title="Required" showIf="!supplierShipmentRef  &amp;&amp; statusSelect == 3"/>
 				</panel>
 			</panel>
+			<panel name="ShipmentOperationsInformations" colSpan="12">
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Salesperson'" />
+				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+           		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
+            </panel>
             <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
                 <viewer>
@@ -269,9 +279,6 @@
                     ]]>
                 </viewer>
             </field>
-            
-            <field name="availabilityRequest" widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2" readonlyIf="statusSelect==3"/>
-        
         </panel>
 
         <panel-tabs name="mainPanelTab">
@@ -341,7 +348,6 @@
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
             </panel>
         </panel-tabs>
-        
         <panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
@@ -567,6 +573,7 @@
 	    <field name="isWithBackorder" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithBackorder"  if="__user__.activeCompany != null"/>
 	    <field name="isWithReturnSurplus" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithReturnSurplus" if="__user__.activeCompany != null &amp;&amp; _typeSelect == 3"/>
 	    <field name="isWithReturnSurplus" expr="eval:false" if="_typeSelect != 3"/>
+	    <field name="_userType" expr="eval: _userType" />
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">

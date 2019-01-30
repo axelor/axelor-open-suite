@@ -1173,4 +1173,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.checkExpirationDates(stockMove);
     }
   }
+
+  @Override
+  @Transactional
+  public void setPickingStockMoveEditDate(StockMove stockMove) {
+    if (!stockMove.getPickingIsEdited()
+        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingIsEdited(true);
+    }
+  }
+
+  @Override
+  public void setPickingStockMovesEditDate(List<Long> ids) {
+    if (ids != null) {
+      for (Long id : ids) {
+        StockMove stockMove = stockMoveRepo.find(id);
+        setPickingStockMoveEditDate(stockMove);
+      }
+    }
+  }
 }
