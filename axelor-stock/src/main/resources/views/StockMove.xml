@@ -247,11 +247,11 @@
             <field name="filterOnAvailableProducts" onChange="action-stock-move-method-update-stock-move-line"/>
 			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3">
 				<panel name="SupplierShipmentDatePanel" itemSpan="12">
-					<field name="supplierShipmentDate" />
+					<field name="supplierShipmentDate" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
 					<label css="label-danger" title="Required" showIf="!supplierShipmentDate &amp;&amp; statusSelect == 3"/>
 				</panel>
 				<panel name="SupplierShipmentRefPanel" itemSpan="12">
-					<field name="supplierShipmentRef"/>
+					<field name="supplierShipmentRef" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
 					<label css="label-danger" title="Required" showIf="!supplierShipmentRef  &amp;&amp; statusSelect == 3"/>
 				</panel>
 			</panel>
@@ -478,8 +478,9 @@
 	<action-group name="action-group-stock-stockmove-realize-click">
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
-    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
-    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
+    	<action name="action-stock-move-validate-shipment-informations"/>
+	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
 
@@ -688,6 +689,10 @@
 	    <error message="Both source location address and delivery (to) address are required to define the delivery itinerary" if="fromStockLocation?.address == null &amp;&amp; toAddress == null"/>
 	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromStockLocation?.address == null"/>
 	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
+	</action-validate>
+	
+	<action-validate name="action-stock-move-validate-shipment-informations">
+		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Shipment Informations field must be filled to realize the stock move."/>
 	</action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
