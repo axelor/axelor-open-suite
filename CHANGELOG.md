@@ -13,6 +13,7 @@
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Specific note on fiscal position.
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
