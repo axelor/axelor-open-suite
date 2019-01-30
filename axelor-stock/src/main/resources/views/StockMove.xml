@@ -316,8 +316,6 @@
 	  	</panel-mail>
     </form>
 
-<<<<<<< HEAD
-=======
 	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
 		<panel name="mainPanel" colSpan="12">
 			<field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
@@ -344,7 +342,6 @@
 		<field name="isWithBackorder" expr="true"/>
 	</action-record>
 
->>>>>>> dev
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>

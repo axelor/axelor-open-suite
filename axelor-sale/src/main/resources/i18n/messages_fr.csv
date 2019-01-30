@@ -118,13 +118,9 @@
 "Delivery information","Informations de livraison",,
 "Description","Description",,
 "Description to display","Description à afficher",,
-<<<<<<< HEAD
 "Description to display on delivery","Description à afficher sur les BL",,
 "Description to display on invoice","Description à afficher sur la facture",,
-"Desired delivery date",,,
-=======
 "Desired delivery date","Date de livraison désirée",,
->>>>>>> dev
 "Details Lines","Lignes de détails",,
 "Discount","Remise",,
 "Discount Type","Type de remise",,

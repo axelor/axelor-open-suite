@@ -123,7 +123,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-<<<<<<< HEAD
         <scalar-parameter name="manageCostSheetGroup" id="5278">
             <property name="valueType">static</property>
             <property name="dataType">boolean</property>
@@ -134,8 +133,10 @@
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">check-box</property>
-            <structure name="format"/>
-=======
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
         <scalar-parameter name="BaseUrl" id="5442">
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -146,7 +147,6 @@
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
->>>>>>> dev
         </scalar-parameter>
     </parameters>
     <data-sources>
@@ -2950,11 +2950,7 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
             </footer>
         </table>
         <table id="461">
-<<<<<<< HEAD
-            <property name="width">7.948in</property>
-=======
             <property name="fontSize">8pt</property>
->>>>>>> dev
             <property name="dataSet">CostSheetLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>

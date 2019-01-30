@@ -140,14 +140,11 @@
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
-<<<<<<< HEAD
 					<field name="$totalPlannedDuration" title="Total Planned Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
-=======
 					<field name="cancelReason" hidden="true"/>
 					<field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
 					</field>
->>>>>>> dev
 				</panel>
 				<panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
