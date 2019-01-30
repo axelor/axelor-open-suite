@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+- SaleOrder: added boolean to invoice via generated task
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
 - Add new object 'Version' in business support module.
@@ -44,6 +45,7 @@
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 
 ## Improvements
+- SaleOrder: refactored 'Business Project' panel
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
 - HR Module : Timesheet - Rename Action Title in "timesheet-form".
