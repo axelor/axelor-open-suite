@@ -58,6 +58,7 @@
 - USER View : changes on some fields in form view.
 - LOGISTICAL FORM : changes in design.
 - SALE ORDER : Change title to shipping date instead of delivery date.
+- Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
