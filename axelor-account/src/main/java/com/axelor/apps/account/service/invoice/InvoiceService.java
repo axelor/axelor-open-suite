@@ -258,4 +258,6 @@ public interface InvoiceService {
    * @return pair of done/anomaly counts
    */
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
+
+  public Boolean checkPartnerBankDetailsList(Invoice invoice);
 }
