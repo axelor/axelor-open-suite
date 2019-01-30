@@ -1175,7 +1175,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void setPickingStockMoveEditDate(StockMove stockMove) {
     if (!stockMove.getPickingIsEdited()
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
