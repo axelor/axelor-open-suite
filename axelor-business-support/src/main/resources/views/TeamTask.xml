@@ -81,7 +81,7 @@
 				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations" readonlyIf="id"/>
 				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid" readonlyIf="id"/>
 				<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
-				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress" readonlyIf="id"/>
+				<field name="progressSelect" colSpan="6" widget="SelectProgress" onChange="action-task-update-planned-progress" readonlyIf="id"/>
 				<field name="assignment" hidden="true" readonlyIf="id"/>
 			</panel>
 		</panel>
