@@ -128,6 +128,7 @@
 			<button name="startBtn" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
 			<button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
+			<button name="realizeBtn" icon="fa-check" title="Consume in stock moves" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-consume-stock-move"/>
 			<button name="finishBtn" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
 			<button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
 			<button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel"/>
@@ -259,6 +260,10 @@
 
 	<action-method name="action-manuf-order-method-update-real-qty">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateRealQty"/>
+	</action-method>
+
+	<action-method name="action-manuf-order-method-consume-stock-move">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="consumeStockMove"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-compute-cost-price">

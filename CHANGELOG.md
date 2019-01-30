@@ -14,8 +14,13 @@
 - PartnerStockSettings : Added new field 'incoterm'.
 - MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
 - Specific note on fiscal position.
+- Prod process: add stock move realize order select.
+- Manuf Order: Add button to consume in stock moves.
+- BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
+- INVOICES : alert message if no bank details in partner-form.
 
 ## Improvements
+- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
@@ -50,6 +55,8 @@
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
 - USER View : changes on some fields in form view.
+- LOGISTICAL FORM : changes in design.
+- SALE ORDER : Change title to shipping date instead of delivery date.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -64,6 +71,7 @@
 - Workflow nodes: mistyped 'incoming'.
 - Ticket: NPE.
 - Move: required analytic distribution template.
+- CURRENCY CONVERSION : Exception ECB
 
 ## [5.1.1] - 2019-01-18
 ## Features

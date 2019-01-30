@@ -1711,6 +1711,7 @@
 "Waiting for deposit slip",,,
 "Warning, existing lines will be deleted, do you wish to continue?",,,
 "Watch out, an invoice was already created for this supplier invoice number.",,,
+"Watch out, this partner has no active bank details",,,
 "Weight table (Payer quality)",,,
 "Wire Transfer",,,
 "Wire transfer operation code",,,
