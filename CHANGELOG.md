@@ -52,6 +52,7 @@
 - SALE ORDER : New label if availabilityRequest = true in linked stock moves
 - PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
 - AccountMangaement : Fix domain for sequence in form view
+- TimesheetLine: date is required.
 - RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
 - Changed a button title in product form.
 - USER View : changes on some fields in form view.
