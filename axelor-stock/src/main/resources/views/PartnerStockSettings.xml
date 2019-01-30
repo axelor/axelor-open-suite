@@ -22,6 +22,7 @@
                requiredIf="realStockMoveAutomaticMail"
                showIf="realStockMoveAutomaticMail"
                form-view="template-form" grid-view="template-grid"/>
+        <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
     </grid>
 
     <form name="partner-stock-settings-form"
@@ -47,6 +48,7 @@
                   showIf="realStockMoveAutomaticMail"
                   form-view="template-form" grid-view="template-grid"/>
             </panel>
+            <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
         </panel>
     </form>
 

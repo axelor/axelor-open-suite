@@ -10,8 +10,17 @@
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 - Product Category : Add tree view.
 - MANUF. ORDER : cancel reasons
+- Add button in bank reconciliation form to load other bank statements.
+- PartnerStockSettings : Added new field 'incoterm'.
+- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Specific note on fiscal position.
+- Prod process: add stock move realize order select.
+- Manuf Order: Add button to consume in stock moves.
+- BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
+- INVOICES : alert message if no bank details in partner-form.
 
 ## Improvements
+- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
@@ -44,19 +53,26 @@
 - PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
 - AccountMangaement : Fix domain for sequence in form view
 - TimesheetLine: date is required.
+- RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
+- Changed a button title in product form.
+- USER View : changes on some fields in form view.
+- LOGISTICAL FORM : changes in design.
+- SALE ORDER : Change title to shipping date instead of delivery date.
 
 ## Bug Fixes
-- AppBuilder: fix export/import of a MetaJsonModel.
-- STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
-- Bank Reconciliation: Default toDate value is now filled.
-- DEMA DATA : fix display only english and french at Import selection
-- Base : Resolve Email PDF printing issue.
-- Stock Move mass invoicing: correct context on generated invoice.
-- PAYROLL : spelling problem
-- MANUF ORDER : cost sheet with tracking number
-- Studio: Fix translations of 'order' in MenuBuilder.
-- Fix typo of 'incoming' in workflow nodes.
-- TICKET : Fix NPE
+- App builder: export/import of a MetaJsonModel.
+- Stock management: CanEdit false on productSet in Stock Availability.
+- Bank reconciliation: default toDate value is now filled.
+- Demo data: display only English and French at Import selection.
+- Base: Email PDF printing.
+- Stock Move mass invoicing: context on generated invoice.
+- Payroll: spelling problem.
+- Manuf order: cost sheet with tracking number.
+- Studio: translations of 'order' in MenuBuilder.
+- Workflow nodes: mistyped 'incoming'.
+- Ticket: NPE.
+- Move: required analytic distribution template.
+- CURRENCY CONVERSION : Exception ECB
 
 ## [5.1.1] - 2019-01-18
 ## Features

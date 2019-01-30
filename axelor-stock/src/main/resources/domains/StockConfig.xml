@@ -33,7 +33,8 @@
     
     <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing"/>
 	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing"/>
-	
+    <boolean name="displayCustomerCodeOnPickingPrinting" title="Display customer code on picking printing"/>
+
 	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
 	
 	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>

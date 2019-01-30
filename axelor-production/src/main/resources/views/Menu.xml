@@ -247,6 +247,15 @@
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
 	</action-view>
 	
+	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop"/>
+	
+	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">
+		<view type="grid" name="stock-location-grid"/>
+		<view type="form" name="stock-location-form"/>
+		<domain>self.usableOnProduction = true AND self.isWorkshop = true</domain>
+		<context name="_productionWorkshop" expr="eval:true"/>
+	</action-view>
+	
 	<!-- ADMINISTRATION -->
 
 	<menuitem name="admin-root-batch-production" parent="admin-root-batch" if="__config__.app.isApp('production')" if-module="axelor-production" 

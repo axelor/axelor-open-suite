@@ -30,11 +30,8 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -44,7 +41,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -123,39 +119,17 @@ public class ManufOrderWorkflowService {
     manufOrder.setRealStartDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
 
-    int beforeOrAfterConfig =
-        Beans.get(ProductionConfigService.class)
-            .getProductionConfig(manufOrder.getCompany())
-            .getStockMoveRealizeOrderSelect();
+    int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
       manufOrder.addInStockMoveListItem(
-          realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList()));
+          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
+              manufOrder, manufOrder.getInStockMoveList()));
       manufOrder.addOutStockMoveListItem(
-          realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getOutStockMoveList()));
+          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
+              manufOrder, manufOrder.getOutStockMoveList()));
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
-  }
-
-  /**
-   * Finish unfinished stock move, and create an empty one.
-   *
-   * @param manufOrder
-   * @param stockMoveList
-   * @return the created empty stock move.
-   */
-  protected StockMove realizeStockMovesAndCreateOneEmpty(
-      ManufOrder manufOrder, List<StockMove> stockMoveList) throws AxelorException {
-    for (StockMove stockMove : stockMoveList) {
-      manufOrderStockMoveService.finishStockMove(stockMove);
-    }
-
-    StockMove newStockMove =
-        Beans.get(ManufOrderStockMoveService.class)
-            ._createToConsumeStockMove(manufOrder, manufOrder.getCompany());
-    newStockMove.setStockMoveLineList(new ArrayList<>());
-    Beans.get(StockMoveService.class).plan(newStockMove);
-    return newStockMove;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
