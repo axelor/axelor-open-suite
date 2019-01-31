@@ -67,6 +67,7 @@
 - Rename Print button of Stock Move
 - SALE ORDER LINE: fix readonly issues.
 - STOCKLOCATION : Disable canEdit on parentStockLocation, partner and address.Changed title of partner.
+- Studio: Add roles on meta field (buttons) generated from workflow(Wkf)
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
