@@ -42,6 +42,7 @@ public class AppMobileController {
     data.put("isTimesheetAppEnable", appMobile.getIsTimesheetAppEnable());
     data.put("isLeaveAppEnable", appMobile.getIsLeaveAppEnable());
     data.put("isExpenseAppEnable", appMobile.getIsExpenseAppEnable());
+    data.put("isTaskAppEnable", appMobile.getIsTaskAppEnable());
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 

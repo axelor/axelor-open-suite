@@ -10,6 +10,7 @@
       		<field name="isTimesheetAppEnable" widget="boolean-switch"/>
       		<field name="isLeaveAppEnable" widget="boolean-switch"/>
       		<field name="isExpenseAppEnable" widget="boolean-switch"/>
+      		<field name="isTaskAppEnable" widget="boolean-switch"/>
 			<field name="offlineRecordLimit"/>
 		</panel>
 		<panel-tabs name="mainPanelTab" showIf="isSaleAppEnable || isCrmAppEnable" >
