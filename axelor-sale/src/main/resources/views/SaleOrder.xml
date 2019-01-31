@@ -299,7 +299,7 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate"/>
+	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -1272,5 +1272,9 @@
 	<action-attrs name="action-sale-order-attrs-availability-request-label">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 	</action-attrs>
+	
+	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
+	</action-method>
 
 </object-views>
