@@ -66,6 +66,7 @@
 - COST SHEET : On cost sheed computed from a Bill of material, for component product, if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
 - Rename Print button of Stock Move
 - SALE ORDER LINE: fix readonly issues.
+- Studio: Add roles on meta field (buttons) generated from workflow(Wkf)
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
