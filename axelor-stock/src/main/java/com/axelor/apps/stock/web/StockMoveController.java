@@ -173,7 +173,6 @@ public class StockMoveController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
       }
-      response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -210,7 +209,7 @@ public class StockMoveController {
                   }
                 });
         fileLink = pickingstockMovePrintService.printStockMoves(ids);
-        if (userType.equals("Sender")) {
+        if (userType != null && userType.equals("Sender")) {
           stockMoveService.setPickingStockMovesEditDate(ids);
         }
         title = I18n.get("Stock Moves");
@@ -220,7 +219,7 @@ public class StockMoveController {
         title = pickingstockMovePrintService.getFileName(stockMove);
         fileLink =
             pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        if (userType.equals("Sender")) {
+        if (userType != null && userType.equals("Sender")) {
           stockMoveService.setPickingStockMoveEditDate(stockMove);
         }
         logger.debug("Printing " + title);
@@ -229,6 +228,7 @@ public class StockMoveController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
       }
+      response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -34,7 +34,9 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq"/>
+		<field name="stockMoveSeq">
+			<hilite color="warning" strong="true" if="pickingIsEdited"/>
+		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
@@ -50,6 +52,7 @@
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
         	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
+        <field name="pickingIsEdited" hidden="true" />
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -78,10 +81,8 @@
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
         	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
-        <field name="availabilityRequest">
-        	<hilite strong="true" color="warning" if="statusSelect==2"/>
-        	<hilite strong="true" color="success" if="statusSelect==3"/>
-        </field>
+        <field name="availabilityRequest"/>
+        <field name="pickingIsEdited" hidden="true" />
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -175,7 +176,7 @@
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" colSpan="1" showTitle="false" readonly="true">
 						<viewer><![CDATA[
                             <h4 class="text-right">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
@@ -184,8 +185,8 @@
                     		</h4>
 						]]></viewer>
 					</field>
-                    <field name="$tags" showTitle="false" colSpan="6" readonly="true" showIf="$readonly()">
-                        <viewer depends="typeSelect,conformitySelect">
+                    <field name="$tags" showTitle="false" colSpan="11" readonly="true" showIf="$readonly()">
+                        <viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect ">
                             <![CDATA[
                                 <h4 class="text-right">
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
@@ -195,8 +196,8 @@
                                     <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
                                     <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
                                		
-                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Edited</span>
-                                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Available</span>
+                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Picking printed</span>
+                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Availability request</span>
                                		
                                 </h4>
                             ]]>
@@ -263,7 +264,7 @@
 				</panel>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Salesperson'" />
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" />
 				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
            		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
             </panel>
