@@ -82,6 +82,7 @@
 - Move: required analytic distribution template.
 - CURRENCY CONVERSION : Exception ECB
 - Invoice: fix rounding error while computing totals.
+- Sale Order Line: hide reserved qty buttons on new line.
 
 ## [5.1.1] - 2019-01-18
 ## Features

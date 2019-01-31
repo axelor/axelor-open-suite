@@ -45,10 +45,10 @@
 	</action-method>
 
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
-		<attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
-		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
+		<attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
+    <attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
+		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
+    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
 	</action-attrs>
 
 	<action-attrs name="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty">
