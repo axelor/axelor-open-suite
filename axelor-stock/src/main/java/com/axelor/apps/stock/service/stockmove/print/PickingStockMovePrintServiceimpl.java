@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.stock.service.stockmove.print;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -38,11 +32,16 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintService {
 
   @Inject private StockMoveService stockMoveService;
-	
+
   @Override
   public String printStockMoves(List<Long> ids, String userType) throws IOException {
     List<File> printedStockMoves = new ArrayList<>();
@@ -92,7 +91,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
   @Override
   public String printStockMove(StockMove stockMove, String format, String userType)
       throws AxelorException, IOException {
-	stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
+    stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
     String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
     return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
