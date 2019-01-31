@@ -9,6 +9,7 @@
 		<option value="timesheet">Timesheets</option>
 		<option value="expense">Expenses</option>
 		<option value="leave">Leaves</option>
+		<option value="task">Task</option>
 	</selection>
 
 </object-views>

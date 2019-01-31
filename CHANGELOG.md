@@ -58,6 +58,7 @@
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
+- Moible: Add new app setting for 'Task'
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
