@@ -65,6 +65,7 @@
 - COST SHEET : On cost sheed computed from a Bill of material, for component product, if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
 - Rename Print button of Stock Move
 - SALE ORDER LINE: fix readonly issues.
+- STOCKLOCATION : Disable canEdit on parentStockLocation, partner and address.Changed title of partner.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
