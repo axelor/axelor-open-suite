@@ -46,7 +46,7 @@
 
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
-		<boolean name="timeInvoicing" title="Invoicing Time"/>
+		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
 
 	 	<extra-code><![CDATA[
 		

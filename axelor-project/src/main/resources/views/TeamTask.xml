@@ -73,7 +73,7 @@
 					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
-					<button name="acceptOrderBtn" title="Accept Order" hideIf="!timeInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<button name="acceptOrderBtn" title="Accept Order" hideIf="teamTaskInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1"/>
 					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2"/>
 				</panel>
@@ -144,8 +144,8 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="timeInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="timeInvoicing" onChange="action-team-task-attrs-to-invoice"/>
+				<field name="teamTaskInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="teamTaskInvoicing" onChange="action-team-task-attrs-to-invoice"/>
 				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
 					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
 					<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="6" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
@@ -367,7 +367,7 @@
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
 		<field name="invoicingType" expr="eval: project?.invoicingType"/>
-		<field name="timeInvoicing" expr="eval: project?.timeInvoicing"/>
+		<field name="teamTaskInvoicing" expr="eval: project?.teamTaskInvoicing"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
@@ -493,8 +493,8 @@
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-to-invoice">
-		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 2 &amp;&amp; timeInvoicing"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 2 &amp;&amp; timeInvoicing"/>
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 2 &amp;&amp; teamTaskInvoicing"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 2 &amp;&amp; teamTaskInvoicing"/>
 	</action-attrs>
 	
 	<action-attrs name="action-team-task-attrs-assginment-customer">
