@@ -53,8 +53,11 @@
 				<field name="useForPartnerBalance" colSpan="3"/>
 				<field name="reconcileOk" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-				<field name="analyticDistributionAuthorized" widget="boolean-switch"/>
-				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" showIf="analyticDistributionAuthorized"/>
+				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4"/>
+				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
+				<field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
+				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
+				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      

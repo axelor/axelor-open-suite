@@ -76,11 +76,19 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         TeamTask task =
             teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
+
+        if (saleOrder.getToInvoiceViaTask()) {
+          task.setTeamTaskInvoicing(true);
+          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+        }
+
         task.setTaskDate(startDate.toLocalDate());
+        task.setUnitPrice(product.getSalePrice());
         teamTaskRepository.save(task);
         tasks.add(task);
       }
     }
+
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
         .model(TeamTask.class.getName())
         .add("grid", "team-task-grid")

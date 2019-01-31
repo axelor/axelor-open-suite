@@ -40,7 +40,12 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +56,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Inject protected BillOfMaterialRepository billOfMaterialRepo;
 
   @Inject private TempBomTreeRepository tempBomTreeRepo;
+
+  @Inject private ProductRepository productRepo;
 
   @Override
   public List<BillOfMaterial> getBillOfMaterialSet(Product product) {
@@ -341,5 +348,57 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) {
     billOfMaterial.getProduct().setDefaultBillOfMaterial(billOfMaterial);
+  }
+
+  @Override
+  public String computeName(BillOfMaterial bom) {
+    return bom.getProduct().getName()
+        + " - "
+        + bom.getQty()
+        + bom.getUnit().getName()
+        + " - "
+        + bom.getId();
+  }
+  
+  
+  @Override
+  public List<BillOfMaterialLine> addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
+    if (rawMaterials != null && !rawMaterials.isEmpty()) {
+      BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
+      int priority = 0;
+      List<BillOfMaterialLine> bomLineList = billOfMaterial.getBillOfMaterialLineList();
+      if (bomLineList != null && !bomLineList.isEmpty()) {
+        priority =
+            Collections.max(
+                bomLineList.stream().map(it -> it.getPriority()).collect(Collectors.toSet()));
+      }
+
+      for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
+        priority += 10;
+        BillOfMaterialLine newComponent =
+            createBomFromRawMaterial(
+                Long.valueOf((int) rawMaterial.get("id")), billOfMaterial, priority);
+        bomLineList.add(newComponent);
+      }
+
+      return bomLineList;
+    }
+
+    return null;
+  }
+
+  protected BillOfMaterialLine createBomFromRawMaterial(
+      long productId, BillOfMaterial parent, int priority) {
+    BillOfMaterialLine newBomLine = new BillOfMaterialLine();
+    Product rawMaterial = productRepo.find(productId);
+    newBomLine.setPriority(priority);
+    newBomLine.setProduct(rawMaterial);
+    newBomLine.setQty(BigDecimal.ONE);
+    newBomLine.setUnit(rawMaterial.getUnit());
+    newBomLine.setBillOfMaterial(null);
+    newBomLine.setParent(parent);
+
+    return newBomLine;
   }
 }

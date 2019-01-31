@@ -102,11 +102,11 @@
   	</xml>
   </wkf>
   
-  <wkfNode wkf="Product Order Flow" name="Draft" title="Draft" startNode="1" sequence="1" xmlId="StartEvent_07npy19"/>
-  <wkfNode wkf="Product Order Flow" name="Confirmed" title="Confirmed" sequence="2" xmlId="Task_07my1i6" />
-  <wkfNode wkf="Product Order Flow" name="Validated" title="Validated" sequence="3" xmlId="Task_0k79fbo" />
-  <wkfNode wkf="Product Order Flow" name="Canceled" title="Canceled" sequence="4" xmlId="Task_069h0a2"/>
-  <wkfNode wkf="Product Order Flow" name="Finished" title="Finished" sequence="5"  endNode="1" xmlId="EndEvent_062urgf"/>
+  <wkfNode wkf="Product Order Flow" name="Draft" title="Draft" nodeType="0" sequence="1" xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="Product Order Flow" name="Confirmed" title="Confirmed" nodeType="1" sequence="2" xmlId="Task_07my1i6" />
+  <wkfNode wkf="Product Order Flow" name="Validated" title="Validated" nodeType="1" sequence="3" xmlId="Task_0k79fbo" />
+  <wkfNode wkf="Product Order Flow" name="Canceled" title="Canceled" nodeType="1" sequence="4" xmlId="Task_069h0a2"/>
+  <wkfNode wkf="Product Order Flow" name="Finished" title="Finished" nodeType="2" sequence="5" xmlId="EndEvent_062urgf"/>
   
   <transition wkf="Product Order Flow" name="Confirm" source="Draft" target="Confirmed" isButton="true" buttonTitle="Confirm" xmlId="SequenceFlow_0qljt6y"/>
   <transition wkf="Product Order Flow" name="Validate" source="Confirmed" target="Validated" isButton="true" buttonTitle="Validate" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Are you sure wants to validate." successMsg="Order validated" />
@@ -115,42 +115,42 @@
   <transition wkf="Product Order Flow" name="Reset" source="Canceled" target="Draft" isButton="true" buttonTitle="Reset" xmlId="SequenceFlow_1yn5orr" />
   
   <node wkf="Product Order Flow" name="Draft">
-  		<incommings>
-  			<incomming name="Reset" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Reset" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Confirm" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Confirmed">
-  		<incommings>
-  			<incomming name="Confirm" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Confirm" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Validate" />
   			<outgoing name="Cancel" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Validated">
-  		<incommings>
-  			<incomming name="Validate" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Validate" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Finish" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Canceled">
-  		<incommings>
-  			<incomming name="Cancel" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Cancel" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Reset" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Finished">
-  		<incommings>
-  			<incomming name="Finish" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Finish" />
+  		</incomings>
   </node>
   
   <workflow name="Product Order Flow" />

@@ -16,23 +16,31 @@
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account.analyticDistributionAuthorized" hidden="true"/>
+        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"/>
         <field name="debit" aggregate="sum" width="100"/>
         <field name="credit" aggregate="sum" width="100"/>
         <field name="amountRemaining" aggregate="sum" width="100"/>
     	<field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect" width="90"/>
         <field name="reconcileGroup"/>
         <field name="origin"/>
         <field name="description"/>
+        <field name="dueDate"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
     
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
+		<field name="account.isTaxRequiredOnMoveLine" hidden="true" />
+		<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
+		<field name="account.analyticDistributionAuthorized" hidden="true"/>
+		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
 		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
@@ -40,9 +48,10 @@
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
-    	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
+    	<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"/>
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="origin"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
@@ -57,13 +66,16 @@
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account.analyticDistributionAuthorized" hidden="true"/>
+        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
        	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect"/>
         <field name="reconcileGroup"/>
         <field name="origin"/>
@@ -80,12 +92,15 @@
         <field name="move.journal"/>
         <field name="description"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account.analyticDistributionAuthorized" hidden="true"/>
+        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="debit" aggregate="sum"/>
         <field name="credit" aggregate="sum"/>
         <field name="amountRemaining" aggregate="sum"/>
        	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"/>
+        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect"/>
        	<field name="reconcileGroup"/>
         <field name="origin"/>
@@ -95,8 +110,13 @@
     
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
-			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"/>
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
+              requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+            <panel colSpan="12" hidden="true">
+              <field name="account.analyticDistributionAuthorized"/>
+              <field name="account.analyticDistributionRequiredOnMoveLines"/>
+            </panel>
 		</panel>
     </form>
     
@@ -257,12 +277,14 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="othersPanel" title="Others" readonly="true">
-				<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"/>
+			<panel name="othersPanel" title="Others">
+				<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
-				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"/>
-				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"/>
-				<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
+				<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
+				<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
+				<field name="bankReconciledAmount" if-module="axelor-bank-payment"  readonly="true"/>
+				<field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
+				<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
 		</panel-tabs>
@@ -347,11 +369,11 @@
 		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} MEMBER OF self.companySet&quot;" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.Move'"/>
 		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;" if="_parent == null || _parent._model != 'com.axelor.apps.account.db.Move'"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
-		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
 	</action-attrs>
-	
+
     <action-record name="action-account-move-line-record-calculate-balance" model="com.axelor.apps.base.db.Wizard">
       <field name="$credit" expr="eval: _credit" if="_credit != null"/>
       <field name="$debit" expr="eval: _debit" if="_debit != null"/>
@@ -415,7 +437,7 @@
 		<view type="form" name="move-line-move-form"/>
 		<domain>self.account.id = :_id</domain>
 	</action-view>
-	
+
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>
 		<field name="move.journal" title="Journal"/>

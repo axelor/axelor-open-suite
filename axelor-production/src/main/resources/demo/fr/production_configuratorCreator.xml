@@ -773,7 +773,7 @@
 		
 		<configuratorProductFormulaList>
 			<configuratorProductFormula>
-				<metaField>1441</metaField>
+				<metaField>description</metaField>
 				<formula>description = ""
 if (carteMere_1?.description){
   description += "Carte mère : " + carteMere_1.description + "\n"
@@ -796,7 +796,7 @@ return description;</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1400</metaField>
+				<metaField>salePrice</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -813,7 +813,7 @@ return cp*nbOrdi_1*1.5</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1401</metaField>
+				<metaField>costPrice</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -830,35 +830,35 @@ return cp*nbOrdi_1</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1438</metaField>
+				<metaField>code</metaField>
 				<formula>"ORD"+"-"+ (__repo__(Product).all().filter("self.name = 'Ordinateur personnalisé'").count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1434</metaField>
+				<metaField>name</metaField>
 				<formula>"Ordinateur personnalisé"</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1445</metaField>
+				<metaField>productCategory</metaField>
 				<formula>__repo__(ProductCategory).all().filter("self.code = 'SER'").fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1397</metaField>
+				<metaField>productTypeSelect</metaField>
 				<formula>'storable'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1436</metaField>
+				<metaField>productFamily</metaField>
 				<formula>__repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
@@ -1261,7 +1261,7 @@ return cp*nbOrdi_1</formula>
 		
 		<configuratorProductFormulaList>
 			<configuratorProductFormula>
-				<metaField>1401</metaField>
+				<metaField>costPrice</metaField>
 				<formula>((longueurA_2?:0)*(largeurA_2?:0)*(quantiteAffiches_2?:0))/6+0.30*(quantiteFlyers_2?:0)
 </formula>
 				<showOnConfigurator>true</showOnConfigurator>
@@ -1269,29 +1269,29 @@ return cp*nbOrdi_1</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1397</metaField>
+				<metaField>costTypeSelect</metaField>
 				<formula>'storable'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1434</metaField>
+				<metaField>name</metaField>
 				<formula>'Campagne publicitaire'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1438</metaField>
+				<metaField>code</metaField>
 				<formula>"PUB"+"-"+ (__repo__(Product).all().filter("self.name = 'Campagne publicitaire'").count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1445</metaField>
-				<formula>'forfait'</formula>
+				<metaField>productCategory</metaField>
+				<formula>__repo__(ProductCategory).all().filter("self.code = 'FORF'").fetchOne()</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>

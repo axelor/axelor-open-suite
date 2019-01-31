@@ -429,7 +429,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toString()
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString()
         + ".csv";
   }
 

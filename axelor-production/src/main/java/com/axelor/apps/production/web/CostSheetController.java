@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
@@ -48,6 +49,7 @@ public class CostSheetController {
                   Beans.get(AppProductionService.class)
                       .getAppProduction()
                       .getManageCostSheetGroup())
+              .addParam("BaseUrl", AppSettings.get().getBaseURL())
               .generate()
               .getFileLink();
 

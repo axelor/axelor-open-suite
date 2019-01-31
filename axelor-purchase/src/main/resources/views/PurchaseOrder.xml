@@ -214,7 +214,15 @@
 		<panel name="referencesPanel" title="References" hideIf="supplierPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="externalReference" hideIf="company == null" onChange="action-purchase-order-attrs-external-reference"/>
       <field name="internalReference"/>
-      <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-important" hidden="true"/>
+      <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
+        <viewer>
+          <![CDATA[
+            <h5>
+              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
+            </h5>
+          ]]>
+				</viewer>
+      </field>
 		</panel>
 	   <panel name="characteristicsPanel" title="Characteristics" sidebar="true" hideIf="supplierPartner == null" canCollapse="true" collapseIf="true">
 			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 

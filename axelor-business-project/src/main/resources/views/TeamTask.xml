@@ -35,11 +35,11 @@
 	<action-record name="action-team-task-record-set-invoicing-type" model="com.axelor.team.db.TeamTask">
 		<field name="invoicingType" expr="eval: null"/>
 		<field name="toInvoice" expr="eval: false"/>
-		<field name="isOrderProposed" expr="eval: timeInvoicing"/>
+		<field name="isOrderProposed" expr="eval: teamTaskInvoicing"/>
 	</action-record>
 	
 	<action-record name="action-team-task-record-update-invoicing-type-and-time-invoicing" model="com.axelor.team.db.TeamTask">
-		<field name="timeInvoicing" expr="eval: project.timeInvoicing"/>
+		<field name="teamTaskInvoicing" expr="eval: project.teamTaskInvoicing"/>
 		<field name="invoicingType" expr="eval: project.invoicingType"/>
 	</action-record>
 

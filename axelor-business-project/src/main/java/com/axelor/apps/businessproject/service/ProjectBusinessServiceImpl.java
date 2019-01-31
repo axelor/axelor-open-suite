@@ -152,13 +152,16 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    */
   @Override
   public Project generateProject(SaleOrder saleOrder) {
-    Project project =
-        this.generateProject(
-            null,
-            saleOrder.getFullName() + "_project",
-            saleOrder.getSalemanUser(),
-            saleOrder.getCompany(),
-            saleOrder.getClientPartner());
+    Project project = projectRepo.findByName(saleOrder.getFullName() + "_project");
+    project =
+        project == null
+            ? this.generateProject(
+                null,
+                saleOrder.getFullName() + "_project",
+                saleOrder.getSalemanUser(),
+                saleOrder.getCompany(),
+                saleOrder.getClientPartner())
+            : project;
     saleOrder.setProject(project);
     return project;
   }
@@ -174,8 +177,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
-    if (parentProject != null && parentProject.getTimeInvoicing()) {
-      project.setTimeInvoicing(true);
+    if (parentProject != null && parentProject.getTeamTaskInvoicing()) {
+      project.setTeamTaskInvoicing(true);
       project.setInvoicingType(parentProject.getInvoicingType());
     }
     return project;

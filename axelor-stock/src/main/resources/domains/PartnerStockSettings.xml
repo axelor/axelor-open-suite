@@ -20,6 +20,7 @@
                      required="true"/>
         <many-to-one name="defaultStockLocation" title="Default stock location"
                      ref="com.axelor.apps.stock.db.StockLocation"/>
+        <many-to-one name="incoterm" title="Incoterm" ref="com.axelor.apps.stock.db.Incoterm"/>
     </entity>
 
 </domain-models>

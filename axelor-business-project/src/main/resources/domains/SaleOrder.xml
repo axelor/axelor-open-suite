@@ -8,6 +8,7 @@
   <entity name="SaleOrder" lang="java">
   	
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" />
+    <boolean name="toInvoiceViaTask" title="To invoice via task" default="false"/>
 
   </entity>
 

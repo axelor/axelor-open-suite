@@ -63,15 +63,7 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
     Map<String, Class<? extends DeclarationOfExchangesExporter>> map = null;
     EconomicArea economicArea = Beans.get(AppStockService.class).getAppStock().getEconomicArea();
     if (economicArea != null) {
-      exportServiceClassMap =
-          ImmutableMap.of(
-              economicArea.getCode(),
-              ImmutableMap.of(
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  DeclarationOfExchangesExporterGoods.class,
-                  ProductRepository.PRODUCT_TYPE_SERVICE,
-                  DeclarationOfExchangesExporterServices.class));
-
+      exportServiceClassMap = getExportServiceClassMap(economicArea);
       map =
           exportServiceClassMap.get(
               declarationOfExchanges.getCountry().getEconomicArea().getCode());
@@ -117,5 +109,17 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
     }
 
     return exporter.export();
+  }
+
+  @Override
+  public Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
+      getExportServiceClassMap(EconomicArea economicArea) {
+    return ImmutableMap.of(
+        economicArea.getCode(),
+        ImmutableMap.of(
+            ProductRepository.PRODUCT_TYPE_STORABLE,
+            DeclarationOfExchangesExporterGoods.class,
+            ProductRepository.PRODUCT_TYPE_SERVICE,
+            DeclarationOfExchangesExporterServices.class));
   }
 }

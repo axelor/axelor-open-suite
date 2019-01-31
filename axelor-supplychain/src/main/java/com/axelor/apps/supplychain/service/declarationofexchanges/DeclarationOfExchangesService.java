@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
+import com.axelor.apps.base.db.EconomicArea;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.exception.AxelorException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface DeclarationOfExchangesService {
@@ -31,4 +33,13 @@ public interface DeclarationOfExchangesService {
    * @throws AxelorException
    */
   Pair<Path, String> export(DeclarationOfExchanges declarationOfExchanges) throws AxelorException;
+
+  /**
+   * Override this method to use custom class for export.
+   *
+   * @param economicArea
+   * @return
+   */
+  Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
+      getExportServiceClassMap(EconomicArea economicArea);
 }

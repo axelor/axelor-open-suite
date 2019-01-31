@@ -16,14 +16,16 @@
         <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onLoad="action-stock-location-line-group-onload">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload">
     	<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="$readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
+            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
@@ -52,7 +54,7 @@
         <field name="rack"/>
     </grid>
 
-    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
+    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-atts-avg-price-scale">
         <panel name="mainPanel">
             <field name="product" form-view="product-form" grid-view="product-grid"/>
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -61,8 +63,9 @@
             <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="$readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
     </form>
     
@@ -76,16 +79,18 @@
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-group-onload"> 
+    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload"> 
 		<panel name="mainPanel">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="$readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
+            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
@@ -127,9 +132,7 @@
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
-            <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="$readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <field name="avgPrice"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
@@ -188,6 +191,10 @@
     <action-attrs name="action-stock-location-line-attrs-update-avg-price">
     	<attribute name="value" for="$isAvgPriceEditable" expr="eval:true"/>
     </action-attrs>
+    
+    <action-record name="action-stock-location-line-record-is-avg-price-changed" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<field name="isAvgPriceChanged" expr="eval:__self__.avgPrice.compareTo(__this__.avgPrice) != 0"/>
+    </action-record>
         
     <action-record name="action-stock-location-line-record-total-quantities" model="com.axelor.apps.stock.db.StockLocationLine">
     	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id)"/>

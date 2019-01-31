@@ -20,12 +20,14 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.CostSheetService;
-import com.axelor.apps.production.service.ManufOrderService;
-import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -129,12 +131,15 @@ public class ManufOrderController {
   public void cancel(ActionRequest request, ActionResponse response) {
 
     try {
-      Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      Context context = request.getContext();
+      ManufOrder manufOrder = context.asType(ManufOrder.class);
 
-      manufOrderWorkflowService.cancel(manufOrder);
-
-      response.setReload(true);
+      manufOrderWorkflowService.cancel(
+          manufOrderRepo.find(manufOrder.getId()),
+          manufOrder.getCancelReason(),
+          manufOrder.getCancelReasonStr());
+      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -162,6 +167,27 @@ public class ManufOrderController {
       for (ManufOrder manufOrder : manufOrders) {
         manufOrderWorkflowService.plan(manufOrder);
       }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from manuf order form on clicking realize button. Call {@link
+   * ManufOrderStockMoveService#realizeStockMovesAndCreateOneEmpty(ManufOrder, List)} with in stock
+   * move list to consume material used in manuf order.
+   *
+   * @param request
+   * @param response
+   */
+  public void consumeStockMove(ActionRequest request, ActionResponse response) {
+    try {
+
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = manufOrderRepo.find(manufOrder.getId());
+
+      Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -387,7 +413,12 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-      Beans.get(CostSheetService.class).computeCostPrice(manufOrder);
+
+      Beans.get(CostSheetService.class)
+          .computeCostPrice(
+              manufOrder,
+              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+              Beans.get(AppBaseService.class).getTodayDate());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

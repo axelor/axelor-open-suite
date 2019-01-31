@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -140,6 +141,28 @@ public class MoveValidateService {
                 moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
+    }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      Account account = moveLine.getAccount();
+      if (account.getIsTaxAuthorizedOnMoveLine()
+          && account.getIsTaxRequiredOnMoveLine()
+          && moveLine.getTaxLine() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_9),
+            account.getName());
+      }
+
+      if (moveLine.getAnalyticDistributionTemplate() == null
+          && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+          && account.getAnalyticDistributionAuthorized()
+          && account.getAnalyticDistributionRequiredOnMoveLines()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_10),
+            account.getName());
+      }
     }
 
     this.validateWellBalancedMove(move);

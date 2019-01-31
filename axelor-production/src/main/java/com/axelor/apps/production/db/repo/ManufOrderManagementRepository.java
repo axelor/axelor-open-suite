@@ -21,7 +21,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

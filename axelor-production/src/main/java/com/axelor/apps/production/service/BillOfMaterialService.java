@@ -19,10 +19,13 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface BillOfMaterialService {
@@ -59,4 +62,9 @@ public interface BillOfMaterialService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
+
+  String computeName(BillOfMaterial bom);
+
+  List<BillOfMaterialLine> addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
 }

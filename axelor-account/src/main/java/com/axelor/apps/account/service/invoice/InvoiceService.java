@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -40,6 +42,26 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceService {
 
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
+
+  /**
+   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
+   * type of invoice.
+   *
+   * @param invoice Invoice to fetch the partner account for
+   * @return null if the invoice does not contains enough information to determine the partner
+   *     account.
+   * @throws AxelorException
+   */
+  Account getPartnerAccount(Invoice invoice) throws AxelorException;
+
+  /**
+   * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
+   *
+   * @param invoice Invoice to fetch the journal for.
+   * @return The suitable journal or null (!) if invoice's company is empty.
+   * @throws AxelorException If operationTypeSelect is empty
+   */
+  Journal getJournal(Invoice invoice) throws AxelorException;
 
   /**
    * Lever l'ensemble des alarmes d'une facture.
@@ -236,4 +258,6 @@ public interface InvoiceService {
    * @return pair of done/anomaly counts
    */
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
+
+  public Boolean checkPartnerBankDetailsList(Invoice invoice);
 }

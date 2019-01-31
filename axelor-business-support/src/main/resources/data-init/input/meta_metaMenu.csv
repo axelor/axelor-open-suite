@@ -1,5 +1,5 @@
 "name";"roles.name"
-"menu-project-root";"role.customer"
 "project-task-customer";"role.customer"
 "project-versions";"Admin"
 "project-announcement";"Admin"
+"business-project-root-invoicing-project";"role.customer"
