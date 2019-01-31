@@ -134,7 +134,7 @@
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-		<context name="_userType" expr="Salesperson"/>
+		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
 	</action-view>
 	
 </object-views>

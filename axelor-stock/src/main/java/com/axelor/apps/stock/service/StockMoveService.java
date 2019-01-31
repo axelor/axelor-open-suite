@@ -208,13 +208,15 @@ public interface StockMoveService {
    * Update editDate of one Outgoing Stock Move
    *
    * @param stockMove
+   * @param userType
    */
-  void setPickingStockMoveEditDate(StockMove stockMove);
+  void setPickingStockMoveEditDate(StockMove stockMove, String userType);
 
   /**
    * Update editDate of a list of Outgoing Stock Move
    *
    * @param ids
+   * @param userType
    */
-  void setPickingStockMovesEditDate(List<Long> ids);
+  void setPickingStockMovesEditDate(List<Long> ids, String userType);
 }
