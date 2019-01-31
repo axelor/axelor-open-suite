@@ -54,8 +54,8 @@
 		</panel>
 
 		<panel name="logisticalFormPanel">
-			<field name="logisticalFormAutomaticMail"/>
-			<field name="logisticalFormMessageTemplate" requiredIf="logisticalFormAutomaticMail" showIf="logisticalFormAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+			<field name="logisticalFormAutomaticEmail"/>
+			<field name="logisticalFormMessageTemplate" requiredIf="logisticalFormAutomaticEmail" showIf="logisticalFormAutomaticEmail" grid-view="template-grid" form-view="template-form"/>
 		</panel>
 
 		<panel name="conformityCertiPanel" title="Conformity certificate">

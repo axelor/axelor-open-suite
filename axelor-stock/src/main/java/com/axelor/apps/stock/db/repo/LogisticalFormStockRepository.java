@@ -58,7 +58,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
 
         if (!logisticalForm.getIsEmailSent()) {
           StockConfig stockConfig = Beans.get(StockConfigService.class).getStockConfig(company);
-          if (stockConfig.getLogisticalFormAutomaticMail()) {
+          if (stockConfig.getLogisticalFormAutomaticEmail()) {
             Template template = stockConfig.getLogisticalFormMessageTemplate();
             if (template == null) {
               throw new AxelorException(
