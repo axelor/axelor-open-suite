@@ -96,15 +96,15 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="timeInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" readonly="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" readonly="true" showIf="timeInvoicing"/>
-				<panel name="pricingPanel" showIf="timeInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
+				<field name="teamTaskInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" readonly="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" readonly="true" showIf="teamTaskInvoicing"/>
+				<panel name="pricingPanel" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
 					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
 					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="timeInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">

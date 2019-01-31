@@ -177,8 +177,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
-    if (parentProject != null && parentProject.getTimeInvoicing()) {
-      project.setTimeInvoicing(true);
+    if (parentProject != null && parentProject.getTeamTaskInvoicing()) {
+      project.setTeamTaskInvoicing(true);
       project.setInvoicingType(parentProject.getInvoicingType());
     }
     return project;
