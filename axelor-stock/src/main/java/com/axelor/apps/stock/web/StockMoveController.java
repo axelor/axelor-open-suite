@@ -215,7 +215,8 @@ public class StockMoveController {
         stockMove = stockMoveRepo.find(stockMove.getId());
         title = pickingstockMovePrintService.getFileName(stockMove);
         fileLink =
-            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF, userType);
+            pickingstockMovePrintService.printStockMove(
+                stockMove, ReportSettings.FORMAT_PDF, userType);
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
