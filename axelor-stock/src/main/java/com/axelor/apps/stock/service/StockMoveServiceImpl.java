@@ -1176,20 +1176,21 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public void setPickingStockMoveEditDate(StockMove stockMove) {
+  public void setPickingStockMoveEditDate(StockMove stockMove, String userType) {
     if (!stockMove.getPickingIsEdited()
-        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+        && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       stockMove.setPickingEditDate(LocalDate.now());
       stockMove.setPickingIsEdited(true);
     }
   }
 
   @Override
-  public void setPickingStockMovesEditDate(List<Long> ids) {
-    if (ids != null) {
+  public void setPickingStockMovesEditDate(List<Long> ids, String userType) {
+    if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setPickingStockMoveEditDate(stockMove);
+        setPickingStockMoveEditDate(stockMove, userType);
       }
     }
   }

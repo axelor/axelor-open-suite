@@ -173,7 +173,6 @@ public class StockMoveController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
       }
-      response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -209,26 +208,21 @@ public class StockMoveController {
                     return Long.parseLong(input.toString());
                   }
                 });
-        fileLink = pickingstockMovePrintService.printStockMoves(ids);
-        if (userType.equals("Sender")) {
-          stockMoveService.setPickingStockMovesEditDate(ids);
-        }
+        fileLink = pickingstockMovePrintService.printStockMoves(ids, userType);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
         StockMove stockMove = context.asType(StockMove.class);
         stockMove = stockMoveRepo.find(stockMove.getId());
         title = pickingstockMovePrintService.getFileName(stockMove);
         fileLink =
-            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        if (userType.equals("Sender")) {
-          stockMoveService.setPickingStockMoveEditDate(stockMove);
-        }
+            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF, userType);
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
       }
+      response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
