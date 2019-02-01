@@ -115,42 +115,42 @@
   <transition wkf="Product Order Flow" name="Reset" source="Canceled" target="Draft" isButton="true" buttonTitle="Reset" xmlId="SequenceFlow_1yn5orr" />
   
   <node wkf="Product Order Flow" name="Draft">
-  		<incommings>
-  			<incomming name="Reset" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Reset" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Confirm" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Confirmed">
-  		<incommings>
-  			<incomming name="Confirm" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Confirm" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Validate" />
   			<outgoing name="Cancel" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Validated">
-  		<incommings>
-  			<incomming name="Validate" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Validate" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Finish" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Canceled">
-  		<incommings>
-  			<incomming name="Cancel" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Cancel" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Reset" />
   		</outgoings>
   </node>
   <node wkf="Product Order Flow" name="Finished">
-  		<incommings>
-  			<incomming name="Finish" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Finish" />
+  		</incomings>
   </node>
   
   <workflow name="Product Order Flow" />

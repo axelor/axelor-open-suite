@@ -4,8 +4,30 @@
 ## Features
 - Workflow: Allow creation of a new field for the object related to the workflow
 - FACTOR : new menu in accounting
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref), update views and add config of Stock Move.
+- SALEORDER : grid view replace creationDate with confirmationDateTime
+- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- Product Category : Add tree view.
+- MANUF. ORDER : cancel reasons
+- Add button in bank reconciliation form to load other bank statements.
+- PartnerStockSettings : Added new field 'incoterm'.
+- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Specific note on fiscal position.
+- Prod process: add stock move realize order select.
+- Manuf Order: Add button to consume in stock moves.
+- BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
+- INVOICES : alert message if no bank details in partner-form.
+- STOCK MOVE: rename stock move's title form according to its type.
+- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
+- MANUF. ORDER : cancel reasons.
+- SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
+- SUBROGATION RELEASE : new printing design
+- STOCK CONFIG : New boolean for picking order printing
 
 ## Improvements
+- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
+- StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
 - BPM - WkfNode : use a RadioSelect with following values: "startNode, taskNode, endNode".
@@ -22,15 +44,58 @@
 - CONTRACT MODEL : set default company in contract-template-form
 - PRODUCT : Fix 'isShippingCostsProduct' appearance each time when we save the record.
 - Sale Order Line: allow edition of partially invoiced line.
+- Added dummy fields to show allocated and total stocks in SaleOrderLine
+- MOVE : Tax management - massUpdate
+- Account Chart : upload metaFile from data-init.
+- MOVE : Disable canEdit on journal
+- STOCKRULE : Remove canEdit on stockLocation.
+- PRODPROCESS : add attribute massUpdate in field name.
+- LOGISCTICAL FORM : add tracking field in grid view.
+- CostSheet : new printing design
+- Allow reversion stock move in mass invoicing.
+- Improve translations in AppBuilder.
+- INVENTORY : Change report design
+- SALE ORDER : New label if availabilityRequest = true in linked stock moves
+- PRODUCT : made trackingNumberConfiguration required on checkExpirationDateAtStockMoveRealization=true
+- AccountMangaement : Fix domain for sequence in form view
+- TimesheetLine: date is required.
+- RAW MATERIAL REQUIREMENT : Update report design and add new printing option 'showRequirementsByMO'.
+- Changed a button title in product form.
+- USER View : changes on some fields in form view.
+- LOGISTICAL FORM : changes in design.
+- SALE ORDER : Change title to shipping date instead of delivery date.
+- Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
+- COST SHEET : On cost sheed computed from a Bill of material, for component product (and waste), if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
+- Rename Print button of Stock Move
+- SALE ORDER LINE: fix readonly issues.
+- STOCKLOCATION : Disable canEdit on parentStockLocation, partner and address.Changed title of partner.
+- Studio: Add roles on meta field (buttons) generated from workflow(Wkf)
+- Partner : Check duplicate stock setting for same company.Changed domain filter for defaultStockLocation in partner stock settings.
+- PICKING ORDER : Add sale order externalReference on report
+- Base : Resolve NPE on fetching latitude and longitude.
+- FIXED ASSET: New reports 'Acquisitions' and 'Summary of gross values and depreciation'.
 - Timesheet: Improve process to check validity of dates.
 
 ## Bug Fixes
-- AppBuilder: fix export/import of a MetaJsonModel.
+- App builder: export/import of a MetaJsonModel.
 - STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
-- Bank Reconciliation: Default toDate value is now filled.
+- Bank reconciliation: default toDate value is now filled.
 - DEMA DATA : fix display only english and french at Import selection
 - Base : Resolve Email PDF printing issue.
+- Stock Move mass invoicing: context on generated invoice.
+- Payroll: spelling problem.
+- Manuf order: cost sheet with tracking number.
+- Studio: translations of 'order' in MenuBuilder.
+- Workflow nodes: mistyped 'incoming'.
+- Ticket: NPE.
+- Move: required analytic distribution template.
+- CURRENCY CONVERSION : Exception ECB
+- Invoice: fix rounding error while computing totals.
+- Sale Order Line: hide reserved qty buttons on new line.
+- Copy Stock Move : set supplier Shipment info and picking edit info to null.
+- Stock Move: correctly set isReversion on new.
 - Timesheet: allow user to enter a toDate greater than current date.
+
 
 ## [5.1.1] - 2019-01-18
 ## Features

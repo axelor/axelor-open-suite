@@ -22,7 +22,7 @@
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new" width="large">
     	<panel name="mainPanel" >
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false"/>
 			<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
 			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2"/>
 	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable'" onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>

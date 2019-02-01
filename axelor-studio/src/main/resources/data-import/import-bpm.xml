@@ -371,7 +371,7 @@
 		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true" create="false">
 			<bind node="wkf" to="wkf" search="self.name = :wkf" update="true" create="false" />
 			<bind node="name" to="name" alias="nodeName" />
-			<bind node="incommings/incomming" to="incomming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
 				<bind node="text()" to="name" alias="inNode" />
 			</bind>
 			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :outNode and self.wkf.name = :wkf" update="false" create="false">

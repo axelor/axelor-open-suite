@@ -96,8 +96,9 @@
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
+				<field name="analyticDistributionTemplate" readonlyIf="!account.analyticDistributionAuthorized" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-attrs-account-invoice-line-onnew-onload"/>
+				<field name="account.analyticDistributionAuthorized" hidden="true" />
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
@@ -155,7 +156,7 @@
 	</action-method>
     
     <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1 || !account.analyticDistributionAuthorized"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-set-domain-analytic-distribution-template">
@@ -354,8 +355,7 @@
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !_parent?.inAti"/>
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; _parent?.inAti"/>
 		
-		<attribute name="readonly" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; !account.analyticDistributionAuthorized"/>
-		<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
+		<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
 		
 	</action-attrs>
 

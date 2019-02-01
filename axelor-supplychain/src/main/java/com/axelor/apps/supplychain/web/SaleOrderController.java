@@ -613,4 +613,21 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void fillSaleOrderLinesEstimatedDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        Integer deliveryState = saleOrderLine.getDeliveryState();
+        if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
+            && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
+          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+        }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
 }

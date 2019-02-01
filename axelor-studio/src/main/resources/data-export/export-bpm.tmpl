@@ -311,9 +311,9 @@
 				wkf.nodes.each{
 					node ->
 					node = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.WkfNodeRepository' as Class).find(node.id)
-					incomming = ""
-					node.incomming.each{
-						incom -> incomming += """\n\t\t\t<incomming>${incom.name}</incomming>"""
+					incoming = ""
+					node.incoming.each{
+						incom -> incoming += """\n\t\t\t<incoming>${incom.name}</incoming>"""
 					}
 					
 					outgoing = ""
@@ -338,8 +338,8 @@
 						\n\t\t\t<xmlId>${node.xmlId}</xmlId>
 						\n\t\t\t<metaField>${node.metaField?.name}</metaField>
 						\n\t\t\t<metaFieldModel>${node.metaField?.metaModel?.name}</metaFieldModel>
-						\n\t\t\t<incommings>$incomming
-						\n\t\t\t</incommings>
+						\n\t\t\t<incomings>$incoming
+						\n\t\t\t</incomings>
 						\n\t\t\t<outgoings>$outgoing
 						\n\t\t\t</outgoings>
 						\n\t\t\t<roleSet>$roles
