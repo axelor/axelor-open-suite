@@ -23,6 +23,7 @@
 - MANUF. ORDER : cancel reasons.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
 - SUBROGATION RELEASE : new printing design
+- STOCK CONFIG : New boolean for picking order printing
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
