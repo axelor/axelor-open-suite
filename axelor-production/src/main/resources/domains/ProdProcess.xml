@@ -28,5 +28,7 @@
    	<boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
 
 		<decimal name="launchQty" title="Launch quantity"/>
+		<integer name="stockMoveRealizeOrderSelect" default="1"
+			selection="production.manuf.order.stock.move.realize.order.select"/>
   </entity>
 </domain-models>

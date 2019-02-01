@@ -156,8 +156,7 @@
 		</panel-mail>
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
-	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10" name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>
 		<field name="probability"/>
@@ -217,11 +216,6 @@
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     </action-group>
-    
-    <action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="name" expr="#{_value}"/>
-		<field name="user" expr="#{__user__}"/>
-	</action-record>
     
     <action-group name="action-group-crm-opportunity-nextstage-click">
     	<action name="action-opportunity-set-next-stage"/>

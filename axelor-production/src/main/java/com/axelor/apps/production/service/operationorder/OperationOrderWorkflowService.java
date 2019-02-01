@@ -30,7 +30,6 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
@@ -202,9 +201,7 @@ public class OperationOrderWorkflowService {
 
       if (operationOrder.getManufOrder() != null) {
         int beforeOrAfterConfig =
-            Beans.get(ProductionConfigService.class)
-                .getProductionConfig(operationOrder.getManufOrder().getCompany())
-                .getStockMoveRealizeOrderSelect();
+            operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
         if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
           for (StockMove stockMove : operationOrder.getInStockMoveList()) {
             Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);

@@ -211,6 +211,37 @@ public class ManufOrderStockMoveService {
   }
 
   /**
+   * Consume in stock moves in manuf order.
+   *
+   * @param manufOrder
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
+    manufOrder.addInStockMoveListItem(
+        realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList()));
+  }
+
+  /**
+   * Finish unfinished stock move, and create an empty one.
+   *
+   * @param manufOrder
+   * @param stockMoveList
+   * @return the created empty stock move.
+   */
+  public StockMove realizeStockMovesAndCreateOneEmpty(
+      ManufOrder manufOrder, List<StockMove> stockMoveList) throws AxelorException {
+    for (StockMove stockMove : stockMoveList) {
+      finishStockMove(stockMove);
+    }
+
+    StockMove newStockMove = _createToConsumeStockMove(manufOrder, manufOrder.getCompany());
+    newStockMove.setStockMoveLineList(new ArrayList<>());
+    Beans.get(StockMoveService.class).plan(newStockMove);
+    return newStockMove;
+  }
+
+  /**
    * A null safe method to get costPrice from the product in the prod product.
    *
    * @param prodProduct a nullable prodProduct.
