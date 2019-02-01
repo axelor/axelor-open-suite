@@ -218,16 +218,16 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
-  public BigDecimal getValuationPrice(Product product, Product parentProduct, boolean fromBOM) {
+  protected BigDecimal getValuationPrice(Product product, Product parentProduct, boolean fromBOM) {
 
     if (fromBOM) {
-      return getValuationPriceFromBOM(product, parentProduct);
+      return getValuationPriceFromBOM(product);
     } else {
       return getValuationPriceFromManufOrder(product, parentProduct);
     }
   }
 
-  public BigDecimal getValuationPriceFromManufOrder(Product product, Product parentProduct) {
+  protected BigDecimal getValuationPriceFromManufOrder(Product product, Product parentProduct) {
 
     BigDecimal price;
 
@@ -251,7 +251,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     return price;
   }
 
-  public BigDecimal getValuationPriceFromBOM(Product product, Product parentProduct) {
+  protected BigDecimal getValuationPriceFromBOM(Product product) {
 
     BigDecimal price = product.getCostPrice();
 
@@ -297,7 +297,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .convert(
                 unit,
                 product.getUnit(),
-                product.getCostPrice(),
+                getValuationPriceFromBOM(product),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(qty);

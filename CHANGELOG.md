@@ -65,7 +65,7 @@
 - LOGISTICAL FORM : changes in design.
 - SALE ORDER : Change title to shipping date instead of delivery date.
 - Opportunities : Delete the possibility to create a new Opportunity from first column "New" in kanban view.
-- COST SHEET : On cost sheed computed from a Bill of material, for component product, if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
+- COST SHEET : On cost sheed computed from a Bill of material, for component product (and waste), if the cost price is not filled, we take into account the average price, if empty, we take the purchase price, if empty we take the first positive supplier catalog price
 - Rename Print button of Stock Move
 - SALE ORDER LINE: fix readonly issues.
 - STOCKLOCATION : Disable canEdit on parentStockLocation, partner and address.Changed title of partner.
