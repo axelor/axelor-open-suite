@@ -68,6 +68,7 @@
 - SALE ORDER LINE: fix readonly issues.
 - STOCKLOCATION : Disable canEdit on parentStockLocation, partner and address.Changed title of partner.
 - Studio: Add roles on meta field (buttons) generated from workflow(Wkf)
+- Partner : Check duplicate stock setting for same company.Changed domain filter for defaultStockLocation in partner stock settings.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
