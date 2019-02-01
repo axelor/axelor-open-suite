@@ -66,6 +66,7 @@
 - TeamTask : Resolve NPE by updating action of HR module.
 - Generation of Project/Phase from SaleOrder
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
+- Contract : Fix issue of not saving currentContractVersion fields in form view
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
