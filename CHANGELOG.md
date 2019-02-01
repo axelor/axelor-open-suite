@@ -89,6 +89,7 @@
 - CURRENCY CONVERSION : Exception ECB
 - Invoice: fix rounding error while computing totals.
 - Sale Order Line: hide reserved qty buttons on new line.
+- Copy Stock Move : set supplier Shipment info and picking edit info to null.
 
 ## [5.1.1] - 2019-01-18
 ## Features
