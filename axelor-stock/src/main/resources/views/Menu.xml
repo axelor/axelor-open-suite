@@ -33,6 +33,7 @@
         <view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+        <context name="_isReversion" expr="eval: true"/>
     </action-view>
 
 	<menuitem name="stock-root-suparrivals" parent="stock-root-stock-moves"
@@ -62,6 +63,7 @@
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
         <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+        <context name="_isReversion" expr="eval: true"/>
     </action-view>
 
 	<menuitem name="stock-root-internal" parent="stock-root-stock-moves"
