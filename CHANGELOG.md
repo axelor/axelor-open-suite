@@ -74,13 +74,14 @@
 - PICKING ORDER : Add sale order externalReference on report
 - Base : Resolve NPE on fetching latitude and longitude.
 - FIXED ASSET: New reports 'Acquisitions' and 'Summary of gross values and depreciation'.
+- Timesheet: Improve process to check validity of dates.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
-- Stock management: CanEdit false on productSet in Stock Availability.
+- STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
 - Bank reconciliation: default toDate value is now filled.
-- Demo data: display only English and French at Import selection.
-- Base: Email PDF printing.
+- DEMA DATA : fix display only english and french at Import selection
+- Base : Resolve Email PDF printing issue.
 - Stock Move mass invoicing: context on generated invoice.
 - Payroll: spelling problem.
 - Manuf order: cost sheet with tracking number.
@@ -93,6 +94,8 @@
 - Sale Order Line: hide reserved qty buttons on new line.
 - Copy Stock Move : set supplier Shipment info and picking edit info to null.
 - Stock Move: correctly set isReversion on new.
+- Timesheet: allow user to enter a toDate greater than current date.
+
 
 ## [5.1.1] - 2019-01-18
 ## Features

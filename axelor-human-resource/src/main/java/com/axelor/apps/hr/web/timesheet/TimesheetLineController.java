@@ -32,9 +32,9 @@ import java.math.BigDecimal;
 
 public class TimesheetLineController {
 
-  private final String HOURS_DURATION_FIELD = "hoursDuration";
+  private static final String HOURS_DURATION_FIELD = "hoursDuration";
 
-  private final String DURATION_FIELD = "duration";
+  private static final String DURATION_FIELD = "duration";
 
   @Inject private TimesheetLineRepository timesheetLineRepo;
 

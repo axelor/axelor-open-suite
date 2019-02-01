@@ -237,7 +237,7 @@ public class TimesheetController {
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
     Map timesheetMap = (Map) request.getContext().get("timesheetSelect");
     Timesheet timesheet =
-        Beans.get(TimesheetRepository.class).find(new Long((Integer) timesheetMap.get("id")));
+        Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
         ActionView.define("Timesheet")
             .model(Timesheet.class.getName())
@@ -503,7 +503,7 @@ public class TimesheetController {
             .generate()
             .getFileLink();
 
-    logger.debug("Printing " + name);
+    logger.debug("Printing {}", name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
