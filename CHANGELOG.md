@@ -71,6 +71,7 @@
 - Studio: Add roles on meta field (buttons) generated from workflow(Wkf)
 - Partner : Check duplicate stock setting for same company.Changed domain filter for defaultStockLocation in partner stock settings.
 - PICKING ORDER : Add sale order externalReference on report
+- Base : Resolve NPE on fetching latitude and longitude.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.

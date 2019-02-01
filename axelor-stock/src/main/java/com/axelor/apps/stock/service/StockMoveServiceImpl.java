@@ -1040,7 +1040,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (result == null) {
       throw new AxelorException(
           stockMove,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.STOCK_MOVE_13),
           dString,
           aString);
