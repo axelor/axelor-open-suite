@@ -73,6 +73,7 @@
 - Partner : Check duplicate stock setting for same company.Changed domain filter for defaultStockLocation in partner stock settings.
 - PICKING ORDER : Add sale order externalReference on report
 - Base : Resolve NPE on fetching latitude and longitude.
+- FIXED ASSET: New reports 'Acquisitions' and 'Summary of gross values and depreciation'.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
