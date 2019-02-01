@@ -309,6 +309,10 @@ public interface ITranslation {
       "SubrogationRelease.creditTotal"; /*)*/
   public static final String SUBROGATION_RELEASE_GRAND_TOTAL = /*$$(*/
       "SubrogationRelease.grandTotal"; /*)*/
+  public static final String SUBROGATION_RELEASE_COMPANY_NAME = /*$$(*/
+      "SubrogationRelease.company"; /*)*/
+  public static final String SUBROGATION_RELEASE_SEQUENCE_NUMBER = /*$$(*/
+      "SubrogationRelease.sequenceNumber"; /*)*/
 
   public static final String CHEQUE_DEPOSIT_SLIP_TITLE = /*$$(*/ "ChequeDepositSlip.title"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_PRINTED_ON = /*$$(*/
