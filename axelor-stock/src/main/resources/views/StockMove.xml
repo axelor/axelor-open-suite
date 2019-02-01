@@ -575,6 +575,8 @@
 	    <field name="isWithReturnSurplus" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithReturnSurplus" if="__user__.activeCompany != null &amp;&amp; _typeSelect == 3"/>
 	    <field name="isWithReturnSurplus" expr="eval:false" if="_typeSelect != 3"/>
 	    <field name="_userType" expr="eval: _userType" />
+      <!-- force boolean conversion -->
+	    <field name="isReversion" expr="eval: _isReversion ?: false"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
