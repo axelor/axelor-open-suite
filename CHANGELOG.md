@@ -22,6 +22,7 @@
 - STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
 - MANUF. ORDER : cancel reasons.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
+- SUBROGATION RELEASE : new printing design
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
