@@ -95,8 +95,8 @@
 - Copy Stock Move : set supplier Shipment info and picking edit info to null.
 - Stock Move: correctly set isReversion on new.
 - Timesheet: allow user to enter a toDate greater than current date.
+- LOGISTICAL FORM : dotted field on saleOrder
 - DEBT RECOVERY : Fix NPE on Validate Debt Recovery
-
 
 ## [5.1.1] - 2019-01-18
 ## Features
