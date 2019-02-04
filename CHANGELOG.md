@@ -104,6 +104,7 @@
 - Fix raw material requirement report query.
 - MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
 - StockConfig: domain issue without supplychain.
+- OPPORTUNITY : save before calling the action on button onClick
 
 ## [5.1.1] - 2019-01-18
 ## Features
