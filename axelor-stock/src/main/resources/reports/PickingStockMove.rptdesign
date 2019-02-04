@@ -2290,13 +2290,13 @@ row["first_name"]
                             <property name="width">3cm</property>
                         </column>
                         <column id="3446">
-                            <property name="width">1in</property>
+                            <property name="width">0.7in</property>
                         </column>
                         <column id="4182">
-                            <property name="width">4cm</property>
+                            <property name="width">2.75cm</property>
                         </column>
                         <column id="3447">
-                            <property name="width">4cm</property>
+                            <property name="width">2.75cm</property>
                         </column>
                         <column id="3449">
                             <property name="width">1.2964583333333333cm</property>
@@ -2305,14 +2305,20 @@ row["first_name"]
                             <property name="width">1.5cm</property>
                         </column>
                         <column id="3450">
-                            <property name="width">3cm</property>
+                            <property name="width">4cm</property>
                         </column>
                         <column id="4097">
-                            <property name="width">2cm</property>
+                            <property name="width">1.5cm</property>
                         </column>
-                        <column id="4166"/>
-                        <column id="4172"/>
-                        <column id="4101"/>
+                        <column id="4166">
+                            <property name="width">1.5cm</property>
+                        </column>
+                        <column id="4172">
+                            <property name="width">1.1cm</property>
+                        </column>
+                        <column id="4101">
+                            <property name="width">1cm</property>
+                        </column>
                         <header>
                             <row id="3428">
                                 <property name="height">0.7672916666666666cm</property>
