@@ -79,6 +79,7 @@
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
 - PICKING ORDER : printing modification.
+- ProdProcess: Add massUpdate to stock move realize order select.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
