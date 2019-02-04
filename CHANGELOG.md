@@ -75,6 +75,7 @@
 - Default partner specific note on fiscal position.
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
+- Logistical form: track statusSelect.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -95,8 +96,9 @@
 - Copy Stock Move : set supplier Shipment info and picking edit info to null.
 - Stock Move: correctly set isReversion on new.
 - Timesheet: allow user to enter a toDate greater than current date.
+- LOGISTICAL FORM : dotted field on saleOrder
+- DEBT RECOVERY : Fix NPE on Validate Debt Recovery
 - MRP : NPE on cancel process
-
 
 ## [5.1.1] - 2019-01-18
 ## Features
