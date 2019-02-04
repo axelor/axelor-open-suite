@@ -74,6 +74,16 @@
 			<panel name="informationsPanel" title="Information">
        <!-- The condition $isReadOnly !== false is used to manage the case where isReadOnly is null. -->
 				<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly !== false" >
+				   
+  				<field name="$viewerTag" showTitle="false" showIf="product != null" readonly="true" colSpan="3">
+					<viewer depends="product.isUnrenewed,product.isPrototype"><![CDATA[
+					 	<h4>
+	                        <span class="label label-important" ng-show="record.product.isUnrenewed" x-translate>Unrenewed</span>
+	                        <span class="label label-important" ng-show="record.product.isPrototype" x-translate>Prototype</span>
+	                    </h4>
+					]]>
+					</viewer>
+				</field>
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
@@ -93,6 +103,9 @@
 	                    </h4>
 					]]></viewer>
 				</field>
+				
+				<field name="product.isUnrenewed" hidden="true"/>	
+        		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
@@ -412,7 +425,6 @@
 		
 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent?._model == 'com.axelor.apps.sale.db.SaleOrderLine'" />
 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'" />
-	
 	</action-attrs>
 	
 	<action-attrs if-module="axelor-business-project" name="action-sale-order-line-attrs-title-project-task">
