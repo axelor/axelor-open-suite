@@ -95,6 +95,7 @@
 - Copy Stock Move : set supplier Shipment info and picking edit info to null.
 - Stock Move: correctly set isReversion on new.
 - Timesheet: allow user to enter a toDate greater than current date.
+- MRP : NPE on cancel process
 
 
 ## [5.1.1] - 2019-01-18
