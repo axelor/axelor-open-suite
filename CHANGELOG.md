@@ -75,6 +75,7 @@
 - Default partner specific note on fiscal position.
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
+- Logistical form: track statusSelect.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
