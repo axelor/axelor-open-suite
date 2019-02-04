@@ -57,6 +57,28 @@
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
+    
+    <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
+    	</toolbar>
+		<field name="stockMoveSeq">
+			<hilite color="warning" strong="true" if="pickingIsEdited"/>
+		</field>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="realDate"/>
+        <field name="fromAddressStr" hidden="true"/>
+        <field name="toAddressStr"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="origin"/>
+        <field name="pickingIsEdited" hidden="true" />
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+    </grid>
 
      <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
@@ -108,6 +130,27 @@
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
+    
+    <grid name="stock-move-mass-invoicing-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    	<toolbar>
+			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    	</toolbar>
+        <field name="stockMoveSeq"/>
+        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="realDate"/>
+        <field name="fromAddressStr"/>
+        <field name="toAddressStr" hidden="true"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
+        <field name="supplierShipmentRef"/>
+        <field name="origin"/>
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+    </grid>
+    
+    
 
     <calendar name="stock-move-calendar" model="com.axelor.apps.stock.db.StockMove" eventStart="estimatedDate"
         eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">
