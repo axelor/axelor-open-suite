@@ -91,6 +91,7 @@
 - CURRENCY CONVERSION : Exception ECB
 - Invoice: fix rounding error while computing totals.
 - Sale Order Line: hide reserved qty buttons on new line.
+- MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
 
 ## [5.1.1] - 2019-01-18
 ## Features
