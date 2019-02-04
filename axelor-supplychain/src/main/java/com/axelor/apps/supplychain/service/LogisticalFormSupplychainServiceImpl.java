@@ -19,8 +19,15 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.LogisticalFormLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
     implements LogisticalFormSupplychainService {
@@ -30,5 +37,26 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     return saleOrderLine == null
         || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
+  }
+
+  @Override
+  protected LogisticalFormLine createLogisticalFormLine(
+      LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
+    LogisticalFormLine logisticalFormLine =
+        super.createLogisticalFormLine(logisticalForm, stockMoveLine, qty);
+
+    StockMove stockMove =
+        logisticalFormLine.getStockMoveLine() != null
+            ? logisticalFormLine.getStockMoveLine().getStockMove()
+            : null;
+
+    if (stockMove != null
+        && stockMove.getOriginId() != null
+        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
+      logisticalFormLine.setSaleOrder(
+          Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId()));
+    }
+
+    return logisticalFormLine;
   }
 }

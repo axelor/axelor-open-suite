@@ -2,28 +2,17 @@
 
 ## [Unreleased 5.1.2]
 ## Features
-- Workflow: Allow creation of a new field for the object related to the workflow
-- FACTOR : new menu in accounting
-- STOCKMOVE : add 2 field of supplier shipment informations (date and ref), update views and add config of Stock Move.
-- SALEORDER : grid view replace creationDate with confirmationDateTime
-- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
-- Product Category : Add tree view.
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
 - PartnerStockSettings : Added new field 'incoterm'.
-- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
-- Specific note on fiscal position.
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - INVOICES : alert message if no bank details in partner-form.
-- STOCK MOVE: rename stock move's title form according to its type.
 - STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
-- MANUF. ORDER : cancel reasons.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
-- SUBROGATION RELEASE : new printing design
-- STOCK CONFIG : New boolean for picking order printing
+- STOCK CONFIG : New boolean for picking order printing with details
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -74,13 +63,26 @@
 - PICKING ORDER : Add sale order externalReference on report
 - Base : Resolve NPE on fetching latitude and longitude.
 - FIXED ASSET: New reports 'Acquisitions' and 'Summary of gross values and depreciation'.
+- Timesheet: Improve process to check validity of dates.
+- Budget: convention applied to form view.
+- FACTOR : new menu in accounting
+- Workflow: Allow creation of a new field for the object related to the workflow
+- STOCKMOVE : add 2 field of supplier shipment informations (date and ref), update views and add config of Stock Move.
+- SALEORDER : grid view replace creationDate with confirmationDateTime
+- STOCKMOVELINE : Added stockMove.estimatedDate & stockMove.reservationDateTime in grid view and form view
+- Product Category : Add tree view.
+- MANUFACTURING : New menuitem 'Workshop' in Manufacturing -> Configuration
+- Default partner specific note on fiscal position.
+- STOCK MOVE: rename stock move's title form according to its type.
+- SUBROGATION RELEASE : new printing design
+- Logistical form: track statusSelect.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
-- Stock management: CanEdit false on productSet in Stock Availability.
+- STOCK MANAGEMENT : CanEdit false on productSet in Stock Availability.
 - Bank reconciliation: default toDate value is now filled.
-- Demo data: display only English and French at Import selection.
-- Base: Email PDF printing.
+- DEMA DATA : fix display only english and french at Import selection
+- Base : Resolve Email PDF printing issue.
 - Stock Move mass invoicing: context on generated invoice.
 - Payroll: spelling problem.
 - Manuf order: cost sheet with tracking number.
@@ -91,7 +93,15 @@
 - CURRENCY CONVERSION : Exception ECB
 - Invoice: fix rounding error while computing totals.
 - Sale Order Line: hide reserved qty buttons on new line.
+- Copy Stock Move : set supplier Shipment info and picking edit info to null.
+- Stock Move: correctly set isReversion on new.
+- Timesheet: allow user to enter a toDate greater than current date.
+- LOGISTICAL FORM : dotted field on saleOrder
+- DEBT RECOVERY : Fix NPE on Validate Debt Recovery
+- MRP : NPE on cancel process
+- Fix raw material requirement report query.
 - MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
+
 
 ## [5.1.1] - 2019-01-18
 ## Features
