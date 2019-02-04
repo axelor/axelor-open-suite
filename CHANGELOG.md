@@ -13,6 +13,7 @@
 - STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
 - STOCK CONFIG : New boolean for picking order printing with details
+- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
 
 ## Improvements
@@ -77,6 +78,7 @@
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
+- PICKING ORDER : printing modification.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -102,7 +104,7 @@
 - MRP : NPE on cancel process
 - Fix raw material requirement report query.
 - MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
-
+- StockConfig: domain issue without supplychain.
 
 ## [5.1.1] - 2019-01-18
 ## Features
