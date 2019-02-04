@@ -16,7 +16,7 @@
 
   <form name="product-task-template-form" title="Task template"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate" width="large"
-    onNew="action-product-task-template-on-new">
+    onNew="action-product-task-template-on-new,action-product-task-template-attrs-set-required">
     <panel name="mainPanel">
       <field name="name" colSpan="12" css="label-bold bold large"/>
       <field name="delayToStart"/>
@@ -69,6 +69,10 @@
     </node>
 
   </tree>
+
+  <action-attrs name="action-product-task-template-attrs-set-required">
+	<attribute name="required" for="parentTaskTemplate" expr="eval: __repo__(TaskTemplate).all().filter('self.product = ?',product).count()>0?true:false"/>
+  </action-attrs>
 
   <action-record name="action-product-task-template-on-new"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
