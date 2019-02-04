@@ -121,4 +121,7 @@ public interface IExceptionMessage {
   static final String ORDER_REMOVE_NOT_OK = /*$$(*/ "You can't remove this record" /*)*/;
 
   static final String MANUF_ORDER_CANCEL = /*$$(*/ "The manufacturing order was canceled." /*)*/;
+
+  static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
+      "A cancel reason must be selected" /*)*/;
 }

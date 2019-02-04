@@ -98,6 +98,7 @@
 - Timesheet: allow user to enter a toDate greater than current date.
 - LOGISTICAL FORM : dotted field on saleOrder
 - DEBT RECOVERY : Fix NPE on Validate Debt Recovery
+- MRP : NPE on cancel process
 
 ## [5.1.1] - 2019-01-18
 ## Features
