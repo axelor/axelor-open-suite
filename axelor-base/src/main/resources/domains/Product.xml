@@ -34,6 +34,7 @@
 		<string name="procurementMethodSelect" title="Procurement method"
 			selection="product.procurement.method.select" initParam="true" />
 		<boolean name="isPrototype" title="Prototype" />
+		<boolean name="isUnrenewed" title="Unrenewed"/>
 		<integer name="productSubTypeSelect" title="Product Subtype"
 			selection="product.sub.type.product.select" />
 		<integer name="inventoryTypeSelect" title="Inventory type"

@@ -13,6 +13,7 @@
 - STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
 - STOCK CONFIG : New boolean for picking order printing with details
+- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
