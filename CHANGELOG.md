@@ -15,6 +15,7 @@
 - STOCK CONFIG : New boolean for picking order printing with details
 - PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
+- LOGISITCAL FORM : alert message when user clicks on action buttons
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 

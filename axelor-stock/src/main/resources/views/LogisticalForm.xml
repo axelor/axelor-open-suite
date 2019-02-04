@@ -45,10 +45,13 @@
 			</panel>
 			<panel name="actionsPanel" colSpan="4">
 				<button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
-					onClick="action-logistical-form-carrier-validated" icon="fa-check" css="btn btn-success" colSpan="12"/>
+					onClick="action-logistical-form-carrier-validated" icon="fa-check" css="btn btn-success" colSpan="12"
+					prompt="Are you sure you want to validate the carrier?"/>
 				<button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
-					onClick="action-logistical-form-process-collected" icon="fa-truck" css="btn btn-success" colSpan="12"/>
-				<button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" colSpan="12"/>
+					onClick="action-logistical-form-process-collected" icon="fa-truck" css="btn btn-success" colSpan="12"
+					prompt="Are you sure you want to change status to  &quot;Collected &quot; ?"/>
+				<button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" colSpan="12"
+				 	prompt="Are you sure you want to go back to provision ?"/>
 			</panel>
         </panel>
         <panel-tabs colSpan="12" name="mainPanelTab">
