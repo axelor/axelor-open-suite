@@ -164,7 +164,13 @@ public class CurrencyConversionService {
       LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
       request.setUrl(url);
       request.setMethod(HTTPMethod.GET);
-      response = httpclient.execute(request);
+      try {
+        response = httpclient.execute(request);
+      } catch (Exception e) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CURRENCY_6));
+      }
       // JSONObject json = new JSONObject(response.getContentAsString());
       LOG.trace(
           "Webservice response code: {}, response message: {}",

@@ -121,7 +121,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       String[] data = exportLineToCsv(stockMoveLine, lineNum);
-      if (data != null) {
+      if (data != null && data.length != 0) {
         dataList.add(data);
         lineNum++;
       }

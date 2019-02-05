@@ -310,8 +310,7 @@
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
 			<bind node="sequence" to="sequence" />
-			<bind node="startNode" to="startNode" />
-			<bind node="endNode" to="endNode" />
+			<bind node="nodeType" to="nodeType" />
 			<bind node="metaFieldModel" alias="metaFieldModel" />
 			<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :metaFieldModel" create="false"/>
 			<bind node="roleSet/role" to="roleSet" search="self.name = :roleName" update="false" create="false">
@@ -328,8 +327,7 @@
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
 			<bind node="sequence" to="sequence" />
-			<bind node="startNode" to="startNode" />
-			<bind node="endNode" to="endNode" />
+			<bind node="nodeType" to="nodeType" />
 			<bind node="metaFieldModel" alias="metaFieldModel" />
 			<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :metaFieldModel" />
 			<bind node="roleSet/role" to="roleSet" search="self.name = :roleName" update="false" create="false">
@@ -373,7 +371,7 @@
 		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true" create="false">
 			<bind node="wkf" to="wkf" search="self.name = :wkf" update="true" create="false" />
 			<bind node="name" to="name" alias="nodeName" />
-			<bind node="incommings/incomming" to="incomming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
 				<bind node="text()" to="name" alias="inNode" />
 			</bind>
 			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :outNode and self.wkf.name = :wkf" update="false" create="false">

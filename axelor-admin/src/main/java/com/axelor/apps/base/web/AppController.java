@@ -95,6 +95,7 @@ public class AppController {
               .add("form", viewName)
               .model("com.axelor.apps.base.db.App" + appName)
               .context("_showRecord", app.getId())
+              .param("forceEdit", "true")
               .map());
     }
   }

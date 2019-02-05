@@ -52,7 +52,7 @@
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
-		<field name="creationDate" />
+		<field name="confirmationDateTime" />
 		<field name="exTaxTotal" aggregate="sum" />
 		<field name="inTaxTotal" aggregate="sum" />
 		<field name="amountInvoiced" hidden="true" aggregate="sum" if="__config__.app.isApp('supplychain')"/>
@@ -202,34 +202,8 @@
 		      </h3>
 		    ]]></viewer>
 		  </field>
-	    <panel name="detailsPanel">
-	      <field name="$invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3" css="label-bold bold" colSpan="4">
-	        <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
-	        <div>
-	        <div class="span7">
-	          <h5>
-	          <span class="label label-important" ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-	          <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
-	        </h5>
-	        </div>
-	      </div>
-	      ]]></viewer>
-	      </field>
-	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" showTitle="false" name="deliveryState" showIf="statusSelect >= 3" css="label-bold bold" colSpan="4">
-	        <viewer><![CDATA[
-	        <div>
-	        <div class="span7">
-	        <h5>
-	          <span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
-	          <span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
-	          <span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
-	        </h5>
-	        </div>
-	      </div>
-	      ]]></viewer>
-	      </field>
-	      <field name="saleOrderTypeSelect" colSpan="4" css="label-bold bold" showTitle="false" readonlyIf="statusSelect >= 2" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain">
+	    <panel name="detailsPanel" colSpan="12">
+	      <field name="saleOrderTypeSelect" colSpan="3" css="label-bold bold" showTitle="false" readonlyIf="statusSelect >= 2" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain">
 	        <viewer><![CDATA[
 	          <div>
 	            <div class="span7">
@@ -242,10 +216,49 @@
 	          </div>
 	        ]]></viewer>
 	      </field>
+	      <field name="$invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
+	        <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
+	        <div>
+	        <div class="span7">
+	          <h5>
+	          <span class="label label-important" ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
+	          <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
+	          <span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+	        </h5>
+	        </div>
+	      </div>
+	      ]]></viewer>
+	      </field>
+	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" showTitle="false" name="deliveryState" showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
+	        <viewer><![CDATA[
+	        <div>
+	        <div class="span7">
+	        <h5>
+	          <span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
+	          <span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
+	          <span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
+	        </h5>
+	        </div>
+	      </div>
+	      ]]></viewer>
+	      </field>
+	      <field name="availabilityRequestLabel" colSpan="3" css="label-bold bold" showTitle="false" readonly="true" hidden="true">
+	        <viewer><![CDATA[
+	          <div>
+	            <div class="span7">
+	              <h5>
+	                <span class="label label-important">
+	                <span x-translate>Availability Request</span>
+	              </h5>
+	            </div>
+	          </div>
+	        ]]></viewer>
+	      </field>
 	  	</panel>
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
 	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
+	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" readonlyIf="statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
 	      <field name="clientPartner" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
@@ -287,7 +300,7 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate"/>
+	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -850,6 +863,7 @@
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
+        <action name="action-sale-order-attrs-availability-request-label"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -859,6 +873,7 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
+		<action name="action-sale-order-attrs-availability-request-label"/>
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -1239,6 +1254,7 @@
 	<action-record name="action-sale-record-update-info-company" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
+		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
 	</action-record>
 
 	<action-record name="action-sale-order-manual-unblock" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1253,5 +1269,13 @@
 		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
+	
+	<action-attrs name="action-sale-order-attrs-availability-request-label">
+		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+	</action-attrs>
+	
+	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
+	</action-method>
 
 </object-views>

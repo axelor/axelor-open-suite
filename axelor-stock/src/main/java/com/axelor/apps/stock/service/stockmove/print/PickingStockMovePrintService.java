@@ -30,16 +30,18 @@ public interface PickingStockMovePrintService {
    * Print a list of stock moves in the same output.
    *
    * @param ids ids of the stock move.
+   * @param userType
    * @return the link to the generated file.
    * @throws IOException
    */
-  String printStockMoves(List<Long> ids) throws IOException;
+  String printStockMoves(List<Long> ids, String userType) throws IOException;
 
   ReportSettings prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
 
   File print(StockMove stockMove, String format) throws AxelorException;
 
-  String printStockMove(StockMove stockMove, String format) throws AxelorException, IOException;
+  String printStockMove(StockMove stockMove, String format, String userType)
+      throws AxelorException, IOException;
 
   String getFileName(StockMove stockMove);
 }

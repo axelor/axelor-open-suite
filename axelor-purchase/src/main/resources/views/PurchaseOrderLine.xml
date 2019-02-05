@@ -286,6 +286,7 @@
     	<field name="qty" expr="eval: 1"/>
     	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
     	<field name="$isFilterOnSupplier" expr="eval: true"/>
+    	<field name="estimatedDelivDate" expr="eval: _parent?.deliveryDate" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; receiptState &lt; 2"/>
     </action-record>
     
     <action-record name="action-purchase-order-line-record-project" model="com.axelor.apps.purchase.db.PurchaseOrderLine" if-module="axelor-business-project">

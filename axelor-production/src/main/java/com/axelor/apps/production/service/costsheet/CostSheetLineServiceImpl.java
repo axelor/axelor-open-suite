@@ -29,12 +29,14 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,31 +167,13 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Unit unit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      BigDecimal consumptionQty)
+      BigDecimal consumptionQty,
+      boolean fromBOM)
       throws AxelorException {
 
-    BigDecimal price;
+    Product parentProduct = parentCostSheetLine.getProduct();
 
-    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
-            || product
-                .getProductSubTypeSelect()
-                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-        && parentCostSheetLine
-            .getProduct()
-            .getRealOrEstimatedPriceSelect()
-            .equals(ProductRepository.PRICE_METHOD_REAL)
-        && parentCostSheetLine
-            .getProduct()
-            .getComponentsValuationMethod()
-            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
-      price = product.getAvgPrice();
-    } else {
-      price = product.getCostPrice();
-    }
-
-    if (price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
-    }
+    BigDecimal price = getValuationPrice(product, parentProduct, fromBOM);
 
     BigDecimal costPrice =
         unitConversionService
@@ -200,6 +184,24 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
+
+    List<CostSheetLine> costSheetLineList =
+        parentCostSheetLine.getCostSheetLineList() != null
+            ? parentCostSheetLine.getCostSheetLineList()
+            : new ArrayList<CostSheetLine>();
+    for (CostSheetLine costSheetLine : costSheetLineList) {
+      if (product.equals(costSheetLine.getProduct()) && unit.equals(costSheetLine.getUnit())) {
+        BigDecimal qty = costSheetLine.getConsumptionQty().add(consumptionQty);
+        costSheetLine.setConsumptionQty(qty);
+        costSheetLine.setCostPrice(
+            costPrice
+                .add(costSheetLine.getCostPrice())
+                .setScale(
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN));
+        return costSheetLine;
+      }
+    }
 
     return this.createCostSheetLine(
         product.getName(),
@@ -214,6 +216,63 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         unit,
         null,
         parentCostSheetLine);
+  }
+
+  protected BigDecimal getValuationPrice(Product product, Product parentProduct, boolean fromBOM) {
+
+    if (fromBOM) {
+      return getValuationPriceFromBOM(product);
+    } else {
+      return getValuationPriceFromManufOrder(product, parentProduct);
+    }
+  }
+
+  protected BigDecimal getValuationPriceFromManufOrder(Product product, Product parentProduct) {
+
+    BigDecimal price;
+
+    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
+            || product
+                .getProductSubTypeSelect()
+                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+        && parentProduct.getRealOrEstimatedPriceSelect().equals(ProductRepository.PRICE_METHOD_REAL)
+        && parentProduct
+            .getComponentsValuationMethod()
+            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
+      price = product.getAvgPrice();
+    } else {
+      price = product.getCostPrice();
+    }
+
+    if (price.compareTo(BigDecimal.ZERO) == 0) {
+      price = product.getPurchasePrice();
+    }
+
+    return price;
+  }
+
+  protected BigDecimal getValuationPriceFromBOM(Product product) {
+
+    BigDecimal price = product.getCostPrice();
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      price = product.getAvgPrice();
+    }
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      price = product.getPurchasePrice();
+    }
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+        if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
+          price = supplierCatalog.getPrice();
+          break;
+        }
+      }
+    }
+
+    return price;
   }
 
   public CostSheetLine createConsumedProductWasteCostSheetLine(
@@ -238,7 +297,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .convert(
                 unit,
                 product.getUnit(),
-                product.getCostPrice(),
+                getValuationPriceFromBOM(product),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(qty);

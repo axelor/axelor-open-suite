@@ -21,6 +21,7 @@
       <field name="company" required="true" canEdit="false"/>
       <field name="duration"/>
       <field name="showAllRequirements"/>
+      <field name="showRequirementsByMO"/>
       <field name="stockLocationSet" colSpan="12"
         domain="self.company = :company AND self.typeSelect = 1"/>
     </panel>

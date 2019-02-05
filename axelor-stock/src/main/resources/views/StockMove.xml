@@ -34,7 +34,9 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq"/>
+		<field name="stockMoveSeq">
+			<hilite color="warning" strong="true" if="pickingIsEdited"/>
+		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
@@ -50,6 +52,7 @@
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
         	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
+        <field name="pickingIsEdited" hidden="true" />
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -60,7 +63,9 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq"/>
+        <field name="stockMoveSeq">
+			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
+		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
@@ -76,10 +81,8 @@
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
         	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
         </field>
-        <field name="availabilityRequest">
-        	<hilite strong="true" color="warning" if="statusSelect==2"/>
-        	<hilite strong="true" color="success" if="statusSelect==3"/>
-        </field>
+        <field name="availabilityRequest"/>
+        <field name="pickingIsEdited" hidden="true" />
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -99,6 +102,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
+        <field name="supplierShipmentRef"/>
         <field name="origin"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -109,12 +113,46 @@
         eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">
         <field name="name" />
     </calendar>
+    
+    <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-customer-returns-form" title="Customer return" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-supplier-returns-form" title="Supplier return" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	<form name="stock-move-internal-move-form" title="Internal Stock Move" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+	
+	
+	<form name="stock-move-availability-requests-form" title="Availability request" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
+       
+       
+	<form name="stock-move-supplier-arrivals-form" title="Supplier Arrival" model="com.axelor.apps.stock.db.StockMove" width="large"
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+    	<panel-include view="stock-move-form" from="axelor-stock" />
+	</form>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
-                <item title="Print" action="save,action-print-stock-move" readonlyIf="statusSelect == 1"/>
+                <item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
+                <item title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
+                <item title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
                 <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 							<item title="Print certificate of conformity"
 								action="save,action-method-print-conformity-certificate"
@@ -138,7 +176,7 @@
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" colSpan="1" showTitle="false" readonly="true">
 						<viewer><![CDATA[
                             <h4 class="text-right">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
@@ -147,16 +185,20 @@
                     		</h4>
 						]]></viewer>
 					</field>
-                    <field name="$tags" showTitle="false" colSpan="6" readonly="true" showIf="$readonly()">
-                        <viewer depends="typeSelect,conformitySelect">
+                    <field name="$tags" showTitle="false" colSpan="11" readonly="true" showIf="$readonly()">
+                        <viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect ">
                             <![CDATA[
                                 <h4 class="text-right">
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
-
+                                    
                                     <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
                                     <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
+                               		
+                               		<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Picking printed</span>
+                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Availability request</span>
+                               		
                                 </h4>
                             ]]>
                         </viewer>
@@ -192,9 +234,12 @@
 
             <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
-
-            <field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="3"/>
-            <field name="realDate" colSpan="3"/>
+			
+			<panel name="datesPanel" colSpan="6">
+				<field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="4"/>
+	            <field name="realDate" colSpan="4"/>
+	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+			</panel>
 
             <panel name="addressPanel" stacked="true">
                 <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3 &amp;&amp; typeSelect == 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
@@ -207,9 +252,22 @@
                     <viewer>{{record.toAddressStr}}</viewer>
                 </field>
             </panel>
-            
-            <field name="filterOnAvailableProducts" onChange="action-stock-move-method-update-stock-move-line"/>
-            
+            <field name="filterOnAvailableProducts" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
+			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3">
+				<panel name="SupplierShipmentDatePanel" itemSpan="12">
+					<field name="supplierShipmentDate" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
+					<label css="label-danger" title="Required" showIf="!supplierShipmentDate &amp;&amp; statusSelect == 3"/>
+				</panel>
+				<panel name="SupplierShipmentRefPanel" itemSpan="12">
+					<field name="supplierShipmentRef" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
+					<label css="label-danger" title="Required" showIf="!supplierShipmentRef  &amp;&amp; statusSelect == 3"/>
+				</panel>
+			</panel>
+			<panel name="ShipmentOperationsInformations" colSpan="12">
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" />
+				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+           		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
+            </panel>
             <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
                 <viewer>
@@ -222,9 +280,6 @@
                     ]]>
                 </viewer>
             </field>
-            
-            <field name="availabilityRequest" widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2" readonlyIf="statusSelect==3"/>
-        
         </panel>
 
         <panel-tabs name="mainPanelTab">
@@ -294,13 +349,38 @@
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
             </panel>
         </panel-tabs>
-        
         <panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
 	  	</panel-mail>
     </form>
-    
+
+	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
+		<panel name="mainPanel" colSpan="12">
+			<field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
+				<viewer depends="typeSelect,fromStockLocation.typeSelect">
+					<![CDATA[
+            <h5 class="text-left">
+              <span ng-show="record.typeSelect == 2 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 1)" x-translate>Do you want to generate backorder for not delivered quantities?</span>
+              <span ng-show="record.typeSelect == 3 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 3)" x-translate>Do you want to generate backorder for not received quantities?</span>
+            </h5>
+          ]]>
+				</viewer>
+			</field>
+
+      <button name="yesBtn" title="Yes" onClick="action-stock-move-popup-backorder-record-set-backorder,save,action-stock-move-method-realize,close" icon="fa-check" colOffset="3" colSpan="3"/>
+      <button name="noBtn" title="No" onClick="action-stock-move-method-realize,close" icon="fa-times" css="btn-danger" colSpan="3"/>
+
+      <field name="typeSelect" hidden="true"/>
+      <field name="fromStockLocation" hidden="true"/>
+      <field name="isWithBackorder" hidden="true"/>
+		</panel>
+	</form>
+
+	<action-record name="action-stock-move-popup-backorder-record-set-backorder" model="com.axelor.apps.stock.db.StockMove">
+		<field name="isWithBackorder" expr="true"/>
+	</action-record>
+
     <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
@@ -318,7 +398,7 @@
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
-	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" />
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"/>
         </panel>
     </form>
     
@@ -407,9 +487,15 @@
 	<action-group name="action-group-stock-stockmove-realize-click">
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
-    	<action name="action-stock-move-method-realize"/>
+    	<action name="action-stock-move-validate-shipment-informations"/>
+	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
+
+  <action-method name="action-stock-move-method-manage-backorder">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="manageBackorder"/>
+  </action-method>
 
   	<action-group name="action-group-stock-stockmove-draft-click">
 	  	<action name="save"/>
@@ -488,6 +574,9 @@
 	    <field name="isWithBackorder" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithBackorder"  if="__user__.activeCompany != null"/>
 	    <field name="isWithReturnSurplus" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.isWithReturnSurplus" if="__user__.activeCompany != null &amp;&amp; _typeSelect == 3"/>
 	    <field name="isWithReturnSurplus" expr="eval:false" if="_typeSelect != 3"/>
+	    <field name="_userType" expr="eval: _userType" />
+      <!-- force boolean conversion -->
+	    <field name="isReversion" expr="eval: _isReversion ?: false"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">
@@ -613,6 +702,10 @@
 	    <error message="Please fill in the source (from) location address to get the delivery itinerary." if="fromStockLocation?.address == null"/>
 	    <error message="Please fill in the delivery (to) address to get the delivery itinerary." if="toAddress == null"/>
 	</action-validate>
+	
+	<action-validate name="action-stock-move-validate-shipment-informations">
+		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Shipment Informations field must be filled to realize the stock move."/>
+	</action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
         model="com.axelor.apps.stock.db.LogisticalForm">
@@ -711,6 +804,5 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
-		
 
 </object-views>

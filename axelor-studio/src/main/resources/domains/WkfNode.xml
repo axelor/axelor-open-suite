@@ -15,11 +15,11 @@
       <string name="xmlId" title="xmlId" />
       <many-to-one name="wkf" ref="Wkf"  />
       <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field for 'My menu'" />
-      <many-to-many name="incomming" ref="WkfTransition"  title="Incomming" />
+      <many-to-many name="incoming" ref="WkfTransition"  title="Incoming" />
       <many-to-many name="outgoing" ref="WkfTransition"  title="Outgoing" />
       <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="ReadOnly for"/>
       <integer name="sequence" title="Sequence" />
-      <integer name="nodeType" title="Node type" selection="studio.node.type.select"/>
+      <integer name="nodeType" title="Node type" selection="studio.node.type.select" default="1" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
       <unique-constraint columns="wkf,sequence"/>
       
