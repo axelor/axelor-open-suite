@@ -36,8 +36,8 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
@@ -47,6 +47,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -60,7 +61,6 @@ public class KilometricService {
 
   private AppBaseService appBaseService;
   private KilometricLogRepository kilometricLogRepo;
-
   private MapService mapService;
 
   @Inject
@@ -132,25 +132,17 @@ public class KilometricService {
       throws AxelorException {
 
     BigDecimal distance = expenseLine.getDistance();
-    if (employee.getMainEmploymentContract() == null
-        || employee.getMainEmploymentContract().getPayCompany() == null) {
+    EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
+    if (mainEmploymentContract == null || mainEmploymentContract.getPayCompany() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
           employee.getName());
     }
-    Company company = employee.getMainEmploymentContract().getPayCompany();
+    Company company = mainEmploymentContract.getPayCompany();
 
-    HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(company);
-
-    BigDecimal previousDistance;
-    KilometricLog log =
-        Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
-    if (log == null) {
-      previousDistance = BigDecimal.ZERO;
-    } else {
-      previousDistance = log.getDistanceTravelled();
-    }
+    KilometricLog log = getKilometricLog(employee, expenseLine.getExpenseDate());
+    BigDecimal previousDistance = log == null ? BigDecimal.ZERO : log.getDistanceTravelled();
 
     KilometricAllowanceRate allowance =
         Beans.get(KilometricAllowanceRateRepository.class)
@@ -159,7 +151,7 @@ public class KilometricService {
                 "self.kilometricAllowParam.id = :_kilometricAllowParamId "
                     + "and self.hrConfig.id = :_hrConfigId")
             .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
-            .bind("_hrConfigId", hrConfig.getId())
+            .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
             .fetchOne();
     if (allowance == null) {
       throw new AxelorException(
@@ -170,9 +162,8 @@ public class KilometricService {
     }
 
     List<KilometricAllowanceRule> ruleList = new ArrayList<>();
-
     List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
-    if (allowanceRuleList != null) {
+    if (ObjectUtils.notEmpty(allowanceRuleList)) {
       for (KilometricAllowanceRule rule : allowanceRuleList) {
 
         if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0
