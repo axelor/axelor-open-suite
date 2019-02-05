@@ -108,6 +108,7 @@
 - MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
 - StockConfig: domain issue without supplychain.
 - OPPORTUNITY : save before calling the action on button onClick
+- Configurator: Fix total computation on sale order when generating sale order line.
 
 ## [5.1.1] - 2019-01-18
 ## Features
