@@ -696,7 +696,7 @@
 "The employee %s has no birth date","L'employé(e) %s n'a pas de date de naissance renseignée",,
 "The employee %s has no seniority date","L'employé(e) %s n'a pas de date d'ancienneté renseignée",,
 "The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing","Il n'y a pas de taux de barème kilométrique correspondant à la puissance fiscale %s et à la société %s",,
-"There is a conflict between the input dates and the dates in the lines: %s","Il y a un conflit entre les dates entrées et les dates des lignes : %s",,
+"There is a conflict between the timesheet input dates and the dates of the following lines: %s","Il y a un conflit entre les dates de la feuille de temps et la date des lignes suivantes : %s",,
 "There is already a payroll preparation for the employee %s, the company %s and the period %s","Il existe déjà une préparation de paie pour l'employé(e) %s, l'entreprise %s, et la période %s",,
 "There is an error in a formula","Il y a une erreur dans une des formules",,
 "There is no leave line for the employee %s and the reason %s.","Il n'y a pas de ligne de créée sur l'employé %s pour la raison %s",,
