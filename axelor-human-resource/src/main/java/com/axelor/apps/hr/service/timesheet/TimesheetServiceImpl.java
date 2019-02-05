@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -65,20 +77,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.mail.MessagingException;
 
 /** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
@@ -769,7 +769,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             timesheet,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
-            Joiner.on(",").join(timesheetLineIndexes));
+            timesheetLineIndexes.stream().map(i -> i.toString()).collect(Collectors.joining(", ")));
       }
     }
   }
