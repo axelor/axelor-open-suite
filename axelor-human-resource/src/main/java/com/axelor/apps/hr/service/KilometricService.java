@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.hr.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.apache.http.client.utils.URIBuilder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.MapService;
@@ -40,20 +53,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import org.apache.http.client.utils.URIBuilder;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
@@ -136,9 +135,9 @@ public class KilometricService {
     if (employee.getMainEmploymentContract() == null
         || employee.getMainEmploymentContract().getPayCompany() == null) {
       throw new AxelorException(
-          String.format(
-              I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName()),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          employee.getName());
     }
     Company company = employee.getMainEmploymentContract().getPayCompany();
 
@@ -164,15 +163,13 @@ public class KilometricService {
             .fetchOne();
     if (allowance == null) {
       throw new AxelorException(
-          String.format(
-              I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
-              expenseLine.getKilometricAllowParam().getName(),
-              company.getName()),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          expenseLine);
+          I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
+          expenseLine.getKilometricAllowParam().getName(),
+          company.getName());
     }
 
-    List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
+    List<KilometricAllowanceRule> ruleList = new ArrayList<>();
 
     List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
     if (allowanceRuleList != null) {
@@ -199,13 +196,8 @@ public class KilometricService {
     } else {
       Collections.sort(
           ruleList,
-          new Comparator<KilometricAllowanceRule>() {
-            @Override
-            public int compare(
-                final KilometricAllowanceRule object1, final KilometricAllowanceRule object2) {
-              return object1.getMinimumCondition().compareTo(object2.getMinimumCondition());
-            }
-          });
+          (object1, object2) ->
+              object1.getMinimumCondition().compareTo(object2.getMinimumCondition()));
       for (KilometricAllowanceRule rule : ruleList) {
         BigDecimal min = rule.getMinimumCondition().max(previousDistance);
         BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance));
@@ -251,7 +243,7 @@ public class KilometricService {
             json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
         status = response.getString("status");
         if (status.equals("OK")) {
-          return new BigDecimal(response.getJSONObject("distance").getDouble("value") / 1000.);
+          return BigDecimal.valueOf(response.getJSONObject("distance").getDouble("value") / 1000.);
         }
       }
 

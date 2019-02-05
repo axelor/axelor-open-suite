@@ -84,7 +84,8 @@
 - SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
 - ProdProcess: Add massUpdate to stock move realize order select.
 - PRODUCT : Set duplicate product fields
-- Timesheet: Exception for date conflicts.
+- Timesheet: exception for date conflicts.
+- HR module: code refactoring.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
