@@ -82,6 +82,7 @@
 - Logistical form: track statusSelect.
 - PICKING ORDER : printing modification.
 - ProdProcess: Add massUpdate to stock move realize order select.
+- PRODUCT : Set duplicate product fields
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
