@@ -25,6 +25,7 @@
 - General balance report : fix wrong sums when we filter on some accounts of the same branch
 - Remove Inconsistency in selections
 - Naming Tool : Missing reserved java litterals
+- Configurator: Fix total computation on sale order when generating sale order line.
 
 ## [5.0.7] - 2018-12-13
 ## Features
