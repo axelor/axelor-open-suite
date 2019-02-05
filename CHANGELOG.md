@@ -46,6 +46,7 @@
 - Invoicing project : Menu organisation
 - Business Project : Addition of required contion on parentTaskTemplate. 
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
+- SALE ORDER : Update in 'Quotations template' working process and view.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

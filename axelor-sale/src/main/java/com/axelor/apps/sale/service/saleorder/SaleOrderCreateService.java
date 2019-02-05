@@ -81,5 +81,8 @@ public interface SaleOrderCreateService {
   public SaleOrder createTemplate(SaleOrder context);
 
   @Transactional
-  public SaleOrder createSaleOrder(SaleOrder context);
+  public SaleOrder createSaleOrder(
+      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
+
+  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 }
