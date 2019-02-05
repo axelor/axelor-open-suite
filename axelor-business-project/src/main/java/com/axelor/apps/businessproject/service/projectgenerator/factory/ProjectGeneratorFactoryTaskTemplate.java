@@ -73,14 +73,34 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   @Transactional
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
     List<TeamTask> tasks = new ArrayList<>();
+    TeamTask root;
 
-    TeamTask root =
-        teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
-    root.setTaskDate(startDate.toLocalDate());
-    tasks.add(teamTaskRepository.save(root));
+    root =
+        teamTaskRepository
+            .all()
+            .filter(
+                "self.project = ? AND self.assignedTo = ? AND self.name = ?",
+                project,
+                project.getAssignedTo(),
+                saleOrder.getFullName())
+            .fetchOne();
+
+    if (root == null) {
+      root = teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
+      root.setTaskDate(startDate.toLocalDate());
+      tasks.add(teamTaskRepository.save(root));
+    }
 
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-      if (!CollectionUtils.isEmpty(orderLine.getProduct().getTaskTemplateList())) {
+      boolean isTaskGenerated =
+          teamTaskRepository
+                  .all()
+                  .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
+                  .fetch()
+                  .size()
+              > 0;
+      if (!CollectionUtils.isEmpty(orderLine.getProduct().getTaskTemplateList())
+          && !(isTaskGenerated)) {
         List<TeamTask> convertedTasks =
             productTaskTemplateService.convert(
                 orderLine
@@ -93,6 +113,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                 root,
                 startDate,
                 orderLine.getQty());
+        convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
         tasks.addAll(convertedTasks);
       }
     }
