@@ -81,6 +81,7 @@
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
 - PICKING ORDER : printing modification.
+- SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
 - ProdProcess: Add massUpdate to stock move realize order select.
 - PRODUCT : Set duplicate product fields
 
