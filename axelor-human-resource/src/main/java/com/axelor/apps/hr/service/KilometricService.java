@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.apache.http.client.utils.URIBuilder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.MapService;
@@ -54,6 +41,19 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.apache.http.client.utils.URIBuilder;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 

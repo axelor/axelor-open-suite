@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.mail.MessagingException;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
@@ -86,6 +78,14 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.mail.MessagingException;
 
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
@@ -100,7 +100,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
-  
+
   @Inject
   public ExpenseServiceImpl(
       MoveService moveService,
@@ -604,7 +604,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     Product product = expenseLine.getExpenseProduct();
     InvoiceLineGenerator invoiceLineGenerator = null;
     Integer atiChoice = invoice.getCompany().getAccountConfig().getInvoiceInAtiSelect();
-    if (atiChoice == AccountConfigRepository.INVOICE_WT_ALWAYS || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
+    if (atiChoice == AccountConfigRepository.INVOICE_WT_ALWAYS
+        || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
       invoiceLineGenerator =
           new InvoiceLineGenerator(
               invoice,

@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import java.math.BigDecimal;
-import java.util.List;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvance;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
@@ -29,6 +27,8 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class EmployeeAdvanceService {
 
