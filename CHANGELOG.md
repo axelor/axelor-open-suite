@@ -16,6 +16,7 @@
 - PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
 - LOGISITCAL FORM : alert message when user clicks on action buttons
+- ACCOUNT MOVE : printing new design
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 

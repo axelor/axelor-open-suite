@@ -264,6 +264,7 @@ public interface ITranslation {
   public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/
       "PurchaseInvoicesDetails.totalTurnover"; /*)*/
 
+  public static final String ACCOUNT_MOVE_TITLE = /*$$(*/ "move.title"; /*)*/
   public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
   public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
   public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/
@@ -286,6 +287,10 @@ public interface ITranslation {
   public static final String ACCOUNT_MOVE_LINE_ORIGIN = /*$$(*/ "moveLine.origin"; /*)*/
   public static final String ACCOUNT_MOVE_LINE_RECONCILE_GROUP = /*$$(*/
       "moveLine.reconcileGroup"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_LINES = /*$$(*/ "moveLine.totalLines"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_DEBIT = /*$$(*/ "moveLine.totalDebit"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_CREDIT = /*$$(*/ "moveLine.totalCredit"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_DIFFERENCE = /*$$(*/ "moveLine.difference"; /*)*/
 
   public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
   public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/
