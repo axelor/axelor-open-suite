@@ -45,6 +45,7 @@
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 - Invoicing project : Menu organisation
 - Business Project : Addition of required contion on parentTaskTemplate. 
+- TeamTask : Added relation with saleOrderLine and InvoiceLine.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

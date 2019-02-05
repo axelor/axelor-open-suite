@@ -166,6 +166,7 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly || $isNotEditable" if-module="axelor-business-project">
 				<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="toInvoice" colSpan="3" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
+				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-sale-order-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
@@ -586,6 +587,11 @@
   		<domain>self.saleOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
-    
-    
+
+  	<action-view name="action-sale-order-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+  		<view type="grid" name="team-task-grid"/>
+  		<view type="form" name="team-task-form"/>
+  		<domain>self.saleOrderLine = :id</domain>
+  	</action-view>
+
 </object-views>
