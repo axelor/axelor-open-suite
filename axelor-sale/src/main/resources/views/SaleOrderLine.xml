@@ -134,8 +134,7 @@
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
 					<field name="isSubLine" hideIf="!isSubLine" readonlyIf="$isReadOnly !== false" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 					<field name="parentLine" hideIf="!isSubLine || parentLine == null" readonlyIf="$isReadOnly !== false"/>
-					<field name="requestedReservedQty" colSpan="6" readonlyIf="isSubLine || saleOrder.statusSelect &gt; 2"
-						if-module="axelor-supplychain"
+					<field name="requestedReservedQty" colSpan="6" readonly="true" if-module="axelor-supplychain"
 						onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"
 						if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 					<field name="reservedQty" colSpan="6" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -360,6 +359,7 @@
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action name="action-sale-order-attrs-hide-ati"/>
 		<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
+		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">

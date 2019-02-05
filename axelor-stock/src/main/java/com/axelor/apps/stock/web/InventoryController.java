@@ -31,6 +31,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -92,9 +93,18 @@ public class InventoryController {
       Inventory inventory = request.getContext().asType(Inventory.class);
       inventory = inventoryRepo.find(inventory.getId());
 
-      inventoryService.exportInventoryAsCSV(inventory);
+      String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+      MetaFile metaFile = inventoryService.exportInventoryAsCSV(inventory);
 
-      response.setReload(true);
+      response.setView(
+          ActionView.define(name)
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + metaFile.getId()
+                      + "/content/download?v="
+                      + metaFile.getVersion())
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

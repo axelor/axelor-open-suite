@@ -15,6 +15,8 @@
 - STOCK CONFIG : New boolean for picking order printing with details
 - PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
+- LOGISITCAL FORM : alert message when user clicks on action buttons
+- ACCOUNT MOVE : printing new design
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -80,6 +82,8 @@
 - Logistical form: track statusSelect.
 - PICKING ORDER : printing modification.
 - SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
+- ProdProcess: Add massUpdate to stock move realize order select.
+- PRODUCT : Set duplicate product fields
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -107,6 +111,8 @@
 - MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
 - StockConfig: domain issue without supplychain.
 - OPPORTUNITY : save before calling the action on button onClick
+- Configurator: Fix total computation on sale order when generating sale order line.
+- Fixed a bug where there were empty lines in declaration of exchanges csv export.
 
 ## [5.1.1] - 2019-01-18
 ## Features
@@ -175,6 +181,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
+- Stock : Download Inventory Export in csv format.
 
 ## Bug Fixes
 - Payroll preparation: changed export file name which was causing error
