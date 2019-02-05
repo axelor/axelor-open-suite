@@ -79,7 +79,7 @@
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
 - PICKING ORDER : printing modification.
-- SALEORDER: currency and pricelist in readonly when SaleOrderLine is filled with at least one line.
+- SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
