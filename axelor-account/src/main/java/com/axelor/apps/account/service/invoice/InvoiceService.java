@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -260,4 +261,12 @@ public interface InvoiceService {
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refusalToPay(
+      Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public Boolean checkIsManagePfp(Invoice invoice) throws AxelorException;
+
+  public void setPfpValidator(Invoice invoice);
 }

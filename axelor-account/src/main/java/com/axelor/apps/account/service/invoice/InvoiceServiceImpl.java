@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -44,6 +45,7 @@ import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -53,9 +55,11 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -775,5 +779,44 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     return true;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refusalToPay(
+      Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
+    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
+    invoice.setDecisionPfpTakenBy(AuthUtils.getUser());
+    invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
+    invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
+    invoice.setReasonOfRefusalToPayStr(reasonOfRefusalToPayStr);
+    
+	invoiceRepo.save(invoice);
+  }
+
+  @Override
+  public Boolean checkIsManagePfp(Invoice invoice) throws AxelorException {
+    
+return (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        && (Beans.get(AccountConfigService.class)
+            .getAccountConfig(invoice.getCompany())
+            .getIsManagePassedForPayment());
+  }
+
+  @Override
+  public void setPfpValidator(Invoice invoice) {
+    if (invoice.getPartner() == null) {
+      return;
+    }
+    
+AccountingSituation accountingSituation =
+        Beans.get(AccountingSituationService.class)
+            .getAccountingSituation(invoice.getPartner(), invoice.getCompany());
+    if (accountingSituation == null) {
+      return;
+    }
+    invoice.setPfpValidator(accountingSituation.getPfpValidator());
   }
 }
