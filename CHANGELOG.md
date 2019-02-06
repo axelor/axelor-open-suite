@@ -46,6 +46,7 @@
 - Invoicing project : Menu organisation
 - Business Project : Addition of required contion on parentTaskTemplate. 
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
+- Project module : ProjectPlanningTime ( Start time / End time )
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
