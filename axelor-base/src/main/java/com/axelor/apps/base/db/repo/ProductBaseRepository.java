@@ -41,8 +41,6 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Inject protected TranslationService translationService;
 
-  @Inject protected ProductService productService;
-
   protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
@@ -104,7 +102,7 @@ public class ProductBaseRepository extends ProductRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
-    productService.copyProduct(product, copy);
+    Beans.get(ProductService.class).copyProduct(product, copy);
 
     return copy;
   }
