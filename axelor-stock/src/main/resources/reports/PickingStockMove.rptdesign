@@ -723,7 +723,7 @@ StockMove.num_of_packages,
 StockMove.tracking_number,
 StockMove.num_of_palettes,
 StockMove.gross_mass,
-StockConfig.picking_order_printing,
+StockConfig.picking_order_printing_detailed,
 StockConfig.display_track_nbr_on_picking_printing,
 StockConfig.display_barcode_on_picking_printing,
 StockConfig.display_customer_code_on_picking_printing as "displayCustomerCodeOnPickingPrinting",
@@ -1538,9 +1538,9 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">picking_order_printing</property>
-                    <text-property name="displayName">picking_order_printing</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["picking_order_printing"]</expression>
+                    <property name="name">picking_order_printing_detailed</property>
+                    <text-property name="displayName">picking_order_printing_detailed</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["picking_order_printing_detailed"]</expression>
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -2884,7 +2884,7 @@ row["first_name"]
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["isTitleLine"] || !row._outer["picking_order_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">row["isTitleLine"] || !row._outer["picking_order_printing_detailed"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4151">
@@ -3370,7 +3370,7 @@ row["first_name"]
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["isTitleLine"] || !row._outer["picking_order_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">row["isTitleLine"] || !row._outer["picking_order_printing_detailed"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4152">
@@ -3584,7 +3584,7 @@ row["first_name"]
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["isTitleLine"] == null || row["isTitleLine"] == false || !row._outer["picking_order_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">row["isTitleLine"] == null || row["isTitleLine"] == false || !row._outer["picking_order_printing_detailed"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4153">
