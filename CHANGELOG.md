@@ -87,6 +87,7 @@
 - Timesheet: exception for date conflicts.
 - HR module: code refactoring.
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
+- STOCK MOVE : Date on report printing
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
