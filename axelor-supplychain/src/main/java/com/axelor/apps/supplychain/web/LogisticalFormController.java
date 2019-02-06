@@ -36,7 +36,7 @@ public class LogisticalFormController {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
 
       String name =
-          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumber());
+          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumberSeq());
 
       String fileLink =
           ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
