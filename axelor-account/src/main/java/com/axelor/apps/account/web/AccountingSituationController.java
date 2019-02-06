@@ -90,14 +90,4 @@ public class AccountingSituationController {
     }
   }
 
-  public void checkIsManagePfp(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    AccountingSituation accountingSituation =
-        request.getContext().asType(AccountingSituation.class);
-    Company company = accountingSituation.getCompany();
-    if (company != null) {
-      AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
-      response.setAttr("pfpValidator", "hidden", !accountConfig.getIsManagePassedForPayment());
-    }
-  }
 }

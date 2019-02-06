@@ -15,7 +15,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-group-onload">
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode">
     	<panel name="mainPanel" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
@@ -99,9 +99,11 @@
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
-        	<panel name="substitutePfpValidatorTabPanel" title="Substitute PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account')">
+        	<panel name="substitutePfpValidatorTabPanel" title="Substitute PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account')" showIf="activeCompany.accountConfig.isManagePassedForPayment">
 				<field name="isPfpValidator" widget="boolean-switch"/>        	
         		<panel-related field="substitutePfpValidatorList" name="substitutePfpValidatorListPanel" title="Substitute PFP Validator" showIf="isPfpValidator" colSpan="12"/>
+        		<field name="activeCompany.accountConfig" hidden="true"/>
+			<field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"/>
         	</panel>
         </panel-tabs>
 
@@ -146,13 +148,7 @@
           <field name="transientPassword"/>
         </panel>
 	</form>
-	
-	<action-group name="action-user-group-onload">
-		<action name="action-user-attrs"/>
-		<action name="action-user-apply-applicaton-mode"/>
-		<action name="action-account-user-check-is-manage-pfp" if="__config__.app.isApp('account')"/>
-	</action-group>
-	
+		
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
     	(${__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;"

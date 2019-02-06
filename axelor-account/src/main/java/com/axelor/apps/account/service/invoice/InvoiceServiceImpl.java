@@ -790,19 +790,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(reasonOfRefusalToPayStr);
-    
-	invoiceRepo.save(invoice);
-  }
 
-  @Override
-  public Boolean checkIsManagePfp(Invoice invoice) throws AxelorException {
-    
-return (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || invoice.getOperationTypeSelect()
-                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-        && (Beans.get(AccountConfigService.class)
-            .getAccountConfig(invoice.getCompany())
-            .getIsManagePassedForPayment());
+    invoiceRepo.save(invoice);
   }
 
   @Override
@@ -810,8 +799,8 @@ return (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUP
     if (invoice.getPartner() == null) {
       return;
     }
-    
-AccountingSituation accountingSituation =
+
+    AccountingSituation accountingSituation =
         Beans.get(AccountingSituationService.class)
             .getAccountingSituation(invoice.getPartner(), invoice.getCompany());
     if (accountingSituation == null) {

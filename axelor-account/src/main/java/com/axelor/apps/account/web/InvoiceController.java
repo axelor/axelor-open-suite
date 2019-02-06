@@ -875,19 +875,9 @@ public class InvoiceController {
     response.setCanClose(true);
   }
 
-  public void checkIsManagePfp(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    try {
-      response.setAttr("$isManagePfp", "value", invoiceService.checkIsManagePfp(invoice));
-    } catch (AxelorException e) {
-      TraceBackService.trace(e);
-    }
-  }
-
   public void setPfpValidator(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoiceService.setPfpValidator(invoice);
-    System.err.println(invoice.getPfpValidator());
     response.setValue("pfpValidator", invoice.getPfpValidator());
   }
 }
