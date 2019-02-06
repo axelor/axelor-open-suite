@@ -120,6 +120,7 @@
 - Expense: NPE related to kilometric expense.
 - BANK RECONCILIATION : Wrong data on printing
 - When creating interco invoice, copy correct prices in lines.
+- When realizing manufacturing order on start, only realize in stock move.
 
 ## [5.1.1] - 2019-01-18
 ## Features
