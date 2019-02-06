@@ -117,6 +117,7 @@
 - Configurator: Fix total computation on sale order when generating sale order line.
 - Fixed a bug where there were empty lines in declaration of exchanges csv export.
 - Expense: NPE related to kilometric expense.
+- BANK RECONCILIATION : Wrong data on printing
 
 ## [5.1.1] - 2019-01-18
 ## Features
