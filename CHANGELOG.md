@@ -93,6 +93,7 @@
 - STOCK MOVE : Date on report printing
 - ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 - Sale Order: saving a sale order being edited does not change its status.
+- PARTNER: Remove the pop up information when the partner create a sale order/purchase order and his label is not null.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.

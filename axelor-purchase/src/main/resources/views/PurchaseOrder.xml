@@ -409,7 +409,6 @@
 	<action-group name="action-group-purchase-order-partner-onchange">
 		<action name="action-purchase-order-record-partner"/>
         <action name="action-purchase-order-attrs-hide-contact-partner"/>
-		<action name="action-purchase-order-validate-information"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
@@ -587,10 +586,6 @@
 
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
-	</action-validate>
-
-	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
