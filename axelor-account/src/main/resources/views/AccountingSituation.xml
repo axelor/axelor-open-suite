@@ -25,7 +25,9 @@
 			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
-			<field name="pfpValidator" domain="self.isPfpValidator = true" canEdit="false"/>
+			<field name="pfpValidator" domain="self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
+			<field name="company.accountConfig" hidden="true"/>
+			<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
 		</panel>
 		<panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
@@ -104,7 +106,6 @@
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
 		<action name="action-accounting-situation-attrs-hide-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-employee-account"/>
-		<action name="action-accounting-situation-method-check-is-managed-pfp"/>
 	</action-group>
 
 	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -122,11 +123,7 @@
 	<action-method name="action-supplychain-method-compute-used-credit">
 		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
-	
-	<action-method name="action-accounting-situation-method-check-is-managed-pfp">
-		<call class="com.axelor.apps.account.web.AccountingSituationController" method="checkIsManagePfp"/>
-	</action-method>
-	
+		
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-form"/>

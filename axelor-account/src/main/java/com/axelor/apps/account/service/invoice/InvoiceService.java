@@ -266,7 +266,5 @@ public interface InvoiceService {
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public Boolean checkIsManagePfp(Invoice invoice) throws AxelorException;
-
   public void setPfpValidator(Invoice invoice);
 }

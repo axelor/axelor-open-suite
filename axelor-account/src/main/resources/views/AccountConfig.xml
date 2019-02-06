@@ -77,7 +77,11 @@
 				<field name="invoiceInAtiSelect"/>
 				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
-
+				
+				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12">	
+					<field name="isManagePassedForPayment" widget="boolean-switch"/>		
+				</panel>
+				
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
 					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 					<field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
@@ -102,9 +106,6 @@
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
 				</panel>
 				
-				<panel name="passedForPaymentPanel" title="Passed for payment">
-					<field name="isManagePassedForPayment" widget="boolean-switch"/>	
-				</panel>
 			</panel>
 
 			<panel name="journalsPanel" title="Journals">
