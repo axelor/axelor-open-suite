@@ -88,6 +88,7 @@
 - HR module: code refactoring.
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
 - STOCK MOVE : Date on report printing
+- ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
