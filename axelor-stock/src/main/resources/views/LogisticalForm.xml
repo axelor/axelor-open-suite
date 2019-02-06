@@ -28,45 +28,50 @@
                 onClick="action-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
         </toolbar>
         <panel colSpan="12" name="mainPanel">
-			<panel name="statusSelectPanel" colSpan="8">
-				<field name="deliveryNumber" colSpan="3" showTitle="false" css="label-bold bold large"/>
+			<panel name="statusSelectPanel" colSpan="4" itemSpan="12">
+				<field name="deliveryNumber" showTitle="false" css="label-bold bold large"/>
 				<field name="statusSelect" widget="NavSelect" showTitle="false"/>
-				<field name="collectionDate" readonlyIf="statusSelect == 3" colSpan="3"/>
+			</panel>
+			<panel name="detailsPanel" colSpan="4">
 				<field name="company" onChange="action-logistical-form-company-change" form-view="company-form"
-					grid-view="company-grid" canEdit="false" readonlyIf="statusSelect > 1" colSpan="4"/>
+					grid-view="company-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
+				<field name="collectionDate" readonlyIf="statusSelect == 3"/>
 				<field name="deliverToCustomerPartner" domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
 					onChange="action-logistical-form-partner-change" form-view="partner-customer-form" grid-view="partner-customer-grid"
-					canEdit="false" readonlyIf="statusSelect > 1" colSpan="4"/>
+					canEdit="false" readonlyIf="statusSelect > 1"/>
 				<field name="stockLocation" onChange="action-logistical-form-stock-location-change" form-view="stock-location-form"
 					grid-view="stock-location-grid" canEdit="false" readonlyIf="statusSelect > 1"
-					domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true" colSpan="4"/>
-            </panel>
-            <panel name="actionsPanel" colSpan="4">
+					domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"/>
+			</panel>
+			<panel name="actionsPanel" colSpan="4">
 				<button name="carrierValidatedBtn" title="Carrier validated" showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
-					onClick="action-logistical-form-carrier-validated" icon="fa-check" css="btn btn-success" colSpan="12"/>
-                <button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
-					onClick="action-logistical-form-process-collected" icon="fa-truck" css="btn btn-success" colSpan="12"/>
-                <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" colSpan="12"/>
-            </panel>
+					onClick="action-logistical-form-carrier-validated" icon="fa-check" css="btn btn-success" colSpan="12"
+					prompt="Are you sure you want to validate the carrier?"/>
+				<button name="collectedBtn" title="Collected" showIf="statusSelect == 2" readonlyIf="!logisticalFormLineList.length"
+					onClick="action-logistical-form-process-collected" icon="fa-truck" css="btn btn-success" colSpan="12"
+					prompt="Are you sure you want to change status to  &quot;Collected &quot; ?"/>
+				<button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1" icon="fa-cubes" onClick="action-logistical-form-back-to-provision" colSpan="12"
+				 	prompt="Are you sure you want to go back to provision ?"/>
+			</panel>
         </panel>
         <panel-tabs colSpan="12" name="mainPanelTab">
             <panel name="generalInfoPanel" title="General">
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
                     form-view="partner-form" grid-view="partner-grid" canEdit="false"
-                    onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1"/>
-                <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1"/>
-                <field name="customerAccountNumberToCarrier" readonlyIf="statusSelect > 1"/>
+                    onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1" colSpan="4"/>
+                <field name="accountSelectionToCarrierSelect" onChange="action-logistical-form-set-customer-account-number" readonlyIf="statusSelect > 1" colSpan="4"/>
+                <field name="customerAccountNumberToCarrier" readonlyIf="statusSelect > 1" colSpan="4"/>
                 <field name="forwarderPartner" 
                     domain="(self.isCarrier = TRUE OR self.isSupplier = TRUE) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
-                	form-view="partner-form" grid-view="partner-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
-                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
-                <field name="tracking" readonlyIf="statusSelect == 3"/>
-                <field name="totalGrossMass" colSpan="3" />
-                <field name="totalNetMass" colSpan="3" />
-                <field name="totalVolume" colSpan="6" />
-                <field name="internalDeliveryComment" readonlyIf="statusSelect == 3"/>
-                <field name="externalDeliveryComment" readonlyIf="statusSelect > 1"/>
+                    form-view="partner-form" grid-view="partner-grid" canEdit="false" readonlyIf="statusSelect > 1" colSpan="4"/>
+                <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" readonlyIf="statusSelect > 1" colSpan="4"/>
+                <field name="tracking" readonlyIf="statusSelect == 3" colSpan="4"/>
+                <field name="totalGrossMass" colSpan="4" />
+                <field name="totalNetMass" colSpan="4" />
+                <field name="totalVolume" colSpan="4" />
+                <field name="internalDeliveryComment" readonlyIf="statusSelect == 3" colSpan="4"/>
+                <field name="externalDeliveryComment" readonlyIf="statusSelect > 1" colSpan="4"/>
             </panel>
             <panel name="LinesPanel" title="Lines" showIf="deliverToCustomerPartner" readonlyIf="statusSelect == 3">
                 <panel name="stockMovePanel" colSpan="12" hideIf="$readonly()">

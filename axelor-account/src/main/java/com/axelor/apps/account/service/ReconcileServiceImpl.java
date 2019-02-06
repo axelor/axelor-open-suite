@@ -99,7 +99,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean canBeZeroBalanceOk) {
 
-    if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
+    if (ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)
+        && amount.compareTo(BigDecimal.ZERO) > 0) {
       log.debug(
           "Create Reconcile (Company : {}, Debit MoveLine : {}, Credit MoveLine : {}, Amount : {}, Can be zero balance ? {} )",
           debitMoveLine.getMove().getCompany(),

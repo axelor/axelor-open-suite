@@ -42,10 +42,10 @@
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="typeSelect" colSpan="3"/>
-			<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="address" form-view="address-form" grid-view="address-grid"/>
+			<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
 			<field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
 			<field name="stockLocationValue" readonly="true" hideIf="typeSelect==3">
 			<viewer>

@@ -29,10 +29,13 @@ import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -254,6 +257,11 @@ public class ManufOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException {
+    if (cancelReason == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
+    }
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {

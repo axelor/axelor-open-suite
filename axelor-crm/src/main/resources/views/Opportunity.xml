@@ -126,9 +126,9 @@
         </panel-tabs>
 
         <panel name="otherDetailsPanel" sidebar="true">
-            <button name="previous-stageBtn" help="Previous stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="action-opportunity-set-previous-stage,save"/>
-            <button name="next-stageBtn" help="Next stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="action-opportunity-set-next-stage,save"/>
-            <button name="closed-wonBtn" help="Closed won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="action-opportunity-set-closed-won,save"/>
+            <button name="previous-stageBtn" help="Previous stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
+            <button name="next-stageBtn" help="Next stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
+            <button name="closed-wonBtn" help="Closed won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
             <button name="closed-lostBtn" help="Closed lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUpPanel" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
                 <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
@@ -156,8 +156,7 @@
 		</panel-mail>
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" onNew="opportunity.kanban.on.new , action-opportunity-group-new" limit="10"
-	 name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10" name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="name"/>
 		<field name="description"/>
 		<field name="probability"/>
@@ -217,11 +216,6 @@
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
     </action-group>
-    
-    <action-record name="opportunity.kanban.on.new" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="name" expr="#{_value}"/>
-		<field name="user" expr="#{__user__}"/>
-	</action-record>
     
     <action-group name="action-group-crm-opportunity-nextstage-click">
     	<action name="action-opportunity-set-next-stage"/>
