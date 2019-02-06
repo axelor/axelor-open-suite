@@ -546,6 +546,8 @@ public interface IExceptionMessage {
       "The sale order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
+      "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
   /** Invoice line generator */
   static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/

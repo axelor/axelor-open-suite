@@ -81,7 +81,8 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
             + "AND self.company = :company "
             + "AND self.dueDate <= :dueDate "
             + "AND self.paymentMode = :paymentMode "
-            + "AND self.id NOT IN (:anomalyList)");
+            + "AND self.id NOT IN (:anomalyList)"
+            + "AND self.pfpValidateStatusSelect != :pfpValidateStatusSelect");
 
     if (manageMultiBanks) {
       filter.append(" AND self.companyBankDetails IN (:bankDetailsSet)");
@@ -100,7 +101,8 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
             .bind("company", accountingBatch.getCompany())
             .bind("dueDate", accountingBatch.getDueDate())
             .bind("paymentMode", accountingBatch.getPaymentMode())
-            .bind("anomalyList", anomalyList);
+            .bind("anomalyList", anomalyList)
+            .bind("pfpValidateStatusSelect", InvoiceRepository.PFP_STATUS_LITIGATION);
 
     if (manageMultiBanks) {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());

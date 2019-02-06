@@ -101,6 +101,10 @@
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
 				</panel>
+				
+				<panel name="passedForPaymentPanel" title="Passed for payment">
+					<field name="isManagePassedForPayment" widget="boolean-switch"/>	
+				</panel>
 			</panel>
 
 			<panel name="journalsPanel" title="Journals">

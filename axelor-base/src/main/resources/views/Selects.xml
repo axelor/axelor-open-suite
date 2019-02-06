@@ -407,6 +407,7 @@
 	<selection name="base.cancel.reason.application.type.select">
 		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
         <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
+        <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
 	</selection>
 
  	<selection name="base.barcode.select">
