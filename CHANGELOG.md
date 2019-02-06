@@ -119,6 +119,7 @@
 - Fixed a bug where there were empty lines in declaration of exchanges csv export.
 - Expense: NPE related to kilometric expense.
 - BANK RECONCILIATION : Wrong data on printing
+- When creating interco invoice, copy correct prices in lines.
 
 ## [5.1.1] - 2019-01-18
 ## Features
