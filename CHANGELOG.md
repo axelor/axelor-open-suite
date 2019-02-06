@@ -238,6 +238,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Payment voucher: fix confirm button display on credit card supplier payments.
 - General balance report : fix wrong sums when we filter on some accounts of the same branch
 - Remove Inconsistency in selections
+- Stock/SupplyChain : Changing field names, report translations, sequence field, selection list values according to naming convention.
 
 ## [5.1.0] - 2018-12-13
 ## Features
