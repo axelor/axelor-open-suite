@@ -137,6 +137,7 @@ Add sale order and client partner fields on production order.
 - ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 - Account: add option to automatically create partners' accounts
 - Account: use partner name as default account name when creating from partner's account configuration screen.
+- Permission : fix existing permission rule issue
 
 ## Improvements
 - Budget: When computing budget lines, take into account `companyExTaxTotal` amounts instead of `exTaxTotal` amounts
