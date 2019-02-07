@@ -52,6 +52,12 @@
 				showIf="realStockMoveAutomaticMail"
 				form-view="template-form" grid-view="template-grid"/>
 		</panel>
+
+		<panel name="logisticalFormPanel">
+			<field name="logisticalFormAutomaticEmail"/>
+			<field name="logisticalFormMessageTemplate" requiredIf="logisticalFormAutomaticEmail" showIf="logisticalFormAutomaticEmail" grid-view="template-grid" form-view="template-form"/>
+		</panel>
+
 		<panel name="conformityCertiPanel" title="Conformity certificate">
 			<field name="conformityCertificateTitle"/>
 			<field name="conformityCertificateDescription" widget="html"/>
