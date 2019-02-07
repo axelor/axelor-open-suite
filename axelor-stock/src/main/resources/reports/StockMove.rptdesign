@@ -777,6 +777,7 @@ else row["last_modified_by"]</expression>
 StockMove.id, 
 MetaFile.file_path as logo_path, 
 StockMove.real_date, 
+StockMove.picking_edit_date,
 StockMove.type_select,
 StockMove.stock_move_seq, 
 Partner.title_select, 
@@ -1716,6 +1717,13 @@ order by StockMoveLine.sequence]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["invoicingAddress"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">picking_edit_date</property>
+                    <text-property name="displayName">picking_edit_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["picking_edit_date"]</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="5232"/>
             <column id="5233">
@@ -1850,6 +1858,12 @@ order by StockMoveLine.sequence]]></xml-property>
                         </column>
                         <row id="3652">
                             <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["picking_edit_date"] == null</expression>
+                                </structure>
+                            </list-property>
                             <cell id="3653">
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
@@ -1884,7 +1898,53 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["real_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["picking_edit_date"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5316">
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["picking_edit_date"] != null</expression>
+                                </structure>
+                            </list-property>
+                            <cell id="5317">
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <text id="5318">
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'StockMove.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]
+															</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]
+															</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">BirtDateTime.now()</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
