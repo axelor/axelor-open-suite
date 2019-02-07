@@ -89,6 +89,7 @@
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
 - STOCK MOVE : Date on report printing
 - ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
+- Sale Order: saving a sale order being edited does not change its status.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -123,6 +124,7 @@
 - When creating interco invoice, copy correct prices in lines.
 - When realizing manufacturing order on start, only realize in stock move.
 - STOCKMOVE : set picking edit date to localDate when the boolean field is true.
+- Sale Order: when modifying a confirmed sale order, remove planned stock moves after cancelling them.
 
 ## [5.1.1] - 2019-01-18
 ## Features

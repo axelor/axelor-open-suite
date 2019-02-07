@@ -253,15 +253,9 @@
                 </field>
             </panel>
             <field name="filterOnAvailableProducts" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
-			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3 &amp;&amp; !isReversion">
-				<panel name="SupplierShipmentDatePanel" itemSpan="12">
-					<field name="supplierShipmentDate" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
-					<label css="label-danger" title="Required" showIf="!supplierShipmentDate &amp;&amp; statusSelect == 3"/>
-				</panel>
-				<panel name="SupplierShipmentRefPanel" itemSpan="12">
-					<field name="supplierShipmentRef" requiredIf="stockIsRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3"/>
-					<label css="label-danger" title="Required" showIf="!supplierShipmentRef  &amp;&amp; statusSelect == 3"/>
-				</panel>
+			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3 &amp;&amp; !isReversion" >
+					<field name="supplierShipmentDate"/>
+					<field name="supplierShipmentRef"/>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
 				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
@@ -467,6 +461,7 @@
         <action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
+        <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -534,6 +529,11 @@
 		<attribute name="value" for="isWithBackorder" expr="eval:company?.stockConfig?.isWithBackorder" if="company != null"/>
     	<attribute name="value" for="isWithReturnSurplus" expr="eval:company?.stockConfig?.isWithReturnSurplus" if="company != null &amp;&amp; typeSelect == 3"/>
     	<attribute name="value" for="isWithReturnSurplus" expr="eval:false" if="typeSelect != 3"/>
+	</action-attrs>
+	
+	<action-attrs name="action-stock-move-attrs-set-required-shipment-supplier-details">
+		<attribute name="required" for="supplierShipmentRef" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
+		<attribute name="required" for="supplierShipmentDate" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
 	</action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">
