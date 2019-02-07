@@ -122,6 +122,7 @@
 - BANK RECONCILIATION : Wrong data on printing
 - When creating interco invoice, copy correct prices in lines.
 - When realizing manufacturing order on start, only realize in stock move.
+- Sale Order: when modifying a confirmed sale order, remove planned stock moves after cancelling them.
 
 ## [5.1.1] - 2019-01-18
 ## Features
