@@ -37,6 +37,7 @@
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
 - APP BUILDER : Added menu "Selections"
 - CONTROL POINT : Added titles in comments panels
+- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
