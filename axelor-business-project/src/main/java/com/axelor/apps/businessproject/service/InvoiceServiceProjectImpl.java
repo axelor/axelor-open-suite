@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -76,6 +77,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       SaleOrderRepository saleOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       IntercoService intercoService,
+      FixedAssetService fixedAssetService,
       InvoicingProjectRepository invoicingProjectRepo) {
     super(
         partnerService,
@@ -88,6 +90,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         sequenceService,
         accountConfigService,
         moveService,
+        fixedAssetService,
         purchaseOrderInvoiceService,
         purchaseOrderRepository,
         saleOrderInvoiceService,
