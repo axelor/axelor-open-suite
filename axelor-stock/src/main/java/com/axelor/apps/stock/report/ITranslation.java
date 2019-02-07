@@ -79,6 +79,8 @@ public interface ITranslation {
   public static final String STOCK_MOVE_GROSS_WEIGHT = /*$$(*/ "StockMove.grossWeight"; /*)*/
   public static final String STOCK_MOVE_DESCRIPTION = /*$$(*/ "StockMove.description"; /*)*/
   public static final String STOCK_MOVE_ISPM = /*$$(*/ "StockMove.ispm"; /*)*/
+  public static final String STOCK_MOVE_DELIVERY_CONDITION = /*$$(*/
+      "StockMove.deliveryCondition"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

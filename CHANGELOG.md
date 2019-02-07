@@ -4,6 +4,7 @@
 ## Features
 - Account: add option to automatically create partners' accounts
 - Account: use partner name as default account name when creating from partner's account configuration screen.
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 
 ## Improvements
 - Disabled 'canEdit' attribute for some fields
