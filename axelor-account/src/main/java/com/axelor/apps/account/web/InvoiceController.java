@@ -868,4 +868,12 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkPartnerBankDetailsList(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setAttr(
+        "$partnerBankDetailsListWarning",
+        "hidden",
+        invoiceService.checkPartnerBankDetailsList(invoice));
+  }
 }

@@ -91,4 +91,6 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_DELIVERY_ADDRESS = /*$$(*/
       "PurchaseOrder.deliveryAddress"; /*)*/
   public static final String PURCHASE_ORDER_ORDER_DATE = /*$$(*/ "PurchaseOrder.orderDate"; /*)*/
+  public static final String PURCHASE_ORDER_SUPPLIER_CODE = /*$$(*/
+      "PurchaseOrder.supplierCode"; /*)*/
 }

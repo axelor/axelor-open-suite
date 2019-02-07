@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -56,7 +57,7 @@ public class MoveController {
       moveService.getMoveValidateService().validate(move);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -225,5 +226,16 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     Map<String, Object> values = moveService.computeTotals(move);
     response.setValues(values);
+  }
+
+  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    if (move.getMoveLineList() != null
+        && !move.getMoveLineList().isEmpty()
+        && move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+      moveService.getMoveLineService().autoTaxLineGenerate(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    }
   }
 }

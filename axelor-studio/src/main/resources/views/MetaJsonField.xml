@@ -8,8 +8,10 @@
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	      <spacer name="appBuilderSpacer"/>
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
-	      <field name="type" />
 	      <field name="title" />
+          <field name="parentModel" type="string" hidden="true" />
+          <field name="type" showIf="parentModel != 'com.axelor.studio.db.Wkf'" />
+          <field name="type" showIf="parentModel == 'com.axelor.studio.db.Wkf'" selection-in="['string', 'integer']" />
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
@@ -26,10 +28,26 @@
 	  <field name="type"/>
 	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	</grid>
-	
-	<action-attrs name="action-studio-set-meta-json-field-defaults" >
-    	<attribute name="value"	for="model" expr="eval:_parent.metaModel?.fullName"/>
-    	<attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"/>
+
+    <action-group name="action-studio-set-meta-json-field-defaults">
+      <action name="action-studio-record-set-meta-json-field-defaults" />
+      <action name="action-studio-attrs-set-meta-json-field-defaults" />
+    </action-group>
+  
+    <action-record name="action-studio-record-set-meta-json-field-defaults" model="com.axelor.meta.db.MetaJsonField">
+      <field name="parentModel" expr="eval:__parent__._model" />
+    </action-record>
+
+    <action-attrs name="action-studio-attrs-set-meta-json-field-defaults">
+      <attribute name="value" for="model" expr="eval:_parent.metaModel?.fullName"
+        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
+      <attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"
+        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
+  
+      <attribute name="value" for="model" expr="eval:_parent.model"
+        if="parentModel == 'com.axelor.studio.db.Wkf'" />
+      <attribute name="value" for="modelField" expr="eval:_parent.jsonField"
+        if="parentModel == 'com.axelor.studio.db.Wkf'" />
     </action-attrs>
     
     <form id="studio-json-field-form" name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onLoad="action-studio-attr-json-field-read-only-model">

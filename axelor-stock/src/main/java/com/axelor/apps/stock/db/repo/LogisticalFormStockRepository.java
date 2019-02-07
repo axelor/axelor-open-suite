@@ -34,7 +34,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
   @Override
   public LogisticalForm save(LogisticalForm logisticalForm) {
     try {
-      if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumber())
+      if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumberSeq())
           && logisticalForm.getCompany() != null) {
         String sequenceNumber =
             Beans.get(SequenceService.class)
@@ -46,7 +46,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
               I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
               logisticalForm.getCompany().getName());
         }
-        logisticalForm.setDeliveryNumber(sequenceNumber);
+        logisticalForm.setDeliveryNumberSeq(sequenceNumber);
       }
 
       return super.save(logisticalForm);

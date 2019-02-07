@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
@@ -32,7 +31,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
-import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -353,12 +351,12 @@ public class IntercoServiceImpl implements IntercoService {
         createIntercoInvoiceLine(invoiceLine, isPurchase);
       }
     }
-    calculateInvoiceAmounts(intercoInvoice);
 
+    invoiceService.compute(intercoInvoice);
     return invoiceRepository.save(intercoInvoice);
   }
 
-  private InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
+  protected InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
@@ -386,63 +384,12 @@ public class IntercoServiceImpl implements IntercoService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
       invoiceLine.setTaxEquiv(taxEquiv);
-      invoiceLine.setPrice(
-          invoiceLineService.getExTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
-      invoiceLine.setInTaxPrice(
-          invoiceLineService.getInTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
-      invoiceLine.setPriceDiscounted(
-          invoiceLineService.computeDiscount(invoiceLine, intercoInvoice.getInAti()));
-      BigDecimal exTaxTotal, inTaxTotal;
-      if (!intercoInvoice.getInAti()) {
-        exTaxTotal =
-            InvoiceLineManagement.computeAmount(
-                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
-        inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxRate()));
-      } else {
-        inTaxTotal =
-            InvoiceLineManagement.computeAmount(
-                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
-        exTaxTotal =
-            inTaxTotal.divide(
-                invoiceLine.getTaxRate().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-      }
-      invoiceLine.setExTaxTotal(exTaxTotal);
-      invoiceLine.setInTaxTotal(inTaxTotal);
       invoiceLine.setCompanyExTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(exTaxTotal, intercoInvoice));
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
       invoiceLine.setCompanyInTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(inTaxTotal, intercoInvoice));
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), intercoInvoice));
     }
     return invoiceLine;
-  }
-
-  private void calculateInvoiceAmounts(Invoice invoice) throws AxelorException {
-    invoice.setExTaxTotal(BigDecimal.ZERO);
-    invoice.setTaxTotal(BigDecimal.ZERO);
-    invoice.setInTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
-
-    invoice.setInvoiceLineTaxList(
-        (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates());
-
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
-      invoice.setCompanyExTaxTotal(
-          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
-    }
-
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
-      invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
-    }
-
-    invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));
-    invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
-    invoice.setAmountRemaining(invoice.getInTaxTotal());
-    invoice.setHasPendingPayments(false);
   }
 
   @Override

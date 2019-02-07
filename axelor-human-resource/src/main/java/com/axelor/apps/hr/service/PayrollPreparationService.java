@@ -184,7 +184,7 @@ public class PayrollPreparationService {
     while (!itDate.isAfter(toDate)) {
       workingDays =
           workingDays.add(
-              new BigDecimal(
+              BigDecimal.valueOf(
                   weeklyPlanningService.workingDayValue(
                       payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
       itDate = itDate.plusDays(1);
@@ -290,7 +290,7 @@ public class PayrollPreparationService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation)
-      throws IOException, AxelorException {
+      throws IOException {
 
     List<String[]> list = new ArrayList<>();
 
@@ -429,7 +429,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toString()
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString()
         + ".csv";
   }
 

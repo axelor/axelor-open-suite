@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid id="project-team-task-form" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -15,7 +15,7 @@
 		<field name="projectCategory"/>
 	</grid>
 	
-	<form title="Task" id="project-team-task-grid" name="team-task-form"
+	<form title="Task" id="project-team-task-form" name="team-task-form"
 		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
 		onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>

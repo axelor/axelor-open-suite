@@ -13,49 +13,60 @@
         <field name="balanceDueDebtRecovery"/>
     </grid>
 
-    <form name="debt-recovery-form" title="Debt Recovery"
-          model="com.axelor.apps.account.db.DebtRecovery">
-        <panel name="mainPanel" title="Overview">
-            <field name="name"/>
-            <field name="referenceDate"/>
-            <field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid"
-                   form-view="debt-recovery-method-form"/>
-            <field name="debtRecoveryMethodLine"
-                   onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-                   grid-view="debt-recovery-method-line-grid"
-                   form-view="debt-recovery-method-line-form"/>
-            <field name="balanceDue"/>
-            <field name="balanceDueDebtRecovery"/>
-        </panel>
-        <panel>
-            <field name="setToIrrecoverableOk"/>
-            <field name="deceasedPartnerOk"/>
-            <field name="unknownAddressOk"/>
-        </panel>
-        <panel>
-            <field name="debtRecoveryDate"/>
-            <field name="waitDebtRecoveryMethodLine"
-                   onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-                   grid-view="debt-recovery-method-line-grid"
-                   form-view="debt-recovery-method-line-form"/>
-            <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
-                    onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
-        </panel>
-        <panel-tabs name="mainPanelTab">
-            <panel-related  name="debtRecoveryHistoryListPanel"
-            			   	field="debtRecoveryHistoryList"
-                           	grid-view="debt-recovery-history-grid"
-                           	form-view="debt-recovery-history-form"/>
-            <panel-related 	name="invoiceDebtRecoverySetPanel" 
-            				field="invoiceDebtRecoverySet" 
-            				grid-view="invoice-grid"
-                           	form-view="invoice-form"/>
-            <panel-related 	name="paymentScheduleLineDebtRecoverySetPanel" 
-            				field="paymentScheduleLineDebtRecoverySet"
-                           	grid-view="payment-schedule-line-grid"
-                           	form-view="payment-schedule-line-form"/>
-        </panel-tabs>
-    </form>
+	<form name="debt-recovery-form" title="Debt Recovery"
+		model="com.axelor.apps.account.db.DebtRecovery">
+		<panel name="mainPanel" title="Overview">
+			<field name="name" showTitle="false" colSpan="12">
+				<viewer depends="name">
+					<![CDATA[
+						<h3>
+							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+						</h3>
+					]]>
+				</viewer>
+			</field>
+			<field name="balanceDue" colSpan="3" />
+			<field name="balanceDueDebtRecovery" colSpan="3" />
+			<field name="referenceDate" colSpan="3" />
+			<field name="debtRecoveryDate" colSpan="3" />
+		</panel>
+		<panel>
+			<field name="setToIrrecoverableOk" widget="boolean-switch"
+				colSpan="3" />
+			<field name="deceasedPartnerOk" widget="boolean-switch"
+				colSpan="3" />
+			<field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
+		</panel>
+		<panel-tabs>
+			<panel-related  name="debtRecoveryHistoryListPanel"
+          field="debtRecoveryHistoryList"
+                grid-view="debt-recovery-history-grid"
+                form-view="debt-recovery-history-form"/>
+      <panel-related 	name="invoiceDebtRecoverySetPanel" 
+          field="invoiceDebtRecoverySet" 
+                grid-view="invoice-grid"
+                form-view="invoice-form"/>
+      <panel-related 	name="paymentScheduleLineDebtRecoverySetPanel" 
+          field="paymentScheduleLineDebtRecoverySet"
+                grid-view="payment-schedule-line-grid"
+                form-view="payment-schedule-line-form"/>
+		</panel-tabs>
+		<panel sidebar="true" name="actions">
+      <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
+        onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
+		</panel>
+		<panel sidebar="true" canCollapse="true" name="caracteristics"
+			title="Caracteristics">
+			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
+				grid-view="debt-recovery-method-grid" />
+			<field name="debtRecoveryMethodLine"
+				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+			<field name="waitDebtRecoveryMethodLine"
+				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+		</panel>
+	</form>
 
     <action-attrs name="action-debt-recovery-attrs-set-debt-recovery-line-domain">
         <attribute for="debtRecoveryMethodLine" name="domain"

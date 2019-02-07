@@ -18,9 +18,11 @@
 package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.AddressServicePurchaseImpl;
+import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
@@ -43,5 +45,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseRequestService.class).to(PurchaseRequestServiceImpl.class);
     bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
     bind(PurchaseOrderPrintService.class).to(PurchaseOrderPrintServiceImpl.class);
+    bind(ProductServiceImpl.class).to(ProductServicePurchaseImpl.class);
   }
 }

@@ -81,6 +81,20 @@ public class StockMoveController {
     }
   }
 
+  public void manageBackorder(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    response.setView(
+        ActionView.define(I18n.get("Manage backorder?"))
+            .model(StockMove.class.getName())
+            .add("form", "popup-stock-move-backorder-form")
+            .param("popup", "reload")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("popup-save", "false")
+            .context("_showRecord", stockMove.getId())
+            .map());
+  }
+
   public void realize(ActionRequest request, ActionResponse response) {
 
     StockMove stockMoveFromRequest = request.getContext().asType(StockMove.class);
@@ -149,11 +163,10 @@ public class StockMoveController {
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
-
         StockMove stockMove = request.getContext().asType(StockMove.class);
+        stockMove = stockMoveRepo.find(stockMove.getId());
         title = stockMovePrintService.getFileName(stockMove);
         fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
@@ -177,6 +190,7 @@ public class StockMoveController {
     Context context = request.getContext();
     String fileLink;
     String title;
+    String userType = (String) context.get("_userType");
 
     try {
 
@@ -194,21 +208,22 @@ public class StockMoveController {
                     return Long.parseLong(input.toString());
                   }
                 });
-        fileLink = pickingstockMovePrintService.printStockMoves(ids);
+        fileLink = pickingstockMovePrintService.printStockMoves(ids, userType);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
-
         StockMove stockMove = context.asType(StockMove.class);
+        stockMove = stockMoveRepo.find(stockMove.getId());
         title = pickingstockMovePrintService.getFileName(stockMove);
         fileLink =
-            pickingstockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-
+            pickingstockMovePrintService.printStockMove(
+                stockMove, ReportSettings.FORMAT_PDF, userType);
         logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
       }
+      response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

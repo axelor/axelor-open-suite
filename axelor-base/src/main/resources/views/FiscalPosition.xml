@@ -13,6 +13,7 @@
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="customerSpecificNote" colSpan="4" if-module="axelor-account" />
+            <field name="customerSpecificNoteText" colSpan="12" showIf="customerSpecificNote" showTitle="false" if-module="axelor-account"/>
 	        <panel-related name="accountEquivListPanel" field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12" if-module="axelor-account" />
 	        <panel-related name="taxEquivListPanel" field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12" />
         </panel>

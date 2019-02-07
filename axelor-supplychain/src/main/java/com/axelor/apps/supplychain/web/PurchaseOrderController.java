@@ -25,6 +25,8 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -343,5 +345,22 @@ public class PurchaseOrderController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     Beans.get(PurchaseOrderServiceSupplychainImpl.class)
         .applyToallBudgetDistribution(purchaseOrder);
+  }
+
+  public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        Integer receiptState = purchaseOrderLine.getReceiptState();
+        if (receiptState != null
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
+          purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+        }
+      }
+    }
+    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
   }
 }

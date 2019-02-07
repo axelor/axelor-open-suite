@@ -22,6 +22,7 @@
                requiredIf="realStockMoveAutomaticMail"
                showIf="realStockMoveAutomaticMail"
                form-view="template-form" grid-view="template-grid"/>
+        <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
     </grid>
 
     <form name="partner-stock-settings-form"
@@ -47,17 +48,14 @@
                   showIf="realStockMoveAutomaticMail"
                   form-view="template-form" grid-view="template-grid"/>
             </panel>
+            <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
         </panel>
     </form>
 
     <action-attrs name="action-partner-default-stock-location-form-domain"
                   model="com.axelor.apps.stock.db.PartnerStockSettings">
         <attribute for="defaultStockLocation" name="domain"
-                   expr="eval: 'self.id IN (0)'"/>
-        <attribute for="defaultStockLocation" name="domain" if="__parent__"
-                   expr="eval: 'self.partner = :__parent__ AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
-        <attribute for="defaultStockLocation" name="domain" if="partner"
-                   expr="eval: 'self.partner = :partner AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
+                   expr="eval: 'self.company = :company AND self.usableOnSaleOrder = true AND self.usableOnPurchaseOrder = true AND (self.typeSelect = 1 OR self.typeSelect = 2)'"/>
     </action-attrs>
 
 </object-views>

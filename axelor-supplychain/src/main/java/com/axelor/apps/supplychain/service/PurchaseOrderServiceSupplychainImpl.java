@@ -143,7 +143,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(purchaseOrderLine.getBudget());
-          budgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+          budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -221,7 +221,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-      newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+      newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
