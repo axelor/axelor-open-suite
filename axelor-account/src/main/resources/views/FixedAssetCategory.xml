@@ -25,7 +25,7 @@
         <panel-tabs name="mainPanelTab">
         	<panel name="accountingInfoPanel" title="Accounting information">
         		<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-        		<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+        		<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
         		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
         	</panel>
         	<panel name="periodicityPanel" title="Periodicity">

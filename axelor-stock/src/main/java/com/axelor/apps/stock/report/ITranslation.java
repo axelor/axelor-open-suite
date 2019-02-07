@@ -94,6 +94,7 @@ public interface ITranslation {
       "StockMove.customerPartnerSeq"; /*)*/
   public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
       "StockMove.supplierPartnerSeq"; /*)*/
+  public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

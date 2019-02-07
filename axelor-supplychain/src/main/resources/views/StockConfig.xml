@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <action-attrs id="action-supplychain-stock-config-attrs-customer-stocklocation-domain" name="action-stock-config-attrs-customer-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
+        <attribute name="domain" for="customerVirtualStockLocation" expr="eval: &quot; self.usableOnSaleOrder = True AND self.typeSelect = 3 &quot;"/>
+    </action-attrs>
+
+    <action-attrs id="action-supplychain-stock-config-attrs-supplier-stocklocation-domain" name="action-stock-config-attrs-supplier-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
+        <attribute name="domain" for="supplierVirtualStockLocation" expr="eval: &quot; self.usableOnPurchaseOrder = True AND self.typeSelect = 3 &quot;"/>
+    </action-attrs>
+
+    <action-attrs id="action-supplychain-stock-config-attrs-receipt-stocklocation-domain" name="action-stock-config-attrs-receipt-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
+        <attribute name="domain" for="receiptDefaultStockLocation" expr="eval: &quot; self.usableOnPurchaseOrder = True AND self.company = :company and self.typeSelect != 3 &quot;"/>
+    </action-attrs>
+
+    <action-attrs id="action-supplychain-stock-config-attrs-pickup-stocklocation-domain" name="action-stock-config-attrs-pickup-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
+        <attribute name="domain" for="pickupDefaultStockLocation" expr="eval: &quot; self.usableOnSaleOrder = True AND self.company = :company and self.typeSelect != 3 &quot;"/>
+    </action-attrs>
+
+</object-views>

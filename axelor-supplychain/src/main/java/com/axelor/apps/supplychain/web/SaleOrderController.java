@@ -518,20 +518,6 @@ public class SaleOrderController {
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
 
-  public void onSave(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
-      if (saleOrderView.getOrderBeingEdited()) {
-        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-        saleOrderServiceSupplychain.validateChanges(saleOrder, saleOrderView);
-        response.setValues(saleOrderView);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   /**
    * Called on sale order invoicing wizard form. Call {@link
    * SaleOrderInvoiceService#getInvoicingWizardOperationDomain(SaleOrder)}
