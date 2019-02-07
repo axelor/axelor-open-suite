@@ -79,6 +79,7 @@
 - Default partner specific note on fiscal position.
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
+- SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
 - Logistical form: track statusSelect.
 - RECONCILE : Update missing sequence alert
 - Naming Tool : Missing reserved java litterals
