@@ -421,7 +421,7 @@ public class MoveService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move) throws AxelorException {
 
-    LocalDate todayDate = appAccountService.getTodayDate();
+    LocalDate todayDate = move.getDate();
 
     Move newMove =
         moveCreateService.createMove(
@@ -438,26 +438,40 @@ public class MoveService {
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
 
+    boolean validatedMove =
+        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+            || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
-      Boolean isDebit = true;
-      BigDecimal amount = moveLine.getCredit();
-      if (amount.compareTo(BigDecimal.ZERO) == 0) {
-        isDebit = false;
-      }
+      Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+
       MoveLine newMoveLine =
           moveLineService.createMoveLine(
               newMove,
               moveLine.getPartner(),
               moveLine.getAccount(),
               moveLine.getCurrencyAmount(),
-              isDebit,
+              !isDebit,
               todayDate,
               moveLine.getCounter(),
               moveLine.getName(),
               null);
       newMove.addMoveLineListItem(newMoveLine);
+
+      if (validatedMove) {
+        if (isDebit) {
+          reconcileService.reconcile(moveLine, newMoveLine, false, true);
+        } else {
+          reconcileService.reconcile(newMoveLine, moveLine, false, true);
+        }
+      }
     }
+
+    if (validatedMove) {
+      moveValidateService.validate(newMove);
+    }
+
     return moveRepository.save(newMove);
   }
 

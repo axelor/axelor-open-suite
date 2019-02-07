@@ -127,9 +127,6 @@ public class ManufOrderWorkflowService {
       manufOrder.addInStockMoveListItem(
           manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
               manufOrder, manufOrder.getInStockMoveList()));
-      manufOrder.addOutStockMoveListItem(
-          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
-              manufOrder, manufOrder.getOutStockMoveList()));
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);

@@ -55,7 +55,7 @@
     <action-attrs name="action-partner-default-stock-location-form-domain"
                   model="com.axelor.apps.stock.db.PartnerStockSettings">
         <attribute for="defaultStockLocation" name="domain"
-                   expr="eval: 'self.usableOnSaleOrder = true AND self.usableOnPurchaseOrder = true AND (self.typeSelect = 1 OR self.typeSelect = 2)'"/>
+                   expr="eval: 'self.company = :company AND self.usableOnSaleOrder = true AND self.usableOnPurchaseOrder = true AND (self.typeSelect = 1 OR self.typeSelect = 2)'"/>
     </action-attrs>
 
 </object-views>
