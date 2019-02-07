@@ -44,6 +44,8 @@
 	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>
 	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
 	<boolean name="isWithBackorder" title="Manage backorder"/>
+	
+	<boolean name="pickingOrderPrinting" title="Picking order printing detailed"/>
 
   </entity>
   

@@ -28,7 +28,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.persistence.PersistenceException;
@@ -41,6 +40,8 @@ public class ProductBaseRepository extends ProductRepository {
   @Inject protected AppBaseService appBaseService;
 
   @Inject protected TranslationService translationService;
+
+  @Inject protected ProductService productService;
 
   protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
@@ -102,19 +103,9 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product copy(Product product, boolean deep) {
-
     Product copy = super.copy(product, deep);
-    copy.setBarCode(null);
-    try {
-      if (product.getPicture() != null) {
-        File file = MetaFiles.getPath(product.getPicture()).toFile();
-        copy.setPicture(metaFiles.upload(file));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    copy.setStartDate(null);
-    copy.setEndDate(null);
+    productService.copyProduct(product, copy);
+
     return copy;
   }
 }

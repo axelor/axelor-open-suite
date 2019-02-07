@@ -43,6 +43,7 @@
 		</extra-code>
 		
 		<track>
+	      <field name="statusSelect" />
 	      <field name="deliveryNumber" />
 	      <field name="collectionDate" />
 	      <field name="deliverToCustomerPartner" />

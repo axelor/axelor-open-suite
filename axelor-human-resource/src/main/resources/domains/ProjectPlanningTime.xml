@@ -19,6 +19,8 @@
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
 	  <integer name="typeSelect" title="Type" selection="hr.project.planning.time.type"/>
+	  <time name="startTime" title="Start time"/>
+	  <time name="endTime" title="End time"/>
 	  
 	  <string name="fullName" namecolumn="true">
 			<![CDATA[

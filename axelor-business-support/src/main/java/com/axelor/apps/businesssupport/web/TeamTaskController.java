@@ -32,10 +32,10 @@ public class TeamTaskController {
     if (task.getProjectCategory() == null
         || task.getProjectCategory().getDefaultInvoicing()
             == ProjectCategoryRepository.DEFAULT_INVOICING_N0) {
-      response.setValue("timeInvoicing", false);
-      response.setValue("invoicingType", null);
+      response.setValue("teamTaskInvoicing", false);
+      response.setValue("teamTaskInvoicing", null);
     } else {
-      response.setValue("timeInvoicing", true);
+      response.setValue("teamTaskInvoicing", true);
       if (task.getProjectCategory().getDefaultInvoicing()
           == ProjectCategoryRepository.DEFAULT_INVOICING_TIME_SPENT) {
         response.setValue("invoicingType", ProjectRepository.INVOICING_TYPE_TIME_BASED);

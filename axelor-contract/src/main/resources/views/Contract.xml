@@ -50,21 +50,21 @@
                 <panel name="currentVersionPanel" title="Current version" colSpan="12">
                     <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <panel name="datesPanel"  colSpan="6">
-                                <panel name="supposedDatesPanel" hideIf="statusSelect >= 3" colSpan="12">
+                            <panel   colSpan="6">
+                                <panel  hideIf="statusSelect >= 3" colSpan="12">
                                     <field name="supposedActivationDate"/>
                                     <field name="supposedEndDate"/>
                                 </panel>
-                                <panel name="activationPanel" hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
+                                <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
                                     <field name="activatedByUser" colSpan="4"/>
                                     <field name="activationDate" colSpan="4"/>
-                                    <panel colSpan="4" name="endDatesPanel">
+                                    <panel colSpan="4" >
                                         <field name="supposedEndDate" hidden="true" readonly="true" showIf="statusSelect == 3" colSpan="12"/>
                                         <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4" colSpan="12"/>
                                     </panel>
                                 </panel>
                             </panel>
-                            <panel showIf="id" colSpan="6" name="creationDetailPanel">
+                            <panel showIf="id" colSpan="6" >
                                 <field name="createdOn"/>
                                 <field name="createdBy"/>
                             </panel>
@@ -169,11 +169,11 @@
                     <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                                <panel colSpan="6" name="paymentPanel">
+                                <panel colSpan="6">
                                     <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
-                                <panel name="automaticInvoicingPanel" colSpan="6">
+                                <panel  colSpan="6">
                                     <field name="automaticInvoicing" colSpan="6" widget="boolean-switch"/>
                                     <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
                                 </panel>
@@ -182,7 +182,7 @@
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
-                                <panel name="invoicingDetailsPanel" hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
+                                <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
                                     <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
@@ -202,12 +202,12 @@
                 </panel>
                 <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                        <panel title="Engagement" name="engagementDetailPanel">
+                        <panel title="Engagement" >
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
                             <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
                             <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
                         </panel>
-                        <panel title="Prior notice" name="priorNoticePanel">
+                        <panel title="Prior notice" >
                             <field name="isWithPriorNotice" widget="boolean-switch"/>
                             <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
                         </panel>

@@ -72,13 +72,22 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     List<TeamTask> tasks = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
+      boolean isTaskGenerated =
+          teamTaskRepository
+                  .all()
+                  .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
+                  .fetch()
+                  .size()
+              > 0;
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+          && !(isTaskGenerated)) {
+
         TeamTask task =
             teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
-          task.setTimeInvoicing(true);
+          task.setTeamTaskInvoicing(true);
           task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
         }
 

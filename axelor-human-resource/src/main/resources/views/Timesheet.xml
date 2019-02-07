@@ -275,7 +275,7 @@
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-toDate">
-		<error message="Invalid date" if="(toDate != null &amp;&amp; toDate &lt; fromDate) || (toDate != null &amp;&amp; toDate &gt; __date__)" action="action-timesheet-null-toDate"/>
+		<error message="Invalid date" if="toDate != null &amp;&amp; toDate &lt; fromDate" action="action-timesheet-null-toDate"/>
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-fromDate">

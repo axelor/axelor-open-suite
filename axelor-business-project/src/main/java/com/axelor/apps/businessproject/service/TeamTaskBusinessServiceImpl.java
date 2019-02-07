@@ -72,6 +72,7 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
       task.setUnitPrice(saleOrderLine.getProduct().getSalePrice());
     }
     task.setQuantity(saleOrderLine.getQty());
+    task.setSaleOrderLine(saleOrderLine);
     return task;
   }
 
@@ -205,6 +206,7 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProject(teamTask.getProject());
+            teamTask.setInvoiceLine(invoiceLine);
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
             invoiceLines.add(invoiceLine);

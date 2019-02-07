@@ -49,10 +49,10 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 
     if (project != null
-        && ((project.getTimeInvoicing()
+        && ((project.getTeamTaskInvoicing()
                 && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED)
             || (project.getParentProject() != null
-                && project.getParentProject().getTimeInvoicing()
+                && project.getParentProject().getTeamTaskInvoicing()
                 && project.getParentProject().getInvoicingType()
                     == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
       timesheetLine.setToInvoice(true);
@@ -75,7 +75,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       toInvoice = null;
     } else if (teamTask != null) {
       toInvoice =
-          teamTask.getTimeInvoicing()
+          teamTask.getTeamTaskInvoicing()
               ? (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_TIME_SPENT
                   ? true
                   : (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_PACKAGE
@@ -84,7 +84,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
               : false;
     } else {
       toInvoice =
-          project.getTimeInvoicing()
+          project.getTeamTaskInvoicing()
               ? (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED
                   ? true
                   : (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE

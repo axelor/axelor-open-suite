@@ -45,6 +45,9 @@
 - Purchase Request : Addition of M2M 'purchaseOrderSet'
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 - Invoicing project : Menu organisation
+- Business Project : Addition of required contion on parentTaskTemplate. 
+- TeamTask : Added relation with saleOrderLine and InvoiceLine.
+- Project module : ProjectPlanningTime ( Start time / End time )
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
@@ -59,12 +62,15 @@
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
+- Moible: Add new app setting for 'Task'
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
 - Studio: Fix import app without image. 
 - TeamTask : Resolve NPE by updating action of HR module.
 - Generation of Project/Phase from SaleOrder
+- Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
+- Contract : Fix issue of not saving currentContractVersion fields in form view
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

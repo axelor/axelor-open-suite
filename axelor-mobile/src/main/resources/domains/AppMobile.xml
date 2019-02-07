@@ -10,6 +10,7 @@
 		<boolean name="isTimesheetAppEnable" default="true" title="Timesheet"/>
 		<boolean name="isLeaveAppEnable" default="true" title="Leave"/>
 		<boolean name="isExpenseAppEnable" default="true" title="Expense"/>
+		<boolean name="isTaskAppEnable" default="true" title="Task"/>
 		<decimal name="offlineRecordLimit" title="Offline record limit"/>
 		
 		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Customers"/>

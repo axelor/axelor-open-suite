@@ -117,6 +117,8 @@ public interface ITranslation {
       "PickingStockMove.withWithout"; /*)*/
   public static final String PICKING_STOCK_MOVE_CUSTOMER_CODE = /*$$(*/
       "PickingStockMove.customerCode"; /*)*/
+  public static final String PICKING_STOCK_MOVE_EXTERNAL_REFERENCE = /*$$(*/
+      "PickingStockMove.externalReference"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/
