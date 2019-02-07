@@ -1177,7 +1177,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void setPickingStockMoveEditDate(StockMove stockMove, String userType) {
-    if (!stockMove.getPickingIsEdited()
+    if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
         && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       stockMove.setPickingEditDate(LocalDate.now());

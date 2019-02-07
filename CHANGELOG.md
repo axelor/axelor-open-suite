@@ -122,6 +122,7 @@
 - BANK RECONCILIATION : Wrong data on printing
 - When creating interco invoice, copy correct prices in lines.
 - When realizing manufacturing order on start, only realize in stock move.
+- STOCKMOVE : set picking edit date to localDate when the boolean field is true.
 
 ## [5.1.1] - 2019-01-18
 ## Features

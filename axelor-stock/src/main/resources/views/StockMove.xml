@@ -264,7 +264,7 @@
 				</panel>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" />
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
 				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
            		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
             </panel>
@@ -618,6 +618,10 @@
 		<field name="electronicSignature" if="!signatoryUser" expr="eval: (__user__?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? __user__.electronicSignature : null"/>
 		<field name="electronicSignature" if="signatoryUser" expr="eval: (signatoryUser?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? signatoryUser.electronicSignature : null"/>
     <field name="signatoryUser" if="isConformityCertifSigned &amp;&amp; !signatoryUser" expr="eval: __user__"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-picking-is-edited-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="pickingEditDate" if="pickingIsEdited" expr="eval: __date__"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-unset-certificate-signed" model="com.axelor.apps.stock.db.StockMove">
