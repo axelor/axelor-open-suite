@@ -19,6 +19,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -45,7 +46,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
         if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumber())) {
           String sequenceNumber =
               Beans.get(SequenceService.class)
-                  .getSequenceNumber("logisticalForm", logisticalForm.getCompany());
+                  .getSequenceNumber(SequenceRepository.LOGISTICAL_FORM, logisticalForm.getCompany());
           if (Strings.isNullOrEmpty(sequenceNumber)) {
             throw new AxelorException(
                 Sequence.class,
