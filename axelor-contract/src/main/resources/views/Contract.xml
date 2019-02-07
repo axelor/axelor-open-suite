@@ -312,14 +312,6 @@
         <context name="_xIsNextVersion" expr="true"/>
     </action-view>
 
-    <grid name="contract-version-next-grid" title="Versions" model="com.axelor.apps.contract.db.ContractVersion">
-        <field name="contract.contractId"/>
-        <field name="contract.name"/>
-        <field name="contract.partner"/>
-        <field name="activationDate"/>
-        <field name="statusSelect"/>
-    </grid>
-
     <action-view name="action.contract.view.contract" model="com.axelor.apps.contract.db.Contract" title="Contract">
         <view type="form" name="contract-form"/>
         <view type="grid" name="contract-grid"/>
