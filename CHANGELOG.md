@@ -80,6 +80,7 @@
 - STOCK MOVE: rename stock move's title form according to its type.
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
+- Naming Tool : Missing reserved java litterals
 - PICKING ORDER : printing modification.
 - SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
 - ProdProcess: Add massUpdate to stock move realize order select.
