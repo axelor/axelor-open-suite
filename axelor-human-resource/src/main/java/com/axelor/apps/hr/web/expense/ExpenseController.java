@@ -58,7 +58,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -68,6 +67,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public class ExpenseController {
     Map<String, Object> expenseMap =
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
-    Long expenseId = new Long((Integer) expenseMap.get("id"));
+    Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())
@@ -284,10 +284,10 @@ public class ExpenseController {
       }
     }
     if (!expenseLineId.isEmpty()) {
-      String ids = Joiner.on(",").join(expenseLineId);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get("Date problem for line(s) : %s"), ids));
+          I18n.get("Date problem for line(s) : %s"),
+          expenseLineId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
     }
   }
 
@@ -305,7 +305,7 @@ public class ExpenseController {
             .generate()
             .getFileLink();
 
-    logger.debug("Printing " + name);
+    logger.debug("Printing {}", name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }

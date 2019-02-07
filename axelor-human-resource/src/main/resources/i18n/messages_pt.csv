@@ -696,7 +696,7 @@
 "The employee %s has no birth date","O empregado %s não tem data de nascimento",,
 "The employee %s has no seniority date","O empregado %s não tem data de antiguidade",,
 "The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing","A taxa de subsídio por quilometragem correspondente à taxa de subsídio por quilometragem permite paramétricas e a empresa % está em falta",,
-"There is a conflict between the input dates and the dates in the lines: %s","Há um conflito entre as datas entradas e as datas nas linhas : %s",,
+"There is a conflict between the timesheet input dates and the dates of the following lines: %s","Há um conflito entre as datas entradas e as datas nas linhas : %s",,
 "There is already a payroll preparation for the employee %s, the company %s and the period %s","Já existe uma preparação da folha de pagamento para os %s empregados, os %s da empresa e os %s do período",,
 "There is an error in a formula","Há um erro em uma fórmula",,
 "There is no leave line for the employee %s and the reason %s.","Não há linha de férias para o empregado %s e o motivo %s.",,

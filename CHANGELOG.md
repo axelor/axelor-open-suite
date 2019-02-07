@@ -13,6 +13,10 @@
 - STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
 - SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
 - STOCK CONFIG : New boolean for picking order printing with details
+- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
+- PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
+- LOGISITCAL FORM : alert message when user clicks on action buttons
+- ACCOUNT MOVE : printing new design
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -77,6 +81,16 @@
 - SUBROGATION RELEASE : new printing design
 - Logistical form: track statusSelect.
 - Naming Tool : Missing reserved java litterals
+- PICKING ORDER : printing modification.
+- SALEORDER: currency and pricelist in readonly when there is at least one sale order line.
+- ProdProcess: Add massUpdate to stock move realize order select.
+- PRODUCT : Set duplicate product fields
+- Timesheet: exception for date conflicts.
+- HR module: code refactoring.
+- ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
+- STOCK MOVE : Date on report printing
+- ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
+- Sale Order: saving a sale order being edited does not change its status.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -101,6 +115,17 @@
 - DEBT RECOVERY : Fix NPE on Validate Debt Recovery
 - MRP : NPE on cancel process
 - Fix raw material requirement report query.
+- MOVE TEMPLATE : fixed issue with check validity process that forbid to update a template content.
+- StockConfig: domain issue without supplychain.
+- OPPORTUNITY : save before calling the action on button onClick
+- Configurator: Fix total computation on sale order when generating sale order line.
+- Fixed a bug where there were empty lines in declaration of exchanges csv export.
+- Expense: NPE related to kilometric expense.
+- BANK RECONCILIATION : Wrong data on printing
+- When creating interco invoice, copy correct prices in lines.
+- When realizing manufacturing order on start, only realize in stock move.
+- STOCKMOVE : set picking edit date to localDate when the boolean field is true.
+- Sale Order: when modifying a confirmed sale order, remove planned stock moves after cancelling them.
 
 ## [5.1.1] - 2019-01-18
 ## Features
@@ -129,6 +154,7 @@ Add sale order and client partner fields on production order.
 - ACCOUNTING EXPORT : On FEC, use of moveLine.reconcileGroup.code and moveLine.reconcileGroup.dateOfLettering instead of reconcile list
 - Account: add option to automatically create partners' accounts
 - Account: use partner name as default account name when creating from partner's account configuration screen.
+- Permission : fix existing permission rule issue
 
 ## Improvements
 - Budget: When computing budget lines, take into account `companyExTaxTotal` amounts instead of `exTaxTotal` amounts
@@ -169,6 +195,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
+- Stock : Download Inventory Export in csv format.
 
 ## Bug Fixes
 - Payroll preparation: changed export file name which was causing error
@@ -220,6 +247,7 @@ instead of use of M2O bankOrder of InvoicePayment object. Like that, if we remov
 - Payment voucher: fix confirm button display on credit card supplier payments.
 - General balance report : fix wrong sums when we filter on some accounts of the same branch
 - Remove Inconsistency in selections
+- Stock/SupplyChain : Changing field names, report translations, sequence field, selection list values according to naming convention.
 
 ## [5.1.0] - 2018-12-13
 ## Features

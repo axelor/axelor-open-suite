@@ -44,6 +44,7 @@
 		public static final int REPORT_AGED_BALANCE = 4;
 		public static final int REPORT_CHEQUE_DEPOSIT = 5;
 		public static final int REPORT_PARNER_BALANCE = 6;
+		public static final int REPORT_PARNER_GENERAL_LEDGER = 7;
 		public static final int REPORT_CASH_PAYMENTS = 10;
 		public static final int REPORT_JOURNAL = 11;
 		public static final int REPORT_VAT_STATEMENT_INVOICE = 12;

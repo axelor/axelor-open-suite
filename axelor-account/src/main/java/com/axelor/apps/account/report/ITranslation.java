@@ -114,6 +114,7 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/
       "AccountingReportType1.paymentMode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+
   public static final String ACCOUNTING_REPORT_1_DESCRIPTION = /*$$(*/
       "AccountingReportType1.description"; /*)*/
   public static final String ACCOUNTING_REPORT_1_PARTNER = /*$$(*/
@@ -126,6 +127,13 @@ public interface ITranslation {
       "AccountingReportType1.credit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
       "AccountingReportType1.total"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
+      "AccountingReportType7.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_DUE_DATE = /*$$(*/
+      "AccountingReportType7.dueDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_RECONCILE_GROUP = /*$$(*/
+      "AccountingReportType7.reconcileGroup"; /*)*/
 
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/
@@ -264,6 +272,7 @@ public interface ITranslation {
   public static final String PURCHASE_INVOICE_DETAILS_REPORT_TOTAL_TURNOVER = /*$$(*/
       "PurchaseInvoicesDetails.totalTurnover"; /*)*/
 
+  public static final String ACCOUNT_MOVE_TITLE = /*$$(*/ "move.title"; /*)*/
   public static final String ACCOUNT_MOVE_REFERENCE = /*$$(*/ "move.reference"; /*)*/
   public static final String ACCOUNT_MOVE_JOURNAL = /*$$(*/ "move.journal"; /*)*/
   public static final String ACCOUNT_MOVE_PARTNER = /*$$(*/ "move.partner"; /*)*/
@@ -286,6 +295,10 @@ public interface ITranslation {
   public static final String ACCOUNT_MOVE_LINE_ORIGIN = /*$$(*/ "moveLine.origin"; /*)*/
   public static final String ACCOUNT_MOVE_LINE_RECONCILE_GROUP = /*$$(*/
       "moveLine.reconcileGroup"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_LINES = /*$$(*/ "moveLine.totalLines"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_DEBIT = /*$$(*/ "moveLine.totalDebit"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_TOTAL_CREDIT = /*$$(*/ "moveLine.totalCredit"; /*)*/
+  public static final String ACCOUNT_MOVE_LINE_DIFFERENCE = /*$$(*/ "moveLine.difference"; /*)*/
 
   public static final String SUBROGATION_RELEASE_TITLE = /*$$(*/ "SubrogationRelease.title"; /*)*/
   public static final String SUBROGATION_RELEASE_SELLER_CODE = /*$$(*/
