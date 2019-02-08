@@ -66,7 +66,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       while (qtyTmp.signum() > 0) {
         LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-        TeamTask task = teamTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+        TeamTask task =
+            teamTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
         task.setParentTask(parent);
         task.setProduct(product);
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);

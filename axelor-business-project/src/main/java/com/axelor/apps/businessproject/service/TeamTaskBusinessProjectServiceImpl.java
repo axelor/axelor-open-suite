@@ -246,7 +246,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     nextTeamTask.setDiscountAmount(teamTask.getDiscountAmount());
     nextTeamTask.setPriceDiscounted(teamTask.getPriceDiscounted());
     nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
-    nextTeamTask.setTimeInvoicing(teamTask.getTimeInvoicing());
+    nextTeamTask.setTeamTaskInvoicing(teamTask.getTeamTaskInvoicing());
     nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
   }
 }
