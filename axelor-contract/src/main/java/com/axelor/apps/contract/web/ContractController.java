@@ -146,10 +146,6 @@ public class ContractController {
     response.setReload(true);
   }
 
-  private LocalDate getToDay() {
-    return Beans.get(AppBaseService.class).getTodayDate();
-  }
-
   public void saveNextVersion(ActionRequest request, ActionResponse response) {
     final ContractVersion version =
         JPA.find(ContractVersion.class, request.getContext().asType(ContractVersion.class).getId());
