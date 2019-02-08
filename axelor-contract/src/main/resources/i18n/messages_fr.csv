@@ -13,7 +13,7 @@
 "Amendment management","Gestion des avenants",,
 "App contract","Application contrat",,
 "Attention the contract will have as starting date the provisional activation         date ${currentContractVersion.supposedActivationDate}, Are you sure?","Attention le contrat aura comme date de début la date d'activation prévisionnelle ${currentContractVersion.supposedActivationDate}, etes-vous sur?",,
-"Auto enable version on renew","Activé automatiquement la version au renouvellement",,
+"Auto enable version on renew","Activer automatiquement la version au renouvellement",,
 "Automatic invoicing","Facturation automatique",,
 "Back","Retour",,
 "Batches",,,
