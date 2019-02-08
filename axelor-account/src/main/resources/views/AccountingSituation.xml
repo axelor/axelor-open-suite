@@ -25,7 +25,7 @@
 			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
-			<field name="pfpValidator" domain="self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
+			<field name="pfpValidatorUser" domain="self.activeCompany = :company and self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
 			<field name="company.accountConfig" hidden="true"/>
 			<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
 		</panel>

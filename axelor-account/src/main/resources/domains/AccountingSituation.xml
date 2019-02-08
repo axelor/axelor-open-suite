@@ -36,7 +36,7 @@
 		<!-- Reported Balance -->
 		<one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation" title="Reported balance lines"/>
 		
-		<many-to-one name="pfpValidator" ref="com.axelor.auth.db.User" title="PFP Validator"/>
+		<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
 		
 		<string name="name">
 			<![CDATA[

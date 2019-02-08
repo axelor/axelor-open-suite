@@ -4,17 +4,21 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="substitute-pfp-validator-grid" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
-        <field name="substitutePfpValidator"/>
+        <field name="substitutePfpValidatorUser"/>
         <field name="substituteStartDate"/>
         <field name="substituteEndDate"/>
     </grid>
     
     <form name="substitute-pfp-validator-form" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
         <panel name="generalPanel" title="General">
-	        <field name="substitutePfpValidator" canEdit="false" domain="self.isPfpValidator = true"/>
+	        <field name="substitutePfpValidatorUser" canEdit="false" onSelect="action-substitute-pfp-validator-attrs-domain-pfp-validator-user"/>
 	        <field name="substituteStartDate"/>
 	        <field name="substituteEndDate"/>			
         </panel>
     </form>
+    
+    <action-attrs name="action-substitute-pfp-validator-attrs-domain-pfp-validator-user">
+    	<attribute name="domain" for="substitutePfpValidatorUser" expr="eval: &quot; self.activeCompany.id = ${__parent__.activeCompany.id} &quot;"/>
+    </action-attrs>
     
 </object-views>
