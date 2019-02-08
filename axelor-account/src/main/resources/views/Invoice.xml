@@ -288,7 +288,7 @@
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 				<panel name="pfpValidationPanel" colSpan="12" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 )">
 					<field name="pfpValidateStatusSelect"/>
-					<field name="pfpValidator" domain="self.isPfpValidator = true" canEdit="false"/>
+					<field name="pfpValidatorUser" domain="self.isPfpValidator = true" canEdit="false"/>
 					<field name="reasonOfRefusalToPayStr" showIf="pfpValidateStatusSelect == 3"/>
 				</panel>
 				<field name="company.accountConfig" hidden="true"/>	
@@ -730,7 +730,7 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-attrs-interco-supplychain"/>
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-method-check-partner-bank-details-list"/>
-		<action name="action-invoice-method-set-pfp-validator" if="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2) "/>
+		<action name="action-invoice-method-set-pfp-validator-user" if="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2) "/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -1085,8 +1085,8 @@ InvoiceSet.length > 0))"
 		<call class="com.axelor.apps.account.web.InvoiceController" method="refusalToPay"/>
 	</action-method>
 	
-	<action-method name="action-invoice-method-set-pfp-validator">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="setPfpValidator"/>
+	<action-method name="action-invoice-method-set-pfp-validator-user">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="setPfpValidatorUser"/>
 	</action-method>
 	
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

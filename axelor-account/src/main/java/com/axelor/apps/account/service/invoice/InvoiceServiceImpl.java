@@ -795,7 +795,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void setPfpValidator(Invoice invoice) {
+  public void setPfpValidatorUser(Invoice invoice) {
     if (invoice.getPartner() == null) {
       return;
     }
@@ -806,6 +806,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (accountingSituation == null) {
       return;
     }
-    invoice.setPfpValidator(accountingSituation.getPfpValidator());
+    invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
   }
 }

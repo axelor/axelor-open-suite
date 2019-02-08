@@ -875,9 +875,9 @@ public class InvoiceController {
     response.setCanClose(true);
   }
 
-  public void setPfpValidator(ActionRequest request, ActionResponse response) {
+  public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoiceService.setPfpValidator(invoice);
-    response.setValue("pfpValidator", invoice.getPfpValidator());
+    invoiceService.setPfpValidatorUser(invoice);
+    response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
   }
 }
