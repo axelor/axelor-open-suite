@@ -280,7 +280,7 @@
 	    	<field name="stockMove.stockMoveSeq"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 	    	<field name="stockMove.estimatedDate"/>
-	    	<field name="stockmove.reservationDateTime" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+            <field name="stockMove.reservationDateTime" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
 	    	<field name="stockMove.realDate"/>
    			<field name="stockMove.typeSelect"/>
 			<field name="stockMove.origin"/>
