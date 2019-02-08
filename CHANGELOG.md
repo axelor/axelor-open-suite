@@ -94,6 +94,7 @@
 - ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 - Sale Order: saving a sale order being edited does not change its status.
 - Tweaks in conformity certificate.
+- StockLocation: Move booleans into supplychain module.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
