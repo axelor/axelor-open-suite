@@ -120,7 +120,7 @@
                 <button name="invoicingBtn" title="Invoicing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-invoicing"/>
                 <panel-dashlet name="contractInvoicingPanel" readonly="false" colSpan="12" height="350" action="action-contract-view-invoicing"/>
             </panel>
-            <panel title="Termination" hidden="true" showIf="statusSelect != 1" colSpan="12" name="terminationPanel">
+            <panel name="terminationPanel" title="Termination" hidden="true" showIf="statusSelect != 1" onTabSelect="action-contract-attrs-show-close-btn">
                 <panel name="renewalPanel" if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal" hidden="true" showIf="currentContractVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentContractVersion.isTacitRenewal)" colSpan="12">
                     <field name="renewalNumber" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
                     <field name="lastRenewalDate" hidden="true" readonly="true" showIf="renewalNumber > 0"/>
@@ -130,7 +130,10 @@
                         </editor>
                     </field>
                 </panel>
-                <panel title="Terminate" colSpan="12" name="terminatePanel">
+                <panel name="terminatePanel" title="Terminate" colSpan="12">
+                  <panel colSpan="12">
+                    <button name="closeContractBtn" title="Close contract" onClick="action-contract-method-close" hidden="true" colSpan="3"/>
+                  </panel>
                     <field name="terminatedDate" readonlyIf="terminatedManually" colSpan="3"/>
                     <panel name="terminationInfoPanel" colSpan="9">
                         <panel name="terminationDetailPanel" hidden="true" showIf="terminatedManually" colSpan="12">
@@ -226,6 +229,14 @@
             <mail-followers/>
         </panel-mail>
     </form>
+
+  <action-attrs name="action-contract-attrs-show-close-btn">
+    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate() &lt; terminatedDate"/>
+  </action-attrs>
+
+  <action-method name="action-contract-method-close">
+    <call class="com.axelor.apps.contract.web.ContractController" method="close"/>
+  </action-method>
 
     <action-group name="action-contract-group-on-load">
         <action name="action-contract-attrs-require-payment-config"/>

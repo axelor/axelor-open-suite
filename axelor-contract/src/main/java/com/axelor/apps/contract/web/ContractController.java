@@ -114,6 +114,21 @@ public class ContractController {
     }
   }
 
+  public void close(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
+
+    ContractService service = Beans.get(ContractService.class);
+    try {
+      service.checkCanTerminateContract(contract);
+      service.close(contract, contract.getTerminatedDate());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void renew(ActionRequest request, ActionResponse response) {
     Contract contract =
         Beans.get(ContractRepository.class)
