@@ -369,10 +369,4 @@
 		<option value="1">%</option>
 		<option value="2">Amount</option>
 	</selection>
-	
-	<selection name="invoice.pfp.validate.status.select">
-		<option value="1">Awaiting</option>	
-		<option value="2">Authorized</option>
-		<option value="3">Litigation</option>
-	</selection>
 </object-views>

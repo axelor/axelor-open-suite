@@ -546,8 +546,6 @@ public interface IExceptionMessage {
       "The sale order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
-  public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
-      "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
   /** Invoice line generator */
   static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
@@ -579,9 +577,6 @@ public interface IExceptionMessage {
 
   static final String INVOICE_VALIDATE_BLOCKING = /*$$(*/
       "The partner is blocked for invoicing." /*)*/;
-
-  static final String INVOICE_VALIDATE_NO_PFP_VALIDATOR_FOR_SUPPLIER = /*$$(*/
-      "Supplier doesn't have a validator for passed for payment, please provide it." /*)*/;
 
   /** Cancel state */
   static final String MOVE_CANCEL_1 = /*$$(*/

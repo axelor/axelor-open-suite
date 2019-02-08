@@ -830,10 +830,7 @@ public class InvoiceController {
             response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY);
             return;
           }
-          if (invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_AUTHORIZED) {
-            response.setError(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION);
-            return;
-          }
+
           invoiceToPay.add(invoiceId);
         }
 
@@ -864,20 +861,5 @@ public class InvoiceController {
         "$partnerBankDetailsListWarning",
         "hidden",
         invoiceService.checkPartnerBankDetailsList(invoice));
-  }
-
-  public void refusalToPay(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    invoiceService.refusalToPay(
-        invoiceRepo.find(invoice.getId()),
-        invoice.getReasonOfRefusalToPay(),
-        invoice.getReasonOfRefusalToPay().getName());
-    response.setCanClose(true);
-  }
-
-  public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    invoiceService.setPfpValidatorUser(invoice);
-    response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
   }
 }

@@ -722,17 +722,4 @@
 		<domain>self.invoice.operationTypeSelect in (1,2)</domain>
 	</action-view>
 	
-	<menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50" icon="fa-cog"/>
-
-	<menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
-		title="Reason of refusal" action="invoice.conf.refusalreason"/>
-		
-	<action-view name="invoice.conf.refusalreason"
-		title="Reason of refusal" model="com.axelor.apps.base.db.CancelReason" >
-		<view type="grid" name="cancel-reason-grid" />
-		<view type="form" name="cancel-reason-form" />
-		<domain>self.applicationType = :_xApplicationType</domain>
-		<context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.Invoice"/>
-	</action-view>
-		
 </object-views>
