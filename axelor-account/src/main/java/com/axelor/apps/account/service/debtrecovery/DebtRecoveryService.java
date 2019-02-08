@@ -228,7 +228,8 @@ public class DebtRecoveryService {
         Move move = moveLine.getMove();
         // facture exigibles non bloquée en relance et dont la date de facture + délai
         // d'acheminement < date du jour
-        if (move.getInvoice() != null
+        if (move.getStatusSelect() != 4
+            && move.getInvoice() != null
             && !move.getInvoice().getDebtRecoveryBlockingOk()
             && !move.getInvoice().getSchedulePaymentOk()
             && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))

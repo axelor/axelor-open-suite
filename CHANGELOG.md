@@ -26,6 +26,7 @@
 - Remove Inconsistency in selections
 - Naming Tool : Missing reserved java litterals
 - Configurator: Fix total computation on sale order when generating sale order line.
+- Debt recovery batch doesn't consider cancelled moves when searching for invoices anymore.
 
 ## [5.0.7] - 2018-12-13
 ## Features
