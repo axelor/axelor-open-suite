@@ -70,7 +70,7 @@
                             </panel>
                         </editor>
                     </field>
-                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+                    <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true" showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing" colSpan="3" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
                 </panel>
             </panel>
             <panel colSpan="3" stacked="true" name="actionPanel">
