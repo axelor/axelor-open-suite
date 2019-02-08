@@ -129,6 +129,7 @@
 - When realizing manufacturing order on start, only realize in stock move.
 - STOCKMOVE : set picking edit date to localDate when the boolean field is true.
 - Sale Order: when modifying a confirmed sale order, remove planned stock moves after cancelling them.
+- Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 
 ## [5.1.1] - 2019-01-18
 ## Features
