@@ -25,6 +25,7 @@
 		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
 		<boolean name="isWithPriorNotice" title="With prior notice"/>
 		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		<boolean name="isConsumptionManagement" title="Consumption management" default="false"/>
 
 		<date name="supposedActivationDate" title="Supposed activation date" copy="false"/>
 		<date name="activationDate" title="Activation date" copy="false"/>
