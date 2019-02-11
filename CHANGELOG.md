@@ -17,6 +17,7 @@
 - PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
 - LOGISITCAL FORM : alert message when user clicks on action buttons
 - ACCOUNT MOVE : printing new design
+- Leave request: Display available quantity before validation.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
