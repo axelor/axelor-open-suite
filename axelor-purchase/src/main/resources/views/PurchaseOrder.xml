@@ -127,7 +127,7 @@
 				<panel-related name="purchaseOrderLineTaxListPanel" field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" colSpan="12">
-				<field name="deliveryDate" colSpan="3"/>
+				<field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
 		        <field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 		        <field name="stockLocation.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
 	  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
@@ -214,7 +214,15 @@
 		<panel name="referencesPanel" title="References" hideIf="supplierPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="externalReference" hideIf="company == null" onChange="action-purchase-order-attrs-external-reference"/>
       <field name="internalReference"/>
-      <label name="duplicateReferenceLabel" title="Reference already existing" css="label label-warning" hidden="true"/>
+      <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
+        <viewer>
+          <![CDATA[
+            <h5>
+              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
+            </h5>
+          ]]>
+				</viewer>
+      </field>
 		</panel>
 	   <panel name="characteristicsPanel" title="Characteristics" sidebar="true" hideIf="supplierPartner == null" canCollapse="true" collapseIf="true">
 			<field name="paymentMode" canEdit="false" domain="self.inOutSelect = 2"  onChange="action-purchase-order-method-fill-company-bank-details" if-module="axelor-account" form-view="payment-mode-form" grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')" colSpan="6"/> 
@@ -608,6 +616,10 @@
 
 	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')" />
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateEstimatedDelivDate"/>
 	</action-method>
 
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">

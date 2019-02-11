@@ -25,7 +25,6 @@ import com.axelor.apps.hr.db.repo.EmployeeAdvanceRepository;
 import com.axelor.apps.hr.db.repo.EmployeeAdvanceUsageRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -43,9 +42,7 @@ public class EmployeeAdvanceService {
     Employee employee =
         Beans.get(EmployeeRepository.class).find(expense.getUser().getEmployee().getId());
 
-    List<EmployeeAdvance> advanceList = Lists.newArrayList();
-
-    advanceList =
+    List<EmployeeAdvance> advanceList =
         employeeAdvanceRepository
             .all()
             .filter(
@@ -66,7 +63,7 @@ public class EmployeeAdvanceService {
 
       for (EmployeeAdvance advance : advanceList) {
 
-        if (currentAmountToRefund.compareTo(BigDecimal.ZERO) == 0) {
+        if (currentAmountToRefund.signum() == 0) {
           break;
         }
 
@@ -85,7 +82,7 @@ public class EmployeeAdvanceService {
   public BigDecimal withdrawFromAdvance(
       EmployeeAdvance employeeAdvance, Expense expense, BigDecimal maxAmount) {
 
-    if (maxAmount.compareTo(employeeAdvance.getRemainingAmount()) == 1) {
+    if (maxAmount.compareTo(employeeAdvance.getRemainingAmount()) > 0) {
       maxAmount = maxAmount.subtract(employeeAdvance.getRemainingAmount());
       createEmployeeAdvanceUsage(employeeAdvance, expense, employeeAdvance.getRemainingAmount());
       employeeAdvance.setRemainingAmount(BigDecimal.ZERO);

@@ -53,7 +53,8 @@ public interface CostSheetLineService {
       Unit unit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      BigDecimal consumptionQty)
+      BigDecimal consumptionQty,
+      boolean fromBOM)
       throws AxelorException;
 
   public CostSheetLine createConsumedProductWasteCostSheetLine(
