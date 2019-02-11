@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.1.2]
+## [5.1.2] - 2019-02-11
 ## Features
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
@@ -631,6 +631,6 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...dev
+[5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
 [5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
