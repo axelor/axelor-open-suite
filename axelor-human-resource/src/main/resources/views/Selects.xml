@@ -173,4 +173,10 @@
 		<option value="2">Spent time</option>
 	</selection>
 
+  <selection name="hr.employee.form.step.by.step.select">
+    <option value="1">Basic information</option>
+    <option value="2">Employment contract</option>
+    <option value="3">Leaves and timesheets</option>
+  </selection>
+
 </object-views>

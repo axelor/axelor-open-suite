@@ -53,7 +53,11 @@
 	       ]]>
 	       
       </string>
-      
+
+    <!-- New employee wizard -->
+    <integer name="stepByStepSelect" title="Step by step" selection="hr.employee.form.step.by.step.select" default="1"/>
+    <!-- END OF New employee wizard -->
+
       <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";
