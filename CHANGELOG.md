@@ -159,6 +159,7 @@ Add sale order and client partner fields on production order.
 - Account: add option to automatically create partners' accounts
 - Account: use partner name as default account name when creating from partner's account configuration screen.
 - Permission : fix existing permission rule issue
+- BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 
 ## Improvements
 - Budget: When computing budget lines, take into account `companyExTaxTotal` amounts instead of `exTaxTotal` amounts
