@@ -18,7 +18,7 @@
       <boolean name="external" title="External" />
       <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
-      <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
+      <boolean name="negativeValueLeave" title="Allow negative value for leaves"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
       <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
@@ -39,7 +39,7 @@
       <string name="socialSecurityNumber"  title="Social security number" encrypted="true"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
       <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" massUpdate="true"/>
-      <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
+      <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch voucher advances" mappedBy="employee" orphanRemoval="true"/>
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
       <string name="exportCode" title="Export code"/>
