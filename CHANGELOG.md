@@ -2,21 +2,11 @@
 
 ## [Unreleased 5.1.2]
 ## Features
-- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 - MANUF. ORDER : cancel reasons
 - Add button in bank reconciliation form to load other bank statements.
-- PartnerStockSettings : Added new field 'incoterm'.
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
-- INVOICES : alert message if no bank details in partner-form.
-- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
-- SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
-- STOCK CONFIG : New boolean for picking order printing with details
-- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
-- PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
-- LOGISITCAL FORM : alert message when user clicks on action buttons
-- ACCOUNT MOVE : printing new design
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -95,6 +85,16 @@
 - Sale Order: saving a sale order being edited does not change its status.
 - Tweaks in conformity certificate.
 - StockLocation: Move booleans into supplychain module.
+- ACCOUNT MOVE : printing new design
+- LOGISITCAL FORM : alert message when user clicks on action buttons
+- PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
+- STOCK CONFIG : New boolean for picking order printing with details
+- SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
+- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
+- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
+- INVOICES : alert message if no bank details in partner-form.
+- PartnerStockSettings : Added new field 'incoterm'.
+- User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -130,6 +130,7 @@
 - When realizing manufacturing order on start, only realize in stock move.
 - STOCKMOVE : set picking edit date to localDate when the boolean field is true.
 - Sale Order: when modifying a confirmed sale order, remove planned stock moves after cancelling them.
+
 
 ## [5.1.1] - 2019-01-18
 ## Features
