@@ -44,6 +44,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,10 @@ import java.util.Map;
 
 @Singleton
 public class PurchaseOrderController {
+
+  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOderServiceSupplychainImpl;
+
+  @Inject private PurchaseOrderRepository purchaseOrderRepository;
 
   public void createStockMove(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -362,5 +367,11 @@ public class PurchaseOrderController {
       }
     }
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+  
+  public void manageBudgetOverviewLines(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    purchaseOderServiceSupplychainImpl.manageBudgetOverviewLines(purchaseOrder);
+    response.setValue("budgetOverviewLineList", purchaseOrder.getBudgetOverviewLineList());
   }
 }

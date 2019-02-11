@@ -49,7 +49,7 @@
 				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<panel name="discountPanel" colSpan="12">
-					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
+					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
 					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 				</panel>
@@ -90,7 +90,7 @@
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>

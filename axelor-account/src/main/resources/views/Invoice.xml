@@ -49,6 +49,7 @@
 	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	            <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
    	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+   	            <item title="See budget overview lines" action="action-invoice-see-budget-overview-lines"/>
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
@@ -118,7 +119,8 @@
 
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
           onNew="action-account-invoice-onnew-group"
-          onLoad="action-account-invoice-onload-group" >
+          onLoad="action-account-invoice-onload-group"
+          onSave="action-invoice-manage-budget-overview-lines" >
 
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -228,6 +230,7 @@
 			<panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
 				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+				<panel-related name="budgetOverviewLineListPanel" field="budgetOverviewLineList" colSpan="12" readonly="true" grid-view="budget-overview-line-grid" form-view="budget-overview-line-form" showIf="budgetOverviewLineList!=null"/>				
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 				<field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" colSpan="6"/>
@@ -664,6 +667,7 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-attrs-change-create-refund-title"/>
 	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+        <action name="action-invoice-attrs-hidden-budget-overview"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -678,6 +682,7 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
         <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
         <action name="action-invoice-method-check-partner-bank-details-list"/>
+        <action name="action-invoice-attrs-hidden-budget-overview"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -886,6 +891,10 @@ InvoiceSet.length > 0))"
       expr="eval: !((supplierInvoiceNb != null &amp;&amp; id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.id != ?', supplierInvoiceNb , id).count() > 0)
                  || (supplierInvoiceNb != null &amp;&amp; id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ?', supplierInvoiceNb).count() > 0))"/>
     </action-attrs>
+    
+    <action-attrs name="action-invoice-attrs-hidden-budget-overview">
+    	<attribute name="hidden" for="budgetOverviewLineList" expr="eval: action-invoice-attrs-hidden-budget-overview != 1 &amp;&amp; operationTypeSelect != 2"/>
+    </action-attrs>
 
 	<!-- DOMAIN -->
 
@@ -1034,6 +1043,10 @@ InvoiceSet.length > 0))"
 	
 	<action-method name="action-invoice-method-check-partner-bank-details-list">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkPartnerBankDetailsList"/>
+	</action-method>
+
+	<action-method name="action-invoice-manage-budget-overview-lines">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="manageBudgetOverviewLines"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

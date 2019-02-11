@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="budget-overview-line-grid" title="Budget overview lines" model="com.axelor.apps.account.db.BudgetOverviewLine">
+       <field name="budget"/>
+       <field name="amount"/>
+    </grid>
+    
+    <grid name="budget-overview-line-complete-grid" title="Budget overview lines" model="com.axelor.apps.account.db.BudgetOverviewLine">
+       <field name="budget"/>
+       <field name="invoice"/>
+       <field name="amount"/>
+       <field name="invoice.validatedDate"/>
+    </grid>
+ 
+	<form name="budget-overview-line-complete-form" title="Budget overview line" model="com.axelor.apps.account.db.BudgetOverviewLine">
+		<panel name="mainPanel">
+			<field name="budget" readonly="true"/>
+			<field name="invoice" readonly="true"/>
+			<field name="amount" readonly="true"/>
+	       	<field name="invoice.validatedDate"/>
+		</panel>
+	</form>
+	
+	<form name="budget-overview-line-form" title="Budget overview line" model="com.axelor.apps.account.db.BudgetOverviewLine">
+		<panel name="mainPanel">
+			<field name="budget" readonly="true"/>
+			<field name="amount" readonly="true"/>
+	       	<field name="invoice.validatedDate"/>
+		</panel>
+	</form>
+	
+	<action-view name="action-invoice-see-budget-overview-lines" title="See budget overview lines"
+		model="com.axelor.apps.account.db.BudgetOverviewLine">
+		<view type="grid" name="budget-overview-line-complete-grid"/>
+		<view type="form" name="budget-overview-line-complete-form"/>
+		<domain>self.invoice.statusSelect IN (2,3)</domain>
+	</action-view>	 
+
+</object-views>

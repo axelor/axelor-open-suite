@@ -260,4 +260,7 @@ public interface InvoiceService {
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
+
+  void manageBudgetOverviewLines(Invoice invoice);
+
 }

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.BudgetOverviewLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -49,9 +50,12 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +144,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudget() != null
-            && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+            && purchaseOrderLine.getBudgetDistributionList() == null) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(purchaseOrderLine.getBudget());
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
@@ -328,5 +332,103 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
+  }
+
+  public void manageBudgetOverviewLines(PurchaseOrder purchaseOrder) {
+
+    if (purchaseOrder.getPurchaseOrderLineList() == null) {
+      return;
+    }
+
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      processMonoBudgetOverview(purchaseOrder);
+    } else {
+      processMultiBudgetOverview(purchaseOrder);
+    }
+  }
+
+  private void processMultiBudgetOverview(PurchaseOrder purchaseOrder) {
+
+    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      purchaseOrderLine.getBudgetDistributionList().forEach(budgetDistributionList::add);
+    }
+
+    Map<Budget, List<BudgetDistribution>> budgetDistributionGroupedByBudget =
+        budgetDistributionList
+            .stream()
+            .collect(Collectors.groupingBy(BudgetDistribution::getBudget));
+    List<BudgetOverviewLine> budgetOverviewLineList = purchaseOrder.getBudgetOverviewLineList();
+
+    if (budgetOverviewLineList != null) {
+      budgetDistributionGroupedByBudget.forEach(
+          (budget, budgetDistributionListGrouped) -> {
+            BigDecimal amount = calculateAggregateAmount(budgetDistributionListGrouped);
+            updateBudgetOverviewLines(purchaseOrder, amount, budget);
+          });
+
+    } else {
+      budgetDistributionGroupedByBudget.forEach(
+          (budget, budgetDistributionListGrouped) -> {
+            BigDecimal amount = calculateAggregateAmount(budgetDistributionListGrouped);
+            createBudgetOverviewLines(purchaseOrder, amount, budget);
+          });
+    }
+  }
+
+  private void processMonoBudgetOverview(PurchaseOrder purchaseOrder) {
+
+    Map<Budget, BigDecimal> budgetExTaxTotalMap = new HashMap<>();
+
+    purchaseOrder
+        .getPurchaseOrderLineList()
+        .forEach(
+            purchaseOrderLine -> {
+              Budget budget = purchaseOrderLine.getBudget();
+              if (budget != null) {
+                budgetExTaxTotalMap.merge(
+                    budget, purchaseOrderLine.getExTaxTotal(), BigDecimal::add);
+              }
+            });
+
+    if (purchaseOrder.getBudgetOverviewLineList() != null) {
+      budgetExTaxTotalMap.forEach(
+          (budget, exTaxTotal) -> {
+            updateBudgetOverviewLines(purchaseOrder, exTaxTotal, budget);
+          });
+    } else {
+      budgetExTaxTotalMap.forEach(
+          (budget, exTaxTotal) -> {
+            createBudgetOverviewLines(purchaseOrder, exTaxTotal, budget);
+          });
+    }
+  }
+
+  private void createBudgetOverviewLines(
+      PurchaseOrder purchaseOrder, BigDecimal amount, Budget budget) {
+    BudgetOverviewLine budgetOverviewLine = new BudgetOverviewLine();
+    budgetOverviewLine.setAmount(amount);
+    budgetOverviewLine.setBudget(budget);
+    purchaseOrder.addBudgetOverviewLineListItem(budgetOverviewLine);
+  }
+
+  private void updateBudgetOverviewLines(
+      PurchaseOrder purchaseOrder, BigDecimal amount, Budget budget) {
+    List<BudgetOverviewLine> budgetOverviewList = purchaseOrder.getBudgetOverviewLineList();
+    Optional<BudgetOverviewLine> optionalLine =
+        budgetOverviewList.stream().filter(e -> e.getBudget().equals(budget)).findFirst();
+    if (optionalLine.isPresent()) {
+      optionalLine.get().setAmount(amount);
+    } else {
+      createBudgetOverviewLines(purchaseOrder, amount, budget);
+    }
+  }
+
+  private BigDecimal calculateAggregateAmount(List<BudgetDistribution> budgetDistributionList) {
+    return budgetDistributionList
+        .stream()
+        .map(BudgetDistribution::getAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }

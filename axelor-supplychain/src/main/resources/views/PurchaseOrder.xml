@@ -2,6 +2,17 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
+	  onNew="action-group-purchase-order-on-new-actions" onSave="action-purchase-manage-budget-overview-lines" id="supplychain-purchase-order-form">
+	  
+		<panel-include view="purchase-order-form" from="axelor-purchase"/>
+		
+	</form>
+	
+	<action-method name="action-purchase-manage-budget-overview-lines">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="manageBudgetOverviewLines"/>
+	</action-method>
     
     <action-method name="action-purchase-order-method-generate-control-invoice">
  		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>

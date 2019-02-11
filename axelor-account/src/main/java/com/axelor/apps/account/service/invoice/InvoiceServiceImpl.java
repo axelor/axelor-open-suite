@@ -19,7 +19,9 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.BudgetOverviewLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -68,11 +70,14 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -776,4 +781,101 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     return true;
   }
+
+  public void manageBudgetOverviewLines(Invoice invoice) {
+
+    if (invoice.getInvoiceLineList() == null) {
+      return;
+    }
+
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      processMonoBudgetOverview(invoice);
+    } else {
+      processMultiBudgetOverview(invoice);
+    }
+  }
+
+  private void processMultiBudgetOverview(Invoice invoice) {
+
+    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.getBudgetDistributionList().forEach(budgetDistributionList::add);
+    }
+
+    Map<Budget, List<BudgetDistribution>> budgetDistributionGroupedByBudget =
+        budgetDistributionList
+            .stream()
+            .collect(Collectors.groupingBy(BudgetDistribution::getBudget));
+    List<BudgetOverviewLine> budgetOverviewLineList = invoice.getBudgetOverviewLineList();
+
+    if (budgetOverviewLineList != null) {
+      budgetDistributionGroupedByBudget.forEach(
+          (budget, budgetDistributionListGrouped) -> {
+            BigDecimal amount = calculateAggregateAmount(budgetDistributionListGrouped);
+            updateBudgetOverviewLines(invoice, amount, budget);
+          });
+
+    } else {
+      budgetDistributionGroupedByBudget.forEach(
+          (budget, budgetDistributionListGrouped) -> {
+            BigDecimal amount = calculateAggregateAmount(budgetDistributionListGrouped);
+            createBudgetOverviewLines(invoice, amount, budget);
+          });
+    }
+  }
+
+  private void processMonoBudgetOverview(Invoice invoice) {
+
+    Map<Budget, BigDecimal> budgetExTaxTotalMap = new HashMap<>();
+
+    invoice
+        .getInvoiceLineList()
+        .forEach(
+            purchaseOrderLine -> {
+              Budget budget = purchaseOrderLine.getBudget();
+              if (budget != null) {
+                budgetExTaxTotalMap.merge(
+                    budget, purchaseOrderLine.getExTaxTotal(), BigDecimal::add);
+              }
+            });
+
+    if (invoice.getBudgetOverviewLineList() != null) {
+      budgetExTaxTotalMap.forEach(
+          (budget, exTaxTotal) -> {
+            updateBudgetOverviewLines(invoice, exTaxTotal, budget);
+          });
+    } else {
+      budgetExTaxTotalMap.forEach(
+          (budget, exTaxTotal) -> {
+            createBudgetOverviewLines(invoice, exTaxTotal, budget);
+          });
+    }
+  }
+
+  private void createBudgetOverviewLines(Invoice invoice, BigDecimal amount, Budget budget) {
+    BudgetOverviewLine budgetOverviewLine = new BudgetOverviewLine();
+    budgetOverviewLine.setAmount(amount);
+    budgetOverviewLine.setBudget(budget);
+    invoice.addBudgetOverviewLineListItem(budgetOverviewLine);
+  }
+
+  private void updateBudgetOverviewLines(Invoice invoice, BigDecimal amount, Budget budget) {
+    List<BudgetOverviewLine> budgetOverviewList = invoice.getBudgetOverviewLineList();
+    Optional<BudgetOverviewLine> optionalLine =
+        budgetOverviewList.stream().filter(e -> e.getBudget().equals(budget)).findFirst();
+    if (optionalLine.isPresent()) {
+      optionalLine.get().setAmount(amount);
+    } else {
+      createBudgetOverviewLines(invoice, amount, budget);
+    }
+  }
+
+  private BigDecimal calculateAggregateAmount(List<BudgetDistribution> budgetDistributionList) {
+    return budgetDistributionList
+        .stream()
+        .map(BudgetDistribution::getAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+  
 }

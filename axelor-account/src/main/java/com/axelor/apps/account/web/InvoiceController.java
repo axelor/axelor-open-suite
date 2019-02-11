@@ -862,4 +862,10 @@ public class InvoiceController {
         "hidden",
         invoiceService.checkPartnerBankDetailsList(invoice));
   }
+
+  public void manageBudgetOverviewLines(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoiceService.manageBudgetOverviewLines(invoice);
+    response.setValue("budgetOverviewLineList", invoice.getBudgetOverviewLineList());
+  }
 }

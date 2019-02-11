@@ -48,6 +48,7 @@
 - Business Project : Addition of required contion on parentTaskTemplate. 
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
 - Project module : ProjectPlanningTime ( Start time / End time )
+- Invoice & PurchaseOrder : Added a budget overview.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

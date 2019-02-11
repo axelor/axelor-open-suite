@@ -21,7 +21,10 @@
 	<boolean name="createdByInterco" default="false"/>
 
 	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-		<long name="generatedSaleOrderId"/>
+	<long name="generatedSaleOrderId"/>
+
+	<one-to-many name="budgetOverviewLineList" ref="com.axelor.apps.account.db.BudgetOverviewLine" title="Budget Overview" mappedBy="purchaseOrder"/>
+	
   </entity>
 
 </domain-models>

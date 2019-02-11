@@ -127,6 +127,9 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
+    
+    <!-- Budget Overview -->
+    <one-to-many name="budgetOverviewLineList" ref="com.axelor.apps.account.db.BudgetOverviewLine" title="Budget Overview" mappedBy="invoice"/>
 	
   	<unique-constraint columns="invoiceId,company"/>
 

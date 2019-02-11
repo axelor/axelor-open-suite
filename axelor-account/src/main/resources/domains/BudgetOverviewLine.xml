@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="BudgetOverviewLine" lang="java">
+  
+  	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+	<decimal name="amount" title="Amount" precision="20" scale="2"/>
+  	<date name="validationDate" title="Validation date"/>
+  	
+  </entity>
+
+</domain-models>
