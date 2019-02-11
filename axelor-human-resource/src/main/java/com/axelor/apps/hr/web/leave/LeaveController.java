@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.hr.web.leave;
 
+import java.util.List;
+import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
@@ -51,9 +53,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class LeaveController {
@@ -204,11 +203,7 @@ public class LeaveController {
                 leaveRequest.getUser().getEmployee().getName()));
         return;
       }
-      if (leaveRequest
-              .getLeaveLine()
-              .getQuantity()
-              .subtract(leaveRequest.getDuration())
-              .compareTo(BigDecimal.ZERO)
+      if (leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).signum()
           < 0) {
         if (!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue()
             && !leaveService.willHaveEnoughDays(leaveRequest)) {

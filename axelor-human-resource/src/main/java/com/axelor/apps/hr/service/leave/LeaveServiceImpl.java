@@ -119,9 +119,7 @@ public class LeaveServiceImpl implements LeaveService {
       endOn = LeaveRequestRepository.SELECT_AFTERNOON;
     }
 
-    BigDecimal duration = this.computeDuration(leave, from, to, startOn, endOn);
-
-    return duration;
+    return this.computeDuration(leave, from, to, startOn, endOn);
   }
 
   /**
@@ -180,10 +178,10 @@ public class LeaveServiceImpl implements LeaveService {
             employee.getName());
       }
       EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
-      if (publicHolidayPlanning == null) {
-        if (leave.getCompany() != null && leave.getCompany().getHrConfig() != null) {
-          publicHolidayPlanning = leave.getCompany().getHrConfig().getPublicHolidayEventsPlanning();
-        }
+      if (publicHolidayPlanning == null
+          && leave.getCompany() != null
+          && leave.getCompany().getHrConfig() != null) {
+        publicHolidayPlanning = leave.getCompany().getHrConfig().getPublicHolidayEventsPlanning();
       }
 
       BigDecimal duration = BigDecimal.ZERO;
@@ -194,20 +192,20 @@ public class LeaveServiceImpl implements LeaveService {
           if (startOn == LeaveRequestRepository.SELECT_MORNING) {
             duration =
                 duration.add(
-                    new BigDecimal(
+                    BigDecimal.valueOf(
                         weeklyPlanningService.workingDayValueWithSelect(
                             weeklyPlanning, from, true, false)));
           } else {
             duration =
                 duration.add(
-                    new BigDecimal(
+                    BigDecimal.valueOf(
                         weeklyPlanningService.workingDayValueWithSelect(
                             weeklyPlanning, from, false, true)));
           }
         } else {
           duration =
               duration.add(
-                  new BigDecimal(
+                  BigDecimal.valueOf(
                       weeklyPlanningService.workingDayValueWithSelect(
                           weeklyPlanning, from, true, true)));
         }
@@ -217,18 +215,20 @@ public class LeaveServiceImpl implements LeaveService {
       else {
         duration =
             duration.add(
-                new BigDecimal(this.computeStartDateWithSelect(from, startOn, weeklyPlanning)));
+                BigDecimal.valueOf(this.computeStartDateWithSelect(from, startOn, weeklyPlanning)));
         LocalDate itDate = leave.getFromDate().plusDays(1);
 
         while (!itDate.isEqual(to) && !itDate.isAfter(to)) {
           duration =
               duration.add(
-                  new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+                  BigDecimal.valueOf(
+                      weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
           itDate = itDate.plusDays(1);
         }
 
         duration =
-            duration.add(new BigDecimal(this.computeEndDateWithSelect(to, endOn, weeklyPlanning)));
+            duration.add(
+                BigDecimal.valueOf(this.computeEndDateWithSelect(to, endOn, weeklyPlanning)));
       }
 
       if (publicHolidayPlanning != null) {
@@ -238,13 +238,11 @@ public class LeaveServiceImpl implements LeaveService {
                     .computePublicHolidayDays(from, to, weeklyPlanning, publicHolidayPlanning));
       }
 
-      if (duration.compareTo(BigDecimal.ZERO) < 0) {
-        duration = BigDecimal.ZERO;
+      if (duration.signum() != -1) {
+        return duration;
       }
-      return duration;
-    } else {
-      return BigDecimal.ZERO;
     }
+    return BigDecimal.ZERO;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -308,15 +306,14 @@ public class LeaveServiceImpl implements LeaveService {
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
       leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
-      if (leaveLine.getQuantity().compareTo(BigDecimal.ZERO) < 0
-          && !employee.getNegativeValueLeave()) {
+      if (leaveLine.getQuantity().signum() == -1 && !employee.getNegativeValueLeave()) {
         throw new AxelorException(
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_EMPLOYEE),
             employee.getName());
       }
-      if (leaveLine.getQuantity().compareTo(BigDecimal.ZERO) < 0
+      if (leaveLine.getQuantity().signum() == -1
           && !leave.getLeaveLine().getLeaveReason().getAllowNegativeValue()) {
         throw new AxelorException(
             leave,
@@ -717,16 +714,11 @@ public class LeaveServiceImpl implements LeaveService {
                         leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain())
                     .multiply(new BigDecimal(interval)));
 
-    if (leaveRequest.getDuration().compareTo(num) > 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return leaveRequest.getDuration().compareTo(num) <= 0;
   }
 
   @Transactional
-  public LeaveLine getLeaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  public LeaveLine getLeaveReasonToJustify(Employee employee, LeaveReason leaveReason) {
     LeaveLine leaveLineBase = null;
     if ((employee.getLeaveLineList() != null) || (!employee.getLeaveLineList().isEmpty())) {
       for (LeaveLine leaveLine : employee.getLeaveLineList()) {
