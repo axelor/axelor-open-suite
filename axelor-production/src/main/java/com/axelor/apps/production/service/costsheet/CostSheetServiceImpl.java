@@ -241,7 +241,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                   billOfMaterialLine.getUnit(),
                   bomLevel,
                   parentCostSheetLine,
-                  billOfMaterialLine.getQty());
+                  billOfMaterialLine.getQty(),
+                  true);
 
           BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
@@ -465,7 +466,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               stockMoveLine.getUnit(),
               bomLevel,
               parentCostSheetLine,
-              stockMoveLine.getRealQty());
+              stockMoveLine.getRealQty(),
+              false);
         }
       }
     } else {
@@ -478,7 +480,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             stockMoveLine.getUnit(),
             bomLevel,
             parentCostSheetLine,
-            stockMoveLine.getRealQty());
+            stockMoveLine.getRealQty(),
+            false);
       }
     }
   }

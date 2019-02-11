@@ -15,6 +15,7 @@
 	<boolean name="displayBuyerOnPrinting" title="Display buyer on printing"/>
 	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 	<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
+		<boolean name="displaySupplierCodeOnPrinting" title="Display supplier code on printing"/>
   	<boolean name="displayProductDetailOnPrinting" title="Display product detail on printing"/>
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>

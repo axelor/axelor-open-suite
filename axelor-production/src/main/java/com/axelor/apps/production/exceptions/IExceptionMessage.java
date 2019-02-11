@@ -119,4 +119,9 @@ public interface IExceptionMessage {
       "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
 
   static final String ORDER_REMOVE_NOT_OK = /*$$(*/ "You can't remove this record" /*)*/;
+
+  static final String MANUF_ORDER_CANCEL = /*$$(*/ "The manufacturing order was canceled." /*)*/;
+
+  static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
+      "A cancel reason must be selected" /*)*/;
 }

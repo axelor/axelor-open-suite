@@ -5,7 +5,7 @@
     <module name="stock" package="com.axelor.apps.stock.db" />
 
     <entity name="LogisticalForm">
-        <string name="deliveryNumber" namecolumn="true" readonly="true" />
+        <string name="deliveryNumberSeq" title="Delivery number" namecolumn="true" readonly="true" />
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" />
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner" required="true"
@@ -41,16 +41,17 @@
 		</extra-code>
 		
 		<track>
-	      <field name="deliveryNumber" />
+	      <field name="statusSelect" />
+	      <field name="deliveryNumberSeq" />
 	      <field name="collectionDate" />
 	      <field name="deliverToCustomerPartner" />
 	      <field name="carrierPartner" />
 	      <field name="forwarderPartner" />
 	      <field name="incoterm" />
 	      <field name="tracking" />
-	      <message if="statusSelect == 1" tag="important">LogisticalForm.Provision</message>
-	      <message if="statusSelect == 2" tag="info">LogisticalForm.Carrier validated</message>
-	      <message if="statusSelect == 3" tag="success">LogisticalForm.Collected</message>
+	      <message if="statusSelect == 1" tag="important">Provision</message>
+	      <message if="statusSelect == 2" tag="info">Carrier validated</message>
+	      <message if="statusSelect == 3" tag="success">Collected</message>
 	    </track>
 		
     </entity>

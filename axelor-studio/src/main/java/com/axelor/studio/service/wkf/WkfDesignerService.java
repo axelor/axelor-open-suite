@@ -32,7 +32,13 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -120,8 +126,8 @@ public class WkfDesignerService {
         }
         node.setSequence(nodeCount);
         nodeCount += 10;
-        if (elementName.equals("startEvent")) node.setStartNode(true);
-        else if (elementName.equals("endEvent")) node.setEndNode(true);
+        if (elementName.equals("startEvent")) node.setNodeType(WkfNodeRepository.START_NODE);
+        else if (elementName.equals("endEvent")) node.setNodeType(WkfNodeRepository.END_NODE);
       } else {
         node.setName(element.getAttribute("name"));
         nodeMap.remove(node.getXmlId());
@@ -136,12 +142,12 @@ public class WkfDesignerService {
 
         for (WkfTransition trn : transitions) {
           if (trn.getXmlId().equals(innerText)) {
-            Set<WkfTransition> existIncomings = node.getIncomming();
+            Set<WkfTransition> existIncomings = node.getIncoming();
 
             if (existIncomings == null) existIncomings = new HashSet<>();
 
             existIncomings.add(trn);
-            node.setIncomming(existIncomings);
+            node.setIncoming(existIncomings);
             trn.setTarget(node);
           }
         }
@@ -252,7 +258,7 @@ public class WkfDesignerService {
 
       if (!allRemoveNodes.isEmpty()) {
         for (WkfNode tempNode : allRemoveNodes) {
-          tempNode.getIncomming().clear();
+          tempNode.getIncoming().clear();
           tempNode.getOutgoing().clear();
         }
       }

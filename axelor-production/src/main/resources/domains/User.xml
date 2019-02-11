@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="stock" package="com.axelor.apps.stock.db"/>
+  <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="StockLocation" lang="java">
-
-    <boolean name="usableOnSaleOrder" title="Usable on sale order" />
-
+  <entity name="User" sequential="true" lang="java">
+  
+	<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
   </entity>
+
 </domain-models>

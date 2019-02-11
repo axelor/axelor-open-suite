@@ -249,7 +249,19 @@
 		<view type="grid" name="debt-recovery-level-grid"/>
 		<view type="form" name="debt-recovery-level-form"/>
 	</action-view>
+	
+	<menuitem name="debt-recovery-root-conf-factor"
+		parent="debt-recovery-root-conf" title="Factor"
+		action="debt.recovery.root.conf.factor" />
 
+	<action-view name="debt.recovery.root.conf.factor"
+		title="Factor" model="com.axelor.apps.base.db.Partner">
+		<view type="cards" name="partner-cards"/>
+		<view type="grid" name="partner-grid" />
+		<view type="form" name="partner-form" />
+		<domain>self.isFactor = true</domain>
+	</action-view>
+	
 	
 	<menuitem name="account-root-accounting" parent="account-root"
 		title="Accounting Exports/Reports" order="20" />

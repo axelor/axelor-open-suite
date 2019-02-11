@@ -13,37 +13,48 @@
         <field name="totalAmountExpected" aggregate="sum"/>
     </grid>
     
-    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large"
-    	onNew="action-budget-record-on-new"
-    	onLoad="action-budget-method-update-lines, save">
-       <panel name="mainPanel" >
-	       <field name="name" required="true"/>
-	       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true"/>
-	       <field name="fromDate"/>
-	       <field name="toDate"/>
-         <field name="company" canEdit="false" colSpan="3"/>
-         <field name="company.currency" readonly="true" colSpan="3"/>
-	       <field name="inChargeUser" canNew="false" canEdit="false" canView="false"/>
-       </panel>
-       <panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
-       <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant">
-			<field name="periodDurationSelect"/>
-			<field name="amountForGeneration"/>
-			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" />    
-		</panel>
-        <panel name="totalAmountExpectedPanel" sidebar="true" readonly="true"  colSpan="4">
-            <field name="totalAmountExpected" css="order-subtotal" showTitle="false" colSpan="12">
-                <viewer>
-                    <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
-                        <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
-                    </dl>
-                    ]]>
-                </viewer>
-            </field>
-        </panel>
-    </form>
+    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save" onNew="action-budget-record-on-new">
+  		<panel name="mainPanel">
+    		<field name="name" showTitle="false" colSpan="12">
+      			<viewer depends="name"><![CDATA[
+
+					<h3>
+						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.code}} / {{record.name}}</span>
+					</h3>
+
+	            ]]></viewer>
+      			<editor>
+        			<field name="code" required="true" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
+    				<field name="name" required="true" colSpan="9"/>
+     		 	</editor>
+    		</field>
+		    <field name="company" canEdit="false"/>
+		    <field name="company.currency" canEdit="false"/>
+		    <field name="fromDate"/>
+		    <field name="toDate"/>
+    		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" canCollapse="true" collapseIf="true">
+			    <field name="periodDurationSelect" colSpan="4"/>
+			    <field name="amountForGeneration" colSpan="4"/>
+	    		<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" colSpan="4"/>
+  			</panel>
+  		</panel>
+		<panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
+		<panel name="totalAmountExpectedPanel" readonly="true" colSpan="4" sidebar="true">
+    		<field name="totalAmountExpected" showTitle="false" colSpan="12" css="order-subtotal">
+      			<viewer><![CDATA[
+
+                   <dl class="dl-horizontal">
+	               		<dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
+	                    <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
+	               </dl>
+
+      			]]></viewer>
+    		</field>
+    		<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true">
+      			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
+    		</panel>
+    	</panel>
+	</form>
     
    <action-group name="action-group-account-budget-generateperiod-click">
     	<action name="action-year-check-date"/>

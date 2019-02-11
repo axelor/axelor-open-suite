@@ -173,8 +173,10 @@ public class TicketController {
   public void computeTotalTimerDuration(ActionRequest request, ActionResponse response) {
     try {
       Ticket ticket = request.getContext().asType(Ticket.class);
-      Duration duration = Beans.get(TimerTicketService.class).compute(ticket);
-      response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
+      if (ticket.getId() != null) {
+        Duration duration = Beans.get(TimerTicketService.class).compute(ticket);
+        response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -213,7 +215,7 @@ public class TicketController {
   public void computeRealDuration(ActionRequest request, ActionResponse response) {
     try {
       Ticket ticket = request.getContext().asType(Ticket.class);
-      if (ticket.getRealTotalDuration().compareTo(BigDecimal.ZERO) == 0) {
+      if (ticket.getId() != null && ticket.getRealTotalDuration().compareTo(BigDecimal.ZERO) == 0) {
         response.setValue(
             "realTotalDuration",
             Beans.get(TimerTicketService.class).compute(ticket).toMinutes() / 60F);

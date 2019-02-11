@@ -191,8 +191,7 @@
 			<bind node="@title" to="title" />
 			<bind node="@wkf" to="wkf" search="self.name = :wkf" update="true"/>
 			<bind node="@sequence" to="sequence" />
-			<bind node="@startNode" to="startNode" />
-			<bind node="@endNode" to="endNode" />
+			<bind node="@nodeType" to="nodeType" />
 			<bind node="@xmlId" to="xmlId" />
 		</bind>
 		<bind node="transition" type="com.axelor.studio.db.WkfTransition">
@@ -210,7 +209,7 @@
 		<bind node="node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true">
 			<bind node="@wkf" to="wkf" search="self.name = :wkf" update="true" />
 			<bind node="@name" to="name" alias="nodeName" />
-			<bind node="incommings/incomming" to="incomming" search="self.name = :name and self.wkf.name = :wkf" update="true">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :name and self.wkf.name = :wkf" update="true">
 				<bind node="@name" to="name" />
 			</bind>
 			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :name and self.wkf.name = :wkf" update="true">
