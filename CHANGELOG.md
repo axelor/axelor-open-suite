@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.3]
 
 ## Features
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 
 ## Improvements
 
