@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased 5.1.3]
+
+## Features
+
+## Improvements
+
+## Bug Fixes
+- INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
+
 ## [5.1.2] - 2019-02-11
 ## Features
 - MANUF. ORDER : cancel reasons
