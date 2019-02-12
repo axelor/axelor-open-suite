@@ -1152,6 +1152,7 @@
 		<view type="form" name="stock-move-form"/>
 		<domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__.id"/>
+		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   	</action-view>
     
     
