@@ -8,6 +8,7 @@
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
+- Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
 
 ## [5.1.2] - 2019-02-11
 ## Features
