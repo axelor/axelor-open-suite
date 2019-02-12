@@ -268,6 +268,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         }
       }
     }
+    super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
         Beans.get(AppSupplychainService.class)
             .getAppSupplychain()
@@ -276,7 +277,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
-    super.requestPurchaseOrder(purchaseOrder);
   }
 
   public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {

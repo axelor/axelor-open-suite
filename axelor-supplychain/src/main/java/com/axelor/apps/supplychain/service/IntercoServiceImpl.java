@@ -53,6 +53,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -129,7 +130,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderComputeService.computeSaleOrder(saleOrder);
 
     saleOrder.setCreatedByInterco(true);
-    return Beans.get(SaleOrderRepository.class).save(saleOrder);
+    Beans.get(SaleOrderRepository.class).persist(saleOrder);
+    Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
+    purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
+    saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    return saleOrder;
   }
 
   @Override
@@ -191,7 +196,11 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setCreatedByInterco(true);
-    return Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
+    Beans.get(PurchaseOrderRepository.class).persist(purchaseOrder);
+    Beans.get(PurchaseOrderService.class).requestPurchaseOrder(purchaseOrder);
+    saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
+    return purchaseOrder;
   }
 
   /**
@@ -352,7 +361,10 @@ public class IntercoServiceImpl implements IntercoService {
     }
 
     invoiceService.compute(intercoInvoice);
-    return invoiceRepository.save(intercoInvoice);
+    intercoInvoice.setExternalReference(invoice.getInvoiceId());
+    intercoInvoice = invoiceRepository.save(intercoInvoice);
+    invoice.setExternalReference(intercoInvoice.getInvoiceId());
+    return intercoInvoice;
   }
 
   protected InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
