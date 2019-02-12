@@ -5,6 +5,7 @@
 ## Features
 
 ## Improvements
+- PURCHASE ORDER LINE : Add new column productCode in purchase-order-line-grid
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
