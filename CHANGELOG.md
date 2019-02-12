@@ -95,6 +95,7 @@
 - Sale Order: saving a sale order being edited does not change its status.
 - Tweaks in conformity certificate.
 - StockLocation: Move booleans into supplychain module.
+- Bank Reconciliation: show a pop up to advise the user of an incomplete bank reconciliation line when validate
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
