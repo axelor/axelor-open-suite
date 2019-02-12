@@ -29,7 +29,7 @@
 
         <toolbar>
             <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
-            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+            <button name="reverseBtn" title="Reverse" showIf="id" icon="fa-exchange" onClick="action-move-view-open-generate-reverse-wizard"/>
             <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move"/>
         </toolbar>
 
@@ -141,6 +141,16 @@
 			<mail-followers />
 		</panel-mail>
     </form>
+
+    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.base.db.Wizard">
+    	<panel name="mainPanel">
+    		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
+    		<field name="dateOfReversionSelect" title="Date of reversion" selection="account.move.date.of.reversion.type.select"/>
+    		<field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
+    		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
+    		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+    	</panel>
+    </form>
 	
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
@@ -213,6 +223,13 @@
 		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
+		<attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
+		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
+		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
+		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
+	</action-attrs>
+
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
@@ -257,7 +274,18 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
-	
+
+	<!-- ACTION VIEW -->
+	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="move-wizard-generate-reverse-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceEdit" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_move" expr="eval: __this__"/>
+	</action-view>
+
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
