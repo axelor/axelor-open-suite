@@ -170,7 +170,7 @@
 	 <action-view name="dashlet.generated.emails" title="Generated emails" model="com.axelor.apps.message.db.Message">
     	<view type="grid" name="message-grid"/>
     	<view type="form" name="message-form"/>
-    	<domain>self.relatedTo1SelectId = :id</domain>
+    	<domain>self.relatedTo1Select = 'com.axelor.apps.marketing.db.Campaign' AND self.relatedTo1SelectId = :id</domain>
     </action-view>
 	
 	<action-method name="action-campaign-generate-targets"  model="com.axelor.apps.marketing.db.Campaign">
