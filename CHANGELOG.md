@@ -8,6 +8,7 @@
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
+- PURCHASE ORDER : add button "See purchase orders lines" in card view
 
 ## [5.1.2] - 2019-02-11
 ## Features
