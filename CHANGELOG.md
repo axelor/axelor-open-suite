@@ -5,6 +5,7 @@
 ## Features
 
 ## Improvements
+- PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.

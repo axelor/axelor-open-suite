@@ -46,9 +46,9 @@
 	        <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
 	        <field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
           <field name="launchQty"/>
-	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"/>
+	        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>
 	        <field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
-	        <field name="isEnabledForAllProducts" colSpan="4"/>
+	        <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
           <field name="stockMoveRealizeOrderSelect" colSpan="4"/>
         </panel>
 
