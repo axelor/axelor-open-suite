@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
@@ -384,32 +383,10 @@ public class IntercoServiceImpl implements IntercoService {
           Beans.get(FiscalPositionService.class)
               .getTaxEquiv(intercoInvoice.getPartner().getFiscalPosition(), tax);
       invoiceLine.setTaxEquiv(taxEquiv);
-      invoiceLine.setPrice(
-          invoiceLineService.getExTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
-      invoiceLine.setInTaxPrice(
-          invoiceLineService.getInTaxUnitPrice(intercoInvoice, invoiceLine, taxLine, isPurchase));
-      invoiceLine.setPriceDiscounted(
-          invoiceLineService.computeDiscount(invoiceLine, intercoInvoice.getInAti()));
-      BigDecimal exTaxTotal, inTaxTotal;
-      if (!intercoInvoice.getInAti()) {
-        exTaxTotal =
-            InvoiceLineManagement.computeAmount(
-                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
-        inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(invoiceLine.getTaxRate()));
-      } else {
-        inTaxTotal =
-            InvoiceLineManagement.computeAmount(
-                invoiceLine.getQty(), invoiceLine.getPriceDiscounted());
-        exTaxTotal =
-            inTaxTotal.divide(
-                invoiceLine.getTaxRate().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-      }
-      invoiceLine.setExTaxTotal(exTaxTotal);
-      invoiceLine.setInTaxTotal(inTaxTotal);
       invoiceLine.setCompanyExTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(exTaxTotal, intercoInvoice));
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
       invoiceLine.setCompanyInTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(inTaxTotal, intercoInvoice));
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), intercoInvoice));
     }
     return invoiceLine;
   }
