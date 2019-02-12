@@ -47,7 +47,7 @@
 			</menu>
 			<menu title="Tools" showTitle="true" icon="fa-wrench">
 				<item title="Gantt" showIf="isProject" action="action-project-open-gantt" />
-				<item title="Book resource" showIf="isProject"
+				<item title="Book resource" showIf="isProject" if=" __config__.app.getApp('project')?.resourceManagement"
 					action="save,action-project-book-resource" />
 			</menu>
 		</menubar>
