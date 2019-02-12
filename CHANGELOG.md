@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.3]
 
 ## Features
+- PRODUCTION PROCESS : new view organization
 
 ## Improvements
 
