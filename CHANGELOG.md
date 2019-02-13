@@ -26,6 +26,7 @@
 - Remove Inconsistency in selections
 - Naming Tool : Missing reserved java litterals
 - Configurator: Fix total computation on sale order when generating sale order line.
+- Stock Move : wrong qty in outgoing move printing
 
 ## [5.0.7] - 2018-12-13
 ## Features
