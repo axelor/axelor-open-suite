@@ -129,6 +129,7 @@
 - INVOICES : alert message if no bank details in partner-form.
 - PartnerStockSettings : Added new field 'incoterm'.
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- SUPPLYCHAIN Batch: show popup if cut-off batch was launched twice in a month
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
