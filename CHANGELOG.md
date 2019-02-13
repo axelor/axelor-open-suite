@@ -9,6 +9,7 @@
 - Interco: copy counterpart reference for intercompany orders and invoices.
 - Interco: make boolean `createdByInterco` appears on order and invoice view.
 - Interco: add config to generate orders and invoice at status validated.
+- PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
