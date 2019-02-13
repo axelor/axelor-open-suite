@@ -148,6 +148,7 @@
 - Base : Update of type in demo-data in Birt Template Parameter.
 - Stock : Download Inventory Export in csv format.
 - Stock/SupplyChain : Changing field names, report translations, sequence field, selection list values according to naming convention.
+- STOCK MOVE LINE: hide filterOnAvailableProducts when stockmove status is not Draft
 
 
 ## [5.1.1] - 2019-01-18
