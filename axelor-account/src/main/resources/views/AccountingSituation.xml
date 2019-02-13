@@ -25,7 +25,7 @@
 			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
-			<field name="pfpValidatorUser" domain="self.activeCompany = :company and self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
+			<field name="pfpValidatorUser" domain=":company member of self.companySet and self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
 			<field name="company.accountConfig" hidden="true"/>
 			<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
 		</panel>
@@ -106,6 +106,7 @@
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
 		<action name="action-accounting-situation-attrs-hide-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-employee-account"/>
+		<action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
 	</action-group>
 
 	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -118,6 +119,10 @@
 
 	<action-attrs name="action-accounting-situation-attrs-hide-employee-account">
 		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
+	</action-attrs>
+	
+	<action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
+		<attribute name="hidden" for="pfpValidatorUser" expr="eval: !__parent__?.isSupplier"/>
 	</action-attrs>
 	
 	<action-method name="action-supplychain-method-compute-used-credit">
