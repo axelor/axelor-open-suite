@@ -12,6 +12,7 @@
 - Interco: add config to generate orders and invoice at status validated.
 - PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 - Project : Hide 'Book Resource' item.
+- PURCHASE ORDER LINE : Add new column productCode in purchase-order-line-grid
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
