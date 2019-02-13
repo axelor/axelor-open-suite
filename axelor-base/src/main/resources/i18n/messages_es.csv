@@ -994,6 +994,7 @@
 "Product variant value4 set","Set de valor de variante de producto4",,
 "Product variant values","Valores de variantes de producto",,
 "Product variants","Variantes de producto",,
+"ProductCatalog.catalog",,,
 "ProductCatalog.description","Descripción",,
 "ProductCatalog.price","Precio",,
 "ProductCatalog.reference","Referencia",,
