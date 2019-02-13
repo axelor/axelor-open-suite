@@ -1158,13 +1158,13 @@
     
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-origin-form"/>
 		<domain>self.saleOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="action-view-open-sale-order-lines" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-origin-form"/>
 		<domain>self.saleOrder.statusSelect IN (:_status)</domain>
   		<context name="_status" expr="eval: status"/>
 	</action-view>
