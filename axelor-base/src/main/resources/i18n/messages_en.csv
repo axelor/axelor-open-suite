@@ -994,6 +994,7 @@
 "Product variant value4 set",,,
 "Product variant values",,,
 "Product variants",,,
+"ProductCatalog.catalog","Catalog",,
 "ProductCatalog.description","Description",,
 "ProductCatalog.price","Price",,
 "ProductCatalog.reference","Reference",,

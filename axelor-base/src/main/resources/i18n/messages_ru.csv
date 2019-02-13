@@ -994,6 +994,7 @@
 "Product variant value4 set","Вариант исполнения изделия4 установленное значение4",,
 "Product variant values","Значения вариантов продукции",,
 "Product variants","Варианты продукции",,
+"ProductCatalog.catalog",,,
 "ProductCatalog.description","Описание",,
 "ProductCatalog.price","Цена",,
 "ProductCatalog.reference","Ссылка",,

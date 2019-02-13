@@ -87,6 +87,7 @@ public interface ITranslation {
   public static final String PRODUCT_CATALOG_DESCRIPTION = /*$$(*/
       "ProductCatalog.description"; /*)*/
   public static final String PRODUCT_CATALOG_PRICE = /*$$(*/ "ProductCatalog.price"; /*)*/
+  public static final String PRODUCT_CATALOG_CATALOG = /*$$(*/ "ProductCatalog.catalog"; /*)*/
 
   public static final String PHONE_BOOK_CONTACT_PHONE_BOOK = /*$$(*/
       "Phonebook.contactPhonebook"; /*)*/
