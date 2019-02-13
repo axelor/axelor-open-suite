@@ -53,6 +53,20 @@
         <field name="invoiced"/>
     </grid>
 
+	<grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines" name="purchase-order-line-all-grid" canNew="false" canDelete="false" canEdit="false">
+		<field name="purchaseOrder.purchaseOrderSeq"/>
+		<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="price" x-scale="2"/>
+		<field name="inTaxPrice" x-scale="2"/>
+		<field name="purchaseOrder.currency"/>
+		<field name="purchaseOrder.buyerUser"/>
+		<field name="desiredDelivDate"/>
+		<field name="estimatedDelivDate"/>
+	</grid>
+
     <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
         <panel-include view="purchase-order-line-form"/>
     </form>
@@ -168,6 +182,18 @@
 		<panel-include view="purchase-order-line-form"/>
 	</form>
 	
+	<form model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line" name="purchase-order-line-all-form" width="large" canNew="false" canDelete="false" canEdit="false">
+		<panel name="mainPanel">
+			<field name="purchaseOrder.company" colSpan="3"/>
+			<spacer name="purchaseOrderCompanySpacer" colSpan="9"/>
+			<field name="purchaseOrder.supplierPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
+			<field name="purchaseOrder.purchaseOrderSeq" grid-view="purchase-order-grid" form-view="purchase-order-form" colSpan="3"/>
+			<field name="purchaseOrder.orderDate" colSpan="3"/>
+			<field name="purchaseOrder.currency" colSpan="3"/>
+		</panel>
+		<panel-include view="purchase-order-line-form"/>
+	</form>
+
 	<action-method name="action-purchase-order-line-method-empty-line">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="emptyLine"/>
 	</action-method>

@@ -13,6 +13,7 @@
 - PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 - Project : Hide 'Book Resource' item.
 - PURCHASE ORDER LINE : Add new column productCode in purchase-order-line-grid
+- PURCHASE/SALE ORDERS LINES : Add new information fields in view
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
