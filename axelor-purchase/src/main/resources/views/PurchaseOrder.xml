@@ -113,7 +113,8 @@
         <field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
 				<panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
-          <field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
       	</panel>
