@@ -4,6 +4,7 @@
 
 ## Features
 - PRODUCTION PROCESS : new view organization
+- MANUF. ORDER : notify by automatic email when MO finished or partially finished
 
 ## Improvements
 - Interco: copy counterpart reference for intercompany orders and invoices.
