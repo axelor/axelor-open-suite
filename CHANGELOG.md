@@ -4,6 +4,7 @@
 
 ## Features
 - PRODUCTION PROCESS : new view organization
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 
 ## Improvements
 - Interco: copy counterpart reference for intercompany orders and invoices.
