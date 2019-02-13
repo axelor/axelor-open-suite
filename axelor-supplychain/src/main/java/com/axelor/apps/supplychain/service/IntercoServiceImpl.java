@@ -41,7 +41,9 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -53,14 +55,17 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -129,7 +134,15 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderComputeService.computeSaleOrder(saleOrder);
 
     saleOrder.setCreatedByInterco(true);
-    return Beans.get(SaleOrderRepository.class).save(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getIntercoSaleOrderCreateFinalized()) {
+      Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
+    }
+    purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
+    saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    return saleOrder;
   }
 
   @Override
@@ -140,20 +153,22 @@ public class IntercoServiceImpl implements IntercoService {
 
     Company intercoCompany = findIntercoCompany(saleOrder.getClientPartner());
     // create purchase order
-    PurchaseOrder purchaseOrder;
-    purchaseOrder =
-        purchaseOrderService.createPurchaseOrder(
-            null,
-            intercoCompany,
-            saleOrder.getContactPartner(),
-            saleOrder.getCurrency(),
-            saleOrder.getDeliveryDate(),
-            null,
-            null,
-            saleOrder.getOrderDate(),
-            saleOrder.getPriceList(),
-            saleOrder.getCompany().getPartner(),
-            saleOrder.getTradingName());
+    PurchaseOrder purchaseOrder = new PurchaseOrder();
+    purchaseOrder.setCompany(intercoCompany);
+    purchaseOrder.setContactPartner(saleOrder.getContactPartner());
+    purchaseOrder.setCurrency(saleOrder.getCurrency());
+    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
+    purchaseOrder.setOrderDate(saleOrder.getOrderDate());
+    purchaseOrder.setPriceList(saleOrder.getPriceList());
+    purchaseOrder.setTradingName(saleOrder.getTradingName());
+    purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
+
+    purchaseOrder.setPrintingSettings(
+        Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
+
+    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
+    purchaseOrder.setTradingName(saleOrder.getTradingName());
 
     // in ati
     purchaseOrder.setInAti(saleOrder.getInAti());
@@ -191,7 +206,15 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setCreatedByInterco(true);
-    return Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
+    Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getIntercoPurchaseOrderCreateRequested()) {
+      Beans.get(PurchaseOrderService.class).requestPurchaseOrder(purchaseOrder);
+    }
+    saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
+    return purchaseOrder;
   }
 
   /**
@@ -352,7 +375,15 @@ public class IntercoServiceImpl implements IntercoService {
     }
 
     invoiceService.compute(intercoInvoice);
-    return invoiceRepository.save(intercoInvoice);
+    intercoInvoice.setExternalReference(invoice.getInvoiceId());
+    intercoInvoice = invoiceRepository.save(intercoInvoice);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getIntercoInvoiceCreateValidated()) {
+      Beans.get(InvoiceService.class).validate(intercoInvoice);
+    }
+    invoice.setExternalReference(intercoInvoice.getInvoiceId());
+    return intercoInvoice;
   }
 
   protected InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
