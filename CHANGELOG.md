@@ -3,12 +3,19 @@
 ## [Unreleased 5.1.3]
 
 ## Features
+- PRODUCTION PROCESS : new view organization
 
 ## Improvements
+- Interco: copy counterpart reference for intercompany orders and invoices.
+- Interco: make boolean `createdByInterco` appears on order and invoice view.
+- Interco: add config to generate orders and invoice at status validated.
+- PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 - Project : Hide 'Book Resource' item.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
+- Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
+- PURCHASE ORDER : add button "See purchase orders lines" in card view
 
 ## [5.1.2] - 2019-02-11
 ## Features
