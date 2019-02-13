@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -128,20 +127,20 @@ public class ManufOrderWorkflowService {
       manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
       manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 
-    if (manufOrder.getBillOfMaterial() != null) {
-      manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
-    }
+      if (manufOrder.getBillOfMaterial() != null) {
+        manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
+      }
 
-    if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
-    }
+      if (!manufOrder.getIsConsProOnOperation()) {
+        manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
+      }
 
-    manufOrderStockMoveService.createToProduceStockMove(manufOrder);
-    manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
-    manufOrder.setCancelReason(null);
-    manufOrder.setCancelReasonStr(null);
+      manufOrderStockMoveService.createToProduceStockMove(manufOrder);
+      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
+      manufOrder.setCancelReason(null);
+      manufOrder.setCancelReasonStr(null);
 
-    manufOrderRepo.save(manufOrder);
+      manufOrderRepo.save(manufOrder);
     }
     return manufOrderList;
   }

@@ -9,6 +9,8 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -118,15 +120,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     LocalDateTime startDate = now;
 
-    System.out.println("initial startDate : " + startDate);
-
     for (ManufOrder manufOrder : pinnedManufOrderList)
       if (manufOrder.getPlannedStartDateT().isBefore(startDate))
         startDate = manufOrder.getPlannedStartDateT();
 
     startDate = this.roundDateTime(startDate);
-
-    System.out.println("    new startDate : " + startDate);
 
     for (ManufOrder manufOrder : manufOrderListToPlan) {
       LocalDateTime releaseDate;
@@ -167,15 +165,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       }
     }
 
-    System.out.println("PINNED");
     displayManufOrder(pinnedManufOrderList, solvedJobScheduling);
-    System.out.println("NOT PINNED");
     displayManufOrder(manufOrderListToPlan, solvedJobScheduling);
-
-    for (Allocation allocation : solvedJobScheduling.getAllocationList()) {
-      System.out.println(
-          allocation.getId() + " : " + allocation.getExecutionMode() + " " + allocation.getDelay());
-    }
   }
 
   private LocalDateTime roundDateTime(LocalDateTime dateTime) throws AxelorException {
@@ -195,7 +186,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
   private void displayManufOrder(List<ManufOrder> manufOrderList, Schedule solvedJobScheduling) {
     for (ManufOrder manufOrder : manufOrderList) {
-      System.out.println(manufOrder.getManufOrderSeq());
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         Allocation allocation = null;
         for (Allocation curAllocation : solvedJobScheduling.getAllocationList()) {
@@ -213,7 +203,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         for (int i = allocation.getStartDate(); i < allocation.getEndDate(); i++) {
           dashes.append("#");
         }
-        System.out.println(spaces.toString() + dashes.toString());
       }
     }
   }
