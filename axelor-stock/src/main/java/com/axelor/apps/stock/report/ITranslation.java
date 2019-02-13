@@ -120,6 +120,8 @@ public interface ITranslation {
       "PickingStockMove.customerCode"; /*)*/
   public static final String PICKING_STOCK_MOVE_EXTERNAL_REFERENCE = /*$$(*/
       "PickingStockMove.externalReference"; /*)*/
+  public static final String PICKING_STOCK_MOVE_DELIVERY_CONDITION = /*$$(*/
+      "PickingStockMove.deliveryCondition"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/

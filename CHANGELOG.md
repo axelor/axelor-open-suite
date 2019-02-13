@@ -4,6 +4,7 @@
 
 ## Features
 - PRODUCTION PROCESS : new view organization
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
 
 ## Improvements
@@ -12,11 +13,13 @@
 - Interco: add config to generate orders and invoice at status validated.
 - PRODUCTION PROCESS : Make isConsProOnOperation/isEnabledForAllProducts boolean readonly when one of them is true
 - Project : Hide 'Book Resource' item.
+- PURCHASE ORDER LINE : Add new column productCode in purchase-order-line-grid
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
 - Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
+- STOCK MOVE LINE LIST : delete canEdit
 
 ## [5.1.2] - 2019-02-11
 ## Features
