@@ -33,6 +33,7 @@ import java.util.List;
 public class BudgetController {
 
   @Inject protected BudgetService budgetService;
+  @Inject protected BudgetRepository budgetRepository;
 
   public void compute(ActionRequest request, ActionResponse response) {
     Budget budget = request.getContext().asType(Budget.class);
@@ -62,5 +63,25 @@ public class BudgetController {
     } catch (Exception e) {
       response.setError(e.getMessage());
     }
+  }
+
+  public void validate(ActionRequest request, ActionResponse response) {
+    Budget budget = request.getContext().asType(Budget.class);
+    budget = budgetRepository.find(budget.getId());
+    budgetService.validate(budget);
+    response.setReload(true);
+  }
+
+  public void draft(ActionRequest request, ActionResponse response) {
+    Budget budget = request.getContext().asType(Budget.class);
+    budget = budgetRepository.find(budget.getId());
+    budgetService.draft(budget);
+    response.setReload(true);
+  }
+
+  public void computeTotalAmountRealized(ActionRequest request, ActionResponse response){
+    Budget budget = request.getContext().asType(Budget.class);
+    budget = budgetRepository.find(budget.getId());
+    response.setValue("totalAmountRealized", budgetService.computeTotalAmountRealized(budget));
   }
 }

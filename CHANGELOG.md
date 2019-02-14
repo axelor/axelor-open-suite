@@ -407,6 +407,8 @@ in progress manuf order and for bill of material, and add a prorata method for i
 ## Features
 - CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
+- ContractTemplate : Addition of demo-data.
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
@@ -459,7 +461,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState.
 
 ## [5.1.2] - 2019-02-11
 ## Features

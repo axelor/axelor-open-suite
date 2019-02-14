@@ -3,17 +3,15 @@
  *
  * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License, version 3, as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -21,12 +19,14 @@ import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,6 +42,19 @@ public class BudgetService {
       }
     }
     return total;
+  }
+
+  public BigDecimal computeTotalAmountRealized(Budget budget) {
+    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
+
+    if (budgetLineList == null) {
+      return BigDecimal.ZERO;
+    }
+
+    return budgetLineList
+        .stream()
+        .map(BudgetLine::getAmountRealized)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   public List<BudgetLine> updateLines(Budget budget) {
@@ -151,5 +164,15 @@ public class BudgetService {
         }
       }
     }
+  }
+
+  @Transactional
+  public void validate(Budget budget) {
+    budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
+  }
+
+  @Transactional
+  public void draft(Budget budget) {
+    budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
   }
 }

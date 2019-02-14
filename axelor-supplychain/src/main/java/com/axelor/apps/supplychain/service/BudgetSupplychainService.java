@@ -105,4 +105,17 @@ public class BudgetSupplychainService extends BudgetService {
     }
     return budget.getBudgetLineList();
   }
+
+  public BigDecimal computeTotalAmountCommitted(Budget budget) {
+    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
+
+    if (budgetLineList == null) {
+      return BigDecimal.ZERO;
+    }
+
+    return budgetLineList
+        .stream()
+        .map(BudgetLine::getAmountCommitted)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
 }
