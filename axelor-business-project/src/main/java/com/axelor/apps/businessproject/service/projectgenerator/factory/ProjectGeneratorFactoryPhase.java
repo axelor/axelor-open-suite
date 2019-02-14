@@ -90,7 +90,8 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
               phase,
               null,
               startDate,
-              saleOrderLine.getQty());
+              saleOrderLine.getQty(),
+              saleOrderLine);
         }
       }
     }

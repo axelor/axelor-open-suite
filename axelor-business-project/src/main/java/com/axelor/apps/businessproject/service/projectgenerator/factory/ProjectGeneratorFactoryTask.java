@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
@@ -28,6 +29,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.team.db.TeamTask;
@@ -68,7 +72,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   @Override
   @Transactional
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
@@ -93,8 +98,19 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
         task.setTaskDate(startDate.toLocalDate());
         task.setUnitPrice(product.getSalePrice());
+        if (project.getTeamTaskInvoicing()
+            && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE) {
+          task.setToInvoice(true);
+        } else if (project.getTeamTaskInvoicing()) {
+          task.setToInvoice(false);
+        }
         teamTaskRepository.save(task);
         tasks.add(task);
+      }
+      if (tasks == null || tasks.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
       }
     }
 

@@ -51,6 +51,7 @@
 - Project module : ProjectPlanningTime ( Start time / End time )
 - TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
 - MOVE : improve reversion process.
+- SaleOrder : Task By product and Task_By_Line Invoicing
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
