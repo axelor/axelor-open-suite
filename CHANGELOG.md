@@ -52,6 +52,7 @@
 - TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
 - MOVE : improve reversion process.
 - SaleOrder : Task By product and Task_By_Line Invoicing
+- Business Project : Addition of new m2o field 'customerAddress'.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
