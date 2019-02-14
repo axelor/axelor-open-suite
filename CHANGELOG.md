@@ -87,7 +87,9 @@
 - Timesheet: exception for date conflicts.
 - HR module: code refactoring.
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
-- STOCK MOVE : Creation of specific grid views of mass update. 
+- STOCK MOVE : Creation of specific grid views of mass invoicing. 
+- STOCK MOVE : Date on report printing
+- ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -118,6 +120,9 @@
 - Configurator: Fix total computation on sale order when generating sale order line.
 - Fixed a bug where there were empty lines in declaration of exchanges csv export.
 - Expense: NPE related to kilometric expense.
+- BANK RECONCILIATION : Wrong data on printing
+- When creating interco invoice, copy correct prices in lines.
+- When realizing manufacturing order on start, only realize in stock move.
 
 ## [5.1.1] - 2019-01-18
 ## Features
