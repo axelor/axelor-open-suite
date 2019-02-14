@@ -58,6 +58,15 @@
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
 - SALE ORDER : notify when stock move is generated automatically from sale order
+- INVOICES : alert message if no bank details in partner-form.
+- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
+- SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
+- STOCK CONFIG : New boolean for picking order printing with details
+- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
+- PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
+- LOGISITCAL FORM : alert message when user clicks on action buttons
+- ACCOUNT MOVE : printing new design
+- Leave reason: choose unit between days and hours.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 

@@ -19,6 +19,15 @@
       <decimal name="defaultDayNumberGain" title="Default day number gain"/>
       <boolean name="selectedByMgtOnly" title="Can only be selected by HR Management"/>
 
+      <integer name="unitSelect" title="Unit" selection="hr.leave.reason.unit.select" />
+
+      <extra-code>
+   		<![CDATA[
+   			public static final int UNIT_SELECT_DAYS = 1;
+   			public static final int UNIT_SELECT_HOURS = 2;
+   		]]>
+      </extra-code>
+      
   </entity>
   
 </domain-models>
