@@ -268,6 +268,7 @@
 	      <panel name="otherInfoPanel" colSpan="3">
 	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
 	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
+	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="6" readonly="true" showIf="createdByInterco" name="createdByInterco"/>
 	    	</panel>
 	    </panel>
 	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
@@ -278,7 +279,7 @@
 	        </field>
 	      </panel>
 	      <panel name="deliveryAddressPanel" stacked="true">
-	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
@@ -307,7 +308,8 @@
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <field name="isNeedingConformityCertificate"/>
+	      <field name="isNeedingConformityCertificate" colSpan="3"/>
+	      <field name="isIspmRequired" readonly="true" colSpan="3"/>
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	    </panel>
@@ -900,6 +902,8 @@
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
+		<action name="action-sale-order-attrs-set-is-ispm-required"
+				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -1154,13 +1158,13 @@
     
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-all-form"/>
 		<domain>self.saleOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="action-view-open-sale-order-lines" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-all-form"/>
 		<domain>self.saleOrder.statusSelect IN (:_status)</domain>
   		<context name="_status" expr="eval: status"/>
 	</action-view>
