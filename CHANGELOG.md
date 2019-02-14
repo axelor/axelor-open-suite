@@ -6,6 +6,7 @@
 - PRODUCTION PROCESS : new view organization
 - CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
+- ContractTemplate : Addition of demo-data.
 
 ## Improvements
 - Interco: copy counterpart reference for intercompany orders and invoices.
