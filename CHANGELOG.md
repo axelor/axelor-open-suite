@@ -8,6 +8,7 @@
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
+- PARTNER : prospect instead of client
 
 ## [5.1.2] - 2019-02-11
 ## Features
