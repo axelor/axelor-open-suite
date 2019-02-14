@@ -69,7 +69,7 @@
 			<field name="displayCustomerCodeOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 			<field name="displayLineDetailsOnPrinting" widget="boolean-switch"/>
-			<field name="pickingOrderPrinting" widget="boolean-switch"/>
+			<field name="pickingOrderPrintingDetailed" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

@@ -142,8 +142,11 @@
 		canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-menu-form">
 		<panel name="mainPanel">
-			<field name="invoice.partner"/>
-			<field name="invoice.invoiceId"/>
+			<field name="invoice.company" colSpan="12"/>
+			<field name="invoice.partner" colSpan="3"/>
+			<field name="invoice.invoiceId" colSpan="3"/>
+			<field name="invoice.invoiceDate" colSpan="3"/>
+			<field name="invoice.currency" colSpan="3"/>
 		</panel>
 		<panel-include view="invoice-line-form"/>
 	</form>
