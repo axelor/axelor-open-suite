@@ -22,6 +22,7 @@
 - Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
 - STOCK MOVE LINE LIST : delete canEdit
+- ACCOUNT : ventilate an invoice don't generate an empty move line due to fixedAsset
 
 ## [5.1.2] - 2019-02-11
 ## Features
