@@ -378,4 +378,9 @@
 		<option value="1">%</option>
 		<option value="2">Amount</option>
 	</selection>
+
+	<selection name="account.move.date.of.reversion.type.select">
+		<option value="1">Today</option>
+		<option value="2">Date of original move</option>
+	</selection>
 </object-views>

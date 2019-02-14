@@ -50,6 +50,7 @@
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
 - Project module : ProjectPlanningTime ( Start time / End time )
 - TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
+- MOVE : improve reversion process.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
