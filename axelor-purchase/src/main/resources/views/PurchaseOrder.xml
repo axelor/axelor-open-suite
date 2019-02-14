@@ -113,7 +113,8 @@
         <field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
 				<panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
-          <field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
       	</panel>
@@ -300,6 +301,9 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
+		<toolbar>
+    			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
+		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -561,15 +565,15 @@
 
 	<action-view name="purchase-order-see-quotation-lines" title="See quotation lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="grid" name="purchase-order-line-all-grid"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="purchase-order-see-purchase-order-lines" title="See purchase order lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="grid" name="purchase-order-line-all-grid"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect IN (:status)</domain>
   		<context name="status" expr="eval: _status"/>
 	</action-view>

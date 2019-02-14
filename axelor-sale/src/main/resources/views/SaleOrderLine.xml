@@ -22,7 +22,7 @@
 		<field name="estimatedDelivDate"/>
 	</grid>
 
-    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
       	<field name="saleOrder"/>
       	<field name="saleOrder.company"/>
       	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
@@ -285,6 +285,18 @@
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel name="mainPanel" >
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
+		</panel>
+		<panel-include view="sale-order-line-form"/>
+	</form>
+
+	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-all-form" width="large" canNew="false" canDelete="false" canEdit="false">
+		<panel name="mainPanel">
+			<field name="saleOrder.company" colSpan="3"/>
+			<spacer name="saleOrderCompanySpacer" colSpan="9"/>
+			<field name="saleOrder.clientPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
+			<field name="saleOrder.saleOrderSeq" grid-view="sale-order-grid" form-view="sale-order-form" colSpan="3"/>
+			<field name="saleOrder.creationDate" colSpan="3"/>
+			<field name="saleOrder.currency" colSpan="3"/>
 		</panel>
 		<panel-include view="sale-order-line-form"/>
 	</form>
