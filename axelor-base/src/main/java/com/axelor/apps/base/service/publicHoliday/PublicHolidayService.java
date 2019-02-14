@@ -17,15 +17,15 @@
  */
 package com.axelor.apps.base.service.publicHoliday;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public class PublicHolidayService {
 

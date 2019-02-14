@@ -10,9 +10,9 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
       <date name="requestDate" title="Request date" readonly="true" />
-      <date name="fromDate" title="From" required="true"/>
+      <datetime name="fromDateT" title="From" required="true"/>
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
-      <date name="toDate" title="To (included)" />
+      <datetime name="toDateT" title="To (included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
       <string name="comments" title="Comments" large="true"/>

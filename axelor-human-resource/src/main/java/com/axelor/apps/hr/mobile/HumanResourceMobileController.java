@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.hr.mobile;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.math.BigDecimal;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -75,6 +63,18 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.math.BigDecimal;
+import java.net.URLConnection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class HumanResourceMobileController {
 
@@ -499,13 +499,15 @@ public class HumanResourceMobileController {
       leave.setLeaveLine(leaveLine);
       leave.setRequestDate(appBaseService.getTodayDate());
       if (requestData.get("fromDate") != null) {
-        leave.setFromDate(
-            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+        leave.setFromDateT(
+            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE)
+                .atStartOfDay());
       }
       leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
       if (requestData.get("toDate") != null) {
-        leave.setToDate(
-            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+        leave.setToDateT(
+            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE)
+                .atStartOfDay());
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
@@ -549,14 +551,17 @@ public class HumanResourceMobileController {
       List<Map<String, String>> dataList = new ArrayList<>();
 
       if (user == null || user.getEmployee() == null) {
-        List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
 
+        List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
         for (LeaveReason leaveReason : leaveReasonList) {
-          Map<String, String> map = new HashMap<>();
-          map.put("name", leaveReason.getLeaveReason());
-          map.put("id", leaveReason.getId().toString());
-          dataList.add(map);
+          if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", leaveReason.getLeaveReason());
+            map.put("id", leaveReason.getId().toString());
+            dataList.add(map);
+          }
         }
+
       } else if (user.getEmployee() != null) {
         List<LeaveLine> leaveLineList =
             Beans.get(LeaveLineRepository.class)

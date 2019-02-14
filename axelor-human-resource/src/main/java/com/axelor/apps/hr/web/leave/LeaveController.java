@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.hr.web.leave;
 
-import java.util.List;
-import java.util.Map;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
@@ -53,6 +51,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class LeaveController {
@@ -269,7 +269,9 @@ public class LeaveController {
       }
       Beans.get(PeriodService.class)
           .checkPeriod(
-              leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
+              leaveRequest.getCompany(),
+              leaveRequest.getToDateT().toLocalDate(),
+              leaveRequest.getFromDateT().toLocalDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
