@@ -518,20 +518,6 @@ public class SaleOrderController {
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
 
-  public void onSave(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
-      if (saleOrderView.getOrderBeingEdited()) {
-        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-        saleOrderServiceSupplychain.validateChanges(saleOrder, saleOrderView);
-        response.setValues(saleOrderView);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   /**
    * Called on sale order invoicing wizard form. Call {@link
    * SaleOrderInvoiceService#getInvoicingWizardOperationDomain(SaleOrder)}
@@ -612,5 +598,22 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void fillSaleOrderLinesEstimatedDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        Integer deliveryState = saleOrderLine.getDeliveryState();
+        if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
+            && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
+          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+        }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
   }
 }

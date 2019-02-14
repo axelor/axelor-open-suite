@@ -101,7 +101,8 @@
 
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
-		  onLoad="action-group-partner-onload" width="large">
+		  onLoad="action-group-partner-onload"
+		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
 		<panel-include view="partner-form" />
 	</form>
 
@@ -929,6 +930,10 @@
         <field name="isSupplier" expr="eval: false" />
         <field name="isCarrier" expr="eval: false" />
     </action-record>
+
+    <action-validate name="action-partner-validate-partner-stock-settings-list">
+    	<error message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    </action-validate>
 
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">

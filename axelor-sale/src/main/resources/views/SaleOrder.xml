@@ -266,9 +266,10 @@
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
 	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
-	      <field name="currency" required="true" readonlyIf="statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
-	      <field name="priceList" readonlyIf="statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
-	      <field name="clientPartner" required="true" hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
+	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
+	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
+	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
+	      <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
 	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
@@ -307,7 +308,7 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate"/>
+	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -332,7 +333,7 @@
         <field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
         <field name="$_elementStartDate" title="Start date" widget="date-time" type="datetime"/>
         <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid"/>
-        <field name="toInvoiceViaTask" hidden="true" showIf="$_projectGeneratorType == 'TASK_BY_LINE'"/>
+        <field name="toInvoiceViaTask" hidden="true" showIf="$_projectGeneratorType == 'TASK_BY_LINE' || $_projectGeneratorType == 'TASK_TEMPLATE'"/>
         <panel name="projectDetailsPanel" colSpan="12">
           <button name="updateLinesBtn" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
           <panel name="fillOrGenerateProjectPanel" stacked="true">
@@ -1287,8 +1288,12 @@
 	<action-attrs name="action-sale-order-attrs-availability-request-label">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 	</action-attrs>
-	
-	<action-validate name="action-sale-order-validate-client-partner">
+  
+	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
+	</action-method>
+
+  <action-validate name="action-sale-order-validate-client-partner">
 		<error message="Please select a customer" if="!clientPartner"/>
 	</action-validate>
 	

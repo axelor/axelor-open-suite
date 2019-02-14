@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
@@ -26,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -50,6 +52,9 @@ public class SaleOrderProjectController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
+        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+      }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
 

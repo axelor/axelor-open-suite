@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -166,31 +167,13 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Unit unit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      BigDecimal consumptionQty)
+      BigDecimal consumptionQty,
+      boolean fromBOM)
       throws AxelorException {
 
-    BigDecimal price;
+    Product parentProduct = parentCostSheetLine.getProduct();
 
-    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
-            || product
-                .getProductSubTypeSelect()
-                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-        && parentCostSheetLine
-            .getProduct()
-            .getRealOrEstimatedPriceSelect()
-            .equals(ProductRepository.PRICE_METHOD_REAL)
-        && parentCostSheetLine
-            .getProduct()
-            .getComponentsValuationMethod()
-            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
-      price = product.getAvgPrice();
-    } else {
-      price = product.getCostPrice();
-    }
-
-    if (price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
-    }
+    BigDecimal price = getValuationPrice(product, parentProduct, fromBOM);
 
     BigDecimal costPrice =
         unitConversionService
@@ -235,6 +218,63 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
+  protected BigDecimal getValuationPrice(Product product, Product parentProduct, boolean fromBOM) {
+
+    if (fromBOM) {
+      return getValuationPriceFromBOM(product);
+    } else {
+      return getValuationPriceFromManufOrder(product, parentProduct);
+    }
+  }
+
+  protected BigDecimal getValuationPriceFromManufOrder(Product product, Product parentProduct) {
+
+    BigDecimal price;
+
+    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
+            || product
+                .getProductSubTypeSelect()
+                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+        && parentProduct.getRealOrEstimatedPriceSelect().equals(ProductRepository.PRICE_METHOD_REAL)
+        && parentProduct
+            .getComponentsValuationMethod()
+            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
+      price = product.getAvgPrice();
+    } else {
+      price = product.getCostPrice();
+    }
+
+    if (price.compareTo(BigDecimal.ZERO) == 0) {
+      price = product.getPurchasePrice();
+    }
+
+    return price;
+  }
+
+  protected BigDecimal getValuationPriceFromBOM(Product product) {
+
+    BigDecimal price = product.getCostPrice();
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      price = product.getAvgPrice();
+    }
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      price = product.getPurchasePrice();
+    }
+
+    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+        if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
+          price = supplierCatalog.getPrice();
+          break;
+        }
+      }
+    }
+
+    return price;
+  }
+
   public CostSheetLine createConsumedProductWasteCostSheetLine(
       Product product,
       Unit unit,
@@ -257,7 +297,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .convert(
                 unit,
                 product.getUnit(),
-                product.getCostPrice(),
+                getValuationPriceFromBOM(product),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(qty);

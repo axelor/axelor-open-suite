@@ -61,4 +61,6 @@ public interface ProductService {
       ProductVariantValue productVariantValue2,
       ProductVariantValue productVariantValue3,
       ProductVariantValue productVariantValue4);
+
+  public void copyProduct(Product product, Product copy);
 }

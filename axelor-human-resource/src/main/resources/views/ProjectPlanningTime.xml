@@ -8,6 +8,8 @@
 		<field name="task"/>
 		<field name="user"/>		
 		<field name="date"/>
+		<field name="startTime"/>
+		<field name="endTime"/>
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
@@ -29,14 +31,17 @@
 	    <field name="realHours"/>
     </grid>
     
-    <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default">
+    <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default" onSave="action-project-planning-time-validate-check-start-time-end-time">
 		<panel name="mainPanel">
-			<field name="plannedHours" showIf="typeSelect == 1"/>
+			<field name="plannedHours" showIf="typeSelect == 1" onChange="action-project-planning-time-record-planned-hours-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="realHours" showIf="typeSelect == 2"/>
 			<field name="project" readonly="true"/>
 			<field name="task" domain="self.project = :project" canEdit="false" />
 			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>
-			<field name="date" />		
+			<field name="date" />
+			<spacer name="dateSpacer" colSpan="6"/>
+			<field name="startTime" showIf="typeSelect == 1" requiredIf="endTime" onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
+			<field name="endTime" showIf="typeSelect == 1" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
@@ -220,5 +225,24 @@
 	<action-validate name="action-project-validate-remove-project-planning-time">
 		<alert message="Are you sure wants to remove selected lines?"/>
 	</action-validate>
+	
+	<action-record name="action-project-planning-time-record-planned-hours-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="startTime" expr="eval: endTime.minusMinutes((long)(plannedHours.doubleValue()*60))" if="!startTime &amp;&amp; endTime &amp;&amp; plannedHours"/>
+		<field name="endTime" expr="eval: startTime.plusMinutes((long)(plannedHours.doubleValue()*60))" if="startTime &amp;&amp; plannedHours &amp;&amp; plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) &lt; 1"/>
+	</action-record>
+	
+	<action-record name="action-project-planning-time-record-start-time-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l" if="startTime &amp;&amp; endTime &amp;&amp; !plannedHours"/>
+		<field name="endTime" expr="eval: startTime.plusMinutes((long)(plannedHours.doubleValue()*60))" if="startTime &amp;&amp; plannedHours &amp;&amp; plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) &lt; 1"/>
+	</action-record>
+	
+	<action-record name="action-project-planning-time-record-end-time-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l" if="startTime &amp;&amp; endTime &amp;&amp; !plannedHours"/>
+		<field name="startTime" expr="eval: endTime.minusMinutes((long)(plannedHours.doubleValue()*60))" if="endTime &amp;&amp; plannedHours"/>
+	</action-record>
+	
+	<action-validate name="action-project-planning-time-validate-check-start-time-end-time">
+  		<error message="Planning line cannot be in two different days" if="eval: startTime &amp;&amp; plannedHours &amp;&amp; (plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) ==1  || (endTime &amp;&amp; endTime.isBefore(startTime)) || plannedHours &gt; 24)" />
+  	</action-validate>
 	
 </object-views>

@@ -154,9 +154,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               invoiceLine.getProductName());
         }
 
-        if (accountConfig.getFixedAssetCatReqOnInvoice()
-            && invoiceLine.getFixedAssets()
-            && invoiceLine.getFixedAssetCategory() != null) {
+        if (invoiceLine.getFixedAssets() && invoiceLine.getFixedAssetCategory() != null) {
 
           FixedAsset fixedAsset = new FixedAsset();
           fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
