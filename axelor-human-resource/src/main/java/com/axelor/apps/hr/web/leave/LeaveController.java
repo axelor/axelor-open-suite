@@ -158,6 +158,7 @@ public class LeaveController {
   public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
+
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
     long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();

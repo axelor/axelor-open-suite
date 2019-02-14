@@ -17,16 +17,15 @@
  */
 package com.axelor.apps.base.service.publicHoliday;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public class PublicHolidayService {
 
@@ -46,8 +45,7 @@ public class PublicHolidayService {
       LocalDate fromDate,
       LocalDate toDate,
       WeeklyPlanning weeklyPlanning,
-      EventsPlanning publicHolidayPlanning)
-      throws AxelorException {
+      EventsPlanning publicHolidayPlanning) {
     BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
     List<EventsPlanningLine> publicHolidayDayList =
@@ -62,15 +60,14 @@ public class PublicHolidayService {
     for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
       publicHolidayDays =
           publicHolidayDays.add(
-              new BigDecimal(
+              BigDecimal.valueOf(
                   weeklyPlanningService.workingDayValue(
                       weeklyPlanning, publicHolidayDay.getDate())));
     }
     return publicHolidayDays;
   }
 
-  public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning)
-      throws AxelorException {
+  public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
 
     if (publicHolidayEventsPlanning == null) {
       return false;

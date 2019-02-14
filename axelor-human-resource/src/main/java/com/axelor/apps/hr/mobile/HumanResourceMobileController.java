@@ -95,7 +95,7 @@ public class HumanResourceMobileController {
    *     350.00, "locationFrom": "Paris", "locationTo": "Marseille", "allowanceTypeSelect": 1,
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -155,6 +155,7 @@ public class HumanResourceMobileController {
    *     <p>payload: { "data": { "action":
    *     "com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines" } }
    */
+  @Transactional
   public void removeLines(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
@@ -323,6 +324,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities"
    * } }
    */
+  @Transactional
   public void getActivities(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
@@ -459,7 +461,7 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     User user = AuthUtils.getUser();
@@ -467,7 +469,7 @@ public class HumanResourceMobileController {
     LeaveReason leaveReason =
         Beans.get(LeaveReasonRepository.class)
             .find(Long.valueOf(requestData.get("leaveReason").toString()));
-    Employee employee = user.getEmployee(); 
+    Employee employee = user.getEmployee();
     if (employee == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -485,8 +487,7 @@ public class HumanResourceMobileController {
       LeaveLine leaveLine =
           Beans.get(LeaveLineRepository.class)
               .all()
-              .filter(
-                  "self.employee = ?1 AND self.leaveReason = ?2", employee, leaveReason)
+              .filter("self.employee = ?1 AND self.leaveReason = ?2", employee, leaveReason)
               .fetchOne();
       if (leaveLine == null) {
         throw new AxelorException(
@@ -540,6 +541,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason"
    * } }
    */
+  @Transactional
   public void getLeaveReason(ActionRequest request, ActionResponse response) {
     try {
       User user = AuthUtils.getUser();
@@ -601,6 +603,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes"
    * } }
    */
+  @Transactional
   public void getExpensesTypes(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
@@ -640,6 +643,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam"
    * } }
    */
+  @Transactional
   public void getKilometricAllowParam(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {

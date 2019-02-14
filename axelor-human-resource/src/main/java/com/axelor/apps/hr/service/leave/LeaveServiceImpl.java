@@ -209,10 +209,9 @@ public class LeaveServiceImpl implements LeaveService {
                       weeklyPlanningService.workingDayValueWithSelect(
                           weeklyPlanning, from, true, true)));
         }
-      }
 
-      // Else if it's on several days
-      else {
+        // Else if it's on several days
+      } else {
         duration =
             duration.add(
                 BigDecimal.valueOf(this.computeStartDateWithSelect(from, startOn, weeklyPlanning)));
@@ -712,7 +711,7 @@ public class LeaveServiceImpl implements LeaveService {
                     .getLeaveCoef()
                     .multiply(
                         leaveRequest.getLeaveLine().getLeaveReason().getDefaultDayNumberGain())
-                    .multiply(new BigDecimal(interval)));
+                    .multiply(BigDecimal.valueOf(interval)));
 
     return leaveRequest.getDuration().compareTo(num) <= 0;
   }
