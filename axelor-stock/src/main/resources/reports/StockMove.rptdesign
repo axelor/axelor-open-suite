@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1630,32 +1630,6 @@ row["first_name"]
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">TrackingNoList</property>
-                                    <text-property name="displayName">TrackingNoList</text-property>
-                                    <property name="dataType">string</property>
-                                    <simple-property-list name="aggregateOn">
-                                        <value>ProductGroup</value>
-                                    </simple-property-list>
-                                    <property name="aggregateFunction">CONCATENATE</property>
-                                    <list-property name="arguments">
-                                        <structure>
-                                            <property name="name">Expression</property>
-                                            <expression name="value" type="javascript">row["tracking_number_seq"]</expression>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">Separat&amp;or</property>
-                                            <expression name="value" type="javascript">"&lt;br>"</expression>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">Ma&amp;x length</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">Sho&amp;w all values</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
                                     <property name="name">stock_move_id</property>
                                     <text-property name="displayName">stock_move_id</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["stock_move_id"]</expression>
@@ -1678,6 +1652,48 @@ row["first_name"]
                                     <text-property name="displayName">sequence</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
                                     <property name="dataType">integer</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">trackingNoList</property>
+                                    <text-property name="displayName">trackingNoList</text-property>
+                                    <property name="dataType">string</property>
+                                    <simple-property-list name="aggregateOn">
+                                        <value>ProductGroup</value>
+                                    </simple-property-list>
+                                    <property name="aggregateFunction">CONCATENATE</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">row["tracking_number_seq"]</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">Separator</property>
+                                            <expression name="value" type="javascript">"&lt;br/>"</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">Maxlength</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">Showallvalues</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">totalQty</property>
+                                    <text-property name="displayName">totalQty</text-property>
+                                    <property name="dataType">float</property>
+                                    <simple-property-list name="aggregateOn">
+                                        <value>ProductGroup</value>
+                                    </simple-property-list>
+                                    <property name="aggregateFunction">SUM</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">row["qty"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
@@ -1913,7 +1929,10 @@ row["first_name"]
                             </header>
                             <group id="3805">
                                 <property name="groupName">ProductGroup</property>
-                                <expression name="keyExpr" type="javascript">row["product_name"]+row["tracking_number_seq"]</expression>
+                                <expression name="keyExpr" type="javascript">row["product_name"]</expression>
+                                <structure name="toc">
+                                    <expression name="expressionValue" type="javascript">row["product_name"]</expression>
+                                </structure>
                                 <property name="hideDetail">false</property>
                                 <list-property name="sort">
                                     <structure>
@@ -1984,7 +2003,7 @@ row["first_name"]
                                             <text id="4120">
                                                 <property name="textAlign">right</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["qty"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["totalQty"]</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                         <cell id="3825">
@@ -2021,7 +2040,7 @@ row["first_name"]
                                             <text id="3460">
                                                 <property name="textAlign">center</property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["TrackingNoList"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["trackingNoList"]</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>

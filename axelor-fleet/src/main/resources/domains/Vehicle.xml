@@ -31,7 +31,6 @@
 		<decimal name="co2emission" title="CO2 Emissions" />
 		<many-to-one name="image"  title="Image" ref="com.axelor.meta.db.MetaFile" />
 		<decimal name="carValue" title="Car value" />
-		<boolean name="isArchived" default="false" title="Archived"/>
 			
 	</entity>
 

@@ -88,11 +88,6 @@
 		<option value='12'>December</option>
 	</selection>
 
-	<selection name='title.type.select'>
-		<option value='1'>Civility</option>
-		<option value='2'>Legal form</option>
-	</selection>
-
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>

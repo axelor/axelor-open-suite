@@ -1730,6 +1730,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">is_barcode_available</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["bar_code"]</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">row["bar_code"]!=null</expression>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1742,7 +1755,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value</expression>
+                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value || row["is_barcode_available"]==0</expression>
                     </structure>
                 </list-property>
                 <property name="width">1.40625in</property>
@@ -1775,6 +1788,23 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <property name="width">1in</property>
             </column>
             <header>
+                <row id="4734">
+                    <cell id="4735">
+                        <data id="4745">
+                            <property name="display">none</property>
+                            <property name="resultSetColumn">is_barcode_available</property>
+                        </data>
+                    </cell>
+                    <cell id="4736"/>
+                    <cell id="4737"/>
+                    <cell id="4738"/>
+                    <cell id="4739"/>
+                    <cell id="4740"/>
+                    <cell id="4741"/>
+                    <cell id="4742"/>
+                    <cell id="4743"/>
+                    <cell id="4744"/>
+                </row>
                 <row id="4674">
                     <cell id="4675">
                         <property name="backgroundColor">#606062</property>

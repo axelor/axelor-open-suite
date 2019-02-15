@@ -25,7 +25,7 @@
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     
-    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
+    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
