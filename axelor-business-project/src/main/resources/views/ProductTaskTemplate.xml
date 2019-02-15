@@ -37,9 +37,8 @@
     <column name="delayToStart" type="decimal" title="Delay to start (Hours)"/>
     <column name="duration" type="decimal" title="Duration (Hours)"/>
     <column name="totalPlannedHrs" type="decimal" title="Planned hours"/>
-    <column name="openTask" type="button"/>
-    <column name="editTask" type="button"/>
-    <column name="removeTask" type="button"/>
+    <column name="editTaskBtn" type="button"/>
+    <column name="removeTaskBtn" type="button"/>
 
     <node model="com.axelor.apps.businessproject.db.ProductTaskTemplate"
       domain="self.product.id = :_id" onClick="action-product-task-template-view-task"
@@ -50,9 +49,8 @@
       <field name="delayToStart" as="delayToStart"/>
       <field name="duration" as="duration"/>
       <field name="totalPlannedHrs" as="totalPlannedHrs"/>
-      <button name="openTaskBtn" title="Open" onClick="action-product-task-template-open-task"/>
-      <button name="editTaskBtn" title="Edit" onClick="action-product-task-template-edit-task"/>
-      <button name="removeTaskBtn" title="Remove" onClick="action-product-task-template-remove-task"/>
+      <button name="editTaskBtn" icon="fa-pencil" onClick="action-product-task-template-edit-task"/>
+      <button name="removeTaskBtn" icon="fa-minus-circle" onClick="action-product-task-template-validate-remove-task,action-product-task-template-remove-task"/>
     </node>
 
     <node model="com.axelor.apps.businessproject.db.ProductTaskTemplate" parent="parentTaskTemplate"
@@ -63,9 +61,8 @@
       <field name="delayToStart" as="delayToStart"/>
       <field name="duration" as="duration"/>
       <field name="totalPlannedHrs" as="totalPlannedHrs"/>
-      <button name="openTaskBtn" title="Open" onClick="action-product-task-template-open-task"/>
-      <button name="editTaskBtn" title="Edit" onClick="action-product-task-template-edit-task"/>
-      <button name="removeTaskBtn" title="Remove" onClick="action-product-task-template-remove-task"/>
+      <button name="editTaskBtn" icon="fa-pencil" onClick="action-product-task-template-edit-task"/>
+      <button name="removeTaskBtn" icon="fa-minus-circle" onClick="action-product-task-template-validate-remove-task,action-product-task-template-remove-task"/>
     </node>
 
   </tree>
@@ -78,12 +75,6 @@
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
     <field name="product" expr="eval: _product"/>
   </action-record>
-
-  <action-view name="action-product-task-template-open-task" title="Tasks"
-    model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
-    <view type="form" name="product-task-template-form"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
 
   <action-view name="action-product-task-template-view-task" title="Tasks"
     model="com.axelor.apps.businessproject.db.ProductTaskTemplate">
@@ -130,5 +121,9 @@
     <call class="com.axelor.apps.businessproject.web.ProductTaskTemplateController"
       method="removeTask"/>
   </action-method>
+
+  <action-validate name="action-product-task-template-validate-remove-task">
+  	<alert message="Do you really want to delete the selected record(s)?"/>
+  </action-validate>
 
 </object-views>

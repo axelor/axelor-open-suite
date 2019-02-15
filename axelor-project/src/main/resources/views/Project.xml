@@ -47,7 +47,7 @@
 			</menu>
 			<menu title="Tools" showTitle="true" icon="fa-wrench">
 				<item title="Gantt" showIf="isProject" action="action-project-open-gantt" />
-				<item title="Book resource" showIf="isProject"
+				<item title="Book resource" showIf="isProject" if=" __config__.app.getApp('project')?.resourceManagement"
 					action="save,action-project-book-resource" />
 			</menu>
 		</menubar>
@@ -100,6 +100,9 @@
 					form-view="partner-form" grid-view="partner-grid" colSpan="6"
 					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					showIf="isBusinessProject" />
+					<field name="customerAddress" grid-view="address-grid" form-view="address-form"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          showIf="isBusinessProject" domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
 			</panel>
 			<field name="progress" showIf="isProject" widget="Progress" colSpan="12">
 				<editor>
