@@ -54,6 +54,7 @@
 - SaleOrder : Task By product and Task_By_Line Invoicing
 - SALE ORDER : Update in 'Quotations template' working process and view.
 - Business Project : Addition of new m2o field 'customerAddress'.
+- Base : Additon of new object 'MailingListMessage' along with views and Menu.
 - DataBackup : Relative date
 
 ## Improvements
@@ -79,6 +80,7 @@
 - Generation of Project/Phase from SaleOrder
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
 - Contract : Fix issue of not saving currentContractVersion fields in form view
+- ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

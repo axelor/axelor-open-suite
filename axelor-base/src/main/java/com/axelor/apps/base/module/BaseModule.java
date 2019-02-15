@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
+import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
+import com.axelor.apps.base.db.repo.MailingListMessageRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -153,5 +155,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
     bind(MapRestService.class).to(MapRestServiceImpl.class);
     bind(TaxRepository.class).to(TaxBaseRepository.class);
+    bind(MailingListMessageRepository.class).to(MailingListMessageBaseRepository.class);
   }
 }
