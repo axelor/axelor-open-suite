@@ -12,6 +12,7 @@
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
 - Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
+- STOCK MOVE and STOCK MOVE LINE: hide filterOnAvailableProducts when stockmove status is not Draft
 
 ## [5.1.2] - 2019-02-11
 ## Features
@@ -148,8 +149,6 @@
 - Base : Update of type in demo-data in Birt Template Parameter.
 - Stock : Download Inventory Export in csv format.
 - Stock/SupplyChain : Changing field names, report translations, sequence field, selection list values according to naming convention.
-- STOCK MOVE LINE: hide filterOnAvailableProducts when stockmove status is not Draft
-
 
 ## [5.1.1] - 2019-01-18
 ## Features

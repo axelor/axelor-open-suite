@@ -450,11 +450,16 @@
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
+    <action-attrs name="action-stock-move-attrs-filter-on-available-products">
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1"/>
+    </action-attrs>
+    
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -462,6 +467,7 @@
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
