@@ -45,9 +45,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,7 +108,7 @@ public class DataBackupCreateService {
   List<String> fileNameList;
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public File create(Integer fetchLimit) throws InterruptedException {
+  public File create(Integer fetchLimit, boolean isRelativeDate) throws InterruptedException {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
 
@@ -135,17 +137,27 @@ public class DataBackupCreateService {
                   QUOTE_CHAR);
           CSVInput csvInput =
               writeCSVData(
-                  metaModel, csvWriter, fetchLimit, totalRecord, subClasses, tempDirectoryPath);
+                  metaModel,
+                  csvWriter,
+                  fetchLimit,
+                  totalRecord,
+                  subClasses,
+                  tempDirectoryPath,
+                  isRelativeDate);
           csvWriter.close();
 
           if (notNullReferenceFlag) {
             notNullReferenceCsvs.add(csvInput);
           } else if (referenceFlag) {
             refernceCsvs.add(csvInput);
-
             CSVInput temcsv = new CSVInput();
             temcsv.setFileName(csvInput.getFileName());
             temcsv.setTypeName(csvInput.getTypeName());
+
+            if (isRelativeDate) {
+              temcsv.setBindings(new ArrayList<>());
+              getCsvInputForDateorDateTime(metaModel, temcsv);
+            }
             if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
               temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
             }
@@ -175,6 +187,23 @@ public class DataBackupCreateService {
     fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
     return zippedFile;
+  }
+
+  void getCsvInputForDateorDateTime(MetaModel metaModel, CSVInput csvInput) {
+    try {
+      Mapper metaModelMapper = Mapper.of(Class.forName(metaModel.getFullName()));
+      Property[] properties = metaModelMapper.getProperties();
+      for (Property property : properties) {
+        String propertyType = property.getType().toString();
+        if ((propertyType.equals("DATE") || propertyType.equals("DATETIME"))
+            && !property.getName().equals("createdOn")
+            && !property.getName().equals("updatedOn")) {
+          getDateOrDateTimeHeader(property, csvInput);
+        }
+      }
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
   }
 
   /* Get All MetaModels */
@@ -262,7 +291,9 @@ public class DataBackupCreateService {
       Integer fetchLimit,
       long totalRecord,
       List<String> subClasses,
-      String dirPath) {
+      String dirPath,
+      boolean isRelativeDate) {
+
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
     List<String> dataArr = null;
@@ -288,7 +319,8 @@ public class DataBackupCreateService {
             for (Property property : pro) {
               if (isPropertyExportable(property)) {
                 if (headerFlag) {
-                  String headerStr = getMetaModelHeader(dataObject, property, csvInput);
+                  String headerStr =
+                      getMetaModelHeader(dataObject, property, csvInput, isRelativeDate);
                   headerArr.add(headerStr);
                 }
                 dataArr.add(
@@ -297,7 +329,8 @@ public class DataBackupCreateService {
                         metaModelMapper.get(dataObject, "id").toString(),
                         property,
                         metaModelMapper.get(dataObject, property.getName()),
-                        dirPath));
+                        dirPath,
+                        isRelativeDate));
               }
             }
 
@@ -341,10 +374,17 @@ public class DataBackupCreateService {
   }
 
   /* Get Header For csv File */
-  private String getMetaModelHeader(Object value, Property property, CSVInput csvInput) {
+  private String getMetaModelHeader(
+      Object value, Property property, CSVInput csvInput, boolean isRelativeDate) {
     String propertyTypeStr = property.getType().toString();
     String propertyName = property.getName();
     switch (propertyTypeStr) {
+      case "DATE":
+      case "DATETIME":
+        if (isRelativeDate) {
+          return getDateOrDateTimeHeader(property, csvInput);
+        }
+        return propertyName;
       case "LONG":
         return propertyName.equalsIgnoreCase("id") ? "importId" : propertyName;
       case "BINARY":
@@ -361,11 +401,27 @@ public class DataBackupCreateService {
     }
   }
 
+  private String getDateOrDateTimeHeader(Property property, CSVInput csvInput) {
+    String propertyName = property.getName();
+    CSVBind csvBind = new CSVBind();
+    csvBind.setField(propertyName);
+    csvBind.setColumn(propertyName);
+    if (property.getType().toString().equals("DATE")) {
+      csvBind.setExpression(
+          "call:com.axelor.csv.script.ImportDateTime:importDate(" + propertyName + ")");
+
+    } else {
+      csvBind.setExpression(
+          "call:com.axelor.csv.script.ImportDateTime:importDateTime(" + propertyName + ")");
+    }
+    csvInput.getBindings().add(csvBind);
+    return propertyName;
+  }
+
   private String getRelationalFieldHeader(
       Property property, CSVInput csvInput, String relationship) {
     csvInput.setSearch("self.importId = :importId");
     CSVBind csvBind = new CSVBind();
-
     String columnName = property.getName() + "_importId";
     String search =
         relationship.equalsIgnoreCase("ONE")
@@ -397,17 +453,35 @@ public class DataBackupCreateService {
 
   /* Get Data For csv File */
   private String getMetaModelData(
-      String metaModelName, String id, Property property, Object value, String dirPath) {
+      String metaModelName,
+      String id,
+      Property property,
+      Object value,
+      String dirPath,
+      boolean isRelativeDate) {
+
     if (value == null) {
       return "";
     }
-
     String propertyTypeStr = property.getType().toString();
     switch (propertyTypeStr) {
+      case "DATE":
+        if (isRelativeDate) {
+          return createRelativeDate((LocalDate) value);
+        }
+        return value.toString();
+
       case "DATETIME":
+        if (isRelativeDate) {
+          if (property.getJavaType() == ZonedDateTime.class) {
+            return createRelativeDateTime(((ZonedDateTime) value).toLocalDateTime());
+          }
+          return createRelativeDateTime((LocalDateTime) value);
+        }
         return property.getJavaType() == ZonedDateTime.class
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
             : value.toString();
+
       case "BINARY":
         String fileName = metaModelName + "_" + property.getName() + "_" + id + ".png";
 
@@ -428,6 +502,72 @@ public class DataBackupCreateService {
       default:
         return value.toString();
     }
+  }
+
+  public String createRelativeDateTime(LocalDateTime dateT) {
+    LocalDateTime currentDateTime = LocalDateTime.now();
+
+    long years = currentDateTime.until(dateT, ChronoUnit.YEARS);
+    currentDateTime = currentDateTime.plusYears(years);
+
+    long months = currentDateTime.until(dateT, ChronoUnit.MONTHS);
+    currentDateTime = currentDateTime.plusMonths(months);
+
+    long days = currentDateTime.until(dateT, ChronoUnit.DAYS);
+    currentDateTime = currentDateTime.plusDays(days);
+
+    long hours = currentDateTime.until(dateT, ChronoUnit.HOURS);
+    currentDateTime = currentDateTime.plusHours(hours);
+
+    long minutes = currentDateTime.until(dateT, ChronoUnit.MINUTES);
+    currentDateTime = currentDateTime.plusMinutes(minutes);
+
+    long seconds = currentDateTime.until(dateT, ChronoUnit.SECONDS);
+    if (seconds < 0 || minutes < 0 || hours < 0 || days < 0 || months < 0 || years < 0) {
+      return "NOW["
+          + ((years == 0) ? "" : (years + "y"))
+          + ((months == 0) ? "" : (months + "M"))
+          + ((days == 0) ? "" : (days + "d"))
+          + ((hours == 0) ? "" : (hours + "H"))
+          + ((minutes == 0) ? "" : (minutes + "m"))
+          + ((seconds == 0) ? "" : (seconds + "s"))
+          + "]";
+    }
+    return "NOW["
+        + ((years == 0) ? "" : ("+" + years + "y"))
+        + ((months == 0) ? "" : ("+" + months + "M"))
+        + ((days == 0) ? "" : ("+" + days + "d"))
+        + ((hours == 0) ? "" : ("+" + hours + "H"))
+        + ((minutes == 0) ? "" : ("+" + minutes + "m"))
+        + ((seconds == 0) ? "" : ("+" + seconds + "s"))
+        + "]";
+  }
+
+  public String createRelativeDate(LocalDate date) {
+    LocalDate currentDate = LocalDate.now();
+    long years = currentDate.until(date, ChronoUnit.YEARS);
+    currentDate = currentDate.plusYears(years);
+
+    long months = currentDate.until(date, ChronoUnit.MONTHS);
+    currentDate = currentDate.plusMonths(months);
+
+    long days = currentDate.until(date, ChronoUnit.DAYS);
+    currentDate = currentDate.plusDays(days);
+
+    if (days < 0 || months < 0 || years < 0) {
+      return "TODAY["
+          + ((years == 0) ? "" : years + "y")
+          + ((months == 0) ? "" : months + "M")
+          + ((days == 0) ? "" : days + "d")
+          + "]";
+    } else if (days == 0 && months == 0 && years == 0) {
+      return "TODAY";
+    }
+    return "TODAY["
+        + ((years == 0) ? "" : ("+" + years + "y"))
+        + ((months == 0) ? "" : ("+" + months + "M"))
+        + ((days == 0) ? "" : ("+" + days + "d"))
+        + "]";
   }
 
   public String getRelationalFieldData(Property property, Object value) {
