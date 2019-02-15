@@ -41,6 +41,7 @@
                 <field name="partner" colSpan="4" domain=":company member of self.companySet" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
+                <field name="project" colSpan="8"/>
                 <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
                     <field name="createdBy" colSpan="3"/>
@@ -244,6 +245,8 @@
         <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
         <field name="currency" expr="eval: __user__.activeCompany.currency"/>
+        <field name="targetTypeSelect" expr="eval:_targetTypeSelect" if="_targetTypeSelect != null"/>
+        <field name="project" expr="eval:_project" if="_project != null"/>
     </action-record>
 
     <action-record name="action-record-contract-version-default-record" model="com.axelor.apps.contract.db.ContractVersion">

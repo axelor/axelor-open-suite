@@ -56,6 +56,7 @@
 - Business Project : Addition of new m2o field 'customerAddress'.
 - Base : Additon of new object 'MailingListMessage' along with views and Menu.
 - DataBackup : Relative date
+- BUSINESS PROJECT : Connect Contract to Project
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

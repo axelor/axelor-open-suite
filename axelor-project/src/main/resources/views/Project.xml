@@ -349,6 +349,12 @@
 				<field name="imputable" colSpan="4" widget="boolean-switch"
 					if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 			</panel>
+			<panel title="Contracts" name="contractPanel" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<button name="createNewCustomerContract" title="Create new customer contract" colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
+				<button name="createNewSupplierContract" title="Create new supplier contract" colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
+				<panel-dashlet name="customerContractPanel" title="Customer contracts" action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="supplierContractPanel" title="Supplier contracts" action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
+			</panel>
 		</panel-tabs>
 		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" hidden="true" />
@@ -788,5 +794,29 @@
 		<attribute name="value" for="project" expr="eval:_parent" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
 		<attribute name="readonly" for="project" expr="eval:true" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
 	</action-attrs>
+
+	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
+		<view type="form" name="contract-form"/>
+		<context name="_targetTypeSelect" expr="eval:1"/>
+		<context name="_project" expr="eval:__self__"/>
+	</action-view>
+
+	<action-view name="action-project-view-create-new-supplier-contract" title="Create new supplier contract" model="com.axelor.apps.contract.db.Contract">
+		<view type="form" name="contract-form"/>
+		<context name="_targetTypeSelect" expr="eval:2"/>
+		<context name="_project" expr="eval:__self__"/>
+	</action-view>
+
+	<action-view name="action-project-dashlet-customer-contracts" title="Customer contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.project.id = :id AND self.targetTypeSelect = 1 AND self.statusSelect != 3</domain>
+	</action-view>
+
+	<action-view name="action-project-dashlet-supplier-contracts" title="Supplier contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.project.id = :id AND self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
+	</action-view>
 
 </object-views>
