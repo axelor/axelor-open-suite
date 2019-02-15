@@ -54,6 +54,7 @@
 - SaleOrder : Task By product and Task_By_Line Invoicing
 - SALE ORDER : Update in 'Quotations template' working process and view.
 - Business Project : Addition of new m2o field 'customerAddress'.
+- DataBackup : Relative date
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
