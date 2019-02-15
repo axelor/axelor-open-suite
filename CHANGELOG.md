@@ -18,6 +18,7 @@
 - VEHICLE : removed isArchived field.
 
 ## Bug Fixes
+- Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
 - Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
 - MANUF. ORDER PRINTING: hide barcode column when it is empty.
 - Purchase Order: remove save on loading purchase order form.
@@ -29,6 +30,7 @@
 - Naming Tool : Missing reserved java litterals
 - Configurator: Fix total computation on sale order when generating sale order line.
 - Stock Move : wrong qty in outgoing move printing
+- MRPLine : Specify views for proposalSelect. 
 
 ## [5.0.7] - 2018-12-13
 ## Features
