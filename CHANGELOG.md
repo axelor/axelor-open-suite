@@ -28,7 +28,7 @@
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
 - STOCK MOVE LINE LIST : delete canEdit
 - HR : Lunch Voucher error
-
+- PARTNER : prospect instead of client
 
 ## [5.1.2] - 2019-02-11
 ## Features
