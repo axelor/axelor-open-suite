@@ -707,6 +707,7 @@ StockMove.stock_move_seq,
 SaleOrder.sale_order_seq,
 SaleOrder.production_note,
 SaleOrder.external_reference,
+SaleOrder.delivery_condition,
 PurchaseOrder.purchase_order_seq,
 Partner.partner_seq as "CustomerCode",
 Partner.title_select,
@@ -1552,6 +1553,13 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">delivery_condition</property>
+                    <text-property name="displayName">delivery_condition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_condition"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4212">
                 <property name="width">2.99cm</property>
@@ -1906,7 +1914,39 @@ order by StockMoveLine.sequence]]></xml-property>
                             </cell>
                         </row>
                         <row id="3658">
-                            <cell id="3659"/>
+                            <cell id="3659">
+                                <text id="4283">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["delivery_condition"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'PickingStockMove.deliveryCondition'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["delivery_condition"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="4284">
+                            <cell id="4285"/>
                         </row>
                         <row id="3660">
                             <cell id="3661">
