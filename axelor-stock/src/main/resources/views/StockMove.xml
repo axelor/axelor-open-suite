@@ -116,34 +116,34 @@
     
     <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-customer-returns-form" title="Customer return" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-supplier-returns-form" title="Supplier return" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-internal-move-form" title="Internal Stock Move" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
 	
 	
 	<form name="stock-move-availability-requests-form" title="Availability request" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
        
        
 	<form name="stock-move-supplier-arrivals-form" title="Supplier Arrival" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
-    	<panel-include view="stock-move-form" from="axelor-stock" />
+    	<panel-include view="stock-move-form"/>
 	</form>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
@@ -289,6 +289,8 @@
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
                 <field name="trackingNumber" colSpan="4"/>
+                <field name="$deliveryCondition" type="string" title="Delivery conditions" readonly="true" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+                <spacer name="deliveryConditionSpacer" colSpan="6" showIf="typeSelect == 2"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -450,11 +452,16 @@
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
+    <action-attrs name="action-stock-move-attrs-filter-on-available-products">
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1"/>
+    </action-attrs>
+    
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -462,6 +469,7 @@
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -534,6 +542,7 @@
 	<action-attrs name="action-stock-move-attrs-set-required-shipment-supplier-details">
 		<attribute name="required" for="supplierShipmentRef" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
 		<attribute name="required" for="supplierShipmentDate" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
+		<attribute name="value" for="$deliveryCondition" expr="eval: __repo__(SaleOrder).all().filter('self.saleOrderSeq LIKE ?',origin).fetchOne()?.deliveryCondition" if="origin !=null &amp;&amp; originTypeSelect!=null &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">

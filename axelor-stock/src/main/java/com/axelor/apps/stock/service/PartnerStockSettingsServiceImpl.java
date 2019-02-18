@@ -37,11 +37,15 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
     if (mailSettingsList == null || mailSettingsList.isEmpty()) {
       return createMailSettings(partner, company);
     }
-    return mailSettingsList
-        .stream()
-        .filter(partnerStockSettings -> company.equals(partnerStockSettings.getCompany()))
-        .findAny()
-        .orElse(createMailSettings(partner, company));
+    PartnerStockSettings partnerStockSettings =
+        mailSettingsList
+            .stream()
+            .filter(stockSettings -> company.equals(stockSettings.getCompany()))
+            .findAny()
+            .get();
+    return partnerStockSettings != null
+        ? partnerStockSettings
+        : createMailSettings(partner, company);
   }
 
   @Override

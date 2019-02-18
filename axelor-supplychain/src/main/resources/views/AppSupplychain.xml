@@ -28,12 +28,27 @@
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
 		</panel>
+		<panel name="manufOrderPanel" title="Manufacturing order">
+			<field name="finishMoAutomaticEmail"/>
+			<field name="finishMoMessageTemplate"
+				requiredIf="finishMoAutomaticEmail"
+				showIf="finishMoAutomaticEmail"
+				form-view="template-form" grid-view="template-grid"/>
+			<field name="partFinishMoAutomaticEmail"/>
+			<field name="partFinishMoMessageTemplate"
+				requiredIf="partFinishMoAutomaticEmail"
+				showIf="partFinishMoAutomaticEmail"
+				form-view="template-form" grid-view="template-grid"/>
+		</panel>
 		<panel name="intercoPanel" title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>
 			<field name="intercoFromSale" widget="boolean-switch"/>
 			<field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
 			<field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"/>
 			<field name="intercoFromInvoice" widget="boolean-switch"/>
+            <field name="intercoSaleOrderCreateFinalized" widget="boolean-switch"/>
+            <field name="intercoPurchaseOrderCreateRequested" widget="boolean-switch"/>
+            <field name="intercoInvoiceCreateValidated" widget="boolean-switch"/>
 		</panel>
 		<panel name="actionPanel">
 			<button name="generateSupplychainConfigurationsBtn" colSpan="4" title="Generate supply chain configurations" onClick="save,com.axelor.apps.supplychain.web.AppSupplychainController:generateSupplychainConfigurations"/>
