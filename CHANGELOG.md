@@ -22,6 +22,7 @@
 - Invoice : Hide columns for invoices.
 - Account : Show move refernce on Move remove.
 - BOM : name depending on nbDecimalDigitForBomQty.
+- PARTNER STOCK SETTING : delete canEdit in company column
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
@@ -31,6 +32,7 @@
 - HR : Lunch Voucher error
 - PARTNER : prospect instead of client
 - PARTNER STOCK SETTING : lines added automatically in table
+
 
 ## [5.1.2] - 2019-02-11
 ## Features
