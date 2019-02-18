@@ -880,6 +880,8 @@
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
 		<action name="action-sale-order-validate-check-on-confirm"/>
     	<action name="action-sale-order-method-confirm"/>
+    	<action name="action-sale-order-validate-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto &amp;&amp; 
+    		(__repo__(StockMove).all().filter('self.originTypeSelect = ? AND self.originId = ? AND self.statusSelect != ?','com.axelor.apps.sale.db.SaleOrder',id,4).count() > 0)"/>
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
@@ -1197,7 +1199,11 @@
 	<action-validate name="action-validate-sale-quotation-check-selection">
 		<error message="You have to choose at least one sale quotation" if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
 	</action-validate>
-
+	
+	<action-validate name="action-sale-order-validate-notify-stock-move-created">
+		<notify message="Stock move has been created for this sale order"/>
+	</action-validate>
+	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="template" expr="true"/>
 		<field name="templateUser" expr="eval: __user__"/>

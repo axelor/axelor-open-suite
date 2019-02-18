@@ -42,7 +42,7 @@ public interface IExceptionMessage {
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move has already been validated" /*)*/;
+      "You can't remove this record, because the move %s has already been validated" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
 
