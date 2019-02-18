@@ -10,6 +10,7 @@
 - SALE ORDER : ISPM 15
 
 ## Improvements
+- STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
 - Interco: copy counterpart reference for intercompany orders and invoices.
 - Interco: make boolean `createdByInterco` appears on order and invoice view.
 - Interco: add config to generate orders and invoice at status validated.
