@@ -73,7 +73,7 @@
             onSelect="action-stock-move-line-method-product-domain"
             form-view="product-form"
             grid-view="stock-move-line-product-grid"
-            width="250px"/>
+            width="250px" canEdit="false"/>
         <field name="productModel" domain="self.isModel = true "
             form-view="product-form" grid-view="product-grid"
             if="__config__.app.getApp('base').getManageProductVariants()"

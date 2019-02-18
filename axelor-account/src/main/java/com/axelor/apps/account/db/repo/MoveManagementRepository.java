@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
@@ -117,7 +118,14 @@ public class MoveManagementRepository extends MoveRepository {
 
     if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)
         && !entity.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK),
+            entity.getReference());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
     } else {
       super.remove(entity);
     }
