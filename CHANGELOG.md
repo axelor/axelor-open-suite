@@ -29,6 +29,7 @@
 - STOCK MOVE LINE LIST : delete canEdit
 - HR : Lunch Voucher error
 - PARTNER : prospect instead of client
+- PARTNER STOCK SETTING : lines added automatically in table
 
 ## [5.1.2] - 2019-02-11
 ## Features
