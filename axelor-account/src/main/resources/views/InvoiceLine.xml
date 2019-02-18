@@ -89,8 +89,17 @@
 			</panel>
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+				<field name="companyExTaxTotal" title="Total W.T." colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
+					<viewer depends="companyExTaxTotal,$currencySymbol">
+						<![CDATA[
+							<dd>{{record.companyExTaxTotal}} {{record.$currencySymbol}}</dd>
+						]]>
+					</viewer>
+				</field>
+				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
@@ -210,6 +219,7 @@
 	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
 	    <action name="action-invoice-line-attrs-sub-line" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     </action-group>
 
 	<action-group name="action-group-account-invoice-line-onload">
@@ -217,6 +227,7 @@
 		<action name="action-attrs-account-invoice-line-onnew-onload"/>
 		<action name="action-invoice-line-attrs-readonly-form"/>
 		<action name="action-invoice-line-record-operation-type"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
 	</action-group>
 
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -317,6 +328,10 @@
 	
 	<action-method name="action-invoice-line-method-get-fixed-asset-category">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getFixedAssetCategory"/>
+	</action-method>
+
+	<action-method name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+		<call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="computeBudgetDistributionSumAmount"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->
