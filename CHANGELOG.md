@@ -26,6 +26,7 @@
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
 - STOCK MOVE LINE LIST : delete canEdit
 - HR : Lunch Voucher error
+- PARTNER STOCK SETTING : lines added automatically in table
 
 
 ## [5.1.2] - 2019-02-11
