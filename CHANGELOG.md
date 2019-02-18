@@ -21,6 +21,7 @@
 - PARTNER: Remove the pop up information when the partner create a sale order/purchase order and his label is not null.
 - Invoice : Hide columns for invoices.
 - Account : Show move refernce on Move remove.
+- BOM : name depending on nbDecimalDigitForBomQty.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
