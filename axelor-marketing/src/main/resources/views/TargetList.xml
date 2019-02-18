@@ -30,7 +30,7 @@
 	            <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
 	            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
 	            <field name="operator"  colSpan="3" required="true"/>
-	            <field name="value" colSpan="3" onChange="action-studio-filter-validate-values"/>
+	            <field name="value" colSpan="3"/>
 	            <field name="targetType" hidden="true" />
 	            <field name="metaField.relationship" hidden="true" />
 	          </editor>

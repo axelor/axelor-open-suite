@@ -54,7 +54,7 @@ public class FilterJpqlService {
           relationship != null ? filter.getTargetField() : filter.getMetaField().getName();
       String condition =
           filterCommonService.getCondition(
-              "self." + fieldName, filter.getOperator(), filter.getValue());
+              "self." + fieldName, filter.getOperator(), "'" + filter.getValue() + "'");
 
       if (filters == null) {
         filters = condition;
