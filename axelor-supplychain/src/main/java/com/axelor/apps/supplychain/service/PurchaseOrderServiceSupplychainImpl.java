@@ -227,6 +227,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
+      Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+          .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
     }
   }
 

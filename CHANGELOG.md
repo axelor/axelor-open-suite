@@ -57,6 +57,7 @@
 - Base : Additon of new object 'MailingListMessage' along with views and Menu.
 - DataBackup : Relative date
 - BUSINESS PROJECT : Connect Contract to Project
+- PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
