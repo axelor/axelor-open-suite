@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large">
+	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large" canDelete="false" canNew="false">
 		<toolbar>
 		    <button name="newBtn" title="New" hidden="true"/>
 		    <button name="deleteBtn" title="Delete" hidden="true"/>
@@ -13,7 +13,7 @@
 		    <button name="exportObjectsBtn" title="Export Object" onClick="action-base-general-export-objects"/>
 		    <button name="remindTimesheetsBtn" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
-		<panel name="todayPanel">
+		<panel name="todayPanel" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
 			<field name="today"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
