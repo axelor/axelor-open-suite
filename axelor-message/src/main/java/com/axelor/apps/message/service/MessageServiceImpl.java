@@ -20,6 +20,7 @@ package com.axelor.apps.message.service;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -109,7 +110,7 @@ public class MessageServiceImpl implements MessageService {
             bccEmailAddressList,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            Beans.get(EmailAccountRepository.class).find(emailAccount.getId()));
 
     messageRepository.save(message);
 
