@@ -5,16 +5,14 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload"
-    onSave="action-supplychain-saleorder-onsave">
+	onLoad="action-group-supplychain-saleorder-onload">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
 	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
 	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload"
-    onSave="action-supplychain-saleorder-onsave">
+	onLoad="action-group-supplychain-saleorder-onload">
 
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -78,10 +76,6 @@
         <action name="action-group-sale-saleorder-onload"/>
 		<action name="action-sale-order-attrs-interco"/>
 	</action-group>
-
-    <action-method name="action-supplychain-saleorder-onsave">
-        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
-    </action-method>
 
 	<action-method name="action-supplychain-sale-order-method-get-stock-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
@@ -199,5 +193,9 @@
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
     </action-record>
+
+    <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
+    	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+    </action-attrs>
 
 </object-views>

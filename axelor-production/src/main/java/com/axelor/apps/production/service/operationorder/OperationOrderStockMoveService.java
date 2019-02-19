@@ -209,6 +209,9 @@ public class OperationOrderStockMoveService {
             operationOrder.getPlannedStartDateT().toLocalDate(),
             null,
             StockMoveRepository.TYPE_INTERNAL);
+    newStockMove.setOrigin(operationOrder.getOperationName());
+    newStockMove.setOriginId(operationOrder.getId());
+    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_OPERATION_ORDER);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(operationOrder, newStockMove);
