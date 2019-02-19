@@ -46,6 +46,7 @@
 - PARTNER : prospect instead of client
 - PARTNER STOCK SETTING : lines added automatically in table
 - MARKETING : Fix an error when launching the emailing
+- PURCHASE ORDER : Don't apply control on receipt stock move on direct order
 
 
 ## [5.1.2] - 2019-02-11
