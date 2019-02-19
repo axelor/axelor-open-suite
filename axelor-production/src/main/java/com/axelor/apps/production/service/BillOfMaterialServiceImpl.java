@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -38,6 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -308,9 +310,12 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   public String computeName(BillOfMaterial bom) {
+    Integer nbDecimalDigitForBomQty =
+        Beans.get(AppProductionService.class).getAppProduction().getNbDecimalDigitForBomQty();
     return bom.getProduct().getName()
         + " - "
-        + bom.getQty()
+        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_EVEN)
+        + " "
         + bom.getUnit().getName()
         + " - "
         + bom.getId();

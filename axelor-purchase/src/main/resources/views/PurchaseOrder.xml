@@ -113,7 +113,8 @@
         <field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
 				<panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
-          <field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
       	</panel>
@@ -127,7 +128,7 @@
 				<panel-related name="purchaseOrderLineTaxListPanel" field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" colSpan="12">
-				<field name="deliveryDate" colSpan="3"/>
+				<field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
 		        <field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 		        <field name="stockLocation.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
 	  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
@@ -300,6 +301,9 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
+		<toolbar>
+    			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
+		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -409,7 +413,6 @@
 	<action-group name="action-group-purchase-order-partner-onchange">
 		<action name="action-purchase-order-record-partner"/>
         <action name="action-purchase-order-attrs-hide-contact-partner"/>
-		<action name="action-purchase-order-validate-information"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
@@ -561,15 +564,15 @@
 
 	<action-view name="purchase-order-see-quotation-lines" title="See quotation lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="grid" name="purchase-order-line-all-grid"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="purchase-order-see-purchase-order-lines" title="See purchase order lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="grid" name="purchase-order-line-all-grid"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect IN (:status)</domain>
   		<context name="status" expr="eval: _status"/>
 	</action-view>
@@ -587,10 +590,6 @@
 
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
-	</action-validate>
-
-	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -616,6 +615,10 @@
 
 	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')" />
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateEstimatedDelivDate"/>
 	</action-method>
 
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">

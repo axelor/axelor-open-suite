@@ -22,7 +22,7 @@
 		<field name="estimatedDelivDate"/>
 	</grid>
 
-    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
       	<field name="saleOrder"/>
       	<field name="saleOrder.company"/>
       	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
@@ -74,6 +74,16 @@
 			<panel name="informationsPanel" title="Information">
        <!-- The condition $isReadOnly !== false is used to manage the case where isReadOnly is null. -->
 				<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly !== false" >
+				   
+  				<field name="$viewerTag" showTitle="false" showIf="product != null" readonly="true" colSpan="3">
+					<viewer depends="product.isUnrenewed,product.isPrototype"><![CDATA[
+					 	<h4>
+	                        <span class="label label-important" ng-show="record.product.isUnrenewed" x-translate>Unrenewed</span>
+	                        <span class="label label-important" ng-show="record.product.isPrototype" x-translate>Prototype</span>
+	                    </h4>
+					]]>
+					</viewer>
+				</field>
   				<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
                         <h4>
@@ -93,6 +103,9 @@
 	                    </h4>
 					]]></viewer>
 				</field>
+				
+				<field name="product.isUnrenewed" hidden="true"/>	
+        		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
@@ -121,8 +134,7 @@
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
 					<field name="isSubLine" hideIf="!isSubLine" readonlyIf="$isReadOnly !== false" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 					<field name="parentLine" hideIf="!isSubLine || parentLine == null" readonlyIf="$isReadOnly !== false"/>
-					<field name="requestedReservedQty" colSpan="6" readonlyIf="isSubLine || saleOrder.statusSelect &gt; 2"
-						if-module="axelor-supplychain"
+					<field name="requestedReservedQty" colSpan="6" readonly="true" if-module="axelor-supplychain"
 						onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"
 						if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 					<field name="reservedQty" colSpan="6" readonly="true" hidden="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -277,6 +289,18 @@
 		<panel-include view="sale-order-line-form"/>
 	</form>
 
+	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-all-form" width="large" canNew="false" canDelete="false" canEdit="false">
+		<panel name="mainPanel">
+			<field name="saleOrder.company" colSpan="3"/>
+			<spacer name="saleOrderCompanySpacer" colSpan="9"/>
+			<field name="saleOrder.clientPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
+			<field name="saleOrder.saleOrderSeq" grid-view="sale-order-grid" form-view="sale-order-form" colSpan="3"/>
+			<field name="saleOrder.creationDate" colSpan="3"/>
+			<field name="saleOrder.currency" colSpan="3"/>
+		</panel>
+		<panel-include view="sale-order-line-form"/>
+	</form>
+
 	<action-method name="action-sale-order-line-method-empty-line">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="emptyLine"/>
 	</action-method>
@@ -347,6 +371,7 @@
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action name="action-sale-order-attrs-hide-ati"/>
 		<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
+		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -412,7 +437,6 @@
 		
 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent?._model == 'com.axelor.apps.sale.db.SaleOrderLine'" />
 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'" />
-	
 	</action-attrs>
 	
 	<action-attrs if-module="axelor-business-project" name="action-sale-order-line-attrs-title-project-task">

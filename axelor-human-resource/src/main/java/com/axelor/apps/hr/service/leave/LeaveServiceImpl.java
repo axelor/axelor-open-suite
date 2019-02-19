@@ -635,14 +635,16 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
-    if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
+    LeaveLine leaveLine = leaveRequest.getLeaveLine();
+    if (leaveLine.getLeaveReason().getManageAccumulation()) {
       manageValidateLeaves(leaveRequest);
     }
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
     leaveRequest.setValidatedBy(AuthUtils.getUser());
     leaveRequest.setValidationDate(appBaseService.getTodayDate());
-
+    leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
+    
     leaveRequestRepo.save(leaveRequest);
 
     createEvents(leaveRequest);

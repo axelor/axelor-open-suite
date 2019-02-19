@@ -47,6 +47,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -574,7 +575,7 @@ public class InventoryService {
   }
 
   @Transactional
-  public void exportInventoryAsCSV(Inventory inventory) throws IOException {
+  public MetaFile exportInventoryAsCSV(Inventory inventory) throws IOException {
 
     List<String[]> list = new ArrayList<>();
 
@@ -649,7 +650,7 @@ public class InventoryService {
     CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      Beans.get(MetaFiles.class).attach(is, fileName, inventory);
+      return Beans.get(MetaFiles.class).upload(is, fileName);
     }
   }
 

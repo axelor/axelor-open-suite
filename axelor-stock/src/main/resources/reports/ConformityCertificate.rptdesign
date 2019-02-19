@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -48,9 +48,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -1608,6 +1605,8 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <property name="colSpan">1</property>
                             <property name="rowSpan">3</property>
                             <image id="4256">
+                                <property name="height">75px</property>
+                                <property name="width">100px</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -1842,7 +1841,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                 <cell id="4179"/>
             </row>
             <row id="3349">
-                <property name="height">0.9583333333333334in</property>
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>

@@ -50,7 +50,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   /**
-   * Recupère la bonne période pour la date passée en paramètre
+   * Fetches the right period with the date in parameter
    *
    * @param date
    * @param company
@@ -188,9 +188,9 @@ public class PeriodServiceImpl implements PeriodService {
   public void checkPeriod(Period period) throws AxelorException {
     if (period != null && period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
-          String.format(I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED), period.getName()),
-          TraceBackRepository.TYPE_FUNCTIONNAL,
-          period);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED),
+          period.getName());
     }
   }
 }
