@@ -41,6 +41,7 @@
 - STOCK MOVE and STOCK MOVE LINE: hide filterOnAvailableProducts when stockmove status is not Draft
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
 - STOCK MOVE LINE LIST : delete canEdit
+- ACCOUNT : ventilate an invoice don't generate an empty move line due to fixedAsset
 - HR : Lunch Voucher error
 - PARTNER : prospect instead of client
 - PARTNER STOCK SETTING : lines added automatically in table
