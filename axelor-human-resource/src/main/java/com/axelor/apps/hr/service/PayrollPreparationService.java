@@ -185,7 +185,7 @@ public class PayrollPreparationService {
       workingDays =
           workingDays.add(
               BigDecimal.valueOf(
-                  weeklyPlanningService.workingDayValue(
+                  weeklyPlanningService.getWorkingDayValueInDays(
                       payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
       itDate = itDate.plusDays(1);
     }

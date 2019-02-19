@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import javax.mail.MessagingException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -51,13 +43,18 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import javax.mail.MessagingException;
 
 public class LeaveServiceImpl implements LeaveService {
 
-  private LeaveLineRepository leaveLineRepo;
+  protected LeaveLineRepository leaveLineRepo;
   protected WeeklyPlanningService weeklyPlanningService;
   protected PublicHolidayHrService publicHolidayHrService;
   protected LeaveRequestRepository leaveRequestRepo;
@@ -79,7 +76,7 @@ public class LeaveServiceImpl implements LeaveService {
       ICalendarEventRepository icalEventRepo,
       ICalendarService icalendarService) {
 
-    this.setLeaveLineRepo(leaveLineRepo);
+    this.leaveLineRepo = leaveLineRepo;
     this.weeklyPlanningService = weeklyPlanningService;
     this.publicHolidayHrService = publicHolidayHrService;
     this.leaveRequestRepo = leaveRequestRepo;
@@ -142,11 +139,12 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   /**
-   * Compute the duration of a given leave request.
+   * Compute the duration of a given leave request. The duration can be in hours or in days,
+   * depending of the leave reason of the leave.
    *
    * @param leave
-   * @param from the beginning of the period
-   * @param to the ending of the period
+   * @param from, the beginning of the leave request inside the period
+   * @param to, the end of the leave request inside the period
    * @param startOn If the period starts in the morning or in the afternoon
    * @param endOn If the period ends in the morning or in the afternoon
    * @return the computed duration in days
@@ -167,51 +165,49 @@ public class LeaveServiceImpl implements LeaveService {
             leave.getUser().getName());
       }
 
-      WeeklyPlanning weeklyPlanning = getWeeklyPlanning(leave, employee);
-
       switch (leave.getLeaveLine().getLeaveReason().getUnitSelect()) {
         case LeaveReasonRepository.UNIT_SELECT_DAYS:
-          duration =
-              computeDurationInDays(
-                  duration,
-                  leave,
-                  weeklyPlanning,
-                  from.toLocalDate(),
-                  to.toLocalDate(),
-                  startOn,
-                  endOn);
+          LocalDate fromDate = from.toLocalDate();
+          LocalDate toDate = to.toLocalDate();
+          duration = computeDurationInDays(leave, employee, fromDate, toDate, startOn, endOn);
           break;
+
         case LeaveReasonRepository.UNIT_SELECT_HOURS:
-          duration = computeDurationInHours(duration, leave, weeklyPlanning, from, to);
+          duration = computeDurationInHours(leave, employee, from, to);
           break;
+
         default:
           throw new AxelorException(null, TraceBackRepository.CATEGORY_NO_VALUE);
-      }
-
-      EventsPlanning publicHolidayPlanning = getPublicHolidayEventsPlanning(leave, employee);
-      if (publicHolidayPlanning != null) {
-        duration =
-            duration.subtract(
-                Beans.get(PublicHolidayHrService.class)
-                    .computePublicHolidayDays(
-                        from.toLocalDate(),
-                        to.toLocalDate(),
-                        weeklyPlanning,
-                        publicHolidayPlanning));
       }
     }
 
     return duration.signum() != -1 ? duration : BigDecimal.ZERO;
   }
 
+  /**
+   * Computes the duration in days of a leave, according to the input planning.
+   *
+   * @param weeklyPlanning
+   * @param publicHolidayPlanning
+   * @param fromDate
+   * @param toDate
+   * @param startOn
+   * @param endOn
+   * @return
+   * @throws AxelorException
+   */
   protected BigDecimal computeDurationInDays(
-      BigDecimal duration,
       LeaveRequest leave,
-      WeeklyPlanning weeklyPlanning,
+      Employee employee,
       LocalDate fromDate,
       LocalDate toDate,
       int startOn,
-      int endOn) {
+      int endOn)
+      throws AxelorException {
+
+    BigDecimal duration = BigDecimal.ZERO;
+    WeeklyPlanning weeklyPlanning = getWeeklyPlanning(leave, employee);
+    EventsPlanning holidayPlanning = getPublicHolidayEventsPlanning(leave, employee);
 
     // If the leave request is only for 1 day
     if (fromDate.isEqual(toDate)) {
@@ -220,20 +216,20 @@ public class LeaveServiceImpl implements LeaveService {
           duration =
               duration.add(
                   BigDecimal.valueOf(
-                      weeklyPlanningService.workingDayValueWithSelect(
+                      weeklyPlanningService.getWorkingDayValueInDaysWithSelect(
                           weeklyPlanning, fromDate, true, false)));
         } else {
           duration =
               duration.add(
                   BigDecimal.valueOf(
-                      weeklyPlanningService.workingDayValueWithSelect(
+                      weeklyPlanningService.getWorkingDayValueInDaysWithSelect(
                           weeklyPlanning, fromDate, false, true)));
         }
       } else {
         duration =
             duration.add(
                 BigDecimal.valueOf(
-                    weeklyPlanningService.workingDayValueWithSelect(
+                    weeklyPlanningService.getWorkingDayValueInDaysWithSelect(
                         weeklyPlanning, fromDate, true, true)));
       }
 
@@ -244,11 +240,12 @@ public class LeaveServiceImpl implements LeaveService {
               BigDecimal.valueOf(
                   this.computeStartDateWithSelect(fromDate, startOn, weeklyPlanning)));
 
-      LocalDate itDate = leave.getFromDateT().toLocalDate().plusDays(1);
+      LocalDate itDate = fromDate.plusDays(1);
       while (!itDate.isEqual(toDate) && !itDate.isAfter(toDate)) {
         duration =
             duration.add(
-                BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+                BigDecimal.valueOf(
+                    weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, itDate)));
         itDate = itDate.plusDays(1);
       }
 
@@ -257,64 +254,72 @@ public class LeaveServiceImpl implements LeaveService {
               BigDecimal.valueOf(this.computeEndDateWithSelect(toDate, endOn, weeklyPlanning)));
     }
 
+    if (holidayPlanning != null) {
+      duration =
+          duration.subtract(
+              publicHolidayHrService.computePublicHolidayDays(
+                  fromDate, toDate, weeklyPlanning, holidayPlanning));
+    }
+
     return duration;
   }
 
+  /**
+   * Computes the duration in hours of a leave, according to the weekly and the holiday plannings.
+   *
+   * @param weeklyPlanning
+   * @param holidayPlanning
+   * @param fromDateT
+   * @param toDateT
+   * @return
+   * @throws AxelorException
+   */
   protected BigDecimal computeDurationInHours(
-      BigDecimal duration,
-      LeaveRequest leave,
-      WeeklyPlanning weeklyPlanning,
-      LocalDateTime fromDateT,
-      LocalDateTime toDateT) {
+      LeaveRequest leave, Employee employee, LocalDateTime fromDateT, LocalDateTime toDateT)
+      throws AxelorException {
 
+    BigDecimal duration = BigDecimal.ZERO;
+    WeeklyPlanning weeklyPlanning = getWeeklyPlanning(leave, employee);
+    EventsPlanning holidayPlanning = getPublicHolidayEventsPlanning(leave, employee);
     LocalDate fromDate = fromDateT.toLocalDate();
     LocalDate toDate = toDateT.toLocalDate();
 
-    DayPlanning dayPlanningFrom =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, fromDateT.toLocalDate());
-    // The leave begins after the arrival of the employee on the morning
-    if (fromDateT.isAfter(dayPlanningFrom.getMorningFrom().atDate(fromDate))) {
-      double firstDayDuration = 0;
-      if (fromDateT.isBefore(dayPlanningFrom.getAfternoonFrom().atDate(fromDate))) {
-        firstDayDuration +=
-            ChronoUnit.MINUTES.between(fromDateT.toLocalTime(), dayPlanningFrom.getMorningTo());
-        firstDayDuration +=
-            ChronoUnit.MINUTES.between(
-                dayPlanningFrom.getAfternoonFrom(), dayPlanningFrom.getAfternoonTo());
-      } else if (fromDateT.isBefore(dayPlanningFrom.getAfternoonTo().atDate(toDate))) {
-        firstDayDuration +=
-            ChronoUnit.MINUTES.between(fromDateT.toLocalTime(), dayPlanningFrom.getAfternoonTo());
-      }
-      duration = duration.add(BigDecimal.valueOf(firstDayDuration / 60));
-      fromDate = fromDate.plusDays(1);
-    }
-
-    DayPlanning dayPlanningTo =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, toDateT.toLocalDate());
-    // The leave ends before the departure of the employee on the afternoon
-    if (toDateT.isBefore(dayPlanningTo.getAfternoonTo().atDate(toDate))) {
-      double lastDayDuration = 0;
-      if (toDateT.isAfter(dayPlanningTo.getMorningTo().atDate(toDate))) {
-        lastDayDuration +=
-            ChronoUnit.MINUTES.between(dayPlanningTo.getAfternoonFrom(), toDateT.toLocalTime());
-        lastDayDuration +=
-            ChronoUnit.MINUTES.between(
-                dayPlanningTo.getMorningFrom(), dayPlanningTo.getMorningTo());
-      } else if (toDateT.isAfter(dayPlanningTo.getMorningFrom().atDate(toDate))) {
-        lastDayDuration +=
-            ChronoUnit.MINUTES.between(dayPlanningTo.getMorningFrom(), toDateT.toLocalTime());
-      }
-      duration = duration.add(BigDecimal.valueOf(lastDayDuration / 60));
-      toDate = toDate.minusDays(1);
-    }
-
-    if (!fromDate.isAfter(toDate)) {
-      int startOn = LeaveRequestRepository.SELECT_MORNING;
-      int endOn = LeaveRequestRepository.SELECT_AFTERNOON;
-      //TODO: for each day, multiply by the number of hours the employee worked that day
+    if (toDate.equals(fromDate)
+        && !publicHolidayHrService.checkPublicHolidayDay(fromDate, holidayPlanning)) {
       duration =
-          computeDurationInDays(duration, leave, weeklyPlanning, fromDate, toDate, startOn, endOn);
+          duration.add(
+              weeklyPlanningService.getWorkingDayValueInHours(
+                  weeklyPlanning, fromDate, fromDateT.toLocalTime(), toDateT.toLocalTime()));
+
+    } else {
+      // First day of leave
+      if (!publicHolidayHrService.checkPublicHolidayDay(fromDate, holidayPlanning)) {
+        duration =
+            duration.add(
+                weeklyPlanningService.getWorkingDayValueInHours(
+                    weeklyPlanning, fromDate, fromDateT.toLocalTime(), null));
+      }
+      fromDate = fromDate.plusDays(1);
+
+      // Last day of leave
+      if (!publicHolidayHrService.checkPublicHolidayDay(toDate, holidayPlanning)) {
+        duration =
+            duration.add(
+                weeklyPlanningService.getWorkingDayValueInHours(
+                    weeklyPlanning, toDate, null, toDateT.toLocalTime()));
+      }
+
+      // Daily leave duration of the other days between from and to date
+      for (LocalDate date = fromDate; date.isBefore(toDate); date = date.plusDays(1)) {
+        if (!publicHolidayHrService.checkPublicHolidayDay(date, holidayPlanning)) {
+          duration =
+              duration.add(
+                  weeklyPlanningService.getWorkingDayValueInHours(
+                      weeklyPlanning, date, null, null));
+        }
+      }
     }
+
     return duration;
   }
 
@@ -360,7 +365,7 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getUser().getName());
     }
     LeaveLine leaveLine =
-        getLeaveLineRepo()
+        leaveLineRepo
             .all()
             .filter(
                 "self.employee = ?1 AND self.leaveReason = ?2",
@@ -393,7 +398,7 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getUser().getName());
     }
     LeaveLine leaveLine =
-        getLeaveLineRepo()
+        leaveLineRepo
             .all()
             .filter(
                 "self.employee = ?1 AND self.leaveReason = ?2",
@@ -444,7 +449,7 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getUser().getName());
     }
     LeaveLine leaveLine =
-        getLeaveLineRepo()
+        leaveLineRepo
             .all()
             .filter(
                 "self.employee = ?1 AND self.leaveReason = ?2",
@@ -477,7 +482,7 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getUser().getName());
     }
     LeaveLine leaveLine =
-        getLeaveLineRepo()
+        leaveLineRepo
             .all()
             .filter(
                 "self.employee = ?1 AND self.leaveReason = ?2",
@@ -512,7 +517,7 @@ public class LeaveServiceImpl implements LeaveService {
       LocalDate date, int select, WeeklyPlanning weeklyPlanning) {
     double value = 0;
     if (select == LeaveRequestRepository.SELECT_MORNING) {
-      value = weeklyPlanningService.workingDayValue(weeklyPlanning, date);
+      value = weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date);
     } else {
       DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
       if (dayPlanning != null
@@ -528,7 +533,7 @@ public class LeaveServiceImpl implements LeaveService {
       LocalDate date, int select, WeeklyPlanning weeklyPlanning) {
     double value = 0;
     if (select == LeaveRequestRepository.SELECT_AFTERNOON) {
-      value = weeklyPlanningService.workingDayValue(weeklyPlanning, date);
+      value = weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date);
     } else {
       DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
       if (dayPlanning != null
@@ -667,7 +672,7 @@ public class LeaveServiceImpl implements LeaveService {
                       toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
     }
 
-    LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
+    LocalDate itDate = fromDate;
     if (fromDate.isBefore(leaveRequest.getFromDateT().toLocalDate())
         || fromDate.equals(leaveRequest.getFromDateT().toLocalDate())) {
       itDate = leaveRequest.getFromDateT().toLocalDate();
@@ -677,7 +682,8 @@ public class LeaveServiceImpl implements LeaveService {
         && !itDate.isAfter(toDate)) {
       leaveDays =
           leaveDays.add(
-              BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, itDate)));
       if (publicHolidayHrService.checkPublicHolidayDay(itDate, employee)) {
         leaveDays = leaveDays.subtract(BigDecimal.ONE);
       }
@@ -855,7 +861,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveLineEmployee.setLeaveReason(leaveReason);
     leaveLineEmployee.setEmployee(employee);
 
-    getLeaveLineRepo().save(leaveLineEmployee);
+    leaveLineRepo.save(leaveLineEmployee);
     return leaveLineEmployee;
   }
 
@@ -874,15 +880,5 @@ public class LeaveServiceImpl implements LeaveService {
       throws AxelorException {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  /** @return the leaveLineRepo */
-  public LeaveLineRepository getLeaveLineRepo() {
-    return leaveLineRepo;
-  }
-
-  /** @param leaveLineRepo the leaveLineRepo to set */
-  public void setLeaveLineRepo(LeaveLineRepository leaveLineRepo) {
-    this.leaveLineRepo = leaveLineRepo;
   }
 }

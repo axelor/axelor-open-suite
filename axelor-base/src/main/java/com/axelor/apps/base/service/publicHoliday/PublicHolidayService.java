@@ -61,12 +61,19 @@ public class PublicHolidayService {
       publicHolidayDays =
           publicHolidayDays.add(
               BigDecimal.valueOf(
-                  weeklyPlanningService.workingDayValue(
+                  weeklyPlanningService.getWorkingDayValueInDays(
                       weeklyPlanning, publicHolidayDay.getDate())));
     }
     return publicHolidayDays;
   }
 
+  /**
+   * Returns true if the given date is a public holiday in the given public holiday events planning.
+   *
+   * @param date
+   * @param publicHolidayEventsPlanning
+   * @return
+   */
   public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
 
     if (publicHolidayEventsPlanning == null) {

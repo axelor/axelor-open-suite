@@ -120,13 +120,13 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           employee.getName());
     }
 
-    LocalDate itDate = fromDate;
-
-    while (!itDate.isAfter(toDate)) {
+    LocalDate date = fromDate;
+    while (!date.isAfter(toDate)) {
       duration =
           duration.add(
-              BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-      itDate = itDate.plusDays(1);
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date)));
+      date = date.plusDays(1);
     }
 
     duration =
