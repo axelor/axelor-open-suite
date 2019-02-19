@@ -143,11 +143,8 @@ public class MoveController {
     } else {
       try {
         moveRepo.remove(move);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
       } catch (Exception e) {
-        TraceBackService.trace(response, e);
-      }
-      {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       }
     }
   }
