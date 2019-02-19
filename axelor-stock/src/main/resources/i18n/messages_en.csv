@@ -619,7 +619,7 @@
 "StockMove.description","Description",,
 "StockMove.grossMass","Gross mass",,
 "StockMove.internalMove","Internal Move",,
-"StockMove.ispm","ISPM standard required",,
+"StockMove.ispm","ISPM 15 standard required",,
 "StockMove.lotNoRef","Lot N°/Ref",,
 "StockMove.mass","Mass",,
 "StockMove.movePreparedBy","Move prepared by",,
