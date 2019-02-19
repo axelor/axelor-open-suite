@@ -27,6 +27,7 @@
 - PARTNER STOCK SETTING : delete canEdit in company column
 - BOM : delete records from O2M 'Raw materials to add to components' when components added in M2M billOfMaterialSet
 - DEMO DATA : disable demo data import on production mode
+- Leave request: Display available quantity before validation.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
