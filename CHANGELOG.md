@@ -37,6 +37,7 @@
 - HR : Lunch Voucher error
 - PARTNER : prospect instead of client
 - PARTNER STOCK SETTING : lines added automatically in table
+- MARKETING : Fix an error when launching the emailing
 
 
 ## [5.1.2] - 2019-02-11
