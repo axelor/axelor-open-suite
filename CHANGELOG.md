@@ -32,6 +32,7 @@
 - Timesheet: merge top panels in form view.
 - Payroll Preparation: no refresh and edit once export is done.
 - Payroll Preparation: filter employee per company.
+- EmployeeBonusMgt: update key for translation and set panel to readonly.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
