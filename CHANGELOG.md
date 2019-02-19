@@ -5,6 +5,7 @@
 ## Features
 
 ## Improvements
+- BOM : delete O2M $rawMaterials when components add in M2M billOfMaterialSet
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
