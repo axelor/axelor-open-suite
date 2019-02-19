@@ -59,9 +59,7 @@
     </grid>
     
     <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-		<field name="stockMoveSeq">
-			<hilite color="warning" strong="true" if="pickingIsEdited"/>
-		</field>
+		<field name="stockMoveSeq"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="realDate"/>
         <field name="fromAddressStr" hidden="true"/>
@@ -70,7 +68,6 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="origin"/>
-        <field name="pickingIsEdited" hidden="true" />
     </grid>
 
      <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
