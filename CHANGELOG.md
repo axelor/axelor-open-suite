@@ -29,6 +29,7 @@
 - DEMO DATA : disable demo data import on production mode
 - Leave request: Display available quantity before validation.
 - Leave request: improve translations.
+- Timesheet: merge top panels in form view.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
