@@ -167,9 +167,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite-dev</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1882,7 +1880,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                         <structure>
                             <property name="name">delivery_number</property>
                             <text-property name="displayName">delivery_number</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                            <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
@@ -2392,8 +2390,9 @@ order by LogisticalFormLine.sequence]]></xml-property>
                 <structure>
                     <property name="name">delivery_number</property>
                     <text-property name="displayName">delivery_number</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">collection_date</property>
@@ -3263,8 +3262,9 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                 <structure>
                     <property name="name">delivery_number</property>
                     <text-property name="displayName">delivery_number</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">collection_date</property>
