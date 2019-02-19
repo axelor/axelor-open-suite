@@ -23,6 +23,7 @@
 - Invoice : Hide columns for invoices.
 - Account : Show move refernce on Move remove.
 - BOM : name depending on nbDecimalDigitForBomQty.
+- SUPPLYCHAIN Batch: show popup if cut-off batch was launched twice in a month
 - Bank Reconciliation: show a pop up to advise the user of an incomplete bank reconciliation line when validate
 - PARTNER STOCK SETTING : delete canEdit in company column
 - BOM : delete records from O2M 'Raw materials to add to components' when components added in M2M billOfMaterialSet
