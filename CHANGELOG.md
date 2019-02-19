@@ -26,7 +26,7 @@
 - Bank Reconciliation: show a pop up to advise the user of an incomplete bank reconciliation line when validate
 - PARTNER STOCK SETTING : delete canEdit in company column
 - BOM : delete records from O2M 'Raw materials to add to components' when components added in M2M billOfMaterialSet
-- DEMO DATA : prod mode
+- DEMO DATA : disable demo data import on production mode
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
