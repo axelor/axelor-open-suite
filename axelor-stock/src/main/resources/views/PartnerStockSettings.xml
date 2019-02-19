@@ -8,7 +8,7 @@
           model="com.axelor.apps.stock.db.PartnerStockSettings">
 
         <field name="company" form-view="company-form"
-               grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"/>
+               grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"  canEdit="false"/>
         <field name="defaultStockLocation" form-view="stock-location-form"
                grid-view="stock-location-grid"
                onSelect="action-partner-default-stock-location-form-domain"/>
