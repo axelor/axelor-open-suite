@@ -98,7 +98,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
-                  .context("_userType",StockMoveRepository.USER_TYPE_SALESPERSON)
+                  .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -107,7 +107,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
-                  .context("_userType",StockMoveRepository.USER_TYPE_SALESPERSON)
+                  .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));

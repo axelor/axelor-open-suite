@@ -644,7 +644,7 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setValidatedBy(AuthUtils.getUser());
     leaveRequest.setValidationDate(appBaseService.getTodayDate());
     leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
-    
+
     leaveRequestRepo.save(leaveRequest);
 
     createEvents(leaveRequest);

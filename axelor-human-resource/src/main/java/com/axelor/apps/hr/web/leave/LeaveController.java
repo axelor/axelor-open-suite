@@ -284,7 +284,7 @@ public class LeaveController {
 
   /**
    * Refuses leave request and sends an email to the applicant.
-   * 
+   *
    * @param request
    * @param response
    * @throws AxelorException

@@ -545,7 +545,8 @@ public class MoveLineService {
         }
 
         if (hasOtherAssets
-                && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
+            && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
+                != 0) {
           account = taxAccountService.getAccount(tax, company, isPurchase, false);
           if (account == null) {
             throw new AxelorException(
