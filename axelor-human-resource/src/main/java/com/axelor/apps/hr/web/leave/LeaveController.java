@@ -107,7 +107,7 @@ public class LeaveController {
   @SuppressWarnings("unchecked")
   public void editLeaveSelected(ActionRequest request, ActionResponse response) {
     Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
-    Long leaveId = new Long((Integer) leaveMap.get("id"));
+    Long leaveId = Long.valueOf((long) leaveMap.get("id"));
     response.setView(
         ActionView.define(I18n.get("LeaveRequest"))
             .model(LeaveRequest.class.getName())
@@ -118,7 +118,7 @@ public class LeaveController {
             .map());
   }
 
-  public void validateLeave(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void validateLeave(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
     Employee employee = user.getEmployee();
@@ -159,22 +159,18 @@ public class LeaveController {
   public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
-    Company activeCompany = user.getActiveCompany();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
-            .model(LeaveRequest.class.getName())
-            .add("grid", "leave-request-grid")
-            .add("form", "leave-request-form");
-
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
-
     long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
 
     if (nbLeaveRequests == 0) {
       response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
     } else {
+      ActionViewBuilder actionView =
+          ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
+              .model(LeaveRequest.class.getName())
+              .add("grid", "leave-request-grid")
+              .add("form", "leave-request-form");
       response.setView(actionView.domain(domain).context("_user", user).map());
     }
   }
@@ -253,7 +249,7 @@ public class LeaveController {
   }
 
   /**
-   * validating leave request and sending an email to the applicant
+   * Validates leave request and sends an email to the applicant.
    *
    * @param request
    * @param response
@@ -286,7 +282,13 @@ public class LeaveController {
     }
   }
 
-  // refusing leave request and sending an email to the applicant
+  /**
+   * Refuses leave request and sends an email to the applicant.
+   * 
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
   public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
 
     try {

@@ -10,6 +10,7 @@
 - SALE ORDER : ISPM 15
 
 ## Improvements
+- STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
 - Interco: copy counterpart reference for intercompany orders and invoices.
 - Interco: make boolean `createdByInterco` appears on order and invoice view.
 - Interco: add config to generate orders and invoice at status validated.
@@ -23,15 +24,28 @@
 - Account : Show move refernce on Move remove.
 - BOM : name depending on nbDecimalDigitForBomQty.
 - SUPPLYCHAIN Batch: show popup if cut-off batch was launched twice in a month
+- Bank Reconciliation: show a pop up to advise the user of an incomplete bank reconciliation line when validate
+- PARTNER STOCK SETTING : delete canEdit in company column
+- BOM : delete records from O2M 'Raw materials to add to components' when components added in M2M billOfMaterialSet
+- DEMO DATA : disable demo data import on production mode
+- Leave request: Display available quantity before validation.
+- Leave request: improve translations.
+- Timesheet: merge top panels in form view.
+- Payroll Preparation: no refresh and edit once export is done.
+- Payroll Preparation: filter employee per company.
+- EmployeeBonusMgt: update key for translation and set panel to readonly.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
 - Production : Change of Error Message without Stracktrace for ProProcess and BOM object.
+- STOCK MOVE and STOCK MOVE LINE: hide filterOnAvailableProducts when stockmove status is not Draft
 - PURCHASE ORDER : add button "See purchase orders lines" in card view
 - STOCK MOVE LINE LIST : delete canEdit
 - HR : Lunch Voucher error
 - PARTNER : prospect instead of client
 - PARTNER STOCK SETTING : lines added automatically in table
+- MARKETING : Fix an error when launching the emailing
+
 
 ## [5.1.2] - 2019-02-11
 ## Features
@@ -169,7 +183,6 @@
 - Base : Update of type in demo-data in Birt Template Parameter.
 - Stock : Download Inventory Export in csv format.
 - Stock/SupplyChain : Changing field names, report translations, sequence field, selection list values according to naming convention.
-
 
 ## [5.1.1] - 2019-01-18
 ## Features

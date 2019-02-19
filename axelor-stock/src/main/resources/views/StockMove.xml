@@ -258,8 +258,8 @@
 					<field name="supplierShipmentRef"/>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
-				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
+				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
            		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
@@ -452,11 +452,16 @@
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
+    <action-attrs name="action-stock-move-attrs-filter-on-available-products">
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1"/>
+    </action-attrs>
+    
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -464,6 +469,7 @@
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">

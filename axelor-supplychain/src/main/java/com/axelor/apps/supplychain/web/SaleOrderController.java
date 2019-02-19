@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
@@ -97,6 +98,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .context("_userType",StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -105,6 +107,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
+                  .context("_userType",StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
