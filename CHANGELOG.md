@@ -28,6 +28,7 @@
 - BOM : delete records from O2M 'Raw materials to add to components' when components added in M2M billOfMaterialSet
 - DEMO DATA : disable demo data import on production mode
 - Leave request: Display available quantity before validation.
+- Leave request: improve translations.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
