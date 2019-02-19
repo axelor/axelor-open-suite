@@ -8,6 +8,7 @@
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
 - ContractTemplate : Addition of demo-data.
 - SALE ORDER : ISPM 15
+- MARKETING CAMPAIGN : Added eventStartDateT and eventEndDateT fields.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"

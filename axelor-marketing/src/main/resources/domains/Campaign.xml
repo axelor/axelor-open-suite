@@ -31,6 +31,8 @@
   	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads Target List" />
     <integer name="sequence"/>
     <string name="report" />
+    <datetime name="eventStartDateT" title="Event start"/>
+    <datetime name="eventEndDateT" title="Event end"/>
   </entity>
 
 </domain-models>
