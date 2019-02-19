@@ -8,6 +8,7 @@
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
 - ContractTemplate : Addition of demo-data.
 - SALE ORDER : ISPM 15
+- Leave reason: choose unit between days and hours.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
@@ -34,6 +35,7 @@
 - Payroll Preparation: no refresh and edit once export is done.
 - Payroll Preparation: filter employee per company.
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
+- WeeklyPlanning: manage durations in hours and rename methods.
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
@@ -58,15 +60,6 @@
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
 - SALE ORDER : notify when stock move is generated automatically from sale order
-- INVOICES : alert message if no bank details in partner-form.
-- STOCKMOVE: Add 2 fields in stock move about editing an outgoing stock move.
-- SALE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Sale Order
-- STOCK CONFIG : New boolean for picking order printing with details
-- PRODUCT : Added new boolean field 'isUnrenewed' and also added label in SOLine form
-- PURCHASE ORDER LINES : Fill 'estimatedDelivDate' from 'deliveryDate' of Purchase Order
-- LOGISITCAL FORM : alert message when user clicks on action buttons
-- ACCOUNT MOVE : printing new design
-- Leave reason: choose unit between days and hours.
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
