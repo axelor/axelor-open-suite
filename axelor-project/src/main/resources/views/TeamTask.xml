@@ -171,6 +171,7 @@
 					</panel>
 					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 				</panel>
+				<field if="__config__.app.getApp('project').isEnableSignature" name="metaFile"  width="120" widget="Image" />
 			</panel>
 			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
 				<panel name="actionsPanel" title="Actions">
