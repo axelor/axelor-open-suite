@@ -36,6 +36,7 @@
 - Payroll Preparation: filter employee per company.
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
 - APP BUILDER : Added menu "Selections"
+- CONTROL POINT : Added titles in comments panels
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
