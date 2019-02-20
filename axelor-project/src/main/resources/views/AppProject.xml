@@ -7,6 +7,7 @@
 		<panel name="mainPanel">
 			<field name="projectLabel"/>
 			<field name="resourceManagement" widget="boolean-switch" />
+			<field name="isEnableSignature" widget="boolean-switch" />
 		</panel>
 	</form>
 	
