@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="equipement-maintenance-grid" title="Equipement Maintenance" model="com.axelor.apps.cmms.db.EquipementMaintenance">
+		<field name="code"/>
+		<field name="name"/>
+		<field name="maintenanceCategory"/>
+		<field name="machine"/>
+		<field name="nextMtnDate"/>
+    </grid>
+
+    <form name="equipement-maintenance-form" title="Equipement Maintenance" model="com.axelor.apps.cmms.db.EquipementMaintenance" width="large">
+    	<panel name="main">
+    		<panel colSpan="2" itemSpan="12">
+    			<field name="image" widget="Image" />
+    		</panel>
+    		<panel colSpan="10">
+	    		<field name="name" colSpan="8"/>
+		    	<field name="code" colSpan="4"/>
+		       	<field name="maintenanceCategory"/>
+		       	<field name="machine" onChange="action-equipement-maintenance-attrs-machine-on-change"/>
+	       	</panel>
+	       	<panel title="Maintenance periods" colSpan="12">
+	       		<field name="mtnEachDay" colSpan="3"/>
+	       		<label name="mtnDays" title="Days" colSpan="1" />
+	       		<field name="mtnEachCycle" showIf="machine != null" colSpan="3"/>
+	       		<label name="mtnCycles" title="Cycles" colSpan="1" showIf="machine != null"/>
+	       		<field name="mtnEachDuration" showIf="machine != null" colSpan="3"/>
+	       		<label name="mtnHoursOfProduction" title="Hours of production" colSpan="1" showIf="machine != null"/>
+	       	</panel>
+	       	<field name="nextMtnDate" />
+	       	<field name="createMtnRequestSelect" showIf="machine != null"/>
+	       	<field name="mtnProcedure" colSpan="12" widget="html"/>
+	       	<field name="mtnFile" widget="binary-link" />
+        </panel>
+        <panel-related field="maintenanceRequestList" colSpan="12">
+       		<field name="requestDate"/>
+		    <field name="requestBy"/>
+		    <field name="expectedDate"/>
+		    <field name="durationHours"/>
+		    <field name="assignedTo"/>
+		    <field name="actionSelect"/>
+		    <field name="doneOn"/>
+		    <field name="statusSelect"/>
+       	</panel-related>
+    </form>
+    
+    <cards name="equipement-maintenance-cards" model="com.axelor.apps.cmms.db.EquipementMaintenance" title="Equipement Maintenance" css="rect-image">
+		<field name="name" />
+		<field name="code" />
+		<field name="image" />
+		<field name="maintenanceCategory"/>
+		<field name="machine" />
+		<template><![CDATA[
+		    <div class="span12"><strong>{{code}}-{{name}}</strong></div>
+			<div>
+			  <div class="span4 card-image">
+                <img ng-show="image" ng-src="{{$image('image', 'content')}}" />
+			  </div>
+			  <div class="span8">
+			    {{maintenanceCategory.name}}<br/>
+			    {{machine.name}}<br/>
+			  </div>
+			</div>
+		]]>
+		</template>
+	</cards>
+    
+    <action-attrs name="action-equipement-maintenance-attrs-machine-on-change">
+    	<attribute name="value" for="name" expr="eval:machine.name" if="name == null &amp;&amp; machine != null"/>
+    </action-attrs>
+
+</object-views>

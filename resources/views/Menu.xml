@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem name="cmms-root" title="CMMS" order="-84" if="__config__.app.isApp('cmms')"
+		icon="fa-recycle" icon-background="olive"/>
+	
+	<menuitem name="cmms-root-equipement-maintenances" parent="cmms-root" 
+		title="Equipement Maintenances" action="cmms.root.equipement.maintenances" order="5"/>
+
+	<action-view name="cmms.root.equipement.maintenances" title="Equipement Maintenances"
+		model="com.axelor.apps.cmms.db.EquipementMaintenance" >
+		<view type="cards" name="equipement-maintenance-cards" />
+		<view type="grid" name="equipement-maintenance-grid" />
+		<view type="form" name="equipement-maintenance-form" />
+	</action-view>
+	
+	<menuitem name="cmms-root-current-maintenance-requests" parent="cmms-root" 
+		title="Current requests" action="cmms.root.current.maintenance.requests" order="10"/>
+	
+	<action-view name="cmms.root.current.maintenance.requests" title="Current requests"
+		model="com.axelor.apps.cmms.db.MaintenanceRequest" >
+		<view type="kanban" name="maintenance-request-kanban" />
+		<view type="calendar" name="maintenance-request-calendar-per-user" />
+		<view type="grid" name="maintenance-request-grid" />
+		<view type="form" name="maintenance-request-form" />
+		<domain>self.statusSelect in (0,1)</domain>
+		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="cmms-root-my-maintenance-requests" parent="cmms-root" 
+		title="My Maintenance requests" action="cmms.root.my.maintenance.requests" order="15"/>
+	
+	<action-view name="cmms.root.my.maintenance.requests" title="My Maintenance requests"
+		model="com.axelor.apps.cmms.db.MaintenanceRequest" >
+		<view type="kanban" name="maintenance-request-kanban" />
+		<view type="calendar" name="maintenance-request-calendar-per-user" />
+		<view type="form" name="maintenance-request-form" />
+		<domain>self.statusSelect in (0,1) and self.assignedTo = :__user__</domain>
+		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="cmms-root-machine-unavailable" parent="cmms-root" 
+		title="Machines unavailable" action="cmms.root.machine.unavailable" order="25"/>
+	
+	<action-view name="cmms.root.machine.unavailable" title="Machines unavailable"
+		model="com.axelor.apps.cmms.db.MaintenanceRequest" >
+		<view type="calendar" name="maintenance-request-calendar-per-machine" />
+		<domain>self.statusSelect != 3 and self.equipementMaintenance.machine is not null</domain>
+		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="cmms-root-maintenance-request-history" parent="cmms-root" 
+		title="Request history" action="cmms.root.maintenance.request.history" order="30"/>
+	
+	<action-view name="cmms.root.maintenance.request.history" title="Request history"
+		model="com.axelor.apps.cmms.db.MaintenanceRequest" >
+		<view type="grid" name="maintenance-request-grid" />
+		<view type="kanban" name="maintenance-request-kanban" />
+		<view type="calendar" name="maintenance-request-calendar-per-user" />
+		<view type="form" name="maintenance-request-form" />
+		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="cmms-root-manuf-order" parent="cmms-root" order="33"
+		title="Manufacturing orders" action="manufacturing.root.manuf.order"/>
+
+	<menuitem name="cmms-root-config" parent="cmms-root" title="Configuration" order="35"/>
+	
+	<menuitem name="cmms-root-config-maintenance-category" parent="cmms-root-config" 
+		title="Maintenance Category" action="cmms.root.config.maintenance.category" order="5"/>
+	
+	<action-view name="cmms.root.config.maintenance.category" title="Maintenance Category"
+		model="com.axelor.apps.cmms.db.MaintenanceCategory" >
+		<view type="grid" name="maintenance-category-grid" />
+		<view type="form" name="maintenance-category-form" />
+	</action-view>
+	
+	<menuitem name="cmms-root-config-machines" parent="cmms-root-config" order="10"
+		title="Machines" action="manufacturing.conf.machine" />
+
+	<menuitem name="cmms-root-config-prod-process" parent="cmms-root-config" order="15"
+		title="Production processes" action="manufacturing.root.prod.process"/>
+
+	<menuitem name="cmms-root-config-bill-of-material" parent="cmms-root-config" order="20"
+		title="Bills of materials" action="manufacturing.root.bill.of.material"/>
+
+</object-views>
