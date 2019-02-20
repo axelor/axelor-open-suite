@@ -53,5 +53,5 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1 = /*$$(*/
       "Products must be Service type and Method of Supply Produce." /*)*/;
   static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2 = /*$$(*/
-      "Please complete the order lines with at least one product type \"Service\" and the supply mode \"Produce\"" /*)*/;
+      "Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce'" /*)*/;
 }

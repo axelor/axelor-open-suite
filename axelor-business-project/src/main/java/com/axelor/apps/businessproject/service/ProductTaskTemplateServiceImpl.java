@@ -72,10 +72,11 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
         task.setUnit(product.getUnit());
         task.setUnitPrice(product.getSalePrice());
-        task.setToInvoice(
-            saleOrderLine.getSaleOrder() != null
-                ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
-                : false);
+        if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+          task.setToInvoice(true);
+          task.setTeamTaskInvoicing(true);
+          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+        }
         tasks.add(teamTaskRepository.save(task));
 
         // Only parent task can have multiple quantities

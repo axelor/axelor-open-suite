@@ -107,11 +107,11 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         teamTaskRepository.save(task);
         tasks.add(task);
       }
-      if (tasks == null || tasks.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
-      }
+    }
+    if (tasks == null || tasks.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
     }
 
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
