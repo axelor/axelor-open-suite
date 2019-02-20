@@ -80,4 +80,6 @@
         <domain>self.menuAction = false</domain>
     </action-view>
 
+	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action-meta-select" order="46"/>
+	
 </object-views>
