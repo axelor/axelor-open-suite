@@ -64,7 +64,7 @@
 	    	</panel>
 			<panel name="printPanel" title="Printing">
 				<field name="printingSettings" canNew="true" canEdit="true" required="true" form-view="printing-setting-form" grid-view="printing-setting-grid"/>
-				<field name="documentTemplates" grid-view="document-template-assignment-grid" form-view="document-template-assignment-company-form" canSelect="true" canNew="true" canEdit="true" colSpan="12"/>
+				<field name="documentTemplates" grid-view="company-document-template-assignment-grid" form-view="company-document-template-assignment-form" canNew="true" colSpan="12"/>
 			</panel>
 	  	</panel-tabs>
    	</form>

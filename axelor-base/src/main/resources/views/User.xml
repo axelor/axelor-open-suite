@@ -99,7 +99,7 @@
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
             <panel name="printPanel" title="Printing">
-                <field name="documentTemplates" grid-view="document-template-assignment-grid" form-view="document-template-assignment-user-form" canSelect="true" canNew="true" canEdit="true" colSpan="12"/>
+                <field name="documentTemplates" grid-view="user-document-template-assignment-grid" form-view="user-document-template-assignment-form" canNew="true" canEdit="true" colSpan="12"/>
             </panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         </panel-tabs>

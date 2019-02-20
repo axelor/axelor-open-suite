@@ -18,8 +18,9 @@
 package com.axelor.apps;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.CompanyDocumentTemplateAssignment;
 import com.axelor.apps.base.db.DocumentTemplate;
-import com.axelor.apps.base.db.DocumentTemplateAssignment;
+import com.axelor.apps.base.db.UserDocumentTemplateAssignment;
 import com.axelor.apps.report.engine.EmbeddedReportSettings;
 import com.axelor.apps.report.engine.ExternalReportSettings;
 import com.axelor.apps.report.engine.JasperReportSettings;
@@ -74,7 +75,7 @@ public class ReportFactory {
     if (template == null) {
       User user = AuthUtils.getUser();
       if (user != null) {
-        for (DocumentTemplateAssignment assignment : user.getDocumentTemplates()) {
+        for (UserDocumentTemplateAssignment assignment : user.getDocumentTemplates()) {
           if (assignment.getType().equals(templateType)
               && assignment.getCompany().equals(company)) {
             template = assignment.getTemplate();
@@ -83,7 +84,7 @@ public class ReportFactory {
         }
       }
       if (template == null && company != null) {
-        for (DocumentTemplateAssignment assignment : company.getDocumentTemplates()) {
+        for (CompanyDocumentTemplateAssignment assignment : company.getDocumentTemplates()) {
           if (assignment.getType().equals(templateType)) {
             template = assignment.getTemplate();
           }
