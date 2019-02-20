@@ -75,6 +75,7 @@
 - Team Task : Change in team-task-form view
 - Moible: Add new app setting for 'Task'
 - JobPosition : Hide statusOpenBtn on statusSelect = 2.
+- Purchase Order : remove IPurchaseOrder deprecated class
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

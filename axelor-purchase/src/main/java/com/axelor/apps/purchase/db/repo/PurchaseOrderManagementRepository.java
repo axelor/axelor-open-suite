@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.purchase.db.repo;
 
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -31,7 +30,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
     PurchaseOrder copy = super.copy(entity, deep);
 
-    copy.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    copy.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     copy.setPurchaseOrderSeq(null);
     copy.setVersionNumber(1);
     copy.setDeliveryDate(null);

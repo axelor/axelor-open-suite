@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -203,8 +202,8 @@ public class PurchaseOrderSupplierService {
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-    purchaseOrder.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
+    purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
 
     poRepo.save(purchaseOrder);
   }
