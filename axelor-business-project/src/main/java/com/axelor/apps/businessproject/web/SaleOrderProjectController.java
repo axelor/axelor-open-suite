@@ -54,6 +54,7 @@ public class SaleOrderProjectController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
         response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        return;
       }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
@@ -73,6 +74,7 @@ public class SaleOrderProjectController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 
@@ -80,6 +82,12 @@ public class SaleOrderProjectController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder.getSaleOrderLineList() == null
+          || (saleOrder.getSaleOrderLineList() != null
+              && saleOrder.getSaleOrderLineList().isEmpty())) {
+        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        return;
+      }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
 
@@ -92,6 +100,7 @@ public class SaleOrderProjectController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 
