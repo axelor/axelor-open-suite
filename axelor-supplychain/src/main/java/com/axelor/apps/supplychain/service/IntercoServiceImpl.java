@@ -43,7 +43,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -166,7 +165,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
 
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
 

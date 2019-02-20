@@ -29,9 +29,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -278,7 +278,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
     if (purchaseOrder.getCreatedByInterco()) {
@@ -349,7 +349,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
   }
