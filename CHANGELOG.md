@@ -58,6 +58,7 @@
 - DataBackup : Relative date
 - BUSINESS PROJECT : Connect Contract to Project
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
+- WEEKLY PLANNING : Add a type and minor changes
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
