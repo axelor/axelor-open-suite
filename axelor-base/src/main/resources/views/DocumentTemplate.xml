@@ -66,7 +66,7 @@
     </action-record>
 
     <action-attrs name="action-document-template-assignment-type-domain">
-        <attribute name="domain" for="template" expr="eval: &quot;self.type = type&quot;"/>
+        <attribute name="domain" for="template" expr="eval: &quot;self.type = '${type}'&quot;"/>
     </action-attrs>
 
 </object-views>
