@@ -11,8 +11,9 @@
 		  onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
-			<field name="leaveCoef" if-module="axelor-human-resource" />
+			<field name="typeSelect" if-module="axelor-production" if="__config__.app.isApp('production')" required="true"/>
+			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" hideIf="typeSelect == 2"/>
+			<field name="leaveCoef" if-module="axelor-human-resource" hideIf="typeSelect == 2"/>
 		</panel>
 	    <panel-related name="weekDaysPanel" field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>
