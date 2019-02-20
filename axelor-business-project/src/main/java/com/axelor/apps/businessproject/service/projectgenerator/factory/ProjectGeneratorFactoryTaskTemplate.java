@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -26,6 +28,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -91,6 +94,14 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
             .fetchOne();
 
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+      Product product = orderLine.getProduct();
+      if (product != null
+          && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
+                      product.getProcurementMethodSelect())
+                  || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
+              && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
+        continue;
+      }
       boolean isTaskGenerated =
           teamTaskRepository
                   .all()
@@ -98,17 +109,15 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                   .fetch()
                   .size()
               > 0;
-      if (!CollectionUtils.isEmpty(orderLine.getProduct().getTaskTemplateList())
-          && !(isTaskGenerated)) {
-        if (root == null) {
-          root = teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
-          root.setTaskDate(startDate.toLocalDate());
-          tasks.add(teamTaskRepository.save(root));
-        }
+      if (root == null) {
+        root = teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
+        root.setTaskDate(startDate.toLocalDate());
+        tasks.add(teamTaskRepository.save(root));
+      }
+      if (!CollectionUtils.isEmpty(product.getTaskTemplateList()) && !(isTaskGenerated)) {
         List<TeamTask> convertedTasks =
             productTaskTemplateService.convert(
-                orderLine
-                    .getProduct()
+                product
                     .getTaskTemplateList()
                     .stream()
                     .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
@@ -120,17 +129,38 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                 orderLine);
         convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
         tasks.addAll(convertedTasks);
+      } else if (CollectionUtils.isEmpty(product.getTaskTemplateList()) && !(isTaskGenerated)) {
+        TeamTask childTask =
+            teamTaskService.create(orderLine.getFullName(), project, project.getAssignedTo());
+        this.updateTask(root, childTask, orderLine);
+
+        tasks.add(teamTaskRepository.save(childTask));
       }
     }
     if (root == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
+          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
-    return ActionView.define("Parent Task")
+    return ActionView.define("Tasks")
         .model(TeamTask.class.getName())
-        .add("form", "team-task-form")
         .add("grid", "team-task-grid")
-        .context("_showRecord", root.getId());
+        .add("form", "team-task-form")
+        .domain("self.parentTask = " + root.getId());
+  }
+
+  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine) {
+    childTask.setParentTask(root);
+    childTask.setQuantity(orderLine.getQty());
+    Product product = orderLine.getProduct();
+    childTask.setProduct(product);
+    childTask.setUnitPrice(product != null ? product.getSalePrice() : null);
+    childTask.setUnit(product != null ? product.getUnit() : null);
+    if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
+      childTask.setToInvoice(true);
+      childTask.setTeamTaskInvoicing(true);
+      childTask.setSaleOrderLine(orderLine);
+      childTask.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+    }
   }
 }
