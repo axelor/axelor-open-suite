@@ -8,6 +8,7 @@
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
 - ContractTemplate : Addition of demo-data.
 - SALE ORDER : ISPM 15
+- MARKETING CAMPAIGN : Added eventStartDateT and eventEndDateT fields.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
@@ -34,6 +35,8 @@
 - Payroll Preparation: no refresh and edit once export is done.
 - Payroll Preparation: filter employee per company.
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
+- APP BUILDER : Added menu "Selections"
+- CONTROL POINT : Added titles in comments panels
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
@@ -50,6 +53,7 @@
 - BANK ORDER : fix issues that appear when we try to merge some bank order manually or automatically from mass invoice payments!
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
+- STOCKMOVE : Fix Invoice NPE
 
 
 ## [5.1.2] - 2019-02-11

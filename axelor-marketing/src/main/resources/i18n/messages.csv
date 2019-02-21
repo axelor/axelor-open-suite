@@ -27,6 +27,8 @@
 "Error in sending an email to the following targets",,,
 "Error in sending emails. Please check the log file generated.",,,
 "Event Type",,,
+"Event end",,,
+"Event start",,,
 "Event type",,,
 "Events",,,
 "Generate Events",,,
