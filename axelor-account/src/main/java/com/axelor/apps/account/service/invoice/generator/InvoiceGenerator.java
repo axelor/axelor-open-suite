@@ -277,10 +277,12 @@ public abstract class InvoiceGenerator {
               .findFirst()
               .orElse(null);
     } else if (accountingSituation != null) {
-      if (paymentMode.equals(partner.getOutPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-      } else if (paymentMode.equals(partner.getInPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyInBankDetails();
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
+        }
       }
       if (companyBankDetails == null) {
         companyBankDetails = company.getDefaultBankDetails();
