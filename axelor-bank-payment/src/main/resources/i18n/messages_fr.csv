@@ -667,6 +667,7 @@
 "The receiver bank details is inactive.","Le RIB destinataire est inactif.",,
 "The receiver bank details type is not compatible with the accepted types in file format.","Le type du RIB destinataire n'est pas autorisé par le format de fichier.",,
 "The sender bank details currency is not compatible with the currency in bank order.","La devise du compte bancaire émetteur n'est pas compatible avec la devise de l'ordre bancaire",,
+"There is at least one incomplete bank reconciliation. Are you sure to continue ?","Il y a au moins une ligne de rapprochement bancaire incomplete. Êtes-vous sûr de vouloir continuer ?",,
 "To Date","à",,
 "Total amount","Montant total",,
 "Total amount in company currency","Montant total en devise société",,

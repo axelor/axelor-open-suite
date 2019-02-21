@@ -10,6 +10,8 @@
  	<many-to-one name="bankOrderLine" ref="com.axelor.apps.bankpayment.db.BankOrderLine" title="Bank order line"/>
    	<string name="relatedToSelect" title="Related to" selection="bank.payment.bank.order.line.origin.related.to.select"/>
 	<long name="relatedToSelectId"/>
+    <string name="relatedToSelectName" title="Related to" readonly="true"/>
+	
   	
   	<extra-code>
   		<![CDATA[

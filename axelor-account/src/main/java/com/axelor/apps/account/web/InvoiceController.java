@@ -821,13 +821,13 @@ public class InvoiceController {
           if (invoice.getCompany() == null
               || company == null
               || !invoice.getCompany().equals(company)) {
-            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY);
+            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
             return;
           }
           if (invoice.getCurrency() == null
               || currency == null
               || !invoice.getCurrency().equals(currency)) {
-            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY);
+            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
             return;
           }
 
@@ -835,7 +835,7 @@ public class InvoiceController {
         }
 
         if (invoiceToPay.isEmpty()) {
-          response.setError(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY);
+          response.setError(I18n.get(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY));
         }
 
         response.setView(

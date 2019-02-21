@@ -111,6 +111,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
       "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
 
+  static final String MANUF_ORDER_MISSING_TEMPLATE = /*$$(*/
+      "The template to send message for manufacturing order is missing." /*)*/;
+
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
 
