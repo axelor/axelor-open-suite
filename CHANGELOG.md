@@ -47,6 +47,9 @@
 - PARTNER STOCK SETTING : lines added automatically in table
 - MARKETING : Fix an error when launching the emailing
 - PURCHASE ORDER : Don't apply control on receipt stock move on direct order
+- BANK ORDER : fix issues that appear when we try to merge some bank order manually or automatically from mass invoice payments!
+First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
+Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 
 
 ## [5.1.2] - 2019-02-11
