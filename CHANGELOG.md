@@ -37,6 +37,7 @@
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
 - APP BUILDER : Added menu "Selections"
 - CONTROL POINT : Added titles in comments panels
+- Model Studio: Added title property for object,removed not supported menu colors and fixed widgets of M2O. 
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
