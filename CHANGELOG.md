@@ -37,6 +37,8 @@
 - ContractTemplate : Addition of demo-data.
 - MARKETING CAMPAIGN : Added eventStartDateT and eventEndDateT fields.
 - SALE ORDER : ISPM 15 management on form view and printing.
+- SALE ORDER : notify when stock move is generated automatically from sale order
+- STOCK MOVE : Creation of specific grid views of mass invoicing. 
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
@@ -64,7 +66,6 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
 - ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
-- SALE ORDER : notify when stock move is generated automatically from sale order
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
@@ -138,7 +139,6 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - Timesheet: exception for date conflicts.
 - HR module: code refactoring.
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
-- STOCK MOVE : Creation of specific grid views of mass invoicing. 
 - STOCK MOVE : Date on report printing
 - ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 - Sale Order: saving a sale order being edited does not change its status.
