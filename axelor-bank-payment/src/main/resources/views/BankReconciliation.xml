@@ -94,6 +94,7 @@
    <action-group name="action-group-bankreconciliation-validate-click">
    		<action name="save"/>
    		<action name="action-bank-reconciliation-method-compute"/>
+   		<action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line"/>
    		<action name="action-bank-reconciliation-method-validate"/>
    </action-group>	
    
@@ -198,6 +199,8 @@
 		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validateMultipleReconcile"/>
 	</action-method>
 	
-   
+	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
+   		<alert message="There is at least one incomplete bank reconciliation. Are you sure to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
+   	</action-validate>
     
 </object-views>
