@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="MpsWeeklySchedule" lang="java" cachable="true">
+  		
+  		<string name="code" title="Code"/>
+  		<string name="name" title="Name"/>
+  		
+  		<boolean name="isMonday" title="Monday"/>
+  		<boolean name="isTuesday" title="Tuesday"/>
+  		<boolean name="isWednesday" title="Wednesday"/>
+  		<boolean name="isThursday" title="Thursday"/>
+  		<boolean name="isFriday" title="Friday"/>
+  		<boolean name="isSaturday" title="Saturday"/>
+  		<boolean name="isSunday" title="Sunday"/>
+  		
+  		<decimal name="hoursMonday" title="Hours"/>
+  		<decimal name="hoursTuesday" title="Hours"/>
+  		<decimal name="hoursWednesday" title="Hours"/>
+  		<decimal name="hoursThursday" title="Hours"/>
+  		<decimal name="hoursFriday" title="Hours"/>
+  		<decimal name="hoursSaturday" title="Hours"/>
+  		<decimal name="hoursSunday" title="Hours"/>
+  		<decimal name="totalHours" title="Total hours" readonly="true"/>
+  		  	
+  </entity>
+  
+</domain-models>

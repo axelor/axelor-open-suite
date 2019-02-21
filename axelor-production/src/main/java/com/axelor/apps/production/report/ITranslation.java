@@ -209,4 +209,22 @@ public interface ITranslation {
       "CostSheet.calculationTypeBillOfMaterial"; /*)*/
   public static final String COST_SHEET_CALCULATION_DATE = /*$$(*/
       "CostSheet.calculationDate"; /*)*/
+
+  public static final String MPS_CHARGE_TITLE = /*$$(*/ "MpsCharge.title"; /*)*/
+  public static final String MPS_CHARGE_CODE = /*$$(*/ "MpsCharge.code"; /*)*/
+  public static final String MPS_CHARGE_START_MONTH = /*$$(*/ "MpsCharge.startMonth"; /*)*/
+  public static final String MPS_CHARGE_END_MONTH = /*$$(*/ "MpsCharge.endMonth"; /*)*/
+  public static final String MPS_CHARGE_TOTAL = /*$$(*/ "MpsCharge.total"; /*)*/
+  public static final String MPS_CHARGE_JANUARY = /*$$(*/ "MpsCharge.january"; /*)*/
+  public static final String MPS_CHARGE_FEBRUARY = /*$$(*/ "MpsCharge.february"; /*)*/
+  public static final String MPS_CHARGE_MARCH = /*$$(*/ "MpsCharge.march"; /*)*/
+  public static final String MPS_CHARGE_APRIL = /*$$(*/ "MpsCharge.april"; /*)*/
+  public static final String MPS_CHARGE_MAY = /*$$(*/ "MpsCharge.may"; /*)*/
+  public static final String MPS_CHARGE_JUNE = /*$$(*/ "MpsCharge.june"; /*)*/
+  public static final String MPS_CHARGE_JULY = /*$$(*/ "MpsCharge.july"; /*)*/
+  public static final String MPS_CHARGE_AUGUST = /*$$(*/ "MpsCharge.august"; /*)*/
+  public static final String MPS_CHARGE_SEPTEMBER = /*$$(*/ "MpsCharge.september"; /*)*/
+  public static final String MPS_CHARGE_OCTOBER = /*$$(*/ "MpsCharge.october"; /*)*/
+  public static final String MPS_CHARGE_NOVEMBER = /*$$(*/ "MpsCharge.november"; /*)*/
+  public static final String MPS_CHARGE_DECEMBER = /*$$(*/ "MpsCharge.december"; /*)*/
 }

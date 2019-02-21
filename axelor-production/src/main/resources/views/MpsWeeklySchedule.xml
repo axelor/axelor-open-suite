@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid model="com.axelor.apps.production.db.MpsWeeklySchedule" title="MPS Weekly schedules" name="mps-weekly-schedule-grid">
+		<field name="code"/>
+		<field name="name"/>
+		<field name="totalHours"/>
+	</grid>
+    
+    <form name="mps-weekly-schedule-form" model="com.axelor.apps.production.db.MpsWeeklySchedule" title="MPS Weekly schedules">
+    	<panel name="mainPanel">
+    		<field name="code"/>
+    		<field name="name"/>
+    	</panel>
+    	<panel name="hoursPanel">    	
+	  		<field name="isMonday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursMonday" readonlyIf="!isMonday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>	  		
+	  		<field name="isTuesday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursTuesday" readonlyIf="!isTuesday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="isWednesday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursWednesday" readonlyIf="!isWednesday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="isThursday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursThursday" readonlyIf="!isThursday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="isFriday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursFriday" readonlyIf="!isFriday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="isSaturday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursSaturday" readonlyIf="!isSaturday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="isSunday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>    			
+	  		<field name="hoursSunday" readonlyIf="!isSunday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+			<field name="totalHours" colOffset="6"/>
+    	</panel>
+    </form>
+    
+    <action-method name="action-mps-weekly-schedule-method-count-total-hours">
+    	<call class="com.axelor.apps.production.web.MpsWeeklyScheduleController" method="countTotalHours"/>
+    </action-method>
+	    
+</object-views>
+
