@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.4]
 ## Features
+- MARKETING : Manage guests and attendees
 
 ## Improvements
 
