@@ -12,6 +12,7 @@
 			 selection="production.manuf.order.stock.move.realize.order.select"/>
 		<many-to-one name="manufOrderSequence" title="Default sequence" ref="com.axelor.apps.base.db.Sequence"/>
 		<one-to-many name="workshopSequenceConfigLineList" title="Sequence by workshop" mappedBy="productionConfig" ref="com.axelor.apps.production.db.WorkshopSequenceConfigLine"/>
+		<boolean name="isMps" title="Master Production Scheduling Charge"/>	
 
 	  <finder-method name="findByCompany" using="company"/>
 

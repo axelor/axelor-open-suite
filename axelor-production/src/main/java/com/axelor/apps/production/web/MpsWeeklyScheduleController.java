@@ -15,16 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.report;
+package com.axelor.apps.production.web;
 
-public interface IReport {
+import com.axelor.apps.production.db.MpsWeeklySchedule;
+import com.axelor.apps.production.service.MpsWeeklyScheduleService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-  public static final String MANUF_ORDER = "ManufOrder.rptdesign";
-  public static final String OPERATION_ORDER = "OperationOrder.rptdesign";
-  public static final String PROD_PROCESS = "ProdProcess.rptdesign";
-  public static final String BILL_OF_MATERIAL = "BillOfMaterial.rptdesign";
-  public static final String RAW_MATERIAL_REQUIREMENT = "RawMaterialRequirement.rptdesign";
-  public static final String COST_SHEET = "CostSheet.rptdesign";
-  public static final String WORK_IN_PROGRESS_VALUATION = "WorkInProgressValuation.rptdesign";
-  public static final String MPS_CHARGE = "MpsCharge.rptdesign";
+@Singleton
+public class MpsWeeklyScheduleController {
+
+  public void countTotalHours(ActionRequest request, ActionResponse response) {
+
+    MpsWeeklySchedule mpsWeeklySchedule = request.getContext().asType(MpsWeeklySchedule.class);
+    Beans.get(MpsWeeklyScheduleService.class).countTotalHours(mpsWeeklySchedule);
+    response.setValue("totalHours", mpsWeeklySchedule.getTotalHours());
+  }
 }
