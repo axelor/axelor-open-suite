@@ -54,7 +54,7 @@
 - SaleOrder : Task By product and Task_By_Line Invoicing
 - SALE ORDER : Update in 'Quotations template' working process and view.
 - Business Project : Addition of new m2o field 'customerAddress'.
-- Base : Additon of new object 'MailingListMessage' along with views and Menu.
+- Base : Additon of new object 'MailingListMessage' along with views, parent menu and sub-menus.
 - DataBackup : Relative date
 - BUSINESS PROJECT : Connect Contract to Project
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
