@@ -34,6 +34,10 @@ import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.MpsChargeService;
+import com.axelor.apps.production.service.MpsChargeServiceImpl;
+import com.axelor.apps.production.service.MpsWeeklyScheduleService;
+import com.axelor.apps.production.service.MpsWeeklyScheduleServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -113,5 +117,7 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
+    bind(MpsWeeklyScheduleService.class).to(MpsWeeklyScheduleServiceImpl.class);
+    bind(MpsChargeService.class).to(MpsChargeServiceImpl.class);
   }
 }

@@ -13,6 +13,7 @@
 		</panel>
 		<panel name="realizeOrderPanel">
 			<field name="stockMoveRealizeOrderSelect"/>
+			<field name="isMps"/>
 		</panel>
 		<panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
         	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.code = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
