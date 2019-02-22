@@ -6,6 +6,7 @@
 - CAMPAIGN : Added a reminder tab
 
 ## Improvements
+- Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 
 ## Bug Fixes
 
