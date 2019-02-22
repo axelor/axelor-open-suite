@@ -8,7 +8,7 @@
 		<field name="description"/>
 	</grid>
 
-	<form model="com.axelor.apps.base.db.MailingListMessage" title="Mailing list message" name="mailing-list-message-form">
+	<form model="com.axelor.apps.base.db.MailingListMessage" width="large" title="Mailing list message" name="mailing-list-message-form">
 		<panel name="mainPanel" colSpan="12">
 			<panel name="imagePanel" colSpan="4">
 				<field name="image" widget="Image" colSpan="12"/>

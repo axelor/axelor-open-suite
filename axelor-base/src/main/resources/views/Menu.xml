@@ -6,8 +6,10 @@
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
 	
-	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list" parent="menu-mail" order="-87" action="menu.mail.my.mailinig.list"/>
-	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list" parent="menu-mail" order="-86" action="menu.mail.all.mailinig.list"/>
+	<menuitem title="Mailinig lists" name="menu-mail-mailing-list" parent="menu-mail" order="-75"/>
+
+	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.my.mailinig.list"/>
+	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.all.mailinig.list"/>
 
 	<action-view name="menu.mail.my.mailinig.list" title="My Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
 		<view type="cards" name="mailing-list-message-cards"/>
