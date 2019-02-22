@@ -49,6 +49,16 @@ public class FilterJpqlService {
 
       MetaField field = filter.getMetaField();
 
+      if (filter.getValue() != null) {
+        String value = filter.getValue();
+        value = value.replaceAll("\"", "");
+        value = value.replaceAll("'", "");
+
+        if (filter.getOperator().contains("like") && !value.contains("%")) {
+          value = "%" + value + "%";
+        }
+        filter.setValue("'" + value + "'");
+      }
       String relationship = field.getRelationship();
       String fieldName =
           relationship != null ? filter.getTargetField() : filter.getMetaField().getName();
