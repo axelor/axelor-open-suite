@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.4]
 ## Features
 - MARKETING : Manage guests and attendees
+- CAMPAIGN : Added a reminder tab
 
 ## Improvements
 

@@ -39,6 +39,7 @@
     <many-to-many name="notParticipatingLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
     <many-to-many name="presentPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-many name="presentLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
+    <one-to-many name="campaignReminderList" title="Reminders" ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
 
   </entity>
 
