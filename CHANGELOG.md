@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.4]
 ## Features
 - MARKETING : Manage guests and attendees
+- MARKETING : Send a reminder to invited targets
 
 ## Improvements
 

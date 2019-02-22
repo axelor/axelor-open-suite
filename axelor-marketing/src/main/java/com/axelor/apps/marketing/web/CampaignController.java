@@ -67,6 +67,33 @@ public class CampaignController {
     }
   }
 
+  public void sendReminderEmail(ActionRequest request, ActionResponse response) {
+
+    Campaign campaign = request.getContext().asType(Campaign.class);
+
+    try {
+
+      campaign = campaignRepo.find(campaign.getId());
+
+      if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
+        response.setFlash(I18n.get(IExceptionMessage.REMINDER_EMAIL1));
+        return;
+      }
+
+      MetaFile logFile = campaignService.sendReminderEmail(campaign);
+
+      if (logFile == null) {
+        response.setFlash(I18n.get(IExceptionMessage.EMAIL_SUCCESS));
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.EMAIL_ERROR2));
+      }
+
+      response.setValue("emailLog", logFile);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void generateEvents(ActionRequest request, ActionResponse response) {
 
     Campaign campaign = request.getContext().asType(Campaign.class);

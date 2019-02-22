@@ -73,6 +73,28 @@ public class CampaignServiceImpl implements CampaignService {
     return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
   }
 
+  @Override
+  public MetaFile sendReminderEmail(Campaign campaign) {
+
+    String errorPartners = "";
+    String errorLeads = "";
+
+    templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+
+    if (campaign.getPartnerReminderTemplate() != null) {
+      errorPartners =
+          sendToPartners(campaign.getInvitedPartnerSet(), campaign.getPartnerReminderTemplate());
+    }
+
+    if (campaign.getLeadReminderTemplate() != null) {
+      errorLeads = sendToLeads(campaign.getInvitedLeadSet(), campaign.getLeadReminderTemplate());
+    }
+    if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
+      return null;
+    }
+    return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
+  }
+
   protected String sendToPartners(Set<Partner> partnerSet, Template template) {
 
     StringBuilder errors = new StringBuilder();

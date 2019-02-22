@@ -28,6 +28,8 @@ public interface CampaignService {
 
   public MetaFile sendEmail(Campaign campaign);
 
+  public MetaFile sendReminderEmail(Campaign campaign);
+
   public void generateEvents(Campaign campaign);
 
   public void generateTargets(Campaign campaign);
