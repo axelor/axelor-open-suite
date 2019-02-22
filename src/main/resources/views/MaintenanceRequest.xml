@@ -29,10 +29,10 @@
 			<field name="manufOrder" />
 			<field name="doneOn"/>
         </panel>
-        <panel name="actions" sidebar="true" title="Actions"  stacked="true" showIf="id != null">
-        	<button name="start" title="Start" showIf="statusSelect == 0" onClick="action-maintenance-request-method-start" />
+        <panel name="actions" sidebar="true" title="Actions" stacked="true">
+          <button name="start" title="Start" showIf="statusSelect == 0" readonlyIf="!equipementMaintenance &amp;&amp; !expectedDate" onClick="save,action-maintenance-request-method-start" />
         	<button name="complete" title="Complete" showIf="statusSelect == 1"  onClick="acttion-maintenance-request-method-complete" />
-        	<button name="cancel" title="Cancel" showIf="statusSelect != 3"  onClick="acttion-maintenance-request-method-cancel" />
+          <button name="cancel" title="Cancel" showIf="id &amp;&amp; statusSelect != 3"  onClick="acttion-maintenance-request-method-cancel" />
         	<button name="replan" title="Replan" showIf="statusSelect == 3" onClick="acttion-maintenance-request-method-replan" />
         </panel>
         <panel-mail name="panel-mail">
