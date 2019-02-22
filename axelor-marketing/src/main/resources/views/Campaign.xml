@@ -75,6 +75,7 @@
 					<field name="emailLog" widget="binary-link" showIf="emailing"/>
 				</panel>
 			</panel>
+			<panel-related name="campaignReminderListPanel" field="campaignReminderList" colSpan="12" showTitle="false" form-view="campaign-reminder-form" grid-view="campaign-reminder-grid"/>
 		</panel-tabs>
 		<panel name="actionsPanel" sidebar="true">
 			<button name="planBtn" showIf="stageSelect == 0" title="Plan" onClick="save,action-campaign-record-plan"/>

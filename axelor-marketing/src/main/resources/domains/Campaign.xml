@@ -33,6 +33,7 @@
     <string name="report" />
     <datetime name="eventStartDateT" title="Event start"/>
     <datetime name="eventEndDateT" title="Event end"/>
+    <one-to-many name="campaignReminderList" title="Reminders" ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
   </entity>
 
 </domain-models>

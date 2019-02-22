@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.4]
 ## Features
+- CAMPAIGN : Added a reminder tab
 
 ## Improvements
 
