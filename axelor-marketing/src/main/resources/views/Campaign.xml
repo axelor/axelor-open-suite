@@ -91,6 +91,7 @@
 					<field name="emailLog" widget="binary-link" showIf="emailing"/>
 				</panel>
 			</panel>
+			<panel-related name="campaignReminderListPanel" field="campaignReminderList" colSpan="12" showTitle="false" form-view="campaign-reminder-form" grid-view="campaign-reminder-grid"/>
 			<panel name="presencePanel" title="Presence" showIf="manageAttendees &amp;&amp; stageSelect &gt;= 2">
 				<panel-related name="presentLeadSetPanel" field="presentLeadSet" colSpan="12" grid-view="lead-grid" form-view="lead-form"/>
 				<panel-related name="presentPartnerSetPanel" field="presentPartnerSet" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
