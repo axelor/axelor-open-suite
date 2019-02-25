@@ -40,7 +40,7 @@
 			]]>
 		</dataset>
 		<category key="month" type="month"/>
-		<series key="count" groupBy="code" type="line"/>
+		<series key="count" groupBy="code" type="area"/>
 	</chart>
 	
 	<action-attrs name="action-mps-charge-attrs-date-on-change">

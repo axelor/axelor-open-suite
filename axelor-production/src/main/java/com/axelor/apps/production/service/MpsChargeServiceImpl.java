@@ -34,8 +34,10 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 public class MpsChargeServiceImpl implements MpsChargeService {
@@ -51,7 +53,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
 
     List<MpsWeeklySchedule> mpsWeeklyScheduleList =
         Beans.get(MpsWeeklyScheduleRepository.class).all().order("totalHours").fetch();
-    Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap = new HashMap<>();
+    Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap = new LinkedHashMap<>();
     for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
       Map<YearMonth, BigDecimal> totalHoursCountYearForMpsWeeklySchedualMap =
           countTotalHoursForMpsWeeklySchedual(mpsWeeklySchedule, startMonthDate, endMonthDate);
@@ -164,7 +166,6 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   public List<Map<String, Object>> getTableDataMapList(
       Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap) {
     List<Map<String, Object>> dataMapList = new ArrayList<>();
-    Map<String, Object> totalRowDataMap = new HashMap<>();
 
     for (Map.Entry<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> entry :
         totalHoursCountMap.entrySet()) {
@@ -175,18 +176,10 @@ public class MpsChargeServiceImpl implements MpsChargeService {
       for (Map.Entry<YearMonth, BigDecimal> yearsMonthCount : entry.getValue().entrySet()) {
         String month = yearsMonthCount.getKey().getMonth().toString().toLowerCase();
         dataMap.put(month, yearsMonthCount.getValue());
-        totalRowDataMap.put(
-            month,
-            ((BigDecimal) totalRowDataMap.getOrDefault(month, BigDecimal.ZERO))
-                .add(yearsMonthCount.getValue()));
       }
       dataMapList.add(dataMap);
     }
 
-    if (totalHoursCountMap.entrySet().size() > 0) {
-      totalRowDataMap.put(TITLE_CODE, "Total");
-      dataMapList.add(totalRowDataMap);
-    }
     return dataMapList;
   }
 
