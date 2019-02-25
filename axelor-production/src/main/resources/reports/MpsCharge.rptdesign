@@ -1345,194 +1345,6 @@ return false;]]></method>
                                 </row>
                             </header>
                         </group>
-                        <footer>
-                            <row id="1128">
-                                <property name="backgroundColor">#AEADAD</property>
-                                <property name="fontSize">8.5pt</property>
-                                <cell id="1129">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3971">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.total')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="1130">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1211">
-                                        <property name="resultSetColumn">Aggregation_13</property>
-                                    </data>
-                                </cell>
-                                <cell id="1131">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1212">
-                                        <property name="resultSetColumn">Aggregation_14</property>
-                                    </data>
-                                </cell>
-                                <cell id="1132">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1213">
-                                        <property name="resultSetColumn">Aggregation_15</property>
-                                    </data>
-                                </cell>
-                                <cell id="1133">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1224">
-                                        <property name="resultSetColumn">Aggregation_16</property>
-                                    </data>
-                                </cell>
-                                <cell id="1134">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1225">
-                                        <property name="resultSetColumn">Aggregation_17</property>
-                                    </data>
-                                </cell>
-                                <cell id="1135">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1226">
-                                        <property name="resultSetColumn">Aggregation_18</property>
-                                    </data>
-                                </cell>
-                                <cell id="1136">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1227">
-                                        <property name="resultSetColumn">Aggregation_19</property>
-                                    </data>
-                                </cell>
-                                <cell id="1137">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1228">
-                                        <property name="resultSetColumn">Aggregation_20</property>
-                                    </data>
-                                </cell>
-                                <cell id="1138">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1229">
-                                        <property name="resultSetColumn">Aggregation_21</property>
-                                    </data>
-                                </cell>
-                                <cell id="1139">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1230">
-                                        <property name="resultSetColumn">Aggregation_22</property>
-                                    </data>
-                                </cell>
-                                <cell id="1140">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1231">
-                                        <property name="resultSetColumn">Aggregation_23</property>
-                                    </data>
-                                </cell>
-                                <cell id="1141">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <property name="textAlign">right</property>
-                                    <data id="1232">
-                                        <property name="resultSetColumn">Aggregation_24</property>
-                                    </data>
-                                </cell>
-                            </row>
-                        </footer>
                     </table>
                 </cell>
             </row>
@@ -1546,8 +1358,8 @@ return false;]]></method>
                     <extended-item extensionName="Chart" id="511">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
-  <Type>Line Chart</Type>
-  <SubType>Overlay</SubType>
+  <Type>Area Chart</Type>
+  <SubType>Stacked</SubType>
   <Block>
     <Children xsi:type="layout:TitleBlock">
       <Bounds>
@@ -2127,7 +1939,7 @@ return false;]]></method>
             <Blue>0</Blue>
           </Entries>
         </SeriesPalette>
-        <Series xsi:type="type:LineSeries">
+        <Series xsi:type="type:AreaSeries">
           <Visible>true</Visible>
           <Label>
             <Caption>
@@ -2178,7 +1990,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
             <Separator>, </Separator>
           </DataPoint>
           <LabelPosition>Above</LabelPosition>
-          <Stacked>false</Stacked>
+          <Stacked>true</Stacked>
           <Triggers>
             <Condition>onmouseover</Condition>
             <Action>
@@ -2192,7 +2004,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
           <Markers>
             <Type>Box</Type>
             <Size>4</Size>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <Outline>
               <Visible>true</Visible>
             </Outline>
@@ -2209,6 +2021,8 @@ row[months[row[&quot;month&quot;]]]</Definition>
             <Visible>true</Visible>
           </LineAttributes>
           <PaletteLineColor>true</PaletteLineColor>
+          <Curve>false</Curve>
+          <ConnectMissingValue>true</ConnectMissingValue>
         </Series>
         <Grouping>
           <GroupType>Text</GroupType>

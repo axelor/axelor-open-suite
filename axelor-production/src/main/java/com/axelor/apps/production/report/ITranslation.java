@@ -214,7 +214,6 @@ public interface ITranslation {
   public static final String MPS_CHARGE_CODE = /*$$(*/ "MpsCharge.code"; /*)*/
   public static final String MPS_CHARGE_START_MONTH = /*$$(*/ "MpsCharge.startMonth"; /*)*/
   public static final String MPS_CHARGE_END_MONTH = /*$$(*/ "MpsCharge.endMonth"; /*)*/
-  public static final String MPS_CHARGE_TOTAL = /*$$(*/ "MpsCharge.total"; /*)*/
   public static final String MPS_CHARGE_JANUARY = /*$$(*/ "MpsCharge.january"; /*)*/
   public static final String MPS_CHARGE_FEBRUARY = /*$$(*/ "MpsCharge.february"; /*)*/
   public static final String MPS_CHARGE_MARCH = /*$$(*/ "MpsCharge.march"; /*)*/
