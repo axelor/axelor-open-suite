@@ -77,6 +77,7 @@
 - JobPosition : Hide statusOpenBtn on statusSelect = 2.
 - Purchase Order : remove IPurchaseOrder deprecated class
 - Project module : Add metaFile field on TeamTask
+- Event : Allowing to suppress unsynchronized events. 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
