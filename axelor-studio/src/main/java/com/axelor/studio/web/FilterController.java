@@ -51,7 +51,10 @@ public class FilterController {
       response.setValue("targetType", type);
       response.setValue("targetField", metaField.getName());
       response.setValue(
-          "targetTitle", metaField.getLabel() != null ? metaField.getLabel() : metaField.getName());
+          "targetTitle",
+          metaField.getLabel() != null && !metaField.getLabel().isEmpty()
+              ? metaField.getLabel()
+              : metaField.getName());
     } else if (isJson && metaJson != null) {
       response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
       response.setValue("targetField", metaJson.getName());
