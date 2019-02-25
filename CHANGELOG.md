@@ -11,6 +11,7 @@
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 
 ## Bug Fixes
+- StockMoveLine: Fix wrong price values in declaration of exchanges.
 
 
 ## [5.1.3] - 2019-02-21
