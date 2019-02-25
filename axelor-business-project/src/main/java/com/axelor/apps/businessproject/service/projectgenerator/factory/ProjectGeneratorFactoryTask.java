@@ -98,6 +98,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
         task.setTaskDate(startDate.toLocalDate());
         task.setUnitPrice(product.getSalePrice());
+        task.setExTaxTotal(saleOrderLine.getExTaxTotal());
         if (project.getTeamTaskInvoicing()
             && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE) {
           task.setToInvoice(true);
