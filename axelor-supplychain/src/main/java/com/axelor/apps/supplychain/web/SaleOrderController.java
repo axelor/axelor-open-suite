@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
@@ -97,6 +98,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -105,6 +107,7 @@ public class SaleOrderController {
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
+                  .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
@@ -518,20 +521,6 @@ public class SaleOrderController {
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
 
-  public void onSave(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
-      if (saleOrderView.getOrderBeingEdited()) {
-        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-        saleOrderServiceSupplychain.validateChanges(saleOrder, saleOrderView);
-        response.setValues(saleOrderView);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   /**
    * Called on sale order invoicing wizard form. Call {@link
    * SaleOrderInvoiceService#getInvoicingWizardOperationDomain(SaleOrder)}
@@ -612,5 +601,22 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void fillSaleOrderLinesEstimatedDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        Integer deliveryState = saleOrderLine.getDeliveryState();
+        if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
+            && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
+          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+        }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
   }
 }

@@ -22,6 +22,7 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
+import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -72,6 +73,28 @@ public class CampaignServiceImpl implements CampaignService {
       return null;
     }
 
+    return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
+  }
+
+  @Override
+  public MetaFile sendReminderEmail(Campaign campaign) {
+
+    String errorPartners = "";
+    String errorLeads = "";
+
+    templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+
+    if (campaign.getPartnerReminderTemplate() != null) {
+      errorPartners =
+          sendToPartners(campaign.getInvitedPartnerSet(), campaign.getPartnerReminderTemplate(), campaign);
+    }
+
+    if (campaign.getLeadReminderTemplate() != null) {
+      errorLeads = sendToLeads(campaign.getInvitedLeadSet(), campaign.getLeadReminderTemplate(), campaign);
+    }
+    if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
+      return null;
+    }
     return generateLog(errorPartners, errorLeads, campaign.getEmailLog(), campaign.getId());
   }
 
@@ -210,5 +233,92 @@ public class CampaignServiceImpl implements CampaignService {
 
     campaign.setPartnerSet(partnerSet);
     campaign.setLeadSet(leadSet);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext) {
+
+    for (Partner partner : campaignContext.getPartnerSet()) {
+      if (partner.isSelected()) {
+        campaign.addInvitedPartnerSetItem(partner);
+      }
+    }
+
+    for (Lead lead : campaignContext.getLeadSet()) {
+      if (lead.isSelected()) {
+        campaign.addInvitedLeadSetItem(lead);
+      }
+    }
+
+    Beans.get(CampaignRepository.class).save(campaign);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void inviteAllTargets(Campaign campaign) {
+
+    campaign.getInvitedPartnerSet().addAll(campaign.getPartnerSet());
+    campaign.getInvitedLeadSet().addAll(campaign.getLeadSet());
+
+    Beans.get(CampaignRepository.class).save(campaign);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void addParticipatingTargets(Campaign campaign, Campaign campaignContext) {
+
+    for (Partner partner : campaignContext.getInvitedPartnerSet()) {
+      if (partner.isSelected()) {
+        campaign.addPartner(partner);
+        campaign.removeInvitedPartnerSetItem(partner);
+      }
+    }
+
+    for (Lead lead : campaignContext.getInvitedLeadSet()) {
+      if (lead.isSelected()) {
+        campaign.addLead(lead);
+        campaign.removeInvitedLeadSetItem(lead);
+      }
+    }
+
+    Beans.get(CampaignRepository.class).save(campaign);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext) {
+
+    for (Partner partner : campaignContext.getInvitedPartnerSet()) {
+      if (partner.isSelected()) {
+        campaign.addNotParticipatingPartnerSetItem(partner);
+        campaign.removeInvitedPartnerSetItem(partner);
+      }
+    }
+
+    for (Lead lead : campaignContext.getInvitedLeadSet()) {
+      if (lead.isSelected()) {
+        campaign.addNotParticipatingLeadSetItem(lead);
+        campaign.removeInvitedLeadSetItem(lead);
+      }
+    }
+
+    Beans.get(CampaignRepository.class).save(campaign);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void markLeadPresent(Campaign campaign, Lead lead) {
+
+    campaign.addPresentLeadSetItem(lead);
+    Beans.get(CampaignRepository.class).save(campaign);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void markPartnerPresent(Campaign campaign, Partner partner) {
+
+    campaign.addPresentPartnerSetItem(partner);
+    Beans.get(CampaignRepository.class).save(campaign);
   }
 }

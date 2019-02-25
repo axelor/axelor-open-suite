@@ -53,13 +53,11 @@ public class StockMoveInvoiceController {
   @Inject private PurchaseOrderRepository purchaseRepo;
 
   public void generateInvoice(ActionRequest request, ActionResponse response) {
-
-    StockMove stockMove = request.getContext().asType(StockMove.class);
-    Invoice invoice = null;
     try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-      Beans.get(StockMoveInvoiceService.class).createInvoice(stockMove);
+      Invoice invoice = Beans.get(StockMoveInvoiceService.class).createInvoice(stockMove);
 
       if (invoice != null) {
         // refresh stockMove context

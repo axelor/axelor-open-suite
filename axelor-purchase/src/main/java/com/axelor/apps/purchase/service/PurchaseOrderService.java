@@ -87,7 +87,7 @@ public interface PurchaseOrderService {
 
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception;
+  public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,

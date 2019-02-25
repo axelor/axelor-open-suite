@@ -122,6 +122,7 @@
 			        	<field name="endDate" colSpan="12" onChange="action-group-base-product-enddate-onchange"/>
 			      	</panel>
 			        <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
+			        <field name="isUnrenewed"/>
 		        	<field name="versionSelect" colSpan="12"/>
                     <panel name="multipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('sale')?.getManageMultipleSaleQuantity()" hideIf="!sellable">
 						<field name="allowToForceSaleQty"/>

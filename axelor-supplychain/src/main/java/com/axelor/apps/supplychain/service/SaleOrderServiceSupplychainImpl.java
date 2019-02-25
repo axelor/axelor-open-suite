@@ -106,6 +106,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             .fetch();
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+      StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
       if (cancelReason == null) {
         throw new AxelorException(
@@ -115,6 +116,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMoveRepository.remove(stockMove);
       }
     }
   }

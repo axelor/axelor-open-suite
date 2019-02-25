@@ -273,6 +273,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,

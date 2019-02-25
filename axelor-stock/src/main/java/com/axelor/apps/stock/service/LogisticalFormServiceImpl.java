@@ -386,12 +386,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     Preconditions.checkNotNull(logisticalForm);
     Preconditions.checkNotNull(stockMoveLine);
 
-    LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
-    logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
-    logisticalFormLine.setStockMoveLine(stockMoveLine);
-    logisticalFormLine.setQty(qty);
-    logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-    logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
+    LogisticalFormLine logisticalFormLine =
+        createLogisticalFormLine(logisticalForm, stockMoveLine, qty);
     addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
   }
 
@@ -652,5 +648,18 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     return Optional.empty();
+  }
+
+  protected LogisticalFormLine createLogisticalFormLine(
+      LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
+
+    LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
+    logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
+    logisticalFormLine.setStockMoveLine(stockMoveLine);
+    logisticalFormLine.setQty(qty);
+    logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
+    logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
+
+    return logisticalFormLine;
   }
 }

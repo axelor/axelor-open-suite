@@ -113,4 +113,43 @@ public class BudgetService {
     }
     return budgetLineList;
   }
+
+  public void checkSharedDates(Budget budget) throws AxelorException {
+
+    if (budget.getBudgetLineList() == null) {
+      return;
+    }
+
+    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
+
+    for (int i = 0; i < budgetLineList.size() - 1; i++) {
+      BudgetLine budgetLineA = budgetLineList.get(i);
+      LocalDate fromDateA = budgetLineA.getFromDate();
+      LocalDate toDateA = budgetLineA.getToDate();
+
+      for (int j = i + 1; j < budgetLineList.size(); j++) {
+        BudgetLine budgetLineB = budgetLineList.get(j);
+        LocalDate fromDateB = budgetLineB.getFromDate();
+        LocalDate toDateB = budgetLineB.getToDate();
+
+        if (fromDateA.equals(fromDateB) || toDateA.equals(toDateB)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get("Two or more budget lines share dates"));
+        }
+
+        if (fromDateA.isBefore(fromDateB) && (!toDateA.isBefore(fromDateB))) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get("Two or more budget lines share dates"));
+        }
+
+        if (fromDateA.isAfter(fromDateB) && (!fromDateA.isAfter(toDateB))) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get("Two or more budget lines share dates"));
+        }
+      }
+    }
+  }
 }

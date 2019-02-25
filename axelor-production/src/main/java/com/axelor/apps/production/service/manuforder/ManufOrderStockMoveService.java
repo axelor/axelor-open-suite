@@ -440,6 +440,9 @@ public class ManufOrderStockMoveService {
             StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
+    newStockMove.setOrigin(manufOrder.getManufOrderSeq());
+    newStockMove.setOriginId(manufOrder.getId());
+    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
 
     // plan the stockmove

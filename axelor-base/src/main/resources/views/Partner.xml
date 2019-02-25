@@ -22,6 +22,7 @@
 		<field name="companyStr" />
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
+		<button name="partnerPresentAtEventBtn" title="Present at the event" icon="fa-check" onClick="action-campaign-method-mark-partner-present" hidden="true"/>
 	</grid>
 
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
@@ -101,7 +102,8 @@
 
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
-		  onLoad="action-group-partner-onload" width="large">
+		  onLoad="action-group-partner-onload"
+		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
 		<panel-include view="partner-form" />
 	</form>
 
@@ -925,6 +927,10 @@
         <field name="isSupplier" expr="eval: false" />
         <field name="isCarrier" expr="eval: false" />
     </action-record>
+
+    <action-validate name="action-partner-validate-partner-stock-settings-list">
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    </action-validate>
 
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">

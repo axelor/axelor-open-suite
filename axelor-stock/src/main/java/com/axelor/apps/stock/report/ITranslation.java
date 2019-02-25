@@ -94,6 +94,7 @@ public interface ITranslation {
       "StockMove.customerPartnerSeq"; /*)*/
   public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
       "StockMove.supplierPartnerSeq"; /*)*/
+  public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/
@@ -117,6 +118,10 @@ public interface ITranslation {
       "PickingStockMove.withWithout"; /*)*/
   public static final String PICKING_STOCK_MOVE_CUSTOMER_CODE = /*$$(*/
       "PickingStockMove.customerCode"; /*)*/
+  public static final String PICKING_STOCK_MOVE_EXTERNAL_REFERENCE = /*$$(*/
+      "PickingStockMove.externalReference"; /*)*/
+  public static final String PICKING_STOCK_MOVE_DELIVERY_CONDITION = /*$$(*/
+      "PickingStockMove.deliveryCondition"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/

@@ -203,7 +203,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       saleOrderLine =
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
-    saleOrder.addSaleOrderLineListItem(saleOrderLine);
     Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 
     Beans.get(SaleOrderRepository.class).save(saleOrder);
