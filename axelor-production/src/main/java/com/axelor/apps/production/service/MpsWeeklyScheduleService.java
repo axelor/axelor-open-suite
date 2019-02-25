@@ -18,8 +18,12 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.MpsWeeklySchedule;
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
 
 public interface MpsWeeklyScheduleService {
 
   public void countTotalHours(MpsWeeklySchedule mpsWeeklySchedule);
+
+  public BigDecimal getHoursForWeekDay(MpsWeeklySchedule mpsWeeklySchedule, DayOfWeek dayOfWeek);
 }

@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 
 public class MpsWeeklyScheduleServiceImpl implements MpsWeeklyScheduleService {
 
@@ -34,5 +35,37 @@ public class MpsWeeklyScheduleServiceImpl implements MpsWeeklyScheduleService {
             .add(mpsWeeklySchedule.getHoursFriday())
             .add(mpsWeeklySchedule.getHoursSaturday())
             .add(mpsWeeklySchedule.getHoursSunday()));
+  }
+
+  @Override
+  public BigDecimal getHoursForWeekDay(MpsWeeklySchedule mpsWeeklySchedule, DayOfWeek dayOfWeek) {
+    BigDecimal hours = BigDecimal.ZERO;
+
+    switch (dayOfWeek) {
+      case MONDAY:
+        hours = mpsWeeklySchedule.getHoursMonday();
+        break;
+      case TUESDAY:
+        hours = mpsWeeklySchedule.getHoursTuesday();
+        break;
+      case WEDNESDAY:
+        hours = mpsWeeklySchedule.getHoursWednesday();
+        break;
+      case THURSDAY:
+        hours = mpsWeeklySchedule.getHoursThursday();
+        break;
+      case FRIDAY:
+        hours = mpsWeeklySchedule.getHoursFriday();
+        break;
+      case SATURDAY:
+        hours = mpsWeeklySchedule.getHoursSaturday();
+        break;
+      case SUNDAY:
+        hours = mpsWeeklySchedule.getHoursSunday();
+        break;
+      default:
+        break;
+    }
+    return hours;
   }
 }
