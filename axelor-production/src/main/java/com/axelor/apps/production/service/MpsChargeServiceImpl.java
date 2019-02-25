@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,59 +81,64 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   private BigDecimal countTotalHoursForGivenMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
+    Integer weekCountForLastDayOfMonth =
+        LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), yearMonth.lengthOfMonth())
+            .get(WeekFields.of(DayOfWeek.MONDAY, 1).weekOfMonth());
     BigDecimal totalHoursCountForExtraDaysInMonth =
         countTotalHoursForExtraDaysInMonth(mpsWeeklySchedule, yearMonth);
     BigDecimal totalHoursCountForCommonWeeksInMonth =
-        mpsWeeklySchedule.getTotalHours().multiply(new BigDecimal(3));
+        mpsWeeklySchedule.getTotalHours().multiply(new BigDecimal(weekCountForLastDayOfMonth));
     BigDecimal totalHoursCountForGivenMonth =
-        totalHoursCountForCommonWeeksInMonth.add(totalHoursCountForExtraDaysInMonth);
+        totalHoursCountForCommonWeeksInMonth.subtract(totalHoursCountForExtraDaysInMonth);
+
     return totalHoursCountForGivenMonth;
   }
 
   private BigDecimal countTotalHoursForExtraDaysInMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
-    LocalDate startDayOfMonth = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1);
-    LocalDate firstMondayOfMonth =
-        startDayOfMonth.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
-    LocalDate lastMondayOfMonth =
-        startDayOfMonth.with(TemporalAdjusters.lastInMonth(DayOfWeek.MONDAY));
-    List<DayOfWeek> extraDaysList = new ArrayList<>();
-
-    IntStream.rangeClosed(1, firstMondayOfMonth.getDayOfMonth() - 1)
-        .mapToObj(
-            dayOfMonth -> LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), dayOfMonth))
-        .forEach(day -> extraDaysList.add(day.getDayOfWeek()));
-    IntStream.rangeClosed(lastMondayOfMonth.getDayOfMonth(), startDayOfMonth.lengthOfMonth())
-        .mapToObj(
-            dayOfMonth -> LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), dayOfMonth))
-        .forEach(day -> extraDaysList.add(day.getDayOfWeek()));
-
     BigDecimal totalHours = BigDecimal.ZERO;
 
-    for (DayOfWeek dayOfWeek : extraDaysList) {
-      if (dayOfWeek.equals(DayOfWeek.MONDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursMonday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.TUESDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursTuesday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.WEDNESDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursWednesday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.THURSDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursThursday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.FRIDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursFriday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.SATURDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursSaturday());
-      }
-      if (dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-        totalHours = totalHours.add(mpsWeeklySchedule.getHoursSunday());
-      }
+    LocalDate startDayOfMonth = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1);
+    LocalDate lastMondayOfPrevMonth =
+        startDayOfMonth.minusMonths(1).with(TemporalAdjusters.lastInMonth(DayOfWeek.MONDAY));
+    LocalDate firstMondayOfNextMonth =
+        startDayOfMonth.plusMonths(1).with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+
+    MpsWeeklyScheduleService mpsWeeklyScheduleService = Beans.get(MpsWeeklyScheduleService.class);
+
+    if (!startDayOfMonth.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+      totalHours =
+          IntStream.rangeClosed(
+                  lastMondayOfPrevMonth.getDayOfMonth(), lastMondayOfPrevMonth.lengthOfMonth())
+              .mapToObj(
+                  dayOfMonth ->
+                      LocalDate.of(
+                          lastMondayOfPrevMonth.getYear(),
+                          lastMondayOfPrevMonth.getMonthValue(),
+                          dayOfMonth))
+              .map(
+                  day ->
+                      mpsWeeklyScheduleService.getHoursForWeekDay(
+                          mpsWeeklySchedule, day.getDayOfWeek()))
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
     }
+    totalHours =
+        IntStream.range(1, firstMondayOfNextMonth.getDayOfMonth())
+            .mapToObj(
+                dayOfMonth ->
+                    LocalDate.of(
+                        firstMondayOfNextMonth.getYear(),
+                        firstMondayOfNextMonth.getMonthValue(),
+                        dayOfMonth))
+            .map(
+                day ->
+                    mpsWeeklyScheduleService.getHoursForWeekDay(
+                        mpsWeeklySchedule, day.getDayOfWeek()))
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .add(totalHours);
     return totalHours;
   }
 
