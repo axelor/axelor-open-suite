@@ -72,6 +72,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
         task.setUnit(product.getUnit());
         task.setUnitPrice(product.getSalePrice());
+        task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);
           task.setTeamTaskInvoicing(true);
