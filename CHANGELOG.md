@@ -11,7 +11,7 @@
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 
 ## Bug Fixes
-
+- Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 
 ## [5.1.3] - 2019-02-21
 ## Features
