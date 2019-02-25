@@ -1696,6 +1696,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="4264">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["CustomerCode"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1734,6 +1740,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3425">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_edit_date"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1804,6 +1816,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3646">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["origin"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1842,6 +1860,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3693">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["user_name"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1886,6 +1910,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="4273">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["external_reference"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1921,6 +1951,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="4074">
                                     <property name="fontSize">10pt</property>
                                     <property name="textAlign">left</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["tracking_number"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[Tracking : <VALUE-OF>row["tracking_number"]</VALUE-OF>]]></text-property>
                                 </text>
@@ -2055,6 +2091,12 @@ row["first_name"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type_select"] == 2 &amp;&amp; !row._outer["to_address_str"]  || row._outer["type_select"] == 3 &amp;&amp; !row._outer["from_address_str"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -2093,6 +2135,12 @@ row["first_name"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">true</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -2129,6 +2177,12 @@ row["first_name"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row._outer["production_note"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
