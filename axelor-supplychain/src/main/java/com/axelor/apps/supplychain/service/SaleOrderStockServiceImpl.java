@@ -412,12 +412,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (taxLine != null) {
         taxRate = taxLine.getValue();
       }
-      if (saleOrderLine.getQty() != BigDecimal.ZERO) {
+      if (saleOrderLine.getQty().signum() != 0) {
         companyUnitPriceUntaxed =
             saleOrderLine
                 .getCompanyExTaxTotal()
                 .divide(
-                    qty,
+                    saleOrderLine.getQty(),
                     Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_EVEN);
       }

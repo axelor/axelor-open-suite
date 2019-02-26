@@ -5,13 +5,17 @@
 - MARKETING : Manage guests and attendees
 - CAMPAIGN : Added a reminder tab
 - MARKETING : Send a reminder to invited targets
+- MARKETING : Add a boolean in targetModelSet
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
+- Marketing : added a panel-dashlet showing the generated emails in campaign.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 
 ## Bug Fixes
+- StockMoveLine: Fix wrong price values in declaration of exchanges.
+- PARTNER BALANCE REPORT : edition date is always empty.
 
 
 ## [5.1.3] - 2019-02-21
@@ -79,7 +83,7 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
-- ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
+- ACCOUNT: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 

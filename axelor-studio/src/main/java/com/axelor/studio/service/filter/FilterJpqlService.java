@@ -62,9 +62,13 @@ public class FilterJpqlService {
       String relationship = field.getRelationship();
       String fieldName =
           relationship != null ? filter.getTargetField() : filter.getMetaField().getName();
+      fieldName = "self." + fieldName;
+      if (filter.getTargetType().equals("String")) {
+        fieldName = "LOWER(" + fieldName + ")";
+        filter.setValue("LOWER(" + filter.getValue() + ")");
+      }
       String condition =
-          filterCommonService.getCondition(
-              "self." + fieldName, filter.getOperator(), filter.getValue());
+          filterCommonService.getCondition(fieldName, filter.getOperator(), filter.getValue());
 
       if (filters == null) {
         filters = condition;
