@@ -11,6 +11,7 @@
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
+- WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
