@@ -133,7 +133,7 @@
 	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
 	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
 	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
-	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" readonly="true"/>
+	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
 	
   	<unique-constraint columns="invoiceId,company"/>
 
