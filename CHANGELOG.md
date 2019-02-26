@@ -5,6 +5,7 @@
 - MARKETING : Manage guests and attendees
 - CAMPAIGN : Added a reminder tab
 - MARKETING : Send a reminder to invited targets
+- MARKETING : Add a boolean in targetModelSet
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
