@@ -19,6 +19,7 @@
 		<string name="mtnComments" title="Maintenance comments" />
 		<date name="startDate" title="Event start date"/>
 		<date name="endDate" title="Event end date"/>
+		<integer name="sequence"/>
 		
 		<extra-code>
 			<![CDATA[
