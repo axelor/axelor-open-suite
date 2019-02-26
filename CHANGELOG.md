@@ -16,6 +16,7 @@
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
 - PARTNER BALANCE REPORT : edition date is always empty.
+- Invoice : fix NPE when printing invoices.
 
 
 ## [5.1.3] - 2019-02-21

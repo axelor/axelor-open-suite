@@ -276,7 +276,7 @@ public class InvoiceController {
 
   /** Method to generate invoice as a Pdf */
   @SuppressWarnings("unchecked")
-  public void showInvoice(ActionRequest request, ActionResponse response) {
+  public void showInvoices(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     String fileLink;
     String title;
@@ -295,10 +295,25 @@ public class InvoiceController {
                 });
         fileLink = invoicePrintService.printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null) {
-        fileLink =
-            invoicePrintService.printInvoice(
-                invoiceRepo.find(request.getContext().asType(Invoice.class).getId()), false);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
+      }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    String fileLink;
+    String title;
+
+    try {
+      if (context.get("id") != null) {
+        Invoice invoice = invoiceRepo.find(request.getContext().asType(Invoice.class).getId());
+        fileLink = invoicePrintService.printInvoice(invoice, false);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
