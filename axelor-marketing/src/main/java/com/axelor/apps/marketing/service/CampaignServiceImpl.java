@@ -239,14 +239,22 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext) {
 
+    Set<Partner> partners = campaign.getPartners();
+    Set<Partner> notParticipatingPartnerSet = campaign.getNotParticipatingPartnerSet();
+
     for (Partner partner : campaignContext.getPartnerSet()) {
-      if (partner.isSelected()) {
+      if (partner.isSelected()
+          && !partners.contains(partner)
+          && !notParticipatingPartnerSet.contains(partner)) {
         campaign.addInvitedPartnerSetItem(partner);
       }
     }
 
+    Set<Lead> leads = campaign.getLeads();
+    Set<Lead> notParticipatingLeadSet = campaign.getNotParticipatingLeadSet();
+
     for (Lead lead : campaignContext.getLeadSet()) {
-      if (lead.isSelected()) {
+      if (lead.isSelected() && !leads.contains(lead) && !notParticipatingLeadSet.contains(lead)) {
         campaign.addInvitedLeadSetItem(lead);
       }
     }
@@ -258,9 +266,23 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void inviteAllTargets(Campaign campaign) {
 
-    campaign.getInvitedPartnerSet().addAll(campaign.getPartnerSet());
-    campaign.getInvitedLeadSet().addAll(campaign.getLeadSet());
+    Set<Partner> partners = campaign.getPartners();
+    Set<Partner> notParticipatingPartnerSet = campaign.getNotParticipatingPartnerSet();
 
+    for (Partner partner : campaign.getPartnerSet()) {
+      if (!partners.contains(partner) && !notParticipatingPartnerSet.contains(partner)) {
+        campaign.addInvitedPartnerSetItem(partner);
+      }
+    }
+
+    Set<Lead> leads = campaign.getLeads();
+    Set<Lead> notParticipatingLeadSet = campaign.getNotParticipatingLeadSet();
+
+    for (Lead lead : campaign.getLeadSet()) {
+      if (!leads.contains(lead) && !notParticipatingLeadSet.contains(lead)) {
+        campaign.addInvitedLeadSetItem(lead);
+      }
+    }
     Beans.get(CampaignRepository.class).save(campaign);
   }
 
