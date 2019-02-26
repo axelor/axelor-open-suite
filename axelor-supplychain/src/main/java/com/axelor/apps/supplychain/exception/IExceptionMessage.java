@@ -192,4 +192,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
+
+  public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
+      "Stock move %s has been created for this sale order" /*)*/;
 }

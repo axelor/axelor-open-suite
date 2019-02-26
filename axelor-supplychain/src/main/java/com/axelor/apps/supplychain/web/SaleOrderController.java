@@ -619,4 +619,24 @@ public class SaleOrderController {
 
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
+
+  public void notifyStockMoveCreated(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    StockMoveRepository stockMoveRepo = Beans.get(StockMoveRepository.class);
+    StockMove stockMove =
+        stockMoveRepo
+            .all()
+            .filter(
+                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect != ?3",
+                "com.axelor.apps.sale.db.SaleOrder",
+                saleOrder.getId(),
+                StockMoveRepository.STATUS_CANCELED)
+            .fetchOne();
+    if (stockMove != null) {
+      response.setNotify(
+          String.format(
+              I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
+              stockMove.getStockMoveSeq()));
+    }
+  }
 }
