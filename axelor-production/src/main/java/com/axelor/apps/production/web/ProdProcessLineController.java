@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterType;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.rpc.ActionRequest;
@@ -35,7 +36,13 @@ public class ProdProcessLineController {
 
   public void updateDuration(ActionRequest request, ActionResponse response) {
     ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-    WorkCenter workCenter = prodProcess.getWorkCenter();
+    WorkCenterType workCenterType = prodProcess.getWorkCenterType();
+    WorkCenter workCenter =
+        workCenterType != null
+                && workCenterType.getWorkCenterList() != null
+                && !workCenterType.getWorkCenterList().isEmpty()
+            ? workCenterType.getWorkCenterList().get(0)
+            : null;
     if (workCenter != null) {
       response.setValue(
           "durationPerCycle",
@@ -45,7 +52,13 @@ public class ProdProcessLineController {
 
   public void updateCapacitySettings(ActionRequest request, ActionResponse response) {
     ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-    WorkCenter workCenter = prodProcess.getWorkCenter();
+    WorkCenterType workCenterType = prodProcess.getWorkCenterType();
+    WorkCenter workCenter =
+        workCenterType != null
+                && workCenterType.getWorkCenterList() != null
+                && !workCenterType.getWorkCenterList().isEmpty()
+            ? workCenterType.getWorkCenterList().get(0)
+            : null;
     if (workCenter != null) {
       response.setValue(
           "minCapacityPerCycle",

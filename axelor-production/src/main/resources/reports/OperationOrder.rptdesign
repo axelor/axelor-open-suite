@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -603,7 +603,7 @@ this.queryText = this.queryText.replace('@INJECTID', params["OperationOrderId"])
 		OperationOrder.planned_end_datet, OperationOrder.real_start_datet, OperationOrder.real_end_datet,OperationOrder.bar_code as operation_barcode, BarCodeFile.file_path as operation_barcode_picture,
 		Machine.serial_number as machine_serial_num, Machine.name as machine_name,
 		ProdProcessLine.description, OperationOrder.status_select,
-		TO_CHAR((MachineWorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
+		TO_CHAR((WorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
 		TO_CHAR((Machine.starting_duration || ' seconds')::interval, 'HH24:MI:SS') as starting_duration,
 		TO_CHAR((Machine.setup_duration || ' seconds')::interval, 'HH24:MI:SS') as setup_duration,
 		TO_CHAR((Machine.ending_duration || ' seconds')::interval, 'HH24:MI:SS') as ending_duration
@@ -626,9 +626,9 @@ LEFT JOIN
 LEFT JOIN
 	base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN 
-	production_work_center AS MachineWorkCenter ON (MachineWorkCenter.id = OperationOrder.machine_work_center)
+	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrder.work_center)
 LEFT JOIN 
-	production_machine AS Machine ON (Machine.id = MachineWorkCenter.machine)
+	production_machine AS Machine ON (Machine.id = OperationOrder.machine)
 LEFT JOIN 
 	production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
 LEFT JOIN 

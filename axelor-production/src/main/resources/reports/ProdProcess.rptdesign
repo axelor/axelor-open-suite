@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -640,13 +640,13 @@ WHERE Production.id IN (?);]]></xml-property>
             <xml-property name="queryText"><![CDATA[select ProductionLine.priority as priority,
 ProductionLine.name as label,
 ProductionLine.id as id,
-WorkCenter.name as workCenter,
+WorkCenterType.name as work_center_type,
 ProductionLine.outsourcing as outsourcing,
 ProductionLine.description,
 (select count(Description.id) from production_object_description as Description where ProductionLine.id = Description.prod_process_line) as totalDescription,
 (select count(product.id) from production_prod_product as product where ProductionLine.id = product.to_consume_prod_process_line) as totalProduct
 from production_prod_process_line ProductionLine
-LEFT JOIN production_work_center as WorkCenter ON (ProductionLine.work_center = WorkCenter.id)
+LEFT JOIN production_work_center_type as WorkCenterType ON (ProductionLine.work_center_type = WorkCenterType.id)
 WHERE ProductionLine.prod_process IN (?) order by ProductionLine.id;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1471,12 +1471,6 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">workcenter</property>
-                                    <text-property name="displayName">workcenter</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["workcenter"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
                                     <property name="name">outsourcing</property>
                                     <text-property name="displayName">outsourcing</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["outsourcing"]</expression>
@@ -1487,6 +1481,13 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                     <text-property name="displayName">description</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["description"]</expression>
                                     <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">work_center_type</property>
+                                    <text-property name="displayName">work_center_type</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["work_center_type"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <column id="4652">
@@ -1692,7 +1693,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">"ProdProcess.workcenter"</value>
+                                                        <value type="javascript">"ProdProcess.workCenterType"</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -1869,7 +1870,7 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["workcenter"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["work_center_type"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4642">

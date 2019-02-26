@@ -52,6 +52,7 @@
 - TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
 - MOVE : improve reversion process.
 - SaleOrder : Task By product and Task_By_Line Invoicing
+- OPERATION ORDER : Changes in the way work centers are handled for production
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

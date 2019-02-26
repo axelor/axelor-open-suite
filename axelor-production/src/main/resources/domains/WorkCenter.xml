@@ -10,7 +10,7 @@
     <string name="name" title="Label" required="true"/>
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
-    <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
+    <integer name="workCenterTypeSelect" title="Resource type" selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
@@ -23,12 +23,22 @@
     
     <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter" title="Human resources"/>
     
-    <one-to-many name="workCenterList" ref="com.axelor.apps.production.db.WorkCenter" mappedBy="parentWorkCenter" title="Replacement machines"/>
     <many-to-one name="parentWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+  	<integer name="typeSelect" title="Priority of use" selection="iproduction.work.center.selector.type.select"/>
+  	<many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine Type"/>
+  	<many-to-one name="workCenterType" ref="com.axelor.apps.production.db.WorkCenterType" title="Work Center Type"/>
+    
+    <extra-code><![CDATA[
+		// TYPE SELECT
+		public static final int DEFAULT_WORK_CENTER = 1;
+		public static final int ALTERNATIVE_WORK_CENTER = 2;
+		public static final int BACK_UP_WORK_CENTER = 3;
+	]]></extra-code>
     
   </entity>
+	
 </domain-models>

@@ -6,14 +6,13 @@
 	<grid name="machine-type-grid" title="Machine Types" model="com.axelor.apps.production.db.MachineType">
 		<field name="name"/>
 		<field name="code"/>
-		<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
 	</grid>
 	
 	<form name="machine-type-form" title="Machine Type" model="com.axelor.apps.production.db.MachineType">
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="code"/>
-			<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="machineSet" grid-view="machine-grid" form-view="machine-form" colSpan="12" canSelect="true"/>
 		</panel>
 	</form>
 	

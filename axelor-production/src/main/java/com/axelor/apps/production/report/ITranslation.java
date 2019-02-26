@@ -120,8 +120,8 @@ public interface ITranslation {
   public static final String PRODUCTION_PROCESS_COMPANY = /*$$(*/ "ProdProcess.company"; /*)*/
   public static final String PRODUCTION_PROCESS_PHASES = /*$$(*/ "ProdProcess.phases"; /*)*/
   public static final String PRODUCTION_PROCESS_PRIORITY = /*$$(*/ "ProdProcess.priority"; /*)*/
-  public static final String PRODUCTION_PROCESS_WORK_CENTER = /*$$(*/
-      "ProdProcess.workcenter"; /*)*/
+  public static final String PRODUCTION_PROCESS_WORK_CENTER_TYPE = /*$$(*/
+      "ProdProcess.workCenterType"; /*)*/
   public static final String PRODUCTION_PROCESS_OUTSOURCING = /*$$(*/
       "ProdProcess.outsourcing"; /*)*/
   public static final String PRODUCTION_PROCESS_DESCRIPTION = /*$$(*/

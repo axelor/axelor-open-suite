@@ -32,6 +32,10 @@ import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
+import com.axelor.apps.production.db.repo.WorkCenterProductionRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.apps.production.db.repo.WorkCenterTypeProductionRepository;
+import com.axelor.apps.production.db.repo.WorkCenterTypeRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
@@ -113,5 +117,7 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
+    bind(WorkCenterTypeRepository.class).to(WorkCenterTypeProductionRepository.class);
+    bind(WorkCenterRepository.class).to(WorkCenterProductionRepository.class);
   }
 }

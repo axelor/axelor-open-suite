@@ -115,4 +115,10 @@
 		<option value="3">Work in progress</option>
 		<option value="4">Bill of material</option>
 	</selection>
+	
+	<selection name="iproduction.work.center.selector.type.select">
+		<option value="1">Default work center</option>
+		<option value="2">Alternative work center</option>
+		<option value="3">Back-up work center</option>
+	</selection>
 </object-views>

@@ -20,12 +20,14 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -68,6 +70,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   @Inject protected AppProductionService appProductionService;
 
+  @Inject private MachineRepository machineRepo;
+
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final DateTimeFormatter DATE_TIME_FORMAT =
       DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -77,24 +81,23 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
+    WorkCenter workCenter = null;
+    if (prodProcessLine.getWorkCenterType() != null
+        && prodProcessLine.getWorkCenterType().getWorkCenterList() != null
+        && !prodProcessLine.getWorkCenterType().getWorkCenterList().isEmpty()) {
+      workCenter = prodProcessLine.getWorkCenterType().getWorkCenterList().get(0);
+    }
+
     OperationOrder operationOrder =
         this.createOperationOrder(
-            manufOrder,
-            prodProcessLine.getPriority(),
-            prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter(),
-            prodProcessLine);
+            manufOrder, prodProcessLine.getPriority(), workCenter, prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public OperationOrder createOperationOrder(
-      ManufOrder manufOrder,
-      int priority,
-      WorkCenter workCenter,
-      WorkCenter machineWorkCenter,
-      ProdProcessLine prodProcessLine)
+      ManufOrder manufOrder, int priority, WorkCenter workCenter, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
     logger.debug(
@@ -109,11 +112,22 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             operationName,
             manufOrder,
             workCenter,
-            machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine);
-
-    this._createHumanResourceList(operationOrder, machineWorkCenter);
+    if (workCenter != null) {
+      Machine machine = workCenter.getMachine();
+      machine =
+          machine != null
+              ? machine
+              : (workCenter.getMachineType() != null
+                      && !workCenter.getMachineType().getMachineSet().isEmpty()
+                  ? workCenter.getMachineType().getMachineSet().stream().findFirst().get()
+                  : null);
+      if (machine == null) {
+        operationOrder.setMachine(machine);
+      }
+    }
+    this._createHumanResourceList(operationOrder, workCenter);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }

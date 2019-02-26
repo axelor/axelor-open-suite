@@ -18,7 +18,11 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterType;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -39,8 +43,10 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -308,5 +314,40 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void prodProcessLineChange(ActionRequest request, ActionResponse response) {
+    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+    WorkCenter workCenter = null;
+    Machine machine = null;
+    if (prodProcessLine != null && prodProcessLine.getWorkCenterType() != null) {
+      WorkCenterType workCenterType = prodProcessLine.getWorkCenterType();
+      List<WorkCenter> workCenterList =
+          workCenterType.getWorkCenterList() != null
+                  && !workCenterType.getWorkCenterList().isEmpty()
+              ? workCenterType.getWorkCenterList()
+              : null;
+
+      if (workCenterList != null && !workCenterList.isEmpty()) {
+        Collections.sort(
+            workCenterList,
+            (workCenter1, workCenter2) -> {
+              return workCenter1.getTypeSelect().compareTo(workCenter2.getTypeSelect());
+            });
+        workCenter = workCenterList.get(0);
+      }
+      machine =
+          workCenter != null && workCenter.getMachine() != null ? workCenter.getMachine() : null;
+      if (machine == null && workCenter.getMachineType() != null) {
+        Set<Machine> machineSet = workCenter.getMachineType().getMachineSet();
+        machine =
+            machineSet != null && !machineSet.isEmpty()
+                ? machineSet.stream().findFirst().get()
+                : null;
+      }
+    }
+    response.setValue("workCenter", workCenter);
+    response.setValue("machine", machine);
   }
 }

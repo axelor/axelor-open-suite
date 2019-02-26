@@ -7,7 +7,6 @@
 		<field name="name"/>
 		<field name="serialNumber"/>
 		<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
-		<field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
 	</grid>
 
 	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large"
@@ -27,7 +26,7 @@
 			</panel>
 			<field name="brand"/>
 			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>
-			<field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
+			<field name="machineTypeSet" widget="TagSelect"/>
 			<field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 			<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 			<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>

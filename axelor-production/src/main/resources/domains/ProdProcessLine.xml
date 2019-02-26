@@ -8,7 +8,6 @@
   <entity name="ProdProcessLine" lang="java">
 
  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
-  	<many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     <string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
@@ -21,5 +20,6 @@
 
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
     <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
+    <many-to-one name="workCenterType" ref="com.axelor.apps.production.db.WorkCenterType" title="Work Center Type"/>
   </entity>
 </domain-models>

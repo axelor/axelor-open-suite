@@ -17,15 +17,18 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -35,18 +38,24 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Inject private MachineRepository machineRepo;
+
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
-
+    WorkCenter workCenter = null;
+    if (prodProcessLine.getWorkCenterType() != null
+        && prodProcessLine.getWorkCenterType().getWorkCenterList() != null
+        && !prodProcessLine.getWorkCenterType().getWorkCenterList().isEmpty()) {
+      workCenter = prodProcessLine.getWorkCenterType().getWorkCenterList().get(0);
+    }
     OperationOrder operationOrder =
         this.createOperationOrder(
             manufOrder,
             prodProcessLine.getPriority(),
             manufOrder.getIsToInvoice(),
-            prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter(),
+            workCenter,
             prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -58,7 +67,6 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       int priority,
       boolean isToInvoice,
       WorkCenter workCenter,
-      WorkCenter machineWorkCenter,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -74,13 +82,26 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             operationName,
             manufOrder,
             workCenter,
-            machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine);
 
+    if (workCenter != null) {
+      Machine machine = workCenter.getMachine();
+      machine =
+          machine != null
+              ? machine
+              : (workCenter.getMachineType() != null
+                      && !workCenter.getMachineType().getMachineSet().isEmpty()
+                  ? workCenter.getMachineType().getMachineSet().stream().findFirst().get()
+                  : null);
+      if (machine != null) {
+        operationOrder.setMachine(machine);
+      }
+    }
+
     operationOrder.setIsToInvoice(isToInvoice);
 
-    this._createHumanResourceList(operationOrder, machineWorkCenter);
+    this._createHumanResourceList(operationOrder, workCenter);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }

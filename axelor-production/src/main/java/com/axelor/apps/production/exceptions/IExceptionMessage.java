@@ -124,4 +124,7 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
+
+  static final String WORK_CENTER_TYPE_SELECT_ERROR = /*$$(*/
+      "There can only be one default work center per work center type." /*)*/;
 }

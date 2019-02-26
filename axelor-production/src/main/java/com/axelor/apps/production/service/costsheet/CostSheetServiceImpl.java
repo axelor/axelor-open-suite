@@ -276,7 +276,15 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 
-        WorkCenter workCenter = prodProcessLine.getWorkCenter();
+        WorkCenterType workCenterType = prodProcessLine.getWorkCenterType();
+        if (workCenterType == null
+            || (workCenterType != null && workCenterType.getWorkCenterList() == null)) {
+          continue;
+        }
+        WorkCenter workCenter =
+            !workCenterType.getWorkCenterList().isEmpty()
+                ? workCenterType.getWorkCenterList().get(0)
+                : null;
 
         if (workCenter != null) {
 
@@ -359,7 +367,13 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine) {
 
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
+    WorkCenterType workCenterType = prodProcessLine.getWorkCenterType();
+    List<WorkCenter> workCenterList =
+        workCenterType != null ? workCenterType.getWorkCenterList() : null;
+    if (workCenterList == null || (workCenterList != null && workCenterList.isEmpty())) {
+      return;
+    }
+    WorkCenter workCenter = workCenterList.stream().findFirst().get();
 
     int costType = workCenter.getCostTypeSelect();
 
@@ -495,7 +509,19 @@ public class CostSheetServiceImpl implements CostSheetService {
       throws AxelorException {
     for (OperationOrder operationOrder : operationOrders) {
 
-      WorkCenter workCenter = operationOrder.getMachineWorkCenter();
+      WorkCenterType workCenterType =
+          operationOrder.getProdProcessLine() != null
+              ? operationOrder.getProdProcessLine().getWorkCenterType()
+              : null;
+
+      List<WorkCenter> workCenterList =
+          workCenterType != null ? workCenterType.getWorkCenterList() : null;
+
+      if (workCenterList == null || (workCenterList != null && workCenterList.isEmpty())) {
+        continue;
+      }
+
+      WorkCenter workCenter = workCenterList.stream().findFirst().get();
       if (workCenter == null) {
         workCenter = operationOrder.getWorkCenter();
       }

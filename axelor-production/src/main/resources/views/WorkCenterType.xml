@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="work-center-type-grid" title="Work Center Types" model="com.axelor.apps.production.db.WorkCenterType">
+		<field name="name"/>
+		<field name="code"/>
+	</grid>
+	
+	<form name="work-center-type-form" title="Work Center Type" model="com.axelor.apps.production.db.WorkCenterType">
+		<panel name="mainPanel">
+			<field name="name" required="true"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+			<field name="description"/>
+			<field name="workCenterList" title="Work Center List" form-view="work-center-form" grid-view="work-center-grid" colSpan="12" canSelect="true" domain="self.workCenterType IS NULL"/>
+		</panel>
+	</form>
+	
+</object-views>

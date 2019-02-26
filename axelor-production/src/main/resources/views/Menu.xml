@@ -138,6 +138,15 @@
 		<view type="form" name="work-center-form" />
 	</action-view>
 	
+	<menuitem name="manufacturing-conf-work-center-type" parent="manufacturing-conf"
+		title="Work Center Types" action="manufacturing.conf.work.center.type" />
+
+	<action-view name="manufacturing.conf.work.center.type" title="Work Center types"
+		model="com.axelor.apps.production.db.WorkCenterType" >
+		<view type="grid" name="work-center-type-grid" />
+		<view type="form" name="work-center-type-form" />
+	</action-view>
+	
 	<menuitem name="manufacturing-conf-machine" parent="manufacturing-conf"
 		title="Machines" action="manufacturing.conf.machine" />
 

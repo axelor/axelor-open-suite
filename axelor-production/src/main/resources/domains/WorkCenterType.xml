@@ -5,10 +5,11 @@
 
     <module name="production" package="com.axelor.apps.production.db"/>
 
-    <entity name="MachineType" lang="java">
-        <string name="name" title="Name" required="true"/>
+    <entity name="WorkCenterType" lang="java">
+        <string name="name" title="Name"/>
         <string name="code" title="Code"/>
-        <many-to-many name="machineSet" ref="com.axelor.apps.production.db.Machine" title="Machines" mappedBy="machineTypeSet"/>
+        <string name="description" title="Description" large="true"/>
+        <one-to-many name="workCenterList" ref="com.axelor.apps.production.db.WorkCenter" title="Work Center List" mappedBy="workCenterType"/>
     </entity>
     
 </domain-models>

@@ -37,11 +37,7 @@ public interface OperationOrderService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public OperationOrder createOperationOrder(
-      ManufOrder manufOrder,
-      int priority,
-      WorkCenter workCenter,
-      WorkCenter machineWorkCenter,
-      ProdProcessLine prodProcessLine)
+      ManufOrder manufOrder, int priority, WorkCenter workCenter, ProdProcessLine prodProcessLine)
       throws AxelorException;
 
   public String computeName(ManufOrder manufOrder, int priority, String operationName);

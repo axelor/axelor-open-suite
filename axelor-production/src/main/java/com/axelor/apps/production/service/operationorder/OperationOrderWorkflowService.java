@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterType;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -162,9 +163,34 @@ public class OperationOrderWorkflowService {
             && lastOperationOrder
                 .getPlannedStartDateT()
                 .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder
-              .getMachineWorkCenter()
-              .equals(operationOrder.getMachineWorkCenter())) {
+          ProdProcessLine lastOperationOrderProdProcessLine =
+              lastOperationOrder.getProdProcessLine();
+          WorkCenterType lastOperationOrderWorkCenterType =
+              lastOperationOrderProdProcessLine != null
+                  ? lastOperationOrderProdProcessLine.getWorkCenterType()
+                  : null;
+          WorkCenter lastOperationOrderWorkCenter =
+              lastOperationOrderWorkCenterType != null
+                      && lastOperationOrderWorkCenterType.getWorkCenterList() != null
+                      && !lastOperationOrderWorkCenterType.getWorkCenterList().isEmpty()
+                  ? lastOperationOrderWorkCenterType.getWorkCenterList().get(0)
+                  : null;
+
+          ProdProcessLine operationOrderProdProcessLine = operationOrder.getProdProcessLine();
+          WorkCenterType operationOrderWorkCenterType =
+              operationOrderProdProcessLine != null
+                  ? operationOrderProdProcessLine.getWorkCenterType()
+                  : null;
+          WorkCenter operationOrderWorkCenter =
+              operationOrderWorkCenterType != null
+                      && operationOrderWorkCenterType.getWorkCenterList() != null
+                      && !operationOrderWorkCenterType.getWorkCenterList().isEmpty()
+                  ? operationOrderWorkCenterType.getWorkCenterList().get(0)
+                  : null;
+
+          if (lastOperationOrderWorkCenter != null
+              && operationOrderWorkCenter != null
+              && lastOperationOrderWorkCenter.equals(operationOrderWorkCenter)) {
             return lastOperationOrder.getPlannedEndDateT();
           }
           return lastOperationOrder.getPlannedStartDateT();
@@ -331,10 +357,19 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
+      WorkCenterType workCenterType =
+          operationOrder.getProdProcessLine() != null
+              ? operationOrder.getProdProcessLine().getWorkCenterType()
+              : null;
+      WorkCenter workCenter =
+          workCenterType != null
+                  && workCenterType.getWorkCenterList() != null
+                  && !workCenterType.getWorkCenterList().isEmpty()
+              ? workCenterType.getWorkCenterList().get(0)
+              : null;
       Machine machine = null;
-      if (machineWorkCenter != null) {
-        machine = machineWorkCenter.getMachine();
+      if (workCenter != null) {
+        machine = workCenter.getMachine();
       } else if (operationOrder.getWorkCenter() != null) {
         machine = operationOrder.getWorkCenter().getMachine();
       }
@@ -456,9 +491,20 @@ public class OperationOrderWorkflowService {
   public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
+
+    WorkCenterType workCenterType =
+        prodProcessLine != null ? prodProcessLine.getWorkCenterType() : null;
+    WorkCenter workCenter =
+        workCenterType != null
+                && workCenterType.getWorkCenterList() != null
+                && !workCenterType.getWorkCenterList().isEmpty()
+            ? workCenterType.getWorkCenterList().get(0)
+            : null;
+    if (workCenter == null) {
+      return duration;
+    }
 
     BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
 
