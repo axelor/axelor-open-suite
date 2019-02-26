@@ -267,4 +267,6 @@ public interface InvoiceService {
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
   public void setPfpValidatorUser(Invoice invoice);
+
+  public Boolean checkIsValidPfpValidatorUser(Invoice invoice);
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -60,6 +61,7 @@ import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -70,6 +72,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -807,5 +810,40 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return;
     }
     invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
+  }
+
+  @Override
+  public Boolean checkIsValidPfpValidatorUser(Invoice invoice) {
+    User pfpValidatorUser = AuthUtils.getUser(invoice.getPfpValidatorUser().getCode());
+    User currentUser = AuthUtils.getUser();
+    if (currentUser.equals(pfpValidatorUser)) {
+      return true;
+    }
+
+    SubstitutePfpValidator substitutePfpValidator =
+        pfpValidatorUser
+            .getSubstitutePfpValidatorList()
+            .stream()
+            .filter(
+                subPfpValidator ->
+                    subPfpValidator.getSubstitutePfpValidatorUser().equals(currentUser))
+            .findFirst()
+            .orElse(null);
+
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate();
+
+    if (substitutePfpValidator != null) {
+      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+
+      if (substituteStartDate == null) {
+        return substituteEndDate == null ? true : substituteEndDate.isAfter(todayDate);
+      } else {
+        return substituteEndDate == null
+            ? substituteStartDate.isBefore(todayDate)
+            : substituteStartDate.isBefore(todayDate) && substituteEndDate.isAfter(todayDate);
+      }
+    }
+    return false;
   }
 }

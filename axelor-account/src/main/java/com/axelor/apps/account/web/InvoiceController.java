@@ -880,4 +880,12 @@ public class InvoiceController {
     invoiceService.setPfpValidatorUser(invoice);
     response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
   }
+
+  public void checkIsValidPfpValidatorUser(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setValue(
+        "$isValidPfpValidatorUser",
+        invoice.getPfpValidatorUser() != null
+            && invoiceService.checkIsValidPfpValidatorUser(invoice));
+  }
 }

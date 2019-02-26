@@ -70,6 +70,10 @@
         <field name="amountRemaining" aggregate="sum"/>
         <field name="currency" />
         <field name="statusSelect"/>
+        <field name="pfpValidateStatusSelect" title="PFP status" showIf="company.accountConfig.isManagePassedForPayment"/>
+        <field name="decisionPfpTakenBy" showIf="company.accountConfig.isManagePassedForPayment"/>
+	<field name="company.accountConfig" hidden="true"/>	
+	<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>        
         <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
         <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -288,8 +292,11 @@
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 				<panel name="pfpValidationPanel" colSpan="12" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 )">
 					<field name="pfpValidateStatusSelect"/>
-					<field name="pfpValidatorUser" domain="self.isPfpValidator = true" canEdit="false"/>
-					<field name="reasonOfRefusalToPayStr" showIf="pfpValidateStatusSelect == 3"/>
+					<field name="pfpValidatorUser" domain="self.isPfpValidator = true" canEdit="false" readonlyIf="!$isValidPfpValidatorUser"/>
+					<field name="reasonOfRefusalToPayStr"  hidden="true" readonly="true" showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3" colSpan="12" css="red">
+						<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+					</field>
+					<field name="$isValidPfpValidatorUser" hidden="true"/>
 				</panel>
 				<field name="company.accountConfig" hidden="true"/>	
 				<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
@@ -336,8 +343,8 @@ InvoiceSet.length > 0))"
             <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
             <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
             <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
-            <button name="passedForPaymentValidation" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Passed for payment validation" onClick="save,action-invoice-record-pfp-validate,save"/>
-            <button name="refusalToPayBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Refusal to pay" onClick="save,action-invoice-view-refusal-to-pay"/>
+            <button name="passedForPaymentValidationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Passed for payment validation" onClick="save,action-invoice-record-pfp-validate,save"/>
+            <button name="refusalToPayBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Refusal to pay" onClick="save,action-invoice-view-refusal-to-pay"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (!company.accountConfig.isManagePassedForPayment || (( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -703,6 +710,7 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
         <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
         <action name="action-invoice-method-check-partner-bank-details-list"/>
+        <action name="action-invoice-method-is-valid-pfp-validator-user" if="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2) "/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -731,6 +739,7 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-record-interco-supplychain"/>
 		<action name="action-invoice-method-check-partner-bank-details-list"/>
 		<action name="action-invoice-method-set-pfp-validator-user" if="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2) "/>
+		<action name="action-invoice-method-is-valid-pfp-validator-user" if="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2) "/>    	
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -1087,6 +1096,10 @@ InvoiceSet.length > 0))"
 	
 	<action-method name="action-invoice-method-set-pfp-validator-user">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="setPfpValidatorUser"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-is-valid-pfp-validator-user">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="checkIsValidPfpValidatorUser"/>
 	</action-method>
 	
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
