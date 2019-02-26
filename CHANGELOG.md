@@ -59,6 +59,7 @@
 - BUSINESS PROJECT : Connect Contract to Project
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
+- TeamTask : Business Project module / TeamTask.toInvoice (Package)
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel

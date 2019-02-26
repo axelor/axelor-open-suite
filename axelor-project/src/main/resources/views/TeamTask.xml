@@ -371,6 +371,7 @@
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
 		<field name="invoicingType" expr="eval: project?.invoicingType"/>
 		<field name="teamTaskInvoicing" expr="eval: project?.teamTaskInvoicing"/>
+		<field name="toInvoice" expr="eval: project?.teamTaskInvoicing &amp;&amp; project?.invoicingType == 2"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
