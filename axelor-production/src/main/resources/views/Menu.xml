@@ -112,6 +112,13 @@
 		<view type="form" name="raw-material-requirement-report-form"/>
 	</action-view>
 	
+	<menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root" title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
+
+	<action-view name="manufacturing.root.cost.calculations" title="Cost calculations" model="com.axelor.apps.production.db.UnitCostCalculation">
+		<view type="grid" name="cost-calculations-grid"/>
+		<view type="form" name="cost-calculations-form"/>
+	</action-view>
+
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
