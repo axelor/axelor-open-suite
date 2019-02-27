@@ -6,6 +6,7 @@
 - CAMPAIGN : Added a reminder tab
 - MARKETING : Send a reminder to invited targets
 - MARKETING : Add a boolean in targetModelSet
+- PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
@@ -13,6 +14,7 @@
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
+- MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 
 ## Bug Fixes

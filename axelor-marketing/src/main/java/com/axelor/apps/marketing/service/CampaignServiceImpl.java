@@ -86,11 +86,13 @@ public class CampaignServiceImpl implements CampaignService {
 
     if (campaign.getPartnerReminderTemplate() != null) {
       errorPartners =
-          sendToPartners(campaign.getInvitedPartnerSet(), campaign.getPartnerReminderTemplate(), campaign);
+          sendToPartners(
+              campaign.getInvitedPartnerSet(), campaign.getPartnerReminderTemplate(), campaign);
     }
 
     if (campaign.getLeadReminderTemplate() != null) {
-      errorLeads = sendToLeads(campaign.getInvitedLeadSet(), campaign.getLeadReminderTemplate(), campaign);
+      errorLeads =
+          sendToLeads(campaign.getInvitedLeadSet(), campaign.getLeadReminderTemplate(), campaign);
     }
     if (errorPartners.isEmpty() && errorLeads.isEmpty()) {
       return null;
@@ -151,7 +153,6 @@ public class CampaignServiceImpl implements CampaignService {
     Message message = templateMessageServiceMarketingImpl.generateAndSendMessage(model, template);
     message.setRelatedTo1Select(Campaign.class.getCanonicalName());
     message.setRelatedTo1SelectId(campaign.getId());
-
   }
 
   protected MetaFile generateLog(
