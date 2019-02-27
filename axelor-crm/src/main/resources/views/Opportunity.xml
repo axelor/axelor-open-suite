@@ -196,6 +196,8 @@
 		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost">
 		<panel name="mainPanel">
 			<field name="lostReason" canEdit="false"/>
+			<field name="lostReasonStr" hideIf="!lostReason.freeText"/>
+			<field name="lostReason.freeText" hidden="true"/>
 		</panel>
 	</form>
 
@@ -231,7 +233,7 @@
     	<action name="action-opportunity-set-closed-lost"/>
     	<action name="save"/>
     </action-group>
-    
+
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>

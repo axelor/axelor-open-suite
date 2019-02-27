@@ -13,6 +13,7 @@
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
+- CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
