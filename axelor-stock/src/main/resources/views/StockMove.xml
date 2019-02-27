@@ -316,7 +316,7 @@
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
                 <field name="trackingNumber" colSpan="4"/>
-                <field name="$deliveryCondition" type="string" title="Delivery conditions" readonly="true" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+                <field name="deliveryCondition" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
                 <spacer name="deliveryConditionSpacer" colSpan="6" showIf="typeSelect == 2"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -569,7 +569,6 @@
 	<action-attrs name="action-stock-move-attrs-set-required-shipment-supplier-details">
 		<attribute name="required" for="supplierShipmentRef" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
 		<attribute name="required" for="supplierShipmentDate" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
-		<attribute name="value" for="$deliveryCondition" expr="eval: __repo__(SaleOrder).all().filter('self.saleOrderSeq LIKE ?',origin).fetchOne()?.deliveryCondition" if="origin !=null &amp;&amp; originTypeSelect!=null &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">

@@ -15,11 +15,14 @@
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
 - MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
+- CUSTOMER DELIVERY : editable deliveryCondition
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
 - PARTNER BALANCE REPORT : edition date is always empty.
+- Shipping Coef: company is now required.
+- Purchase Order Controller: Better exception management.
 
 
 ## [5.1.3] - 2019-02-21
