@@ -15,6 +15,7 @@
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
 - MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
+- CUSTOMER DELIVERY : editable deliveryCondition
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
