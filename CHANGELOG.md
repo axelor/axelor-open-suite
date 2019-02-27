@@ -16,6 +16,7 @@
 - Studio: Dynamic fetching of records for relational fields
 - MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
 - CUSTOMER DELIVERY : editable deliveryCondition
+- CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
