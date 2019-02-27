@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="cost-calculations-line-grid" title="Results" model="com.axelor.apps.production.db.UnitCostCalcLine" editable="true" orderBy="product.code">
+		<field name="product.code"/>
+		<field name="product.name"/>
+		<field name="computedCost" readonly="true"/>
+		<field name="costToApply"/>
+    </grid>
+    
+	<form name="cost-calculations-line-form" title="Results" model="com.axelor.apps.production.db.UnitCostCalcLine" width="large">
+		<panel name="mainPanel">
+			<field name="unitCostCalculation" hidden="true"/>
+			<field name="product" readonly="true"/>
+			<field name="computedCost" readonly="true"/>
+			<field name="costToApply"/>
+		</panel>
+	</form>
+	
+</object-views>

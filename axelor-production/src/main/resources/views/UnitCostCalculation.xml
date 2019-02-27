@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="cost-calculations-grid" title="Cost price calculation" model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
+		<field name="unitCostCalcSeq"/>
+		<field name="createdOn"/>
+		<field name="executionDate"/>
+		<field name="allBomLevels"/>
+		<field name="statusSelect"/>
+    </grid>
+
+	<form name="cost-calculations-form" title="Cost price calculation" model="com.axelor.apps.production.db.UnitCostCalculation" width="large" onNew="action-unit-cost-calculation-record-default">
+		<panel name="mainPanel">
+			<field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false" colSpan="12"/>
+			<field name="unitCostCalcSeq" readonly="true" colSpan="12"/>
+			<field name="executionDate" readonly="true"/>
+			<field name="companySet" widget="TagSelect"/>
+			<field name="productSubTypeSelect" widget="MultiSelect"/>
+			<field name="productSet" widget="TagSelect"/>
+			<field name="productCategorySet" widget="TagSelect"/>
+			<field name="productFamilySet" widget="TagSelect"/>
+			<field name="allBomLevels"/>
+			<field name="unitCostCalcLineList" grid-view="cost-calculations-line-grid" form-view="cost-calculations-line-form" colSpan="12"/>
+		</panel>
+		<panel name="actionPanel" sidebar="true">
+			<button name="runCalculationBtn" title="Run calculation" onClick="save,action-unit-cost-calculation-group-run-calculation,save"/>
+			<button name="exportBtn" title="Export" onClick="save,action-unit-cost-calculation-method-export-csv"/>
+			<button name="importBtn" title="Import" onClick="save,action-unit-cost-calculation-view-import-csv"/>
+		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+
+	<form name="wizard-unit-cost-calc-import-form" title="Import CSV" model="com.axelor.apps.base.db.Wizard" >
+		<panel name="wizardPanel">
+			<field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
+			<button name="importBtn" colSpan="4" title="Import" readonlyIf="metaFile == null" onClick="action-unit-cost-calculation-method-import-csv"/>
+		</panel>
+	</form>
+
+	<action-record name="action-unit-cost-calculation-record-default" model="com.axelor.apps.production.db.UnitCostCalculation">
+		<field name="statusSelect" expr="eval:1"/>
+	</action-record>
+
+	<action-record name="action-unit-cost-calculation-record-update-status" model="com.axelor.apps.production.db.UnitCostCalculation">
+		<field name="statusSelect" expr="eval:2"/>
+	</action-record>
+
+	<action-method name="action-unit-cost-calculation-method-run-calculation">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="runUnitCostCalc"/>
+	</action-method>
+
+	<action-method name="action-unit-cost-calculation-method-export-csv">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="exportUnitCostCalc"/>
+	</action-method>
+	
+	<action-method name="action-unit-cost-calculation-method-import-csv">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="importUnitCostCalc"/>
+	</action-method>
+	
+	<action-group name="action-unit-cost-calculation-group-run-calculation">
+		<action name="action-unit-cost-calculation-method-run-calculation"/>
+		<action name="action-unit-cost-calculation-record-update-status"/>
+	</action-group>
+
+	<action-view name="action-unit-cost-calculation-view-import-csv" title="Import" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-unit-cost-calc-import-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="800"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+	</action-view>
+
+</object-views>

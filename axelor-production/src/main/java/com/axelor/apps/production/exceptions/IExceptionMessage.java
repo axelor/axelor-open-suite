@@ -127,4 +127,9 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/ "Data import failed" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
+      "Uploaded file is not a CSV file" /*)*/;
 }
