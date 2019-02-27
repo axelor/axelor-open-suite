@@ -5,6 +5,7 @@
 ## Improvements
 - SUPPL INVOICES : new buttons to validate payment
 CRM : Convert leads (change title and change the translation of title).
+- PRODUCTION : Add a new object UnitCostCalculation
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
