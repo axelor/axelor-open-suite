@@ -96,8 +96,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
+  public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+    // Nothing to check if we don't have supply chain.
+  }
+
+  @Override
   public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-    // Nothing to validate if we don't have supply chain.
+    checkModifiedConfirmedOrder(saleOrder, saleOrderView);
   }
 
   @Override

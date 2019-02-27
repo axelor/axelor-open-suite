@@ -525,6 +525,12 @@ public class SaleOrderController {
     }
   }
 
+  /**
+   * Called from sale order form view, on clicking validate change button.
+   * Call {@link SaleOrderService#validateChanges(SaleOrder, SaleOrder)}.
+   * @param request
+   * @param response
+   */
   public void validateChanges(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);

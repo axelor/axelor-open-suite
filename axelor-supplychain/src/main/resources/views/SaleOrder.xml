@@ -5,14 +5,16 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload">
+	onLoad="action-group-supplychain-saleorder-onload"
+	onSave="action-supplychain-saleorder-onsave">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 
 	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
 	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload">
+	onLoad="action-group-supplychain-saleorder-onload"
+	onSave="action-supplychain-saleorder-onsave">
 
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -79,6 +81,10 @@
 
 	<action-method name="action-supplychain-sale-order-method-get-stock-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
+    </action-method>
+
+    <action-method name="action-supplychain-saleorder-onsave">
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
     </action-method>
 
     <action-method name="action-supplychain-sale-order-method-generate-invoice">

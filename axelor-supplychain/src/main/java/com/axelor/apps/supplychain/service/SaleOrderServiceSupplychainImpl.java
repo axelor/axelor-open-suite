@@ -121,9 +121,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
     }
   }
 
+  /**
+   * In the supplychain implementation, we check if the user has deleted already delivered qty.
+   * @param saleOrder
+   * @param saleOrderView
+   * @throws AxelorException if the user tried to remove already delivered qty.
+   */
   @Override
-  public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-    super.validateChanges(saleOrder, saleOrderView);
+  public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
@@ -157,6 +162,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             saleOrderLine.getFullName());
       }
     }
+  }
+
+  @Override
+  public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
+    super.validateChanges(saleOrder, saleOrderView);
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrderView);
     saleOrderView.setOrderBeingEdited(false);

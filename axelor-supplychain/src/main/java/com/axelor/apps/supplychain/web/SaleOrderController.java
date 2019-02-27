@@ -522,6 +522,26 @@ public class SaleOrderController {
   }
 
   /**
+   * Called from sale order on save.
+   * Call {@link SaleOrderServiceSupplychainImpl#checkModifiedConfirmedOrder(SaleOrder, SaleOrder)}
+   * @param request
+   * @param response
+   */
+  public void onSave(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+      if (saleOrderView.getOrderBeingEdited()) {
+        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+        saleOrderServiceSupplychain.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+        response.setValues(saleOrderView);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  /**
    * Called on sale order invoicing wizard form. Call {@link
    * SaleOrderInvoiceService#getInvoicingWizardOperationDomain(SaleOrder)}
    *
