@@ -7,6 +7,7 @@
 - MARKETING : Send a reminder to invited targets
 - MARKETING : Add a boolean in targetModelSet
 - PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
+- PRODUCTION : Add a new object UnitCostCalculation
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
