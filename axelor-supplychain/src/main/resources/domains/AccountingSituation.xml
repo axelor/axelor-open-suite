@@ -9,5 +9,7 @@
         <!--  Customer Credit -->
         <decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2"/>
         <decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>
+        <date name="dateInsurCredit" title="Insurance date credit"/>
+        <string name="description" title="Comment" large="true"/>
     </entity>
 </domain-models>
