@@ -45,5 +45,8 @@
 	    ]]>
 		</string>
 
+		<date name="dateAssurCredit" title="Date assur. credit"/>
+		<string name="description" title="Commentaire" large="true"/>
+
 	</entity>
 </domain-models>
