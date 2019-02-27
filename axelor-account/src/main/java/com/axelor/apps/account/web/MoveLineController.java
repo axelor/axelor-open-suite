@@ -140,11 +140,14 @@ public class MoveLineController {
 
     try {
       if (idList != null) {
+        MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
         for (Integer id : idList) {
-          MoveLine moveLine = Beans.get(MoveLineRepository.class).find(id.longValue());
-          if (moveLine != null) {
-            totalCredit = totalCredit.add(moveLine.getCredit());
-            totalDebit = totalDebit.add(moveLine.getDebit());
+          if (id != null) {
+            MoveLine moveLine = moveLineRepository.find(id.longValue());
+            if (moveLine != null) {
+              totalCredit = totalCredit.add(moveLine.getCredit());
+              totalDebit = totalDebit.add(moveLine.getDebit());
+            }
           }
         }
         finalBalance = totalDebit.subtract(totalCredit);

@@ -81,6 +81,7 @@
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
+- MOVE LINE : Fix NPE in the balance calculation.
 
 
 ## [5.1.2] - 2019-02-11
