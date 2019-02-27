@@ -66,6 +66,12 @@
 		</panel>
 	</form>
 	
+  <action-group id="action-group-supplychain-sale-order-validate-changes" name="action-group-sale-order-validate-changes">
+    <action name="action-supplychain-saleorder-onsave"/>
+    <action name="save"/>
+    <action name="action-sale-order-validate-changes"/>
+  </action-group>
+
 	<action-group name="action-group-supplychain-saleorder-onnew">
         <action name="action-group-sale-saleorder-onnew"/>
 		<action name="action-sale-order-record-payment-mode"/>

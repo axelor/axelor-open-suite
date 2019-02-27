@@ -44,6 +44,7 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -522,8 +523,9 @@ public class SaleOrderController {
   }
 
   /**
-   * Called from sale order on save.
-   * Call {@link SaleOrderServiceSupplychainImpl#checkModifiedConfirmedOrder(SaleOrder, SaleOrder)}
+   * Called from sale order on save. Call {@link
+   * SaleOrderServiceSupplychainImpl#checkModifiedConfirmedOrder(SaleOrder, SaleOrder)}.
+   *
    * @param request
    * @param response
    */
@@ -536,8 +538,7 @@ public class SaleOrderController {
         response.setValues(saleOrderView);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

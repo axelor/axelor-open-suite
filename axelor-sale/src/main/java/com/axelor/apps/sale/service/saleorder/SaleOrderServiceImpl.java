@@ -96,13 +96,15 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-    // Nothing to check if we don't have supply chain.
+  public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
+      throws AxelorException {
+    // Nothing to check if we don't have supplychain.
   }
 
   @Override
-  public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-    checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void validateChanges(SaleOrder saleOrder) throws AxelorException {
+    // Nothing to do if we don't have supplychain.
   }
 
   @Override

@@ -526,8 +526,9 @@ public class SaleOrderController {
   }
 
   /**
-   * Called from sale order form view, on clicking validate change button.
-   * Call {@link SaleOrderService#validateChanges(SaleOrder, SaleOrder)}.
+   * Called from sale order form view, on clicking validate change button. Call {@link
+   * SaleOrderService#validateChanges(SaleOrder)}.
+   *
    * @param request
    * @param response
    */
@@ -535,11 +536,10 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-      Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
-      response.setValues(saleOrderView);
+      Beans.get(SaleOrderService.class).validateChanges(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 
