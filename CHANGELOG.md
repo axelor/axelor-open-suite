@@ -28,6 +28,7 @@
 - MANUF ORDER : error when finishMoAutomaticEmail = true
 - Stock Move Invoicing: get price from stock move lines instead of from product.
 - STOCKMOVELINE : Fix NPE
+- Partner Stock Settings: fix exception when there were no settings for a company.
 
 ## [5.1.3] - 2019-02-21
 ## Features
