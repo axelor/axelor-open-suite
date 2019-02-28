@@ -39,6 +39,33 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4234">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="logoPath" id="4079">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <script-data-source name="Scripted Data Source" id="4">
@@ -126,8 +153,8 @@ myJSONObject =eval('('+ data +')');]]></method>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">monthName</property>
-                    <property name="dataType">string</property>
+                    <property name="name">yearMonth</property>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
             <list-property name="columnHints">
@@ -174,7 +201,7 @@ myJSONObject =eval('('+ data +')');]]></method>
                     <property name="columnName">month</property>
                 </structure>
                 <structure>
-                    <property name="columnName">monthName</property>
+                    <property name="columnName">yearMonth</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -251,8 +278,8 @@ myJSONObject =eval('('+ data +')');]]></method>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">monthName</property>
-                        <property name="dataType">string</property>
+                        <property name="name">yearMonth</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                 </list-property>
             </structure>
@@ -260,16 +287,13 @@ myJSONObject =eval('('+ data +')');]]></method>
             <method name="open"><![CDATA[len = myJSONObject.data.length;
 count = 0;]]></method>
             <method name="fetch"><![CDATA[if(count < len){
-	var months = [,'MpsCharge.january','MpsCharge.february','MpsCharge.march','MpsCharge.april','MpsCharge.may',
-					'MpsCharge.june','MpsCharge.july','MpsCharge.august','MpsCharge.september','MpsCharge.october',
-						'MpsCharge.november','MpsCharge.december'];
 						
 	var monthName = myJSONObject.data[count].monthName;
 	var month = myJSONObject.data[count].month;
 	row["code"] = myJSONObject.data[count].code;
 	row[monthName]=myJSONObject.data[count].count;
-	row["monthName"] = Packages.com.axelor.i18n.I18n.get(months[month]);
 	row["month"] = month;
+	row["yearMonth"] = myJSONObject.data[count].yearMonth;
 	count++;
 	return true;
 }
@@ -277,10 +301,159 @@ return false;]]></method>
         </script-data-set>
     </data-sets>
     <page-setup>
-        <simple-master-page name="Simple MasterPage" id="2"/>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">9pt</property>
+            <property name="fontWeight">normal</property>
+            <property name="fontStyle">normal</property>
+            <property name="fontVariant">normal</property>
+            <property name="color">black</property>
+            <property name="textLineThrough">none</property>
+            <property name="textOverline">none</property>
+            <property name="textUnderline">none</property>
+            <property name="borderBottomColor">black</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderBottomWidth">medium</property>
+            <property name="borderLeftColor">black</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderLeftWidth">medium</property>
+            <property name="borderRightColor">black</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderRightWidth">medium</property>
+            <property name="borderTopColor">black</property>
+            <property name="borderTopStyle">none</property>
+            <property name="borderTopWidth">medium</property>
+            <property name="marginTop">0pt</property>
+            <property name="marginLeft">0pt</property>
+            <property name="marginBottom">0pt</property>
+            <property name="marginRight">0pt</property>
+            <property name="paddingTop">1pt</property>
+            <property name="paddingLeft">1pt</property>
+            <property name="paddingBottom">1pt</property>
+            <property name="paddingRight">1pt</property>
+            <property name="display">block</property>
+            <property name="pageBreakAfter">auto</property>
+            <property name="pageBreakBefore">auto</property>
+            <property name="pageBreakInside">auto</property>
+            <property name="showIfBlank">false</property>
+            <property name="overflow">hidden</property>
+            <property name="headerHeight">0.45in</property>
+            <property name="footerHeight">0.2in</property>
+            <page-header>
+                <grid id="4236">
+                    <column id="4237"/>
+                    <column id="4238"/>
+                    <row id="4239">
+                        <property name="height">0.44in</property>
+                        <cell id="4240">
+                            <image id="4235">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">normal</property>
+                                <property name="fontStyle">normal</property>
+                                <property name="fontVariant">normal</property>
+                                <property name="color">black</property>
+                                <property name="textLineThrough">none</property>
+                                <property name="textOverline">none</property>
+                                <property name="textUnderline">none</property>
+                                <property name="borderBottomColor">black</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderLeftColor">black</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderLeftWidth">medium</property>
+                                <property name="borderRightColor">black</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderRightWidth">medium</property>
+                                <property name="borderTopColor">black</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginTop">0pt</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <property name="marginRight">0pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="display">block</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="pageBreakInside">auto</property>
+                                <property name="showIfBlank">false</property>
+                                <property name="overflow">hidden</property>
+                                <property name="height">48px</property>
+                                <property name="width">140px</property>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+params["logoPath"].value</expression>
+                            </image>
+                        </cell>
+                        <cell id="4241">
+                            <text id="51">
+                                <property name="fontSize">14pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.title')</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-header>
+            <page-footer>
+                <grid id="4631">
+                    <property name="width">100%</property>
+                    <column id="4828">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">17cm</property>
+                    </column>
+                    <column id="4818">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="4820">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="4823">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="4635">
+                        <property name="fontSize">9pt</property>
+                        <cell id="4827">
+                            <property name="verticalAlign">middle</property>
+                        </cell>
+                        <cell id="4817">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3937">
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4819">
+                            <property name="verticalAlign">middle</property>
+                            <text id="3939">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4822">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3941">
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
     </page-setup>
     <body>
         <grid id="1234">
+            <property name="fontFamily">sans-serif</property>
+            <property name="verticalAlign">bottom</property>
             <property name="height">100%</property>
             <property name="width">100%</property>
             <list-property name="boundDataColumns">
@@ -296,15 +469,26 @@ return false;]]></method>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <expression name="expression" type="javascript">params["logoPath"].value</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="1235"/>
             <column id="1236"/>
             <row id="1238">
-                <property name="height">0.7in</property>
+                <property name="borderBottomStyle">none</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">0.8in</property>
                 <cell id="1239">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <grid id="1249">
+                        <property name="marginTop">30pt</property>
                         <column id="1250">
                             <property name="width">25%</property>
                         </column>
@@ -317,25 +501,12 @@ return false;]]></method>
                         <column id="1251">
                             <property name="width">25%</property>
                         </column>
-                        <row id="1293">
-                            <property name="textAlign">center</property>
-                            <property name="height">1cm</property>
-                            <cell id="1294">
-                                <property name="colSpan">4</property>
-                                <property name="rowSpan">1</property>
-                                <text id="51">
-                                    <property name="fontSize">12pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.title')</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                        </row>
                         <row id="1252">
                             <cell id="1253">
                                 <property name="colSpan">2</property>
                                 <property name="rowSpan">1</property>
                                 <text id="3800">
+                                    <property name="textAlign">center</property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.startMonth')</VALUE-OF> : </B><VALUE-OF>params["startMonthDate"].value</VALUE-OF>]]></text-property>
                                 </text>
@@ -345,6 +516,7 @@ return false;]]></method>
                                 <property name="rowSpan">1</property>
                                 <text id="1271">
                                     <property name="marginLeft">5pt</property>
+                                    <property name="textAlign">center</property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.endMonth')</VALUE-OF> : </B><VALUE-OF>params["endMonthDate"].value</VALUE-OF>]]></text-property>
                                 </text>
@@ -787,6 +959,18 @@ return false;]]></method>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">month</property>
+                                <text-property name="displayName">month</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["month"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">yearMonth</property>
+                                <text-property name="displayName">yearMonth</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["yearMonth"]</expression>
+                                <property name="dataType">date-time</property>
+                            </structure>
                         </list-property>
                         <column id="1142">
                             <property name="width">7.8%</property>
@@ -829,6 +1013,7 @@ return false;]]></method>
                         </column>
                         <header>
                             <row id="3923">
+                                <property name="backgroundColor">#E5E5E5</property>
                                 <property name="fontSize">8.5pt</property>
                                 <cell id="3924">
                                     <property name="borderBottomStyle">solid</property>
@@ -1358,8 +1543,8 @@ return false;]]></method>
                     <extended-item extensionName="Chart" id="511">
                         <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
   <Version>2.6.1</Version>
-  <Type>Area Chart</Type>
-  <SubType>Stacked</SubType>
+  <Type>Line Chart</Type>
+  <SubType>Overlay</SubType>
   <Block>
     <Children xsi:type="layout:TitleBlock">
       <Bounds>
@@ -1620,7 +1805,7 @@ return false;]]></method>
   </ExtendedProperties>
   <SampleData>
     <BaseSampleData>
-      <DataSetRepresentation>'A','B','C','D','E'</DataSetRepresentation>
+      <DataSetRepresentation>01/05/2000,02/01/2000,04/12/2000,03/12/2000,02/29/2000</DataSetRepresentation>
     </BaseSampleData>
     <OrthogonalSampleData>
       <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
@@ -1667,7 +1852,7 @@ return false;]]></method>
     <Visible>false</Visible>
   </EmptyMessage>
   <Axes>
-    <Type>Text</Type>
+    <Type>DateTime</Type>
     <Title>
       <Caption>
         <Value>X-Axis Title</Value>
@@ -1939,7 +2124,7 @@ return false;]]></method>
             <Blue>0</Blue>
           </Entries>
         </SeriesPalette>
-        <Series xsi:type="type:AreaSeries">
+        <Series xsi:type="type:LineSeries">
           <Visible>true</Visible>
           <Label>
             <Caption>
@@ -1990,7 +2175,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
             <Separator>, </Separator>
           </DataPoint>
           <LabelPosition>Above</LabelPosition>
-          <Stacked>true</Stacked>
+          <Stacked>false</Stacked>
           <Triggers>
             <Condition>onmouseover</Condition>
             <Action>
@@ -2004,7 +2189,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
           <Markers>
             <Type>Box</Type>
             <Size>4</Size>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <Outline>
               <Visible>true</Visible>
             </Outline>
@@ -2021,8 +2206,6 @@ row[months[row[&quot;month&quot;]]]</Definition>
             <Visible>true</Visible>
           </LineAttributes>
           <PaletteLineColor>true</PaletteLineColor>
-          <Curve>false</Curve>
-          <ConnectMissingValue>true</ConnectMissingValue>
         </Series>
         <Grouping>
           <GroupType>Text</GroupType>
@@ -2743,7 +2926,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
           <Visible>false</Visible>
         </Label>
         <DataDefinition>
-          <Definition>row[&quot;monthName&quot;]</Definition>
+          <Definition>row[&quot;yearMonth&quot;]</Definition>
         </DataDefinition>
         <SeriesIdentifier></SeriesIdentifier>
         <DataPoint>
@@ -2757,13 +2940,13 @@ row[months[row[&quot;month&quot;]]]</Definition>
       </Series>
       <Grouping>
         <Enabled>false</Enabled>
-        <GroupingUnit>Months</GroupingUnit>
-        <GroupType>Text</GroupType>
+        <GroupingUnit>Years</GroupingUnit>
+        <GroupType>DateTime</GroupType>
         <AggregateExpression>Sum</AggregateExpression>
       </Grouping>
       <Sorting>Ascending</Sorting>
       <SortKey>
-        <Definition>row[&quot;month&quot;]</Definition>
+        <Definition>row[&quot;yearMonth&quot;]</Definition>
       </SortKey>
     </SeriesDefinitions>
     <Orientation>Horizontal</Orientation>
@@ -2782,6 +2965,7 @@ row[months[row[&quot;month&quot;]]]</Definition>
       <Caption>
         <Value></Value>
         <Font>
+          <Name>SansSerif</Name>
           <Alignment/>
           <Rotation>45.0</Rotation>
         </Font>
@@ -2810,6 +2994,9 @@ row[months[row[&quot;month&quot;]]]</Definition>
       </Insets>
       <Visible>true</Visible>
     </Label>
+    <FormatSpecifier xsi:type="attribute:JavaDateFormatSpecifier">
+      <Pattern>MMM yyyy</Pattern>
+    </FormatSpecifier>
     <LabelPosition>Below</LabelPosition>
     <MajorGrid>
       <LineAttributes>
@@ -2867,9 +3054,6 @@ row[months[row[&quot;month&quot;]]]</Definition>
     </Scale>
     <Origin>
       <Type>Min</Type>
-      <Value xsi:type="data:NumberDataElement">
-        <Value>0.0</Value>
-      </Value>
     </Origin>
     <PrimaryAxis>true</PrimaryAxis>
     <CategoryAxis>true</CategoryAxis>
@@ -2978,10 +3162,10 @@ row[months[row[&quot;month&quot;]]]</Definition>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">monthName</property>
-                                <text-property name="displayName">monthName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["monthName"]</expression>
-                                <property name="dataType">string</property>
+                                <property name="name">yearMonth</property>
+                                <text-property name="displayName">yearMonth</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["yearMonth"]</expression>
+                                <property name="dataType">date-time</property>
                             </structure>
                         </list-property>
                     </extended-item>
