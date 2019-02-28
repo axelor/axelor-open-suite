@@ -18,6 +18,7 @@
 - CUSTOMER DELIVERY : editable deliveryCondition
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 - Sale Order: if config is activated, create stock move after modifications validation.
+- Stock Location: fill company on creating inventory
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
