@@ -830,7 +830,7 @@ public class InvoiceController {
             response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY);
             return;
           }
-          if (invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_AUTHORIZED) {
+          if (invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
             response.setError(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION);
             return;
           }
@@ -877,15 +877,23 @@ public class InvoiceController {
 
   public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoiceService.setPfpValidatorUser(invoice);
-    response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
+    response.setValue("pfpValidatorUser", invoiceService.getPfpValidatorUser(invoice));
   }
 
-  public void checkIsValidPfpValidatorUser(ActionRequest request, ActionResponse response) {
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    response.setValue(
-        "$isValidPfpValidatorUser",
-        invoice.getPfpValidatorUser() != null
-            && invoiceService.checkIsValidPfpValidatorUser(invoice));
+    response.setAttr(
+        "pfpValidatorUser", "domain", invoiceService.getPfpValidatorUserDomain(invoice));
+  }
+
+  public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    if (invoice.getPfpValidatorUser() == null) {
+      return;
+    }
+    response.setAttr(
+        "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+        "value",
+        invoice.getPfpValidatorUser().equals(invoiceService.getPfpValidatorUser(invoice)));
   }
 }

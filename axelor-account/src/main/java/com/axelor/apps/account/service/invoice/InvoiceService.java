@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -266,7 +267,7 @@ public interface InvoiceService {
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public void setPfpValidatorUser(Invoice invoice);
+  public User getPfpValidatorUser(Invoice invoice);
 
-  public Boolean checkIsValidPfpValidatorUser(Invoice invoice);
+  public String getPfpValidatorUserDomain(Invoice invoice);
 }

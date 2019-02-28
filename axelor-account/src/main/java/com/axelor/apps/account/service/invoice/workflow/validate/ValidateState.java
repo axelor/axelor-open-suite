@@ -86,6 +86,8 @@ public class ValidateState extends WorkflowInvoice {
     if (Beans.get(AccountConfigService.class)
             .getAccountConfig(invoice.getCompany())
             .getIsManagePassedForPayment()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
         && invoice.getPfpValidatorUser() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
