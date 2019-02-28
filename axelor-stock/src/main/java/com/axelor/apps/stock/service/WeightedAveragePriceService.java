@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.db.repo;
+package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.service.WeightedAveragePriceService;
-import com.axelor.inject.Beans;
+import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
-public class StockLocationLineStockRepository extends StockLocationLineRepository {
+public interface WeightedAveragePriceService {
 
-  @Override
-  public StockLocationLine save(StockLocationLine entity) {
-    Product product = entity.getProduct();
-    Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
-    return super.save(entity);
-  }
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void computeAvgPriceForProduct(Product product);
+
+  public BigDecimal computeAvgPriceForCompany(Product product, Company company);
 }

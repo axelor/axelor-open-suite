@@ -21,6 +21,10 @@
   	<string name="code" title="Code"/>
   	<string name="name" title="name"/>
   	
+  	<decimal name="unitCostPrice" title="Unit cost price" precision="20" scale="10"/>
+  	<decimal name="ratio" title="Ratio" precision="20" scale="10"/>
+  	
+  	
   	 <extra-code><![CDATA[
 	
 	   	// TYPE SELECT

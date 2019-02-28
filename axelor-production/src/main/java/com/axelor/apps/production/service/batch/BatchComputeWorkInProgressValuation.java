@@ -19,6 +19,7 @@ package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -26,10 +27,12 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,11 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     ProductionBatch productionBatch = batch.getProductionBatch();
     Company company = productionBatch.getCompany();
     StockLocation workshopStockLocation = productionBatch.getWorkshopStockLocation();
+
+    if (productionBatch.getValuationDate() == null) {
+      productionBatch.setValuationDate(Beans.get(AppBaseService.class).getTodayDate());
+    }
+    LocalDate valuationDate = productionBatch.getValuationDate();
 
     List<ManufOrder> manufOrderList = null;
     Map<String, Object> bindValues = new HashMap<String, Object>();
@@ -71,16 +79,18 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
-    manufOrderList =
-        Beans.get(ManufOrderRepository.class).all().filter(domain).bind(bindValues).fetch();
+    ManufOrderRepository manufOrderRepo = Beans.get(ManufOrderRepository.class);
+
+    manufOrderList = manufOrderRepo.all().filter(domain).bind(bindValues).fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
       try {
         costSheetService.computeCostPrice(
-            manufOrder,
+            manufOrderRepo.find(manufOrder.getId()),
             CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-            productionBatch.getValuationDate());
+            valuationDate);
         incrementDone();
+        JPA.clear();
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(e, IExceptionMessage.MANUF_ORDER_NO_GENERATION, batch.getId());

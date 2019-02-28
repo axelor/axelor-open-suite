@@ -1,5 +1,8 @@
 # Changelog
 
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
+in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
+
 ## [Unreleased 5.1.1]
 ## Features
 - Subrogation Release : add change tracking on status and add new fields.
