@@ -42,10 +42,6 @@
         <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
         <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
         <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
-        <boolean name="finishMoAutomaticEmail" title="Send email when manufacturing order finished" default="false"/>
-        <many-to-one name="finishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-        <boolean name="partFinishMoAutomaticEmail" title="Send email when manufacturing order partially finished" default="false"/>
-        <many-to-one name="partFinishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 	</entity>
 
 </domain-models>
