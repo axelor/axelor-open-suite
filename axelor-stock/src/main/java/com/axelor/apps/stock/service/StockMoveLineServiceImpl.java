@@ -876,22 +876,24 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine) {
-    return computeSpreadableQtyOverLogisticalFormLines(
-        stockMoveLine, stockMoveLine.getLogisticalFormLineList());
+    return stockMoveLine != null
+        ? computeSpreadableQtyOverLogisticalFormLines(
+            stockMoveLine, stockMoveLine.getLogisticalFormLineList())
+        : BigDecimal.ZERO;
   }
 
   @Override
   public BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, LogisticalForm logisticalForm) {
 
-    if (logisticalForm == null) {
+    if (logisticalForm == null && stockMoveLine != null) {
       return computeSpreadableQtyOverLogisticalFormLines(
           stockMoveLine, stockMoveLine.getLogisticalFormLineList());
     }
 
     List<LogisticalFormLine> updatedLogisticalFormLineList = new ArrayList<>();
 
-    if (stockMoveLine.getLogisticalFormLineList() != null) {
+    if (stockMoveLine != null && stockMoveLine.getLogisticalFormLineList() != null) {
       for (LogisticalFormLine logisticalFormLine : stockMoveLine.getLogisticalFormLineList()) {
         if (!logisticalForm.equals(logisticalFormLine.getLogisticalForm())) {
           updatedLogisticalFormLineList.add(logisticalFormLine);
@@ -901,7 +903,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (logisticalForm.getLogisticalFormLineList() != null) {
       for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-        if (stockMoveLine.equals(logisticalFormLine.getStockMoveLine())) {
+        if (stockMoveLine != null && stockMoveLine.equals(logisticalFormLine.getStockMoveLine())) {
           updatedLogisticalFormLineList.add(logisticalFormLine);
         }
       }
@@ -913,6 +915,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   private BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, List<LogisticalFormLine> logisticalFormLineList) {
+
+    if (stockMoveLine == null) {
+      return null;
+    }
 
     if (stockMoveLine.getProduct() == null
         || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(

@@ -26,6 +26,7 @@
 - Purchase Order Controller: Better exception management.
 - Sale Order: added missing check on confirmed sale order modification
 - MANUF ORDER : error when finishMoAutomaticEmail = true
+- STOCKMOVELINE : NPE
 
 
 ## [5.1.3] - 2019-02-21
