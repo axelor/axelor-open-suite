@@ -80,6 +80,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -798,52 +799,58 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void setPfpValidatorUser(Invoice invoice) {
-    if (invoice.getPartner() == null) {
-      return;
-    }
+  public User getPfpValidatorUser(Invoice invoice) {
 
     AccountingSituation accountingSituation =
         Beans.get(AccountingSituationService.class)
             .getAccountingSituation(invoice.getPartner(), invoice.getCompany());
     if (accountingSituation == null) {
-      return;
+      return null;
     }
-    invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
+    return accountingSituation.getPfpValidatorUser();
   }
 
   @Override
-  public Boolean checkIsValidPfpValidatorUser(Invoice invoice) {
-    User pfpValidatorUser = AuthUtils.getUser(invoice.getPfpValidatorUser().getCode());
-    User currentUser = AuthUtils.getUser();
-    if (currentUser.equals(pfpValidatorUser)) {
-      return true;
+  public String getPfpValidatorUserDomain(Invoice invoice) {
+
+    User pfpValidatorUser = getPfpValidatorUser(invoice);
+    if(pfpValidatorUser == null) {
+    	return "self.id in (0)";
     }
-
-    SubstitutePfpValidator substitutePfpValidator =
-        pfpValidatorUser
-            .getSubstitutePfpValidatorList()
-            .stream()
-            .filter(
-                subPfpValidator ->
-                    subPfpValidator.getSubstitutePfpValidatorUser().equals(currentUser))
-            .findFirst()
-            .orElse(null);
-
+    List<SubstitutePfpValidator> substitutePfpValidatorList =
+        pfpValidatorUser.getSubstitutePfpValidatorList();
+    List<User> validPfpValidatorUserList = new ArrayList<>();
+    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
     LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate();
 
-    if (substitutePfpValidator != null) {
+    validPfpValidatorUserList.add(pfpValidatorUser);
+
+    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
       LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
       LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
 
       if (substituteStartDate == null) {
-        return substituteEndDate == null ? true : substituteEndDate.isAfter(todayDate);
+        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
       } else {
-        return substituteEndDate == null
-            ? substituteStartDate.isBefore(todayDate)
-            : substituteStartDate.isBefore(todayDate) && substituteEndDate.isAfter(todayDate);
+        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        } else if (substituteStartDate.isBefore(todayDate)
+            && substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
       }
     }
-    return false;
+
+    pfpValidatorUserDomain
+        .append("(")
+        .append(
+            validPfpValidatorUserList
+                .stream()
+                .map(pfpValidator -> pfpValidator.getId().toString())
+                .collect(Collectors.joining(",")))
+        .append(")");
+    return pfpValidatorUserDomain.toString();
   }
 }

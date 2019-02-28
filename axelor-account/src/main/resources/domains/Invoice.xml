@@ -165,7 +165,7 @@
 	    
 	    // PFP VALIDATE STATUS SELECT
 	    public static final int PFP_STATUS_AWAITING = 1;
-	    public static final int PFP_STATUS_AUTHORIZED = 2;
+	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
 	    
 	]]></extra-code>
