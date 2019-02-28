@@ -26,6 +26,7 @@
 - Purchase Order Controller: Better exception management.
 - Sale Order: added missing check on confirmed sale order modification
 - MANUF ORDER : error when finishMoAutomaticEmail = true
+- Stock Move Invoicing: get price from stock move lines instead of from product.
 
 
 ## [5.1.3] - 2019-02-21
