@@ -26,7 +26,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -147,7 +149,14 @@ public class MoveLineController {
             if (moveLine != null) {
               totalCredit = totalCredit.add(moveLine.getCredit());
               totalDebit = totalDebit.add(moveLine.getDebit());
+            } else {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_NO_VALUE,
+                  I18n.get("Cannot find the move line with id: ") + id.longValue());
             }
+          } else {
+            throw new AxelorException(
+                MoveLine.class, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("One id is null"));
           }
         }
         finalBalance = totalDebit.subtract(totalCredit);
