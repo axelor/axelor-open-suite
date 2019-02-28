@@ -28,8 +28,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -37,7 +40,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 public class MpsChargeServiceImpl implements MpsChargeService {
@@ -46,6 +48,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   final String TITLE_MONTH = "month";
   final String TITLE_MONTH_NAME = "monthName";
   final String TITLE_COUNT = "count";
+  final String TITLE_YEAR_MONTH = "yearMonth";
 
   @Override
   public Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> countTotalHours(
@@ -203,6 +206,11 @@ public class MpsChargeServiceImpl implements MpsChargeService {
         dataMap.put(TITLE_CODE, mpsWeeklySchedualCode);
         dataMap.put(TITLE_MONTH, yearMonth.getMonthValue());
         dataMap.put(TITLE_MONTH_NAME, monthName);
+        dataMap.put(
+            TITLE_YEAR_MONTH,
+            LocalDateTime.of(
+                    LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1), LocalTime.MIN)
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         dataMap.put(TITLE_COUNT, yearsMonthCount.getValue());
         dataMapList.add(dataMap);
       }
