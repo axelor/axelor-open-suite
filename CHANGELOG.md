@@ -63,6 +63,7 @@
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
 
 ## Improvements
+- Contract: added button to manually close contract if termination date was set in the future
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config
 - Employee: refactored view (Add a creation workflow and allow to automatically create or link a user)
 - SaleOrder: refactored 'Business Project' panel
