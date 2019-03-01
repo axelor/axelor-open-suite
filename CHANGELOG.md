@@ -6,6 +6,7 @@
 - CAMPAIGN : Added a reminder tab
 - MARKETING : Send a reminder to invited targets
 - MARKETING : Add a boolean in targetModelSet
+- PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
 - PRODUCTION : Add a new object UnitCostCalculation
 
 ## Improvements
@@ -14,11 +15,23 @@
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
+- MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
+- CUSTOMER DELIVERY : editable deliveryCondition
+- CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
+- Sale Order: if config is activated, create stock move after modifications validation.
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
+in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
 - PARTNER BALANCE REPORT : edition date is always empty.
-
+- Shipping Coef: company is now required.
+- Purchase Order Controller: Better exception management.
+- Sale Order: added missing check on confirmed sale order modification
+- MANUF ORDER : error when finishMoAutomaticEmail = true
+- Stock Move Invoicing: get price from stock move lines instead of from product.
+- STOCKMOVELINE : Fix NPE
+- Partner Stock Settings: fix exception when there were no settings for a company.
 
 ## [5.1.3] - 2019-02-21
 ## Features

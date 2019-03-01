@@ -394,18 +394,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return billOfMaterial;
   }
 
-  /** Returns the quantity produced by a manufacturing order. */
-  @Override
-  public BigDecimal getProducedQuantity(ManufOrder manufOrder) {
-    return manufOrder
-        .getProducedStockMoveLineList()
-        .stream()
-        .filter(stockMoveLine -> manufOrder.getProduct().equals(stockMoveLine.getProduct()))
-        .map(StockMoveLine::getRealQty)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
-  }
-
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException {
