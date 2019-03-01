@@ -932,7 +932,7 @@
     </action-record>
 
     <action-validate name="action-partner-validate-partner-stock-settings-list">
-    	<error message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
 
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">

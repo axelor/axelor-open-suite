@@ -73,6 +73,10 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
     }
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
+    task.setToInvoice(
+        saleOrderLine.getSaleOrder() != null
+            ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
+            : false);
     return task;
   }
 

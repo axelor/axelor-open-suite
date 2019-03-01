@@ -19,7 +19,6 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -40,13 +39,14 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
   @Override
   public LogisticalForm save(LogisticalForm logisticalForm) {
     try {
+
       Company company = logisticalForm.getCompany();
 
       if (company != null) {
-        if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumber())) {
+        if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumberSeq())) {
           String sequenceNumber =
               Beans.get(SequenceService.class)
-                  .getSequenceNumber(SequenceRepository.LOGISTICAL_FORM, logisticalForm.getCompany());
+                  .getSequenceNumber("logisticalForm", logisticalForm.getCompany());
           if (Strings.isNullOrEmpty(sequenceNumber)) {
             throw new AxelorException(
                 Sequence.class,
@@ -54,7 +54,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
                 I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
                 logisticalForm.getCompany().getName());
           }
-          logisticalForm.setDeliveryNumber(sequenceNumber);
+          logisticalForm.setDeliveryNumberSeq(sequenceNumber);
         }
 
         if (!logisticalForm.getIsEmailSent()) {
@@ -75,8 +75,8 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
           }
         }
       }
-
       return super.save(logisticalForm);
+
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new PersistenceException(e.getLocalizedMessage());

@@ -115,4 +115,10 @@
 		<option value="3">Work in progress</option>
 		<option value="4">Bill of material</option>
 	</selection>
+
+	<selection name="production.weekly.planning.type.select">
+		<option value="1">Human resources</option>
+		<option value="2">Machine</option>
+	</selection>
+
 </object-views>

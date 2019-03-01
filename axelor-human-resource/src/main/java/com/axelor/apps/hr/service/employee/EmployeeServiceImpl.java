@@ -175,11 +175,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
             : name == null ? firstName : name;
     name = name == null ? "" : name;
     urlMap.put(
-        "google",
-        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
-            + name
-            + "' target='_blank' />");
-    urlMap.put(
         "facebook",
         "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
             + name

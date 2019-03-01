@@ -51,9 +51,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
 
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDesiredDelivDate(null);
-      saleOrderLine.setEstimatedDelivDate(null);
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setDesiredDelivDate(null);
+        saleOrderLine.setEstimatedDelivDate(null);
+      }
     }
 
     return copy;
@@ -91,10 +93,13 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   public void computeFullName(SaleOrder saleOrder) {
     try {
-      if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
-        saleOrder.setFullName(
-            saleOrder.getSaleOrderSeq() + "-" + saleOrder.getClientPartner().getName());
-      else saleOrder.setFullName(saleOrder.getClientPartner().getName());
+      if (saleOrder.getClientPartner() != null) {
+        String fullName = saleOrder.getClientPartner().getName();
+        if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) {
+          fullName = saleOrder.getSaleOrderSeq() + "-" + fullName;
+        }
+        saleOrder.setFullName(fullName);
+      }
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }

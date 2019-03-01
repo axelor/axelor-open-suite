@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -192,5 +194,16 @@ public class InvoiceLineController {
     }
 
     return invoice;
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+    Beans.get(InvoiceLineSupplychainService.class)
+        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
+
+    response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
   }
 }

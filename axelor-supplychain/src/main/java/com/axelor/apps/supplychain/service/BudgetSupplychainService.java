@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -104,5 +105,28 @@ public class BudgetSupplychainService extends BudgetService {
       }
     }
     return budget.getBudgetLineList();
+  }
+
+  public void computeBudgetDistributionSumAmount(
+      BudgetDistribution budgetDistribution, LocalDate computeDate) {
+
+    if (budgetDistribution.getBudget() != null
+        && budgetDistribution.getBudget().getBudgetLineList() != null
+        && computeDate != null) {
+      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
+      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
+
+      for (BudgetLine budgetLine : budgetLineList) {
+        LocalDate fromDate = budgetLine.getFromDate();
+        LocalDate toDate = budgetLine.getToDate();
+
+        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+          BigDecimal amount =
+              budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
+          budgetAmountAvailable = budgetAmountAvailable.add(amount);
+        }
+      }
+      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+    }
   }
 }

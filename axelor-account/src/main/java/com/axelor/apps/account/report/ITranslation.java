@@ -114,6 +114,7 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/
       "AccountingReportType1.paymentMode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+
   public static final String ACCOUNTING_REPORT_1_DESCRIPTION = /*$$(*/
       "AccountingReportType1.description"; /*)*/
   public static final String ACCOUNTING_REPORT_1_PARTNER = /*$$(*/
@@ -126,6 +127,13 @@ public interface ITranslation {
       "AccountingReportType1.credit"; /*)*/
   public static final String ACCOUNTING_REPORT_1_TOTAL = /*$$(*/
       "AccountingReportType1.total"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_7_TITLE = /*$$(*/
+      "AccountingReportType7.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_DUE_DATE = /*$$(*/
+      "AccountingReportType7.dueDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_RECONCILE_GROUP = /*$$(*/
+      "AccountingReportType7.reconcileGroup"; /*)*/
 
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/

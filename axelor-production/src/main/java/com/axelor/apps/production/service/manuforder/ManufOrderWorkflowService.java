@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -33,6 +36,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -127,9 +131,6 @@ public class ManufOrderWorkflowService {
       manufOrder.addInStockMoveListItem(
           manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
               manufOrder, manufOrder.getInStockMoveList()));
-      manufOrder.addOutStockMoveListItem(
-          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
-              manufOrder, manufOrder.getOutStockMoveList()));
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
@@ -217,6 +218,10 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+    AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
+    if (appSupplychain != null && appSupplychain.getFinishMoAutomaticEmail()) {
+      this.sendMail(manufOrder, appSupplychain.getFinishMoMessageTemplate());
+    }
   }
 
   /** Return the cost price for one unit in a manufacturing order. */
@@ -252,6 +257,10 @@ public class ManufOrderWorkflowService {
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate());
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+    AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
+    if (appSupplychain != null && appSupplychain.getPartFinishMoAutomaticEmail()) {
+      this.sendMail(manufOrder, appSupplychain.getPartFinishMoMessageTemplate());
+    }
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -381,5 +390,19 @@ public class ManufOrderWorkflowService {
         .stream()
         .sorted(byPriority.thenComparing(byId))
         .collect(Collectors.toList());
+  }
+
+  protected void sendMail(ManufOrder manufOrder, Template template) throws AxelorException {
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE));
+    }
+    try {
+      Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), manufOrder);
+    }
   }
 }

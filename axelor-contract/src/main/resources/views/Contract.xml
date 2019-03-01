@@ -16,7 +16,10 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" onLoad="action-contract-group-on-load" onSave="action-contract-method-is-valid" onNew="action-contract-record-default" readonlyIf="statusSelect == 3">
+    <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" readonlyIf="statusSelect == 3"
+          onNew="action-contract-record-default"
+          onLoad="action-contract-group-on-load"
+          onSave="action-contract-method-is-valid">
         <toolbar>
             <button name="printContractBtn" title="Print" hidden="true" icon="fa-print" onClick="notImplementedYet"/>
         </toolbar>
@@ -41,6 +44,7 @@
                 <field name="partner" colSpan="4" domain=":company member of self.companySet" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
+                <field name="project" colSpan="8"/>
                 <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
                     <field name="createdBy" colSpan="3"/>
@@ -158,17 +162,18 @@
                 </panel>
             </panel>
             <panel if="__config__.app.getApp('contract').isConfigContract" title="Config." name="configPanel">
-                <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing" colSpan="12"  name="configSubPanel">
-                    <field name="isInvoicingManagement" colSpan="6" widget="boolean-switch" onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
-                    <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement" colSpan="6">
-                        <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement" name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
-                        <field if="__config__.app.getApp('contract').isConsumptionManagement" name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
-                    </panel>
-                    <field if="__config__.app.getApp('contract').isConsumptionManagement" name="currentContractVersion" showTitle="false" hidden="true" showIf="isConsumptionManagement" colSpan="6" x-show-icons="false">
-                        <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                            <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
-                        </editor>
-                    </field>
+              <panel name="configSubPanel" title="Invoicing" if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
+                <field name="isInvoicingManagement" onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config" colSpan="12" widget="boolean-switch"/>
+                <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
+                  <field name="isAdditionaBenefitManagement" if="__config__.app.getApp('contract')isAdditionalBenefitManagement" widget="boolean-switch" colSpan="12"/>
+                  <field name="isConsumptionManagement" if="__config__.app.getApp('contract').isConsumptionManagement" onChange="action-contract-record-update-field-in-version" widget="boolean-switch" colSpan="3"/>
+                  <field name="currentContractVersion" if="__config__.app.getApp('contract').isConsumptionManagement" showTitle="false" hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
+                    <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
+                      <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
+                    </editor>
+                  </field>
+                </panel>
+
                     <panel name="invoicingSubPanel" hidden="true" showIf="isInvoicingManagement" colSpan="12">
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
@@ -255,6 +260,8 @@
         <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
         <field name="currency" expr="eval: __user__.activeCompany.currency"/>
+        <field name="targetTypeSelect" expr="eval:_targetTypeSelect" if="_targetTypeSelect != null"/>
+        <field name="project" expr="eval:_project" if="_project != null"/>
     </action-record>
 
     <action-record name="action-record-contract-version-default-record" model="com.axelor.apps.contract.db.ContractVersion">

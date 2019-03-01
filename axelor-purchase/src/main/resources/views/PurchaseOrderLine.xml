@@ -7,6 +7,7 @@
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="purchaseOrder.purchaseOrderSeq"/>
     	<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    	<field name="productCode"/>
     	<field name="productName"/>
         <field name="qty" aggregate="sum"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -51,6 +52,20 @@
 		<field name="toInvoice"/>
         <field name="invoiced"/>
     </grid>
+
+	<grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines" name="purchase-order-line-all-grid" canNew="false" canDelete="false" canEdit="false">
+		<field name="purchaseOrder.purchaseOrderSeq"/>
+		<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="productName"/>
+		<field name="qty" aggregate="sum"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="price" x-scale="2"/>
+		<field name="inTaxPrice" x-scale="2"/>
+		<field name="purchaseOrder.currency"/>
+		<field name="purchaseOrder.buyerUser"/>
+		<field name="desiredDelivDate"/>
+		<field name="estimatedDelivDate"/>
+	</grid>
 
     <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
         <panel-include view="purchase-order-line-form"/>
@@ -120,8 +135,17 @@
 				<panel-related name="purchaseOrderSupplierLineListPanel" field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
+				<field name="companyExTaxTotal" title="Total W.T." colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
+					<viewer depends="companyExTaxTotal,$currencySymbol">
+						<![CDATA[
+							<dd>{{record.companyExTaxTotal}} {{record.$currencySymbol}}</dd>
+						]]>
+					</viewer>
+				</field>
+				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-purchase-order-method-compute-budget-distribution-sum-amount"/>
+				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hidden="true">
 				<field name="desiredDelivDate"/>
@@ -167,6 +191,18 @@
 		<panel-include view="purchase-order-line-form"/>
 	</form>
 	
+	<form model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line" name="purchase-order-line-all-form" width="large" canNew="false" canDelete="false" canEdit="false">
+		<panel name="mainPanel">
+			<field name="purchaseOrder.company" colSpan="3"/>
+			<spacer name="purchaseOrderCompanySpacer" colSpan="9"/>
+			<field name="purchaseOrder.supplierPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
+			<field name="purchaseOrder.purchaseOrderSeq" grid-view="purchase-order-grid" form-view="purchase-order-form" colSpan="3"/>
+			<field name="purchaseOrder.orderDate" colSpan="3"/>
+			<field name="purchaseOrder.currency" colSpan="3"/>
+		</panel>
+		<panel-include view="purchase-order-line-form"/>
+	</form>
+
 	<action-method name="action-purchase-order-line-method-empty-line">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="emptyLine"/>
 	</action-method>
@@ -214,6 +250,7 @@
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 		<action name="action-purchase-order-line-attrs-delivery-panel"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -334,6 +371,10 @@
 	
 	<action-method name="action-purchase-order-line-method-onchange-intaxprice">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="updatePrice"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-method-compute-budget-distribution-sum-amount">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeBudgetDistributionSumAmount"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->

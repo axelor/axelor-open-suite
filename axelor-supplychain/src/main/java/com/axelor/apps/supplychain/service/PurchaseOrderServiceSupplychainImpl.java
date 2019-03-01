@@ -29,10 +29,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -225,6 +227,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
+      Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+          .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
     }
   }
 
@@ -268,15 +272,35 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         }
       }
     }
+    super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
         Beans.get(AppSupplychainService.class)
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
-    super.requestPurchaseOrder(purchaseOrder);
+    if (purchaseOrder.getCreatedByInterco()) {
+      fillIntercompanySaleOrderCounterpart(purchaseOrder);
+    }
+  }
+
+  /**
+   * Fill interco sale order counterpart is the sale order exist.
+   *
+   * @param purchaseOrder
+   */
+  protected void fillIntercompanySaleOrderCounterpart(PurchaseOrder purchaseOrder) {
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderRepository.class)
+            .all()
+            .filter("self.saleOrderSeq = :saleOrderSeq")
+            .bind("saleOrderSeq", purchaseOrder.getExternalReference())
+            .fetchOne();
+    if (saleOrder != null) {
+      saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    }
   }
 
   public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
@@ -325,7 +349,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
   }
