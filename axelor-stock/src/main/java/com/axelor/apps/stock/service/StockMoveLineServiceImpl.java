@@ -73,9 +73,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected StockLocationLineService stockLocationLineService;
   protected UnitConversionService unitConversionService;
-  private TrackingNumberService trackingNumberService;
-
-  @Inject protected TrackingNumberRepository trackingNumberRepo;
+  protected TrackingNumberService trackingNumberService;
+  protected WeightedAveragePriceService weightedAveragePriceService;
+  protected TrackingNumberRepository trackingNumberRepo;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -85,7 +85,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
       StockLocationLineService stockLocationLineService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      WeightedAveragePriceService weightedAveragePriceService,
+      TrackingNumberRepository trackingNumberRepo) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -93,6 +95,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.unitConversionService = unitConversionService;
+    this.weightedAveragePriceService = weightedAveragePriceService;
+    this.trackingNumberRepo = trackingNumberRepo;
   }
 
   @Override
@@ -431,7 +435,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       boolean realQty)
       throws AxelorException {
 
-    StockLocationServiceImpl stockLocationServiceImpl = Beans.get(StockLocationServiceImpl.class);
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -463,7 +466,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber(),
             BigDecimal.ZERO);
-        stockLocationServiceImpl.computeAvgPriceForProduct(stockMoveLine.getProduct());
+        weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
   }

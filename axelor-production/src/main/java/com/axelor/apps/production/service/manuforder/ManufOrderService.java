@@ -99,8 +99,6 @@ public interface ManufOrderService {
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 
-  public BigDecimal getProducedQuantity(ManufOrder manufOrder);
-
   /**
    * Generate waste stock move.
    *

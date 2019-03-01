@@ -18,6 +18,8 @@
 - CUSTOMER DELIVERY : editable deliveryCondition
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 - Sale Order: if config is activated, create stock move after modifications validation.
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
+in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
