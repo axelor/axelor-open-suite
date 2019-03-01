@@ -44,6 +44,8 @@ import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
@@ -109,5 +111,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
 
     bind(MoveManagementRepository.class).to(MoveBankPaymentRepository.class);
+
+    bind(BankOrderLineOriginService.class).to(BankOrderLineOriginServiceImpl.class);
   }
 }

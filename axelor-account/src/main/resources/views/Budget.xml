@@ -13,7 +13,7 @@
         <field name="totalAmountExpected" aggregate="sum"/>
     </grid>
     
-    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save" onNew="action-budget-record-on-new">
+    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
   		<panel name="mainPanel">
     		<field name="name" showTitle="false" colSpan="12">
       			<viewer depends="name"><![CDATA[
@@ -93,5 +93,9 @@
                   &amp;&amp; inTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
 			  message="Total amount is exceeded than budget."/>
 	</action-validate>
+	
+	<action-method name="action-budget-check-shared-dates">
+		<call class="com.axelor.apps.account.web.BudgetController" method="checkSharedDates"/>
+	</action-method>
 
 </object-views>

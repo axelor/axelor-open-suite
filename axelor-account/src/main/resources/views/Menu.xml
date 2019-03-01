@@ -24,7 +24,7 @@
 
 	<action-view name="invoice.root.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
+		<view type="grid" name="invoice-refund-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
@@ -50,7 +50,7 @@
 
 	<action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-supplier-grid"/>
+		<view type="grid" name="invoice-supplier-refund-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
@@ -597,7 +597,7 @@
 	
 	<action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
+		<view type="grid" name="invoice-refund-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
@@ -619,7 +619,7 @@
 	
 	<action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-supplier-grid" />
+		<view type="grid" name="invoice-supplier-refund-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>

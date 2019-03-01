@@ -107,10 +107,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     Query q =
         JPA.em()
             .createQuery(
-                "select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
+                "select count(*) FROM SaleOrder as self WHERE self.statusSelect in (?1 , ?2) AND self.clientPartner = ?3 ");
     q.setParameter(1, SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    q.setParameter(2, saleOrder.getClientPartner());
-    if ((long) q.getSingleResult() == 1) {
+    q.setParameter(2, SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    q.setParameter(3, saleOrder.getClientPartner());
+    if ((long) q.getSingleResult() == 0) {
       saleOrder.getClientPartner().setIsCustomer(false);
       saleOrder.getClientPartner().setIsProspect(true);
     }

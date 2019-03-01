@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -49,6 +50,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,8 +220,21 @@ public class ManufOrderStockMoveService {
    */
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
-    manufOrder.addInStockMoveListItem(
-        realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList()));
+    List<StockMoveLine> consumedStockMoveLineList =
+        manufOrder
+            .getConsumedStockMoveLineList()
+            .stream()
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getStockMove().getStatusSelect()
+                        != StockMoveRepository.STATUS_REALIZED)
+            .collect(Collectors.toList());
+    if (consumedStockMoveLineList == null || consumedStockMoveLineList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MANUF_STOCK_MOVE_ERROR_1));
+    }
+    realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList());
   }
 
   /**
@@ -229,16 +244,16 @@ public class ManufOrderStockMoveService {
    * @param stockMoveList
    * @return the created empty stock move.
    */
-  public StockMove realizeStockMovesAndCreateOneEmpty(
+  public void realizeStockMovesAndCreateOneEmpty(
       ManufOrder manufOrder, List<StockMove> stockMoveList) throws AxelorException {
     for (StockMove stockMove : stockMoveList) {
       finishStockMove(stockMove);
     }
 
-    StockMove newStockMove = _createToConsumeStockMove(manufOrder, manufOrder.getCompany());
-    newStockMove.setStockMoveLineList(new ArrayList<>());
-    Beans.get(StockMoveService.class).plan(newStockMove);
-    return newStockMove;
+    //    StockMove newStockMove = _createToConsumeStockMove(manufOrder, manufOrder.getCompany());
+    //    newStockMove.setStockMoveLineList(new ArrayList<>());
+    //    Beans.get(StockMoveService.class).plan(newStockMove);
+    //    return newStockMove;
   }
 
   /**
@@ -440,7 +455,15 @@ public class ManufOrderStockMoveService {
             StockMoveRepository.TYPE_INTERNAL);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
+    newStockMove.setOrigin(manufOrder.getManufOrderSeq());
+    newStockMove.setOriginId(manufOrder.getId());
+    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
+
+    if (newStockMove.getStockMoveLineList() == null
+        || newStockMove.getStockMoveLineList().isEmpty()) {
+      return;
+    }
 
     // plan the stockmove
     stockMoveService.plan(newStockMove);

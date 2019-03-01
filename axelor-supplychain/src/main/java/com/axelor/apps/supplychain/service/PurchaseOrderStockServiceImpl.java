@@ -286,7 +286,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           createProductStockMoveLine(
               purchaseOrderLine,
               qty,
-              purchaseOrderLine.getProduct().getControlOnReceipt() ? qualityStockMove : stockMove);
+              needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove);
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
@@ -295,6 +295,24 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     }
     return stockMoveLine;
+  }
+
+  /**
+   * @param product
+   * @param purchaseOrder
+   * @return true if product needs a control on receipt and if the purchase order is not a direct
+   *     order
+   */
+  protected boolean needControlOnReceipt(PurchaseOrderLine purchaseOrderLine) {
+
+    Product product = purchaseOrderLine.getProduct();
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+
+    if (product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
+      return true;
+    }
+    return false;
   }
 
   protected StockMoveLine createProductStockMoveLine(

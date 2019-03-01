@@ -14,6 +14,7 @@
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<integer name="calculationTypeSelect" title="Calculation type" selection="production.cost.sheet.calculation.type.select"/>
    	<date name="calculationDate" title="Date of calculation"/>
+   	<decimal name="manufOrderProducedRatio" title="Produced ratio" precision="20" scale="5"/>
   	
   	<extra-code><![CDATA[
 		// CALCULATION TYPE SELECT

@@ -6,7 +6,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-supplychain-saleorder-onload"
-    onSave="action-supplychain-saleorder-onsave">
+	onSave="action-supplychain-saleorder-onsave">
 		
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -14,7 +14,7 @@
 	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
 	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
 	onLoad="action-group-supplychain-saleorder-onload"
-    onSave="action-supplychain-saleorder-onsave">
+	onSave="action-supplychain-saleorder-onsave">
 
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
@@ -66,6 +66,12 @@
 		</panel>
 	</form>
 	
+  <action-group id="action-group-supplychain-sale-order-validate-changes" name="action-group-sale-order-validate-changes">
+    <action name="action-supplychain-saleorder-onsave"/>
+    <action name="save"/>
+    <action name="action-sale-order-validate-changes"/>
+  </action-group>
+
 	<action-group name="action-group-supplychain-saleorder-onnew">
         <action name="action-group-sale-saleorder-onnew"/>
 		<action name="action-sale-order-record-payment-mode"/>
@@ -79,12 +85,12 @@
 		<action name="action-sale-order-attrs-interco"/>
 	</action-group>
 
-    <action-method name="action-supplychain-saleorder-onsave">
-        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
-    </action-method>
-
 	<action-method name="action-supplychain-sale-order-method-get-stock-location">
     	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
+    </action-method>
+
+    <action-method name="action-supplychain-saleorder-onsave">
+        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
     </action-method>
 
     <action-method name="action-supplychain-sale-order-method-generate-invoice">
@@ -199,5 +205,9 @@
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
     </action-record>
+
+    <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
+    	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+    </action-attrs>
 
 </object-views>
