@@ -3,6 +3,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+- Employee: added wizard when creating new employee
 - LogisticalForm: if config enabled, send an email on first save
 - SaleOrder: added boolean to invoice via generated task
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
@@ -62,6 +63,7 @@
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
 
 ## Improvements
+- Employee: refactored view
 - SaleOrder: refactored 'Business Project' panel
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.

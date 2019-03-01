@@ -80,7 +80,6 @@ public class EmployeeController {
     Map<String, String> urlMap =
         employeeService.getSocialNetworkUrl(
             employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
-    response.setAttr("contactPartner.googleLabel", "title", urlMap.get("google"));
     response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
@@ -93,7 +92,6 @@ public class EmployeeController {
     Map<String, String> urlMap =
         employeeService.getSocialNetworkUrl(
             partnerContact.getName(), partnerContact.getFirstName());
-    response.setAttr("googleLabel", "title", urlMap.get("google"));
     response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
