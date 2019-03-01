@@ -7,6 +7,7 @@
 - MARKETING : Send a reminder to invited targets
 - MARKETING : Add a boolean in targetModelSet
 - PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
+- CUST. DELIVERY : new tags "not invoiced" and "invoiced"
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
