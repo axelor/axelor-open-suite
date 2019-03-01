@@ -48,6 +48,7 @@
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
 		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
 
+		<many-to-one name="customerAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT

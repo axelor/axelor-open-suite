@@ -591,7 +591,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       }
     }
 
-    String description = user.getFullName(); 
+    String description = user.getFullName();
     String productName = product.getName();
     if (date != null) {
       productName += " " + "(" + date + ")";

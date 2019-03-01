@@ -1,7 +1,9 @@
 # Changelog
 
+
 ## [Unreleased 5.2.0]
 ## Features
+- Employee: added wizard when creating new employee
 - LogisticalForm: if config enabled, send an email on first save
 - SaleOrder: added boolean to invoice via generated task
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
@@ -48,9 +50,21 @@
 - Business Project : Addition of required contion on parentTaskTemplate. 
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
 - Project module : ProjectPlanningTime ( Start time / End time )
+- TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
+- MOVE : improve reversion process.
+- SaleOrder : Task By product and Task_By_Line Invoicing
+- SALE ORDER : Update in 'Quotations template' working process and view.
+- Business Project : Addition of new m2o field 'customerAddress'.
+- Base : Additon of new object 'MailingListMessage' along with views, parent menu and sub-menus.
+- DataBackup : Relative date
+- BUSINESS PROJECT : Connect Contract to Project
+- PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
+- WEEKLY PLANNING : Add a type and minor changes
+- TeamTask : Business Project module / TeamTask.toInvoice (Package)
 
 ## Improvements
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config
+- Employee: refactored view (Add a creation workflow and allow to automatically create or link a user)
 - SaleOrder: refactored 'Business Project' panel
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
@@ -64,6 +78,10 @@
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
 - Moible: Add new app setting for 'Task'
+- JobPosition : Hide statusOpenBtn on statusSelect = 2.
+- Purchase Order : remove IPurchaseOrder deprecated class
+- Project module : Add metaFile field on TeamTask
+- Event : Allowing to suppress unsynchronized events. 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -72,6 +90,7 @@
 - Generation of Project/Phase from SaleOrder
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
 - Contract : Fix issue of not saving currentContractVersion fields in form view
+- ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

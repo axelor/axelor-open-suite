@@ -83,7 +83,8 @@ public class DataBackupServiceImpl implements DataBackupService {
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
-            File backupFile = createService.create(obj.getFetchLimit());
+            File backupFile =
+                createService.create(obj.getFetchLimit(), dataBackup.getIsRelativeDate());
             obj.setBackupMetaFile(metaFiles.upload(backupFile));
             obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
             Beans.get(DataBackupRepository.class).save(obj);

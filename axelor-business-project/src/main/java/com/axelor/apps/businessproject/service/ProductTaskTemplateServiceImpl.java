@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.db.ProductTaskTemplate;
 import com.axelor.apps.businessproject.db.repo.ProductTaskTemplateRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -53,8 +55,10 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       Project project,
       TeamTask parent,
       LocalDateTime startDate,
-      BigDecimal qty) {
+      BigDecimal qty,
+      SaleOrderLine saleOrderLine) {
     List<TeamTask> tasks = new ArrayList<>();
+    Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
       BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
@@ -64,11 +68,27 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
 
         TeamTask task = teamTaskBusinessService.create(template, project, dateWithDelay, qty);
         task.setParentTask(parent);
+        task.setProduct(product);
+        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+        task.setUnit(product.getUnit());
+        task.setUnitPrice(product.getSalePrice());
+        task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+        if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+          task.setToInvoice(true);
+          task.setTeamTaskInvoicing(true);
+          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+        }
         tasks.add(teamTaskRepository.save(task));
 
         // Only parent task can have multiple quantities
         List<TeamTask> children =
-            convert(template.getTaskTemplateList(), project, task, dateWithDelay, BigDecimal.ONE);
+            convert(
+                template.getTaskTemplateList(),
+                project,
+                task,
+                dateWithDelay,
+                BigDecimal.ONE,
+                saleOrderLine);
         tasks.addAll(children);
 
         qtyTmp = qtyTmp.subtract(BigDecimal.ONE);

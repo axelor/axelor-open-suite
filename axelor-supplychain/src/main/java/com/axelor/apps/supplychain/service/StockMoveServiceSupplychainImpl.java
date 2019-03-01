@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -115,7 +114,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
-        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+        purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
       } else {
         Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
@@ -242,10 +241,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    */
   protected void finishOrValidatePurchaseOrderStatus(PurchaseOrder purchaseOrder) {
 
-    if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    if (purchaseOrder.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     } else {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     }
   }
 
@@ -269,11 +268,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
         }
         if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
         } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
         } else {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
         }
       }
     }

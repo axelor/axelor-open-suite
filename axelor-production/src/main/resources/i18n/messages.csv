@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "105",,,
 "5",,,
+"A cancel reason must be selected",,,
 "Action",,,
 "Actions",,,
 "Add Manuf. Order",,,
@@ -523,6 +524,7 @@
 "The planned end date is inferior to the actual date",,,
 "The product %s is not in the bill of material related to this production process",,,
 "The product cost cannot be changed because the product cost type is not manual",,,
+"The template to send message for manufacturing order is missing.",,,
 "There no's defined nomenclature for product %s (%s)",,,
 "There's no configured sequence for fabrication's orders",,,
 "There's no configured sequence for production's orders",,,

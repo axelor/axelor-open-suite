@@ -45,7 +45,7 @@
 	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
 	<boolean name="isWithBackorder" title="Manage backorder"/>
 	
-	<boolean name="pickingOrderPrinting" title="Picking order printing detailed"/>
+	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"/>
 
   </entity>
   

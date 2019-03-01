@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
-import com.axelor.apps.tool.NammingTool;
+import com.axelor.apps.tool.NamingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
@@ -181,7 +181,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   }
 
   private String isKeyword(String[] fieldNames, int ind) {
-    if (NammingTool.isKeyword(fieldNames[ind])) {
+    if (NamingTool.isKeyword(fieldNames[ind])) {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];

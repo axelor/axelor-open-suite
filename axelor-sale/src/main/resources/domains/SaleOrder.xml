@@ -10,16 +10,17 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
 	<string name="fullName" namecolumn="true"/>
   	<string name="saleOrderSeq"  title="Internal Number" readonly="true"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
   	<datetime name="confirmationDateTime" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
+	<string name="title" title="Title"/>
 	
 <!--   	Onglet Coordonnées client -->
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
   	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Main/Invoicing address"/>
 
