@@ -32,6 +32,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - STOCKMOVELINE : Fix NPE
 - Partner Stock Settings: fix exception when there were no settings for a company.
 - Manuf Order: fix produced product quantities computation.
+- Lunch Voucher Line: added compute action on the grid view. 
 
 ## [5.1.3] - 2019-02-21
 ## Features
