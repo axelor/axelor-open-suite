@@ -201,12 +201,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-    BigDecimal qty =
-        billOfMaterial.getQty().multiply(manufOrderQty).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal bomQty = billOfMaterial.getQty();
 
     // add the produced product
     manufOrder.addToProduceProdProductListItem(
-        new ProdProduct(manufOrder.getProduct(), qty, billOfMaterial.getUnit()));
+        new ProdProduct(manufOrder.getProduct(), manufOrderQty, billOfMaterial.getUnit()));
 
     // Add the residual products
     if (appProductionService.getAppProduction().getManageResidualProductOnBom()
@@ -218,12 +217,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             productVariantService.getProductVariant(
                 manufOrder.getProduct(), prodResidualProduct.getProduct());
 
-        qty =
-            prodResidualProduct
-                .getQty()
-                .multiply(manufOrderQty)
-                .setScale(
-                    appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN);
+        BigDecimal qty =
+            bomQty.signum() != 0
+                ? prodResidualProduct
+                    .getQty()
+                    .multiply(manufOrderQty)
+                    .divide(
+                        bomQty,
+                        appProductionService.getNbDecimalDigitForBomQty(),
+                        RoundingMode.HALF_EVEN)
+                : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(
             new ProdProduct(product, qty, prodResidualProduct.getUnit()));
