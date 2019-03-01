@@ -16,8 +16,9 @@
         <field name="isConsumptionLine" hidden="true"/>
     </grid>
 
-    <form name="contract-line-form" title="Contract Line"
-          model="com.axelor.apps.contract.db.ContractLine">
+    <form name="contract-line-form" title="Contract line" model="com.axelor.apps.contract.db.ContractLine"
+          onNew="action-contract-line-attrs-hide-consumption-line"
+          onLoad="action-contract-line-attrs-hide-consumption-line">
         <panel name="mainPanel">
             <field name="product" canEdit="false"
                    onChange="action-method-contract-version-change-product,
@@ -32,14 +33,16 @@
             <field name="unit" canEdit="false"/>
             <field name="exTaxTotal" readonly="true"/>
             <field name="inTaxTotal" readonly="true"/>
-            <field name="isConsumptionLine"
-               onChange="action-method-contract-line-change-is-consumption-line,
-               action-method-contract-line-compute-total"/>
+            <field name="isConsumptionLine" hidden="true" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
             <field name="isInvoiced" readonly="true" showIf="isInvoiced" />
             <field name="description" colSpan="12" widget="html"/>
             <field name="contractVersion" hidden="true"/>
         </panel>
     </form>
+
+  <action-attrs name="action-contract-line-attrs-hide-consumption-line" model="com.axelor.apps.contract.db.ContractLine">
+    <attribute name="hidden" for="isConsumptionLine" expr="eval: !__parent__?.isConsumptionManagement"/>
+  </action-attrs>
 
     <action-record name="action-method-contract-line-change-is-consumption-line"
                    model="com.axelor.apps.contract.db.ContractLine">

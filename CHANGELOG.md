@@ -63,7 +63,8 @@
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
 
 ## Improvements
-- Employee: refactored view
+- ContractLine: hide `isConsumptionLine` if not activated in Contract config
+- Employee: refactored view (Add a creation workflow and allow to automatically create or link a user)
 - SaleOrder: refactored 'Business Project' panel
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.

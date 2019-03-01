@@ -18,6 +18,8 @@
 package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
@@ -31,6 +33,7 @@ public class ContractModule extends AxelorModule {
 
   @Override
   protected void configure() {
+    bind(AbstractContractRepository.class).to(ContractRepository.class);
     bind(ContractService.class).to(ContractServiceImpl.class);
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
