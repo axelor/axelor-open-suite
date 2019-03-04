@@ -137,7 +137,6 @@ public class CostSheetServiceImpl implements CostSheetService {
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {
     this.init();
-    manufOrder.addCostSheetListItem(costSheet);
 
     List<CostSheet> costSheetList = manufOrder.getCostSheetList();
     LocalDate previousCostSheetDate = null;
@@ -153,6 +152,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         }
       }
     }
+    manufOrder.addCostSheetListItem(costSheet);
 
     costSheet.setCalculationTypeSelect(calculationTypeSelect);
     costSheet.setCalculationDate(
@@ -680,6 +680,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       if ((calculationType == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION
               || calculationType == CostSheetRepository.CALCULATION_END_OF_PRODUCTION)
+          && previousCostSheetDate != null
           && !previousCostSheetDate.isBefore(stockMove.getRealDate())) {
         continue;
 
