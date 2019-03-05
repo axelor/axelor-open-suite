@@ -33,6 +33,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Partner Stock Settings: fix exception when there were no settings for a company.
 - Manuf Order: fix produced product quantities computation.
 - Fix NPE on finishing manuf order.
+- SaleOrder : Fixed error for action attrs to hide inAti field.
 
 ## [5.1.3] - 2019-02-21
 ## Features
