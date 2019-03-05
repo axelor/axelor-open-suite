@@ -18,54 +18,47 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class MaintenanceRequestServiceImpl implements MaintenanceRequestService {
-	
-	@Inject
-	private MaintenanceRequestRepository maintenanceRequestRepo;
-	
-	@Inject
-	private AppBaseService appBaseService;
-	
-	@Transactional
-	public MaintenanceRequest start(MaintenanceRequest  maintenanceRequest) {
-		
-		maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_IN_PROGRESS);
-		
-		return maintenanceRequestRepo.save(maintenanceRequest);
-		
-	}
-	
-	@Transactional
-	public MaintenanceRequest complete(MaintenanceRequest  maintenanceRequest) {
-		
-		maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_COMPLETED);
-		maintenanceRequest.setDoneOn(appBaseService.getTodayDate());
-		
-		return maintenanceRequestRepo.save(maintenanceRequest);
-		
-	}
-	
-	@Transactional
-	public MaintenanceRequest cancel(MaintenanceRequest  maintenanceRequest) {
-		
-		maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_CANCELED);
-		
-		return maintenanceRequestRepo.save(maintenanceRequest);
-		
-	}
-	
-	@Transactional
-	public MaintenanceRequest replan(MaintenanceRequest  maintenanceRequest) {
-		
-		maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_PLANNED);
-		
-		return maintenanceRequestRepo.save(maintenanceRequest);
-		
-	}
+
+  @Inject private MaintenanceRequestRepository maintenanceRequestRepo;
+
+  @Inject private AppBaseService appBaseService;
+
+  @Transactional
+  public MaintenanceRequest start(MaintenanceRequest maintenanceRequest) {
+
+    maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_IN_PROGRESS);
+
+    return maintenanceRequestRepo.save(maintenanceRequest);
+  }
+
+  @Transactional
+  public MaintenanceRequest complete(MaintenanceRequest maintenanceRequest) {
+
+    maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_COMPLETED);
+    maintenanceRequest.setDoneOn(appBaseService.getTodayDate());
+
+    return maintenanceRequestRepo.save(maintenanceRequest);
+  }
+
+  @Transactional
+  public MaintenanceRequest cancel(MaintenanceRequest maintenanceRequest) {
+
+    maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_CANCELED);
+
+    return maintenanceRequestRepo.save(maintenanceRequest);
+  }
+
+  @Transactional
+  public MaintenanceRequest replan(MaintenanceRequest maintenanceRequest) {
+
+    maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_PLANNED);
+
+    return maintenanceRequestRepo.save(maintenanceRequest);
+  }
 }

@@ -25,56 +25,52 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class MaintenanceRequestController {
-	
-	@Inject
-	private MaintenanceRequestRepository maintenanceRequestRepo;
-	
-	@Inject
-	private MaintenanceRequestService maintenanceRequestService;
-	
-	public void start(ActionRequest request, ActionResponse response) {
-		
-		MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
-		
-		if (maintenanceRequest.getId() != null) {
-			maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
-			maintenanceRequestService.start(maintenanceRequest);
-			response.setReload(true);
-		}
-	}
-	
-	public void complete(ActionRequest request, ActionResponse response) {
-		
-		MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
-		
-		if (maintenanceRequest.getId() != null) {
-			maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
-			maintenanceRequestService.complete(maintenanceRequest);
-			response.setReload(true);
-		}
-	}
-	
-	public void cancel(ActionRequest request, ActionResponse response) {
-		
-		MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
-		
-		if (maintenanceRequest.getId() != null) {
-			maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
-			maintenanceRequestService.cancel(maintenanceRequest);
-			response.setReload(true);
-		}
-	}
-	
-	
-	public void replan(ActionRequest request, ActionResponse response) {
-		
-		MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
-		
-		if (maintenanceRequest.getId() != null) {
-			maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
-			maintenanceRequestService.replan(maintenanceRequest);
-			response.setReload(true);
-		}
-	}
-	
+
+  @Inject private MaintenanceRequestRepository maintenanceRequestRepo;
+
+  @Inject private MaintenanceRequestService maintenanceRequestService;
+
+  public void start(ActionRequest request, ActionResponse response) {
+
+    MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
+
+    if (maintenanceRequest.getId() != null) {
+      maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
+      maintenanceRequestService.start(maintenanceRequest);
+      response.setReload(true);
+    }
+  }
+
+  public void complete(ActionRequest request, ActionResponse response) {
+
+    MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
+
+    if (maintenanceRequest.getId() != null) {
+      maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
+      maintenanceRequestService.complete(maintenanceRequest);
+      response.setReload(true);
+    }
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+
+    MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
+
+    if (maintenanceRequest.getId() != null) {
+      maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
+      maintenanceRequestService.cancel(maintenanceRequest);
+      response.setReload(true);
+    }
+  }
+
+  public void replan(ActionRequest request, ActionResponse response) {
+
+    MaintenanceRequest maintenanceRequest = request.getContext().asType(MaintenanceRequest.class);
+
+    if (maintenanceRequest.getId() != null) {
+      maintenanceRequest = maintenanceRequestRepo.find(maintenanceRequest.getId());
+      maintenanceRequestService.replan(maintenanceRequest);
+      response.setReload(true);
+    }
+  }
 }

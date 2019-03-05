@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.maintenance.db;
+package com.axelor.apps.maintenance.report;
 
-public interface Imaintenance {
+public interface IReport {
 
-  /** Sequence select value */
-  public static final String SEQ_MAINTENANCE = "maintenance";
+  public static final String MANUF_ORDER = "MaintenanceManufOrder.rptdesign";
+  public static final String PROD_PROCESS = "MaintenanceProdProcess.rptdesign";
+  public static final String BILL_OF_MATERIAL = "MaintenanceBillOfMaterial.rptdesign";
 }

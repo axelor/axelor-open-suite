@@ -20,12 +20,12 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 
 public interface MaintenanceRequestService {
-	
-	public MaintenanceRequest start(MaintenanceRequest  maintenanceRequest);
-	
-	public MaintenanceRequest complete(MaintenanceRequest  maintenanceRequest);
-	
-	public MaintenanceRequest cancel(MaintenanceRequest  maintenanceRequest);
-	
-	public MaintenanceRequest replan(MaintenanceRequest  maintenanceRequest);
+
+  public MaintenanceRequest start(MaintenanceRequest maintenanceRequest);
+
+  public MaintenanceRequest complete(MaintenanceRequest maintenanceRequest);
+
+  public MaintenanceRequest cancel(MaintenanceRequest maintenanceRequest);
+
+  public MaintenanceRequest replan(MaintenanceRequest maintenanceRequest);
 }

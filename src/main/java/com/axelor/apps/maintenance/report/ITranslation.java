@@ -15,10 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.maintenance.db;
+package com.axelor.apps.maintenance.report;
 
-public interface Imaintenance {
+public interface ITranslation {
 
-  /** Sequence select value */
-  public static final String SEQ_MAINTENANCE = "maintenance";
+  /*Manufacturing Orders*/
+  public static String MANUF_ORDER_MACHINE = /*$$(*/ "ManufOrder.machine"; /*)*/
+  public static String MANUF_ORDER_MACHINE_TYPE = /*$$(*/ "ManufOrder.machineType"; /*)*/
+
+  /*Bill of Materials*/
+  public static String BOM_MACHINE = /*$$(*/ "BOM.machine"; /*)*/
+
+  /*Production Processes*/
+  public static String PROD_PROCESS_MACHINE = /*$$(*/ "ProdProcess.machine"; /*)*/
 }

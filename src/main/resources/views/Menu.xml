@@ -66,7 +66,17 @@
 	</action-view>
 	
 	<menuitem name="maintenance-root-manuf-order" parent="maintenance-root" order="33"
-		title="Manufacturing orders" action="manufacturing.root.manuf.order"/>
+		title="Manufacturing orders" action="maintenance.manufacturing.root.manuf.order"/>
+
+	<action-view name="maintenance.manufacturing.root.manuf.order" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="grid" name="maintenance-manuf-order-grid" />
+    <view type="form" name="manuf-order-form" />
+    <view-param name="search-filters" value="manuf-order-filters"/>
+    <domain>(self.isPermanent is null OR self.isPermanent = false) AND self.type = 2</domain>
+    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+    <context name="_maintenance" expr="eval: true"/>
+	</action-view>
 
 	<menuitem name="maintenance-root-config" parent="maintenance-root" title="Configuration" order="35"/>
 	
@@ -83,9 +93,57 @@
 		title="Machines" action="manufacturing.conf.machine" />
 
 	<menuitem name="maintenance-root-config-prod-process" parent="maintenance-root-config" order="15"
-		title="Production processes" action="manufacturing.root.prod.process"/>
+		title="Production processes" action="maintenance.manufacturing.root.prod.process"/>
+
+  <action-view name="maintenance.manufacturing.root.prod.process" title="Production processes"
+    model="com.axelor.apps.production.db.ProdProcess" >
+    <view type="grid" name="maintenance-prod-process-grid" />
+    <view type="form" name="prod-process-form" />
+    <domain>self.type = 2</domain>
+    <context name="_maintenance" expr="eval: true"/>
+  </action-view>
 
 	<menuitem name="maintenance-root-config-bill-of-material" parent="maintenance-root-config" order="20"
-		title="Bills of materials" action="manufacturing.root.bill.of.material"/>
+		title="Bills of materials" action="maintenance.manufacturing.root.bill.of.material"/>
 
+  <action-view name="maintenance.manufacturing.root.bill.of.material" title="Bills of materials"
+    model="com.axelor.apps.production.db.BillOfMaterial" >
+    <view type="grid" name="maintenance-bill-of-material-grid" />
+    <view type="form" name="bill-of-material-form" />
+    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false AND self.type = 2</domain>
+    <context name="_maintenance" expr="eval: true"/>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.root.bill.of.material" name="manufacturing.root.bill.of.material" title="Bills of materials"
+    model="com.axelor.apps.production.db.BillOfMaterial" >
+    <view type="grid" name="bill-of-material-grid" />
+    <view type="form" name="bill-of-material-form" />
+    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false AND self.type = 1</domain>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.root.prod.process" name="manufacturing.root.prod.process" title="Production processes"
+    model="com.axelor.apps.production.db.ProdProcess" >
+    <view type="grid" name="prod-process-grid" />
+    <view type="form" name="prod-process-form" />
+    <domain>self.type = 1</domain>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.root.manuf.order" name="manufacturing.root.manuf.order" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" >
+    <view type="grid" name="manuf-order-grid" />
+    <view type="form" name="manuf-order-form" />
+    <view-param name="search-filters" value="manuf-order-filters"/>
+    <domain>(self.isPermanent is null OR self.isPermanent = false) AND self.type = 1</domain>
+    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+  </action-view>
+
+  <action-view id="addons.maintenance.manufacturing.conf.manuf.order" name="manufacturing.conf.manuf.order" title="Permanent manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" >
+    <view type="grid" name="manuf-order-grid" />
+    <view type="form" name="manuf-order-form" />
+    <view-param name="search-filters" value="manuf-order-filters"/>
+    <domain>self.type = 3</domain>
+    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+    <context name="_createPermanent" expr="eval: true"/>
+  </action-view>
 </object-views>
