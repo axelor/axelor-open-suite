@@ -34,10 +34,12 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -56,7 +58,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     implements StockMoveLineServiceSupplychain {
 
   protected AccountManagementService accountManagementService;
-
   protected PriceListService priceListService;
 
   @Inject
@@ -65,11 +66,13 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       AppBaseService appBaseService,
       AppStockService appStockService,
       StockMoveToolService stockMoveToolService,
-      AccountManagementService accountManagementService,
-      PriceListService priceListService,
-      UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      UnitConversionService unitConversionService,
+      WeightedAveragePriceService weightedAveragePriceService,
+      TrackingNumberRepository trackingNumberRepo,
+      AccountManagementService accountManagementService,
+      PriceListService priceListService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -77,7 +80,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockMoveToolService,
         stockMoveLineRepository,
         stockLocationLineService,
-        unitConversionService);
+        unitConversionService,
+        weightedAveragePriceService,
+        trackingNumberRepo);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }

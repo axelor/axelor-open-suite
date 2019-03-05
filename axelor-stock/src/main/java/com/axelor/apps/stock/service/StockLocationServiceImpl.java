@@ -21,9 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -36,7 +34,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -163,43 +160,6 @@ public class StockLocationServiceImpl implements StockLocationService {
   @Override
   public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException {
     return getQty(productId, locationId, "future");
-  }
-
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void computeAvgPriceForProduct(Product product) {
-    Long productId = product.getId();
-    String query =
-        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
-            + "WHERE self.product.id = "
-            + productId
-            + " AND self.stockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL;
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-    BigDecimal productAvgPrice = BigDecimal.ZERO;
-    BigDecimal qtyTot = BigDecimal.ZERO;
-    List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-    if (results.isEmpty()) {
-      return;
-    }
-    for (List<Object> result : results) {
-      BigDecimal avgPrice = (BigDecimal) result.get(1);
-      BigDecimal qty = (BigDecimal) result.get(2);
-      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
-      qtyTot = qtyTot.add(qty);
-    }
-    if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
-      return;
-    }
-    productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-    product.setAvgPrice(productAvgPrice);
-    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-      product.setCostPrice(productAvgPrice);
-      if (product.getAutoUpdateSalePrice()) {
-        Beans.get(ProductService.class).updateSalePrice(product);
-      }
-    }
-    productRepo.save(product);
   }
 
   public List<Long> getBadStockLocationLineId() {
