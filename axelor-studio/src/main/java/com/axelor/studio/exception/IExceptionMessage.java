@@ -59,6 +59,10 @@ public interface IExceptionMessage {
   static final String INVALID_MODULE_ZIP = /*$$(*/
       "Uploaded zip file name is not a valid module name" /*)*/;
 
+  /** Invalid module zip * */
+  static final String INVALID_MODULE_NAME = /*$$(*/
+      "Please follow standard module naming convension" /*)*/;
+
   /** Invalid zip entry * */
   static final String INVALID_ZIP_ENTRY = /*$$(*/ "Invalid zip entry: %s" /*)*/;
 

@@ -52,11 +52,11 @@ public class ModuleImportService {
   public void importModule(ModuleBuilder moduleBuilder)
       throws ZipException, IOException, AxelorException {
 
-    if (moduleBuilder.getMetaFile() == null) {
+    if (moduleBuilder.getImportMetaFile() == null) {
       return;
     }
 
-    MetaFile metaFile = moduleBuilder.getMetaFile();
+    MetaFile metaFile = moduleBuilder.getImportMetaFile();
     File file = MetaFiles.getPath(metaFile).toFile();
     validateFile(file);
 

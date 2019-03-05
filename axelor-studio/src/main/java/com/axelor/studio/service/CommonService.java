@@ -18,7 +18,9 @@
 package com.axelor.studio.service;
 
 import com.axelor.common.Inflector;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommonService {
@@ -112,11 +114,89 @@ public class CommonService {
   public static final String WIDGET = "Widget";
   public static final String WIDGET_ATTRS = "Widget Attrs";
 
+  public static final String[] MENU_HEADERS =
+      new String[] {
+        "Notes",
+        "Object",
+        "Views",
+        "Name",
+        "Title",
+        "Title FR",
+        "Parent",
+        "Order",
+        "Icon",
+        "Background",
+        "Filters",
+        "Action"
+      };
+
+  public static final String OBJECT = "Object";
+  public static final String VIEWS = "Views";
+  public static final String MENU_NAME = "Name";
+  public static final String MENU_TITLE = "Title";
+  public static final String MENU_TITLE_FR = "Title FR";
+  public static final String PARENT = "Parent";
+  public static final String ORDER = "Order";
+  public static final String ICON = "Icon";
+  public static final String BACKGROUND = "Background";
+  public static final String FILTER = "Filters";
+  public static final String ACTION = "Action";
+
+  public static final List<String> FIELD_TYPES;
+
+  static {
+    List<String> types = new ArrayList<String>();
+    types.add("string");
+    types.add("integer");
+    types.add("decimal");
+    types.add("boolean");
+    types.add("datetime");
+    types.add("date");
+    types.add("time");
+    types.add("many-to-one");
+    types.add("one-to-many");
+    types.add("many-to-many");
+    types.add("one-to-one");
+    FIELD_TYPES = Collections.unmodifiableList(types);
+  }
+
+  public static final List<String> RELATIONAL_FIELD_TYPES;
+
+  static {
+    List<String> types = new ArrayList<String>();
+    types.add("many-to-one");
+    types.add("one-to-many");
+    types.add("many-to-many");
+    types.add("one-to-one");
+    RELATIONAL_FIELD_TYPES = Collections.unmodifiableList(types);
+  }
+
+  public static final List<String> VIEW_ELEMENTS;
+
+  static {
+    List<String> elements = new ArrayList<String>();
+    elements.add("onnew");
+    elements.add("onsave");
+    elements.add("panel");
+    elements.add("button");
+    elements.add("separator");
+    VIEW_ELEMENTS = Collections.unmodifiableList(elements);
+  }
+
+  public static final List<String> POSITION_TYPES;
+
+  static {
+    List<String> types = new ArrayList<String>();
+    types.add("before");
+    types.add("after");
+    types.add("replace");
+    POSITION_TYPES = Collections.unmodifiableList(types);
+  }
+
+  public static final List<String> MODEL_TYPES = Arrays.asList(new String[] {"Real", "Custom"});
+
   public static final List<String> RELATIONAL_JSON_FIELD_TYPES =
       Arrays.asList(new String[] {"json-many-to-one", "json-one-to-many", "json-many-to-many"});
-
-  public static final List<String> RELATIONAL_FIELD_TYPES =
-      Arrays.asList(new String[] {"many-to-one", "one-to-many", "many-to-many"});
 
   public final Inflector inflector = Inflector.getInstance();
 
