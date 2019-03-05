@@ -103,13 +103,13 @@ public class EventManagementRepository extends EventRepository {
   public void remove(Event entity, boolean removeRemote) {
 
     try {
-      
+
       if (entity.getCalendar() == null && Strings.isNullOrEmpty(entity.getUid())) {
         //     Not a synchronized event
         super.remove(entity);
         return;
       }
-      
+
       User user = AuthUtils.getUser();
       List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
       if (calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())) {
