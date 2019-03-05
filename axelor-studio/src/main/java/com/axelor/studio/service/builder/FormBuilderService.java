@@ -258,6 +258,9 @@ public class FormBuilderService {
     // XPath to parse the XML
     String target = "//*[@name='" + searchField + "']";
     Node searchNode = (Node) xPath.evaluate(target, xmlDocument, XPathConstants.NODE);
+    if (searchNode == null) {
+      return;
+    }
 
     HashMap<String, Object> widgetAttrs = getWidgetAttrs(valMap);
 
@@ -725,6 +728,9 @@ public class FormBuilderService {
   private SimpleWidget createField(Map<String, String> valMap) {
 
     PanelField field = new PanelField();
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.DOMAIN))) {
+      field.setDomain(valMap.get(CommonService.DOMAIN));
+    }
     field.setWidget(valMap.get(CommonService.WIDGET));
     field.setOnChange(valMap.get(CommonService.ON_CHANGE));
     if (valMap.get(CommonService.REQUIRED) != null
@@ -734,6 +740,14 @@ public class FormBuilderService {
     if (valMap.get(CommonService.REQUIRED) != null
         && !valMap.get(CommonService.REQUIRED).equals("x")) {
       field.setRequiredIf(valMap.get(CommonService.REQUIRED));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.MIN_SIZE))
+        && !valMap.get(CommonService.MIN_SIZE).equals("0")) {
+      field.setMinSize(valMap.get(CommonService.MIN_SIZE));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.MAX_SIZE))
+        && !valMap.get(CommonService.MAX_SIZE).equals("0")) {
+      field.setMaxSize(valMap.get(CommonService.MAX_SIZE));
     }
 
     return field;
@@ -742,6 +756,9 @@ public class FormBuilderService {
   private SimpleWidget createSimpleFieldItem(Map<String, String> valMap) {
 
     Field field = new Field();
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.DOMAIN))) {
+      field.setDomain(valMap.get(CommonService.DOMAIN));
+    }
     field.setWidget(valMap.get(CommonService.WIDGET));
     field.setOnChange(valMap.get(CommonService.ON_CHANGE));
     if (valMap.get(CommonService.REQUIRED) != null
@@ -751,6 +768,14 @@ public class FormBuilderService {
     if (valMap.get(CommonService.REQUIRED) != null
         && !valMap.get(CommonService.REQUIRED).equals("x")) {
       field.setRequiredIf(valMap.get(CommonService.REQUIRED));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.MIN_SIZE))
+        && !valMap.get(CommonService.MIN_SIZE).equals("0")) {
+      field.setMinSize(valMap.get(CommonService.MIN_SIZE));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.MAX_SIZE))
+        && !valMap.get(CommonService.MAX_SIZE).equals("0")) {
+      field.setMaxSize(valMap.get(CommonService.MAX_SIZE));
     }
 
     return field;

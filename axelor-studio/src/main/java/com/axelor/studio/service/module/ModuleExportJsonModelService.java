@@ -267,27 +267,33 @@ public class ModuleExportJsonModelService {
       String module, List<String[]> jsonFieldData, ZipOutputStream zipOut, CSVConfig csvConfig)
       throws IOException {
 
-    String fileName =
-        moduleExportDataInitService.getModulePrefix(module)
-            + MetaJsonField.class.getSimpleName()
-            + ".csv";
+    if (!jsonFieldData.isEmpty()) {
+      String fileName =
+          moduleExportDataInitService.getModulePrefix(module)
+              + MetaJsonField.class.getSimpleName()
+              + ".csv";
 
-    CSVInput input =
-        moduleExportDataInitService.createCSVInput(
-            fileName,
-            MetaJsonField.class.getName(),
-            null,
-            "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
-    CSVBind bind =
-        moduleExportDataInitService.createCSVBind(
-            "roleNames", "roles", "self.name in :roleNames", "roleNames.split('|') as List", true);
-    input.getBindings().add(bind);
-    bind =
-        moduleExportDataInitService.createCSVBind(
-            "jsonModelName", "jsonModel", "self.name = :jsonModelName", null, true);
-    input.getBindings().add(bind);
-    csvConfig.getInputs().add(input);
+      CSVInput input =
+          moduleExportDataInitService.createCSVInput(
+              fileName,
+              MetaJsonField.class.getName(),
+              null,
+              "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
+      CSVBind bind =
+          moduleExportDataInitService.createCSVBind(
+              "roleNames",
+              "roles",
+              "self.name in :roleNames",
+              "roleNames.split('|') as List",
+              true);
+      input.getBindings().add(bind);
+      bind =
+          moduleExportDataInitService.createCSVBind(
+              "jsonModelName", "jsonModel", "self.name = :jsonModelName", null, true);
+      input.getBindings().add(bind);
+      csvConfig.getInputs().add(input);
 
-    moduleExportDataInitService.addCsv(zipOut, fileName, JSON_FIELD_HEADER, jsonFieldData);
+      moduleExportDataInitService.addCsv(zipOut, fileName, JSON_FIELD_HEADER, jsonFieldData);
+    }
   }
 }

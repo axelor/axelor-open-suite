@@ -101,7 +101,7 @@
 	</selection>
 	
 	<selection name="studio.module.builder.file.type.select">
-		<option value="zip">Zip</option>
+		<option value="zip">moduleBuilder.Zip</option>
 		<option value="excel">Excel</option>
 	</selection>
     

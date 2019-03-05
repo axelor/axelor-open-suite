@@ -17,10 +17,16 @@
   		<panel>
       		<field name="name" pattern="axelor(-[a-z]+)+$" />
       		<field name="fileTypeSelect"/>
-      		<field name="metaFile" widget="binary-link" onChange="action-module-builder-record-meta-file-change" colSpan="12"/>
-      		<button name="exportModule" title="Export module" onClick="save,action-module-builder-method-export-module,save"/>
-      		<button name="importModule" title="Import module" onClick="save,action-module-builder-method-import-module" showIf="metaFile != null"/>
       	</panel>
+   		<panel colSpan="12">
+ 			<field name="exportMetaFile" widget="binary-link"/>
+ 			<button name="exportModule" title="Export module" onClick="save,action-module-builder-method-export-module,save" showIf="fileTypeSelect"/>
+		</panel>
+		<panel colSpan="12">
+ 			<field name="importMetaFile" widget="binary-link" onChange="action-module-builder-record-meta-file-change"/>
+			<field name="generatedFile" widget="binary-link" showIf="fileTypeSelect == 'excel'"/>
+ 			<button name="importModule" title="Import module" onClick="save,action-module-builder-method-import-module,save" showIf="importMetaFile != null"/>
+	 	</panel>
   	</form>
   	
   	<action-method name="action-module-builder-method-export-module">
@@ -40,7 +46,7 @@
   	</action-validate>
 	
 	<action-record name="action-module-builder-record-meta-file-change" model="com.axelor.studio.db.ModuleBuilder">
-		<field name="name" expr="eval: metaFile.fileName.replace('.zip','')" if="metaFile != null &amp;&amp; metaFile.fileName.endsWith('.zip')"/>
+		<field name="name" expr="eval: importMetaFile.fileName.replace('.zip','')" if="importMetaFile != null &amp;&amp; importMetaFile.fileName.endsWith('.zip')"/>
 	</action-record>
 	
 </object-views>

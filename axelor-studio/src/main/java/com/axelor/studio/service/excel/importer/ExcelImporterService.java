@@ -31,10 +31,12 @@ import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.service.CommonService;
 import com.axelor.studio.service.builder.ViewBuilderService;
 import com.axelor.studio.service.module.ModuleExportDataInitService;
 import com.axelor.studio.service.module.ModuleExportService;
 import com.axelor.studio.service.module.ModuleImportService;
+import com.axelor.studio.service.validator.ValidatorService;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,20 +53,25 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExcelImporterService {
-
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static final String MODULE_PATTERN = "axelor(-[a-z]+)+$";
 
   private List<String[]> jsonFieldData = new ArrayList<>();
 
   private List<String[]> jsonModelData = new ArrayList<>();
+
+  private List<String> customModels = new ArrayList<>();
+
+  private List<String> realModels = new ArrayList<>();
+
+  private List<Map<String, String>> menuList = new ArrayList<>();
+
+  @Inject private ValidatorService validatorService;
 
   @Inject private MetaFiles metaFiles;
 
@@ -105,10 +111,17 @@ public class ExcelImporterService {
     if (!module.matches(MODULE_PATTERN)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVALID_MODULE_ZIP));
+          I18n.get(IExceptionMessage.INVALID_MODULE_NAME));
     }
 
     reader.initialize(metaFile);
+
+    File logFile = validatorService.validate(reader);
+    if (logFile != null) {
+      return metaFiles.upload(logFile);
+    }
+
+    extractSheets(reader);
 
     File zipFile = createModule(module, reader);
 
@@ -121,6 +134,47 @@ public class ExcelImporterService {
     zipFile.delete();
 
     return metaFile;
+  }
+
+  private void extractSheets(DataReaderService reader) {
+    String keys[] = reader.getKeys();
+
+    for (String key : keys) {
+      if (key.equals("Menu")) {
+        int totalLines = reader.getTotalLines(key);
+        if (totalLines == 0) {
+          continue;
+        }
+
+        for (int rowNum = 0; rowNum < totalLines; rowNum++) {
+          if (rowNum == 0) {
+            continue;
+          }
+
+          String[] row = reader.read(key, rowNum);
+          if (row == null) {
+            continue;
+          }
+
+          Map<String, String> valMap = createValMap(row, CommonService.MENU_HEADERS);
+          menuList.add(valMap);
+        }
+        continue;
+      }
+
+      String modelType = key.substring(key.indexOf("(") + 1, key.lastIndexOf(")"));
+      key = key.substring(0, key.indexOf("("));
+
+      if (modelType.equals("Real")) {
+        realModels.add(key);
+
+      } else if (modelType.equals("Custom")) {
+        customModels.add(key);
+
+      } else {
+        continue;
+      }
+    }
   }
 
   private File createModule(String module, DataReaderService reader)
@@ -144,39 +198,19 @@ public class ExcelImporterService {
   private void processSheet(DataReaderService reader, String module, ZipOutputStream zipOut)
       throws IOException, JAXBException, AxelorException {
 
-    String[] keys = reader.getKeys();
-    if (keys == null) {
-      return;
-    }
     Map<String, ObjectViews> viewMap = new HashMap<>();
 
-    for (String key : keys) {
-      if (!key.equals("Menu")) {
-
-        log.debug("Importing sheet: {}", key);
-
-        int totalLines = reader.getTotalLines(key);
-        if (totalLines == 0) {
-          continue;
-        }
-
-        String checkCustom = key.substring(key.indexOf("(") + 1, key.lastIndexOf(")"));
-
-        switch (checkCustom) {
-          case "Custom":
-            customImporter.customImport(this, reader, key, jsonModelData, jsonFieldData);
-            break;
-
-          case "Real":
-            realImporter.realImporter(this, module, reader, key, viewMap, zipOut);
-            break;
-
-          default:
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.NO_MODULE_DATA));
-        }
-      }
+    if (!CollectionUtils.isEmpty(customModels)) {
+      customImporter.customImport(
+          this, module, reader, jsonModelData, jsonFieldData, customModels, realModels);
     }
+
+    if (!CollectionUtils.isEmpty(realModels)) {
+      viewMap =
+          realImporter.realImporter(
+              this, module, reader, jsonFieldData, realModels, customModels, menuList, zipOut);
+    }
+
     addView(module, zipOut, viewMap);
   }
 
@@ -195,7 +229,7 @@ public class ExcelImporterService {
     }
   }
 
-  protected Map<String, String> createValMap(String[] row, String[] headers) {
+  public static Map<String, String> createValMap(String[] row, String[] headers) {
 
     Map<String, String> valMap = new HashMap<>();
     if (headers != null) {
