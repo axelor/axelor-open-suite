@@ -59,6 +59,7 @@
 - BUSINESS PROJECT : Connect Contract to Project
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
+- Production : Remove stockLocation from Machine Type object.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
