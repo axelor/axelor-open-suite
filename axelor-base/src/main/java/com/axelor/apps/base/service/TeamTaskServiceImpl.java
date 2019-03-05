@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
@@ -45,6 +46,13 @@ public class TeamTaskServiceImpl implements TeamTaskService {
             .getDates(frequency, teamTask.getTaskDate(), frequency.getEndDate());
 
     taskDates.removeIf(date -> date.equals(teamTask.getTaskDate()));
+
+    // limit how many TeamTask will be generated at once
+    Integer limitNumberTasksGenerated =
+        Beans.get(AppBaseService.class).getAppBase().getLimitNumberTasksGenerated();
+    if (taskDates.size() > limitNumberTasksGenerated) {
+      taskDates = taskDates.subList(0, limitNumberTasksGenerated);
+    }
 
     TeamTask lastTask = teamTask;
     for (LocalDate date : taskDates) {

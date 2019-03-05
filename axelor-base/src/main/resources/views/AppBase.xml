@@ -44,6 +44,7 @@
 				<field name="enableCalendars" widget="boolean-switch"/>
 				<field name="document" widget="boolean-switch"/>
                 <field name="passwordChangedTemplate"/>
+        <field name="limitNumberTasksGenerated"/>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
