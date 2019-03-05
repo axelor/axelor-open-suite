@@ -12,6 +12,14 @@
 		<string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
 		<many-to-one name="targetVersion" title="Target version" ref="com.axelor.apps.businesssupport.db.ProjectVersion"/>
 		<boolean name="isOrderProposed" title="Order Proposed"/>
+
+		<extra-code>
+			<![CDATA[
+				// ASSIGNMENT
+				public static final int ASSIGNMENT_CUSTOMER = 1;
+				public static final int ASSIGNMENT_PROVIDER = 2;
+			]]>
+		</extra-code>
 	
 		<track>
 			<field name="isOrderAccepted"/>

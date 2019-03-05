@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.db.Frequency;
 import com.axelor.team.db.TeamTask;
-import java.time.LocalDate;
 
-public class TeamTaskServiceImpl implements TeamTaskService {
+public interface TeamTaskService {
 
-  @Override
-  public TeamTask create(String subject, Project project, User assignedTo) {
-    TeamTask task = new TeamTask();
-    task.setName(subject);
-    task.setAssignedTo(assignedTo);
-    task.setTaskDate(LocalDate.now());
-    task.setStatus("new");
-    task.setPriority("normal");
-    project.addTeamTaskListItem(task);
-    return task;
-  }
+  /** Generates reccurent tasks from given {@link TeamTask} and {@link Frequency} */
+  void generateTasks(TeamTask teamTask, Frequency frequency);
+
+  /**
+   * Updates fields of next task of given {@link TeamTask}, recursively.
+   *
+   * <p>This method DOES NOT update potential parent.
+   */
+  void updateNextTask(TeamTask teamTask);
+
+  /** Removes all next tasks of given {@link TeamTask}. */
+  void removeNextTasks(TeamTask teamTask);
 }

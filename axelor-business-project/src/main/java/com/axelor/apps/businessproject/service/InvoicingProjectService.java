@@ -74,7 +74,7 @@ public class InvoicingProjectService {
 
   @Inject protected PartnerService partnerService;
 
-  @Inject protected TeamTaskBusinessService teamTaskBusinessService;
+  @Inject protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
 
@@ -159,7 +159,7 @@ public class InvoicingProjectService {
         expenseService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        teamTaskBusinessService.createInvoiceLines(
+        teamTaskBusinessProjectService.createInvoiceLines(
             invoice, teamTaskList, folder.getTeamTaskSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());

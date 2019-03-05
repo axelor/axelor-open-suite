@@ -3,6 +3,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+- TeamTask: added Frequency
 - Employee: added wizard when creating new employee
 - LogisticalForm: if config enabled, send an email on first save
 - SaleOrder: added boolean to invoice via generated task

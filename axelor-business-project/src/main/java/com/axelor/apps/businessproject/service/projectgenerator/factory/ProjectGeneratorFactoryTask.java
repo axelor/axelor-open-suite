@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -46,18 +46,18 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskBusinessService teamTaskBusinessService;
+  private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   private TeamTaskRepository teamTaskRepository;
 
   @Inject
   public ProjectGeneratorFactoryTask(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskBusinessService teamTaskBusinessService,
+      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
       TeamTaskRepository teamTaskRepository) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
-    this.teamTaskBusinessService = teamTaskBusinessService;
+    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
   }
 
@@ -89,7 +89,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
           && !(isTaskGenerated)) {
 
         TeamTask task =
-            teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
+            teamTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
           task.setTeamTaskInvoicing(true);

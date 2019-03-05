@@ -22,10 +22,10 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -49,7 +49,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskService teamTaskService;
+  private TeamTaskBusinessProjectService teamTaskService;
   private TeamTaskRepository teamTaskRepository;
   private ProductTaskTemplateService productTaskTemplateService;
 
@@ -57,7 +57,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   public ProjectGeneratorFactoryTaskTemplate(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskService teamTaskService,
+      TeamTaskBusinessProjectService teamTaskService,
       TeamTaskRepository teamTaskRepository,
       ProductTaskTemplateService productTaskTemplateService) {
     this.projectBusinessService = projectBusinessService;

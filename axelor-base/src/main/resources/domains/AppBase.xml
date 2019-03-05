@@ -63,6 +63,8 @@
 
         <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
 
+    <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
+
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<selection name="support.assignment.select">
-		<option value="1">Client</option>
-		<option value="2">Prestataire</option>
+		<option value="1">Customer</option>
+		<option value="2">Provider</option>
 	</selection>
 	
 	<selection name="support.project.version.status.select">

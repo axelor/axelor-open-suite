@@ -26,30 +26,35 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.service.TeamTaskServiceImpl;
+import com.axelor.apps.project.service.TeamTaskProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
-    implements TeamTaskBusinessService {
+public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceImpl
+    implements TeamTaskBusinessProjectService {
 
   private PriceListLineRepository priceListLineRepository;
 
   private PriceListService priceListService;
 
   @Inject
-  public TeamTaskBusinessServiceImpl(
-      PriceListLineRepository priceListLineRepository, PriceListService priceListService) {
+  public TeamTaskBusinessProjectServiceImpl(
+      TeamTaskRepository teamTaskRepo,
+      PriceListLineRepository priceListLineRepository,
+      PriceListService priceListService) {
+    super(teamTaskRepo);
     this.priceListLineRepository = priceListLineRepository;
     this.priceListService = priceListService;
   }
@@ -220,5 +225,28 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  @Override
+  protected void setModuleFields(TeamTask teamTask, LocalDate date, TeamTask newTeamTask) {
+    super.setModuleFields(teamTask, date, newTeamTask);
+
+    // Module 'business project' fields
+    // none
+  }
+
+  @Override
+  protected void updateModuleFields(TeamTask teamTask, TeamTask nextTeamTask) {
+    super.updateModuleFields(teamTask, nextTeamTask);
+
+    // Module 'business project' fields
+    nextTeamTask.setToInvoice(teamTask.getToInvoice());
+    nextTeamTask.setExTaxTotal(teamTask.getExTaxTotal());
+    nextTeamTask.setDiscountTypeSelect(teamTask.getDiscountTypeSelect());
+    nextTeamTask.setDiscountAmount(teamTask.getDiscountAmount());
+    nextTeamTask.setPriceDiscounted(teamTask.getPriceDiscounted());
+    nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
+    nextTeamTask.setTeamTaskInvoicing(teamTask.getTeamTaskInvoicing());
+    nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
   }
 }

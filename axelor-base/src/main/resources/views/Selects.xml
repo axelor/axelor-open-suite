@@ -450,5 +450,14 @@
 		<option value="pl">Polish Beta</option>
 		<option value="ru">Russian Beta</option>
 	</selection>
-	
+
+  <selection name="frequency.base.type.select">
+    <option value="monthDays">Month days</option>
+    <option value="everyNWeeks">Every N weeks</option>
+  </selection>
+
+  <selection name="team.task.type.select">
+    <option value="task">Task</option>
+  </selection>
+
 </object-views>
