@@ -102,6 +102,7 @@ public class ModuleExportDataInitService {
 
     Beans.get(ModuleExportJsonModelService.class)
         .addJsonModelsFromExcel(modulePrefix, jsonModelData, zipOut, csvConfig);
+
     Beans.get(ModuleExportJsonModelService.class)
         .addJsonFieldsFromExcel(module, jsonFieldData, zipOut, csvConfig);
 

@@ -25,21 +25,26 @@ import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.service.CommonService;
+import com.axelor.studio.service.builder.ModelBuilderService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import java.util.ArrayList;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CustomImporter {
 
-  private List<String[]> jsonFieldData = new ArrayList<>();
-
-  private List<String[]> jsonModelData = new ArrayList<>();
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private Inflector inflector = Inflector.getInstance();
 
+  private DataReaderService reader;
+
   private ExcelImporterService excelImporterService;
+
+  @Inject private ModelBuilderService modelBuilderService;
 
   @Inject private MetaFieldRepository metaFieldRepo;
 
@@ -47,32 +52,44 @@ public class CustomImporter {
 
   public void customImport(
       ExcelImporterService excelImporterService,
+      String module,
       DataReaderService reader,
-      String key,
       List<String[]> jsonModelData,
-      List<String[]> jsonFieldData) {
+      List<String[]> jsonFieldData,
+      List<String> customModels,
+      List<String> realModels) {
 
     this.excelImporterService = excelImporterService;
-    this.jsonModelData = jsonModelData;
-    this.jsonFieldData = jsonFieldData;
+    this.reader = reader;
 
-    String model = key.substring(0, key.indexOf("("));
+    for (String key : customModels) {
 
-    String modelName = "";
-    Object obj = excelImporterService.getModelFromName(model);
+      log.debug("Importing sheet: {}", key);
+      key += "(Custom)";
 
-    if (obj instanceof MetaModel) {
-      MetaModel metaModel = (MetaModel) obj;
-      modelName = metaModel.getName();
+      int totalLines = reader.getTotalLines(key);
+      if (totalLines == 0) {
+        continue;
+      }
 
-    } else {
-      addJsonModels(model, reader, key);
-      modelName = model;
+      String model = key.substring(0, key.indexOf("("));
+
+      String modelName = "";
+      Object obj = excelImporterService.getModelFromName(model);
+
+      if (obj instanceof MetaModel) {
+        MetaModel metaModel = (MetaModel) obj;
+        modelName = metaModel.getName();
+
+      } else {
+        addJsonModels(model, key, jsonModelData);
+        modelName = model;
+      }
+      addJsonFields(module, key, modelName, jsonFieldData, realModels);
     }
-    addJsonFields(reader, key, modelName);
   }
 
-  private void addJsonModels(String model, DataReaderService reader, String key) {
+  private void addJsonModels(String model, String key, List<String[]> jsonModelData) {
 
     if (Strings.isNullOrEmpty(model)) {
       return;
@@ -92,7 +109,7 @@ public class CustomImporter {
         continue;
       }
 
-      Map<String, String> valMap = excelImporterService.createValMap(row, CommonService.HEADERS);
+      Map<String, String> valMap = ExcelImporterService.createValMap(row, CommonService.HEADERS);
 
       if (valMap.get(CommonService.TYPE).equals("onnew")
           && valMap.get(CommonService.FORMULA) != null) {
@@ -119,7 +136,12 @@ public class CustomImporter {
         });
   }
 
-  private void addJsonFields(DataReaderService reader, String key, String modelName) {
+  private void addJsonFields(
+      String module,
+      String key,
+      String modelName,
+      List<String[]> jsonFieldData,
+      List<String> realModels) {
 
     if (modelName == null) {
       return;
@@ -137,7 +159,7 @@ public class CustomImporter {
         continue;
       }
 
-      Map<String, String> valMap = excelImporterService.createValMap(row, CommonService.HEADERS);
+      Map<String, String> valMap = ExcelImporterService.createValMap(row, CommonService.HEADERS);
 
       if ((valMap.get(CommonService.TYPE).equals("panel")
               && valMap.get(CommonService.NAME).contains("end"))
@@ -146,11 +168,16 @@ public class CustomImporter {
         continue;
       }
 
-      createJsonField(modelName, valMap);
+      createJsonField(module, modelName, valMap, jsonFieldData, realModels);
     }
   }
 
-  private void createJsonField(String modelName, Map<String, String> valMap) {
+  private void createJsonField(
+      String module,
+      String modelName,
+      Map<String, String> valMap,
+      List<String[]> jsonFieldData,
+      List<String> realModels) {
 
     String name = valMap.get(CommonService.NAME);
     Object obj = excelImporterService.getModelFromName(modelName);
@@ -158,6 +185,7 @@ public class CustomImporter {
     String type = valMap.get(CommonService.TYPE);
     String targetModelName = null;
     String targetJsonModelName = null;
+
     if (type.contains("-to-")) {
       String targetModel = type.substring(type.indexOf("(") + 1, type.indexOf(")"));
       Object targetObj = excelImporterService.getModelFromName(targetModel);
@@ -166,14 +194,19 @@ public class CustomImporter {
       if (targetObj instanceof MetaModel) {
         MetaModel targetMetaModel = (MetaModel) targetObj;
         targetModelName = targetMetaModel.getFullName();
+      }
 
-      } else if (targetObj instanceof MetaJsonModel) {
-        MetaJsonModel targetJsonModel = (MetaJsonModel) targetObj;
+      if (targetModelName == null && realModels.contains(targetModel)) {
+        targetModelName = modelBuilderService.getModelFullName(module, targetModel);
+      }
+
+      if (targetModelName == null) {
         type = "json-" + type;
-        targetJsonModelName = targetJsonModel.getName();
-
-      } else {
         targetJsonModelName = targetModel;
+        if (targetObj instanceof MetaJsonModel) {
+          MetaJsonModel targetJsonModel = (MetaJsonModel) targetObj;
+          targetJsonModelName = targetJsonModel.getName();
+        }
       }
     }
 

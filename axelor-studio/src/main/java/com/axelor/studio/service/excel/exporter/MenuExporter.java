@@ -18,50 +18,34 @@
 package com.axelor.studio.service.excel.exporter;
 
 import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.Context;
 import com.axelor.meta.schema.actions.ActionView.View;
+import com.axelor.studio.service.CommonService;
+import com.axelor.studio.service.builder.ViewBuilderService;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.lang.StringUtils;
 
 public class MenuExporter {
 
-  public static final String[] MENU_HEADERS =
-      new String[] {
-        "Notes",
-        "Object",
-        "Views",
-        "Name",
-        "Title",
-        "Title FR",
-        "Parent",
-        "Order",
-        "Icon",
-        "Background",
-        "Filters",
-        "Action"
-      };
-
-  public static final int OBJECT = 1;
-  public static final int VIEWS = 2;
-  public static final int NAME = 3;
-  public static final int TITLE = 4;
-  public static final int TITLE_FR = 5;
-  public static final int PARENT = 6;
-  public static final int ORDER = 7;
-  public static final int ICON = 8;
-  public static final int BACKGROUND = 9;
-  public static final int FILTER = 10;
-  public static final int ACTION = 11;
-
   @Inject private MetaMenuRepository metaMenuRepo;
+
+  @Inject private ViewBuilderService viewBuilderService;
 
   @Inject private TranslationService translationService;
 
@@ -84,15 +68,25 @@ public class MenuExporter {
         metaMenuRepo
             .all()
             .filter(
-                "self.left = true "
-                    + "AND self.module is null "
-                    + "AND self.action is null "
-                    + "AND self.parent is null")
+                "self.left = true AND self.module is null AND self.parent is null AND self.xmlId is not null")
             .order("order")
             .order("id")
             .fetch();
 
     addMenu(parentMenus.iterator());
+
+    List<String> menuNames =
+        menus.stream().map(menu -> menu.getName()).collect(Collectors.toList());
+
+    List<MetaMenu> parentOtherMenus =
+        metaMenuRepo
+            .all()
+            .filter(
+                "self.left = true AND self.module is null AND self.parent is null AND self.xmlId is null AND self.name not in (:menuNames)")
+            .bind("menuNames", menuNames)
+            .fetch();
+
+    addMenu(parentOtherMenus.iterator());
   }
 
   private void addMenu(Iterator<MetaMenu> menuIter) {
@@ -112,54 +106,69 @@ public class MenuExporter {
 
   private void writeMenus(String moduleName, DataWriter writer) {
 
-    String[] values = new String[MENU_HEADERS.length];
-    values = MENU_HEADERS;
+    Map<String, String> values = new HashMap<>();
 
-    writer.write("Menu", null, values);
+    writer.write("Menu", null, CommonService.MENU_HEADERS);
 
     for (MetaMenu menu : menus) {
-      values = new String[MENU_HEADERS.length];
-
-      values[NAME] = menu.getName().replaceAll("json-model", moduleName);
-      values[PARENT] = menu.getParent() != null ? menu.getParent().getName() : null;
-      values[ORDER] = menu.getOrder() != null ? menu.getOrder().toString() : null;
-      values[ICON] = menu.getIcon();
-      values[BACKGROUND] = menu.getIconBackground();
-      values[TITLE] = menu.getTitle();
-      values[TITLE_FR] = translationService.getTranslation(menu.getTitle(), "fr");
+      values = new HashMap<>();
+      values.put(CommonService.MENU_NAME, menu.getName().replaceAll("json-model", moduleName));
+      values.put(
+          CommonService.PARENT, menu.getParent() != null ? menu.getParent().getName() : null);
+      values.put(CommonService.ORDER, menu.getOrder() != null ? menu.getOrder().toString() : null);
+      values.put(CommonService.ICON, menu.getIcon());
+      values.put(CommonService.BACKGROUND, menu.getIconBackground());
+      values.put(CommonService.MENU_TITLE, menu.getTitle());
+      values.put(
+          CommonService.MENU_TITLE_FR, translationService.getTranslation(menu.getTitle(), "fr"));
 
       MetaAction action = menu.getAction();
       if (action != null && action.getType().equals("action-view")) {
         values = addAction(moduleName, values, action);
       }
 
-      writer.write("Menu", null, values);
+      writer.write("Menu", null, values, CommonService.MENU_HEADERS);
     }
   }
 
-  private String[] addAction(String moduleName, String[] values, MetaAction metaAction) {
+  private Map<String, String> addAction(
+      String moduleName, Map<String, String> values, MetaAction metaAction) {
 
-    values[ACTION] = metaAction.getName().replace("all.json", moduleName.replace("-", "."));
-    values[OBJECT] = getModelName(metaAction.getModel());
+    values.put(
+        CommonService.ACTION,
+        metaAction.getName().replace("all.json", moduleName.replace("-", ".")));
 
     try {
       ObjectViews objectViews = XMLViews.fromXML(metaAction.getXml());
       ActionView action = (ActionView) objectViews.getActions().get(0);
-      values[FILTER] = action.getDomain();
+      String jsonModel = getJsonModel(action);
+      if (Strings.isNullOrEmpty(jsonModel)) {
+        jsonModel = getModelName(action.getModel());
+      }
+      values.put(CommonService.OBJECT, jsonModel);
+      values.put(CommonService.FILTER, action.getDomain());
       List<View> views = action.getViews();
       if (views == null) {
         return values;
       }
 
       for (View view : views) {
-        String name = view.getName();
-        if (name == null) {
+        String type = view.getType();
+        if (type == null) {
           continue;
         }
-        if (values[VIEWS] == null) {
-          values[VIEWS] = view.getName();
+        if (values.get(CommonService.VIEWS) == null) {
+          values.put(
+              CommonService.VIEWS,
+              viewBuilderService.getDefaultViewName(
+                  view.getType(), values.get(CommonService.OBJECT)));
         } else {
-          values[VIEWS] += "," + view.getName();
+          values.put(
+              CommonService.VIEWS,
+              values.get(CommonService.VIEWS)
+                  + ","
+                  + viewBuilderService.getDefaultViewName(
+                      view.getType(), values.get(CommonService.OBJECT)));
         }
       }
     } catch (JAXBException e) {
@@ -167,6 +176,31 @@ public class MenuExporter {
     }
 
     return values;
+  }
+
+  @SuppressWarnings("unchecked")
+  private String getJsonModel(ActionView actionView) {
+    String jsonModel = null;
+
+    try {
+      Mapper mapper = Mapper.of(ActionView.class);
+      Field field = mapper.getBeanClass().getDeclaredField("contexts");
+      field.setAccessible(true);
+      List<ActionView.Context> contextList = (List<Context>) field.get(actionView);
+      if (contextList != null) {
+        jsonModel =
+            contextList
+                .stream()
+                .filter(context -> context.getName().equals("jsonModel"))
+                .findFirst()
+                .get()
+                .getExpression();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return StringUtils.substringBetween(jsonModel, "'", "'");
   }
 
   private String getModelName(String name) {

@@ -74,7 +74,7 @@ public class FormExporter {
         MetaJsonModel jsonModel = metaJsonModelrepo.findByName(model);
         processCustomItem(jsonModel, formView);
       } else {
-        processItem(metaModel);
+        processRealItem(metaModel);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -95,25 +95,7 @@ public class FormExporter {
     List<MetaJsonField> fields = model.getFields();
     Collections.sort(fields, (field1, field2) -> field1.getSequence() - field2.getSequence());
 
-    int panelCounter = 0;
-    MetaJsonField panelField = null;
-    for (MetaJsonField field : fields) {
-      if (field.getType().equals("panel")) {
-        if (panelCounter > 0) {
-          processPanelEnd(panelField, viewName);
-        }
-        processPanel(field, viewName);
-        panelField = field;
-        panelCounter++;
-        continue;
-      }
-
-      processField(field, viewName);
-
-      if (panelCounter > 0 && fields.get(fields.size() - 1).equals(field)) {
-        processPanelEnd(panelField, viewName);
-      }
-    }
+    processItem(null, fields, viewName);
 
     excelExporterService.addViewProcessed(viewName);
   }
@@ -139,25 +121,53 @@ public class FormExporter {
     excelExporterService.writeRow(valMap);
   }
 
-  private void processItem(MetaModel model) {
+  private void processRealItem(MetaModel model) {
     List<MetaJsonField> fields =
         metaJsonFieldRepo.all().filter("self.model = ?1", model.getFullName()).fetch();
 
+    Collections.sort(fields, (field1, field2) -> field1.getSequence() - field2.getSequence());
+
     String viewName = "";
+    processItem(model, fields, viewName);
+  }
+
+  private void processItem(MetaModel model, List<MetaJsonField> fields, String viewName) {
+
+    int panelCounter = 0;
+    MetaJsonField panelField = null;
+    boolean isField = false;
 
     for (MetaJsonField field : fields) {
-      viewName = getViewName(field, model);
+      isField = false;
 
-      if (!excelExporterService.isViewProcessed(viewName)) {
-        log.debug("Processing form: {}", viewName);
-        excelExporterService.addViewProcessed(viewName);
+      if (model != null) {
+        viewName = getViewName(field, model);
+
+        if (!excelExporterService.isViewProcessed(viewName)) {
+          log.debug("Processing form: {}", viewName);
+          excelExporterService.addViewProcessed(viewName);
+        }
       }
 
       if (field.getType().equals("panel")) {
+        if (panelCounter > 0) {
+          processPanelEnd(panelField, viewName);
+        }
         processPanel(field, viewName);
+        panelField = field;
+        panelCounter++;
         continue;
       }
+
       processField(field, viewName);
+      isField = true;
+
+      if (panelCounter > 0 && fields.get(fields.size() - 1).equals(field)) {
+        processPanelEnd(panelField, viewName);
+      }
+    }
+    if (!isField) {
+      processPanelEnd(panelField, viewName);
     }
   }
 

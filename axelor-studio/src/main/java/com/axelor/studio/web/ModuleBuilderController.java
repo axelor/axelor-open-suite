@@ -67,7 +67,7 @@ public class ModuleBuilderController {
       if (moduleBuilder.getFileTypeSelect().equals(ModuleBuilderRepository.FILE_TYPE_ZIP)) {
 
         exportFile =
-            moduleExportService.export(moduleBuilder.getName(), moduleBuilder.getMetaFile());
+            moduleExportService.export(moduleBuilder.getName(), moduleBuilder.getImportMetaFile());
 
       } else if (moduleBuilder
           .getFileTypeSelect()
@@ -77,11 +77,8 @@ public class ModuleBuilderController {
         DataReaderService reader = new ExcelReaderService();
 
         exportFile = excelExporterService.export(moduleBuilder.getName(), writer, reader);
-
-      } else {
-        response.setError("Please select type");
       }
-      response.setValue("metaFile", exportFile);
+      response.setValue("exportMetaFile", exportFile);
     } catch (Exception e) {
       response.setError(e.getMessage());
       TraceBackService.trace(e);
@@ -96,19 +93,24 @@ public class ModuleBuilderController {
       if (moduleBuilder.getFileTypeSelect().equals(ModuleBuilderRepository.FILE_TYPE_ZIP)) {
 
         moduleImportService.importModule(moduleBuilder);
+        response.setFlash(I18n.get(IExceptionMessage.MODULE_IMPORTED));
 
       } else if (moduleBuilder
           .getFileTypeSelect()
           .equals(ModuleBuilderRepository.FILE_TYPE_EXCEL)) {
 
         DataReaderService reader = new ExcelReaderService();
-        MetaFile importFile = moduleBuilder.getMetaFile();
+        MetaFile importFile = moduleBuilder.getImportMetaFile();
 
-        MetaFile moduleFile =
+        MetaFile file =
             excelImporterService.importExcel(moduleBuilder.getName(), reader, importFile);
-        response.setValue("metaFile", moduleFile);
+
+        response.setValue("generatedFile", file);
+
+        if (!file.getFileName().startsWith("Log")) {
+          response.setFlash(I18n.get(IExceptionMessage.MODULE_IMPORTED));
+        }
       }
-      response.setFlash(I18n.get(IExceptionMessage.MODULE_IMPORTED));
     } catch (Exception e) {
       response.setError(e.getMessage());
       TraceBackService.trace(e);
