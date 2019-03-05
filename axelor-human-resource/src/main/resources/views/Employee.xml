@@ -31,13 +31,14 @@
     </toolbar>
 
     <!-- New employee wizard -->
-    <panel name="stepByStepControlsPanel" showIf="!id">
+    <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 4">
       <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left" readonlyIf="stepByStepSelect &lt; 2" onClick="validate,action-employee-record-previous-step"/>
-      <field name="stepByStepSelect" colSpan="10" css="text-center" readonly="true" showTitle="false" widget="NavSelect"/>
+      <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true" showTitle="false" widget="NavSelect" selection-in="[1, 2, 3]"/>
       <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right" readonlyIf="stepByStepSelect &gt; 2" onClick="validate,action-employee-record-next-step"/>
+      <button name="finishBtn" colSpan="1" title="Finish" onClick="validate,action-employee-record-finish-sbs"/>
     </panel>
 
-    <panel name="contactSBSPanel" colSpan="12" readonlyIf="stepByStepSelect &gt; 1" showIf="!id">
+    <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 4">
       <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
@@ -58,24 +59,24 @@
     </panel>
 
     <!-- Basic info -->
-    <panel name="phoneProSBSPanel" title="Work phones" showIf="!id &amp;&amp; stepByStepSelect == 1">
+    <panel name="phoneProSBSPanel" title="Work phones" showIf="stepByStepSelect == 1">
       <field name="fixedProPhone" onChange="action-employee-method-normalize-fixedProPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
       <field name="mobileProPhone" onChange="action-employee-method-normalize-mobileProPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
       <field name="phoneAtCustomer" onChange="action-employee-method-normalize-phoneAtCustomer" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
     </panel>
 
-    <panel name="personalInfoSBSPanel" title="Personal information" showIf="!id &amp;&amp; stepByStepSelect == 1">
+    <panel name="personalInfoSBSPanel" title="Personal information" showIf="stepByStepSelect == 1">
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
 
-    <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="!id &amp;&amp; stepByStepSelect == 1">
+    <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="stepByStepSelect == 1">
       <field name="emergencyContact" colSpan="4"/>
       <field name="emergencyNumber" onChange="action-employee-method-normalize-emergencyNumber" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
     </panel>
 
-    <panel name="rhInfoSBSPanel" title="HR information" showIf="!id &amp;&amp; stepByStepSelect == 1">
+    <panel name="rhInfoSBSPanel" title="HR information" showIf="stepByStepSelect == 1">
       <panel colSpan="12">
         <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
@@ -96,7 +97,7 @@
     <!-- END OF Basic info -->
 
     <!-- Employment contract -->
-    <panel name="contractualInfoSBSPanel" title="Contractual information" showIf="!id &amp;&amp; stepByStepSelect == 2">
+    <panel name="contractualInfoSBSPanel" title="Contractual information" showIf="stepByStepSelect == 2">
       <field name="dateOfHire" colSpan="3"/>
       <field name="seniorityDate" colSpan="3"/>
       <field name="bonusCoef" colSpan="3"/>
@@ -108,7 +109,7 @@
       <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true" x-bind="{{hourlyRate * dailyWorkHours}}"/>
     </panel>
 
-    <panel name="mainEmploymentContractSBSPanel" title="Main employment contract" showIf="!id &amp;&amp; stepByStepSelect == 2">
+    <panel name="mainEmploymentContractSBSPanel" title="Main employment contract" showIf="stepByStepSelect == 2">
       <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id" showTitle="false">
         <editor x-viewer="true">
           <field name="payCompany" colSpan="3"/>
@@ -119,16 +120,16 @@
       </field>
     </panel>
 
-    <panel-related name="employmentContractsSBSPanel" field="employmentContractList" form-view="employment-contract-form" grid-view="employment-contract-employee-grid" showIf="!id &amp;&amp; stepByStepSelect == 2"/>
+    <panel-related name="employmentContractsSBSPanel" field="employmentContractList" form-view="employment-contract-form" grid-view="employment-contract-employee-grid" showIf="stepByStepSelect == 2"/>
     <!-- END OF Employment contract -->
 
     <!-- Leaves and timesheets -->
-    <panel name="leaveListSBSPanel" title="Leave List" if="__config__.app.isApp('leave')" showIf="!id &amp;&amp; stepByStepSelect == 3">
+    <panel name="leaveListSBSPanel" title="Leave List" if="__config__.app.isApp('leave')" showIf="stepByStepSelect == 3">
       <field name="leaveLineList" colSpan="12" form-view="leave-line-form" grid-view="leave-line-grid"/>
       <field name="negativeValueLeave" widget="InlineCheckbox"/>
     </panel>
 
-    <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="!id &amp;&amp; stepByStepSelect == 3">
+    <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
@@ -137,7 +138,7 @@
     <!-- END OF Leaves and timesheets -->
     <!-- END OF New employee wizard -->
 
-    <panel name="contactPanel" showIf="id">
+    <panel name="contactPanel" showIf="stepByStepSelect == 4">
       <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <panel name="imagePanel" colSpan="2">
@@ -168,7 +169,7 @@
       </field>
     </panel>
 
-    <panel-tabs name="mainPanelTab" showIf="id">
+    <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 4">
       <panel name="informationPanel" title="Information">
         <panel name="phoneProPanel" title="Work phones" colSpan="12">
           <field name="fixedProPhone" onChange="action-employee-method-normalize-fixedProPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
@@ -296,6 +297,10 @@
 
   <action-record name="action-employee-record-next-step" model="com.axelor.apps.hr.db.Employee">
     <field name="stepByStepSelect" expr="eval: stepByStepSelect + 1"/>
+  </action-record>
+
+  <action-record name="action-employee-record-finish-sbs" model="com.axelor.apps.hr.db.Employee">
+    <field name="stepByStepSelect" expr="eval: 4"/>
   </action-record>
 
   <form name="employee-annual-report-form" title="Annual report" model="com.axelor.apps.hr.db.Employee">

@@ -177,6 +177,7 @@
     <option value="1">Basic information</option>
     <option value="2">Employment contract</option>
     <option value="3">Leaves and timesheets</option>
+    <option value="4">Finished</option>
   </selection>
 
 </object-views>
