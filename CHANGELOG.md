@@ -34,6 +34,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Manuf Order: fix produced product quantities computation.
 - Fix NPE on finishing manuf order.
 - SaleOrder : Fixed error for action attrs to hide inAti field.
+- SALEORDER : birt report - product picture
 
 ## [5.1.3] - 2019-02-21
 ## Features
