@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"${clientPartner?.saleOrderInformation}",,,
 "%s : You must configure Sales module for company %s",,,
 "A cancel reason must be selected",,,
 "ATI",,,
