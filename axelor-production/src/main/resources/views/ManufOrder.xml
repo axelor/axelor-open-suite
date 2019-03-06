@@ -166,6 +166,7 @@
 				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related name="diffStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
+				<field name="$isAllStockMoveLineRealized" type="boolean" hidden="true"/>
 			</panel>
    			<panel name="consumedProductsPanel" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
 				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
@@ -294,6 +295,10 @@
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
 	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
 	</action-attrs>
+	
+	<action-attrs name="action-manuf-order-atts-set-isAllStockMoveLineRealized">
+		<attribute name="value" for="$isAllStockMoveLineRealized" expr="eval: producedStockMoveLineList.any { it?.stockMove?.statusSelect == 3 } &amp;&amp; consumedStockMoveLineList.any { it?.stockMove?.statusSelect == 3 }"/>
+	</action-attrs>
 
     <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
 	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
@@ -340,12 +345,10 @@
 	</action-group>
 	
 	<action-group name="action-manuf-order-group-part-finish">
-		<action name="action-manuf-order-validate-finish-confirmation" 
-			if="!(producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 })"/>
-		<action name="action-manuf-order-method-finish" 
-			if="!(producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 })" />
-		<action name="action-manuf-order-method-part-finish" 
-			if="producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 }"/>
+		<action name="action-manuf-order-atts-set-isAllStockMoveLineRealized"/>
+		<action name="action-manuf-order-validate-finish-confirmation" if="isAllStockMoveLineRealized"/>
+		<action name="action-manuf-order-method-finish" if="isAllStockMoveLineRealized" />
+		<action name="action-manuf-order-method-part-finish" if="!isAllStockMoveLineRealized"/>
 	</action-group>
     
     <action-group name="action-manuf-order-method-start-or-resume">
