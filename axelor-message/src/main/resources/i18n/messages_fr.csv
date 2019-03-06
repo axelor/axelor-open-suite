@@ -25,6 +25,7 @@
 "Email addresses","Adresses email",,
 "Email sending is in progress",,,
 "Email sending is in progress for %d messages.",,,
+"Email was not sent because no default email account was found : please create one.","Le mail n'a pas pu être envoyé car le compte SMTP par défaut n'a été trouvé: veuillez le configurer ",,
 "Emails","Emails",,
 "Fetch emails",,,
 "Forecasted Sent Date","Date prévue d'envoi",,

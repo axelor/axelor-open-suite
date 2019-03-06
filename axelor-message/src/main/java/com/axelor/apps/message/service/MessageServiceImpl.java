@@ -256,7 +256,10 @@ public class MessageServiceImpl implements MessageService {
     EmailAccount mailAccount = message.getMailAccount();
 
     if (mailAccount == null) {
-      return message;
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MESSAGE_MISSING_DEFAULT_EMAIL_ACCOUNT));
     }
 
     log.debug("Sent email");
