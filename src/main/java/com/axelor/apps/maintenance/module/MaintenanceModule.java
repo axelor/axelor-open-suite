@@ -26,7 +26,9 @@ import com.axelor.apps.maintenance.service.MaintenanceBillOfMaterialService;
 import com.axelor.apps.maintenance.service.MaintenanceManufOrderWorkFlowService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
+import com.axelor.apps.maintenance.service.ManufOrderPlanMaintenanceServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 
 public class MaintenanceModule extends AxelorModule {
@@ -39,5 +41,6 @@ public class MaintenanceModule extends AxelorModule {
     bind(MaintenanceRequestRepository.class).to(MaintenanceRequestRepo.class);
     bind(BillOfMaterialServiceImpl.class).to(MaintenanceBillOfMaterialService.class);
     bind(ManufOrderWorkflowService.class).to(MaintenanceManufOrderWorkFlowService.class);
+    bind(ManufOrderPlanServiceImpl.class).to(ManufOrderPlanMaintenanceServiceImpl.class);
   }
 }
