@@ -68,9 +68,11 @@
     <panel name="personalInfoSBSPanel" title="Personal information" showIf="stepByStepSelect == 1">
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
+      <field name="sexSelect" colSpan="4"/>
+      <field name="cityOfBirth" colSpan="4"/>
+      <field name="departmentOfBirth" colSpan="4"/>
+      <field name="countryOfBirth" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
-      <field name="birthDepartment" colSpan="4"/>
-      <field name="cityofBirth" colSpan="4"/>
     </panel>
 
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="stepByStepSelect == 1">
@@ -189,9 +191,11 @@
         <panel name="personalInfoPanel" title="Personal information" colSpan="12">
           <field name="birthDate" colSpan="4"/>
           <field name="maritalStatus" colSpan="4"/>
+          <field name="sexSelect" colSpan="4"/>
+          <field name="cityOfBirth" colSpan="4"/>
+          <field name="departmentOfBirth" colSpan="4"/>
+          <field name="countryOfBirth" colSpan="4"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
-          <field name="birthDepartment" colSpan="4"/>
-          <field name="cityofBirth" colSpan="4"/>
         </panel>
 
         <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
@@ -299,8 +303,17 @@
       <panel-dashlet name="employeeBonusDashletPanel" title="Bonuses" action="employee.dashlet.employee.bonus" colSpan="12" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()" readonly="true"/>
 
       <panel-include if-module="axelor-talent" view="talent-employee-form"/>
+
+      <panel name="dpaePanel" title="DPAE" if="__user__.activeCompany?.hrConfig?.enableDPAE">
+        <button name="generateNewDPAE" title="Generate new DPAE" colSpan="3" onClick="save,action-employee-method-generate-new-dpae"/>
+        <panel-related field="dpaeList" colSpan="12" canNew="false" grid-view="dpae-grid" form-view="dpae-form"/>
+      </panel>
     </panel-tabs>
   </form>
+
+  <action-method name="action-employee-method-generate-new-dpae">
+    <call class="com.axelor.apps.hr.web.EmployeeController" method="generateNewDPAE"/>
+  </action-method>
 
   <action-record name="action-employee-record-previous-step" model="com.axelor.apps.hr.db.Employee">
     <field name="stepByStepSelect" expr="eval: stepByStepSelect - 1"/>

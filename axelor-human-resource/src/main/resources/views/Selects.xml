@@ -181,4 +181,9 @@
     <option value="5">Finished</option>
   </selection>
 
+  <selection name="employee.hr.sex.select">
+    <option value="F">F</option>
+    <option value="M">M</option>
+  </selection>
+
 </object-views>
