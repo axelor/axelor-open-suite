@@ -140,6 +140,7 @@
 	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	    <field name="stockLocation" expr="eval:_location"/>
+	    <field name="company" expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">

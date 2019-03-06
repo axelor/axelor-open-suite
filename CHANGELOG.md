@@ -7,6 +7,7 @@
 - MARKETING : Send a reminder to invited targets
 - MARKETING : Add a boolean in targetModelSet
 - PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
+- CUST. DELIVERY : new tags "not invoiced" and "invoiced"
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
@@ -21,6 +22,9 @@
 - Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
 in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
 - FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
+- MANUF. ORDER : show error when no default email account
+- Stock Location: fill company on creating inventory
+
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
@@ -32,6 +36,10 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Stock Move Invoicing: get price from stock move lines instead of from product.
 - STOCKMOVELINE : Fix NPE
 - Partner Stock Settings: fix exception when there were no settings for a company.
+- Manuf Order: fix produced product quantities computation.
+- Fix NPE on finishing manuf order.
+- SaleOrder : Fixed error for action attrs to hide inAti field.
+- Timesheet :Fix lines generation error.
 
 ## [5.1.3] - 2019-02-21
 ## Features
