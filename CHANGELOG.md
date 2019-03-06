@@ -42,6 +42,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Timesheet :Fix lines generation error.
 - SALEORDER : birt report - product picture
 - Partner price list : Fix when select price lists and put them in a partner price list.
+- Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
 
 ## [5.1.3] - 2019-02-21
 ## Features
