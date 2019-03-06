@@ -20,7 +20,6 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -104,14 +103,9 @@ public class ManufOrderWorkflowService {
       if (CollectionUtils.isEmpty(manufOrder.getToProduceProdProductList())) {
         manufOrderService.createToProduceProdProductList(manufOrder);
       }
-      /*
-      if (manufOrder.getPlannedStartDateT() == null) {
-        manufOrder.setPlannedStartDateT(
-            Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-      }*/
     }
 
-    if (Beans.get(AppProductionRepository.class).all().fetchOne().getFiniteCapacity()) {
+    if (Beans.get(AppProductionService.class).getAppProduction().getFiniteCapacity()) {
       Beans.get(ManufOrderPlanService.class).optaPlan(manufOrderList, quickSolve);
     } else {
       for (ManufOrder manufOrder : manufOrderList) {

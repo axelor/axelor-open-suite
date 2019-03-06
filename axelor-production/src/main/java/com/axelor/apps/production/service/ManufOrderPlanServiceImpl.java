@@ -1,5 +1,23 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.production.service;
 
+import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -18,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -39,8 +58,12 @@ import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.GlobalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private Schedule unsolvedJobScheduling;
   private Map<String, Resource> machineCodeToResourceMap;
@@ -65,14 +88,16 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.projectIdToManufOrderMap = new HashMap<>();
 
     // Get optaplanner granularity
-    switch (Beans.get(AppProductionRepository.class).all().fetchOne().getSchedulingGranularity()) {
-      case (1):
+    int schedulingGranularity =
+        Beans.get(AppProductionService.class).getAppProduction().getSchedulingGranularity();
+    switch (schedulingGranularity) {
+      case (AppProductionRepository.GRANULARITY_MINUTES):
         this.granularity = 60;
         break;
-      case (2):
+      case (AppProductionRepository.GRANULARITY_HOURS):
         this.granularity = 3600;
         break;
-      case (3):
+      case (AppProductionRepository.GRANULARITY_DAYS):
         this.granularity = 86400;
         break;
       default:
@@ -98,9 +123,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.initializePlanner();
 
     // Build the Solver
-    SolverFactory<Schedule> solverFactory;
-    if (quickSolve) solverFactory = SolverFactory.createFromXmlResource(QUICK_SOLVER_CONFIG);
-    else solverFactory = SolverFactory.createFromXmlResource(SLOW_SOLVER_CONFIG);
+    SolverFactory<Schedule> solverFactory =
+        SolverFactory.createFromXmlResource(quickSolve ? QUICK_SOLVER_CONFIG : SLOW_SOLVER_CONFIG);
     Solver<Schedule> solver = solverFactory.buildSolver();
 
     // Round now LocalDateTime
@@ -115,14 +139,16 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
             .bind("now", now)
             .bind(
                 "manufOrderIds",
-                manufOrderListToPlan.stream().map(it -> it.getId()).collect(Collectors.toList()))
+                manufOrderListToPlan.stream().map(ManufOrder::getId).collect(Collectors.toList()))
             .fetch();
 
     LocalDateTime startDate = now;
 
-    for (ManufOrder manufOrder : pinnedManufOrderList)
-      if (manufOrder.getPlannedStartDateT().isBefore(startDate))
+    for (ManufOrder manufOrder : pinnedManufOrderList) {
+      if (manufOrder.getPlannedStartDateT().isBefore(startDate)) {
         startDate = manufOrder.getPlannedStartDateT();
+      }
+    }
 
     startDate = this.roundDateTime(startDate);
 
@@ -137,18 +163,20 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       }
 
       // Create project
+      log.debug("Creating project for manufOrder {}", manufOrder.getManufOrderSeq());
       Project project =
           this.createProject(
               manufOrder, startDate, granularity, this.durationBetween(startDate, releaseDate));
       this.projectIdToManufOrderMap.put(project.getId(), manufOrder);
     }
 
-    System.out.println("pinnedManufOrderList size : " + pinnedManufOrderList.size());
-    System.out.println("pinnedManufOrderList :");
+    log.debug("pinnedManufOrderList size: {}", pinnedManufOrderList.size());
 
     for (ManufOrder manufOrder : pinnedManufOrderList) {
-      System.out.println(
-          "manufOrder " + manufOrder.getId() + " " + manufOrder.getPlannedEndDateT());
+      log.debug(
+          "Creating project for pinned manufOrder {} {}",
+          manufOrder.getId(),
+          manufOrder.getPlannedEndDateT());
       // Create project
       Project project = this.createProject(manufOrder, startDate, granularity, true);
       this.projectIdToManufOrderMap.put(project.getId(), manufOrder);
@@ -164,18 +192,17 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.planOperationOrder(operationOrder, allocation, granularity, startDate);
       }
     }
-
-    displayManufOrder(pinnedManufOrderList, solvedJobScheduling);
-    displayManufOrder(manufOrderListToPlan, solvedJobScheduling);
   }
 
   private LocalDateTime roundDateTime(LocalDateTime dateTime) throws AxelorException {
-    switch (Beans.get(AppProductionRepository.class).all().fetchOne().getSchedulingGranularity()) {
-      case (1):
+    int schedulingGranularity =
+        Beans.get(AppProductionService.class).getAppProduction().getSchedulingGranularity();
+    switch (schedulingGranularity) {
+      case (AppProductionRepository.GRANULARITY_MINUTES):
         return this.ceilDateTime(dateTime, ChronoUnit.MINUTES);
-      case (2):
+      case (AppProductionRepository.GRANULARITY_HOURS):
         return this.ceilDateTime(dateTime, ChronoUnit.HOURS);
-      case (3):
+      case (AppProductionRepository.GRANULARITY_DAYS):
         return this.ceilDateTime(dateTime, ChronoUnit.DAYS);
       default:
         throw new AxelorException(
@@ -184,33 +211,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
   }
 
-  private void displayManufOrder(List<ManufOrder> manufOrderList, Schedule solvedJobScheduling) {
-    for (ManufOrder manufOrder : manufOrderList) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        Allocation allocation = null;
-        for (Allocation curAllocation : solvedJobScheduling.getAllocationList()) {
-          OperationOrder curOperationOrder =
-              this.allocationIdToOperationOrderMap.get(curAllocation.getId());
-          if (curOperationOrder != null && curOperationOrder.getId() == operationOrder.getId()) {
-            allocation = curAllocation;
-          }
-        }
-        StringBuilder spaces = new StringBuilder();
-        for (int i = 0; i < allocation.getStartDate(); i++) {
-          spaces.append(" ");
-        }
-        StringBuilder dashes = new StringBuilder();
-        for (int i = allocation.getStartDate(); i < allocation.getEndDate(); i++) {
-          dashes.append("#");
-        }
-      }
-    }
-  }
-
   private LocalDateTime ceilDateTime(LocalDateTime dateTime, ChronoUnit chronoUnit) {
     LocalDateTime tmpDateTime = dateTime.truncatedTo(chronoUnit);
-    if (tmpDateTime.equals(dateTime)) return tmpDateTime;
-    return tmpDateTime.plus(chronoUnit.getDuration());
+    return tmpDateTime.equals(dateTime) ? tmpDateTime : tmpDateTime.plus(chronoUnit.getDuration());
   }
 
   private void createResources() {
@@ -237,11 +240,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
 
     LocalDateTime operationOrderPlannedStartDate =
-        startDate.plusSeconds(allocation.getStartDate() * granularity);
+        startDate.plusSeconds(allocation.getStartDate() * Long.valueOf(granularity));
     operationOrder.setPlannedStartDateT(operationOrderPlannedStartDate);
 
     LocalDateTime operationOrderPlannedEndDate =
-        startDate.plusSeconds(allocation.getEndDate() * granularity);
+        startDate.plusSeconds(allocation.getEndDate() * Long.valueOf(granularity));
     operationOrder.setPlannedEndDateT(operationOrderPlannedEndDate);
 
     operationOrder.setPlannedDuration(
@@ -319,19 +322,19 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         this.getPriorityToOperationOrderListMap(manufOrder);
 
     List<Integer> sortedPriorityList =
-        new ArrayList<Integer>(new TreeSet<Integer>(priorityToOperationOrderListMap.keySet()));
+        new ArrayList<>(new TreeSet<Integer>(priorityToOperationOrderListMap.keySet()));
 
     Map<Integer, ArrayList<Job>> priorityToJobListMap =
         this.initializePriorityToJobListMap(sortedPriorityList);
     Map<Integer, ArrayList<Allocation>> priorityToAllocationListMap =
         this.initializePriorityToAllocationListMap(sortedPriorityList);
 
-    Project project;
-    if (projectReleaseDate != null) project = new Project(projectReleaseDate);
-    else project = new Project();
+    Project project = projectReleaseDate != null ? new Project(projectReleaseDate) : new Project();
     this.unsolvedJobScheduling.addProject(project);
 
     // Source Job
+    // the first element in sorted priority list is Integer.MIN_VALUE so to find the successor we
+    // take the second element.
     List<Job> sourceSuccessorJobList = priorityToJobListMap.get(sortedPriorityList.get(1));
     Job sourceJob = this.getSourceJob(project, sourceSuccessorJobList);
     project.addJob(sourceJob);
@@ -344,7 +347,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     sourceJob.addExecutionMode(sourceExecutionMode);
 
     // Source Allocation
-    Long sourceAllocationId = (long) (project.getId() * 100);
+    Long sourceAllocationId = project.getId() * 100;
     List<Allocation> sourceSucccessorAllocationList =
         priorityToAllocationListMap.get(sortedPriorityList.get(1));
     Allocation sourceAllocation =
@@ -367,8 +370,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     sinkJob.addExecutionMode(sinkExecutionMode);
 
     // Sink Allocation
-    Long sinkAllocationId =
-        (long) (project.getId() * 100 + manufOrder.getOperationOrderList().size() + 1);
+    Long sinkAllocationId = project.getId() * 100 + manufOrder.getOperationOrderList().size() + 1;
     List<Allocation> sinkPredecessorAllocationList =
         priorityToAllocationListMap.get(sortedPriorityList.get(sortedPriorityList.size() - 2));
     Allocation sinkAllocation =
@@ -407,7 +409,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         executionMode.addResourceRequirement(resourceRequirement);
 
         // Allocation
-        Long allocationId = (long) (project.getId() * 100 + (allocationIdx + 1));
+        Long allocationId = project.getId() * 100 + (allocationIdx + 1);
         List<Allocation> predecessorAllocationList =
             priorityToAllocationListMap.get(sortedPriorityList.get(priorityIdx - 1));
         List<Allocation> successorAllocationList =
@@ -440,8 +442,6 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
           job.setPinnedExecutionMode(executionMode);
           allocation.setDelay(pinnedDate);
           allocation.setExecutionMode(executionMode);
-          // System.out.println("pinned operation order " + operationOrder.getId() + " pinned date "
-          // + job.getPinnedDate());
         }
       }
     }
@@ -513,7 +513,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       OperationOrder operationOrder, ManufOrder manufOrder, Integer granularity) {
     long duration = 0;
 
-    if (operationOrder.getWorkCenter().getWorkCenterTypeSelect() != 1
+    if (operationOrder.getWorkCenter().getWorkCenterTypeSelect() != IWorkCenter.WORK_CENTER_HUMAN
         && operationOrder.getWorkCenter().getMaxCapacityPerCycle().intValue() != 0) {
       duration =
           (long)
@@ -521,7 +521,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
                   * Math.ceil(
                       (float) manufOrder.getQty().intValue()
                           / operationOrder.getWorkCenter().getMaxCapacityPerCycle().intValue()));
-    } else if (operationOrder.getWorkCenter().getWorkCenterTypeSelect() == 1) {
+    } else if (operationOrder.getWorkCenter().getWorkCenterTypeSelect()
+        == IWorkCenter.WORK_CENTER_HUMAN) {
       duration =
           operationOrder.getWorkCenter().getProdHumanResourceList().get(0).getDuration()
               * manufOrder.getQty().intValue();
