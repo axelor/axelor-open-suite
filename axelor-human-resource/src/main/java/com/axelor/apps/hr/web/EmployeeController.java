@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
@@ -27,9 +28,11 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -115,5 +118,26 @@ public class EmployeeController {
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void generateNewDPAE(ActionRequest request, ActionResponse response) {
+    Employee employee = request.getContext().asType(Employee.class);
+    employee = Beans.get(EmployeeRepository.class).find(employee.getId());
+
+    try {
+      Long dpaeId = employeeService.generateNewDPAE(employee);
+
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("DPAE"))
+              .model(DPAE.class.getName())
+              .add("grid", "dpae-grid")
+              .add("form", "dpae-form")
+              .context("_showRecord", dpaeId);
+      response.setView(builder.map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+
+    response.setReload(true);
   }
 }

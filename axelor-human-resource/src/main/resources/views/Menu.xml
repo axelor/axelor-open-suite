@@ -50,7 +50,13 @@
 	    <view type="form" name="employee-bonus-mgt-form"/>
 	</action-view>
 
-	<menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
+  <menuitem name="hr-employee-dpae" title="DPAEs" parent="hr-root-emp-mgt" action="employee.dpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE"/>
+  <action-view name="employee.dpae.all" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
+    <view type="grid" name="dpae-grid"/>
+    <view type="form" name="dpae-form"/>
+  </action-view>
+
+  <menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf" title="Product Activities" action="conf.product.activity"/>
 
