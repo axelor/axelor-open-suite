@@ -38,6 +38,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Fix NPE on finishing manuf order.
 - SaleOrder : Fixed error for action attrs to hide inAti field.
 - Timesheet :Fix lines generation error.
+- Partner price list : Fix when select price lists and put them in a partner price list.
 
 ## [5.1.3] - 2019-02-21
 ## Features
