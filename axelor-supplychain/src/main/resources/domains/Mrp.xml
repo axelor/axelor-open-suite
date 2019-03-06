@@ -13,6 +13,7 @@
       <many-to-many name="mrpForecastSet" ref="com.axelor.apps.supplychain.db.MrpForecast" title="Forecasts"/>
       <date name="endDate" title="End date"/>
       <integer name="statusSelect" title="Status" selection="supplychain.mrp.status.select" default="0"/>
+      <string name="mrpSeq" title="MRP number" readonly="true"/>
       
       <extra-code><![CDATA[
 	

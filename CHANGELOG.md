@@ -62,6 +62,7 @@
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
+- MRP : Generate new sequence on save
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

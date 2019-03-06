@@ -192,4 +192,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
+
+  static final String SUPPLYCHAIN_MRP_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for MRP" /*)*/;
 }
