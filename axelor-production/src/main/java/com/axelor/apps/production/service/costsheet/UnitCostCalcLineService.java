@@ -15,19 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.apps.production.db.UnitCostCalculation;
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.UnitCostCalcLine;
 
-public interface UnitCostCalculationService {
+public interface UnitCostCalcLineService {
 
-  public MetaFile exportUnitCostCalc(UnitCostCalculation unitCostCalculation, String fileName)
-      throws IOException;
-
-  public void importUnitCostCalc(MetaFile dataFile, UnitCostCalculation unitCostCalculation)
-      throws IOException;
-
-  public void runUnitCostCalc(UnitCostCalculation unitCostCalculation);
+  public UnitCostCalcLine createUnitCostCalcLine(
+      Product product, int maxLevel, CostSheet costSheet);
 }

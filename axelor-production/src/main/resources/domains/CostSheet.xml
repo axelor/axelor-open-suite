@@ -10,7 +10,7 @@
   	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BillOfMaterial"/>
     <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="ManufOrder"/>
   	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="costSheet" title="Cost sheet lines"/>
-    <decimal name="costPrice" title="Cost price"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<integer name="calculationTypeSelect" title="Calculation type" selection="production.cost.sheet.calculation.type.select"/>
    	<date name="calculationDate" title="Date of calculation"/>

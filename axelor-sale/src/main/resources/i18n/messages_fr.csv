@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"${clientPartner?.saleOrderInformation}",,,
 "%s : You must configure Sales module for company %s","%s : Veuillez configurer le module vente pour la société %s",,
 "A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
 "ATI","TTC",,

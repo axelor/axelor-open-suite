@@ -142,7 +142,7 @@ public class MrpServiceImpl implements MrpService {
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void startMrp(Mrp mrp) {
 
     log.debug("Start MRP");
@@ -158,7 +158,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void reset(Mrp mrp) {
 
     mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
