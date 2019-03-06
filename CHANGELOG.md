@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.0]
 ## Features
+- Employee: added DPAE
 - TeamTask: added Frequency
 - Employee: added wizard when creating new employee
 - LogisticalForm: if config enabled, send an email on first save
