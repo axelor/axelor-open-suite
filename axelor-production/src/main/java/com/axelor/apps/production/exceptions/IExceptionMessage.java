@@ -138,4 +138,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
       "Uploaded file is not a CSV file" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
+      "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
 }

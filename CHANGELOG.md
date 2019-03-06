@@ -5,7 +5,7 @@
 ## Improvements
 - SUPPL INVOICES : new buttons to validate payment
 CRM : Convert leads (change title and change the translation of title).
-- PRODUCTION : Add a new object UnitCostCalculation
+- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
