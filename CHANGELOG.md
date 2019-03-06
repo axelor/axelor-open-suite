@@ -1,6 +1,5 @@
 # Changelog
 
-
 ## [Unreleased 5.2.0]
 ## Features
 - TeamTask: added Frequency

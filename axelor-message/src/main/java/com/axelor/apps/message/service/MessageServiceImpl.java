@@ -20,6 +20,7 @@ package com.axelor.apps.message.service;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -90,6 +91,10 @@ public class MessageServiceImpl implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
     Message message =
         createMessage(
             content,
@@ -251,7 +256,10 @@ public class MessageServiceImpl implements MessageService {
     EmailAccount mailAccount = message.getMailAccount();
 
     if (mailAccount == null) {
-      return message;
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MESSAGE_MISSING_DEFAULT_EMAIL_ACCOUNT));
     }
 
     log.debug("Sent email");

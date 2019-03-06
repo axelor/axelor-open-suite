@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsService {
 
@@ -37,11 +38,14 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
     if (mailSettingsList == null || mailSettingsList.isEmpty()) {
       return createMailSettings(partner, company);
     }
-    return mailSettingsList
-        .stream()
-        .filter(partnerStockSettings -> company.equals(partnerStockSettings.getCompany()))
-        .findAny()
-        .orElse(createMailSettings(partner, company));
+    Optional<PartnerStockSettings> partnerStockSettings =
+        mailSettingsList
+            .stream()
+            .filter(stockSettings -> company.equals(stockSettings.getCompany()))
+            .findAny();
+    return partnerStockSettings.isPresent()
+        ? partnerStockSettings.get()
+        : createMailSettings(partner, company);
   }
 
   @Override

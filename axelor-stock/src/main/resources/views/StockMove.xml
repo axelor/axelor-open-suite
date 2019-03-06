@@ -57,6 +57,18 @@
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
+    
+    <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+		<field name="stockMoveSeq"/>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="realDate"/>
+        <field name="fromAddressStr" hidden="true"/>
+        <field name="toAddressStr"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="origin"/>
+    </grid>
 
      <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
@@ -108,6 +120,21 @@
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
+    
+    <grid name="stock-move-mass-invoicing-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+        <field name="stockMoveSeq"/>
+        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="realDate"/>
+        <field name="fromAddressStr"/>
+        <field name="toAddressStr" hidden="true"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+        <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
+        <field name="supplierShipmentRef"/>
+        <field name="origin"/>
+    </grid>
+    
+    
 
     <calendar name="stock-move-calendar" model="com.axelor.apps.stock.db.StockMove" eventStart="estimatedDate"
         eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">
@@ -170,25 +197,25 @@
 
         <panel name="mainPanel">
             <panel colSpan="9" name="typeSelectPanel">
-                <panel name="statusPanel" itemSpan="12">
+                <panel name="statusPanel" colSpan="12" itemSpan="12">
                     <field name="statusSelect" widget="NavSelect" showTitle="false"/>
                     <field name="stockMoveSeq" css="label-bold bold large" showTitle="false"/>
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" colSpan="1" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" colSpan="4" showTitle="false" readonly="true">
 						<viewer><![CDATA[
-                            <h4 class="text-right">
+                            <h4 class="text-left">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
                             	<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 2" x-translate>Partially available</span>
                             	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 3" x-translate>Unavailable</span>
                     		</h4>
 						]]></viewer>
 					</field>
-                    <field name="$tags" showTitle="false" colSpan="11" readonly="true" showIf="$readonly()">
+                    <field name="$tags" showTitle="false" colSpan="6" readonly="true" showIf="$readonly()">
                         <viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect ">
                             <![CDATA[
-                                <h4 class="text-right">
+                                <h4 class="text-left">
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
@@ -202,6 +229,16 @@
                                 </h4>
                             ]]>
                         </viewer>
+                    </field>
+                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+                    	<viewer depends="invoice.statusSelect">
+				<![CDATA[
+					<h4 class="text-left">                    	
+						<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && record.invoice && record.invoice.statusSelect == 3" x-translate>Invoiced</span>
+						<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && (!record.invoice || (record.invoice && [1,2].includes(record.invoice.statusSelect)))" x-translate>Not Invoiced</span>
+					</h4>
+				]]>
+            	</viewer>
                     </field>
 
                     <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-attrs-set-values-typeselect-onchange,action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
@@ -258,8 +295,8 @@
 					<field name="supplierShipmentRef"/>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
-				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || statusSelect==3 || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
+				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
            		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
@@ -289,7 +326,7 @@
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
                 <field name="trackingNumber" colSpan="4"/>
-                <field name="$deliveryCondition" type="string" title="Delivery conditions" readonly="true" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+                <field name="deliveryCondition" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
                 <spacer name="deliveryConditionSpacer" colSpan="6" showIf="typeSelect == 2"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
@@ -455,11 +492,16 @@
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
+    <action-attrs name="action-stock-move-attrs-filter-on-available-products">
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1"/>
+    </action-attrs>
+    
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -467,6 +509,7 @@
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
+		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -539,7 +582,6 @@
 	<action-attrs name="action-stock-move-attrs-set-required-shipment-supplier-details">
 		<attribute name="required" for="supplierShipmentRef" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
 		<attribute name="required" for="supplierShipmentDate" expr="eval: __config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; statusSelect == 3 &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion"/>
-		<attribute name="value" for="$deliveryCondition" expr="eval: __repo__(SaleOrder).all().filter('self.saleOrderSeq LIKE ?',origin).fetchOne()?.deliveryCondition" if="origin !=null &amp;&amp; originTypeSelect!=null &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 
     <action-attrs name="action-stock-move-generate-invoice-button">

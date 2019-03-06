@@ -84,10 +84,21 @@
 			</menu>
 		</menubar>
 		<panel name="mainPanel">
-			<panel name="headPanel" colSpan="9">
-				<field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
-				<field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+			<panel name="detailsPanel" colSpan="9">
+				<panel name="headPanel" colSpan="12">
+					<field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"/>
+					<field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+				</panel>
+				<field name="company" colSpan="5" form-view="company-form" grid-view="company-grid" onChange="action-hr-record-empty-user"/>
+				<field name="user" colSpan="5" form-view="user-form" onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+				<field name="timeLoggingPreferenceSelect" readonly="true" hidden="true" />
+				<field name="user.employee" hidden="true" />
+				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
+				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5" />
+				<field name="toDate" onChange="action-timesheet-validate-toDate" colSpan="5" />
+				<button name="createBtn" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 			</panel>
+			
 			<panel name="actionsPanel" colSpan="3" itemSpan="12">
 				<button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm" hideIf="statusSelect &gt; 1" icon="fa-check-square-o"/>
 				<button name="continueBtn" onClick="action-timesheet-group-continue,close" title="Continue" showIf="statusSelect == 2 &amp;&amp; user != null &amp;&amp; user.code == $user" icon="fa-arrow-right"/>
@@ -100,20 +111,7 @@
 						if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
 			</panel>
 		</panel>
-		<panel name="detailsPanel">
-			<panel name="generalInfoPanel">
-				<field name="company" colSpan="6" form-view="company-form" grid-view="company-grid" onChange="action-hr-record-empty-user"/>
-				<field name="user" colSpan="6" form-view="user-form" onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-				<field name="timeLoggingPreferenceSelect" readonly="true"/>
-				<field name="user.employee" hidden="true" />
-				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
-			</panel>
-			<panel name="datesPanel">
-				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date"/>
-				<field name="toDate" onChange="action-timesheet-validate-toDate"/>
-				<button name="createBtn" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
-			</panel>
-		</panel>
+		
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
 		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
 			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
