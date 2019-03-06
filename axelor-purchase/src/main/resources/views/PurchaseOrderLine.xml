@@ -41,6 +41,7 @@
 		<field name="purchaseOrder.purchaseOrderSeq"/>
 		<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="productCode"/>
+		<field name="product.code" title="Code"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>

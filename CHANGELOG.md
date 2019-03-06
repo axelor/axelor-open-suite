@@ -21,8 +21,10 @@
 - Sale Order: if config is activated, create stock move after modifications validation.
 - Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
 in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
+- FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
 - MANUF. ORDER : show error when no default email account
 - Stock Location: fill company on creating inventory
+
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
@@ -38,6 +40,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Fix NPE on finishing manuf order.
 - SaleOrder : Fixed error for action attrs to hide inAti field.
 - Timesheet :Fix lines generation error.
+- SALEORDER : birt report - product picture
 - Partner price list : Fix when select price lists and put them in a partner price list.
 
 ## [5.1.3] - 2019-02-21
