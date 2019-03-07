@@ -44,6 +44,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Partner price list : Fix when select price lists and put them in a partner price list.
 - MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
 - Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
+- MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
 
 ## [5.1.3] - 2019-02-21
 ## Features
