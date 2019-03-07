@@ -58,6 +58,9 @@
     <integer name="stepByStepSelect" title="Step by step" selection="hr.employee.form.step.by.step.select" default="1"/>
     <!-- END OF New employee wizard -->
 
+	<many-to-one name="birthDepartment" title="Birth Department" ref="com.axelor.apps.base.db.Department" help="For foreign-born employees, please enter the code 99"/>
+	<many-to-one name="cityofBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
+
       <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";

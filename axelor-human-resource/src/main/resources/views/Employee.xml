@@ -69,6 +69,8 @@
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="birthDepartment" colSpan="4"/>
+      <field name="cityofBirth" colSpan="4"/>
     </panel>
 
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="stepByStepSelect == 1">
@@ -181,6 +183,8 @@
           <field name="birthDate" colSpan="4"/>
           <field name="maritalStatus" colSpan="4"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+          <field name="birthDepartment" colSpan="4"/>
+          <field name="cityofBirth" colSpan="4"/>
         </panel>
 
         <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
