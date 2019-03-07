@@ -1195,15 +1195,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[7] = partner.getName();
         }
         items[8] = moveLine.getOrigin();
-        if (moveLine.getDate() != null) {
+        if (moveLine.getOriginDate() != null) {
           items[9] =
               moveLine
                   .getOriginDate()
                   .format(
                       DateTimeFormatter.ofPattern(
-                          DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des
-          // lignes
-          // d'écriture.
+                          DATE_FORMAT_YYYYMMDD)); 
         }
         items[10] = moveLine.getDescription();
         items[11] = moveLine.getDebit().toString();
