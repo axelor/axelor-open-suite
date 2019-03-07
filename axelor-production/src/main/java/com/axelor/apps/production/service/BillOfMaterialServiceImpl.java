@@ -155,6 +155,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     copy.setVersionNumber(
         this.getLatestBillOfMaterialVersion(billOfMaterial, billOfMaterial.getVersionNumber(), true)
             + 1);
+    billOfMaterialRepo.save(copy);
+    String name = this.computeName(copy);
+    copy.setName(name);
 
     return billOfMaterialRepo.save(copy);
   }
