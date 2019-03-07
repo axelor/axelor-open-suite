@@ -25,6 +25,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - MANUF. ORDER : show error when no default email account
 - Stock Location: fill company on creating inventory
 - Change the page numbering on invoices and orders printing.
+- BANK STATEMENT : hide runImportBtn when status = "imported"
 
 
 ## Bug Fixes
