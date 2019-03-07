@@ -6,9 +6,9 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="BillOfMaterial" lang="java">
-    <integer name="type" title="Type" selection="maintenance.type.select"/>
+    <integer name="type" default="1" title="Type" selection="maintenance.type.select"/>
 
-    <many-to-one name="machineType" default="1" ref="com.axelor.apps.production.db.MachineType" title="Machine type"/>
+    <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine type"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="false"/>
   </entity>
 
