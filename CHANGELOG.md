@@ -24,6 +24,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
 - MANUF. ORDER : show error when no default email account
 - Stock Location: fill company on creating inventory
+- Change the page numbering on invoices and orders printing.
 
 
 ## Bug Fixes
