@@ -513,7 +513,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       OperationOrder operationOrder, ManufOrder manufOrder, Integer granularity) {
     long duration = 0;
 
-    if (operationOrder.getWorkCenter().getWorkCenterTypeSelect() != 1) {
+    if (operationOrder.getWorkCenter().getWorkCenterTypeSelect() != 1
+        && operationOrder.getWorkCenter().getMaxCapacityPerCycle().intValue() != 0) {
       duration =
           (long)
               (operationOrder.getWorkCenter().getDurationPerCycle()
@@ -525,7 +526,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
           operationOrder.getWorkCenter().getProdHumanResourceList().get(0).getDuration()
               * manufOrder.getQty().intValue();
     }
-    return (int) Math.ceil(((double) duration) / granularity);
+
+    duration =
+        granularity != 0 ? duration = (long) Math.ceil(((double) duration) / granularity) : 0l;
+    return (int) duration;
   }
 
   private Allocation getSourceAllocation(

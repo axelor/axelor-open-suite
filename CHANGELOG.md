@@ -85,7 +85,7 @@
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
 - Contract : Fix issue of not saving currentContractVersion fields in form view
 - ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
-
+- Production : Fix Java Heap Error.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
 
