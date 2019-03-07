@@ -25,7 +25,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - MANUF. ORDER : show error when no default email account
 - Stock Location: fill company on creating inventory
 
-
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
 - PARTNER BALANCE REPORT : edition date is always empty.
@@ -44,6 +43,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Partner price list : Fix when select price lists and put them in a partner price list.
 - MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
 - Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
+- Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
 
 ## [5.1.3] - 2019-02-21
 ## Features
