@@ -17,20 +17,27 @@
  */
 package com.axelor.apps.hr.web;
 
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 @Singleton
 public class UserHrController {
 
   @Inject UserRepository userRepo;
-
+  @Inject UserService userService;
   @Inject UserHrService userHrService;
 
   @Transactional
@@ -40,5 +47,54 @@ public class UserHrController {
     userHrService.createEmployee(user);
 
     response.setReload(true);
+  }
+
+  @Transactional
+  public void createUser(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    User user = context.asType(User.class);
+
+    User employeeUser = new User();
+    employeeUser.setActivateOn(user.getActivateOn());
+    employeeUser.setExpiresOn(user.getExpiresOn());
+    employeeUser.setCode(user.getCode());
+    employeeUser.setGroup(user.getGroup());
+
+    if (context.containsKey("_id")) {
+      Object employeeId = context.get("_id");
+      if (employeeId != null) {
+        Employee employee =
+            Beans.get(EmployeeRepository.class).find(Long.parseLong(employeeId.toString()));
+        employeeUser.setEmployee(Beans.get(EmployeeRepository.class).find(employee.getId()));
+
+        if (employee.getContactPartner() != null) {
+          String employeeName = employee.getContactPartner().getName();
+          if (employee.getContactPartner().getFirstName() != null) {
+            employeeName += " " + employee.getContactPartner().getFirstName();
+          }
+          employeeUser.setName(employeeName);
+          if (employee.getContactPartner().getEmailAddress() != null) {
+            employeeUser.setEmail(employee.getContactPartner().getEmailAddress().getAddress());
+          }
+        }
+
+        if (employee.getMainEmploymentContract() != null) {
+          employeeUser.setActiveCompany(employee.getMainEmploymentContract().getPayCompany());
+        }
+
+        List<EmploymentContract> contractList = employee.getEmploymentContractList();
+        if (contractList != null && !contractList.isEmpty()) {
+          for (EmploymentContract employmentContract : contractList) {
+            employeeUser.addCompanySetItem(employmentContract.getPayCompany());
+          }
+        }
+        CharSequence password = userService.generateRandomPassword();
+        employeeUser.setPassword(password.toString());
+        employee.setUser(employeeUser);
+      }
+    }
+
+    userRepo.save(employeeUser);
+    response.setCanClose(true);
   }
 }
