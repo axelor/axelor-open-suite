@@ -14,32 +14,33 @@
 	    <field name="statusSelect"/>
     </grid>
 
-    <form name="maintenance-request-form" title="Maintenance Request" model="com.axelor.apps.maintenance.db.MaintenanceRequest"
-    	onNew="action-maintenance-request-record-default" width="large">
-    	<panel name="main">
-    		<field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"/>
-    		<field name="equipementMaintenance" requiredIf="!$popup()" hideIf="$popup()"/>
-			<field name="requestDate"/>
+	<form name="maintenance-request-form" title="Maintenance Request" model="com.axelor.apps.maintenance.db.MaintenanceRequest"
+			onNew="action-maintenance-request-record-default" width="large">
+		<panel name="main">
+   		<field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"/>
+   		<field name="equipementMaintenance" colSpan="4" requiredIf="!$popup()" hideIf="$popup()" onChange="action-maintenance-request-attrs-equi-maintenance-onchange"/>
+			<field name="machine" readonly="true" colSpan="4"/>
+			<field name="requestDate" colSpan="4"/>
 			<field name="requestBy" canEdit="false"/>
 			<field name="expectedDate"/>
 			<field name="assignedTo" canEdit="false"/>
 			<field name="durationHours"/>
 			<field name="mtnTask" colSpan="12" widget="html"/>
 			<field name="actionSelect" widget="RadioSelect"/>
-			<field name="manufOrder" domain="self.type = 2"/>
+			<field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate" canNew="true" domain="self.type = 2"/>
 			<field name="doneOn"/>
-        </panel>
-        <panel name="actions" sidebar="true" title="Actions" stacked="true">
-          <button name="start" title="Start" showIf="statusSelect == 0" readonlyIf="!equipementMaintenance &amp;&amp; !expectedDate" onClick="save,action-maintenance-request-method-start" />
-        	<button name="complete" title="Complete" showIf="statusSelect == 1"  onClick="acttion-maintenance-request-method-complete" />
-          <button name="cancel" title="Cancel" showIf="id &amp;&amp; statusSelect != 3"  onClick="acttion-maintenance-request-method-cancel" />
-        	<button name="replan" title="Replan" showIf="statusSelect == 3" onClick="acttion-maintenance-request-method-replan" />
-        </panel>
-        <panel-mail name="panel-mail">
+		</panel>
+		<panel name="actions" sidebar="true" title="Actions" stacked="true">
+			<button name="start" title="Start" showIf="statusSelect == 0" readonlyIf="!equipementMaintenance &amp;&amp; !expectedDate" onClick="save,action-maintenance-request-method-start" />
+			<button name="complete" title="Complete" showIf="statusSelect == 1"  onClick="acttion-maintenance-request-method-complete" />
+      <button name="cancel" title="Cancel" showIf="id &amp;&amp; statusSelect != 3"  onClick="acttion-maintenance-request-method-cancel" />
+    	<button name="replan" title="Replan" showIf="statusSelect == 3" onClick="acttion-maintenance-request-method-replan" />
+    </panel>
+    <panel-mail name="panel-mail">
 		  <mail-messages limit="4" />
 		  <mail-followers />
 		</panel-mail>
-    </form>
+	</form>
     
     <kanban name="maintenance-request-kanban"  title="Maintenance Request" columnBy="statusSelect" sequenceBy="sequence"
     	onNew="action-maintenance-request-record-default" limit="10" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -81,12 +82,18 @@
     	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="equipementMaintenance.name" />
  	</calendar>
-    
+
     <action-record name="action-maintenance-request-record-default" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="assignedTo"  expr="eval:__user__"/>
     	<field name="requestBy"  expr="eval:__user__"/>
     	<field name="requestDate"  expr="eval:__config__.app.getTodayDate()"/>
+    	<field name="machine" expr="eval: _parent?.machine" if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
+    	<field name="equipementMaintenance" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
     </action-record>
+    
+    <action-attrs name="action-maintenance-request-attrs-equi-maintenance-onchange">
+    	<attribute name="value" for="machine" expr="eval: equipementMaintenance?.machine"/>
+    </action-attrs>
     
     <action-method name="action-maintenance-request-method-start">
     	<call class="com.axelor.apps.maintenance.web.MaintenanceRequestController" method="start"/>
