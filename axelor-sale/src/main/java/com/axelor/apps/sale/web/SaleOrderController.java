@@ -32,6 +32,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -628,5 +630,19 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
       response.setReload(true);
     }
+  }
+
+  public void updateDeleiveryDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> soLines = saleOrder.getSaleOrderLineList();
+    for (SaleOrderLine soLine : soLines) {
+      if (soLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
+        for (SaleOrderLine subLine : soLine.getSubLineList()) {
+          subLine.setDesiredDelivDate(soLine.getDesiredDelivDate());
+          subLine.setEstimatedDelivDate(soLine.getEstimatedDelivDate());
+        }
+      }
+    }
+    response.setValue("saleOrderLineList", soLines);
   }
 }

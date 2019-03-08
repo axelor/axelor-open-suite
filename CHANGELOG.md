@@ -31,6 +31,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - SALES : translate availability requests in french
 - MANUF ORDER : open popup on cost sheet calculation
 - SALE ORDER : Removed amount display from title lines on print
+- SaleOrderLine : Set delivery date for pack sublines.
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.

@@ -889,6 +889,7 @@
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
+        <action name="action-sale-order-method-update-delivery-date" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
@@ -934,6 +935,10 @@
     	<field name="inAti" expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
     </action-record>
+
+    <action-method name="action-sale-order-method-update-delivery-date">
+      <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateDeleiveryDate"/>
+    </action-method>
 
 	<action-method name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateAmountToBeSpreadOverTheTimetable"/>
