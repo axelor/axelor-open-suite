@@ -50,6 +50,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
 - MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
 - PRODPROCESS : reset version and status on copy
+- BILLOFMATERIAL : reset version and costsheet related info on copy
 
 ## [5.1.3] - 2019-02-21
 ## Features
