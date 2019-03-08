@@ -52,6 +52,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
 - PRODPROCESS : reset version and status on copy
 - BILLOFMATERIAL : reset version and costsheet related info on copy
+- Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
 
 ## [5.1.3] - 2019-02-21
 ## Features
