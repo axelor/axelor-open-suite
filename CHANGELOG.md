@@ -26,8 +26,10 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Stock Location: fill company on creating inventory
 - Change the page numbering on invoices and orders printing.
 - BANK STATEMENT : hide runImportBtn when status = "imported"
-- MANUF ORDER : cost sheet calculation
-
+- BillOfMaterial : make 'unit' required and notEditable field.
+- APP ACCOUNT : put Configuration panel before payer panel
+- SALES : translate availability requests in french
+- MANUF ORDER : open popup on cost sheet calculation
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
@@ -48,6 +50,8 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
 - Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
 - MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
+- PRODPROCESS : reset version and status on copy
+- BILLOFMATERIAL : reset version and costsheet related info on copy
 
 ## [5.1.3] - 2019-02-21
 ## Features
