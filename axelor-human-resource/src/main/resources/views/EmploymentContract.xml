@@ -28,6 +28,7 @@
             <button name="editContractWordMLBtn" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
         	<button name="generatePayrollPreparationBtn" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
 					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+			<button name="exportBtn" title="Export employment contract" onClick="save,action-employment-contract-method-export"/>		
         </toolbar>
         <panel name="statusPanel" title="Status">
         	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
@@ -102,6 +103,10 @@
     
     <action-method name="action-employment-contract-method-addAmendment">
         <call class="com.axelor.apps.hr.web.EmploymentContractController" method="addAmendment"/>
+    </action-method>
+    
+    <action-method name="action-employment-contract-method-export">
+    	<call class="com.axelor.apps.hr.web.EmploymentContractController" method="exportEmploymentContract"/>
     </action-method>
     
     <action-validate name="action-employment-contract-validate-printing-settings">
