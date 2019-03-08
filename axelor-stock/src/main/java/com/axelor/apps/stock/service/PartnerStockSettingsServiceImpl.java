@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
@@ -62,5 +63,23 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
     mailSettings.setRealStockMoveMessageTemplate(stockConfig.getRealStockMoveMessageTemplate());
     partner.addPartnerStockSettingsListItem(mailSettings);
     return Beans.get(PartnerStockSettingsRepository.class).save(mailSettings);
+  }
+
+  @Override
+  public StockLocation getDefaultStockLocation(Partner partner, Company company) {
+
+    if (partner != null && company != null) {
+      PartnerStockSettings partnerStockSettings =
+          Beans.get(PartnerStockSettingsRepository.class)
+              .all()
+              .filter("self.partner = ? AND self.company = ?", partner, company)
+              .fetchOne();
+
+      if (partnerStockSettings != null) {
+        return partnerStockSettings.getDefaultStockLocation();
+      }
+    }
+
+    return null;
   }
 }
