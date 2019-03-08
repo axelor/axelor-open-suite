@@ -31,14 +31,14 @@
     </toolbar>
 
     <!-- New employee wizard -->
-    <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 4">
+    <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5">
       <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left" readonlyIf="stepByStepSelect &lt; 2" onClick="validate,action-employee-record-previous-step"/>
-      <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true" showTitle="false" widget="NavSelect" selection-in="[1, 2, 3]"/>
-      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right" readonlyIf="stepByStepSelect &gt; 2" onClick="validate,action-employee-record-next-step"/>
-      <button name="finishBtn" colSpan="1" title="Finish" onClick="validate,action-employee-record-finish-sbs"/>
+      <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true" showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
+      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right" readonlyIf="stepByStepSelect &gt; 3" onClick="validate,action-employee-record-next-step"/>
+      <button name="finishBtn" colSpan="1" title="Finish" onClick="validate,action-employee-record-finish-sbs" showIf="stepByStepSelect == 4"/>
     </panel>
 
-    <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 4">
+    <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
       <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
@@ -136,9 +136,16 @@
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
+    
+    <!-- User creation -->
+    <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
+    	<field name="user" title="Attach to"/>
+    	<button name="createUserBtn" title="Create new user" onClick="save,action-employee-view-open-user-creation-wizard"/>
+    </panel>
+    <!-- END OF User creation -->
     <!-- END OF New employee wizard -->
 
-    <panel name="contactPanel" showIf="stepByStepSelect == 4">
+    <panel name="contactPanel" showIf="stepByStepSelect == 5">
       <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <panel name="imagePanel" colSpan="2">
@@ -169,7 +176,7 @@
       </field>
     </panel>
 
-    <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 4">
+    <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="informationPanel" title="Information">
         <panel name="phoneProPanel" title="Work phones" colSpan="12">
           <field name="fixedProPhone" onChange="action-employee-method-normalize-fixedProPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
@@ -300,7 +307,7 @@
   </action-record>
 
   <action-record name="action-employee-record-finish-sbs" model="com.axelor.apps.hr.db.Employee">
-    <field name="stepByStepSelect" expr="eval: 4"/>
+    <field name="stepByStepSelect" expr="eval: 5"/>
   </action-record>
 
   <form name="employee-annual-report-form" title="Annual report" model="com.axelor.apps.hr.db.Employee">
