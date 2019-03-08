@@ -29,6 +29,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - BillOfMaterial : make 'unit' required and notEditable field.
 - APP ACCOUNT : put Configuration panel before payer panel
 - SALES : translate availability requests in french
+- MANUF ORDER : open popup on cost sheet calculation
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
