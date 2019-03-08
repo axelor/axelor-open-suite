@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
