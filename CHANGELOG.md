@@ -24,7 +24,13 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
 - MANUF. ORDER : show error when no default email account
 - Stock Location: fill company on creating inventory
-
+- Change the page numbering on invoices and orders printing.
+- BANK STATEMENT : hide runImportBtn when status = "imported"
+- BillOfMaterial : make 'unit' required and notEditable field.
+- APP ACCOUNT : put Configuration panel before payer panel
+- SALES : translate availability requests in french
+- MANUF ORDER : open popup on cost sheet calculation
+- SALE ORDER : Removed amount display from title lines on print
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
@@ -44,6 +50,12 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Partner price list : Fix when select price lists and put them in a partner price list.
 - MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
 - INVOICE PRINTING : remove blank space that appear just behind the invoice lines and remove the line spacings in note. Improve page number alignment.
+- Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
+- MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
+- PRODPROCESS : reset version and status on copy
+- BILLOFMATERIAL : reset version and costsheet related info on copy
+- Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
+- ACCOUNTING MOVES : Fix error message display at the wrong time
 
 ## [5.1.3] - 2019-02-21
 ## Features
