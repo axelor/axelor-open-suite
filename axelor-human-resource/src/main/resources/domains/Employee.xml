@@ -65,6 +65,9 @@
     <!-- DPAE -->
     <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE" mappedBy="employee"/>
 
+	<string name="maidenName" title="Maiden name"/>
+	<string name="maritalName" title="Marital name"/>
+
       <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";

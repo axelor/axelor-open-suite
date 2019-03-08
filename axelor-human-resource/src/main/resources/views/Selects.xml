@@ -94,6 +94,11 @@
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
 		<option value="5">Leave Management Reset</option>
+		<option value="6">Export des salariés</option>
+	</selection>
+	
+	<selection name="hr.batch.employment.contract.export.type.select">
+		<option value="1">SILAE</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">

@@ -72,6 +72,8 @@
       <field name="cityOfBirth" colSpan="4"/>
       <field name="departmentOfBirth" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4"/>
+      <field name="maidenName" colSpan="4"/>
+      <field name="maritalName" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
 
@@ -195,6 +197,8 @@
           <field name="cityOfBirth" colSpan="4"/>
           <field name="departmentOfBirth" colSpan="4"/>
           <field name="countryOfBirth" colSpan="4"/>
+          <field name="maidenName" colSpan="4"/>
+          <field name="maritalName" colSpan="4"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
         </panel>
 

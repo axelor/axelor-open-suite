@@ -64,6 +64,7 @@
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
 - BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence. 
 - InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
+- HR : Add CSV export support for Employment Contracts from its view and HR batch
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

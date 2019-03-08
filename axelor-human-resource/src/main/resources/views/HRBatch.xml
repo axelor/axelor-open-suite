@@ -64,6 +64,12 @@
                 <panel-related name="employeeSetPanel" field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
                 <button name="leaveManagementBatchBtn" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
             </panel>
+            
+            <panel title="Export des salariés" hidden="true" showIf="actionSelect == 6">
+            	<field name="employmentContractExportTypeSelect" colSpan="4"/>
+            	<spacer name="employmentContractExportSpacer" colSpan="8"/>
+            	<button name="employmentContractExportBatchBtn" readonlyIf="employmentContractExportTypeSelect == null" title="Employment contract export batch" onClick="save,action-hrbatch-method-hr-batch" colSpan="4"/>
+            </panel>
 
 			<panel name="informationsPanel" title="Informations">
 				<field name="createdOn" title="Created on"/>
