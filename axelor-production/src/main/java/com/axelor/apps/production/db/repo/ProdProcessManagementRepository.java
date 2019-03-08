@@ -31,4 +31,16 @@ public class ProdProcessManagementRepository extends ProdProcessRepository {
 
     return super.save(prodProcess);
   }
+
+  @Override
+  public ProdProcess copy(ProdProcess entity, boolean deep) {
+
+    ProdProcess copy = super.copy(entity, deep);
+
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setVersionNumber(1);
+    copy.setOriginalProdProcess(null);
+
+    return copy;
+  }
 }

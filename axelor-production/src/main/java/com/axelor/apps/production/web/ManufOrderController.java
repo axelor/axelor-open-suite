@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -414,11 +415,25 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
 
-      Beans.get(CostSheetService.class)
-          .computeCostPrice(
-              manufOrder,
-              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-              Beans.get(AppBaseService.class).getTodayDate());
+      CostSheet costSheet =
+          Beans.get(CostSheetService.class)
+              .computeCostPrice(
+                  manufOrder,
+                  CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+                  Beans.get(AppBaseService.class).getTodayDate());
+
+      response.setView(
+          ActionView.define(I18n.get("Cost sheet"))
+              .model(CostSheet.class.getName())
+              .param("popup", "true")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .add("grid", "cost-sheet-bill-of-material-grid")
+              .add("form", "cost-sheet-bill-of-material-form")
+              .context("_showRecord", String.valueOf(costSheet.getId()))
+              .map());
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
