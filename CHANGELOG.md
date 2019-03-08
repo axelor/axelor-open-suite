@@ -28,6 +28,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - BANK STATEMENT : hide runImportBtn when status = "imported"
 - BillOfMaterial : make 'unit' required and notEditable field.
 - APP ACCOUNT : put Configuration panel before payer panel
+- SALES : translate availability requests in french
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
