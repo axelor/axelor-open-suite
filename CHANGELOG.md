@@ -30,6 +30,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - APP ACCOUNT : put Configuration panel before payer panel
 - SALES : translate availability requests in french
 - MANUF ORDER : open popup on cost sheet calculation
+- SALE ORDER : Removed amount display from title lines on print
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
