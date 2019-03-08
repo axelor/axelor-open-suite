@@ -54,6 +54,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - PRODPROCESS : reset version and status on copy
 - BILLOFMATERIAL : reset version and costsheet related info on copy
 - Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
+- ACCOUNTING MOVES : Fix error message display at the wrong time
 
 ## [5.1.3] - 2019-02-21
 ## Features
