@@ -62,6 +62,7 @@
 - WEEKLY PLANNING : Add a type and minor changes
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
 - BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence. 
+- InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
