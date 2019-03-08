@@ -43,6 +43,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - SALEORDER : birt report - product picture
 - Partner price list : Fix when select price lists and put them in a partner price list.
 - MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
+- INVOICE PRINTING : remove blank space that appear just behind the invoice lines and remove the line spacings in note. Improve page number alignment.
 
 ## [5.1.3] - 2019-02-21
 ## Features

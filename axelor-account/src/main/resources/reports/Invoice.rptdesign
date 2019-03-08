@@ -2744,6 +2744,7 @@ $func$ LANGUAGE plpgsql;
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">1pt</property>
                             <property name="verticalAlign">top</property>
                             <grid id="3804">
                                 <property name="height">1.7197916666666668cm</property>
@@ -2753,6 +2754,7 @@ $func$ LANGUAGE plpgsql;
                                 <row id="3808">
                                     <property name="height">0.6085416666666666cm</property>
                                     <cell id="3809">
+                                        <property name="paddingTop">0pt</property>
                                         <auto-text id="3810">
                                             <list-property name="visibility">
                                                 <structure>
@@ -2764,6 +2766,7 @@ $func$ LANGUAGE plpgsql;
                                         </auto-text>
                                     </cell>
                                     <cell id="3811">
+                                        <property name="paddingTop">0pt</property>
                                         <text id="3812">
                                             <list-property name="visibility">
                                                 <structure>
@@ -2776,6 +2779,7 @@ $func$ LANGUAGE plpgsql;
                                         </text>
                                     </cell>
                                     <cell id="3813">
+                                        <property name="paddingTop">0pt</property>
                                         <auto-text id="3814">
                                             <list-property name="visibility">
                                                 <structure>
@@ -2791,6 +2795,7 @@ $func$ LANGUAGE plpgsql;
                                     <cell id="5230">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
+                                        <property name="paddingTop">0pt</property>
                                     </cell>
                                 </row>
                             </grid>
@@ -4455,7 +4460,7 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductcode"]</expression>
+                                                <expression name="valueExpr" type="javascript">!row["customerproductcode"] || row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">customerproductcode</property>
@@ -4484,13 +4489,14 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] &amp;&amp; row["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] || row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">customerproductname</property>
                                     </data>
                                     <text id="5327">
                                         <property name="fontSize">8pt</property>
+                                        <property name="marginBottom">4pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -4512,22 +4518,10 @@ row["partnerFirstName"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {row["product_name"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["is_sub_line"]) {row["product_name"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["is_pack_line"]) {row["product_name"]}</VALUE-OF></B>]]></text-property>
                                     </text>
-                                    <data id="5329">
-                                        <property name="fontSize">8pt</property>
-                                        <property name="fontWeight">bold</property>
-                                        <property name="fontStyle">italic</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] &amp;&amp; !row["is_title_line"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <property name="resultSetColumn">customerproductname</property>
-                                    </data>
                                     <text id="5328">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <property name="marginBottom">4pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -6468,7 +6462,7 @@ row["partnerFirstName"]
                                         <property name="fontStyle">normal</property>
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["note"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["note"] != null ) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF><br>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5115"/>
