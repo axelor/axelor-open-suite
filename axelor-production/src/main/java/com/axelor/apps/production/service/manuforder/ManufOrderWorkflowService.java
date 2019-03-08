@@ -264,7 +264,9 @@ public class ManufOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException {
-    if (cancelReason == null) {
+    if (cancelReason == null
+        && manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_DRAFT
+        && manufOrder.getStatusSelect() != ManufOrderRepository.STATUS_PLANNED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
@@ -294,11 +296,13 @@ public class ManufOrderWorkflowService {
     }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
-    manufOrder.setCancelReason(cancelReason);
-    if (Strings.isNullOrEmpty(cancelReasonStr)) {
-      manufOrder.setCancelReasonStr(cancelReason.getName());
-    } else {
-      manufOrder.setCancelReasonStr(cancelReasonStr);
+    if (cancelReason != null) {
+      manufOrder.setCancelReason(cancelReason);
+      if (Strings.isNullOrEmpty(cancelReasonStr)) {
+        manufOrder.setCancelReasonStr(cancelReason.getName());
+      } else {
+        manufOrder.setCancelReasonStr(cancelReasonStr);
+      }
     }
     manufOrderRepo.save(manufOrder);
   }

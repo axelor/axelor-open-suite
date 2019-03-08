@@ -220,7 +220,7 @@
 		<panel name="mainPanel">
 			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
 			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
-			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-sale-order-cancel-reason-check,action-manuf-order-method-cancel" colOffset="4" colSpan="4"/>
+			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-manuf-order-group-cancel-confirm" colOffset="4" colSpan="4"/>
 		</panel>
     </form>
 
@@ -362,6 +362,11 @@
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
         <action name="action-manuf-order-reset"/>
         <action name="action-manuf-order-attrs-set-unit"  if="billOfMaterial != null"/>
+	</action-group>
+	
+	<action-group name="action-manuf-order-group-cancel-confirm">
+		<action name="action-sale-order-cancel-reason-check" if="statusSelect > 3"/>
+		<action name="action-manuf-order-method-cancel"/>
 	</action-group>
 
     <action-method name="action-manuf-order-method-print">
