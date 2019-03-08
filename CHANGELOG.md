@@ -27,6 +27,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Change the page numbering on invoices and orders printing.
 - BANK STATEMENT : hide runImportBtn when status = "imported"
 - BillOfMaterial : make 'unit' required and notEditable field.
+- APP ACCOUNT : put Configuration panel before payer panel
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
