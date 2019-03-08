@@ -371,6 +371,7 @@
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action name="action-sale-order-attrs-hide-ati"/>
 		<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
+        <action name="action-sale-order-line-attrs-not-pack" if="typeSelect != 2 &amp;&amp; !isSubLine"/>
 		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
 
@@ -388,6 +389,7 @@
       <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
+        <action name="action-sale-order-line-attrs-not-pack" if="typeSelect != 2 &amp;&amp; !isSubLine"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -462,6 +464,12 @@
 		<attribute name="hidden" for="discountPanel,taxLine,marginPanel" expr="eval:parentLine.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
+    <action-attrs name="action-sale-order-line-attrs-not-pack">
+      <attribute name="hidden" for="discountPanel" expr="false"/>
+      <attribute name="hidden" for="taxLine" expr="false"/>
+      <attribute name="hidden" for="marginPanel" expr="false"/>
+    </action-attrs>
+  
     <!-- ACTION RECORD -->
     
 	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">

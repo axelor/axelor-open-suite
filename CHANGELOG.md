@@ -57,6 +57,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
 - ACCOUNTING MOVES : Fix error message display at the wrong time
 - ACCOUNTING MOVES : NPE clicking on autoTaxLineGenerateBtn
+- SaleOrderLine : show discount when product is not pack type.
 
 ## [5.1.3] - 2019-02-21
 ## Features
