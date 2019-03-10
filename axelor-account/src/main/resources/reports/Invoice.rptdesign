@@ -2723,36 +2723,6 @@ $func$ LANGUAGE plpgsql;
                             <property name="borderTopStyle">none</property>
                             <property name="paddingTop">1pt</property>
                             <property name="verticalAlign">top</property>
-<<<<<<< HEAD
-                            <grid id="3804">
-                                <property name="height">1.7197916666666668cm</property>
-                                <column id="3805"/>
-                                <column id="3806"/>
-                                <column id="3807"/>
-                                <row id="3808">
-                                    <property name="height">0.6085416666666666cm</property>
-                                    <cell id="3809">
-                                        <property name="paddingTop">0pt</property>
-                                        <auto-text id="3810">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="3811">
-                                        <property name="paddingTop">0pt</property>
-                                        <text id="3812">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-=======
                             <grid id="5359">
                                 <property name="width">3.5189583333333334cm</property>
                                 <column id="5360">
@@ -2773,40 +2743,17 @@ $func$ LANGUAGE plpgsql;
                                     <cell id="5366">
                                         <text id="5367">
                                             <property name="textAlign">center</property>
->>>>>>> 57c06d9b42bb3a97b3c5cdaafe9e2517e9b5b3c8
                                             <property name="contentType">plain</property>
                                             <text-property name="content"><![CDATA[/]]></text-property>
                                         </text>
                                     </cell>
-<<<<<<< HEAD
-                                    <cell id="3813">
-                                        <property name="paddingTop">0pt</property>
-                                        <auto-text id="3814">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-=======
                                     <cell id="5368">
                                         <auto-text id="5369">
                                             <property name="textAlign">left</property>
->>>>>>> 57c06d9b42bb3a97b3c5cdaafe9e2517e9b5b3c8
                                             <property name="type">total-page</property>
                                         </auto-text>
                                     </cell>
                                 </row>
-<<<<<<< HEAD
-                                <row id="5229">
-                                    <cell id="5230">
-                                        <property name="colSpan">3</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="paddingTop">0pt</property>
-                                    </cell>
-                                </row>
-=======
->>>>>>> 57c06d9b42bb3a97b3c5cdaafe9e2517e9b5b3c8
                             </grid>
                         </cell>
                     </row>
