@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -32,6 +33,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.db.JPA;
@@ -362,5 +365,16 @@ public class PurchaseOrderController {
       }
     }
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  public void changebudgetLineDomain(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    List<BudgetLine> budgetLineList =
+        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+            .changebudgetLineDomain(purchaseOrder);
+    String domain =
+        Beans.get(BudgetSupplychainService.class).changebudgetLineDomain(budgetLineList);
+
+    response.setAttr("budgetLine", "domain", domain);
   }
 }

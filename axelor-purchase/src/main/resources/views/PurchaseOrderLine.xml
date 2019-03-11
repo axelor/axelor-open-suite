@@ -128,8 +128,14 @@
 						]]>
 					</viewer>
 				</field>
-				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true">
+					<viewer depends="budgetDistributionSumAmount,$currencySymbol">
+						<![CDATA[
+							<dd>{{record.budgetDistributionSumAmount}} {{record.$currencySymbol}}</dd>
+						]]>
+					</viewer>
+				</field>
+				<field name="budgetLine" if="!__config__.app.getApp('budget').getManageMultiBudget()" onSelect="action-purchase-order-line-method-budget-line-domain"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-purchase-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
@@ -361,6 +367,10 @@
 
 	<action-method name="action-purchase-order-method-compute-budget-distribution-sum-amount">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeBudgetDistributionSumAmount"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-line-method-budget-line-domain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="changebudgetLineDomain"/>
 	</action-method>
 
 	<!-- ACTION ATTRS -->

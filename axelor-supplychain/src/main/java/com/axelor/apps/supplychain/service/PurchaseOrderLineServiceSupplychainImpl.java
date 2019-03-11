@@ -20,7 +20,9 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Product;
@@ -32,6 +34,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -191,7 +194,6 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
     List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
     BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = purchaseOrder.getOrderDate();
 
     if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
 
@@ -199,9 +201,24 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
         budgetDistributionSumAmount =
             budgetDistributionSumAmount.add(budgetDistribution.getAmount());
         Beans.get(BudgetSupplychainService.class)
-            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
+            .computeBudgetDistributionSumAmount(budgetDistribution);
       }
     }
     purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  public List<BudgetLine> changebudgetLineDomain(PurchaseOrder purchaseOrder) {
+    List<BudgetLine> budgetLineList =
+        Beans.get(BudgetLineRepository.class)
+            .all()
+            .filter(
+                "self.budget.allBudgetLinesAvailable = ?1 OR (self.budget.allBudgetLinesAvailable != ?1 AND ?2 BETWEEN self.fromDate AND self.toDate)",
+                true,
+                purchaseOrder.getOrderDate() == null
+                    ? Beans.get(AppSupplychainService.class).getTodayDate()
+                    : purchaseOrder.getOrderDate())
+            .fetch();
+
+    return budgetLineList;
   }
 }

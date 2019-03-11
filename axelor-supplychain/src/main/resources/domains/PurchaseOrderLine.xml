@@ -13,7 +13,7 @@
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	
 	<boolean name="invoiced" readonly="true"/>
-	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+	<many-to-one name="budgetLine" ref="com.axelor.apps.account.db.BudgetLine" title="Budget Lines"/>
 	<one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="purchaseOrderLine"/>
 	<decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 	

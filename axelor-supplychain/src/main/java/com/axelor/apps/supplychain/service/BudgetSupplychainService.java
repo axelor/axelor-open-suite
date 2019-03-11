@@ -24,13 +24,14 @@ import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BudgetSupplychainService extends BudgetService {
 
@@ -57,76 +58,60 @@ public class BudgetSupplychainService extends BudgetService {
             Beans.get(BudgetDistributionRepository.class)
                 .all()
                 .filter(
-                    "self.budget.id = ?1 AND (self.purchaseOrderLine.purchaseOrder.statusSelect in (?2) OR ?3 is null)",
+                    "self.budgetLine.budget.id = ?1 AND (self.purchaseOrderLine.purchaseOrder.statusSelect in (?2) OR ?3 is null)",
                     budget.getId(),
                     statusList,
                     statusList)
                 .fetch();
         for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-          LocalDate orderDate =
-              budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
-          if (orderDate != null) {
-            for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-              LocalDate fromDate = budgetLine.getFromDate();
-              LocalDate toDate = budgetLine.getToDate();
-              if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                  && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
-                budgetLine.setAmountCommitted(
-                    budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
-                break;
-              }
-            }
-          }
+          BudgetLine budgetLine = budgetDistribution.getBudgetLine();
+          budgetLine.setAmountCommitted(
+              budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
         }
       }
       budgetDistributionList =
           Beans.get(BudgetDistributionRepository.class)
               .all()
               .filter(
-                  "self.budget.id = ?1 AND (self.invoiceLine.invoice.statusSelect = ?2 OR self.invoiceLine.invoice.statusSelect = ?3)",
+                  "self.budgetLine.budget.id = ?1 AND (self.invoiceLine.invoice.statusSelect = ?2 OR self.invoiceLine.invoice.statusSelect = ?3)",
                   budget.getId(),
                   InvoiceRepository.STATUS_VALIDATED,
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        LocalDate orderDate = budgetDistribution.getInvoiceLine().getInvoice().getInvoiceDate();
-        if (orderDate != null) {
-          for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-            LocalDate fromDate = budgetLine.getFromDate();
-            LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
-              budgetLine.setAmountRealized(
-                  budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-              break;
-            }
-          }
-        }
+        BudgetLine budgetLine = budgetDistribution.getBudgetLine();
+        budgetLine.setAmountRealized(
+            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
       }
     }
     return budget.getBudgetLineList();
   }
 
-  public void computeBudgetDistributionSumAmount(
-      BudgetDistribution budgetDistribution, LocalDate computeDate) {
+  public void computeBudgetDistributionSumAmount(BudgetDistribution budgetDistribution) {
+    BudgetLine budgetLine = budgetDistribution.getBudgetLine();
+    BigDecimal budgetAmountAvailable =
+        budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
+    budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+  }
 
-    if (budgetDistribution.getBudget() != null
-        && budgetDistribution.getBudget().getBudgetLineList() != null
-        && computeDate != null) {
-      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
-      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
+  public String changebudgetLineDomain(List<BudgetLine> budgetLineList) {
+    Map<Budget, BudgetLine> map = new HashMap<>();
+    ArrayList<Long> idList = new ArrayList<>();
 
-      for (BudgetLine budgetLine : budgetLineList) {
-        LocalDate fromDate = budgetLine.getFromDate();
-        LocalDate toDate = budgetLine.getToDate();
+    for (BudgetLine budgetLine : budgetLineList) {
 
-        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
-          BigDecimal amount =
-              budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
-          budgetAmountAvailable = budgetAmountAvailable.add(amount);
-        }
+      if (budgetLine.getBudget().getAllBudgetLinesAvailable()) {
+        idList.add(budgetLine.getId());
+      } else if (!budgetLine.getBudget().getAllBudgetLinesAvailable()
+          && map.get(budgetLine.getBudget()) == null) {
+        map.put(budgetLine.getBudget(), budgetLine);
+        idList.add(budgetLine.getId());
       }
-      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
     }
+
+    String idString = Joiner.on(",").join(idList);
+    String domain = "self.id IN (" + idString + ")";
+
+    return domain;
   }
 }

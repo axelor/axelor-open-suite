@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -27,6 +29,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -64,5 +67,15 @@ public class PurchaseOrderLineController {
     response.setValue(
         "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
+  }
+
+  public void changebudgetLineDomain(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    List<BudgetLine> budgetLineList =
+        purchaseOrderLineServiceSupplychainImpl.changebudgetLineDomain(purchaseOrder);
+    String domain =
+        Beans.get(BudgetSupplychainService.class).changebudgetLineDomain(budgetLineList);
+
+    response.setAttr("budgetLine", "domain", domain);
   }
 }

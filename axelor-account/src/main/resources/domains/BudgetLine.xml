@@ -12,6 +12,16 @@
     <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" />
     <decimal name="amountExpected" title="Expected amount" precision="20" scale="2"/>
     <decimal name="amountRealized" title="Realized amount" precision="20" scale="2"/>
+    <string name="fullName" namecolumn="true">
+		<![CDATA[
+			String fullName = budget.getName();
+			if(fromDate != null && toDate != null)	{
+				fullName += "  " + this.getFromDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY")) + "  -  " + 
+				this.getToDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+			}
+			return fullName;
+		]]>
+    </string>
   
   </entity>
 

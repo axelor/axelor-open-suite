@@ -20,7 +20,7 @@
 	<boolean name="interco" title="Interco"/>
 	<boolean name="createdByInterco" default="false"/>
 
-	<many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+	<many-to-one name="budgetLine" ref="com.axelor.apps.account.db.BudgetLine" title="Budget Lines"/>
 		<long name="generatedSaleOrderId"/>
   </entity>
 

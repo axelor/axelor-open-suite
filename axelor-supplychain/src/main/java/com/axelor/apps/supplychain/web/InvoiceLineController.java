@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -205,5 +207,15 @@ public class InvoiceLineController {
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+  }
+
+  public void changebudgetLineDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+    List<BudgetLine> budgetLineList =
+        Beans.get(InvoiceLineSupplychainService.class).changebudgetLineDomain(invoice);
+    String domain =
+        Beans.get(BudgetSupplychainService.class).changebudgetLineDomain(budgetLineList);
+
+    response.setAttr("budgetLine", "domain", domain);
   }
 }

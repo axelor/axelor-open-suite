@@ -232,7 +232,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       }
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-      invoiceLine.setBudget(purchaseOrderLine.getBudget());
+      invoiceLine.setBudgetLine(purchaseOrderLine.getBudgetLine());
       invoiceLine.setBudgetDistributionSumAmount(
           purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
@@ -342,7 +342,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
+      budgetDistribution.setBudgetLine(budgetDistributionIt.getBudgetLine());
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);

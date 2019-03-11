@@ -259,9 +259,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void generateBudgetDistribution(Invoice invoice) {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
+        if (invoiceLine.getBudgetLine() != null
+            && invoiceLine.getBudgetDistributionList().isEmpty()) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(invoiceLine.getBudget());
+          budgetDistribution.setBudgetLine(invoiceLine.getBudgetLine());
           budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
           invoiceLine.addBudgetDistributionListItem(budgetDistribution);
         }

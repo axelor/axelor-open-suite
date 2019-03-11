@@ -32,6 +32,7 @@
 		    <field name="company.currency" canEdit="false"/>
 		    <field name="fromDate"/>
 		    <field name="toDate"/>
+		    <field name="allBudgetLinesAvailable" widget="boolean-switch"/>
     		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" canCollapse="true" collapseIf="true">
 			    <field name="periodDurationSelect" colSpan="4"/>
 			    <field name="amountForGeneration" colSpan="4"/>

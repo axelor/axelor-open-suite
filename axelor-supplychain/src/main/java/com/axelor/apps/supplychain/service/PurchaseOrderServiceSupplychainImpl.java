@@ -141,10 +141,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getBudget() != null
-            && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+        if (purchaseOrderLine.getBudgetLine() != null
+            && (purchaseOrderLine.getBudgetDistributionList() == null
+                || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(purchaseOrderLine.getBudget());
+          budgetDistribution.setBudgetLine(purchaseOrderLine.getBudgetLine());
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
@@ -224,7 +225,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
       newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
-      newBudgetDistribution.setBudget(purchaseOrder.getBudget());
+      newBudgetDistribution.setBudgetLine(purchaseOrder.getBudgetLine());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
       Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
@@ -244,7 +245,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       if (appAccountService.getAppBudget().getManageMultiBudget()) {
         for (PurchaseOrderLine pol : purchaseOrderLines) {
           for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
-            Budget budget = bd.getBudget();
+            Budget budget = bd.getBudgetLine().getBudget();
 
             if (!amountPerBudget.containsKey(budget)) {
               amountPerBudget.put(budget, bd.getAmount());
@@ -259,7 +260,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       } else {
         for (PurchaseOrderLine pol : purchaseOrderLines) {
           // getting Budget associated to POL
-          Budget budget = pol.getBudget();
+          Budget budget = pol.getBudgetLine().getBudget();
 
           if (!amountPerBudget.containsKey(budget)) {
             amountPerBudget.put(budget, pol.getExTaxTotal());
