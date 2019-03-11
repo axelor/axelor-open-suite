@@ -19,6 +19,8 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
@@ -45,6 +47,15 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
     copy.setOriginalBillOfMaterial(null);
     copy.setCostPrice(BigDecimal.ZERO);
     copy.clearCostSheetList();
+
+    if (entity.getBillOfMaterialSet() != null && !entity.getBillOfMaterialSet().isEmpty()) {
+      Set<BillOfMaterial> billOfMaterialSet = new HashSet<BillOfMaterial>();
+      for (BillOfMaterial billOfMaterial : entity.getBillOfMaterialSet()) {
+        BillOfMaterial billOfMaterialCopy = copy(billOfMaterial, deep);
+        billOfMaterialSet.add(billOfMaterialCopy);
+      }
+      copy.setBillOfMaterialSet(billOfMaterialSet);
+    }
 
     return copy;
   }
