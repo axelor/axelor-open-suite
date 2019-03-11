@@ -1,19 +1,15 @@
 # Changelog
 
-## [Unreleased 5.1.4]
+## [5.1.4] - 2019-03-11
 ## Features
-- MARKETING : Manage guests and attendees
-- CAMPAIGN : Added a reminder tab
-- MARKETING : Send a reminder to invited targets
-- MARKETING : Add a boolean in targetModelSet
-- PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
-- CUST. DELIVERY : new tags "not invoiced" and "invoiced"
+- MARKETING CAMPAIGN : Manage guests and attendees
+- MARKETING CAMPAIGN : Send a reminder to invited targets
+- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets 
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
-- WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
 - MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
 - CUSTOMER DELIVERY : editable deliveryCondition
@@ -31,7 +27,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - SALES : translate availability requests in french
 - MANUF ORDER : open popup on cost sheet calculation
 - SALE ORDER : Removed amount display from title lines on print
-- Translation : Fix english translation of accounting export types.
+- CUST. DELIVERY : new tags "not invoiced" and "invoiced"
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
@@ -59,6 +55,9 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - ACCOUNTING MOVES : Fix error message display at the wrong time
 - ACCOUNTING MOVES : NPE clicking on autoTaxLineGenerateBtn
 - Exception: formatting error.
+- PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
+- Translation : Fix english translation of accounting export types.
+- WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
 
 
@@ -749,8 +748,10 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-[Unreleased 5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...dev
+
+[5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
 [5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+
