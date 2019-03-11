@@ -23,8 +23,8 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -98,7 +98,7 @@ public class ProductStockController {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
       }
-      Beans.get(StockLocationService.class).computeAvgPriceForProduct(product);
+      Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -91,6 +91,10 @@ public class MessageServiceImpl implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
     Message message =
         createMessage(
             content,
@@ -110,7 +114,7 @@ public class MessageServiceImpl implements MessageService {
             bccEmailAddressList,
             addressBlock,
             mediaTypeSelect,
-            Beans.get(EmailAccountRepository.class).find(emailAccount.getId()));
+            emailAccount);
 
     messageRepository.save(message);
 
@@ -252,7 +256,10 @@ public class MessageServiceImpl implements MessageService {
     EmailAccount mailAccount = message.getMailAccount();
 
     if (mailAccount == null) {
-      return message;
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MESSAGE_MISSING_DEFAULT_EMAIL_ACCOUNT));
     }
 
     log.debug("Sent email");

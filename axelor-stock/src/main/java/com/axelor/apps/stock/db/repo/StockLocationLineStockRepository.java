@@ -19,7 +19,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
@@ -28,7 +28,7 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
   public StockLocationLine save(StockLocationLine entity) {
     Product product = entity.getProduct();
     if (entity.getIsAvgPriceChanged()) {
-      Beans.get(StockLocationService.class).computeAvgPriceForProduct(product);
+      Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
     }
     return super.save(entity);
   }

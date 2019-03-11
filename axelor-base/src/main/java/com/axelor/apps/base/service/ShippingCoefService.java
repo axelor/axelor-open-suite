@@ -68,7 +68,7 @@ public class ShippingCoefService {
     }
 
     for (ShippingCoef shippingCoefObject : shippingCoefList) {
-      if (shippingCoefObject.getCompany().equals(company)) {
+      if (company.equals(shippingCoefObject.getCompany())) {
         shippingCoef = shippingCoefObject.getShippingCoef();
       }
     }

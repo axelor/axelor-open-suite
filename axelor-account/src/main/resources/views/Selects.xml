@@ -85,8 +85,8 @@
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
-		<option value="1000">Export payroll journal entry -> Administration</option>
-		<option value="1001">Export payroll journal entry -> Acc. Soft.</option>
+		<option value="1000">Export journal entry -> Administration</option>
+		<option value="1001">Export journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>

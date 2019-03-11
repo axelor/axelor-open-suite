@@ -47,13 +47,22 @@ public interface SaleOrderService {
   void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
   /**
-   * Validate changes.
+   * Check modified confirmed order before saving it.
    *
    * @param saleOrder
    * @param saleOrderView
    * @throws AxelorException
    */
-  void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
+  void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
+      throws AxelorException;
+
+  /**
+   * Validate changes.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void validateChanges(SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Sort detail lines by sequence.

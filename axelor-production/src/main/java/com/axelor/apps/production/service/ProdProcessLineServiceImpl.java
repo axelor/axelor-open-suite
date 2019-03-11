@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
@@ -53,7 +54,7 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
       }
     }
 
-    return Collections.max(durations);
+    return !CollectionUtils.isEmpty(durations) ? Collections.max(durations) : new Long(0);
   }
 
   public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
