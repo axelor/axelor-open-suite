@@ -91,7 +91,7 @@
 		<alert if="__config__.app.getApp('budget')?.manageMultiBudget
                   &amp;&amp;budgetDistributionList != null &amp;&amp; budgetDistributionList
                   &amp;&amp; inTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
-			  message="Total amount is exceeded than budget."/>
+			  message="The total amount is greater than the budget distribution total."/>
 	</action-validate>
 	
 	<action-method name="action-budget-check-shared-dates">
