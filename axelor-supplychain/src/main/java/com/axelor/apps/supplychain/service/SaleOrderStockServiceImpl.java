@@ -29,7 +29,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -140,16 +139,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getProduct() != null
-          || saleOrderLine.getTypeSelect().equals(SaleOrderLineRepository.TYPE_PACK)) {
-        BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+            if (saleOrderLine.getProduct() != null) {
+              BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+              if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+                createStockMoveLine(stockMove, saleOrderLine, qty);
+              }
+            }
+          }
 
-        if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(stockMove, saleOrderLine, qty);
-        }
-      }
-    }
-
+    
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       if (stockMove
           .getStockMoveLineList()
@@ -171,10 +169,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
 
       stockMoveService.plan(stockMove);
-
-      if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
-        setParentStockMoveLine(stockMove);
-      }
     }
 
     return stockMove;
@@ -207,25 +201,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     return saleOrderLinePerDateMap;
-  }
-
-  @Transactional
-  public void setParentStockMoveLine(StockMove stockMove) {
-
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
-      if (line.getSaleOrderLine() != null) {
-        line.setPackPriceSelect(line.getSaleOrderLine().getPackPriceSelect());
-        StockMoveLine parentStockMoveLine =
-            Beans.get(StockMoveLineRepository.class)
-                .all()
-                .filter(
-                    "self.saleOrderLine = ?1 and self.stockMove = ?2",
-                    line.getSaleOrderLine().getParentLine(),
-                    stockMove)
-                .fetchOne();
-        line.setParentLine(parentStockMoveLine);
-      }
-    }
   }
 
   protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException {
@@ -444,39 +419,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
       }
 
-      if (stockMoveLine != null) {
-        updatePackInfo(saleOrderLine, stockMoveLine);
-      }
-
-      return stockMoveLine;
-    } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-      StockMoveLine stockMoveLine =
-          stockMoveLineService.createStockMoveLine(
-              null,
-              saleOrderLine.getProductName(),
-              saleOrderLine.getDescription(),
-              BigDecimal.ZERO,
-              BigDecimal.ZERO,
-              BigDecimal.ZERO,
-              null,
-              stockMove,
-              StockMoveLineService.TYPE_SALES,
-              saleOrderLine.getSaleOrder().getInAti(),
-              null);
-
-      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-      updatePackInfo(saleOrderLine, stockMoveLine);
-      stockMoveLine.setSaleOrderLine(saleOrderLine);
-
       return stockMoveLine;
     }
     return null;
-  }
-
-  private void updatePackInfo(SaleOrderLine saleOrderLine, StockMoveLine stockMoveLine) {
-    stockMoveLine.setLineTypeSelect(saleOrderLine.getTypeSelect());
-    stockMoveLine.setPackPriceSelect(saleOrderLine.getPackPriceSelect());
-    stockMoveLine.setIsSubLine(saleOrderLine.getIsSubLine());
   }
 
   @Override

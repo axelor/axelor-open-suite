@@ -8,7 +8,6 @@
 			<field name="manageSalesUnits" widget="boolean-switch"/>
       		<field name="manageSaleOrderVersion" widget="boolean-switch" onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
       		<field name="printingOnSOFinalization" widget="boolean-switch" readonlyIf="manageSaleOrderVersion" />
-			<field name="productPackMgt" widget="boolean-switch"/>
 			<field name="enableConfigurator" widget="boolean-switch"/>
 			<field name="allowPendingOrderModification" widget="boolean-switch"/>
             <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>

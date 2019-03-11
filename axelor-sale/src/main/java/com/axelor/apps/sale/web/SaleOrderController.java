@@ -685,19 +685,6 @@ public class SaleOrderController {
     response.setAttr("priceList", "domain", domain);
   }
 
-  public void removeSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      response.setValue(
-          "saleOrderLineList",
-          Beans.get(SaleOrderComputeService.class)
-              .removeSubLines(saleOrder.getSaleOrderLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   public void updateSaleOrderLineTax(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);

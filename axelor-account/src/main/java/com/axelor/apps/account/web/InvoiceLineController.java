@@ -159,7 +159,7 @@ public class InvoiceLineController {
 
         String errorMsg = (String) productInformation.get("error");
 
-        if (!Strings.isNullOrEmpty(errorMsg) && invoiceLineService.isAccountRequired(invoiceLine)) {
+        if (!Strings.isNullOrEmpty(errorMsg)) {
           response.setFlash(errorMsg);
         }
       } catch (Exception e) {

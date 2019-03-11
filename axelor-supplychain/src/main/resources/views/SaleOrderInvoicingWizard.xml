@@ -49,10 +49,9 @@
 		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll || isSubline" min="0"/>
+			   readonlyIf="invoiceAll" min="0"/>
         <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
-		<field name="isSubline" hidden="true" />
 	</grid>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">

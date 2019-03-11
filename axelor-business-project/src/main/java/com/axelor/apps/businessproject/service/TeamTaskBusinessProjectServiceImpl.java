@@ -206,9 +206,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
             teamTask.getDiscountTypeSelect(),
             teamTask.getExTaxTotal(),
             BigDecimal.ZERO,
-            false,
-            false,
-            0) {
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
