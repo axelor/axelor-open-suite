@@ -59,6 +59,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - ACCOUNTING MOVES : Fix error message display at the wrong time
 - ACCOUNTING MOVES : NPE clicking on autoTaxLineGenerateBtn
 - Exception: formatting error.
+- Calendar : Synchronisation anomaly fixed.
 
 ## [5.1.3] - 2019-02-21
 ## Features
