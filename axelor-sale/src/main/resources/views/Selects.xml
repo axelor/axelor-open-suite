@@ -41,7 +41,6 @@
 	<selection name="sale.order.line.type.select">
 		<option value="0">Standard</option>
 		<option value="1">Title</option>
-		<option value="2">Pack</option>
 	</selection>
 
 	<selection name="configurator.update.sale.order.line">
@@ -68,11 +67,6 @@
 	
 	<selection name="sequence.generic.code.select" id="sale.sequence.generic.code.select">
 		<option value="saleOrder">Sales order</option>
-	</selection>
-	
-	<selection name="product.pack.price.select">
-		<option value="0">Pack price only</option>
-		<option value="1">Subline price only</option>
 	</selection>
 	
 	<selection name="sale.order.fill.saleman.select">

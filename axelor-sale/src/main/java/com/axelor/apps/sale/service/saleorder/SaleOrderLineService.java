@@ -37,8 +37,7 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -117,8 +116,6 @@ public interface SaleOrderLineService {
 
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 
-  public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
-
   public SaleOrder getSaleOrder(Context context);
 
   public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
@@ -139,8 +136,5 @@ public interface SaleOrderLineService {
    * @param packPriceSelect
    * @throws AxelorException
    */
-  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
-      throws AxelorException;
-
-  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect);
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 }

@@ -1,4 +1,7 @@
 # Changelog
+## [Unreleased 5.3.0]
+## Improvements
+- Remove Pack Feature.
 
 ## [Unreleased 5.2.0]
 ## Features

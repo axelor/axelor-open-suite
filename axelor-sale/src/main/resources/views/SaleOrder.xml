@@ -895,11 +895,8 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
-		<action name="action-sale-order-method-remove-subline"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
@@ -1094,10 +1091,6 @@
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
     </action-method>
-
-    <action-method name="action-sale-order-method-remove-subline">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="removeSubLines"/>
-	</action-method>
 
     <action-method name="action-sale-order-method-compute">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>

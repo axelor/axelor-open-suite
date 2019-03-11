@@ -59,7 +59,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -76,8 +75,6 @@ public class SaleOrderController {
   @Inject private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
 
   @Inject private SaleOrderRepository saleOrderRepo;
-
-  @Inject private SaleOrderLineRepository saleOrderLineRepo;
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -251,7 +248,7 @@ public class SaleOrderController {
               new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
-            addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
+            // addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           }
         }
@@ -279,26 +276,6 @@ public class SaleOrderController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  private void addSubLineQty(
-      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId) {
-
-    SaleOrderLine saleOrderLine = saleOrderLineRepo.find(soLineId);
-
-    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-      for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-        BigDecimal qty = BigDecimal.ZERO;
-        if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-          qty =
-              qtyToInvoiceItem
-                  .multiply(subLine.getQty())
-                  .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
-        }
-        qty = qty.setScale(2, RoundingMode.HALF_EVEN);
-        qtyToInvoiceMap.put(subLine.getId(), qty);
-      }
     }
   }
 
@@ -611,9 +588,6 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getIsSubLine()) {
-          continue;
-        }
         Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);

@@ -457,14 +457,6 @@
         </panel>
     </form>
     
-    <action-method name="action-stock-move-method-add-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="addSubLines"/>
-    </action-method>
-    
-    <action-method name="action-stock-move-method-remove-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="removeSubLines"/>
-    </action-method>
-    
     <action-method name="action-stock-move-method-compute">
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="compute"/>
     </action-method>
@@ -488,10 +480,6 @@
 	    <context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 	
-    <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
-    	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
-    </action-attrs> -->
-    
     <action-attrs name="action-stock-move-attrs-filter-on-available-products">
     	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1"/>
     </action-attrs>

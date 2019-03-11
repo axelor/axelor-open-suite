@@ -218,9 +218,7 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null,
-            false,
-            0) {
+            null) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -268,9 +266,7 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null,
-            false,
-            0) {
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
