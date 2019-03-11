@@ -77,9 +77,9 @@
     	eventStart="requestDate" eventStop="doneOn"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="equipementMaintenance.name" />
  	</calendar>
- 	
+
  	<calendar name="maintenance-request-calendar-per-machine" title="Maintenance Request" mode="month" colorBy="statusSelect" editable="false"
-    	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	eventStart="requestDate" eventStop="doneOn"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="equipementMaintenance.name" />
  	</calendar>
 
