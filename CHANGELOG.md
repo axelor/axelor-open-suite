@@ -59,6 +59,8 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - ACCOUNTING MOVES : Fix error message display at the wrong time
 - ACCOUNTING MOVES : NPE clicking on autoTaxLineGenerateBtn
 - Exception: formatting error.
+- ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
+
 
 ## [5.1.3] - 2019-02-21
 ## Features
