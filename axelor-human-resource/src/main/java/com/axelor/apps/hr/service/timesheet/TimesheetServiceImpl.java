@@ -1017,7 +1017,7 @@ public class TimesheetServiceImpl implements TimesheetService {
               .all()
               .filter(
                   "self.user.id = ?1 "
-                      + "AND self.date ?2 BETWEEN ?3 "
+                      + "AND self.date BETWEEN ?2 AND ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="marketing" package="com.axelor.apps.marketing.db"/>
+  
+  <entity name="CampaignReminder" lang="java">
+  
+  	<many-to-one name="campaign" title="Campaign" ref="com.axelor.apps.marketing.db.Campaign"/>
+  	<integer name="typeSelect" title="Type" selection="marketing.campaign.reminder.type.select" default="1"/>
+  	<integer name="duration" title="Duration"/>
+  	<integer name="durationTypeSelect" title="Duration type" selection="marketing.campaign.reminder.duration.type.select" default = "3"/>
+  	<integer name="assignToSelect" title="Assign to" selection="marketing.campaign.reminder.assign.to.select"/>
+  	<boolean name="isReminded" title="Reminded" default="false"/>
+  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+  </entity>
+  
+</domain-models>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2122,19 +2122,17 @@ from base_app_base]]></xml-property>
                 <grid id="4314">
                     <property name="height">2.487083333333333cm</property>
                     <property name="width">19.261666666666667cm</property>
-                    <column id="4315"/>
-                    <column id="4410">
-                        <property name="textAlign">right</property>
-                        <property name="width">0.4166666666666667in</property>
+                    <column id="4315">
+                        <property name="width">15.583958333333335cm</property>
                     </column>
                     <column id="4394">
                         <property name="textAlign">right</property>
-                        <property name="width">3.44cm</property>
+                        <property name="width">3.6777083333333334cm</property>
                     </column>
                     <row id="4316">
                         <property name="height">0.47625cm</property>
                         <cell id="4317">
-                            <property name="colSpan">3</property>
+                            <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -2166,17 +2164,19 @@ from base_app_base]]></xml-property>
                                 <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="4409">
-                            <text id="4411">
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
-                            </text>
-                        </cell>
                         <cell id="4390">
                             <grid id="4397">
-                                <column id="4398"/>
-                                <column id="4399"/>
-                                <column id="4400"/>
+                                <property name="canShrink">false</property>
+                                <property name="width">3.519cm</property>
+                                <column id="4398">
+                                    <property name="width">6%</property>
+                                </column>
+                                <column id="4399">
+                                    <property name="width">3%</property>
+                                </column>
+                                <column id="4400">
+                                    <property name="width">6%</property>
+                                </column>
                                 <row id="4401">
                                     <cell id="4402">
                                         <auto-text id="4403">
@@ -2185,12 +2185,14 @@ from base_app_base]]></xml-property>
                                     </cell>
                                     <cell id="4404">
                                         <text id="4405">
+                                            <property name="textAlign">center</property>
                                             <property name="contentType">plain</property>
                                             <text-property name="content"><![CDATA[/]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4406">
                                         <auto-text id="4407">
+                                            <property name="textAlign">left</property>
                                             <property name="type">total-page</property>
                                         </auto-text>
                                     </cell>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="partner-campaign-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
+		<field name="partnerSeq"/>
+		<field name="simpleFullName"/>
+		<field name="fixedPhone"/>
+		<field name="emailAddress.address" title="Email"/>
+		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
+		<field name="fiscalPosition.code" title="Fiscal position"/>
+		<field name="registrationCode" />
+		<field name="mainAddress"/>
+		<field name="companyStr" />
+		<button name="partnerPresentAtEventBtn" title="Present at the event" icon="fa-check" onClick="action-campaign-method-mark-partner-present" hidden="true"/>
+	</grid>
+
+</object-views>

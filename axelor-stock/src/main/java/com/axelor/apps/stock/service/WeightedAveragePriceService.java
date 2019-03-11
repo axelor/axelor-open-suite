@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.exception;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
-public class LogisticalFormWarning extends AxelorException {
+public interface WeightedAveragePriceService {
 
-  private static final long serialVersionUID = 7036277936135855411L;
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void computeAvgPriceForProduct(Product product);
 
-  public LogisticalFormWarning(LogisticalForm logisticalForm, String message) {
-    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
-  }
+  public BigDecimal computeAvgPriceForCompany(Product product, Company company);
 }
