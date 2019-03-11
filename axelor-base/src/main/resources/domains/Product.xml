@@ -135,7 +135,6 @@
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				public static final String PRODUCT_TYPE_PACK = "pack";
 				
 				// SALE SUPPLY SELECT
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;

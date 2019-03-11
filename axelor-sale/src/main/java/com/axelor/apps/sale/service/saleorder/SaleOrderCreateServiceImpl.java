@@ -248,8 +248,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        Beans.get(SaleOrderLineService.class)
-            .fillPrice(saleOrderLine, saleOrder, saleOrderLine.getPackPriceSelect());
+        Beans.get(SaleOrderLineService.class).fillPrice(saleOrderLine, saleOrder);
         Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
       }
     }

@@ -8,7 +8,6 @@
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
     <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
-		<boolean name="productPackMgt" title="Product Pack Management" />
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
 		<boolean name="allowPendingOrderModification" />
         <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
