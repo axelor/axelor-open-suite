@@ -49,7 +49,7 @@
 	<action-view name="maintenance.root.machine.unavailable" title="Machines unavailable"
 		model="com.axelor.apps.maintenance.db.MaintenanceRequest" >
 		<view type="calendar" name="maintenance-request-calendar-per-machine" />
-		<domain>self.statusSelect in (0,1,2) and self.equipementMaintenance.machine is null</domain>
+		<domain>self.statusSelect in (0,1,2) and self.equipementMaintenance.machine is not null</domain>
 		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	

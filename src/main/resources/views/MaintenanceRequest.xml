@@ -20,15 +20,15 @@
    		<field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"/>
    		<field name="equipementMaintenance" colSpan="4" requiredIf="!$popup()" hideIf="$popup()" onChange="action-maintenance-request-attrs-equi-maintenance-onchange"/>
 			<field name="machine" readonly="true" colSpan="4"/>
-			<field name="requestDate" colSpan="4"/>
+			<field name="requestDate" colSpan="4" onChange="action-maintenance-request-record-action-select-onchange"/>
 			<field name="requestBy" canEdit="false"/>
-			<field name="expectedDate"/>
+			<field name="expectedDate" onChange="action-maintenance-request-record-action-select-onchange"/>
 			<field name="assignedTo" canEdit="false"/>
 			<field name="durationHours"/>
 			<field name="mtnTask" colSpan="12" widget="html"/>
-			<field name="actionSelect" widget="RadioSelect"/>
+			<field name="actionSelect" widget="RadioSelect" onChange="action-maintenance-request-record-action-select-onchange"/>
 			<field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate" canNew="true" domain="self.type = 2"/>
-			<field name="doneOn"/>
+			<field name="doneOn" onChange="action-maintenance-request-record-action-select-onchange"/>
 		</panel>
 		<panel name="actions" sidebar="true" title="Actions" stacked="true">
 			<button name="start" title="Start" showIf="statusSelect == 0" readonlyIf="!equipementMaintenance &amp;&amp; !expectedDate" onClick="save,action-maintenance-request-method-start" />
@@ -74,14 +74,21 @@
     
     
     <calendar name="maintenance-request-calendar-per-user" title="Maintenance Request" mode="month" colorBy="assignedTo" editable="false"
-    	eventStart="requestDate" eventStop="doneOn"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="equipementMaintenance.name" />
  	</calendar>
 
  	<calendar name="maintenance-request-calendar-per-machine" title="Maintenance Request" mode="month" colorBy="statusSelect" editable="false"
-    	eventStart="requestDate" eventStop="doneOn"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="equipementMaintenance.name" />
  	</calendar>
+
+	<action-record name="action-maintenance-request-record-action-select-onchange" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+		<field name="endDate" expr="eval: doneOn != null ? doneOn.plusDays(1) : expectedDate.plusDays(1)" if="actionSelect == 0"/>
+		<field name="startDate" expr="eval: requestDate" if="actionSelect == 0"/>
+		<field name="endDate" expr="eval: doneOn != null ? doneOn : expectedDate" if="actionSelect == 1"/>
+		<field name="startDate" expr="eval: doneOn != null ? doneOn : expectedDate" if="actionSelect == 1"/>
+	</action-record>
 
     <action-record name="action-maintenance-request-record-default" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
     	<field name="assignedTo"  expr="eval:__user__"/>
