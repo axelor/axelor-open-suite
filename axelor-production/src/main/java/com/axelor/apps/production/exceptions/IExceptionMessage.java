@@ -127,6 +127,4 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
-
-  static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/ "All products has been consumed" /*)*/;
 }

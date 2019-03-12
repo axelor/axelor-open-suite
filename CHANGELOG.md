@@ -14,18 +14,17 @@
 ## Features
 - MARKETING CAMPAIGN : Manage guests and attendees
 - MARKETING CAMPAIGN : Send a reminder to invited targets
-- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets 
+- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - Studio: Dynamic fetching of records for relational fields
-- MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
 - CUSTOMER DELIVERY : editable deliveryCondition
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 - Sale Order: if config is activated, create stock move after modifications validation.
-- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for
 in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
 - FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
 - MANUF. ORDER : show error when no default email account

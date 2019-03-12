@@ -130,7 +130,7 @@
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
 			<button name="realizeBtn" icon="fa-check" title="Consume in stock moves" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-consume-stock-move"/>
 			<button name="finishBtn" icon="fa-power-off" title="Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
-			<button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-group-part-finish"/>
+			<button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12" showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
 			<button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12" showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel"/>
 		</panel>
 		</panel>
@@ -338,15 +338,6 @@
 		<action name="action-businessproduction-manuf-order-method-check-timesheet" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 		<action name="action-manuf-order-method-finish"/>
 	</action-group>
-	
-	<action-group name="action-manuf-order-group-part-finish">
-		<action name="action-manuf-order-validate-finish-confirmation" 
-			if="!(producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 })"/>
-		<action name="action-manuf-order-method-finish" 
-			if="!(producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 })" />
-		<action name="action-manuf-order-method-part-finish" 
-			if="producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } &amp;&amp; producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 }"/>
-	</action-group>
     
     <action-group name="action-manuf-order-method-start-or-resume">
     	<action name="action-manuf-order-method-start" if="statusSelect == 3"/>
@@ -476,10 +467,6 @@
 	   model="com.axelor.apps.production.db.ManufOrder">
 	   <alert message="The planned end date is inferior to the actual date"
 	       if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
-	</action-validate>
-	
-	<action-validate name="action-manuf-order-validate-finish-confirmation" model="com.axelor.apps.production.db.ManufOrder">
-		<alert message="All products has been produced. Do you want to finish MO ?"/>
 	</action-validate>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">

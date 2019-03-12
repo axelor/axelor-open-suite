@@ -127,8 +127,9 @@ public class ManufOrderWorkflowService {
 
     int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-      manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
-          manufOrder, manufOrder.getInStockMoveList());
+      manufOrder.addInStockMoveListItem(
+          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
+              manufOrder, manufOrder.getInStockMoveList()));
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
