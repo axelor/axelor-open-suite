@@ -7,6 +7,7 @@
 
 ## Bug Fixes
 - Configurator : Fix demo data
+- Employee : Fix issue on save of contact master detail.
 
 
 ## [5.1.4] - 2019-03-11
