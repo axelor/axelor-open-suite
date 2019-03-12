@@ -297,7 +297,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-manuf-order-atts-set-isAllStockMoveLineRealized">
-		<attribute name="value" for="$isAllStockMoveLineRealized" expr="eval: !(producedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 } || consumedStockMoveLineList.any { it?.stockMove?.statusSelect != 3 })"/>
+		<attribute name="value" for="$isAllStockMoveLineRealized" expr="eval: producedStockMoveLineList.any { it?.stockMove?.statusSelect == 3 } &amp;&amp; consumedStockMoveLineList.any { it?.stockMove?.statusSelect == 3 }"/>
 	</action-attrs>
 
     <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
