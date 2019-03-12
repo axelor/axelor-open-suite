@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased 5.1.5]
+## Features
+
+## Improvements
+- Production: Remove 'stockLocation' from MachineType.
+
+## Bug Fixes
+
 ## [5.1.4] - 2019-03-11
 ## Features
 - MARKETING CAMPAIGN : Manage guests and attendees
