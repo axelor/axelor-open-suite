@@ -22,4 +22,10 @@ public interface ITranslation {
   public static final String MANUFACTURING_APP_NAME = /*$$(*/ "value:Manufacturing"; /*)*/
   public static final String WORK_IN_PROGRESS_VALUATION = /*$$(*/
       "Work in progress valuation"; /*)*/
+
+  /*Planning View Translations*/
+  public static final String PROD_PROCESS = /*$$(*/ "Prod. Process"; /*)*/
+  public static final String FREEZE = /*$$(*/ "Freeze"; /*)*/
+  public static final String UNFREEZE = /*$$(*/ "Unfreeze"; /*)*/
+  public static final String DELETE = /*$$(*/ "Delete"; /*)*/
 }

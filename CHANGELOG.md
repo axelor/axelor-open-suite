@@ -76,6 +76,7 @@
 - Team Task : Change in team-task-form view
 - Moible: Add new app setting for 'Task'
 - JobPosition : Hide statusOpenBtn on statusSelect = 2.
+- Production : Addition of French translation for Planning view.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
