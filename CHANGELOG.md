@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.5]
 ## Features
+- GANTT : Fixes for links start-start and end-end links
 
 ## Improvements
 
