@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.5]
 ## Features
+- Sale Order Line: new option to keep requested qty equal to qty.
 
 ## Improvements
 
