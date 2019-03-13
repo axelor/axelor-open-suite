@@ -10,6 +10,7 @@
 - Configurator : Fix demo data
 - Employee : Fix issue on save of contact master detail.
 - BankPayment : Change in slice of nextOrderId in EbicsUser.
+- MANUF. ORDER : display message when no default email account found to send email
 
 ## [5.1.4] - 2019-03-11
 ## Features
