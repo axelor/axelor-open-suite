@@ -5,6 +5,7 @@
 - Sale Order Line: new option to keep requested qty equal to qty.
 
 ## Improvements
+- Data config : rename field 'Fields'
 
 ## Bug Fixes
 - Configurator : Fix demo data
