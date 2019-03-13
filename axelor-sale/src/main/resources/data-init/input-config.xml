@@ -20,7 +20,7 @@
     		<bind to="modelSelect" column="modelSelect" />
     	</bind>
     	<bind to="metaModel" column="metaModel" search="self.name = :metaModel" />
-    	<bind to="metaFieldSet" column="fields" search="self.name in :fields and self.metaModel.name = :metaModel" eval="fields.split(',') as List" />
+    	<bind to="toExportMetaFieldSet" column="fields" search="self.name in :fields and self.metaModel.name = :metaModel" eval="fields.split(',') as List" />
     	<bind to="toDeleteMetaFieldSet" column="toDeleteFields" search="self.name in :toDeleteFields and self.metaModel.name = :metaModel" eval="toDeleteFields.split(',') as List" />
     </input>
     

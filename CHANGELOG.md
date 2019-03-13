@@ -6,6 +6,7 @@
 - GANTT : Fixes for links start-start and end-end links
 
 ## Improvements
+- Data config : rename field 'Fields'
 
 ## Bug Fixes
 - Configurator : Fix demo data
