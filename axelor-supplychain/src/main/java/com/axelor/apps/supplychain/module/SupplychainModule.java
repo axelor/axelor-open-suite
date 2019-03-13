@@ -58,6 +58,8 @@ import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
+import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
@@ -198,5 +200,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockMoveManagementRepository.class).to(StockMoveSupplychainRepository.class);
     bind(StockCorrectionServiceImpl.class).to(StockCorrectionServiceSupplychainImpl.class);
     bind(StockMoveMultiInvoiceService.class).to(StockMoveMultiInvoiceServiceImpl.class);
+    bind(MrpRepository.class).to(MrpManagementRepository.class);
   }
 }
