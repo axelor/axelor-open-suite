@@ -99,7 +99,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   }
 
   @Override
-  protected String computeReleatedName(Model model) {
+  protected String computeRelatedName(Model model) {
 
     if (model instanceof ManufOrder) {
 
@@ -111,7 +111,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     } else {
 
-      return super.computeReleatedName(model);
+      return super.computeRelatedName(model);
     }
   }
 

@@ -29,6 +29,14 @@
   	<call class="com.axelor.studio.web.FilterController" method="updateTargetType" />
   </action-method>
   
+  <action-method name="action-filter-method-update-target-meta-field">
+    <call method="updateTargetMetaField" class="com.axelor.studio.web.FilterController"/>
+  </action-method>
+
+  <action-method name="action-filter-method-clear-selection">
+    <call method="clearSelection" class="com.axelor.studio.web.FilterController"/>
+  </action-method>
+
   <action-attrs name="action-chart-filter-meta-json-field-domain">
   	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many')&quot;"/>
   </action-attrs>

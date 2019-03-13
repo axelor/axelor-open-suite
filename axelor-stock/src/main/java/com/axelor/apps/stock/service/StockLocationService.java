@@ -18,10 +18,8 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -51,9 +49,6 @@ public interface StockLocationService {
   public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException;
 
   public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException;
-
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void computeAvgPriceForProduct(Product product);
 
   public List<Long> getBadStockLocationLineId();
 

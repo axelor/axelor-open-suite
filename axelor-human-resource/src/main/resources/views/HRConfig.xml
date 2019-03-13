@@ -79,6 +79,9 @@
 		  		<field name="exportCodeForLunchVoucherManagement" />
 		  		<field name="exportCodeForExtraHours" />
 		  	</panel>
+        <panel name="dpaePanel" title="DPAE">
+          <field name="enableDPAE" widget="BooleanSwitch"/>
+        </panel>
 		</panel-tabs>
 	</form>
 	
@@ -93,7 +96,5 @@
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-
-
 
 </object-views>

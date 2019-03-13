@@ -26,6 +26,10 @@
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       <date name="birthDate" title="Birth date" />
       <string name="maritalStatus" title="Marital status" selection="hr.employee.marital.status"/>
+    <many-to-one name="cityOfBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
+    <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department" help="For foreign-born employees, please enter the code 99"/>
+    <many-to-one name="countryOfBirth" title="Country of birth" ref="com.axelor.apps.base.db.Country"/>
+    <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>
       <string name="fixedProPhone" title="Work fixed phone"/>
       <string name="mobileProPhone" title="Work mobile phone"/>
       <string name="phoneAtCustomer" title="Phone at the customer"/>
@@ -58,11 +62,20 @@
     <integer name="stepByStepSelect" title="Step by step" selection="hr.employee.form.step.by.step.select" default="1"/>
     <!-- END OF New employee wizard -->
 
+    <!-- DPAE -->
+    <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE" mappedBy="employee"/>
+
+	<string name="maidenName" title="Maiden name"/>
+	<string name="maritalName" title="Marital name"/>
+
       <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";
    			public static final String TIME_PREFERENCE_HOURS = "hours";
    			public static final String TIME_PREFERENCE_MINUTES = "minutes";
+
+   			public static final String SEX_F = "F";
+   			public static final String SEX_M = "M";
    		]]>
    	</extra-code>
       

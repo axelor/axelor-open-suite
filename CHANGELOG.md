@@ -1,8 +1,8 @@
 # Changelog
 
-
 ## [Unreleased 5.2.0]
 ## Features
+- Employee: added DPAE
 - TeamTask: added Frequency
 - Employee: added wizard when creating new employee
 - LogisticalForm: if config enabled, send an email on first save
@@ -62,6 +62,9 @@
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
+- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence. 
+- InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
+- HR : Add CSV export support for Employment Contracts from its view and HR batch
 - MRP : Generate new sequence on save
 
 ## Improvements
@@ -85,6 +88,7 @@
 - Purchase Order : remove IPurchaseOrder deprecated class
 - Project module : Add metaFile field on TeamTask
 - Event : Allowing to suppress unsynchronized events. 
+- Employee : Add new fields 'birthDepartment' and 'cityofBirth'
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

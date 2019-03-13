@@ -40,7 +40,7 @@
 	<integer name="payrollPreparationExportTypeSelect" title="Export type" selection="hr.batch.payroll.preparation.export.type.select" />
 	<boolean name="exportAlreadyExported" title="Also export already exported payroll preparations" />
 	
-  	
+  	<integer name="employmentContractExportTypeSelect" title="Export type" selection="hr.batch.employment.contract.export.type.select"/>
   	
   	<extra-code><![CDATA[
 	
@@ -50,10 +50,14 @@
 		public static final int ACTION_PAYROLL_PREPARATION_GENERATION = 3;
 		public static final int ACTION_PAYROLL_PREPARATION_EXPORT = 4;
 		public static final int ACTION_LEAVE_MANAGEMENT_RESET = 5;
+		public static final int ACTION_EMPLOYMENT_CONTRACT_EXPORT = 6;
 		
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;
 		public static final int EXPORT_TYPE_NIBELIS = 2;
+
+		//EMPLOYMENT CONTRACT EXPORT TYPE SELECT
+		public static final int EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE = 1;
 	]]></extra-code>
   	
   </entity>

@@ -4339,12 +4339,25 @@ row["ClientPartFirstName"]
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">is_product_picture_available</property>
+                                <text-property name="displayName">is_product_picture_available</text-property>
+                                <property name="dataType">integer</property>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4515">
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["displayProductPictureOnPrinting"] != 1</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["displayProductPictureOnPrinting"] != 1 || (row._outer["displayProductPictureOnPrinting"] == 1 &amp;&amp; row["is_product_picture_available"] == 0)</expression>
                                 </structure>
                             </list-property>
                             <property name="width">4%</property>
@@ -4441,6 +4454,10 @@ row["ClientPartFirstName"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
+                                    <data id="4520">
+                                        <property name="display">none</property>
+                                        <property name="resultSetColumn">is_product_picture_available</property>
+                                    </data>
                                 </cell>
                                 <cell id="3708">
                                     <property name="colSpan">1</property>
@@ -4833,6 +4850,12 @@ row["ClientPartFirstName"]
                                         <property name="borderRightWidth">thin</property>
                                         <text id="4510">
                                             <property name="fontSize">8pt</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["productPicture"]==null</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="HTML">"<IMG src='" + params["AttachmentPath"].value + row["productPicture"] + "' width='100%'/>"</VALUE-OF>]]></text-property>
                                         </text>

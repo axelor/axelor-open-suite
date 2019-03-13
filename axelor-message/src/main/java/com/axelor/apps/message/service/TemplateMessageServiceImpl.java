@@ -23,6 +23,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
@@ -90,7 +91,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3),
-            template.getMetaModel().getFullName());
+            I18n.get(IExceptionMessage.SET_EMAIL_TEMPLATE_MESSAGE));
       }
       initMaker(objectId, model, tag);
     }
@@ -177,7 +178,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             addressBlock,
             mediaTypeSelect,
             getMailAccount());
-    message.setTemplate(template);
+
+    message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
 
     message = Beans.get(MessageRepository.class).save(message);
 
