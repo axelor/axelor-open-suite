@@ -17,9 +17,22 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
+import com.google.inject.Inject;
 
 public class EmployeeHRRepository extends EmployeeRepository {
+
+  @Inject PartnerService partnerService;
+
+  @Override
+  public Employee save(Employee entity) {
+    Partner partner = entity.getContactPartner();
+    partner.setSimpleFullName(partnerService.computeSimpleFullName(partner));
+    partner.setFullName(partnerService.computeFullName(partner));
+    return super.save(entity);
+  }
 
   @Override
   public Employee copy(Employee entity, boolean deep) {
