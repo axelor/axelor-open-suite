@@ -67,6 +67,7 @@
 - HR : Add CSV export support for Employment Contracts from its view and HR batch
 - MRP : Generate new sequence on save
 - TeamTask : Separate tasks and tickets
+- DataBackup : update importId when its null with format IDDDMMYYHHMM
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

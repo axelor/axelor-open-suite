@@ -18,7 +18,9 @@
 				selection-in="[0,1,2]" colSpan="12" />
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
 				colSpan="4" />
-			<field name="isRelativeDate" widget="boolean-switch" />
+			<field name="isRelativeDate" widget="boolean-switch"  onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
+			<field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"  colSpan="2"/>
+			<spacer colSpan="4"/>
 			<button-group name="mainBtnGroup" colSpan="3">
 			<button name="backToDraftBtn" title="Back To Draft"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
@@ -85,5 +87,9 @@
 		<call class="com.axelor.apps.base.web.DataBackupController"
 			method="RestoreBackUp" />
 	</action-method>
+	
+	<action-attrs name="action-data-backup-attrs-onchange-relativedate">
+		<attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
+	</action-attrs>
 
 </object-views>
