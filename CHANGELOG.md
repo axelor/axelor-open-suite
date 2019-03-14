@@ -4,6 +4,7 @@
 ## Features
 - Sale Order Line: new option to keep requested qty equal to qty.
 - GANTT : Fixes for links start-start and end-end links
+- MRP : Add a status to MRP Forecasts
 
 ## Improvements
 - Data config : rename field 'Fields'
