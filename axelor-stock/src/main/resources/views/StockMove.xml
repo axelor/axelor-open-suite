@@ -501,9 +501,7 @@
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
-    	<action name="action-stock-move-method-remove-subline"/>
     	<action name="save" if="stockMoveLineList.find{it->it.lineTypeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
-    	<action name="action-stock-move-method-add-subline"/>
     	<action name="action-stock-move-method-compute"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>
