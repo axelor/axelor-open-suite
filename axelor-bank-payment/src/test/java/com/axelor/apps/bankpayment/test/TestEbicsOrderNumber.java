@@ -17,38 +17,37 @@
  */
 package com.axelor.apps.bankpayment.test;
 
-
-import org.junit.Test;
-
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TestEbicsOrderNumber {
 
-	@Test
-	public void validateOrderId() {
-		EbicsUserService ebicsUserService = new EbicsUserService();
-		try {
-			ebicsUserService.getNextOrderNumber("01.AC");
-		}catch(AxelorException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	
-	@Test
-	public void testPossibleOrderNumbers() {
-		EbicsUserService ebicsUserService = new EbicsUserService();
-		int i = 0;
-		String orderNo = "A000";
-		try {
-			while (true) {
-				orderNo = ebicsUserService.getNextOrderNumber(orderNo);
-				i++;
-			}
-		}catch(AxelorException e) {
-			System.out.println(e.getMessage());
-			System.out.println("Maximum possible order numbers: " + i);
-		}
-	}
+  @Test
+  public void validateOrderId() {
+    EbicsUserService ebicsUserService = new EbicsUserService();
+    try {
+      ebicsUserService.getNextOrderNumber("01.AC");
+    } catch (AxelorException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 
+  @Test
+  public void testPossibleOrderNumbers() {
+    EbicsUserService ebicsUserService = new EbicsUserService();
+    int i = 0;
+    String orderNo = "A000";
+    try {
+      while (true) {
+        i++;
+        orderNo = ebicsUserService.getNextOrderNumber(orderNo);
+      }
+    } catch (AxelorException e) {
+      System.out.println(e.getMessage());
+      System.out.println("Maximum possible order numbers: " + i);
+      Assert.assertTrue(i == (36 * 36 * 36));
+    }
+  }
 }
