@@ -12,18 +12,19 @@
     </grid>
     
 	<form name="mrp-line-type-form" model="com.axelor.apps.supplychain.db.MrpLineType" title="MRP Type">
-	    <panel name="mainPanel" >
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-   	        <field name="label"/>
-   	        <field name="name"/>
-        	<field name="elementSelect"/>
-        	<field name="typeSelect"/>
-        	<field name="sequence"/>
-        	<field name="statusSelect" widget="MultiSelect" selection="purchase.purchase.order.status.select" showIf="elementSelect == 2"/>
-        	<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" showIf="elementSelect == 3"/>
-        	<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production" if="__config__.app.isApp('production')"/>
-	   		<field name="includeElementWithoutDate" showIf="[2,3,6,7].indexOf(elementSelect) != -1"/>
-	    </panel>
+		<panel name="mainPanel" >
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+			<field name="label"/>
+			<field name="name"/>
+			<field name="elementSelect"/>
+			<field name="typeSelect"/>
+			<field name="sequence"/>
+			<field name="statusSelect" widget="MultiSelect" selection="purchase.purchase.order.status.select" showIf="elementSelect == 2"/>
+			<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" showIf="elementSelect == 3"/>
+			<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+			<field name="includeElementWithoutDate" showIf="[2,3,6,7].indexOf(elementSelect) != -1"/>
+			<field name="applicationFieldSelect" widget="MultiSelect"/>
+		</panel>
 	 </form>
 	 
 </object-views>

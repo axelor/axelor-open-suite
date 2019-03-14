@@ -60,6 +60,7 @@
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
 - Production : Remove stockLocation from Machine Type object.
+- SupplyChain : Addition of multiselect field in MrpLineType object.
 
 ## Improvements
 - SaleOrder: refactored 'Business Project' panel
