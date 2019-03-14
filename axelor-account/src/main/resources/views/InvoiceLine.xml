@@ -236,12 +236,6 @@
 		<action name="action-invoice-line-method-compute-analytic-distribution"/>
 		<action name="action-budget-validate-exceed-line-amount"/>
 	</action-group>
-
-	<action-group name="action-group-invoice-line-pack-price-select-onchange">
-		<action name="action-invoice-subline-method-reset-pack-data"/>
-		<action name="action-attrs-account-invoice-line-onnew-onload"/>
-	</action-group>
-	
     
     <!--     ACTION RECORDS -->
     
@@ -264,10 +258,6 @@
 	<action-method name="action-invoice-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="computeAnalyticDistribution"/>
 	</action-method>
-	
-	<action-method name="action-invoice-method-title-subline-update-qty">
-		<call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="updateSubLineQty"/>
-	</action-method>
 
 	<action-method name="action-invoice-line-method-convert-tax">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="convertUnitPrice"/>
@@ -287,10 +277,6 @@
 
 	<action-method name="action-invoice-line-method-get-account">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getAccount"/>
-	</action-method>
-
-	<action-method name="action-invoice-subline-method-reset-pack-data">
-		<call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="resetPackData"/>
 	</action-method>
 	
 	<action-method name="action-invoice-line-method-onchange-price">

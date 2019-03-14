@@ -2377,6 +2377,62 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">total_qty_per_product</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">description_list</property>
+                                <property name="dataType">string</property>
+                                <property name="aggregateFunction">CONCATENATE</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["description"]</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Separator</property>
+                                        <expression name="value" type="javascript">"&lt;br>"</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Maxlength</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Showallvalues</property>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">tracking_no_list</property>
+                                <property name="dataType">string</property>
+                                <property name="aggregateFunction">CONCATENATE</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["tracking_number_seq"]</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Separator</property>
+                                        <expression name="value" type="javascript">" "</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Maxlength</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Showallvalues</property>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <list-property name="filter">
                             <structure>

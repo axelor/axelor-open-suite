@@ -432,7 +432,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
     return unit;
   }
-  
+
   @Override
   public SaleOrder getSaleOrder(Context context) {
 

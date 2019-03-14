@@ -139,15 +139,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-            if (saleOrderLine.getProduct() != null) {
-              BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
-              if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-                createStockMoveLine(stockMove, saleOrderLine, qty);
-              }
-            }
-          }
+      if (saleOrderLine.getProduct() != null) {
+        BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+        if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+          createStockMoveLine(stockMove, saleOrderLine, qty);
+        }
+      }
+    }
 
-    
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       if (stockMove
           .getStockMoveLineList()

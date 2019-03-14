@@ -248,7 +248,6 @@ public class SaleOrderController {
               new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
-            // addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           }
         }
