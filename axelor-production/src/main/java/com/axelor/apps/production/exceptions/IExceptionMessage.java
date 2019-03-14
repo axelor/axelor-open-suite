@@ -128,5 +128,6 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
 
-  static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/ "All products has been consumed" /*)*/;
+  static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
+      "Automatic email was not sent because no default email account was found : please create one." /*)*/;
 }
