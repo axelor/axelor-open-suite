@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.db.DataBackup;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -108,7 +109,7 @@ public class DataBackupCreateService {
   List<String> fileNameList;
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public File create(Integer fetchLimit, boolean isRelativeDate) throws InterruptedException {
+  public File create(DataBackup dataBackup) throws InterruptedException {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
 
@@ -137,13 +138,7 @@ public class DataBackupCreateService {
                   QUOTE_CHAR);
           CSVInput csvInput =
               writeCSVData(
-                  metaModel,
-                  csvWriter,
-                  fetchLimit,
-                  totalRecord,
-                  subClasses,
-                  tempDirectoryPath,
-                  isRelativeDate);
+                  metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
           csvWriter.close();
 
           if (notNullReferenceFlag) {
@@ -154,7 +149,7 @@ public class DataBackupCreateService {
             temcsv.setFileName(csvInput.getFileName());
             temcsv.setTypeName(csvInput.getTypeName());
 
-            if (isRelativeDate) {
+            if (dataBackup.getIsRelativeDate()) {
               temcsv.setBindings(new ArrayList<>());
               getCsvInputForDateorDateTime(metaModel, temcsv);
             }
@@ -288,11 +283,10 @@ public class DataBackupCreateService {
   private CSVInput writeCSVData(
       MetaModel metaModel,
       CSVWriter csvWriter,
-      Integer fetchLimit,
+      DataBackup dataBackup,
       long totalRecord,
       List<String> subClasses,
-      String dirPath,
-      boolean isRelativeDate) {
+      String dirPath) {
 
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
@@ -303,6 +297,9 @@ public class DataBackupCreateService {
     try {
       Mapper metaModelMapper = Mapper.of(Class.forName(metaModel.getFullName()));
       Property[] pro = metaModelMapper.getProperties();
+      Integer fetchLimit = dataBackup.getFetchLimit();
+      boolean isRelativeDate = dataBackup.getIsRelativeDate();
+      boolean updateImportId = dataBackup.getUpdateImportId();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -326,11 +323,12 @@ public class DataBackupCreateService {
                 dataArr.add(
                     getMetaModelData(
                         metaModel.getName(),
-                        metaModelMapper.get(dataObject, "id").toString(),
+                        metaModelMapper,
                         property,
-                        metaModelMapper.get(dataObject, property.getName()),
+                        dataObject,
                         dirPath,
-                        isRelativeDate));
+                        isRelativeDate,
+                        updateImportId));
               }
             }
 
@@ -454,17 +452,26 @@ public class DataBackupCreateService {
   /* Get Data For csv File */
   private String getMetaModelData(
       String metaModelName,
-      String id,
+      Mapper metaModelMapper,
       Property property,
-      Object value,
+      Object dataObject,
       String dirPath,
-      boolean isRelativeDate) {
+      boolean isRelativeDate,
+      boolean updateImportId) {
 
+    String id = metaModelMapper.get(dataObject, "id").toString();
+    Object value = metaModelMapper.get(dataObject, property.getName());
     if (value == null) {
       return "";
     }
     String propertyTypeStr = property.getType().toString();
+
     switch (propertyTypeStr) {
+      case "LONG":
+        if (updateImportId) {
+          return ((Model) dataObject).getImportId();
+        }
+        return value.toString();
       case "DATE":
         if (isRelativeDate) {
           return createRelativeDate((LocalDate) value);
@@ -495,10 +502,10 @@ public class DataBackupCreateService {
         return fileName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationalFieldValue(property, value);
+        return getRelationalFieldValue(property, value, updateImportId);
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
-        return getRelationalFieldData(property, value);
+        return getRelationalFieldData(property, value, updateImportId);
       default:
         return value.toString();
     }
@@ -570,12 +577,12 @@ public class DataBackupCreateService {
         + "]";
   }
 
-  public String getRelationalFieldData(Property property, Object value) {
+  public String getRelationalFieldData(Property property, Object value, boolean updateImportId) {
     StringBuilder idStringBuilder = new StringBuilder();
     Collection<?> valueList = (Collection<?>) value;
     String referenceData = "";
     for (Object val : valueList) {
-      referenceData = getRelationalFieldValue(property, val);
+      referenceData = getRelationalFieldValue(property, val, updateImportId);
       if (StringUtils.notBlank(referenceData)) {
         idStringBuilder.append(referenceData + REFERENCE_FIELD_SEPARATOR);
       }
@@ -587,17 +594,17 @@ public class DataBackupCreateService {
     return idStringBuilder.toString();
   }
 
-  private String getRelationalFieldValue(Property property, Object val) {
+  private String getRelationalFieldValue(Property property, Object val, boolean updateImportId) {
     if (property.getTarget() != null
         && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
         && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
       try {
         return Mapper.of(val.getClass()).get(val, "name").toString();
       } catch (Exception e) {
-        return ((Model) val).getId().toString();
+        return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
       }
     } else {
-      return ((Model) val).getId().toString();
+      return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
     }
   }
 
