@@ -606,6 +606,53 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  public void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException {
+    checkManufOrderStockMoveLineList(
+        manufOrder.getConsumedStockMoveLineList(), oldManufOrder.getConsumedStockMoveLineList());
+  }
+
+  @Override
+  public void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException {
+    checkManufOrderStockMoveLineList(
+        manufOrder.getProducedStockMoveLineList(), oldManufOrder.getProducedStockMoveLineList());
+  }
+
+  protected void checkManufOrderStockMoveLineList(
+      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
+      throws AxelorException {
+
+    List<StockMoveLine> realizedProducedStockMoveLineList =
+        stockMoveLineList
+            .stream()
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getStockMove() != null
+                        && stockMoveLine.getStockMove().getStatusSelect()
+                            == StockMoveRepository.STATUS_REALIZED)
+            .sorted(Comparator.comparingLong(StockMoveLine::getId))
+            .collect(Collectors.toList());
+    List<StockMoveLine> oldRealizedProducedStockMoveLineList =
+        oldStockMoveLineList
+            .stream()
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getStockMove() != null
+                        && stockMoveLine.getStockMove().getStatusSelect()
+                            == StockMoveRepository.STATUS_REALIZED)
+            .sorted(Comparator.comparingLong(StockMoveLine::getId))
+            .collect(Collectors.toList());
+
+    // the two lists must be equal
+    if (!realizedProducedStockMoveLineList.equals(oldRealizedProducedStockMoveLineList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES));
+    }
+  }
+
+  @Override
   public void updateStockMoveFromManufOrder(
       List<StockMoveLine> stockMoveLineList, StockMove stockMove) throws AxelorException {
     if (stockMoveLineList == null) {

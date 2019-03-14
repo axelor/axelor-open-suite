@@ -177,6 +177,26 @@ public interface ManufOrderService {
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
+   * Check the realized consumed stock move lines in manuf order has not changed.
+   *
+   * @param manufOrder a manuf order from context.
+   * @param oldManufOrder a manuf order from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException;
+
+  /**
+   * Check the realized produced stock move lines in manuf order has not changed.
+   *
+   * @param manufOrder a manuf order from context.
+   * @param oldManufOrder a manuf order from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException;
+
+  /**
    * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
    * move to match the stock move line list. The list can be from manuf order or operation order.
    *

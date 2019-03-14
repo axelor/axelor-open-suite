@@ -10,6 +10,7 @@
 - Data config : rename field 'Fields'
 - Reserved qty: Add data checks in service and in view.
 - Sale Order Line: When being edited, editable when the amount is 0.
+- ManufOrder: Prevent the user from removing realized stock move lines.
 
 ## Bug Fixes
 - Configurator : Fix demo data

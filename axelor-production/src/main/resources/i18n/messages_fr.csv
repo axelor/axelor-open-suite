@@ -585,6 +585,7 @@
 "Workshop","Atelier",,
 "You can't manage the consumed products on phases because this production process is related to several bills of material","Vous ne pouvez pas gérer les produits consommés par phases car cette gamme est reliée à plusieurs nomenclatures",,
 "You can't remove this record","Vous ne pouvez pas supprimer cet enregistrement",,
+"You cannot delete realized stock move lines.","Vous ne pouvez pas supprimer des lignes de mouvements de stock réalisés.",,
 "You must add a positive quantity","Veuillez entrer une quantité positive",,
 "You must configure a component default stock location for company %s.",,,
 "You must configure a finished products default stock location for company %s.","Veuillez configurer un emplacement par défaut des produits finis pour la société %s",,

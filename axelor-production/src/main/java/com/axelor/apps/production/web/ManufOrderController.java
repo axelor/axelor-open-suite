@@ -372,7 +372,26 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on produced stock move line change.
+   * Called from manuf order form, on produced stock move line change. Call {@link
+   * ManufOrderService#checkProducedStockMoveLineList(ManufOrder, ManufOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkProducedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      manufOrderService.checkProducedStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  /**
+   * Called from manuf order form, on produced stock move line change. Call {@link
+   * ManufOrderService#updateProducedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -386,6 +405,24 @@ public class ManufOrderController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from manuf order form, on consumed stock move line change. Call {@link
+   * ManufOrderService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConsumedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      manufOrderService.checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 

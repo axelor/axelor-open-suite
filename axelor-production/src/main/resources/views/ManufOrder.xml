@@ -164,7 +164,7 @@
 				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="product.code"/>
 				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
+				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related name="diffStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel name="consumedProductsPanel" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
@@ -178,7 +178,7 @@
 				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="toProduceProdProductListPanel" field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-				<panel-related name="producedStockMoveLineListPanel" field="producedStockMoveLineList" onChange="save,action-manuf-order-method-update-produced-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
+				<panel-related name="producedStockMoveLineListPanel" field="producedStockMoveLineList" onChange="action-manuf-order-method-check-produced-stock-move,save,action-manuf-order-method-update-produced-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related name="wasteProdProductListPanel" field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel name="descriptionPanel" title="Waste description" colSpan="12">
 					<field name="wasteProdDescription" showTitle="false" colSpan="12"/>
@@ -405,8 +405,16 @@
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedDates"/>
 	</action-method>
 
+	<action-method name="action-manuf-order-method-check-consumed-stock-move">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkConsumedStockMoveLineList"/>
+	</action-method>
+
 	<action-method name="action-manuf-order-method-update-consumed-stock-move">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateConsumedStockMoveFromManufOrder"/>
+	</action-method>
+
+	<action-method name="action-manuf-order-method-check-produced-stock-move">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkProducedStockMoveLineList"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-update-produced-stock-move">
