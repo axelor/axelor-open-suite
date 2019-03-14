@@ -2,13 +2,17 @@
 
 ## [Unreleased 5.1.5]
 ## Features
+- Sale Order Line: new option to keep requested qty equal to qty.
+- GANTT : Fixes for links start-start and end-end links
 
 ## Improvements
+- Data config : rename field 'Fields'
 
 ## Bug Fixes
 - Configurator : Fix demo data
 - Employee : Fix issue on save of contact master detail.
 - BankPayment : Change in slice of nextOrderId in EbicsUser.
+- MANUF. ORDER : display message when no default email account found to send email
 - STOCK MOVE : address printing issue
 
 ## [5.1.4] - 2019-03-11

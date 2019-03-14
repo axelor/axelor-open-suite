@@ -44,6 +44,10 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
 	</action-method>
 
+	<action-record name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="requestedReservedQty" expr="eval: BigDecimal.ZERO.max(qty)" if="requestedReservedQty &gt; qty || saleOrder?.company?.supplyChainConfig?.autoRequestReservedQty || __parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+	</action-record>
+
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
 		<attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
     <attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>

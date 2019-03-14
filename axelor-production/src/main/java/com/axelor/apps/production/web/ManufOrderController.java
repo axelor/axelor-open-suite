@@ -109,7 +109,9 @@ public class ManufOrderController {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
 
-      manufOrderWorkflowService.finish(manufOrder);
+      if (!manufOrderWorkflowService.finish(manufOrder)) {
+        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      }
 
       response.setReload(true);
     } catch (Exception e) {
@@ -122,7 +124,9 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
 
-      Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder);
+      if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
+        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
