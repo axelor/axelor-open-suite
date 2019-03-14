@@ -7,6 +7,7 @@
 
 ## Improvements
 - Data config : rename field 'Fields'
+- Reserved qty: Add data checks in service and in view.
 
 ## Bug Fixes
 - Configurator : Fix demo data
