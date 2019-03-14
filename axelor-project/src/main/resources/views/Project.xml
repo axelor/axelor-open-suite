@@ -126,8 +126,9 @@
 					<panel-dashlet name="projectPhaseTreeDashletPanel" title="Phases" colSpan="12"
 						action="tree:project-phase-tree" />
 				</panel>
-				<button name="addTaskBtn" title="New" colSpan="2"
+				<button name="addTaskBtn" title="New task" colSpan="2"
 					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-task" />
+				<button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-ticket" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				<button name="allTaskBtn" title="All tasks" colSpan="2"
 					css="btn-custom text-left" icon="fa-tasks"
 					onClick="action-project-view-show-related-tasks" />
@@ -647,6 +648,19 @@
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<context name="_project" expr="eval:__this__"/>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+	</action-view>
+
+	<action-view name="action-project-add-ticket" model="com.axelor.team.db.TeamTask" title="Ticket">
+		<view name="team-task-form" type="form"/>
+		<view name="team-task-grid" type="grid"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="true"/>
+		<view-param name="show-confirm" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceTitle" value="true"/>
+		<context name="_project" expr="eval:__this__"/>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
 	</action-view>
 
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
