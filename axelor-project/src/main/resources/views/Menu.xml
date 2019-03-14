@@ -38,7 +38,18 @@
 		<view type="kanban" name="team-task-kanban"/>
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
-		<domain>self.project.statusSelect IN (1,2)</domain>
+		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'task'</domain>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+	</action-view>
+
+	<menuitem name="project-open-tickets" parent="menu-project-root" title="Tickets" order="21" action="all.open.project.tickets" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+	<action-view name="all.open.project.tickets" title="Ticket" model="com.axelor.team.db.TeamTask">
+		<view type="kanban" name="team-task-kanban"/>
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<view-param name="forceTitle" value="true"/>
+		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'ticket'</domain>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
 	</action-view>
 
 	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>

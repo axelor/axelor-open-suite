@@ -458,6 +458,7 @@
 
   <selection name="team.task.type.select">
     <option value="task">Task</option>
+    <option value="ticket">Ticket</option>
   </selection>
 
 </object-views>
