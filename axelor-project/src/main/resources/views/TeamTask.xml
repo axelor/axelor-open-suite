@@ -38,20 +38,22 @@
 
 		<panel name="mainPanel" colSpan="12">
 			<field name="status" colSpan="6" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
-			<field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="4" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
-				<viewer>
-					<![CDATA[
-						<h4 class="text-right">
-							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
-							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-							
-							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
-							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
-						</h4>
-					]]>
-				</viewer>
-			</field>
+			<panel name="viewerTagsPanel" colSpan="4">
+				<field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" hidden="true">
+					<viewer>
+						<![CDATA[
+							<h4 class="text-right">
+								<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+								<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
+								<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
+
+								<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
+								<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
+							</h4>
+						]]>
+					</viewer>
+				</field>
+			</panel>
 			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="2"/>
 			<field name="$provider" hidden="true" type="string"/>
 			<panel name="projectDetailsPanel" colSpan="12">
@@ -72,22 +74,22 @@
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form" if="!__config__.app.isApp('business-support')"/>
-					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
-					<field name="isPrivate"  colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<field name="isOrderAccepted" colSpan="3"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
+					<field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderAccepted" colSpan="3" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
-					<button name="acceptOrderBtn" title="Accept Order" hideIf="!teamTaskInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1"/>
-					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2"/>
+					<button name="acceptOrderBtn" title="Accept Order" hidden="true" showIf="typeSelect == 'ticket'" hideIf="!teamTaskInvoicing || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" hidden="true" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
+					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" hidden="true" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
 				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
 				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
-				<field name="assignment" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
+				<field name="assignment" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>

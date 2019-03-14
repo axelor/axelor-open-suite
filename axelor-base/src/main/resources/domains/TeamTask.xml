@@ -17,6 +17,7 @@
     <extra-code>
       // TYPE SELECT
       public static final String TYPE_TASK = "task";
+      public static final String TYPE_TICKET = "ticket";
     </extra-code>
   </entity>
 
