@@ -90,6 +90,11 @@
 		<option value="2">Confirmed</option>
 		<option value="3">Cancelled</option>
 	</selection>
+	
+	<selection name="supplychain.mrp.mrp.type">
+		<option value="1">MRP</option>
+		<option value="2">MPS</option>
+	</selection>
 
 	<selection name="supplychain.mrp.line.type.application.field.select">
 		<option value="1">MRP</option>
