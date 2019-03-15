@@ -22,14 +22,16 @@
 		<field name="status"/>
     </grid>
 
-    <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new">
-        <toolbar>
-            <button name="createAmendmentBtn" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment" hidden="true"/>
-            <button name="editContractWordMLBtn" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
-        	<button name="generatePayrollPreparationBtn" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
-					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
-			<button name="exportBtn" title="Export employment contract" onClick="save,action-employment-contract-method-export"/>		
-        </toolbar>
+    <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new" width="large">
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item title="Create amendment" action="save,action-employment-contract-method-addAmendment" hideIf="true"/>
+				<item title="Print contract" action="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
+				<item title="Generate payroll prepa." action="save,action-employment-contract-generate-payroll-prepa"
+						if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+				<item title="Export employment contract" action="save,action-employment-contract-method-export"/>
+			</menu>
+		</menubar>
         <panel name="statusPanel" title="Status">
         	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
         </panel>
