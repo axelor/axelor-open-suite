@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+	<form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="Master Production Scheduling" width="large"
+		onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-manuf-order-record-onnew">
+		<panel-include view="mrp-form"/>
+	</form>
+	
+	<action-record name="action-mrp-manuf-order-record-onnew" model="com.axelor.apps.supplychain.db.Mrp">
+		<field name="mrpType" expr="eval:2"/>
+	</action-record>
+	
+	<action-record name="action-mrp-manuf-order-record-reset-period" model="com.axelor.apps.supplychain.db.Mrp">
+		<field name="period" expr="eval: null"/>
+	</action-record>
+	
+</object-views>
+
+
