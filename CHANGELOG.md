@@ -18,6 +18,7 @@
 - BankPayment : Change in slice of nextOrderId in EbicsUser.
 - MANUF. ORDER : display message when no default email account found to send email
 - STOCK MOVE : address printing issue
+- Ticket : remove pop-up onNew.
 
 ## [5.1.4] - 2019-03-11
 ## Features
