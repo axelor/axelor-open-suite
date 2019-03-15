@@ -423,6 +423,15 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
+  public void checkConsumedStockMoveLineList(
+      OperationOrder operationOrder, OperationOrder oldOperationOrder) throws AxelorException {
+    Beans.get(ManufOrderService.class)
+        .checkRealizedStockMoveLineList(
+            operationOrder.getConsumedStockMoveLineList(),
+            oldOperationOrder.getConsumedStockMoveLineList());
+  }
+
+  @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {

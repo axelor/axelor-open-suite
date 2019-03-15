@@ -617,18 +617,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
       throws AxelorException {
-    checkManufOrderStockMoveLineList(
+    checkRealizedStockMoveLineList(
         manufOrder.getConsumedStockMoveLineList(), oldManufOrder.getConsumedStockMoveLineList());
   }
 
   @Override
   public void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
       throws AxelorException {
-    checkManufOrderStockMoveLineList(
+    checkRealizedStockMoveLineList(
         manufOrder.getProducedStockMoveLineList(), oldManufOrder.getProducedStockMoveLineList());
   }
 
-  protected void checkManufOrderStockMoveLineList(
+  @Override
+  public void checkRealizedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
       throws AxelorException {
 
