@@ -91,6 +91,7 @@
 - Project module : Add metaFile field on TeamTask
 - Event : Allowing to suppress unsynchronized events. 
 - Employee : Add new fields 'birthDepartment' and 'cityofBirth'
+- Employment Contract : Add buttons to "Tools" in menubar and set form width to large
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
