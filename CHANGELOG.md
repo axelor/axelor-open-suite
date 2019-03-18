@@ -13,6 +13,7 @@
 - ManufOrder: Prevent the user from removing realized stock move lines.
 - ManufOrder: does not create empty stock moves.
 - ProdProcess : Change in description of phase view.
+- Production : Change title for durations.
 
 ## Bug Fixes
 - Configurator : Fix demo data
