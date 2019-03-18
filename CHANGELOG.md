@@ -18,6 +18,7 @@
 - Production : Change title for durations.
 - INVOICE : Replaced static french word Acompte(s) lié(s) with translation
 - TASKS : Project planning time line autofill
+- ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
 
 ## Bug Fixes
 - Configurator : Fix demo data
