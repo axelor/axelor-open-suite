@@ -27,7 +27,7 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
-  	<string name="productCode" title="Displayed Product code"/>
+	<string name="productCode" title="Supplier code"/>
   	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
   	<decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>

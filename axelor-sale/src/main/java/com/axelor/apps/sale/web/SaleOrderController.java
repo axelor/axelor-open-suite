@@ -224,14 +224,18 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+  public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+      Beans.get(SaleOrderWorkflowService.class)
+          .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
@@ -525,15 +529,21 @@ public class SaleOrderController {
     }
   }
 
+  /**
+   * Called from sale order form view, on clicking validate change button. Call {@link
+   * SaleOrderService#validateChanges(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
   public void validateChanges(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-      Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
-      response.setValues(saleOrderView);
+      Beans.get(SaleOrderService.class).validateChanges(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 

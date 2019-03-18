@@ -34,15 +34,15 @@
      	
     <string name="note" large="true"/>
 
+    
     <extra-code><![CDATA[
-	
-	   	// STATUS SELECT
-		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_VALIDATED = 2;
-		public static final int STATUS_APPLICABLE = 3;
-		public static final int STATUS_OBSOLETE = 4;
-	
-	]]></extra-code>
-	
+
+    	// STATUS SELECT
+    	public static final int STATUS_DRAFT = 1;
+    	public static final int STATUS_VALIDATED = 2;
+    	public static final int STATUS_APPLICABLE = 3;
+    	public static final int STATUS_OBSOLETE = 4;
+
+    ]]></extra-code>
   </entity>
 </domain-models>
