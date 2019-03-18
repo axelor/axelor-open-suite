@@ -5,6 +5,7 @@
 - Sale Order Line: new option to keep requested qty equal to qty.
 - GANTT : Fixes for links start-start and end-end links
 - MRP : Add a status to MRP Forecasts
+- Studio: Set canEdit and canNew for relational fields from studio. 
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -13,6 +14,7 @@
 - ManufOrder: Prevent the user from removing realized stock move lines.
 - ManufOrder: does not create empty stock moves.
 - ProdProcess : Change in description of phase view.
+- ManufOrder : Added new label 'Outsourced'
 - Production : Change title for durations.
 
 ## Bug Fixes
@@ -23,6 +25,7 @@
 - STOCK MOVE : address printing issue
 - Ticket : remove pop-up onNew.
 - Product : set 'stockManaged' false when product is of type 'service'.
+- Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
 
 ## [5.1.4] - 2019-03-11
 ## Features
