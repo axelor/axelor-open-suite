@@ -355,6 +355,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
+      <action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">

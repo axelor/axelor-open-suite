@@ -20,6 +20,7 @@
 - MANUF. ORDER : display message when no default email account found to send email
 - STOCK MOVE : address printing issue
 - Ticket : remove pop-up onNew.
+- Product : set 'stockManaged' false when product is of type 'service'.
 
 ## [5.1.4] - 2019-03-11
 ## Features
