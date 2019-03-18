@@ -82,6 +82,15 @@ public interface OperationOrderService {
       List<ProdProduct> prodProductList,
       List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
+  /**
+   * Check the realized consumed stock move lines in operation order has not changed.
+   *
+   * @param operationOrder an operation order from context.
+   * @param oldOperationOrder an operation order from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkConsumedStockMoveLineList(
+      OperationOrder operationOrder, OperationOrder oldOperationOrder) throws AxelorException;
 
   /**
    * On changing {@link OperationOrder#consumedStockMoveLineList}, we update {@link

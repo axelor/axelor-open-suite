@@ -111,7 +111,7 @@ public class PartnerService {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
       return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
     }
-    return partner.getSimpleFullName();
+    return computeSimpleFullName(partner);
   }
 
   public String computeSimpleFullName(Partner partner) {

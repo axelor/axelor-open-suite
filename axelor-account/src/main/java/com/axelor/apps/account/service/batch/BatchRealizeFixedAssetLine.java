@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -49,7 +50,6 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
                 FixedAssetLineRepository.STATUS_PLANNED,
                 LocalDate.now())
             .fetch();
-
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
@@ -59,6 +59,10 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(e);
+      } finally {
+        if (batch.getDone() % 1 == 0) {
+          JPA.clear();
+        }
       }
     }
   }

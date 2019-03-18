@@ -26,13 +26,15 @@ public class LogisticalFormError extends AxelorException {
 
   private static final long serialVersionUID = 354779411257144849L;
 
-  public LogisticalFormError(LogisticalForm logisticalForm, String message, Object... messageArgs) {
-    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message, messageArgs);
+  public LogisticalFormError(LogisticalForm logisticalForm, String message) {
+    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
   }
 
   public LogisticalFormError(
       LogisticalFormLine logisticalFormLine, String message, Object... messageArgs) {
     super(
-        logisticalFormLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message, messageArgs);
+        logisticalFormLine,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        String.format(message, messageArgs));
   }
 }

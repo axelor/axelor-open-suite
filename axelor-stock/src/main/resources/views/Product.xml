@@ -8,7 +8,11 @@
         <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
         <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
-
+    
+    <action-record name="action-product-record-service-stock-managed" model="com.axelor.apps.base.db.Product">
+      <field name="stockManaged" expr="eval: productTypeSelect != 'service'"/>
+    </action-record>
+    
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
         <attribute name="scale" for="avgPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
     </action-attrs>

@@ -161,7 +161,7 @@
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
-      <action name="action-account-validate-prompt"/>
+      <action name="action-account-validate-prompt" if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect == 2)"/>
       <action name="save"/>
       <action name="action-move-method-validate"/>
     </action-group>

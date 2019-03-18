@@ -44,6 +44,7 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -519,6 +520,26 @@ public class SaleOrderController {
     saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
+  }
+
+  /**
+   * Called from sale order on save. Call {@link
+   * SaleOrderServiceSupplychainImpl#checkModifiedConfirmedOrder(SaleOrder, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void onSave(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+      if (saleOrderView.getOrderBeingEdited()) {
+        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+        saleOrderServiceSupplychain.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+        response.setValues(saleOrderView);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   /**
