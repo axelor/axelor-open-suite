@@ -94,11 +94,20 @@
 		</menubar>
 		<panel name="mainPanel">
 		<panel name="detailsPanel" colSpan="8">
-			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="3"/>
-			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="3"/>
-			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" colSpan="3" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
-			<field name="$viewerIsPermanent" showTitle="false" colSpan="3" showIf="isPermanent &amp;&amp; $readonly()">
+			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="2"/>
+			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
+			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
+				<viewer>
+					<![CDATA[
+						<h4 class="text-right">
+							<span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcess.outsourcing" x-translate>Outsourced</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
+			<field name="$viewerIsPermanent" showTitle="false" colSpan="2" showIf="isPermanent &amp;&amp; $readonly()">
 				<viewer depends="isPermanent">
 					<![CDATA[
 						<h4 style="text-align: left;">
@@ -110,7 +119,7 @@
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
-			<field name="prodProcess.outsourcing" colSpan="3"/>
+			<field name="prodProcess.outsourcing" colSpan="3" hidden="true"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
