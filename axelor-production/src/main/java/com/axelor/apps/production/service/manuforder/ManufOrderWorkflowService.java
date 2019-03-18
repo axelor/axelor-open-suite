@@ -29,9 +29,11 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -76,6 +78,16 @@ public class ManufOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
+
+    if (manufOrder.getBillOfMaterial().getStatusSelect()
+            != BillOfMaterialRepository.STATUS_APPLICABLE
+        && manufOrder.getProdProcess().getStatusSelect()
+            != ProdProcessRepository.STATUS_APPLICABLE) {
+      throw new AxelorException(
+          manufOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("Bill of material and production process must be applicable"));
+    }
 
     if (Beans.get(SequenceService.class)
         .isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
