@@ -4,11 +4,22 @@
 ## Features
 - Sale Order Line: new option to keep requested qty equal to qty.
 - GANTT : Fixes for links start-start and end-end links
+- MRP : Add a status to MRP Forecasts
+- Studio: Set canEdit and canNew for relational fields from studio. 
 
 ## Improvements
 - Data config : rename field 'Fields'
 - Reserved qty: Add data checks in service and in view.
 - Sale Order Line: When being edited, editable when the amount is 0.
+- ManufOrder: Prevent the user from removing realized stock move lines.
+- ManufOrder: does not create empty stock moves.
+- ProdProcess : Change in description of phase view.
+- ManufOrder : Added new label 'Outsourced'
+- Production : Change title for durations.
+- INVOICE : Replaced static french word Acompte(s) lié(s) with translation
+- TASKS : Project planning time line autofill
+- ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
+- MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
 
 ## Bug Fixes
 - Configurator : Fix demo data
@@ -17,6 +28,9 @@
 - MANUF. ORDER : display message when no default email account found to send email
 - STOCK MOVE : address printing issue
 - Debt Recovery Batch : NPE fixed
+- Ticket : remove pop-up onNew.
+- Product : set 'stockManaged' false when product is of type 'service'.
+- Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
 
 ## [5.1.4] - 2019-03-11
 ## Features

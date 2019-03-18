@@ -36,6 +36,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for fabrication's orders" /*)*/;
 
+  static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
+      "You cannot delete realized stock move lines." /*)*/;
+
   /** Batch Compute work in progress valuation */
   static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
 

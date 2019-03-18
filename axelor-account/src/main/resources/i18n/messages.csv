@@ -973,6 +973,7 @@
 "Invoice(s) validated",,,
 "Invoice(s) ventilated",,,
 "Invoice.advancePayment",,,
+"Invoice.advancePayments",,,
 "Invoice.afterDiscount",,,
 "Invoice.bankDetails",,,
 "Invoice.bankingInfo",,,
