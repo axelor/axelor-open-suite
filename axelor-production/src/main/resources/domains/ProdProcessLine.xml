@@ -14,7 +14,7 @@
     <string name="description" title="Description" large="true"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
+    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
     <boolean name="outsourcing" title="Outsourcing"/>
     <boolean name="optional" title="Optional"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
