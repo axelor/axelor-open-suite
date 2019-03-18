@@ -15,6 +15,8 @@
 - ManufOrder: does not create empty stock moves.
 - ProdProcess : Change in description of phase view.
 - ManufOrder : Added new label 'Outsourced'
+- Production : Change title for durations.
+- INVOICE : Replaced static french word Acompte(s) lié(s) with translation
 - TASKS : Project planning time line autofill
 
 ## Bug Fixes
