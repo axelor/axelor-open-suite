@@ -31,6 +31,7 @@
 - Ticket : remove pop-up onNew.
 - Product : set 'stockManaged' false when product is of type 'service'.
 - Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
+- Calendar : Synchronisation anomaly fixed.
 
 ## [5.1.4] - 2019-03-11
 ## Features
