@@ -14,7 +14,7 @@
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - Studio: Dynamic fetching of records for relational fields
-- Contract : better naming and traduction (fr) for the buttons
+- Contract : better naming and translation (fr) for the buttons
 
 ## Bug Fixes
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
