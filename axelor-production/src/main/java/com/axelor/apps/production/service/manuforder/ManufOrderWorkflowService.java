@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -36,6 +37,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -127,8 +129,9 @@ public class ManufOrderWorkflowService {
 
     int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-      manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
-          manufOrder, manufOrder.getInStockMoveList());
+      for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+        manufOrderStockMoveService.finishStockMove(stockMove);
+      }
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
@@ -163,7 +166,7 @@ public class ManufOrderWorkflowService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void finish(ManufOrder manufOrder) throws AxelorException {
+  public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -218,8 +221,9 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
     AppProduction appProduction = Beans.get(AppProductionService.class).getAppProduction();
     if (appProduction != null && appProduction.getFinishMoAutomaticEmail()) {
-      this.sendMail(manufOrder, appProduction.getFinishMoMessageTemplate());
+      return this.sendMail(manufOrder, appProduction.getFinishMoMessageTemplate());
     }
+    return true;
   }
 
   /** Return the cost price for one unit in a manufacturing order. */
@@ -241,7 +245,7 @@ public class ManufOrderWorkflowService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void partialFinish(ManufOrder manufOrder) throws AxelorException {
+  public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
@@ -257,8 +261,9 @@ public class ManufOrderWorkflowService {
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
     AppProduction appProduction = Beans.get(AppProductionService.class).getAppProduction();
     if (appProduction != null && appProduction.getPartFinishMoAutomaticEmail()) {
-      this.sendMail(manufOrder, appProduction.getPartFinishMoMessageTemplate());
+      return this.sendMail(manufOrder, appProduction.getPartFinishMoMessageTemplate());
     }
+    return true;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
@@ -394,11 +399,15 @@ public class ManufOrderWorkflowService {
         .collect(Collectors.toList());
   }
 
-  protected void sendMail(ManufOrder manufOrder, Template template) throws AxelorException {
+  protected boolean sendMail(ManufOrder manufOrder, Template template) throws AxelorException {
     if (template == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE));
+    }
+    if (Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne()
+        == null) {
+      return false;
     }
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
@@ -406,5 +415,6 @@ public class ManufOrderWorkflowService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), manufOrder);
     }
+    return true;
   }
 }

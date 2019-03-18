@@ -902,6 +902,8 @@
 		<action name="action-sale-order-record-set-contact-partner"/>
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"
+				if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-attrs-set-is-ispm-required"
 				if="__config__.app.isApp('supplychain')"/>
