@@ -16,6 +16,8 @@
 - ProdProcess : Change in description of phase view.
 - ManufOrder : Added new label 'Outsourced'
 - Production : Change title for durations.
+- INVOICE : Replaced static french word Acompte(s) lié(s) with translation
+
 
 ## Bug Fixes
 - Configurator : Fix demo data

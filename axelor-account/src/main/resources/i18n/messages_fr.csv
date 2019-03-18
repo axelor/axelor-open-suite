@@ -972,6 +972,7 @@
 "Invoice(s) validated","Facture(s) validée(s)",,
 "Invoice(s) ventilated","Facture(s) ventilée(s)",,
 "Invoice.advancePayment","Facture d'acompte",,
+"Invoice.advancePayments","Acompte(s) lié(s)",,
 "Invoice.afterDiscount","après remise de",,
 "Invoice.bankDetails","Banque",,
 "Invoice.bankingInfo","Informations bancaires",,

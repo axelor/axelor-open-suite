@@ -972,6 +972,7 @@
 "Invoice(s) validated",,,
 "Invoice(s) ventilated",,,
 "Invoice.advancePayment","Advance invoice",,
+"Invoice.advancePayments","Advance payments",,
 "Invoice.afterDiscount","after a discount of",,
 "Invoice.bankDetails","Bank details",,
 "Invoice.bankingInfo","Banking info",,
