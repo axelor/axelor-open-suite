@@ -93,6 +93,7 @@
 - Employee : Add new fields 'birthDepartment' and 'cityofBirth'
 - Employment Contract : Add buttons to "Tools" in menubar and set form width to large
 - TeamsTask : New menu titles
+- Contract : partner / project filters improved
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

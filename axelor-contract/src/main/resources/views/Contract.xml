@@ -41,10 +41,10 @@
                     ]]></viewer>
                 </field>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
-                <field name="partner" colSpan="4" domain=":company member of self.companySet" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
+                <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
-                <field name="project" colSpan="8"/>
+                <field name="project" colSpan="8" domain="(select id from User where partner = :partner) member of self.membersUserSet"/>
                 <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
                     <field name="createdBy" colSpan="3"/>
@@ -260,7 +260,6 @@
         <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
         <field name="currency" expr="eval: __user__.activeCompany.currency"/>
-        <field name="targetTypeSelect" expr="eval:_targetTypeSelect" if="_targetTypeSelect != null"/>
         <field name="project" expr="eval:_project" if="_project != null"/>
     </action-record>
 
@@ -396,6 +395,11 @@
           name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
           || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)
           || !id"/>
+    </action-attrs>
+
+    <action-attrs name="action-contract-attrs-domains-partner">
+		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND (self.isProspect = true OR self.isCustomer = true) &quot;" if="_xTargetType == 1"/>
+		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND self.isSupplier = true &quot;" if="_xTargetType == 2"/>
     </action-attrs>
 
 </object-views>

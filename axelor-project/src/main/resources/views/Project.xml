@@ -811,13 +811,13 @@
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
 		<view type="form" name="contract-form"/>
-		<context name="_targetTypeSelect" expr="eval:1"/>
+		<context name="_xTargetType" expr="eval:1"/>
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
 
 	<action-view name="action-project-view-create-new-supplier-contract" title="Create new supplier contract" model="com.axelor.apps.contract.db.Contract">
 		<view type="form" name="contract-form"/>
-		<context name="_targetTypeSelect" expr="eval:2"/>
+		<context name="_xTargetType" expr="eval:2"/>
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
 
