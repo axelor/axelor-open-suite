@@ -37,6 +37,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -128,9 +129,9 @@ public class ManufOrderWorkflowService {
 
     int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-      manufOrder.addInStockMoveListItem(
-          manufOrderStockMoveService.realizeStockMovesAndCreateOneEmpty(
-              manufOrder, manufOrder.getInStockMoveList()));
+      for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+        manufOrderStockMoveService.finishStockMove(stockMove);
+      }
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);

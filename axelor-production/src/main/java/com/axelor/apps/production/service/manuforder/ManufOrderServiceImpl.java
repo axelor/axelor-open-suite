@@ -581,26 +581,35 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
+    StockMove stockMove;
+    if (stockMoveOpt.isPresent()) {
+      stockMove = stockMoveOpt.get();
+    } else {
+      stockMove =
+          manufOrderStockMoveService._createToConsumeStockMove(manufOrder, manufOrder.getCompany());
+      manufOrder.addInStockMoveListItem(stockMove);
+      Beans.get(StockMoveService.class).plan(stockMove);
     }
-    StockMove stockMove = stockMoveOpt.get();
-
     updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
-    if (!stockMoveOpt.isPresent()) {
-      return;
+    StockMove stockMove;
+    if (stockMoveOpt.isPresent()) {
+      stockMove = stockMoveOpt.get();
+    } else {
+      stockMove =
+          manufOrderStockMoveService._createToProduceStockMove(manufOrder, manufOrder.getCompany());
+      manufOrder.addOutStockMoveListItem(stockMove);
+      Beans.get(StockMoveService.class).plan(stockMove);
     }
-    StockMove stockMove = stockMoveOpt.get();
 
     updateStockMoveFromManufOrder(producedStockMoveLineList, stockMove);
   }
@@ -608,18 +617,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
       throws AxelorException {
-    checkManufOrderStockMoveLineList(
+    checkRealizedStockMoveLineList(
         manufOrder.getConsumedStockMoveLineList(), oldManufOrder.getConsumedStockMoveLineList());
   }
 
   @Override
   public void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
       throws AxelorException {
-    checkManufOrderStockMoveLineList(
+    checkRealizedStockMoveLineList(
         manufOrder.getProducedStockMoveLineList(), oldManufOrder.getProducedStockMoveLineList());
   }
 
-  protected void checkManufOrderStockMoveLineList(
+  @Override
+  public void checkRealizedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
       throws AxelorException {
 
@@ -671,6 +681,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           .getStockMoveLineList()
           .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
     }
+    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+    // update stock location by cancelling then planning stock move.
+    stockMoveService.cancel(stockMove);
+    stockMoveService.plan(stockMove);
   }
 
   /**
