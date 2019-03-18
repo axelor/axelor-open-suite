@@ -20,6 +20,7 @@
 - TASKS : Project planning time line autofill
 - ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
 - MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
+- Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 
 ## Bug Fixes
 - Configurator : Fix demo data
@@ -64,7 +65,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - CUST. DELIVERY : new tags "not invoiced" and "invoiced"
 
 ## Bug Fixes
-- Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 - StockMoveLine: Fix wrong price values in declaration of exchanges.
 - PARTNER BALANCE REPORT : edition date is always empty.
 - Shipping Coef: company is now required.
