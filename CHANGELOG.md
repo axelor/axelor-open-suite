@@ -27,6 +27,7 @@
 - BankPayment : Change in slice of nextOrderId in EbicsUser.
 - MANUF. ORDER : display message when no default email account found to send email
 - STOCK MOVE : address printing issue
+- Debt Recovery Batch : NPE fixed
 - Ticket : remove pop-up onNew.
 - Product : set 'stockManaged' false when product is of type 'service'.
 - Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
