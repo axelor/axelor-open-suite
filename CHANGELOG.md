@@ -5,6 +5,7 @@
 - Sale Order Line: new option to keep requested qty equal to qty.
 - GANTT : Fixes for links start-start and end-end links
 - MRP : Add a status to MRP Forecasts
+- Studio: Set canEdit and canNew for relational fields from studio. 
 
 ## Improvements
 - Data config : rename field 'Fields'
