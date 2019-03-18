@@ -211,4 +211,20 @@
     	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
     </action-attrs>
 
+	<action-method name="action-sale-order-method-allocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="allocateAll"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-deallocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="deallocateAll"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-reserve-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="reserveAll"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-cancel-reservation">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="cancelReservation"/>
+	</action-method>
+
 </object-views>

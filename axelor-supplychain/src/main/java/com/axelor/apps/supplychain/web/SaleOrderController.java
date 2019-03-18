@@ -39,6 +39,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -658,6 +659,78 @@ public class SaleOrderController {
           String.format(
               I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#allocateAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).allocateAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#deallocateAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).deallocateAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#reserveAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void reserveAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).reserveAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#cancelReservation(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).cancelReservation(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

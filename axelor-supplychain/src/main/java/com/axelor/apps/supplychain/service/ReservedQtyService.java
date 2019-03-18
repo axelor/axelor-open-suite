@@ -132,6 +132,8 @@ public interface ReservedQtyService {
 
   /**
    * Update allocated quantity in sale order line with a new quantity, updating location and moves.
+   * If the allocated quantity become bigger than the requested quantity, we also change the
+   * requested quantity to match the allocated quantity.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -142,7 +144,8 @@ public interface ReservedQtyService {
       throws AxelorException;
 
   /**
-   * Update requested quantity in sale order line.
+   * Update requested quantity in sale order line. If the requested quantity become lower than the
+   * allocated quantity, we also change the allocated quantity to match the requested quantity.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -188,7 +191,7 @@ public interface ReservedQtyService {
       throws AxelorException;
 
   /**
-   * In a partially realized stock move line, call this method to desallocate the quantity that will
+   * In a partially realized stock move line, call this method to deallocate the quantity that will
    * be allocated to the newly generated stock move line.
    *
    * @param stockMoveLine
