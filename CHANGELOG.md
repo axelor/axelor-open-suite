@@ -15,6 +15,7 @@
 - ManufOrder: does not create empty stock moves.
 - ProdProcess : Change in description of phase view.
 - ManufOrder : Added new label 'Outsourced'
+- TASKS : Project planning time line autofill
 
 ## Bug Fixes
 - Configurator : Fix demo data
