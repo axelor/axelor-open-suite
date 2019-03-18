@@ -12,6 +12,7 @@
 - Sale Order Line: When being edited, editable when the amount is 0.
 - ManufOrder: Prevent the user from removing realized stock move lines.
 - ManufOrder: does not create empty stock moves.
+- ProdProcess : Change in description of phase view.
 
 ## Bug Fixes
 - Configurator : Fix demo data
