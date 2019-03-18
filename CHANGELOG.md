@@ -15,6 +15,7 @@
 - ManufOrder: does not create empty stock moves.
 - ProdProcess : Change in description of phase view.
 - ManufOrder : Added new label 'Outsourced'
+- INVOICE : french term in printing Replace French word Acompte(s) lié(s) into Advance payments in Invoice
 
 ## Bug Fixes
 - Configurator : Fix demo data
