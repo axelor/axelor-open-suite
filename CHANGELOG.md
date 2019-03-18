@@ -32,6 +32,8 @@
 - Product : set 'stockManaged' false when product is of type 'service'.
 - Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
 - Calendar : Synchronisation anomaly fixed.
+- Contract : better naming and translation (fr) for the buttons
+
 
 ## [5.1.4] - 2019-03-11
 ## Features
