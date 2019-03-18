@@ -16,11 +16,11 @@
 	<view type="form" name="project-version-form"/>
   </action-view>
   
-  <menuitem name="project-task-customer" title="Tasks" order="-102" if="__config__.app.isApp('business-support')" icon="fa-tasks" icon-background="#3f6bb9"/>
+  <menuitem name="project-task-customer" title="Tickets" order="-102" if="__config__.app.isApp('business-support')" icon="fa-tasks" icon-background="#3f6bb9"/>
 
-  <menuitem name="project-task-customer-my-task" title="My Tasks" parent="project-task-customer" action="project.task.customer.my.task" order="1"/>
+  <menuitem name="project-task-customer-my-task" title="My Tickets" parent="project-task-customer" action="project.task.customer.my.task" order="1"/>
   
-  <action-view name="project.task.customer.my.task" title="My Tasks" model="com.axelor.team.db.TeamTask">
+  <action-view name="project.task.customer.my.task" title="My Tickets" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
 	<domain>self.customerReferral = :user AND self.isPrivate = false AND self.typeSelect = 'ticket'</domain>
@@ -28,7 +28,7 @@
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
-  <menuitem name="project-task-customer-new" title="New tasks" parent="project-task-customer" action="project.task.customer.new" order="2"/>
+  <menuitem name="project-task-customer-new" title="New Ticket" parent="project-task-customer" action="project.task.customer.new" order="2"/>
 
   <action-view name="project.task.customer.new" title="New tasks" model="com.axelor.team.db.TeamTask">
 	<view type="form" name="team-task-client-form"/>
@@ -58,10 +58,10 @@
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
-  <menuitem name="project-task-customer-open-all" title="All open tasks" parent="project-task-customer"
+  <menuitem name="project-task-customer-open-all" title="All open ticket" parent="project-task-customer"
 	action="project.task.customer.open.all" order="5"/>
 
-  <action-view name="project.task.customer.open.all" title="All open tasks" model="com.axelor.team.db.TeamTask">
+  <action-view name="project.task.customer.open.all" title="All open ticket" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
 	<domain>self.status IN :status_open AND self.isPrivate = false AND self.typeSelect = 'ticket'</domain>
