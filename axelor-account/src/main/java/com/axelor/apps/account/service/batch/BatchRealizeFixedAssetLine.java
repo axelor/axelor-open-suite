@@ -35,6 +35,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineService fixedAssetLineService;
 
+  @Inject FixedAssetLineRepository fixedAssetLineRepo;
+
   @Inject
   public BatchRealizeFixedAssetLine(FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetLineService = fixedAssetLineService;
@@ -52,6 +54,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
             .fetch();
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
+        fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
         if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetLineService.realize(fixedAssetLine);
           incrementDone();
@@ -59,11 +62,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(e);
-      } finally {
-        if (batch.getDone() % 1 == 0) {
-          JPA.clear();
-        }
       }
+      JPA.clear();
     }
   }
 

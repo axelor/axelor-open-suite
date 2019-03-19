@@ -31,7 +31,7 @@
 - Debt Recovery Batch : NPE fixed
 - Ticket : remove pop-up onNew.
 - Product : set 'stockManaged' false when product is of type 'service'.
-- Accouny : Manage JPA cache for BatchRealizeFixedAssetLine.
+- Account : Manage JPA cache for BatchRealizeFixedAssetLine.
 - Calendar : Synchronisation anomaly fixed.
 - Contract : better naming and translation (fr) for the buttons
 
