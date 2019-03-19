@@ -10,7 +10,7 @@
       <string name="name" title="Name"/>
       <integer name="elementSelect" title="Element" selection="supplychain.mrp.line.element.select" default="0"/>
       <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select" default="0"/>
-      <integer name="sequence" title="Sequence to order MRP results"/>
+      <integer name="sequence" title="Sequence to order results"/>
 
       <string name="statusSelect" title="Statuses to take into account" />
       
