@@ -34,7 +34,7 @@
 - Account : Manage JPA cache for BatchRealizeFixedAssetLine.
 - Calendar : Synchronisation anomaly fixed.
 - Contract : better naming and translation (fr) for the buttons
-
+- HR : Fix employeeSet domain.
 
 ## [5.1.4] - 2019-03-11
 ## Features
