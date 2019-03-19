@@ -306,7 +306,7 @@
 	    <panel name="taxPanel" title="Tax">
 	      <panel-related name="saleOrderLineTaxListPanel" colSpan="12" field="saleOrderLineTaxList" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
-	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
+	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
