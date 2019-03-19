@@ -44,6 +44,8 @@
 		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
 			<field name="acceptedCredit"/>
 			<field name="usedCredit"/>
+			<field name="insurCreditDate"/>
+			<field name="description" colSpan="12"/>
 		</panel>
 
 		<panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
@@ -89,6 +91,8 @@
 		 <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
 			 <field name="acceptedCredit"/>
 			 <field name="usedCredit"/>
+			 <field name="insurCreditDate"/>
+			 <field name="description" colSpan="12"/>
 		 </panel>
 
 		 <panel-dashlet name="viewMoveLinesPanel" action="action-accounting-situation-view-move-lines"/>
