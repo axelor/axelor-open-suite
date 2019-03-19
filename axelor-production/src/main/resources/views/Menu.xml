@@ -150,6 +150,15 @@
 		<domain>self.typeSelect = 3</domain>
 	</action-view>
 	
+	<menuitem name="manufacturing-root-sop" parent="manufacturing-root"
+		title="S&amp;OP" action="manufacturing.root.sop" order="44"/>
+
+	<action-view name="manufacturing.root.sop" title="Sales and Operations Planning"
+		model="com.axelor.apps.production.db.Sop">
+		<view type="grid" name="sop-grid"/>
+		<view type="form" name="sop-form"/>
+	</action-view>
+	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
