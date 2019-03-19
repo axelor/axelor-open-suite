@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -64,6 +65,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -77,6 +79,10 @@ public class SaleOrderController {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private SaleOrderRepository saleOrderRepo;
+
+  @Inject private CurrencyRepository currencyRepo;
+
+  @Inject private PriceListRepository priceListRepo;
 
   @Inject private SaleOrderPrintService saleOrderPrintService;
 
@@ -234,15 +240,23 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @SuppressWarnings("unchecked")
   public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
-    SaleOrder context = request.getContext().asType(SaleOrder.class);
-    context = saleOrderRepo.find(context.getId());
+    LinkedHashMap<String, Object> saleOrderTemplateContext =
+        (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
+    Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
+    SaleOrder context = saleOrderRepo.find(Long.valueOf(saleOrderId));
+
     response.setView(
         ActionView.define("Sale order")
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form-wizard")
             .context("_idCopy", context.getId().toString())
+            .context("_wizardCurrency", request.getContext().get("currency"))
+            .context("_wizardPriceList", request.getContext().get("priceList"))
             .map());
+
+    response.setCanClose(true);
   }
 
   public void generateViewTemplate(ActionRequest request, ActionResponse response) {
@@ -255,11 +269,47 @@ public class SaleOrderController {
             .map());
   }
 
-  public void createSaleOrder(ActionRequest request, ActionResponse response) {
+  public void generateSaleOrderWizard(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrderTemplate = request.getContext().asType(SaleOrder.class);
+    Partner clientPartner = saleOrderTemplate.getClientPartner();
+
+    response.setView(
+        ActionView.define("Create the quotation")
+            .model(Wizard.class.getName())
+            .add("form", "sale-order-template-wizard-form")
+            .param("popup", "reload")
+            .param("show-toolbar", "false")
+            .param("show-confirm", "false")
+            .param("width", "large")
+            .param("popup-save", "false")
+            .context("_saleOrderTemplate", saleOrderTemplate)
+            .context("_clientPartnerCurrency", clientPartner.getCurrency())
+            .map());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void createSaleOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrder origin =
         saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+
     if (origin != null) {
-      SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
+      LinkedHashMap<String, Object> wizardCurrencyContext =
+          (LinkedHashMap<String, Object>) request.getContext().get("_wizardCurrency");
+      Integer wizardCurrencyId = (Integer) wizardCurrencyContext.get("id");
+      Currency wizardCurrency = currencyRepo.find(Long.valueOf(wizardCurrencyId));
+
+      PriceList wizardPriceList = null;
+      if (request.getContext().get("_wizardPriceList") != null) {
+        LinkedHashMap<String, Object> wizardPriceListContext =
+            (LinkedHashMap<String, Object>) request.getContext().get("_wizardPriceList");
+        Integer wizardPriceListId = (Integer) wizardPriceListContext.get("id");
+        wizardPriceList = priceListRepo.find(Long.valueOf(wizardPriceListId));
+      }
+
+      SaleOrder copy =
+          Beans.get(SaleOrderCreateService.class)
+              .createSaleOrder(origin, wizardCurrency, wizardPriceList);
       response.setValues(Mapper.toMap(copy));
     }
   }
@@ -269,7 +319,7 @@ public class SaleOrderController {
     if (context.get("_idCopy") != null) {
       String idCopy = context.get("_idCopy").toString();
       SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
-      SaleOrder copy = Beans.get(SaleOrderCreateService.class).createSaleOrder(origin);
+      SaleOrder copy = Beans.get(SaleOrderCreateService.class).createTemplate(origin);
       response.setValues(Mapper.toMap(copy));
     }
   }
@@ -525,15 +575,21 @@ public class SaleOrderController {
     }
   }
 
+  /**
+   * Called from sale order form view, on clicking validate change button. Call {@link
+   * SaleOrderService#validateChanges(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
   public void validateChanges(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-      Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
-      response.setValues(saleOrderView);
+      Beans.get(SaleOrderService.class).validateChanges(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 
@@ -586,8 +642,17 @@ public class SaleOrderController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void fillPriceList(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder;
+    if (request.getContext().get("_saleOrderTemplate") != null) {
+      LinkedHashMap<String, Object> saleOrderTemplateContext =
+          (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
+      Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
+      saleOrder = saleOrderRepo.find(Long.valueOf(saleOrderId));
+    } else {
+      saleOrder = request.getContext().asType(SaleOrder.class);
+    }
     response.setValue(
         "priceList",
         saleOrder.getClientPartner() != null
@@ -603,8 +668,17 @@ public class SaleOrderController {
    * @param request
    * @param response
    */
+  @SuppressWarnings("unchecked")
   public void changePriceListDomain(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder;
+    if (request.getContext().get("_saleOrderTemplate") != null) {
+      LinkedHashMap<String, Object> saleOrderTemplateContext =
+          (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
+      Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
+      saleOrder = saleOrderRepo.find(Long.valueOf(saleOrderId));
+    } else {
+      saleOrder = request.getContext().asType(SaleOrder.class);
+    }
     String domain =
         Beans.get(PartnerPriceListService.class)
             .getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
@@ -622,5 +696,14 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
       response.setReload(true);
     }
+  }
+
+  public void updateSaleOrderLineTax(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
+
+    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 }

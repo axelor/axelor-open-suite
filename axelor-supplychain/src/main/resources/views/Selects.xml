@@ -85,4 +85,8 @@
 		<option value="2">Forecasted customer invoices</option>
 	</selection>
 
+	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
+		<option value="mrp">MRP</option>
+	</selection>
+
 </object-views>

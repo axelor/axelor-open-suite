@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -171,112 +171,21 @@
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">product</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">stockLocation</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">manuf_order_seq</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">neededQty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">missingNegativeQty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">availableStockLocation</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">availableQty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">label_to_printing</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">missingQty</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">product</property>
-                    <property name="nativeName">product</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">stockLocation</property>
-                    <property name="nativeName">stockLocation</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">manuf_order_seq</property>
-                    <property name="nativeName">manuf_order_seq</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">neededQty</property>
-                    <property name="nativeName">neededQty</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">missingNegativeQty</property>
-                    <property name="nativeName">missingNegativeQty</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">availableStockLocation</property>
-                    <property name="nativeName">availableStockLocation</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">availableQty</property>
-                    <property name="nativeName">availableQty</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">label_to_printing</property>
-                    <property name="nativeName">label_to_printing</property>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[SELECT
     Product.full_name as "product",
     ProductionStockLocation.name as "stockLocation",
     ManufOrder.manuf_order_seq,
-    sum(StockMoveLine.qty) as "neededQty",
-    sum(StockMoveLine.qty) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
+    CASE ManufOrder.is_cons_pro_on_operation
+      WHEN true THEN sum(StockMoveLine.qty)
+      ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+    END as "neededQty",
+    (CASE ManufOrder.is_cons_pro_on_operation
+      WHEN true THEN sum(StockMoveLine.qty)
+      ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+    END) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
     StockLocation.name as "availableStockLocation",
     sum(StockLocationLine.current_qty)/count(StockMoveLine.qty) as "availableQty",
     Unit.label_to_printing
@@ -331,9 +240,11 @@ GROUP BY
     Product.full_name,
     ProductionStockLocation.name,
     ManufOrder.manuf_order_seq,
+    ManufOrder.is_cons_pro_on_operation,
     ProductionStockLocationLine.current_qty,
     label_to_printing,
-    StockLocation.name;]]></xml-property>
+    StockLocation.name;
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

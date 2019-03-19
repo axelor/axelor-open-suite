@@ -36,8 +36,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,10 +84,21 @@ public class MoveController {
 
   public void generateReverse(ActionRequest request, ActionResponse response) {
 
-    Move move = request.getContext().asType(Move.class);
+    Context context = request.getContext();
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> moveMap = (LinkedHashMap<String, Object>) context.get("_move");
+    Integer moveId = (Integer) moveMap.get("id");
+    boolean isAutomaticReconcile = (boolean) context.get("isAutomaticReconcile");
+    boolean isAutomaticAccounting = (boolean) context.get("isAutomaticAccounting");
+    boolean isUnreconcileOriginalMove = (boolean) context.get("isUnreconcileOriginalMove");
 
     try {
-      Move newMove = moveService.generateReverse(moveRepo.find(move.getId()));
+      Move newMove =
+          moveService.generateReverse(
+              moveRepo.find(new Long(moveId)),
+              isAutomaticReconcile,
+              isAutomaticAccounting,
+              isUnreconcileOriginalMove);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
@@ -93,6 +106,7 @@ public class MoveController {
                 .param("forceEdit", "true")
                 .context("_showRecord", newMove.getId().toString())
                 .map());
+        response.setCanClose(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -143,11 +157,8 @@ public class MoveController {
     } else {
       try {
         moveRepo.remove(move);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
       } catch (Exception e) {
-        TraceBackService.trace(response, e);
-      }
-      {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       }
     }
   }

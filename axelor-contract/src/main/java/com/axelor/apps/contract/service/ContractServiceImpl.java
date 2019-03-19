@@ -353,9 +353,21 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       contract.setTerminatedByUser(AuthUtils.getUser());
     }
     contract.setEndDate(date);
-    if (date.isBefore(appBaseService.getTodayDate())
-        || date.equals(appBaseService.getTodayDate())) {
-      versionService.terminate(currentVersion, date);
+
+    close(contract, date);
+
+    save(contract);
+  }
+
+  @Override
+  @Transactional
+  public void close(Contract contract, LocalDate terminationDate) {
+    LocalDate today = appBaseService.getTodayDate();
+
+    ContractVersion currentVersion = contract.getCurrentContractVersion();
+
+    if (terminationDate.isBefore(today) || terminationDate.equals(today)) {
+      versionService.terminate(currentVersion, terminationDate);
       contract.setStatusSelect(CLOSED_CONTRACT);
     }
 

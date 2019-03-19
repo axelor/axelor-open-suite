@@ -28,4 +28,7 @@ public interface IExceptionMessage {
       "Error in sending emails. Please check the log file generated." /*)*/;
 
   static final String EMAIL_SUCCESS = /*$$(*/ "Emails sent successfully" /*)*/;
+
+  static final String REMINDER_EMAIL1 = /*$$(*/
+      "Please add atleast one invited Partner or Lead." /*)*/;
 }

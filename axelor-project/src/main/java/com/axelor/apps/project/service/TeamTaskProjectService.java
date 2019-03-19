@@ -17,10 +17,11 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 
-public interface TeamTaskService {
+public interface TeamTaskProjectService extends TeamTaskService {
   TeamTask create(String subject, Project project, User assignedTo);
 }

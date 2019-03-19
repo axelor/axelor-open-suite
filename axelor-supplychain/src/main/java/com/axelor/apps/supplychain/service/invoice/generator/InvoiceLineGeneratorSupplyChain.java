@@ -157,7 +157,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       if (purchaseOrderLine.getIsTitleLine()) {
         this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
       }
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
       this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
@@ -234,6 +233,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
+      invoiceLine.setBudgetDistributionSumAmount(
+          purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && isAccountRequired()) {
@@ -256,14 +257,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (stockMoveLine != null) {
 
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-
-      this.price =
-          invoiceLineService.getExTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-      this.inTaxPrice =
-          invoiceLineService.getInTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.price = stockMoveLine.getUnitPriceUntaxed();
+      this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
       this.price =
           unitConversionService.convert(
@@ -349,6 +344,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }

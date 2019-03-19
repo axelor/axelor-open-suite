@@ -1040,7 +1040,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (result == null) {
       throw new AxelorException(
           stockMove,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.STOCK_MOVE_13),
           dString,
           aString);
@@ -1171,6 +1171,27 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void checkExpirationDates(StockMove stockMove) throws AxelorException {
     if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       stockMoveLineService.checkExpirationDates(stockMove);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void setPickingStockMoveEditDate(StockMove stockMove, String userType) {
+    if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
+        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+        && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
+      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingIsEdited(true);
+    }
+  }
+
+  @Override
+  public void setPickingStockMovesEditDate(List<Long> ids, String userType) {
+    if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
+      for (Long id : ids) {
+        StockMove stockMove = stockMoveRepo.find(id);
+        setPickingStockMoveEditDate(stockMove, userType);
+      }
     }
   }
 }

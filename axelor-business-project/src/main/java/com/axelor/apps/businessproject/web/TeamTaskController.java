@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,7 +28,7 @@ import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
 
-  @Inject private TeamTaskBusinessService teamTaskBusinessService;
+  @Inject private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
 
   @Inject private TeamTaskRepository teamTaskRepo;
 
@@ -41,7 +41,7 @@ public class TeamTaskController {
     }
 
     try {
-      teamTask = teamTaskBusinessService.updateDiscount(teamTask);
+      teamTask = teamTaskBusinessProjectService.updateDiscount(teamTask);
 
       response.setValue("discountTypeSelect", teamTask.getDiscountTypeSelect());
       response.setValue("discountAmount", teamTask.getDiscountAmount());
@@ -55,7 +55,7 @@ public class TeamTaskController {
     TeamTask teamTask = request.getContext().asType(TeamTask.class);
 
     try {
-      teamTask = teamTaskBusinessService.compute(teamTask);
+      teamTask = teamTaskBusinessProjectService.compute(teamTask);
       response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
       response.setValue("exTaxTotal", teamTask.getExTaxTotal());
     } catch (Exception e) {

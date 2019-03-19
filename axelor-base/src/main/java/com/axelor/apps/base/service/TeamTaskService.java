@@ -15,28 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.db;
+package com.axelor.apps.base.service;
 
-@Deprecated
-public interface IPurchaseOrder {
+import com.axelor.apps.base.db.Frequency;
+import com.axelor.team.db.TeamTask;
 
-  /** Static purchase order status select */
-  static final int STATUS_DRAFT = 1;
+public interface TeamTaskService {
 
-  static final int STATUS_REQUESTED = 2;
-  static final int STATUS_VALIDATED = 3;
-  static final int STATUS_FINISHED = 4;
-  static final int STATUS_CANCELED = 5;
+  /** Generates reccurent tasks from given {@link TeamTask} and {@link Frequency} */
+  void generateTasks(TeamTask teamTask, Frequency frequency);
 
-  /** Static purchase order receipt status select */
-  static final int STATE_NOT_RECEIVED = 1;
+  /**
+   * Updates fields of next task of given {@link TeamTask}, recursively.
+   *
+   * <p>This method DOES NOT update potential parent.
+   */
+  void updateNextTask(TeamTask teamTask);
 
-  static final int STATE_PARTIALLY_RECEIVED = 2;
-  static final int STATE_RECEIVED = 3;
-
-  /** Static invoicing type select */
-  static final int INVOICING_FREE = 1;
-
-  static final int INVOICING_BY_DELIVERY = 2;
-  static final int INVOICING_PER_ORDER = 3;
+  /** Removes all next tasks of given {@link TeamTask}. */
+  void removeNextTasks(TeamTask teamTask);
 }

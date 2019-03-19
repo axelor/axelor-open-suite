@@ -23,11 +23,11 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -142,7 +142,7 @@ public class MrpServiceImpl implements MrpService {
     this.finish(mrpRepository.find(mrp.getId()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void startMrp(Mrp mrp) {
 
     log.debug("Start MRP");
@@ -158,7 +158,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void reset(Mrp mrp) {
 
     mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
@@ -561,7 +561,7 @@ public class MrpServiceImpl implements MrpService {
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
-      statusList.add(IPurchaseOrder.STATUS_VALIDATED);
+      statusList.add(PurchaseOrderRepository.STATUS_VALIDATED);
     }
 
     // TODO : Manage the case where order is partially delivered
@@ -573,7 +573,7 @@ public class MrpServiceImpl implements MrpService {
                     + "AND self.purchaseOrder.statusSelect IN (?4)",
                 this.productMap.keySet(),
                 this.stockLocationList,
-                IPurchaseOrder.STATE_RECEIVED,
+                PurchaseOrderRepository.STATE_RECEIVED,
                 statusList)
             .fetch();
 

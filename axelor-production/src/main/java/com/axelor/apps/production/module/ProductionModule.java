@@ -32,6 +32,8 @@ import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
+import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
+import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
@@ -58,6 +60,10 @@ import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.production.service.costsheet.UnitCostCalcLineService;
+import com.axelor.apps.production.service.costsheet.UnitCostCalcLineServiceImpl;
+import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
+import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -113,5 +119,8 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
+    bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
+    bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
+    bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
   }
 }

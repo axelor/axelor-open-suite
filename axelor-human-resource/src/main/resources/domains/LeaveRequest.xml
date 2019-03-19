@@ -10,9 +10,9 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
       <date name="requestDate" title="Request date" readonly="true" />
-      <date name="fromDate" title="Date from" required="true"/>
+      <date name="fromDate" title="From" required="true"/>
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
-      <date name="toDate" title="Date to (Included)" />
+      <date name="toDate" title="To (included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
       <string name="comments" title="Comments" large="true"/>
@@ -25,6 +25,7 @@
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
+      <decimal name="quantityBeforeValidation" title="Available quantity (before validation)" scale="4" precision="8" />
       <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
 	
       <string name="fullName" namecolumn="true" readonly="true">

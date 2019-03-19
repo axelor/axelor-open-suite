@@ -3,11 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="stock" package="com.axelor.apps.stock.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="StockLocation" lang="java">
-
-    <boolean name="usableOnSaleOrder" title="Usable on sale order" />
-
+  <entity name="Sequence" lang="java">
+    
+     <extra-code><![CDATA[
+        
+        //SEQUENCE SELECT
+  		public static final String SUPPLYCHAIN_MRP = "mrp";
+        
+     ]]></extra-code>
+    
   </entity>
+
 </domain-models>

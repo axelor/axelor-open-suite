@@ -9,7 +9,7 @@
 
       <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
       <boolean name="manageAccumulation" title="Manage Accumulation"/>
-      <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
+      <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>
       <string name="instruction"  title="Instruction" multiline="true" large="true"/>
       

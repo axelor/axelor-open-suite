@@ -94,6 +94,11 @@
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
 		<option value="5">Leave Management Reset</option>
+		<option value="6">Export des salariés</option>
+	</selection>
+	
+	<selection name="hr.batch.employment.contract.export.type.select">
+		<option value="1">SILAE</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
@@ -172,5 +177,18 @@
 		<option value="1">Planned time</option>
 		<option value="2">Spent time</option>
 	</selection>
+
+  <selection name="hr.employee.form.step.by.step.select">
+    <option value="1">Basic information</option>
+    <option value="2">Employment contract</option>
+    <option value="3">Leaves and timesheets</option>
+    <option value="4">User creation</option>
+    <option value="5">Finished</option>
+  </selection>
+
+  <selection name="employee.hr.sex.select">
+    <option value="F">F</option>
+    <option value="M">M</option>
+  </selection>
 
 </object-views>

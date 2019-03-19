@@ -15,24 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
-import com.axelor.team.db.TeamTask;
-import java.time.LocalDate;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.UnitCostCalcLine;
 
-public class TeamTaskServiceImpl implements TeamTaskService {
+public interface UnitCostCalcLineService {
 
-  @Override
-  public TeamTask create(String subject, Project project, User assignedTo) {
-    TeamTask task = new TeamTask();
-    task.setName(subject);
-    task.setAssignedTo(assignedTo);
-    task.setTaskDate(LocalDate.now());
-    task.setStatus("new");
-    task.setPriority("normal");
-    project.addTeamTaskListItem(task);
-    return task;
-  }
+  public UnitCostCalcLine createUnitCostCalcLine(
+      Product product, int maxLevel, CostSheet costSheet);
 }

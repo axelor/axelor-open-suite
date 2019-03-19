@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HRConfig" lang="java" cachable="true">
+  <entity name="HRConfig" cachable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Kilometric expense product" />
     <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20"/>
@@ -67,7 +67,9 @@
 	<!-- Unique product for the timesheet -->
 	<boolean name="useUniqueProductForTimesheet"  title="Use unique product for timesheet" />
     <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product" title="Unique product for timesheet" />
-  	 
+
+    <!-- DPAE -->
+    <boolean name="enableDPAE" title="Enable DPAE" default="false"/>
   </entity>
   
 </domain-models>

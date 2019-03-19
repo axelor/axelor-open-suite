@@ -28,9 +28,9 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -286,7 +286,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           createProductStockMoveLine(
               purchaseOrderLine,
               qty,
-              purchaseOrderLine.getProduct().getControlOnReceipt() ? qualityStockMove : stockMove);
+              needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove);
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
@@ -295,6 +295,24 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     }
     return stockMoveLine;
+  }
+
+  /**
+   * @param product
+   * @param purchaseOrder
+   * @return true if product needs a control on receipt and if the purchase order is not a direct
+   *     order
+   */
+  protected boolean needControlOnReceipt(PurchaseOrderLine purchaseOrderLine) {
+
+    Product product = purchaseOrderLine.getProduct();
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+
+    if (product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
+      return true;
+    }
+    return false;
   }
 
   protected StockMoveLine createProductStockMoveLine(
@@ -460,7 +478,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     if (purchaseOrder.getPurchaseOrderLineList() == null
         || purchaseOrder.getPurchaseOrderLineList().isEmpty()) {
-      return IPurchaseOrder.STATE_NOT_RECEIVED;
+      return PurchaseOrderRepository.STATE_NOT_RECEIVED;
     }
 
     int receiptState = -1;
@@ -469,22 +487,24 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
       if (this.isStockMoveProduct(purchaseOrderLine, purchaseOrder)) {
 
-        if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_NOT_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        if (purchaseOrderLine.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_NOT_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_NOT_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_NOT_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_NOT_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_NOT_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-          return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+          return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
         }
       }
     }

@@ -89,11 +89,21 @@
 			</panel>
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+				<field name="companyExTaxTotal" title="Total W.T." colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
+					<viewer depends="companyExTaxTotal,$currencySymbol">
+						<![CDATA[
+							<dd>{{record.companyExTaxTotal}} {{record.$currencySymbol}}</dd>
+						]]>
+					</viewer>
+				</field>
+				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-invoice-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" readonlyIf="!account.analyticDistributionAuthorized" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
@@ -141,8 +151,11 @@
 		canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-menu-form">
 		<panel name="mainPanel">
-			<field name="invoice.partner"/>
-			<field name="invoice.invoiceId"/>
+			<field name="invoice.company" colSpan="12"/>
+			<field name="invoice.partner" colSpan="3"/>
+			<field name="invoice.invoiceId" colSpan="3"/>
+			<field name="invoice.invoiceDate" colSpan="3"/>
+			<field name="invoice.currency" colSpan="3"/>
 		</panel>
 		<panel-include view="invoice-line-form"/>
 	</form>
@@ -206,6 +219,7 @@
 	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
 	    <action name="action-invoice-line-attrs-sub-line" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     </action-group>
 
 	<action-group name="action-group-account-invoice-line-onload">
@@ -213,6 +227,7 @@
 		<action name="action-attrs-account-invoice-line-onnew-onload"/>
 		<action name="action-invoice-line-attrs-readonly-form"/>
 		<action name="action-invoice-line-record-operation-type"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
 	</action-group>
 
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -315,6 +330,10 @@
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getFixedAssetCategory"/>
 	</action-method>
 
+	<action-method name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+		<call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="computeBudgetDistributionSumAmount"/>
+	</action-method>
+
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-attrs-account-invoice-line-onnew-onload">
 		<!-- Show Elements -->
@@ -381,5 +400,11 @@
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
 		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 	</action-attrs>
+
+	<action-view name="action-invoice-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<domain>self.invoiceLine = :id</domain>
+	</action-view>
 
 </object-views>
