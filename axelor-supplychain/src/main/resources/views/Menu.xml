@@ -42,9 +42,9 @@
 	
 	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration" icon="fa-cog"/>
 	
-	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
+	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="Move types" action="stock.mrp.configuration.mrp.line.type"/>
 	
-	<action-view name="stock.mrp.configuration.mrp.line.type" title="MRP move types" model="com.axelor.apps.supplychain.db.MrpLineType">
+	<action-view name="stock.mrp.configuration.mrp.line.type" title="Move types" model="com.axelor.apps.supplychain.db.MrpLineType">
     	<view type="grid" name="mrp-line-type-grid"/>
 	    <view type="form" name="mrp-line-type-form"/>
 	</action-view>
