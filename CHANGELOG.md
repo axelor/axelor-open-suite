@@ -31,6 +31,7 @@
 - Configurator: Fix total computation on sale order when generating sale order line.
 - Stock Move : wrong qty in outgoing move printing
 - MRPLine : Specify views for proposalSelect. 
+- HR : Fix NoSuchField Error.
 
 ## [5.0.7] - 2018-12-13
 ## Features
