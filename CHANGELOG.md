@@ -154,6 +154,7 @@
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
 - SaleOrderLine : Fix functionality of Edit button of Sale Order.
 - PurchaseOrder: Add analytic move lines to generated purchase order.
+- Workflow: reset domain of model and json field when app builder is changed.
 
 ## [5.1.7] - 2019-06-17
 ## Features
