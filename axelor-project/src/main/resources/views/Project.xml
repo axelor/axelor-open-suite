@@ -355,6 +355,7 @@
 				<button name="createNewSupplierContract" title="Create new supplier contract" colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
 				<panel-dashlet name="customerContractPanel" title="Customer contracts" action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
 				<panel-dashlet name="supplierContractPanel" title="Supplier contracts" action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="contractInvoicePanel" title="Invoices" action="action-project-dashlet-contract-invoices" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel name="attrsPanel">
@@ -833,4 +834,10 @@
 		<domain>self.project.id = :id AND self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
 	</action-view>
 
+	<action-view name="action-project-dashlet-contract-invoices" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.contract.project.id = :_id</domain>
+	</action-view>
+	
 </object-views>
