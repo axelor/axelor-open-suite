@@ -23,6 +23,8 @@
 	<decimal name="totalPaid" title="Total paid" readonly="true"/>
 	<decimal name="totalCashed" title="Total cashed" readonly="true"/>
 	<boolean name="includeOtherBankStatements" title="Include other bank statements"/>
+    <many-to-one name="validatedByUser" title="Validated By" ref="com.axelor.auth.db.User" readonly="true"/>
+    <date name="validatedDate" title="Validated On" readonly="true"/>
 
 	<extra-code><![CDATA[
 	
