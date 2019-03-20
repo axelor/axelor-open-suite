@@ -5,7 +5,8 @@
 - Sale Order Line: new option to keep requested qty equal to qty.
 - GANTT : Fixes for links start-start and end-end links
 - MRP : Add a status to MRP Forecasts
-- Studio: Set canEdit and canNew for relational fields from studio. 
+- Studio: Set canEdit and canNew for relational fields from studio.
+- Sale Order: new button to modify reserved quantities in lines.
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -35,6 +36,7 @@
 - Calendar : Synchronisation anomaly fixed.
 - Contract : better naming and translation (fr) for the buttons
 - HR : Fix employeeSet domain.
+- Add missing french translation.
 - Business Project : Link Project when invoice generate from sale order.
 
 ## [5.1.4] - 2019-03-11

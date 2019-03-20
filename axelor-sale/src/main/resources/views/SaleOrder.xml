@@ -170,6 +170,10 @@
 	      <item title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
 	      <item title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
+        <item title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Deallocate all" action="save,action-sale-order-method-deallocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+				<item title="Reserve all" action="save,action-sale-order-method-reserve-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Cancel reservation" action="save,action-sale-order-method-cancel-reservation" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
 	    </menu>
 	  </menubar>
 	  <panel name="mainPanel">
