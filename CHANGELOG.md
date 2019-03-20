@@ -22,7 +22,7 @@
 - ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
 - MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
 - Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
-
+- Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
 ## Bug Fixes
 - Configurator : Fix demo data
 - Employee : Fix issue on save of contact master detail.
