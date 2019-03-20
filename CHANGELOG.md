@@ -8,6 +8,7 @@
 - Studio: Set canEdit and canNew for relational fields from studio.
 - Sale Order: new button to modify reserved quantities in lines.
 - Bank Payment : Addition of two fields in BankReconciliation.
+- Stock Location Line: New buttons to allocate or deallocate every related stock move lines.
 
 ## Improvements
 - Data config : rename field 'Fields'

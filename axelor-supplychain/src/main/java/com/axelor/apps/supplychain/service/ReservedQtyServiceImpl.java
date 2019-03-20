@@ -313,20 +313,17 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     BigDecimal realReservedQty;
 
     // the quantity that will be allocated in stock move line
-    BigDecimal realReservedStockMoveQty;
     BigDecimal leftToAllocate =
         stockLocationLine.getRequestedReservedQty().subtract(stockLocationLine.getReservedQty());
     realReservedQty = stockLocationQty.min(leftToAllocate);
 
-    realReservedStockMoveQty =
-        convertUnitWithProduct(stockLocationLineUnit, stockMoveLineUnit, realReservedQty, product);
     allocateReservedQuantityInSaleOrderLines(
-        realReservedStockMoveQty, stockLocation, product, stockLocationLineUnit);
+        realReservedQty, stockLocation, product, stockLocationLineUnit);
     updateReservedQty(stockLocationLine);
   }
 
   @Override
-  public void allocateReservedQuantityInSaleOrderLines(
+  public BigDecimal allocateReservedQuantityInSaleOrderLines(
       BigDecimal qtyToAllocate,
       StockLocation stockLocation,
       Product product,
@@ -350,19 +347,24 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             stockMoveLine -> stockMoveLine.getStockMove().getReservationDateTime()));
     BigDecimal leftQtyToAllocate = qtyToAllocate;
     for (StockMoveLine stockMoveLine : stockMoveLineListToAllocate) {
+      BigDecimal leftQtyToAllocateStockMove =
+          convertUnitWithProduct(
+              stockLocationLineUnit, stockMoveLine.getUnit(), leftQtyToAllocate, product);
       BigDecimal neededQtyToAllocate =
           stockMoveLine.getRequestedReservedQty().subtract(stockMoveLine.getReservedQty());
-      BigDecimal allocatedQty = leftQtyToAllocate.min(neededQtyToAllocate);
+      BigDecimal allocatedStockMoveQty = leftQtyToAllocateStockMove.min(neededQtyToAllocate);
 
-      BigDecimal allocatedStockMoveQty =
+      BigDecimal allocatedQty =
           convertUnitWithProduct(
-              stockLocationLineUnit, stockMoveLine.getUnit(), allocatedQty, product);
+              stockMoveLine.getUnit(), stockLocationLineUnit, allocatedStockMoveQty, product);
 
       // update reserved qty in stock move line and sale order line
       updateReservedQuantityFromStockMoveLine(stockMoveLine, product, allocatedStockMoveQty);
       // update left qty to allocate
       leftQtyToAllocate = leftQtyToAllocate.subtract(allocatedQty);
     }
+
+    return qtyToAllocate.subtract(leftQtyToAllocate);
   }
 
   @Override

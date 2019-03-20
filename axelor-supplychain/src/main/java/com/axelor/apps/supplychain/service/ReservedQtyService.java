@@ -108,12 +108,13 @@ public interface ReservedQtyService {
    * product and stock location. The first stock move to have the reservation will be the first to
    * have the quantity allocated.
    *
-   * @param qtyToAllocate
-   * @param stockLocation
-   * @param product
-   * @param stockLocationLineUnit
+   * @param qtyToAllocate the quantity available to be allocated.
+   * @param stockLocation a stock location.
+   * @param product a product.
+   * @param stockLocationLineUnit Unit of the stock location line.
+   * @return The quantity that was allocated (in stock location line unit).
    */
-  void allocateReservedQuantityInSaleOrderLines(
+  BigDecimal allocateReservedQuantityInSaleOrderLines(
       BigDecimal qtyToAllocate,
       StockLocation stockLocation,
       Product product,
