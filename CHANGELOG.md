@@ -37,6 +37,7 @@
 - Contract : better naming and translation (fr) for the buttons
 - HR : Fix employeeSet domain.
 - Add missing french translation.
+- Business Project : Link Project when invoice generate from sale order.
 
 ## [5.1.4] - 2019-03-11
 ## Features
