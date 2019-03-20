@@ -16,6 +16,7 @@
 - SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
 - RECONCILE : Update missing sequence alert
 - VEHICLE : removed isArchived field.
+- HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.

@@ -1,9 +1,15 @@
 "code";"name"
-1;1
-2;2
-3;3
-4;4
-5;5
-6;6
-7;7
-"SUP7";"More than 7"
+"AINF3";"Less than 3 – automobile"
+"A3";"3 – automobile"
+"A4";"4 – automobile"
+"A5";"5 – automobile"
+"A6";"6 – automobile"
+"A7";"7 – automobile"
+"ASUP7";"More than 7 – automobile"
+"M1";"1 – motorbike"
+"M2";"2 – motorbike"
+"M3";"3 – motorbike"
+"M4";"4 – motorbike"
+"M5";"5 – motorbike"
+"MSUP5";"More than 5 – motorbike"
+"MP";"moped"
