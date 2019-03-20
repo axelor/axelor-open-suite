@@ -39,7 +39,7 @@
 	
 	<form name="sop-line-generate-mps-forecasts-wizard-form"  title="Generate MPS forecasts" model="com.axelor.apps.base.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
     	<panel name="wizardPanel" colSpan="12">
-	    	<panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false" editable="true" type="one-to-many" colSpan="12" target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false" onChange="action-mrp-forecast-method-compute-total-forecast">
+	    	<panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false" editable="true" type="one-to-many" colSpan="12" target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
 	    		<field name="product" readonly="true"/>
 	    		<field name="qty" onChange="action-sop-line-record-compute-total-price"/>
 	    		<field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
@@ -47,8 +47,10 @@
 	    	</panel-related>
 	    	
 	    	<field name="$sopSalesForecast" readonly="true" title="Sales forecast" type="decimal"/>
-	    	<field name="$totalForecast" readonly="true" title="Total forecast" type="decimal"/>
 	    	<field name="$stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true"/>
+	    	<field name="$totalForecast" readonly="true" title="Total forecast" type="decimal"/>
+	    	<spacer name="totalForecastSpacer" colSpan="6"/>
+	    	<button name="computeTotalForecastBtn" title="Compute total forecast" onClick="action-mrp-forecast-method-compute-total-forecast"/>
 			<button name="confirmForecastsBtn" readonlyIf="$stockLocation==null" title="Confirm forecasts" onClick="action-mrp-forecast-method-generate-mrp-forecasts"/>
     	</panel>
     </form>
@@ -88,7 +90,10 @@
 	</action-record>
 	
 	<action-record name="action-sop-line-record-compute-qty" model="com.axelor.apps.base.db.Wizard">
-		<field name="qty" expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_EVEN)"/>
+		<field name="qty" expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_EVEN)" 
+			if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0"/>
+		<field name="qty" expr="eval: 0" 
+			if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) == 0"/>
 	</action-record>
 	
 	<action-method name="action-mrp-forecast-method-generate-mrp-forecasts">
