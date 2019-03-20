@@ -182,7 +182,7 @@
 "LogisticalForm.customerCode","Customer code:",,
 "LogisticalForm.customerName","Customer name:",,
 "LogisticalForm.date","Date:",,
-"LogisticalForm.item",,,
+"LogisticalForm.item","Item",,
 "LogisticalForm.itemDescription","Item description",,
 "LogisticalForm.packagingNumber","Packaging number:",,
 "LogisticalForm.packingList","Packing list",,
