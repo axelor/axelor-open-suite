@@ -23,7 +23,9 @@
         </toolbar>
 		<panel name="mainPanel" colSpan="12">
 			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
-				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
+				<field name="validatedByUser" colSpan="2"/>
+				<field name="validatedDate" colSpan="2"/>
 				<field name="name"/>
 				<field name="bankStatement" domain="self.statusSelect = 2"/>
 				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
@@ -37,7 +39,7 @@
 			</panel>
 			<panel colSpan="12" name="actionsPanel">
 				<button name="loadBankStatementBtn" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
-				<button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3"/>
+				<button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" readonlyIf="statusSelect == 2" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3"/>
 				<button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="save,action-group-bankreconciliation-validate-click" colSpan="3"/>
 				<button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3"/>
 			</panel>

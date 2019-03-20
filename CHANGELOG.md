@@ -7,6 +7,7 @@
 - MRP : Add a status to MRP Forecasts
 - Studio: Set canEdit and canNew for relational fields from studio.
 - Sale Order: new button to modify reserved quantities in lines.
+- Bank Payment : Addition of two fields in BankReconciliation.
 
 ## Improvements
 - Data config : rename field 'Fields'
