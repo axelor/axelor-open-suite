@@ -68,6 +68,7 @@
 - MRP : Generate new sequence on save
 - TeamTask : Separate tasks and tickets
 - DataBackup : update importId when its null with format IDDDMMYYHHMM
+- Project : Added dashlet view of contract invoices
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
