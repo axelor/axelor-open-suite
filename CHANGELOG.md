@@ -9,6 +9,7 @@
 - Sale Order: new button to modify reserved quantities in lines.
 - Bank Payment : Addition of two fields in BankReconciliation.
 - Stock Location Line: New buttons to allocate or deallocate every related stock move lines.
+- Supplychain Config: add an option to auto allocate reserved qty on other stock moves.
 
 ## Improvements
 - Data config : rename field 'Fields'

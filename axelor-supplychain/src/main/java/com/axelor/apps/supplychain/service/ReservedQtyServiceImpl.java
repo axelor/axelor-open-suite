@@ -244,6 +244,21 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
               realReservedQty,
               stockMoveLine.getProduct());
       updateReservedQuantityFromStockMoveLine(stockMoveLine, product, realReservedStockMoveQty);
+
+      // reallocate quantity in other stock move lines
+      if (supplychainConfigService
+          .getSupplyChainConfig(stockLocation.getCompany())
+          .getAutoAllocateOnAllocation()) {
+        BigDecimal availableQuantityInLocation =
+            stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+        availableQuantityInLocation =
+            convertUnitWithProduct(
+                stockLocationLineUnit, stockMoveLineUnit, availableQuantityInLocation, product);
+        BigDecimal qtyRemainingToAllocate =
+            availableQuantityInLocation.subtract(realReservedStockMoveQty);
+        reallocateQty(
+            stockMoveLine, stockLocation, stockLocationLine, product, qtyRemainingToAllocate);
+      }
     }
 
     updateReservedQty(stockLocationLine);
