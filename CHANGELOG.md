@@ -38,6 +38,7 @@
 - HR : Fix employeeSet domain.
 - Add missing french translation.
 - Business Project : Link Project when invoice generate from sale order.
+- HR : Remove search from emailAddress from Employee.
 
 ## [5.1.4] - 2019-03-11
 ## Features
