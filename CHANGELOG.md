@@ -44,6 +44,7 @@
 - HR : Remove search from emailAddress from Employee.
 - Business Project : Hide sale order in report on conditon.
 - Stock Move: reservation date time is now readonly.
+- Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
 
 ## [5.1.4] - 2019-03-11
 ## Features

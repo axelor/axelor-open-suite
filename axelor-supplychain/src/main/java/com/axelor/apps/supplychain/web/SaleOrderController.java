@@ -99,6 +99,7 @@ public class SaleOrderController {
                   .add("form", "stock-move-form")
                   .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
+                  .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
