@@ -27,6 +27,8 @@
 - MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
 - Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 - Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
+- Sale Order: notify the creation of stock move after modification.
+
 ## Bug Fixes
 - Configurator : Fix demo data
 - Employee : Fix issue on save of contact master detail.
