@@ -294,6 +294,7 @@
 "Payment mode","Mode de paiement",,
 "Period",,,
 "Picking Order Info","Info bon de préparation",,
+"Planned stock move lines","Lignes de mouvement de stock prévues",,
 "Please configure the advance payment account for the company %s","Veuillez configurer le compte pour les acomptes pour la société %s",,
 "Please configure the advance payment product","Veuillez configurer le produit d'acompte",,
 "Please configure the sale order invoicing product","Veuillez configurer le produit de facturation des commandes",,
