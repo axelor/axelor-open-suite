@@ -52,6 +52,8 @@
 - Business Project : Hide sale order in report on conditon.
 - Stock Move: reservation date time is now readonly.
 - Supplychain : Addition of french translation.
+- BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
+
 
 ## [5.1.4] - 2019-03-11
 ## Features
