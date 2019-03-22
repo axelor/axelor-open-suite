@@ -16,6 +16,8 @@
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	
+    <integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+    
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>

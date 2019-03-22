@@ -17,8 +17,9 @@
         </panel>
     </form>
     
-    <action-attrs name="action-substitute-pfp-validator-attrs-domain-pfp-validator-user">
-    	<attribute name="domain" for="substitutePfpValidatorUser" expr="eval: &quot; self.activeCompany.id = ${__parent__.activeCompany.id} &quot;"/>
-    </action-attrs>
+	<action-attrs name="action-substitute-pfp-validator-attrs-domain-pfp-validator-user">
+	  <attribute name="domain" expr="eval: &quot; self.companySet.id in (${__parent__.companySet.isEmpty()?0:__parent__.companySet.id.join(', ')}) &quot;" for="substitutePfpValidatorUser"/>
+	</action-attrs>
+
     
 </object-views>
