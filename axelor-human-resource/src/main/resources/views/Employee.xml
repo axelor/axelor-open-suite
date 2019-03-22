@@ -32,10 +32,10 @@
 
     <!-- New employee wizard -->
     <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5">
-      <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left" readonlyIf="stepByStepSelect &lt; 2" onClick="validate,action-employee-record-previous-step"/>
+      <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left" readonlyIf="stepByStepSelect &lt; 2" onClick="validate,action-employee-record-previous-step,save"/>
       <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true" showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
-      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right" readonlyIf="stepByStepSelect &gt; 3" onClick="validate,action-employee-record-next-step"/>
-      <button name="finishBtn" colSpan="1" title="Finish" onClick="validate,action-employee-record-finish-sbs" showIf="stepByStepSelect == 4"/>
+      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right" readonlyIf="stepByStepSelect &gt; 3" onClick="validate,action-employee-record-next-step,save"/>
+      <button name="finishBtn" colSpan="1" title="Finish" onClick="validate,action-employee-record-finish-sbs,save" showIf="stepByStepSelect == 4"/>
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
