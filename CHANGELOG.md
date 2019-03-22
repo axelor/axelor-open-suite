@@ -54,7 +54,7 @@
 - Supplychain : Addition of french translation.
 - BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
 - Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
-
+- Account : fix reverse charge tax computation.
 
 ## [5.1.4] - 2019-03-11
 ## Features
