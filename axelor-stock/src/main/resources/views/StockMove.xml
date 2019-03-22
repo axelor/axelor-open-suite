@@ -9,6 +9,8 @@
     	</toolbar>
     	<hilite if="statusSelect == 2 &amp;&amp; $moment(__date__).diff(estimatedDate, 'days') &gt; 0" color="danger"/>
   		<hilite if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10" color="warning"/>
+		<hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 2 &amp;&amp; $get('company.accountConfig.isManagePassedForPayment')" color="success"/>
+		<hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 3 &amp;&amp; $get('company.accountConfig.isManagePassedForPayment')" color="danger"/>
         <field name="stockMoveSeq"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -25,6 +27,9 @@
         </field>
         <field name="typeSelect" hidden="true" />
         <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
+        <field name="pfpValidateStatusSelect" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+	<field name="company.accountConfig" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+	<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
@@ -197,25 +202,25 @@
 
         <panel name="mainPanel">
             <panel colSpan="9" name="typeSelectPanel">
-                <panel name="statusPanel" itemSpan="12">
+                <panel name="statusPanel" colSpan="12" itemSpan="12">
                     <field name="statusSelect" widget="NavSelect" showTitle="false"/>
                     <field name="stockMoveSeq" css="label-bold bold large" showTitle="false"/>
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" colSpan="1" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" colSpan="4" showTitle="false" readonly="true">
 						<viewer><![CDATA[
-                            <h4 class="text-right">
+                            <h4 class="text-left">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
                             	<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 2" x-translate>Partially available</span>
                             	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 3" x-translate>Unavailable</span>
                     		</h4>
 						]]></viewer>
 					</field>
-                    <field name="$tags" showTitle="false" colSpan="11" readonly="true" showIf="$readonly()">
+                    <field name="$tags" showTitle="false" colSpan="6" readonly="true" showIf="$readonly()">
                         <viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect ">
                             <![CDATA[
-                                <h4 class="text-right">
+                                <h4 class="text-left">
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
                                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
@@ -230,17 +235,32 @@
                             ]]>
                         </viewer>
                     </field>
+					<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+						<viewer depends="pfpValidateStatusSelect">
+								<![CDATA[
+								<h4 class="text-left">                    	
+									<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 2" x-translate>Authorized</span>
+									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 3"  x-translate>Litigation</span>
+								</h4>
+								]]>
+						</viewer>
+					</field>
 
                     <field name="typeSelect" title="Type" showIf="!$readonly()" onChange="action-stock-move-attrs-set-values-typeselect-onchange,action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change" readonlyIf="statusSelect != 1"/>
                     <field name="conformitySelect" showIf="statusSelect == 2" onChange="action-stock-move-method-change-conformity" />
 
                     <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
                     <field name="isReversion" hidden="true" />
+                    
+                    <field name="company.accountConfig" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+                    <field name="company.accountConfig.isManagePassedForPayment" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
                 </panel>
             </panel>
 
             <panel name="actionPanel" colSpan="3" itemSpan="12">
                 <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
+				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="Authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="Litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>              
                 <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
                 <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>

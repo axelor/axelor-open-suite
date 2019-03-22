@@ -1205,6 +1205,7 @@ InvoiceSet.length > 0))"
 		<view type="form" name="stock-move-form" />
 		<domain>self.invoice.id=:invoiceId</domain>
 		<context name="invoiceId" expr="eval:id" />
+		<context name="_fromInvoice" expr="eval: true"/>
 	</action-view>
 	
 	<action-view name="action-invoice-view-show-subrogation-release" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">	
