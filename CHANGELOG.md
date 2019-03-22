@@ -28,6 +28,7 @@
 - Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 - Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
 - Sale Order: notify the creation of stock move after modification.
+- PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
 
 ## Bug Fixes
 - Configurator : Fix demo data
