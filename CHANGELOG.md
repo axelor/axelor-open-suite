@@ -10,6 +10,8 @@
 - Bank Payment : Addition of two fields in BankReconciliation.
 - Stock Location Line: New buttons to allocate or deallocate every related stock move lines.
 - Supplychain Config: add an option to auto allocate reserved qty on other stock moves.
+- Sale Order Line: new button showing the future qty of the product.
+- HR : Add new column 'periodTotal' in timesheet validate grid.
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -26,6 +28,11 @@
 - MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
 - Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
 - Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
+- Sale Order: notify the creation of stock move after modification.
+- PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
+- BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
+- User : calendarManagementList remove from user-preferences-form.
+
 ## Bug Fixes
 - Configurator : Fix demo data
 - Employee : Fix issue on save of contact master detail.
@@ -44,7 +51,10 @@
 - HR : Remove search from emailAddress from Employee.
 - Business Project : Hide sale order in report on conditon.
 - Stock Move: reservation date time is now readonly.
+- Supplychain : Addition of french translation.
+- BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
 - Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
+
 
 ## [5.1.4] - 2019-03-11
 ## Features

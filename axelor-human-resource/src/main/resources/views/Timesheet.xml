@@ -64,6 +64,7 @@
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
+		<field name="periodTotal"/>
 		<field name="sentDate"/>
 		<field name="statusSelect"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>

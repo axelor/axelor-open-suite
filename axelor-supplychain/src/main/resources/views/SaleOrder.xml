@@ -70,6 +70,7 @@
     <action name="action-supplychain-saleorder-onsave"/>
     <action name="save"/>
     <action name="action-sale-order-validate-changes"/>
+		<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
   </action-group>
 
 	<action-group name="action-group-supplychain-saleorder-onnew">
