@@ -30,6 +30,7 @@
 - Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
 - Sale Order: notify the creation of stock move after modification.
 - PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
+- BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
 
 ## Bug Fixes
 - Configurator : Fix demo data
