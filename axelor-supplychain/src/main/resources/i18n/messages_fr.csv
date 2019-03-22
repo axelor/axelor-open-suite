@@ -264,7 +264,7 @@
 "Name","Nom",,
 "Nbr of days","Nbr de jours",,
 "No default supplier is defined for the product %s","Il n'y a pas de fournisseur par défaut de défini pour le produit %s.",,
-"No delivery stock move to generate for this purchase order",,,
+"No delivery stock move to generate for this purchase order","Il n'y a pas de mouvement de stock à générer pour cette commande fournisseur.",,
 "No delivery stock move to generate for this sale order","Il n’y a pas de mouvement de stock à générer pour cette commande client.",,
 "No invoice was generated","Aucune facture n'a été générée",,
 "No move type found for element : %s","Aucun type d'encours trouvé pour l'élement : %s",,

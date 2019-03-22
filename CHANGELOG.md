@@ -47,6 +47,7 @@
 - HR : Remove search from emailAddress from Employee.
 - Business Project : Hide sale order in report on conditon.
 - Stock Move: reservation date time is now readonly.
+- Supplychain : Addition of french translation.
 
 ## [5.1.4] - 2019-03-11
 ## Features
