@@ -34,7 +34,6 @@ import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
@@ -48,7 +47,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -59,9 +57,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -248,7 +243,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
+    StockLocation toStockLocation =
+        stockConfigService.getCustomerVirtualStockLocation(
+            stockConfigService.getStockConfig(company));
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -313,59 +310,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
     stockMove.setPlannedStockMoveAutomaticMail(mailSettings.getPlannedStockMoveAutomaticMail());
     stockMove.setPlannedStockMoveMessageTemplate(mailSettings.getPlannedStockMoveMessageTemplate());
-  }
-
-  /**
-   * @param saleOrder
-   * @return the first default stock location corresponding to the partner and the company. Choose
-   *     first the external stock location, else virtual.
-   *     <p>null if there is no default stock location
-   */
-  protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
-    Preconditions.checkNotNull(saleOrder, I18n.get("Sale order cannot be null."));
-
-    Partner partner = saleOrder.getClientPartner();
-    Company company = saleOrder.getCompany();
-
-    Preconditions.checkNotNull(partner, I18n.get("Partner cannot be null."));
-    Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
-
-    List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
-
-    List<StockLocation> candidateStockLocations =
-        defaultStockLocations != null
-            ? defaultStockLocations
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
-                .map(PartnerStockSettings::getDefaultStockLocation)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-            : new ArrayList<>();
-
-    // check external or internal stock location
-    Optional<StockLocation> candidateNonVirtualStockLocation =
-        candidateStockLocations
-            .stream()
-            .filter(
-                stockLocation ->
-                    stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
-                        || stockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
-            .findAny();
-    if (candidateNonVirtualStockLocation.isPresent()) {
-      return candidateNonVirtualStockLocation.get();
-    } else {
-      // no external stock location found, search for virtual
-      return candidateStockLocations
-          .stream()
-          .filter(
-              stockLocation ->
-                  stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
-          .findAny()
-          .orElse(
-              stockConfigService.getCustomerVirtualStockLocation(
-                  stockConfigService.getStockConfig(company)));
-    }
   }
 
   @Override
