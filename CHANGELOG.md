@@ -31,6 +31,7 @@
 - Sale Order: notify the creation of stock move after modification.
 - PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
 - BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
+- User : calendarManagementList remove from user-preferences-form.
 
 ## Bug Fixes
 - Configurator : Fix demo data
