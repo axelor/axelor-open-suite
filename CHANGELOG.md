@@ -32,6 +32,7 @@
 - PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
 - BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
 - User : calendarManagementList remove from user-preferences-form.
+- TRAINING : Field "calendar" not filled when a training event is created.
 
 ## Bug Fixes
 - Configurator : Fix demo data
@@ -54,6 +55,7 @@
 - Supplychain : Addition of french translation.
 - BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
 - Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
+
 
 
 ## [5.1.4] - 2019-03-11
