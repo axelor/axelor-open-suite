@@ -106,6 +106,6 @@
 - ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
 - Accounting situation : added two fields (insurCreditDate and description) to manage the Credit Insurance.
 - Employee : Fix issue of not saving each phase of creation process
-
+- TeamTask : Fix issue of creating new record from calendar view
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

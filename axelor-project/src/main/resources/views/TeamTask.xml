@@ -487,8 +487,8 @@
 	</action-method>
 
 	<action-group name="action-team-task-group-timer-process">
-		<action name="action-team-task-method-manage-timer-buttons"/>
-		<action name="action-team-task-method-compute-total-timer-duration"/>
+		<action name="action-team-task-method-manage-timer-buttons" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
+		<action name="action-team-task-method-compute-total-timer-duration" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 		<action name="action-project-attrs-project-planning-time-cancel-remove"/>
