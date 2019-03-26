@@ -33,6 +33,7 @@
 - BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
 - User : calendarManagementList remove from user-preferences-form.
 - Stock Move Line: stock move is readonly in form view.
+- TRAINING : Added calendar for training event.
 
 ## Bug Fixes
 - Configurator : Fix demo data
@@ -57,6 +58,7 @@
 - Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
 - Fix action call when validating a modified sale order.
 - Fix calendar view call in HR module.
+
 
 
 ## [5.1.4] - 2019-03-11
