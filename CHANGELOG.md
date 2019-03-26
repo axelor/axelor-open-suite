@@ -34,6 +34,7 @@
 - User : calendarManagementList remove from user-preferences-form.
 - Stock Move Line: stock move is readonly in form view.
 - TRAINING : Added calendar for training event.
+- INVOICE : display current date in printing when invoiceDate = null
 
 ## Bug Fixes
 - Configurator : Fix demo data
