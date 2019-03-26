@@ -32,6 +32,7 @@
 - PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
 - BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
 - User : calendarManagementList remove from user-preferences-form.
+- Stock Move Line: stock move is readonly in form view.
 
 ## Bug Fixes
 - Configurator : Fix demo data
