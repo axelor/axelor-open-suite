@@ -4,9 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="sop-line-grid" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine">
+    	<hilite if="status == 1" color="primary" />
+    	<field name="status" hidden="true"/>
         <field name="year"/>
         <field name="period"/>
-        <field name="currency"/>
         <field name="sopSalesForecast"/>
         <field name="sopRealSales"/>
         <field name="sopSalesGap"/>
@@ -18,11 +19,13 @@
         <field name="sopStockGap"/>
     </grid>
     
-	<form name="sop-line-form" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine">
+	<form name="sop-line-form" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine" onNew="action-sop-line-record-set-status">
 		<panel name="mainPanel">
-			<field name="year" required="true" domain="self.typeSelect = 3"/>
-			<field name="period" required="true" domain="self.year = :year"/>
-			<field name="currency" required="true"/>
+			<field name="status" showTitle="false" colSpan="8" widget="NavSelect"/>
+			<button name="confirmBtn" title="Confirm" showIf="id &amp;&amp; status == 1" colSpan="4" onClick="save,action-sop-line-record-set-status,save"/>
+			<field name="year" required="true" domain="self.typeSelect = 3" canEdit="false"/>
+			<field name="period" required="true" domain="self.year = :year" onChange="action-sop-line-record-set-currency" canEdit="false"/>
+			<field name="currency" required="true" canEdit="false"/>
 			<spacer name="currencySpacer"/>
 			<field name="sopSalesForecast" onChange="action-sop-line-record-compute-sop-sales-gap" colSpan="4"/>
 			<field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap" colSpan="4"/>
@@ -43,15 +46,18 @@
 	    		<field name="product" readonly="true"/>
 	    		<field name="qty" onChange="action-sop-line-record-compute-total-price"/>
 	    		<field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
-	    		<field name="$totalPrice" type="decimal" title="Total price" onChange="action-sop-line-record-totalPrice-onchange"/>
+	    		<field name="$totalPrice" type="decimal" title="Total price" onChange="action-sop-line-group-total-price-onchange"/>
 	    	</panel-related>
+	    	<button name="setToZeroBtn" colSpan="6" title="Set to zero" onClick="action-mrp-forecast-method-set-qty-totalforecast"/>
+	    	<spacer name="setToZeroBtnSpacer" colSpan="6"/>
 	    	
 	    	<field name="$sopSalesForecast" readonly="true" title="Sales forecast" type="decimal"/>
-	    	<field name="$stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true"/>
+	    	<field name="$stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" canEdit="false"/>
 	    	<field name="$totalForecast" readonly="true" title="Total forecast" type="decimal"/>
-	    	<spacer name="totalForecastSpacer" colSpan="6"/>
+	    	<field name="$difference" readonly="true" title="Difference" type="decimal"/>
+	    	<field name="$currency" hidden="true" type="many-to-one" target="com.axelor.apps.base.db.Currency" colSpan="12"/>
 	    	<button name="computeTotalForecastBtn" title="Compute total forecast" onClick="action-mrp-forecast-method-compute-total-forecast"/>
-			<button name="confirmForecastsBtn" readonlyIf="$stockLocation==null" title="Confirm forecasts" onClick="action-mrp-forecast-method-generate-mrp-forecasts"/>
+	    	<button name="confirmForecastsBtn" readonlyIf="$stockLocation==null" title="Confirm forecasts" onClick="action-sop-line-group-confirm-forecasts-onclick"/>
     	</panel>
     </form>
     
@@ -65,9 +71,15 @@
     	<context name="_sopLine" expr="eval: __this__"/>
     </action-view>
     
-    <action-group name="action-sop-line-record-totalPrice-onchange">
+    <action-group name="action-sop-line-group-total-price-onchange">
     	<action name="action-sop-line-record-compute-qty"/>
     	<action name="action-sop-line-record-compute-total-price"/>
+    </action-group>
+    
+    <action-group name="action-sop-line-group-confirm-forecasts-onclick">
+    	<action name="action-mrp-forecast-method-compute-total-forecast"/>
+    	<action name="action-mrp-forecast-validate-check-difference" if="new BigDecimal($difference).compareTo(BigDecimal.ZERO) != 0"/>
+    	<action name="action-mrp-forecast-method-generate-mrp-forecasts"/>
     </action-group>
 	
 	<action-record name="action-sop-line-record-compute-sop-sales-gap" model="com.axelor.apps.production.db.SopLine">
@@ -96,6 +108,15 @@
 			if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) == 0"/>
 	</action-record>
 	
+	<action-record name="action-sop-line-record-set-currency" model="com.axelor.apps.production.db.SopLine">
+		<field name="currency" expr="eval: period?.year?.company?.currency"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-set-status" model="com.axelor.apps.production.db.SopLine">
+		<field name="status" expr="eval: 1" if="!id"/>
+		<field name="status" expr="eval: 2" if="status == 1"/>
+	</action-record>
+	
 	<action-method name="action-mrp-forecast-method-generate-mrp-forecasts">
 		<call class="com.axelor.apps.production.web.MrpForecastController" method="generateMrpForecast"/>
 	</action-method>
@@ -107,6 +128,14 @@
 	<action-method name="action-mrp-forecast-method-compute-total-forecast">
 		<call class="com.axelor.apps.production.web.MrpForecastController" method="computeTotalForecast"/>
 	</action-method>
+	
+	<action-method name="action-mrp-forecast-method-set-qty-totalforecast">
+		<call class="com.axelor.apps.production.web.MrpForecastController" method="resetMrpForecasts"/>
+	</action-method>
+	
+	<action-validate name="action-mrp-forecast-validate-check-difference">
+		<alert message="There currently is a ${$difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"/>
+	</action-validate>
     
 </object-views>
 

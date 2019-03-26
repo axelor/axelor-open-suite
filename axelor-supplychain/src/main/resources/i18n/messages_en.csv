@@ -80,6 +80,8 @@
 "Create sale counterpart on this status",,,
 "Created by",,,
 "Created by interco",,,
+"Created from SOP",,,
+"Created manually",,,
 "Created on",,,
 "Cumulated invoiced %",,,
 "Cumulative qty",,,
