@@ -20,11 +20,18 @@ package com.axelor.apps.quality.service;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.ControlPointModel;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.apps.quality.db.QualityCorrectiveAction;
+import com.axelor.apps.quality.db.QualityMeasuringPoint;
 import com.axelor.apps.quality.db.QualityProcess;
 import com.axelor.apps.quality.db.repo.ControlPointRepository;
+import com.axelor.apps.quality.db.repo.QualityControlRepository;
+import com.axelor.apps.quality.db.repo.QualityCorrectiveActionRepository;
+import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class QualityControlServiceImpl implements QualityControlService {
 
@@ -38,33 +45,75 @@ public class QualityControlServiceImpl implements QualityControlService {
    */
   @Override
   @Transactional
-  public void preFillOperations(QualityControl qualityControl) throws AxelorException {
+  public void preFillOperations(QualityControl qualityControl, QualityProcess process)
+      throws AxelorException {
 
-    if (qualityControl.getQualityProcess() != null) {
-      QualityProcess process = qualityControl.getQualityProcess();
+    List<ControlPointModel> controlPointModelList = process.getControlPointModelList();
+    List<ControlPointModel> optionalControlPointModelList =
+        process.getOptionalControlPointModelList();
+    List<QualityCorrectiveAction> qualityCorrectiveActionList =
+        process.getQualityCorrectiveActionList();
 
-      if (process != null && process.getControlPointModelList() != null) {
-        qualityControl.getControlPointList().clear();
-        for (ControlPointModel model : process.getControlPointModelList()) {
-          ControlPoint point = new ControlPoint();
-          point.setStatusSelect(1);
-          point.setName(model.getName());
-          point.setPriority(model.getPriority());
-          point.setProduct(model.getProduct());
-          point.setTeam(model.getTeam());
-          point.setResponsible(model.getResponsible());
-          point.setControlTypeSelect(model.getControlTypeSelect());
-          point.setTestTypeSelect(model.getTestTypeSelect());
-          point.setInstructions(model.getInstructions());
-          point.setNotes(model.getNotes());
-          point.setMessageIfFailure(model.getMessageIfFailure());
-          point.setControlFrequency(model.getControlFrequency());
-          point.setControlPointDate(qualityControl.getStartDate());
-          point.setQualityControl(qualityControl);
-          controlPointRepo.save(point);
-          qualityControl.addControlPointListItem(point);
-        }
+    if (controlPointModelList != null) {
+      qualityControl.getControlPointList().clear();
+
+      for (ControlPointModel model : controlPointModelList) {
+        ControlPoint point = new ControlPoint();
+        this.createControlPointListItem(model, point, qualityControl);
+        qualityControl.addControlPointListItem(point);
       }
     }
+
+    if (optionalControlPointModelList != null) {
+      qualityControl.getOptionalControlPointList().clear();
+
+      for (ControlPointModel model : optionalControlPointModelList) {
+        ControlPoint point = new ControlPoint();
+        this.createControlPointListItem(model, point, qualityControl);
+        qualityControl.addOptionalControlPointListItem(point);
+      }
+    }
+
+    if (qualityCorrectiveActionList != null) {
+      qualityControl.getQualityCorrectiveActionList().clear();
+
+      for (QualityCorrectiveAction qualityCorrectiveAction : qualityCorrectiveActionList) {
+        qualityCorrectiveAction =
+            Beans.get(QualityCorrectiveActionRepository.class).copy(qualityCorrectiveAction, true);
+        qualityControl.addQualityCorrectiveActionListItem(qualityCorrectiveAction);
+      }
+    }
+  }
+
+  @Transactional
+  public void createControlPointListItem(
+      ControlPointModel model, ControlPoint point, QualityControl qualityControl) {
+
+    point.setStatusSelect(1);
+    point.setName(model.getName());
+    point.setPriority(model.getPriority());
+    point.setNotes(model.getNotes());
+    point.setControlFrequency(model.getControlFrequency());
+
+    for (QualityMeasuringPoint measuringPoint : model.getMeasuringPointList()) {
+      measuringPoint = Beans.get(QualityMeasuringPointRepository.class).copy(measuringPoint, true);
+      point.addMeasuringPointListItem(measuringPoint);
+    }
+
+    point.setControlPointDate(qualityControl.getStartDate());
+
+    controlPointRepo.save(point);
+  }
+
+  @Override
+  @Transactional
+  public void preFillOperationsFromOptionals(
+      QualityControl qualityControl, List<ControlPoint> optionalControlPointList) {
+
+    for (ControlPoint optionalControlPoint : optionalControlPointList) {
+      qualityControl.addControlPointListItem(optionalControlPoint);
+    }
+
+    Beans.get(QualityControlRepository.class).save(qualityControl);
   }
 }

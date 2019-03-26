@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="quality-corrective-action-grid" title="Corrective actions" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+		<field name="name"/>
+		<field name="details"/>
+		<field name="isApplicable"/>
+	</grid>
+
+	<form name="quality-corrective-action-form" title="Corrective actions" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+		<panel name="mainPanel">
+			<field name="name"/>
+			<field name="details"/>
+			<field name="isApplicable" showTitle="false"/>
+		</panel>
+	</form>
+
+</object-views>

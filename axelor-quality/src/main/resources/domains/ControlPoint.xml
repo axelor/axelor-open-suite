@@ -7,18 +7,15 @@
 	<entity name="ControlPoint" lang="java" cachable="true">
 		<integer name="statusSelect" selection="quality.control.points.status.select"/>
 		<many-to-one name="qualityControl" ref="QualityControl" title="Quality control" />
+		<many-to-one name="optionalQualityControl" ref="QualityControl"/>
 		<string name="name" title="Control point name" required="true"/>
 		<integer name="priority" title="Priority"/>
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" />
-		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" required="true" />
+		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 		<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
-		<integer name="controlTypeSelect" title="Control type" selection="quality.control.points.control.type.select"/>
-		<integer name="testTypeSelect" title="Test type" selection="quality.control.points.test.type.select" />
 		<decimal name="controlFrequency" title="Control Frequency"/>
-		<string name="instructions" title="Instructions"/>
 		<string name="notes" title="Notes"/>
-		<string name="messageIfFailure" title="Message if failure"/>
 		<date name="controlPointDate" title="Date"/>
+		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
 	</entity>
 
 </domain-models>
