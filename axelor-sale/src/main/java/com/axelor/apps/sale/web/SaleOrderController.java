@@ -32,7 +32,9 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -64,6 +66,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,6 +88,8 @@ public class SaleOrderController {
   @Inject private PriceListRepository priceListRepo;
 
   @Inject private SaleOrderPrintService saleOrderPrintService;
+
+  @Inject private SaleOrderService saleOrderService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -692,5 +697,25 @@ public class SaleOrderController {
     Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
 
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+  }
+
+  public void addPack(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    String saleOrderId = context.get("_id").toString();
+    SaleOrder saleOrder = saleOrderRepo.find(Long.parseLong(saleOrderId));
+
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> packMap =
+        (LinkedHashMap<String, Object>) request.getContext().get("pack");
+    String packId = packMap.get("id").toString();
+    Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
+
+    String qty = context.get("qty").toString();
+    BigDecimal packQty = new BigDecimal(qty);
+
+    saleOrder = saleOrderService.addPack(saleOrder, pack, packQty);
+
+    response.setCanClose(true);
   }
 }

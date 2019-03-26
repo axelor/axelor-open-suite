@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -135,4 +136,11 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal ConversionRate,
+      Integer sequence);
 }

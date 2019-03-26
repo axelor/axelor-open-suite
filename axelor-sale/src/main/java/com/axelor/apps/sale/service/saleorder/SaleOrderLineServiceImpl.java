@@ -31,11 +31,13 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -529,5 +531,46 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         product.getSaleProductMultipleQtyList(),
         product.getAllowToForceSaleQty(),
         response);
+  }
+
+  @Override
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal ConversionRate,
+      Integer sequence) {
+    if (packLine.getProductName() != null) {
+      SaleOrderLine soLine = new SaleOrderLine();
+
+      Product product = packLine.getProduct();
+      soLine.setProduct(product);
+      soLine.setProductName(packLine.getProductName());
+      if (packLine.getQuantity() != null) {
+        soLine.setQty(packLine.getQuantity().multiply(packQty));
+      }
+      soLine.setUnit(packLine.getUnit());
+      soLine.setTypeSelect(packLine.getTypeSelect());
+      soLine.setSequence(sequence);
+      if (packLine.getPrice() != null) {
+        soLine.setPrice(packLine.getPrice().multiply(ConversionRate));
+      }
+      soLine.setIsShowTotal(packLine.getIsShowTotal());
+      soLine.setIsHideUnitAmounts(packLine.getIsHideUnitAmounts());
+
+      if (product != null) {
+        if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+          soLine.setDescription(product.getDescription());
+        }
+        try {
+          Beans.get(SaleOrderLineService.class).fillPrice(soLine, saleOrder);
+          Beans.get(SaleOrderLineService.class).computeValues(saleOrder, soLine);
+        } catch (AxelorException e) {
+          TraceBackService.trace(e);
+        }
+      }
+      return soLine;
+    }
+    return null;
   }
 }

@@ -1,7 +1,10 @@
 # Changelog
 ## [Unreleased 5.3.0]
+## Features
+- Add Pack Feature in sale order.
+
 ## Improvements
-- Remove Pack Feature.
+- Remove Pack Feature from Product.
 
 ## [Unreleased 5.2.0]
 ## Features

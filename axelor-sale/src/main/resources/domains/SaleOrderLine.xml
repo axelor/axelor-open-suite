@@ -63,6 +63,9 @@
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
 	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
 	
+	<boolean name="isShowTotal" title="Show Total"/>
+	<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
+	
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>
