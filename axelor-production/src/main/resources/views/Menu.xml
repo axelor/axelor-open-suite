@@ -124,14 +124,6 @@
 		<domain>self.mrpType = 2</domain>
 	</action-view>
 	
-	<menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts" action="manufacturing.mps.forecast"/>
-	
-	<action-view name="manufacturing.mps.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
-		<view type="grid" name="mrp-forecast-grid"/>
-		<view type="form" name="mrp-forecast-form"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
-	</action-view>
-	
 	<menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration" icon="fa-cog"/>
 	
 	<menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf" title="Move types" action="manufacturing.mps.conf.mrp.line.type"/>

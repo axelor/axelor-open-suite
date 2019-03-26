@@ -27,5 +27,6 @@ public interface MrpForecastProductionService {
   public void generateMrpForecast(
       Period period,
       List<LinkedHashMap<String, Object>> mrpForecastList,
-      StockLocation stockLocation);
+      StockLocation stockLocation,
+      int technicalOrigin);
 }

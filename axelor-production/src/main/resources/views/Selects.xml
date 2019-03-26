@@ -127,5 +127,10 @@
 		<option value="2">Hours</option>
 		<option value="3">Days</option>
 	</selection>
+	
+	<selection name="production.sop.line.status">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+	</selection>
 
 </object-views>

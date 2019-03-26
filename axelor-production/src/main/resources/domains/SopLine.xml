@@ -22,6 +22,8 @@
 	<decimal name="sopStockForecast" title="Stock forecast"/>
 	<decimal name="sopRealStock" title="Real stock"/>
 	<decimal name="sopStockGap" title="% Gap"/>
+	
+	<integer name="status" title="Status" selection="production.sop.line.status"/>
   	
   </entity>
 </domain-models>

@@ -9,7 +9,7 @@
     
 	<form name="sop-form" title="Sales and Operations Planning" model="com.axelor.apps.production.db.Sop" width="large">
 		<panel name="mainPanel">
-			<field name="productFamily" domain="self.id NOT IN (SELECT productFamily FROM Sop)"/>
+			<field name="productFamily" domain="self.id NOT IN (SELECT productFamily FROM Sop)" canEdit="false"/>
 			<spacer name="productFamilySpacer"/>
 			<panel-related name="sopLineListPanel" field="sopLineList" showIf="productFamily" form-view="sop-line-form" grid-view="sop-line-grid" colSpan="12"/>
 		</panel>

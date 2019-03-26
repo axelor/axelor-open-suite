@@ -17,12 +17,19 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.supplychain.db.MrpForecast;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -36,6 +43,9 @@ import java.util.TreeSet;
 @Singleton
 public class SopLineController {
 
+  @Inject MrpForecastRepository mrpForecastRepo;
+  @Inject CurrencyRepository currencyRepo;
+
   public void fillMrpForecast(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
@@ -45,9 +55,14 @@ public class SopLineController {
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> sopLineMap =
         (LinkedHashMap<String, Object>) context.get("_sopLine");
+    @SuppressWarnings("unchecked")
+    LinkedHashMap<String, Object> currencyMap =
+        (LinkedHashMap<String, Object>) sopLineMap.get("currency");
 
     BigDecimal sopSalesForecast = new BigDecimal(sopLineMap.get("sopSalesForecast").toString());
     Integer productFamilyId = (Integer) productFamilyMap.get("id");
+    Currency currency = currencyRepo.find(Long.parseLong(currencyMap.get("id").toString()));
+    BigDecimal totalForecast = BigDecimal.ZERO;
     SortedSet<Map<String, Object>> mrpForecastSet =
         new TreeSet<Map<String, Object>>(Comparator.comparing(m -> (String) m.get("code")));
     List<Product> productList =
@@ -58,6 +73,24 @@ public class SopLineController {
     if (productList != null) {
       for (Product product : productList) {
         Map<String, Object> map = new HashMap<String, Object>();
+        MrpForecast mrpForecast =
+            mrpForecastRepo
+                .all()
+                .filter(
+                    "self.product.id = ?1 AND self.technicalOrigin = ?2",
+                    product.getId(),
+                    MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP)
+                .fetchOne();
+        if (mrpForecast != null) {
+          map = Mapper.toMap(mrpForecast);
+          BigDecimal totalPrice = mrpForecast.getQty().multiply(product.getSalePrice());
+          map.put("$totalPrice", totalPrice);
+          map.put("$unitPrice", product.getSalePrice());
+          map.put("code", product.getCode());
+          totalForecast = totalForecast.add(totalPrice);
+          mrpForecastSet.add(map);
+          continue;
+        }
         map.put("product", product);
         map.put("qty", BigDecimal.ZERO);
         map.put("$totalPrice", BigDecimal.ZERO);
@@ -68,6 +101,12 @@ public class SopLineController {
     }
     response.setValue("$mrpForecasts", mrpForecastSet);
     response.setValue("$sopSalesForecast", sopSalesForecast);
-    response.setValue("$totalForecast", BigDecimal.ZERO);
+    response.setValue("$totalForecast", totalForecast);
+    response.setValue(
+        "$difference",
+        sopSalesForecast
+            .subtract(totalForecast)
+            .setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
+    response.setValue("$currency", currency);
   }
 }

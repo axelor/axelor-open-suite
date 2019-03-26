@@ -20,9 +20,11 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -58,7 +60,11 @@ public class MrpForecastController {
         Beans.get(StockLocationRepository.class)
             .find(Long.parseLong(stockLocationMap.get("id").toString()));
     if (mrpForecastList != null && !mrpForecastList.isEmpty()) {
-      mrpForecastProductionService.generateMrpForecast(period, mrpForecastList, stockLocation);
+      mrpForecastProductionService.generateMrpForecast(
+          period,
+          mrpForecastList,
+          stockLocation,
+          MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP);
     }
     response.setCanClose(true);
   }
@@ -69,6 +75,7 @@ public class MrpForecastController {
     ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
         (ArrayList<LinkedHashMap<String, Object>>) context.get("mrpForecasts");
     BigDecimal totalForecast = BigDecimal.ZERO;
+    BigDecimal sopSalesForecast = new BigDecimal(context.get("sopSalesForecast").toString());
     if (mrpForecastList != null) {
       for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
         BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
@@ -83,5 +90,34 @@ public class MrpForecastController {
       }
     }
     response.setValue("$totalForecast", totalForecast);
+    response.setValue(
+        "$difference",
+        sopSalesForecast
+            .subtract(totalForecast)
+            .setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice())
+            .abs());
+  }
+
+  public void resetMrpForecasts(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    @SuppressWarnings("unchecked")
+    ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
+        (ArrayList<LinkedHashMap<String, Object>>) context.get("mrpForecasts");
+    BigDecimal totalForecast = BigDecimal.ZERO;
+    BigDecimal sopSalesForecast = new BigDecimal(context.get("sopSalesForecast").toString());
+    if (mrpForecastList != null) {
+      for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, Object> productMap =
+            (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
+        BigDecimal unitPrice = new BigDecimal(productMap.get("salePrice").toString());
+        mrpForecastItem.put("qty", BigDecimal.ZERO);
+        mrpForecastItem.put("$totalPrice", BigDecimal.ZERO);
+        mrpForecastItem.put("$unitPrice", unitPrice);
+      }
+    }
+    response.setValue("$mrpForecasts", mrpForecastList);
+    response.setValue("$totalForecast", totalForecast);
+    response.setValue("$difference", sopSalesForecast);
   }
 }

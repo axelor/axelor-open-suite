@@ -39,30 +39,48 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
   public void generateMrpForecast(
       Period period,
       List<LinkedHashMap<String, Object>> mrpForecastList,
-      StockLocation stockLocation) {
+      StockLocation stockLocation,
+      int technicalOrigin) {
     LocalDate forecastDate = period.getToDate();
 
     for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
+      Long id =
+          mrpForecastItem.get("id") != null
+              ? Long.parseLong(mrpForecastItem.get("id").toString())
+              : null;
       BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
-      if (qty.compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
       @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> productMap =
           (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
       Product product = productRepo.find(Long.parseLong(productMap.get("id").toString()));
-      this.createMrpForecast(forecastDate, product, stockLocation, qty);
+      if (id != null && qty.compareTo(BigDecimal.ZERO) == 0) {
+        this.RemoveMrpForecast(id);
+      } else if (qty.compareTo(BigDecimal.ZERO) != 0) {
+        this.createMrpForecast(id, forecastDate, product, stockLocation, qty, technicalOrigin);
+      }
     }
   }
 
   @Transactional
   public void createMrpForecast(
-      LocalDate forecastDate, Product product, StockLocation stockLocation, BigDecimal qty) {
-    MrpForecast mrpForecast = new MrpForecast();
+      Long id,
+      LocalDate forecastDate,
+      Product product,
+      StockLocation stockLocation,
+      BigDecimal qty,
+      int technicalOrigin) {
+    MrpForecast mrpForecast = id != null ? mrpForecastRepo.find(id) : new MrpForecast();
     mrpForecast.setForecastDate(forecastDate);
     mrpForecast.setProduct(product);
     mrpForecast.setStockLocation(stockLocation);
     mrpForecast.setQty(qty);
+    mrpForecast.setTechnicalOrigin(technicalOrigin);
     mrpForecastRepo.save(mrpForecast);
+  }
+
+  @Transactional
+  public void RemoveMrpForecast(Long id) {
+    MrpForecast mrpForecast = id != null ? mrpForecastRepo.find(id) : new MrpForecast();
+    mrpForecastRepo.remove(mrpForecast);
   }
 }

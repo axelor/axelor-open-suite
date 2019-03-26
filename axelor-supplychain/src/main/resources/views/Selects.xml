@@ -100,5 +100,10 @@
 		<option value="1">MRP</option>
 		<option value="2">MPS</option>
 	</selection>
+	
+	<selection name="supplychain.mrp.forecast.technical.origin.select">
+		<option value="1">Created manually</option>
+		<option value="2">Created from SOP</option>
+	</selection>
 
 </object-views>
