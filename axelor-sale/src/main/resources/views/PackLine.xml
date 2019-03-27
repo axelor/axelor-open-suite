@@ -28,7 +28,7 @@
     	<field name="productName" expr="eval: product?.name"/>
     	<field name="price" expr="eval: product?.salePrice"/>
     	<field name="unit" expr="eval: product?.unit"/>
-    	<field name="unit" expr="eval: product?.salesUnit" if="unit == null"/>
+    	<field name="unit" expr="eval: product?.salesUnit" if="product?.unit == null"/>
     </action-record>
     
     <action-record name="action-pack-line-record-onnew" model="com.axelor.apps.sale.db.PackLine">

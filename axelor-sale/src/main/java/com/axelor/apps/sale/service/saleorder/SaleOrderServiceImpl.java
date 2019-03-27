@@ -152,15 +152,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
     }
 
-    SaleOrderLine soLine = new SaleOrderLine();
-    if (pack.getName() != null && pack.getComponents() != null && !pack.getComponents().isEmpty()) {
-      soLine.setTypeSelect(SaleOrderLineRepository.TYPE_TITLE);
-      soLine.setProductName(pack.getName());
-      soLine.setSequence(++sequence);
-      soLine.setSaleOrder(saleOrder);
-      soLines.add(soLine);
-    }
-
+    SaleOrderLine soLine;
     for (PackLine packLine : pack.getComponents()) {
       soLine =
           saleOrderService.createSaleOrderLine(
