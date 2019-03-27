@@ -60,8 +60,7 @@
 - Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
 - Fix action call when validating a modified sale order.
 - Fix calendar view call in HR module.
-
-
+- Sale : Fix NPE due to null packPriceSelect.
 
 ## [5.1.4] - 2019-03-11
 ## Features
