@@ -12,6 +12,7 @@
 - Supplychain Config: add an option to auto allocate reserved qty on other stock moves.
 - Sale Order Line: new button showing the future qty of the product.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
+- Account : Display technicalOriginSelect as tag in Move form.
 
 ## Improvements
 - Data config : rename field 'Fields'
