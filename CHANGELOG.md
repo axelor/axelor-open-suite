@@ -34,6 +34,7 @@
 - User : calendarManagementList remove from user-preferences-form.
 - Stock Move Line: stock move is readonly in form view.
 - TRAINING : Added calendar for training event.
+- Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
 
 ## Bug Fixes
 - Configurator : Fix demo data
