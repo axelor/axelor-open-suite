@@ -772,4 +772,13 @@ public interface IExceptionMessage {
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  /** User */
+  static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
+      "%s has not exaclty the same internal companies as %s." /*)*/;
+
+  static final String USER_PFP_VALIDATOR_UPDATED = /*$$(*/
+      "Pfp validator changed successfully" /*)*/;
+  static final String USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION = /*$$(*/
+      "No Accounting Situation related to %s." /*)*/;
 }

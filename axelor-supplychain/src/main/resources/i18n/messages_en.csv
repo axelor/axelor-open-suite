@@ -35,6 +35,7 @@
 "Are you sure you want generate all proposals ?",,,
 "Are you sure you want run the calculation ? Calculation can take a long time.",,,
 "At least one sale order line must be selected",,,
+"At least one stock move is in litigation, do you really want to validate passed for payment ?",,,
 "Auto allocate stock on receipt",,,
 "Availability requests",,,
 "Available stock",,,

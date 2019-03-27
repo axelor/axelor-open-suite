@@ -814,8 +814,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public String getPfpValidatorUserDomain(Invoice invoice) {
 
     User pfpValidatorUser = getPfpValidatorUser(invoice);
-    if(pfpValidatorUser == null) {
-    	return "self.id in (0)";
+    if (pfpValidatorUser == null) {
+      return "self.id in (0)";
     }
     List<SubstitutePfpValidator> substitutePfpValidatorList =
         pfpValidatorUser.getSubstitutePfpValidatorList();

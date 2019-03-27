@@ -687,6 +687,12 @@ public class InvoiceController {
         response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
         response.setValue(
             "invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
+        response.setValue(
+            "invoiceAutomaticMailOnValidate",
+            accountingSituation.getInvoiceAutomaticMailOnValidate());
+        response.setValue(
+            "invoiceMessageTemplateOnValidate",
+            accountingSituation.getInvoiceMessageTemplateOnValidate());
       }
     }
   }
@@ -871,7 +877,7 @@ public class InvoiceController {
     invoiceService.refusalToPay(
         invoiceRepo.find(invoice.getId()),
         invoice.getReasonOfRefusalToPay(),
-        invoice.getReasonOfRefusalToPay().getName());
+        invoice.getReasonOfRefusalToPayStr());
     response.setCanClose(true);
   }
 
