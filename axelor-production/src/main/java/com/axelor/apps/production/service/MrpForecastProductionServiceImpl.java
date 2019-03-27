@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.MrpForecast;
@@ -75,6 +76,8 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
     mrpForecast.setStockLocation(stockLocation);
     mrpForecast.setQty(qty);
     mrpForecast.setTechnicalOrigin(technicalOrigin);
+    Unit unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
+    mrpForecast.setUnit(unit);
     mrpForecastRepo.save(mrpForecast);
   }
 
