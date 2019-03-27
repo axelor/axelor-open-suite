@@ -37,6 +37,7 @@
 - INVOICE : display current date in printing when invoiceDate = null
 - Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
+- Stock Location Line: Future quantity is now computed from a query.
 
 ## Bug Fixes
 - Configurator : Fix demo data
