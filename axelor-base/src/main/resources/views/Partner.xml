@@ -483,6 +483,13 @@
 			</panel>
 			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
+		
+		  <panel name="employeePanel" showIf="id !=null  &amp;&amp; isEmployee" sidebar="true">
+    		<button name="openEmployeeFormBtn" title="Open employee form" onClick="action-partner-view-open-employee-form"/>
+    		<field name="isEmployee" hidden="true"/>
+    		<field name="$linkedEmployee" type="many-to-one" x-target="com.axelor.apps.hr.db.Employee" hidden="true"/>
+ 		 </panel>
+		
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
@@ -735,15 +742,25 @@
     </action-group>
     
     <action-group name="action-group-partner-contact-onload">
+    	<action name="action-partner-attrs-set-linked-employee" if="isEmployee"/>
+    	<action name="action-partner-attrs-hide-employee-panel"/>
     	<action name="action-partner-method-check-name"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
     	<action name="action-partner-attrs-partner-seq-editable"/>
     </action-group>
-
+	
     <action-record name="action-partner-empty-first-name" model="com.axelor.apps.base.db.Partner">
         <field name="firstName" expr="eval: null" />
     </action-record>
+
+	<action-attrs name="action-partner-attrs-set-linked-employee">
+		<attribute name="value" for="$linkedEmployee" expr="eval: __repo__(Employee).all().filter('self.contactPartner.id=?',id).fetchOne()"/>
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-hide-employee-panel">
+		<attribute name="hidden" for="employeePanel" expr="eval:!isEmployee &amp;&amp; !( __user__.employee != null &amp;&amp; ((__user__.employee == linkedEmployee &amp;&amp; linkedEmployee.hrManager) || (__user__.employee.contactPartner == __this__)))"/>
+	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
 		<attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
@@ -909,6 +926,12 @@
 		<view type="form" name="move-line-form"/>
 		<domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
 		<context name="partnerId" expr="eval: id"/>
+	</action-view>
+
+	<action-view name="action-partner-view-open-employee-form" model="com.axelor.apps.hr.db.Employee" title="Employee">
+	  	<view name="employee-form" type="form"/>
+	  	<view name="employee-grid" type="grid"/>
+	  	<context name="_showRecord" expr="eval:linkedEmployee.id"/>
 	</action-view>
 
 	<action-method name="action-convert-into-individual-partner">
