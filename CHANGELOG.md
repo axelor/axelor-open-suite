@@ -36,6 +36,7 @@
 - TRAINING : Added calendar for training event.
 - INVOICE : display current date in printing when invoiceDate = null
 - Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
+- FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 
 ## Bug Fixes
 - Configurator : Fix demo data
