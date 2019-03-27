@@ -101,7 +101,7 @@
 				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
 				
-				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12">	
+				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">	
 					<field name="isManagePassedForPayment" widget="boolean-switch"/>		
 				</panel>
 				

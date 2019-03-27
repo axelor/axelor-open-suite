@@ -89,5 +89,4 @@ public class AccountingSituationController {
       response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
     }
   }
-
 }

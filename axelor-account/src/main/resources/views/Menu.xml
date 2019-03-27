@@ -722,10 +722,11 @@
 		<domain>self.invoice.operationTypeSelect in (1,2)</domain>
 	</action-view>
 	
-	<menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50" icon="fa-cog"/>
+	<menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50" icon="fa-cog" 
+		if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 
 	<menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
-		title="Reason of refusal" action="invoice.conf.refusalreason"/>
+		title="Reason of refusal" action="invoice.conf.refusalreason" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 		
 	<action-view name="invoice.conf.refusalreason"
 		title="Reason of refusal" model="com.axelor.apps.base.db.CancelReason" >

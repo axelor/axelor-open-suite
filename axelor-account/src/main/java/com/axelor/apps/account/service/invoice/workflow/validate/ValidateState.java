@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -83,12 +84,15 @@ public class ValidateState extends WorkflowInvoice {
           I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
 
-    if (Beans.get(AccountConfigService.class)
-            .getAccountConfig(invoice.getCompany())
-            .getIsManagePassedForPayment()
-        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-        && invoice.getPfpValidatorUser() == null) {
+    if (Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment()
+        && (Beans.get(AccountConfigService.class)
+                .getAccountConfig(invoice.getCompany())
+                .getIsManagePassedForPayment()
+            && (invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                || invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+            && invoice.getPfpValidatorUser() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.INVOICE_VALIDATE_NO_PFP_VALIDATOR_FOR_SUPPLIER));
