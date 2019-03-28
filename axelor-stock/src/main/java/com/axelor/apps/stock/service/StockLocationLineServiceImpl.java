@@ -567,7 +567,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       stockLocationLine.setAvgPrice(newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
-
     }
     return stockLocationLine;
   }
