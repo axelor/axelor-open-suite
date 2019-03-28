@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -115,18 +116,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       List<SaleOrderLine> saleOrderLineList = saleOrderLinePerDateMap.get(estimatedDeliveryDate);
 
-      StockMove stockMove = createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
+      Optional<StockMove> stockMove =
+          createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
 
-      if (stockMove != null && stockMove.getId() != null) {
-
-        stockMoveList.add(stockMove.getId());
-      }
+      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
 
     return stockMoveList;
   }
 
-  protected StockMove createStockMove(
+  protected Optional<StockMove> createStockMove(
       SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
 
@@ -145,34 +144,36 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
 
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      if (stockMove
-          .getStockMoveLineList()
-          .stream()
-          .noneMatch(
-              stockMoveLine ->
-                  stockMoveLine.getSaleOrderLine() != null
-                      && stockMoveLine.getSaleOrderLine().getTypeSelect()
-                          == SaleOrderLineRepository.TYPE_NORMAL)) {
-        stockMove.setFullySpreadOverLogisticalFormsFlag(true);
-      }
-
-      boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
-      stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
-
-      if (isNeedingConformityCertificate) {
-        stockMove.setSignatoryUser(
-            stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
-      }
-
-      stockMoveService.plan(stockMove);
-
-      if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
-        setParentStockMoveLine(stockMove);
-      }
+    if (stockMove.getStockMoveLineList() == null || stockMove.getStockMoveLineList().isEmpty()) {
+      return Optional.empty();
     }
 
-    return stockMove;
+    if (stockMove
+        .getStockMoveLineList()
+        .stream()
+        .noneMatch(
+            stockMoveLine ->
+                stockMoveLine.getSaleOrderLine() != null
+                    && stockMoveLine.getSaleOrderLine().getTypeSelect()
+                        == SaleOrderLineRepository.TYPE_NORMAL)) {
+      stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+    }
+
+    boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
+    stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
+
+    if (isNeedingConformityCertificate) {
+      stockMove.setSignatoryUser(
+          stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+    }
+
+    stockMoveService.plan(stockMove);
+
+    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
+      setParentStockMoveLine(stockMove);
+    }
+
+    return Optional.of(stockMove);
   }
 
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
@@ -277,7 +278,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
-    return Beans.get(StockMoveRepository.class).save(stockMove);
+    return stockMove;
   }
 
   /**
