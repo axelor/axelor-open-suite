@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -32,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
@@ -76,19 +78,19 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
     if (current) {
       if (isIncrement) {
         stockLocationLine.setRequestedReservedQty(
-            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
+            computeRequestedReservedQty(stockLocationLine).add(requestedReservedQty));
       } else {
         stockLocationLine.setRequestedReservedQty(
-            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
+            computeRequestedReservedQty(stockLocationLine).subtract(requestedReservedQty));
       }
     }
     if (future) {
       if (isIncrement) {
         stockLocationLine.setRequestedReservedQty(
-            stockLocationLine.getRequestedReservedQty().subtract(requestedReservedQty));
+            computeRequestedReservedQty(stockLocationLine).subtract(requestedReservedQty));
       } else {
         stockLocationLine.setRequestedReservedQty(
-            stockLocationLine.getRequestedReservedQty().add(requestedReservedQty));
+            computeRequestedReservedQty(stockLocationLine).add(requestedReservedQty));
       }
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
@@ -132,29 +134,34 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   @Override
   public StockLocationLine updateLocationFromProduct(
       StockLocationLine stockLocationLine, Product product) throws AxelorException {
-    Unit productUnit = product.getUnit();
-    Unit stockLocationUnit = stockLocationLine.getUnit();
+    stockLocationLine = super.updateLocationFromProduct(stockLocationLine, product);
+    stockLocationLine.setRequestedReservedQty(computeRequestedReservedQty(stockLocationLine));
+    return stockLocationLine;
+  }
 
-    if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-      BigDecimal reservedQty =
+  protected BigDecimal computeRequestedReservedQty(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    // requested reserved qty is the sum of the qties in planned stock move lines.
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Product product = stockLocationLine.getProduct();
+
+    BigDecimal requestedReservedQty = BigDecimal.ZERO;
+
+    // compute from stock move lines
+    List<StockMoveLine> stockMoveLineList = findOutgoingPlannedStockMoveLines(stockLocationLine);
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      BigDecimal qtyToAdd =
           unitConversionService.convert(
-              stockLocationUnit,
-              productUnit,
-              stockLocationLine.getReservedQty(),
-              stockLocationLine.getReservedQty().scale(),
+              stockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              stockMoveLine.getRequestedReservedQty(),
+              stockMoveLine.getRequestedReservedQty().scale(),
               product);
-      stockLocationLine.setReservedQty(reservedQty);
-      BigDecimal requestedReservedQty =
-          unitConversionService.convert(
-              stockLocationUnit,
-              productUnit,
-              stockLocationLine.getRequestedReservedQty(),
-              stockLocationLine.getRequestedReservedQty().scale(),
-              product);
-      stockLocationLine.setRequestedReservedQty(requestedReservedQty);
+      requestedReservedQty = requestedReservedQty.add(qtyToAdd);
     }
 
-    return super.updateLocationFromProduct(stockLocationLine, product);
+    return requestedReservedQty;
   }
 }
