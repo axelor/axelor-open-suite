@@ -40,6 +40,7 @@
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - Stock Location Line: Future quantity is now computed from a query.
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+- HR : Add buttons for status change in JobApplication and a menu of Skill.
 
 ## Bug Fixes
 - Configurator : Fix demo data
