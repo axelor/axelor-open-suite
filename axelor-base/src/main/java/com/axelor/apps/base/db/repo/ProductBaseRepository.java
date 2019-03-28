@@ -47,6 +47,16 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product save(Product product) {
+
+    try {
+      if (appBaseService.getAppBase().getGenerateProductSequence()
+          && Strings.isNullOrEmpty(product.getCode())) {
+        product.setCode(Beans.get(ProductService.class).getSequence());
+      }
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
     if (product.getId() != null) {
@@ -86,17 +96,7 @@ public class ProductBaseRepository extends ProductRepository {
         throw new ValidationException(e.getMessage());
       }
     }
-
-    try {
-      if (Strings.isNullOrEmpty(product.getSequence())
-          && appBaseService.getAppBase().getGenerateProductSequence()) {
-        product.setSequence(Beans.get(ProductService.class).getSequence());
-      }
-
-      return super.save(product);
-    } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
-    }
+    return super.save(product);
   }
 
   @Override
