@@ -44,14 +44,16 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   protected ReconcileGroupRepository reconcileGroupRepository;
   protected ReconcileRepository reconcileRepository;
-
-  @Inject private MoveLineRepository moveLineRepository;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
   public ReconcileGroupServiceImpl(
-      ReconcileGroupRepository reconcileGroupRepository, ReconcileRepository reconcileRepository) {
+      ReconcileGroupRepository reconcileGroupRepository,
+      ReconcileRepository reconcileRepository,
+      MoveLineRepository moveLineRepository) {
     this.reconcileGroupRepository = reconcileGroupRepository;
     this.reconcileRepository = reconcileRepository;
+    this.moveLineRepository = moveLineRepository;
   }
 
   @Override
