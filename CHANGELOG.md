@@ -88,6 +88,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Stock Move Line: stock move is readonly in form view.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
 
 
 ## [5.1.4] - 2019-03-11
