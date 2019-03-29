@@ -71,6 +71,7 @@
 - Sale : Fix NPE due to null packPriceSelect.
 - PRODUCT : automatic sequence with generateProductSequence = true
 - Sale Order: do not generate empty stock move.
+- Fix concurrency exception on invoice.
 
 ## [5.1.4] - 2019-03-11
 ## Features
