@@ -642,6 +642,13 @@
 		<view type="form" name="advanced-export-form"/>
 	</action-view>
 	
+	<menuitem title="Printing Setting" name="menu-printing-setting" parent="admin-root-maintenance" action="menu-printing-setting" />
+
+	<action-view name="menu-printing-setting" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
+		<view type="grid" name="printing-setting-grid"/>
+		<view type="form" name="printing-setting-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 

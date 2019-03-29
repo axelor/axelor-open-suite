@@ -98,11 +98,15 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
+import com.axelor.apps.supplychain.service.SaleOrderReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
+import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychainImpl;
@@ -201,5 +205,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockCorrectionServiceImpl.class).to(StockCorrectionServiceSupplychainImpl.class);
     bind(StockMoveMultiInvoiceService.class).to(StockMoveMultiInvoiceServiceImpl.class);
     bind(MrpRepository.class).to(MrpManagementRepository.class);
+    bind(SaleOrderReservedQtyService.class).to(SaleOrderReservedQtyServiceImpl.class);
+    bind(StockLocationLineReservationService.class)
+        .to(StockLocationLineReservationServiceImpl.class);
   }
 }

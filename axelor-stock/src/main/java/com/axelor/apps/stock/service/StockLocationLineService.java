@@ -194,4 +194,13 @@ public interface StockLocationLineService {
    * @return
    */
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
+
+  /**
+   * For a given line, compute the future quantity of a stock location line from its current qty and
+   * planned stock move lines with the same stock location and the same product.
+   *
+   * @param stockLocationLine a stock location line with a product and a stock location.
+   * @return the future quantity of the stock location line.
+   */
+  BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
 }

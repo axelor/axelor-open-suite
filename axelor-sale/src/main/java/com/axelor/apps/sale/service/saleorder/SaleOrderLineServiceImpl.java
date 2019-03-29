@@ -219,10 +219,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getProductPackMgt()) {
 
       if (saleOrderLine.getIsSubLine()
+          && packPriceSelect != null
           && packPriceSelect == SaleOrderLineRepository.PACK_PRICE_ONLY) {
         return false;
       }
       if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK
+          && packPriceSelect != null
           && packPriceSelect == SaleOrderLineRepository.SUBLINE_PRICE_ONLY) {
         return false;
       }

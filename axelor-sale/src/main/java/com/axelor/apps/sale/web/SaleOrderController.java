@@ -230,14 +230,18 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+  public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+      Beans.get(SaleOrderWorkflowService.class)
+          .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   @SuppressWarnings("unchecked")

@@ -23,10 +23,13 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -52,6 +55,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Inject protected StockLocationLineRepository stockLocationLineRepo;
 
   @Inject protected StockRulesService stockRulesService;
+
+  @Inject protected StockMoveLineRepository stockMoveLineRepository;
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -367,9 +372,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
     if (future) {
       if (isIncrement) {
-        stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().add(qty));
+        stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine).add(qty));
       } else {
-        stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().subtract(qty));
+        stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine).subtract(qty));
       }
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
@@ -553,14 +558,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
               product);
       stockLocationLine.setCurrentQty(currentQty);
 
-      BigDecimal futureQty =
-          unitConversionService.convert(
-              stockLocationUnit,
-              productUnit,
-              stockLocationLine.getFutureQty(),
-              stockLocationLine.getFutureQty().scale(),
-              product);
-      stockLocationLine.setFutureQty(futureQty);
+      stockLocationLine.setUnit(product.getUnit());
+      stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
 
       BigDecimal avgQty = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
@@ -568,9 +567,78 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       stockLocationLine.setAvgPrice(newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
-
-      stockLocationLine.setUnit(product.getUnit());
     }
     return stockLocationLine;
+  }
+
+  protected static final String stockMoveLineFilter =
+      "(self.stockMove.archived IS NULL OR self.archived IS FALSE) "
+          + "AND self.stockMove.statusSelect = :planned "
+          + "AND self.product.id = :productId ";
+
+  @Override
+  public BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException {
+    // future quantity is current quantity minus planned outgoing stock move lines plus planned
+    // incoming stock move lines.
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Product product = stockLocationLine.getProduct();
+
+    BigDecimal futureQty = stockLocationLine.getCurrentQty();
+
+    List<StockMoveLine> incomingStockMoveLineList =
+        findIncomingPlannedStockMoveLines(stockLocationLine);
+    List<StockMoveLine> outgoingStockMoveLineList =
+        findOutgoingPlannedStockMoveLines(stockLocationLine);
+
+    for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
+      BigDecimal qtyToAdd =
+          unitConversionService.convert(
+              incomingStockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              incomingStockMoveLine.getQty(),
+              incomingStockMoveLine.getQty().scale(),
+              product);
+      futureQty = futureQty.add(qtyToAdd);
+    }
+
+    for (StockMoveLine outgoingStockMoveLine : outgoingStockMoveLineList) {
+      BigDecimal qtyToSubtract =
+          unitConversionService.convert(
+              outgoingStockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              outgoingStockMoveLine.getQty(),
+              outgoingStockMoveLine.getQty().scale(),
+              product);
+      futureQty = futureQty.subtract(qtyToSubtract);
+    }
+
+    return futureQty;
+  }
+
+  protected List<StockMoveLine> findIncomingPlannedStockMoveLines(
+      StockLocationLine stockLocationLine) {
+    String incomingStockMoveLineFilter =
+        stockMoveLineFilter + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+    return stockMoveLineRepository
+        .all()
+        .filter(incomingStockMoveLineFilter)
+        .bind("planned", StockMoveRepository.STATUS_PLANNED)
+        .bind("productId", stockLocationLine.getProduct().getId())
+        .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
+        .fetch();
+  }
+
+  protected List<StockMoveLine> findOutgoingPlannedStockMoveLines(
+      StockLocationLine stockLocationLine) {
+    String outgoingStockMoveLineFilter =
+        stockMoveLineFilter + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+    return stockMoveLineRepository
+        .all()
+        .filter(outgoingStockMoveLineFilter)
+        .bind("planned", StockMoveRepository.STATUS_PLANNED)
+        .bind("productId", stockLocationLine.getProduct().getId())
+        .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
+        .fetch();
   }
 }

@@ -36,6 +36,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for fabrication's orders" /*)*/;
 
+  static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
+      "You cannot delete realized stock move lines." /*)*/;
+
   /** Batch Compute work in progress valuation */
   static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
 
@@ -128,6 +131,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
 
+  static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
+	      "Automatic email was not sent because no default email account was found : please create one." /*)*/;
+  
   static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/ "All products has been consumed" /*)*/;
 
   static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/ "Data import failed" /*)*/;

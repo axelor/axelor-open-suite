@@ -129,7 +129,7 @@ public class CalendarConfigurationService {
         ActionView.define(title)
             .name(name)
             .model("com.axelor.apps.base.db.ICalendarEvent")
-            .add("calendar", "calendar-all")
+            .add("calendar", "calendar-event-all")
             .add("grid", "calendar-event-grid")
             .add("form", "calandar-event-form")
             .domain("self.calendar.id in (:_calendarIdList)")

@@ -176,6 +176,15 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE = /*$$(*/
+      "Please do not enter negative quantity for reservation." /*)*/;
+
+  static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_HIGH = /*$$(*/
+      "The requested quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
+  static final String SALE_ORDER_LINE_ALLOCATED_QTY_TOO_HIGH = /*$$(*/
+      "The allocated quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
 
