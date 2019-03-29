@@ -7,7 +7,7 @@
 
   <entity name="StockMoveLine" lang="java">
   
-  	<many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
+  	<many-to-one name="stockMove" readonly="true" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    

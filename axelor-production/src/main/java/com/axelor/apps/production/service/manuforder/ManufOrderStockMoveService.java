@@ -37,7 +37,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -50,7 +49,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,9 +77,6 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
-      stockMove.setOriginId(manufOrder.getId());
-      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
-      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 
@@ -114,16 +109,23 @@ public class ManufOrderStockMoveService {
     StockLocation fromStockLocation =
         getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
-    return stockMoveService.createStockMove(
-        null,
-        null,
-        company,
-        fromStockLocation,
-        virtualStockLocation,
-        null,
-        manufOrder.getPlannedStartDateT().toLocalDate(),
-        null,
-        StockMoveRepository.TYPE_INTERNAL);
+    StockMove stockMove =
+        stockMoveService.createStockMove(
+            null,
+            null,
+            company,
+            fromStockLocation,
+            virtualStockLocation,
+            null,
+            manufOrder.getPlannedStartDateT().toLocalDate(),
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+
+    stockMove.setOriginId(manufOrder.getId());
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setOrigin(manufOrder.getManufOrderSeq());
+
+    return stockMove;
   }
 
   /**
@@ -185,9 +187,6 @@ public class ManufOrderStockMoveService {
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
       StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
-      stockMove.setOriginId(manufOrder.getId());
-      stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
-      stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
@@ -220,47 +219,16 @@ public class ManufOrderStockMoveService {
    */
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
-    List<StockMoveLine> consumedStockMoveLineList =
-        manufOrder
-            .getConsumedStockMoveLineList()
-            .stream()
-            .filter(
-                stockMoveLine ->
-                    stockMoveLine.getStockMove().getStatusSelect()
-                        != StockMoveRepository.STATUS_REALIZED)
-            .collect(Collectors.toList());
-    if (consumedStockMoveLineList == null || consumedStockMoveLineList.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MANUF_STOCK_MOVE_ERROR_1));
-    }
-    realizeStockMovesAndCreateOneEmpty(manufOrder, manufOrder.getInStockMoveList());
-  }
-
-  /**
-   * Finish unfinished stock move, and create an empty one.
-   *
-   * @param manufOrder
-   * @param stockMoveList
-   * @return the created empty stock move.
-   */
-  public void realizeStockMovesAndCreateOneEmpty(
-      ManufOrder manufOrder, List<StockMove> stockMoveList) throws AxelorException {
-    for (StockMove stockMove : stockMoveList) {
+    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
       finishStockMove(stockMove);
     }
-
-    //    StockMove newStockMove = _createToConsumeStockMove(manufOrder, manufOrder.getCompany());
-    //    newStockMove.setStockMoveLineList(new ArrayList<>());
-    //    Beans.get(StockMoveService.class).plan(newStockMove);
-    //    return newStockMove;
   }
 
   /**
    * A null safe method to get costPrice from the product in the prod product.
    *
    * @param prodProduct a nullable prodProduct.
-   * @return the cost price or {@link BigDecimal.ZERO} if the product is null.
+   * @return the cost price or 0 if the product is null.
    */
   protected BigDecimal getCostPriceFromProduct(ProdProduct prodProduct) {
     Optional<Product> product = Optional.ofNullable(prodProduct.getProduct());
@@ -285,16 +253,21 @@ public class ManufOrderStockMoveService {
           stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
     }
 
-    return stockMoveService.createStockMove(
-        null,
-        null,
-        company,
-        virtualStockLocation,
-        producedProductStockLocation,
-        null,
-        plannedEndDate,
-        null,
-        StockMoveRepository.TYPE_INTERNAL);
+    StockMove stockMove =
+        stockMoveService.createStockMove(
+            null,
+            null,
+            company,
+            virtualStockLocation,
+            producedProductStockLocation,
+            null,
+            plannedEndDate,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setOriginId(manufOrder.getId());
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setOrigin(manufOrder.getManufOrderSeq());
+    return stockMove;
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -460,21 +433,18 @@ public class ManufOrderStockMoveService {
     newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
 
-    if (newStockMove.getStockMoveLineList() == null
-        || newStockMove.getStockMoveLineList().isEmpty()) {
-      return;
-    }
+    if (!newStockMove.getStockMoveLineList().isEmpty()) {
+      // plan the stockmove
+      stockMoveService.plan(newStockMove);
 
-    // plan the stockmove
-    stockMoveService.plan(newStockMove);
-
-    if (inOrOut == PART_FINISH_IN) {
-      manufOrder.addInStockMoveListItem(newStockMove);
-      newStockMove.getStockMoveLineList().forEach(manufOrder::addConsumedStockMoveLineListItem);
-      manufOrder.clearDiffConsumeProdProductList();
-    } else {
-      manufOrder.addOutStockMoveListItem(newStockMove);
-      newStockMove.getStockMoveLineList().forEach(manufOrder::addProducedStockMoveLineListItem);
+      if (inOrOut == PART_FINISH_IN) {
+        manufOrder.addInStockMoveListItem(newStockMove);
+        newStockMove.getStockMoveLineList().forEach(manufOrder::addConsumedStockMoveLineListItem);
+        manufOrder.clearDiffConsumeProdProductList();
+      } else {
+        manufOrder.addOutStockMoveListItem(newStockMove);
+        newStockMove.getStockMoveLineList().forEach(manufOrder::addProducedStockMoveLineListItem);
+      }
     }
   }
 

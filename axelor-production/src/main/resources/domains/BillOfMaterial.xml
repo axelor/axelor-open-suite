@@ -33,6 +33,7 @@
 	<one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
      	
     <string name="note" large="true"/>
+
     
     <extra-code><![CDATA[
 

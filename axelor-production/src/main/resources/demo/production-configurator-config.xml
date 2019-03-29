@@ -126,8 +126,8 @@
       </bind>
 
       <bind node="configuratorProductFormulaList/configuratorProductFormula" to="configuratorProductFormulaList">
-        <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
-          <bind node="text()" to="id" alias="metaField"/>
+        <bind node="metaField" to="metaField" search="self.metaModel.name = 'Product' AND self.name = :metaField" if="metaField">
+          <bind node="text()" to="name" alias="metaField"/>
         </bind>
         <bind node="formula" to="formula"/>
         <bind node="showOnConfigurator" to="showOnConfigurator"/>
@@ -137,8 +137,8 @@
       </bind>
 
       <bind node="configuratorSOLineFormulaList/configuratorSOLineFormula" to="configuratorSOLineFormulaList">
-        <bind node="metaField" to="metaField" search="self.id = :metaField" if="metaField">
-          <bind node="text()" to="id" alias="metaField"/>
+        <bind node="metaField" to="metaField" search="self.metaModel.name = 'SaleOrderLine' AND self.name = :metaField" if="metaField">
+          <bind node="text()" to="name" alias="metaField"/>
         </bind>
         <bind node="formula" to="formula"/>
         <bind node="showOnConfigurator" to="showOnConfigurator"/>

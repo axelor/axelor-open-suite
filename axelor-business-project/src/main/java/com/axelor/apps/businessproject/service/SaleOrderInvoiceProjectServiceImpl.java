@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
@@ -37,6 +38,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceImpl {
@@ -87,5 +89,18 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       }
     }
     return invoiceMerged;
+  }
+
+  @Override
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice, SaleOrderLine saleOrderLine, BigDecimal qtyToInvoice)
+      throws AxelorException {
+    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
+    for (InvoiceLine invoiceLine : invoiceLines) {
+      if (saleOrderLine != null) {
+        invoiceLine.setProject(saleOrderLine.getProject());
+      }
+    }
+    return invoiceLines;
   }
 }

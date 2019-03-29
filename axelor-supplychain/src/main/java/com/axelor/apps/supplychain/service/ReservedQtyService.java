@@ -108,12 +108,13 @@ public interface ReservedQtyService {
    * product and stock location. The first stock move to have the reservation will be the first to
    * have the quantity allocated.
    *
-   * @param qtyToAllocate
-   * @param stockLocation
-   * @param product
-   * @param stockLocationLineUnit
+   * @param qtyToAllocate the quantity available to be allocated.
+   * @param stockLocation a stock location.
+   * @param product a product.
+   * @param stockLocationLineUnit Unit of the stock location line.
+   * @return The quantity that was allocated (in stock location line unit).
    */
-  void allocateReservedQuantityInSaleOrderLines(
+  BigDecimal allocateReservedQuantityInSaleOrderLines(
       BigDecimal qtyToAllocate,
       StockLocation stockLocation,
       Product product,
@@ -132,6 +133,8 @@ public interface ReservedQtyService {
 
   /**
    * Update allocated quantity in sale order line with a new quantity, updating location and moves.
+   * If the allocated quantity become bigger than the requested quantity, we also change the
+   * requested quantity to match the allocated quantity.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -142,7 +145,8 @@ public interface ReservedQtyService {
       throws AxelorException;
 
   /**
-   * Update requested quantity in sale order line.
+   * Update requested quantity in sale order line. If the requested quantity become lower than the
+   * allocated quantity, we also change the allocated quantity to match the requested quantity.
    *
    * @param saleOrderLine
    * @param newReservedQty
@@ -188,7 +192,7 @@ public interface ReservedQtyService {
       throws AxelorException;
 
   /**
-   * In a partially realized stock move line, call this method to desallocate the quantity that will
+   * In a partially realized stock move line, call this method to deallocate the quantity that will
    * be allocated to the newly generated stock move line.
    *
    * @param stockMoveLine

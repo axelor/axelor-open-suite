@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -308,10 +309,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    // FIXME: Disabled temporary due to RM#14505
-    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    //    }
+    Beans.get(InvoicePrintService.class).printAndSave(invoice);
   }
 
   /**

@@ -3286,12 +3286,6 @@ if(row["operation_type_select"] == "1" ){
                                 <text id="3425">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["invoice_date"] == null</expression>
-                                        </structure>
-                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -3315,7 +3309,7 @@ if(row["operation_type_select"] == "1" ){
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["invoice_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy"> if(row._outer["invoice_date"] != null){ row._outer["invoice_date"] } else { BirtDateTime.now() } </VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -4775,10 +4769,34 @@ row["partnerFirstName"]
                                 <cell id="4459">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
-                                    <label id="4420">
+                                    <text id="5370">
                                         <property name="textAlign">left</property>
-                                        <text-property name="text">Acompte(s) lié(s)</text-property>
-                                    </label>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.advancePayments'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4462"/>
                             </row>

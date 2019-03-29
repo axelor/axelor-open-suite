@@ -65,6 +65,7 @@
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="sentDate"/>
+		<field name="periodTotal"/>
 		<field name="statusSelect"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 	</grid>

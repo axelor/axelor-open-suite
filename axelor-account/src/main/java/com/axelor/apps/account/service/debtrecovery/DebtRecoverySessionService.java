@@ -236,6 +236,12 @@ public class DebtRecoverySessionService {
         return debtRecoveryMethodLine;
       }
     }
-    return null;
+
+    throw new AxelorException(
+        debtRecovery,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(
+            com.axelor.apps.account.exception.IExceptionMessage
+                .DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
   }
 }
