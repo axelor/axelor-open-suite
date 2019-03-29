@@ -31,7 +31,11 @@ public class UserServiceAccountImpl extends UserServiceImpl {
 
     return Beans.get(AccountingSituationRepository.class)
         .all()
-        .filter("self.pfpValidatorUser = ?", pfpValidatorUser)
+        .filter(
+            "self.pfpValidatorUser = ? and self.company in ? and self.company in ?",
+            pfpValidatorUser,
+            pfpValidatorUser.getCompanySet(),
+            newPfpValidatorUser.getCompanySet())
         .update("pfpValidatorUser", newPfpValidatorUser);
   }
 }

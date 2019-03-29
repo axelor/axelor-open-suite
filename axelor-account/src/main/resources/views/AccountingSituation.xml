@@ -35,10 +35,10 @@
 			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
 		<panel name="automaticMailPanel" title="Automatic mail">
-			<field name="invoiceAutomaticMail"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 			<field name="invoiceAutomaticMailOnValidate"/>
 			<field name="invoiceMessageTemplateOnValidate" requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate" domain="self.metaModel.name = 'Invoice'"/>
+			<field name="invoiceAutomaticMail"/>
+			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
 		<panel name="debtRecoveryProcessPanel" title="Debt recovery process">
 			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>

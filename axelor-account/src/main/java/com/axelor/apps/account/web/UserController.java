@@ -39,23 +39,16 @@ public class UserController {
 
     Integer pfpValidatorUserId = (Integer) request.getContext().get("_userId");
     LinkedHashMap<String, Object> newPfpValidatorUserMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("user");
+        (LinkedHashMap<String, Object>) request.getContext().get("newPfpValidatorUser");
 
+    if (newPfpValidatorUserMap == null) {
+      return;
+    }
     UserRepository userRepository = Beans.get(UserRepository.class);
     User newPfpValidatorUser =
         userRepository.find(((Integer) newPfpValidatorUserMap.get("id")).longValue());
     User pfpValidatorUser = userRepository.find(pfpValidatorUserId.longValue());
-    Set<Company> pfpValidatorUserCompanySet = pfpValidatorUser.getCompanySet();
-    Set<Company> newPfpValidatorUserCompanySet = newPfpValidatorUser.getCompanySet();
 
-    if (!pfpValidatorUserCompanySet.equals(newPfpValidatorUserCompanySet)) {
-      response.setAlert(
-          String.format(
-              I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL),
-              newPfpValidatorUser.getName(),
-              pfpValidatorUser.getName()));
-      return;
-    }
     int updateCount =
         userServiceAccountImpl.changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
     if (updateCount >= 1) {
@@ -66,6 +59,39 @@ public class UserController {
           String.format(
               I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION),
               pfpValidatorUser.getName()));
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void comparePfpValidatorCompanySet(ActionRequest request, ActionResponse response) {
+    Integer pfpValidatorUserId = (Integer) request.getContext().get("_userId");
+    LinkedHashMap<String, Object> newPfpValidatorUserMap =
+        (LinkedHashMap<String, Object>) request.getContext().get("newPfpValidatorUser");
+
+    if (newPfpValidatorUserMap == null) {
+      return;
+    }
+
+    UserRepository userRepository = Beans.get(UserRepository.class);
+    User newPfpValidatorUser =
+        userRepository.find(((Integer) newPfpValidatorUserMap.get("id")).longValue());
+    User pfpValidatorUser = userRepository.find(pfpValidatorUserId.longValue());
+    Set<Company> pfpValidatorUserCompanySet = pfpValidatorUser.getCompanySet();
+    Set<Company> newPfpValidatorUserCompanySet = newPfpValidatorUser.getCompanySet();
+
+    if (!pfpValidatorUserCompanySet.equals(newPfpValidatorUserCompanySet)) {
+
+      response.setAttr(
+          "$pfpValidatorCompanySetLabel",
+          "title",
+          String.format(
+              I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL),
+              newPfpValidatorUser.getName(),
+              pfpValidatorUser.getName()));
+      response.setAttr("$pfpValidatorCompanySetLabel", "hidden", false);
+
+    } else {
+      response.setAttr("$pfpValidatorCompanySetLabel", "hidden", true);
     }
   }
 }
