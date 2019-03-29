@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased 5.1.6]
+## Features
+## Improvements
+## Bug Fixes
+
+
 ## [5.1.5] - 2019-03-30
 ## Features
 - Sale Order Line: new option to keep requested qty equal to qty.
@@ -825,6 +831,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[Unreleased 5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...dev
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
