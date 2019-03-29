@@ -70,14 +70,22 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
       StockLocation stockLocation,
       BigDecimal qty,
       int technicalOrigin) {
+    Unit unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
     MrpForecast mrpForecast = id != null ? mrpForecastRepo.find(id) : new MrpForecast();
+    if (id != null
+        && mrpForecast.getForecastDate().equals(forecastDate)
+        && mrpForecast.getStockLocation().equals(stockLocation)
+        && mrpForecast.getQty().compareTo(qty) == 0
+        && mrpForecast.getUnit().equals(unit)) {
+      return;
+    }
     mrpForecast.setForecastDate(forecastDate);
     mrpForecast.setProduct(product);
     mrpForecast.setStockLocation(stockLocation);
     mrpForecast.setQty(qty);
     mrpForecast.setTechnicalOrigin(technicalOrigin);
-    Unit unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
     mrpForecast.setUnit(unit);
+    mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_SELECT_DRAFT);
     mrpForecastRepo.save(mrpForecast);
   }
 

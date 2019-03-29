@@ -19,6 +19,11 @@
 		// TECHNICAL ORIGIN
 		public static final int TECHNICAL_ORIGIN_CREATED_MANUALLY = 1;
 		public static final int TECHNICAL_ORIGIN_CREATED_FROM_SOP = 2;
+		
+		// STATUS SELECT
+		public static final int STATUS_SELECT_DRAFT = 1;
+		public static final int STATUS_SELECT_CONFIRMED = 2;
+		public static final int STATUS_SELECT_CANCELLED = 3;
 	]]></extra-code>
       
   </entity>
