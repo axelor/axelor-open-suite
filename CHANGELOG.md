@@ -1,21 +1,97 @@
 # Changelog
 
+## [5.1.5] - 2019-03-30
+## Features
+- Sale Order Line: new option to keep requested qty equal to qty.
+- MRP : Add a status to MRP Forecasts
+- Studio: Set canEdit and canNew for relational fields from studio.
+- Sale Order: new button to modify reserved quantities in lines.
+- Stock Location Line: New buttons to allocate or deallocate every related stock move lines.
+- Supplychain Config: add an option to auto allocate reserved qty on other stock moves.
+- Sale Order Line: new button showing the future qty of the product.
+- Account : Display technicalOriginSelect as tag in Move form.
+- Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
+
+## Improvements
+- Data config : rename field 'Fields'
+- Reserved qty: Add data checks in service and in view.
+- ProdProcess : Change in description of phase view.
+- ManufOrder : Added new label 'Outsourced'
+- Production : Change title for durations.
+- TASKS : Project planning time line autofill
+- ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
+- MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
+- Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
+- Sale Order: notify the creation of stock move after modification.
+- PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
+- User : calendarManagementList remove from user-preferences-form.
+- TRAINING : Added calendar for training event.
+- INVOICE : display current date in printing when invoiceDate = null
+- Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
+- Stock Location Line: Future quantity is now computed from a query.
+- Stock Location Line: Requested reserved quantity is now computed from a query.
+- PROJECT : Add mass update for "imputable" field
+- HR : Add buttons for status change in JobApplication and a menu of Skill.
+- Invoice: Always print after validation.
+- Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
+- HR : Add new column 'periodTotal' in timesheet validate grid.
+
+## Bug Fixes
+- Configurator : Fix demo data
+- Employee : Fix issue on save of contact master detail.
+- BankPayment : Change in slice of nextOrderId in EbicsUser.
+- MANUF. ORDER : display message when no default email account found to send email
+- STOCK MOVE : address printing issue
+- Debt Recovery Batch : NPE fixed
+- Ticket : remove pop-up onNew.
+- Product : set 'stockManaged' false when product is of type 'service'.
+- Account : Manage JPA cache for BatchRealizeFixedAssetLine.
+- Calendar : Synchronisation anomaly fixed.
+- Contract : better naming and translation (fr) for the buttons
+- HR : Fix employeeSet domain.
+- Add missing french translation.
+- Business Project : Link Project when invoice generate from sale order.
+- HR : Remove search from emailAddress from Employee.
+- Business Project : Hide sale order in report on conditon.
+- Stock Move: reservation date time is now readonly.
+- Supplychain : Addition of french translation.
+- BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
+- Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
+- Fix action call when validating a modified sale order.
+- Fix calendar view call in HR module.
+- Sale : Fix NPE due to null packPriceSelect.
+- PRODUCT : automatic sequence with generateProductSequence = true
+- Sale Order: do not generate empty stock move.
+- Fix concurrency exception on invoice.
+- Invoice: does not copy printedPDF metafile.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
+- GANTT : Fixes for links start-start and end-end links
+- Sale Order Line: When being edited, editable when the amount is 0.
+- ManufOrder: Prevent the user from removing realized stock move lines.
+- ManufOrder: does not create empty stock moves.
+- INVOICE : Replaced static french word Acompte(s) lié(s) with translation
+- Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
+- BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
+- Stock Move Line: stock move is readonly in form view.
+- FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
+- ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+
+
 ## [5.1.4] - 2019-03-11
 ## Features
 - MARKETING CAMPAIGN : Manage guests and attendees
 - MARKETING CAMPAIGN : Send a reminder to invited targets
-- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets 
+- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets
 
 ## Improvements
 - Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
 - BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
 - Marketing : added a panel-dashlet showing the generated emails in campaign.
 - Studio: Dynamic fetching of records for relational fields
-- MANUF. ORDER : empty stockmoves with realizeBtn and finishPartBtn
 - CUSTOMER DELIVERY : editable deliveryCondition
 - CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
 - Sale Order: if config is activated, create stock move after modifications validation.
-- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for 
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for
 in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
 - FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
 - MANUF. ORDER : show error when no default email account
@@ -749,6 +825,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[5.1.5]: https://github.com/axelor/abs-webapp/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/abs-webapp/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/abs-webapp/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/axelor/abs-webapp/compare/v5.1.1...v5.1.2
