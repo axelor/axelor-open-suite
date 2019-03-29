@@ -20,23 +20,20 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.service.ReconcileGroupService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class ReconcileGroupController {
-
-  @Inject private ReconcileGroupRepository reconcileGroupRepository;
-
-  @Inject ReconcileGroupService reconcileGroupService;
 
   public void unletter(ActionRequest request, ActionResponse response) {
 
     ReconcileGroup reconcileGroup =
-        reconcileGroupRepository.find(request.getContext().asType(ReconcileGroup.class).getId());
+        Beans.get(ReconcileGroupRepository.class)
+            .find(request.getContext().asType(ReconcileGroup.class).getId());
 
     if (reconcileGroup != null) {
-      reconcileGroupService.unletter(reconcileGroup);
+      Beans.get(ReconcileGroupService.class).unletter(reconcileGroup);
     }
     response.setReload(true);
   }
