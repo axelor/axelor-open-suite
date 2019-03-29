@@ -32,6 +32,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Stock Move Invoicing: get price from stock move lines instead of from product.
 - STOCKMOVELINE : Fix NPE
 - Partner Stock Settings: fix exception when there were no settings for a company.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
 
 ## [5.1.3] - 2019-02-21
 ## Features
