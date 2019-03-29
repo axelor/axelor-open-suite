@@ -387,13 +387,13 @@ InvoiceSet.length > 0))"
 				</panel>
 			</panel>
 			<panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
-				<panel  name="afterVentilationAutomaticMailPanel" hideIf="statusSelect &gt;= 3 &amp;&amp; !invoiceAutomaticMail" colSpan="12">
-					<field name="invoiceAutomaticMail"/>
-					<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
-				</panel>
 				<panel name="afterValidationAutomaticMailPanel" hideIf="statusSelect &gt;= 2 &amp;&amp; !invoiceAutomaticMailOnValidate" colSpan="12">
 					<field name="invoiceAutomaticMailOnValidate"/>
 					<field name="invoiceMessageTemplateOnValidate" requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate" domain="self.metaModel.name = 'Invoice'"/>				
+				</panel>
+				<panel  name="afterVentilationAutomaticMailPanel" hideIf="statusSelect &gt;= 3 &amp;&amp; !invoiceAutomaticMail" colSpan="12">
+					<field name="invoiceAutomaticMail"/>
+					<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 				</panel>
 				<button name="messageBtn" title="Show mail" showIf="[2,3].includes(statusSelect) &amp;&amp; ( invoiceAutomaticMail || invoiceAutomaticMailOnValidate )" onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
 			</panel>

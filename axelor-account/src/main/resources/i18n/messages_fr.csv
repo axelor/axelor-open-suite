@@ -1553,7 +1553,7 @@
 "Seller code","Code vendeur",,
 "Send a notify email","Envoyer email de notification",,
 "Send email","Envoyer email",,
-"Send email on invoice validate",,,
+"Send email on invoice validate","Envoyer un mail lors de la validation de factures",,
 "Send email on invoice ventilation","Envoyer un mail lors de la ventilation de factures",,
 "Sender Name","Nom/Raison sociale émetteur",,
 "Sender Nbr.","Numéro émetteur",,
