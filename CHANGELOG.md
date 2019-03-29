@@ -74,6 +74,8 @@
 - Sale Order: do not generate empty stock move.
 - Fix concurrency exception on invoice.
 - Invoice: does not copy printedPDF metafile.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
+
 
 ## [5.1.4] - 2019-03-11
 ## Features
@@ -133,6 +135,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Translation : Fix english translation of accounting export types.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
+
 
 ## [5.1.3] - 2019-02-21
 ## Features

@@ -331,7 +331,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .getCompanyExTaxTotal()
               .divide(
                   purchaseOrderLine.getQty(),
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                  appBaseService.getNbDecimalDigitForUnitPrice(),
                   RoundingMode.HALF_EVEN);
     }
 
@@ -360,10 +360,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     BigDecimal shippingCoef =
         shippingCoefService.getShippingCoef(
             product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany(), qty);
-    if (shippingCoef.compareTo(BigDecimal.ONE) != 0) {
-      priceDiscounted = priceDiscounted.multiply(shippingCoef);
-      companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
-    }
+    priceDiscounted = priceDiscounted.multiply(shippingCoef);
+    companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
     BigDecimal taxRate = BigDecimal.ZERO;
     TaxLine taxLine = purchaseOrderLine.getTaxLine();
