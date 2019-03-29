@@ -42,6 +42,7 @@
 - Stock Location Line: Requested reserved quantity is now computed from a query.
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
 - PROJECT : Add mass update for "imputable" field
+- HR : Add buttons for status change in JobApplication and a menu of Skill.
 
 ## Bug Fixes
 - Configurator : Fix demo data
