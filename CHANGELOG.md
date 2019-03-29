@@ -73,6 +73,7 @@
 - PRODUCT : automatic sequence with generateProductSequence = true
 - Sale Order: do not generate empty stock move.
 - Fix concurrency exception on invoice.
+- Invoice: does not copy printedPDF metafile.
 
 ## [5.1.4] - 2019-03-11
 ## Features
