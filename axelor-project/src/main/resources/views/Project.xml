@@ -23,6 +23,7 @@
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
+		<field name="imputable" width="90"/>
 		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
