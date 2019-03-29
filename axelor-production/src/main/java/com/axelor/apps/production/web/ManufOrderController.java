@@ -44,6 +44,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
@@ -109,7 +110,9 @@ public class ManufOrderController {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
 
-      manufOrderWorkflowService.finish(manufOrder);
+      if (!manufOrderWorkflowService.finish(manufOrder)) {
+        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      }
 
       response.setReload(true);
     } catch (Exception e) {
@@ -122,7 +125,9 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
 
-      Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder);
+      if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
+        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -176,8 +181,8 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form on clicking realize button. Call {@link
-   * ManufOrderStockMoveService#realizeStockMovesAndCreateOneEmpty(ManufOrder, List)} with in stock
-   * move list to consume material used in manuf order.
+   * ManufOrderStockMoveService#consumeInStockMoves(ManufOrder)} to consume material used in manuf
+   * order.
    *
    * @param request
    * @param response
@@ -368,7 +373,26 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on produced stock move line change.
+   * Called from manuf order form, on produced stock move line change. Call {@link
+   * ManufOrderService#checkProducedStockMoveLineList(ManufOrder, ManufOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkProducedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      manufOrderService.checkProducedStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  /**
+   * Called from manuf order form, on produced stock move line change. Call {@link
+   * ManufOrderService#updateProducedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -386,7 +410,26 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on consumed stock move line change.
+   * Called from manuf order form, on consumed stock move line change. Call {@link
+   * ManufOrderService#checkConsumedStockMoveLineList(ManufOrder, ManufOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConsumedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      manufOrderService.checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+
+  /**
+   * Called from manuf order form, on consumed stock move line change. Call {@link
+   * ManufOrderService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -405,7 +448,7 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form, on clicking "compute cost price" button. Call {@link
-   * CostSheetService#computeCostPrice(ManufOrder)}.
+   * CostSheetService#computeCostPrice(ManufOrder, int, LocalDate)}.
    *
    * @param request
    * @param response
