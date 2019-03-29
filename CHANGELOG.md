@@ -13,6 +13,7 @@
 - Sale Order Line: new button showing the future qty of the product.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
 - Account : Display technicalOriginSelect as tag in Move form.
+- Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
 
 ## Improvements
 - Data config : rename field 'Fields'
