@@ -4,10 +4,8 @@
 
 	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control">
 		<field name="name"/>
-		<field name="team"/>
 		<field name="responsible"/>
 		<field name="controlPointDate"/>
-		<field name="priority"/>
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
@@ -16,9 +14,7 @@
 			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 			<field name="name"/>
 			<field name="responsible"/>
-			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="controlPointDate"/>
-			<field name="priority"/>
 		</panel>
 		<panel name="measuringPointPanel">
 			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-grid" form-view="quality-measuring-point-form"/>

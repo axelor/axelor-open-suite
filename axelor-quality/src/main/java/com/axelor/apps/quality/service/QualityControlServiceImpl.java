@@ -89,9 +89,9 @@ public class QualityControlServiceImpl implements QualityControlService {
   public void createControlPointListItem(
       ControlPointModel model, ControlPoint point, QualityControl qualityControl) {
 
-    point.setStatusSelect(1);
+    point.setStatusSelect(ControlPointRepository.STATUS_TO_DO);
     point.setName(model.getName());
-    point.setPriority(model.getPriority());
+    point.setSequence(model.getSequence());
     point.setNotes(model.getNotes());
     point.setControlFrequency(model.getControlFrequency());
 

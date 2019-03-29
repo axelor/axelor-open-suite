@@ -52,5 +52,10 @@
 		<option value="4" icon="img/rating/rating-4.00.png">4</option>
 		<option value="5" icon="img/rating/rating-5.00.png">5</option>
 	</selection>
+
+	<selection name="quality.measuring.point.status.select">
+		<option value="1">Open</option>
+		<option value="2">Closed</option>
+	</selection>
 	
 </object-views>

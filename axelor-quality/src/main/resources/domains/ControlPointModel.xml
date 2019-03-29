@@ -6,7 +6,7 @@
 
 	<entity name="ControlPointModel" lang="java" cachable="true">
 		<string name="name" title="Control point name" required="true"/>
-		<integer name="priority" title="Priority"/>
+		<integer name="sequence" title="Sequence"/>
 		<decimal name="controlFrequency" title="Control Frequency"/>
 		<string name="notes" title="Notes"/>
 		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>

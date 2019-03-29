@@ -4,13 +4,11 @@
 
 	<grid name="control-point-model-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPointModel">
 		<field name="name"/>
-		<field name="priority"/>
 	</grid>
 	
 	<form name="control-point-model-form" title="Control points" model="com.axelor.apps.quality.db.ControlPointModel">	
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="priority"/>
 		</panel>
 		<panel name="measuringPointPanel">
 			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-grid" form-view="quality-measuring-point-form"/>

@@ -6,20 +6,30 @@
 		<field name="name"/>
 		<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
 		<field name="compliant"/>
-		<field name="notCompliant"/>
 		<field name="observations"/>
 	</grid>
 
-	<form name="quality-measuring-point-form" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+	<form name="quality-measuring-point-form" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint" onNew="action-quality-measuring-point-record-status-default">
 		<panel name="mainPanel">
+			<field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true" showTitle="false"/>
 			<field name="name"/>
 			<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
 			<field name="coefficient"/>
 			<field name="compliant" colSpan="3" widget="boolean-switch"/>
-			<field name="notCompliant" colSpan="3" widget="boolean-switch"/>
 			<field name="photosList" colSpan="12"/>
 			<field name="observations" colSpan="12" widget="html"/>
 		</panel>
+		<panel name="actionPanel" hidden="true" showIf="statusSelect == 1" sidebar="true">
+			<button name="closeBtn" title="Close" onClick="save,action-quality-measuring-point-record-status-closed" icon="fa-times" colSpan="12"/>
+		</panel>
 	</form>
+
+	<action-record name="action-quality-measuring-point-record-status-default" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+		<field name="statusSelect" expr="eval:1"/>
+	</action-record>
+
+	<action-record name="action-quality-measuring-point-record-status-closed" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+		<field name="statusSelect" expr="eval:2"/>
+	</action-record>
 
 </object-views>
