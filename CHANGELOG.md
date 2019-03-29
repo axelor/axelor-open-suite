@@ -39,7 +39,9 @@
 - Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - Stock Location Line: Future quantity is now computed from a query.
+- Stock Location Line: Requested reserved quantity is now computed from a query.
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+- PROJECT : Add mass update for "imputable" field
 - HR : Add buttons for status change in JobApplication and a menu of Skill.
 
 ## Bug Fixes
@@ -67,6 +69,7 @@
 - Fix calendar view call in HR module.
 - Sale : Fix NPE due to null packPriceSelect.
 - PRODUCT : automatic sequence with generateProductSequence = true
+- Sale Order: do not generate empty stock move.
 
 ## [5.1.4] - 2019-03-11
 ## Features
