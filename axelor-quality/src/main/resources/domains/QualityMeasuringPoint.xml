@@ -9,10 +9,10 @@
 		<string name="name" title="Name"/>
 		<integer name="measuringNote" title="Note" selection="quality.measuring.point.measuring.note.select"/>
 		<boolean name="compliant" title="Compliant"/>
-		<boolean name="notCompliant" title="Not compliant"/>
 		<decimal name="coefficient" title="Coefficient"/>
 		<string name="observations" title="Observations"/>
 		<one-to-many name="photosList" title="Photos" ref="com.axelor.meta.db.MetaFile" orphanRemoval="true"/>
+		<integer name="statusSelect" title="Status" selection="quality.measuring.point.status.select"/>
 
 	</entity>
 

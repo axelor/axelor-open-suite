@@ -9,13 +9,18 @@
 		<many-to-one name="qualityControl" ref="QualityControl" title="Quality control" />
 		<many-to-one name="optionalQualityControl" ref="QualityControl"/>
 		<string name="name" title="Control point name" required="true"/>
-		<integer name="priority" title="Priority"/>
-		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 		<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
 		<decimal name="controlFrequency" title="Control Frequency"/>
 		<string name="notes" title="Notes"/>
 		<date name="controlPointDate" title="Date"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
+		<integer name="sequence" title="Sequence"/>
+
+		<extra-code>
+			<![CDATA[
+				public static final int STATUS_TO_DO = 1;
+			]]>
+		</extra-code>
 	</entity>
 
 </domain-models>
