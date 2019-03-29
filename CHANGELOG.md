@@ -44,6 +44,7 @@
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
 - PROJECT : Add mass update for "imputable" field
 - HR : Add buttons for status change in JobApplication and a menu of Skill.
+- Invoice: Always print after validation.
 
 ## Bug Fixes
 - Configurator : Fix demo data
