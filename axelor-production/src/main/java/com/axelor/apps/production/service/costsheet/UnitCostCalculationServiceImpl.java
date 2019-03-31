@@ -249,12 +249,14 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
+    BillOfMaterial billOfMaterial = product.getDefaultBillOfMaterial();
+
     CostSheet costSheet =
-        costSheetService.computeCostPrice(
-            product.getDefaultBillOfMaterial(), origin, unitCostCalculation);
+        costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
 
     UnitCostCalcLine unitCostCalcLine =
-        unitCostCalcLineService.createUnitCostCalcLine(product, level, costSheet);
+        unitCostCalcLineService.createUnitCostCalcLine(
+            product, billOfMaterial.getCompany(), level, costSheet);
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
     unitCostCalculationRepository.save(unitCostCalculation);
   }

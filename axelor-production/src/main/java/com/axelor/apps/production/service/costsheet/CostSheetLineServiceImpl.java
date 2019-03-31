@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.costsheet;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -226,6 +227,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         costPrice = BigDecimal.ZERO;
     }
 
+    costPrice = costPrice.multiply(consumptionQty);
     costPrice =
         unitConversionService
             .convert(
@@ -233,8 +235,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 product.getUnit(),
                 costPrice,
                 appProductionService.getNbDecimalDigitForUnitPrice(),
-                product)
-            .multiply(consumptionQty);
+                product);
 
     List<CostSheetLine> costSheetLineList =
         parentCostSheetLine.getCostSheetLineList() != null
@@ -273,30 +274,22 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
+    Currency companyCurrency = company.getCurrency();
 
     if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
-      price =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              company.getCurrency(),
-              product.getPurchaseCurrency(),
-              price,
-              appProductionService.getTodayDate());
+
+      if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+        price = product.getCostPrice();
+      }
     } else if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_COST) {
       price = product.getCostPrice();
+
+      if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+        price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
+      }
     }
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getCostPrice();
-    }
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
-      price =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              company.getCurrency(),
-              product.getPurchaseCurrency(),
-              price,
-              appProductionService.getTodayDate());
-    }
+
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       price = product.getPurchasePrice();
 
@@ -306,23 +299,30 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
       price = product.getPurchasePrice().multiply(shippingCoef);
 
+      price =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              product.getPurchaseCurrency(),
+              companyCurrency,
+              price,
+              appProductionService.getTodayDate());
+
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
         for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
             price = supplierCatalog.getPrice();
             Partner supplierPartner = supplierCatalog.getSupplierPartner();
             if (supplierPartner != null) {
-              price =
-                  currencyService.getAmountCurrencyConvertedAtDate(
-                      supplierPartner.getCurrency(),
-                      product.getPurchaseCurrency(),
-                      price,
-                      appProductionService.getTodayDate());
-
               shippingCoef =
                   shippingCoefService.getShippingCoef(
                       product, supplierPartner, company, new BigDecimal(9999999));
               price = price.multiply(shippingCoef);
+
+              price =
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      supplierPartner.getCurrency(),
+                      companyCurrency,
+                      price,
+                      appProductionService.getTodayDate());
             }
             break;
           }
