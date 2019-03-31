@@ -6,8 +6,9 @@
     <grid name="unit-cost-calc-line-grid" title="Results" model="com.axelor.apps.production.db.UnitCostCalcLine" editable="true" orderBy="product.code">
 		<field name="product.code"/>
 		<field name="product.name"/>
+		<field name="company" readonly="true"/>
 		<field name="maxLevel" readonly="true"/>
-		<field name="product.purchaseCurrency"/>
+		<field name="company.currency"/>
 		<field name="previousCost" readonly="true" x-scale="2"/>
 		<field name="computedCost" readonly="true" x-scale="2"/>
 		<field name="costToApply" x-scale="2"/>
@@ -18,8 +19,9 @@
 		<panel name="mainPanel">
 			<field name="unitCostCalculation" hidden="true"/>
 			<field name="product" readonly="true"/>
+			<field name="company" readonly="true"/>
 			<field name="maxLevel" readonly="true"/>
-			<field name="product.purchaseCurrency"/>
+			<field name="company.currency"/>
 			<field name="previousCost" readonly="true"/>
 			<field name="computedCost" readonly="true"/>
 			<field name="costSheet" readonly="true"/>

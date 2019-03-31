@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.CostSheet;
@@ -41,10 +42,11 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
   }
 
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, int maxLevel, CostSheet costSheet) {
+      Product product, Company company, int maxLevel, CostSheet costSheet) {
 
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
+    unitCostCalcLine.setCompany(company);
     unitCostCalcLine.setPreviousCost(product.getCostPrice());
     unitCostCalcLine.setCostSheet(costSheet);
     unitCostCalcLine.setComputedCost(costSheet.getCostPrice());
