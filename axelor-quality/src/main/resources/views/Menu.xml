@@ -90,5 +90,12 @@
 		<view type="grid" name="quality-tag-grid"/>
 		<view type="form" name="quality-tag-form"/>
 	</action-view>
+
+	<menuitem name="quality-control-point-type" parent="quality-configurations" title="Control point type" action="quality.control.point.type" />
+
+	<action-view name="quality.control.point.type" title="Control point type" model="com.axelor.apps.quality.db.ControlPointType">
+		<view type="grid" name="quality-control-point-type-grid"/>
+		<view type="form" name="quality-control-point-type-form"/>
+	</action-view>
 			  	
 </object-views>
