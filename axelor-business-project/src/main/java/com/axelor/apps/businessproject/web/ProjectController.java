@@ -128,8 +128,8 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
 
     int toInvoiceCount = 0;
-    if(project.getId() != null) {
-    	toInvoiceCount = invoicingProjectService.countToInvoice(project);
+    if (project.getId() != null) {
+      toInvoiceCount = invoicingProjectService.countToInvoice(project);
     }
 
     response.setValue("$toInvoiceCounter", toInvoiceCount);
