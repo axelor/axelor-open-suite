@@ -1792,7 +1792,7 @@
 "With Payment Rejected","Met betaling afgewezen",,
 "Year","Jaar",,
 "Year or period or date is null, you must set a period.","Jaar of periode of datum is ongeldig, u moet een periode instellen.",,
-"You can't remove this record, because the move %s has already been validated",,,
+"You can't remove this record, because the move %s has already been validated","U kunt dit record niet verwijderen, omdat de verhuizing %s al is gevalideerd.",,
 "You cannot delete this deposit slip.","U kunt deze stortingsbon niet verwijderen.",,
 "You have to choose at least one invoice","U moet minstens één factuur kiezen",,
 "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s",,,

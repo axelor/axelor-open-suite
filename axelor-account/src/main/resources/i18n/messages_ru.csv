@@ -1792,7 +1792,7 @@
 "With Payment Rejected","С отклоненным платежом",,
 "Year","Год",,
 "Year or period or date is null, you must set a period.","Год, период или дата недействительны, вы должны установить период.",,
-"You can't remove this record, because the move %s has already been validated",,,
+"You can't remove this record, because the move %s has already been validated","Вы не можете удалить эту запись, потому что перемещение %s уже было подтверждено.",,
 "You cannot delete this deposit slip.","Вы не можете удалить этот депозитный чек.",,
 "You have to choose at least one invoice","Вы должны выбрать хотя бы один счет-фактуру",,
 "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s",,,

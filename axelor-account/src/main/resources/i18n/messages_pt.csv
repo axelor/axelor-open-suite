@@ -1792,7 +1792,7 @@
 "With Payment Rejected","Com pagamento recusado",,
 "Year","Ano",,
 "Year or period or date is null, you must set a period.","Ano ou período ou data é nulo, você deve definir um período.",,
-"You can't remove this record, because the move %s has already been validated",,,
+"You can't remove this record, because the move %s has already been validated","Você não pode remover este registro, porque o movimento %s já foi validado",,
 "You cannot delete this deposit slip.","Não é possível eliminar este comprovante de depósito.",,
 "You have to choose at least one invoice","É necessário selecionar pelo menos uma fatura",,
 "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s",,,
