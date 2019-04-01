@@ -65,6 +65,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     event.setEndDateTime(trainingRegister.getToDate());
     event.setSubject(trainingRegister.getTraining().getName());
     event.setUser(trainingRegister.getEmployee().getUser());
+    event.setCalendar(trainingRegister.getCalendar());
     if (trainingRegister.getTrainingSession() != null) {
       event.setLocation(trainingRegister.getTrainingSession().getLocation());
     }

@@ -46,7 +46,7 @@
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
-                <field name="$viewerTags" colSpan="12" showTitle="false">
+                <field name="$viewerTags" showTitle="false">
                     <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -63,6 +63,18 @@
                         <field name="statusSelect"/>
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
+                </field>
+                <field name="$technicalOriginTags" showTitle="false">
+                  <viewer depends="technicalOriginSelect">
+                    <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Entry</span>
+	                      <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Automatic</span>
+	                      <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 3" x-translate>Template</span>
+	                      <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 4" x-translate>Import</span>
+                      </h4>
+                    ]]>
+                  </viewer>
                 </field>
                 <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>

@@ -914,7 +914,7 @@
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
-    <action name="action-sale-order-validate-changes"/>
+    <action name="action-method-sale-order-validate-changes"/>
   </action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
