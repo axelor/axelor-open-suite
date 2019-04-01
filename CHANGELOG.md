@@ -43,6 +43,7 @@
 - Invoice: Always print after validation.
 - Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
+- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Configurator : Fix demo data
