@@ -81,6 +81,7 @@
 - Stock Move Line: stock move is readonly in form view.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+- Account : fix reverse charge tax computation.
 
 
 ## [5.1.4] - 2019-03-11
