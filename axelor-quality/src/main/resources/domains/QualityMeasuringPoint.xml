@@ -12,7 +12,6 @@
 		<decimal name="coefficient" title="Coefficient"/>
 		<string name="observations" title="Observations"/>
 		<one-to-many name="photosList" title="Photos" ref="com.axelor.meta.db.MetaFile" orphanRemoval="true"/>
-		<integer name="statusSelect" title="Status" selection="quality.measuring.point.status.select"/>
 
 	</entity>
 

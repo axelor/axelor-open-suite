@@ -27,9 +27,8 @@
 	</selection>
 	
 	<selection name="quality.control.points.status.select">
-		<option value="1">To do</option>
-		<option value="2">Passed</option>
-		<option value="3">Failed</option>
+		<option value="1">On hold</option>
+		<option value="2">Done</option>
 	</selection>
 	
 	<selection name="quality.control.point.model.period">
@@ -51,11 +50,6 @@
 		<option value="3" icon="img/rating/rating-3.00.png">3</option>
 		<option value="4" icon="img/rating/rating-4.00.png">4</option>
 		<option value="5" icon="img/rating/rating-5.00.png">5</option>
-	</selection>
-
-	<selection name="quality.measuring.point.status.select">
-		<option value="1">Open</option>
-		<option value="2">Closed</option>
 	</selection>
 	
 </object-views>

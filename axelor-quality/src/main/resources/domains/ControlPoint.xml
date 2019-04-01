@@ -15,10 +15,11 @@
 		<date name="controlPointDate" title="Date"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
 		<integer name="sequence" title="Sequence"/>
+		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType"/>
 
 		<extra-code>
 			<![CDATA[
-				public static final int STATUS_TO_DO = 1;
+				public static final int STATUS_ON_HOLD = 1;
 			]]>
 		</extra-code>
 	</entity>
