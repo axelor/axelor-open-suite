@@ -95,7 +95,7 @@
 "InvoicingProjectAnnex.currency","Currency",,
 "InvoicingProjectAnnex.customer","Customer",,
 "InvoicingProjectAnnex.date","Date",,
-"InvoicingProjectAnnex.deadlineDate","Deadline",,
+"InvoicingProjectAnnex.deadline","Deadline",,
 "InvoicingProjectAnnex.dueDate","Due date",,
 "InvoicingProjectAnnex.duration","Duration",,
 "InvoicingProjectAnnex.estimatedShippingDate","Estimated shipping date",,
