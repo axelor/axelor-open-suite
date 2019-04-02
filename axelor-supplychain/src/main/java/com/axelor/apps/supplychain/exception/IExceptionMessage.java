@@ -204,7 +204,7 @@ public interface IExceptionMessage {
 
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;
-  
+
   static final String SUPPLYCHAIN_MRP_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for MRP" /*)*/;
 }

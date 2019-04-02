@@ -144,6 +144,7 @@ public class InvoicingProjectService {
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
+    invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_GENERATED);
     invoicingProjectRepo.save(invoicingProject);
     return invoice;
   }
@@ -470,7 +471,7 @@ public class InvoicingProjectService {
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
-     
+
       fileList.add(Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice()));
       fileList.add(reportSettings.generate().getFile());
 
