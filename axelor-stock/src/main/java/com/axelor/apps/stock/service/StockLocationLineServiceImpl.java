@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -571,7 +572,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     return stockLocationLine;
   }
 
-  protected static final String stockMoveLineFilter =
+  protected static final String STOCK_MOVE_LINE_FILTER =
       "(self.stockMove.archived IS NULL OR self.archived IS FALSE) "
           + "AND self.stockMove.statusSelect = :planned "
           + "AND self.product.id = :productId ";
@@ -618,27 +619,52 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected List<StockMoveLine> findIncomingPlannedStockMoveLines(
       StockLocationLine stockLocationLine) {
+    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String incomingStockMoveLineFilter =
-        stockMoveLineFilter + "AND self.stockMove.toStockLocation.id = :stockLocationId";
-    return stockMoveLineRepository
-        .all()
-        .filter(incomingStockMoveLineFilter)
-        .bind("planned", StockMoveRepository.STATUS_PLANNED)
-        .bind("productId", stockLocationLine.getProduct().getId())
-        .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
-        .fetch();
+        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+    if (isDetailsStockLocationLine) {
+      incomingStockMoveLineFilter =
+          incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
+    }
+    Query<StockMoveLine> stockMoveLineQuery =
+        stockMoveLineRepository
+            .all()
+            .filter(incomingStockMoveLineFilter)
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("productId", stockLocationLine.getProduct().getId());
+    if (isDetailsStockLocationLine) {
+      stockMoveLineQuery
+          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
+          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
+    } else {
+      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
+    }
+    return stockMoveLineQuery.fetch();
   }
 
   protected List<StockMoveLine> findOutgoingPlannedStockMoveLines(
       StockLocationLine stockLocationLine) {
+    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String outgoingStockMoveLineFilter =
-        stockMoveLineFilter + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
-    return stockMoveLineRepository
-        .all()
-        .filter(outgoingStockMoveLineFilter)
-        .bind("planned", StockMoveRepository.STATUS_PLANNED)
-        .bind("productId", stockLocationLine.getProduct().getId())
-        .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
-        .fetch();
+        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+    if (isDetailsStockLocationLine) {
+      outgoingStockMoveLineFilter =
+          outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
+    }
+    Query<StockMoveLine> stockMoveLineQuery =
+        stockMoveLineRepository
+            .all()
+            .filter(outgoingStockMoveLineFilter)
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("productId", stockLocationLine.getProduct().getId());
+
+    if (isDetailsStockLocationLine) {
+      stockMoveLineQuery
+          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
+          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
+    } else {
+      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
+    }
+    return stockMoveLineQuery.fetch();
   }
 }
