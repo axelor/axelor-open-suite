@@ -7,6 +7,7 @@
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
 - Contract : Specify type when generating the invoice.
+- Invoice : cannot cancel an advance payment invoice.
 
 ## [5.1.5] - 2019-03-30
 ## Features
