@@ -38,8 +38,11 @@
    			<panel name="namePanel" colSpan="5">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
-          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="4" css="label-bold bold large" placeholder="Code" />
-          				<field name="name" showTitle="false" colSpan="8" css="label-bold bold large" placeholder="Name"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true" 
+          					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
+          					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
+          				<field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name"/>
         			</editor>
       			</field>
     		</panel>
@@ -62,7 +65,6 @@
 					</viewer>
 				</field>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
-				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
     		<panel name="productInfoPanel" colSpan="10" >
       
@@ -355,6 +357,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
+      <action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">

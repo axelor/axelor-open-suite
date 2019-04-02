@@ -235,10 +235,20 @@
                             ]]>
                         </viewer>
                     </field>
+                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+                    	<viewer depends="invoice.statusSelect">
+				<![CDATA[
+					<h4 class="text-left">
+						<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && record.invoice && record.invoice.statusSelect == 3" x-translate>Invoiced</span>
+						<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && (!record.invoice || (record.invoice && [1,2].includes(record.invoice.statusSelect)))" x-translate>Not Invoiced</span>
+					</h4>
+				]]>
+            	</viewer>
+                    </field>
 					<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<viewer depends="pfpValidateStatusSelect">
 								<![CDATA[
-								<h4 class="text-left">                    	
+								<h4 class="text-left">
 									<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 2" x-translate>Authorized</span>
 									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 3"  x-translate>Litigation</span>
 								</h4>
@@ -251,7 +261,7 @@
 
                     <field name="cancelReason" colOffset="6" canView="false" showIf="cancelReason != null" readonly="true"/>
                     <field name="isReversion" hidden="true" />
-                    
+
                     <field name="company.accountConfig" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
                     <field name="company.accountConfig.isManagePassedForPayment" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
                 </panel>
@@ -260,7 +270,7 @@
             <panel name="actionPanel" colSpan="3" itemSpan="12">
                 <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="Authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="Litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>              
+				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="Litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
                 <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
                 <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>

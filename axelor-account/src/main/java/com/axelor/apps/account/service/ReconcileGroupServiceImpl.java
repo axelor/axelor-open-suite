@@ -44,12 +44,16 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   protected ReconcileGroupRepository reconcileGroupRepository;
   protected ReconcileRepository reconcileRepository;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
   public ReconcileGroupServiceImpl(
-      ReconcileGroupRepository reconcileGroupRepository, ReconcileRepository reconcileRepository) {
+      ReconcileGroupRepository reconcileGroupRepository,
+      ReconcileRepository reconcileRepository,
+      MoveLineRepository moveLineRepository) {
     this.reconcileGroupRepository = reconcileGroupRepository;
     this.reconcileRepository = reconcileRepository;
+    this.moveLineRepository = moveLineRepository;
   }
 
   @Override
@@ -240,6 +244,22 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
         Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
       }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void unletter(ReconcileGroup reconcileGroup) {
+    List<MoveLine> moveLineList =
+        moveLineRepository.all().filter("self.reconcileGroup = ?", reconcileGroup.getId()).fetch();
+
+    if (moveLineList != null || !moveLineList.isEmpty()) {
+      for (MoveLine moveLine : moveLineList) {
+        moveLine.setReconcileGroup(null);
+        moveLineRepository.save(moveLine);
+      }
+      reconcileGroup.setUnletteringDate(Beans.get(AppBaseService.class).getTodayDate());
+      reconcileGroupRepository.save(reconcileGroup);
     }
   }
 }
