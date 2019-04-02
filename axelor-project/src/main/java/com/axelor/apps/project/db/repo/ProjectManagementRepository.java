@@ -18,7 +18,10 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -74,6 +77,12 @@ public class ProjectManagementRepository extends ProjectRepository {
   public Project copy(Project entity, boolean deep) {
     Project project = super.copy(entity, false);
     project.setStatusSelect(STATE_NEW);
+    for (TeamTask teamTask : entity.getTeamTaskList()) {
+      teamTask = Beans.get(TeamTaskRepository.class).copy(teamTask, false);
+      teamTask.setStatus("new");
+      teamTask.setProgressSelect(0);
+      project.addTeamTaskListItem(teamTask);
+    }
     return project;
   }
 }

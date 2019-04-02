@@ -3,6 +3,8 @@
 ## [Unreleased 5.1.6]
 ## Features
 ## Improvements
+- Project : Copy tasks when duplicate project.
+
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
