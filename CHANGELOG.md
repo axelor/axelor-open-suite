@@ -4,6 +4,7 @@
 ## Features
 ## Improvements
 CRM : Convert leads (change title and change the translation of title).
+- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -45,7 +46,6 @@ CRM : Convert leads (change title and change the translation of title).
 - Invoice: Always print after validation.
 - Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
-- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Configurator : Fix demo data
