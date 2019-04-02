@@ -108,7 +108,7 @@
               </panel>
               <panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
                 <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-                <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+                <field name="productCategory" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
               </panel>
             </panel>
           </panel>
