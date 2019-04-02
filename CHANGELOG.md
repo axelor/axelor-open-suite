@@ -3,6 +3,8 @@
 ## [Unreleased 5.1.6]
 ## Features
 ## Improvements
+CRM : Convert leads (change title and change the translation of title).
+
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
