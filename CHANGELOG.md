@@ -12,6 +12,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 - Remove mapping between Product Family and Product Category.
 - Fix NPE when planning with tracking number.
+- Invoice : cannot cancel an advance payment invoice.
 
 ## [5.1.5] - 2019-03-30
 ## Features
