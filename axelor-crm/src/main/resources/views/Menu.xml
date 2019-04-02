@@ -221,7 +221,9 @@
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
-	  
+	<menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="25"
+		 title="Sale quotations" action="sc.root.sale.quotations" />
+	
 	<!-- CRM Dashboard Entry for CRM.... -->
 
 	
