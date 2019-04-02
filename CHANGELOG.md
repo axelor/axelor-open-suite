@@ -6,6 +6,7 @@
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
+- Remove mapping between Product Family and Product Category.
 
 ## [5.1.5] - 2019-03-30
 ## Features
