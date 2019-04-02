@@ -70,6 +70,7 @@
 - DataBackup : update importId when its null with format IDDDMMYYHHMM
 - Project : Added dashlet view of contract invoices
 - Quality : Major updates in axelor-quality module
+- Business Project : Addition of new field statusSelect in InvoicingProject.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
