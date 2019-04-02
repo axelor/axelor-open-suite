@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.6]
 ## Features
+- Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
+
 ## Improvements
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
