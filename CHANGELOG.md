@@ -5,6 +5,7 @@
 ## Improvements
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
+- Product: Cost sheet group is not displayed twice in form view
 
 ## [5.1.5] - 2019-03-30
 ## Features
