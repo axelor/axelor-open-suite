@@ -3,9 +3,12 @@
 ## [Unreleased 5.1.6]
 ## Features
 ## Improvements
+CRM : Convert leads (change title and change the translation of title).
+
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
+- Contract : Specify type when generating the invoice.
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 
 ## [5.1.5] - 2019-03-30
@@ -43,6 +46,7 @@
 - Invoice: Always print after validation.
 - Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
+- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Configurator : Fix demo data
