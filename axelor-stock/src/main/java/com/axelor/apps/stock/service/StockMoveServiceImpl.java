@@ -742,9 +742,9 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove.getStockMoveLineList(),
           stockMove.getEstimatedDate(),
           true);
-    }
 
-    stockMove.setRealDate(appBaseService.getTodayDate());
+      stockMove.setRealDate(appBaseService.getTodayDate());
+    }
 
     stockMove.clearPlannedStockMoveLineList();
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
