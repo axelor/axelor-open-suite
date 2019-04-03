@@ -17,6 +17,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Fix NPE when planning with tracking number.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
+- CAMPAIGN : generate targets
 
 ## [5.1.5] - 2019-03-30
 ## Features

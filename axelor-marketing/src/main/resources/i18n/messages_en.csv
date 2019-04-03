@@ -16,6 +16,8 @@
 "Campaign types",,,
 "Campaigns",,,
 "Cancel",,,
+"Cannot generate targets. Please check lead filter of Target Model.",,,
+"Cannot generate targets. Please check partner filter of Target Model.",,,
 "Clear Selection",,,
 "Configuration",,,
 "Contact",,,

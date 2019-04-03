@@ -16,6 +16,8 @@
 "Campaign types","Types de campagnes",,
 "Campaigns","Campagnes",,
 "Cancel","Annuler",,
+"Cannot generate targets. Please check lead filter of Target Model.","Impossible de générer des cibles. Veuillez vérifier le filtre principal du modèle cible.",,
+"Cannot generate targets. Please check partner filter of Target Model.","Impossible de générer des cibles. Veuillez vérifier le filtre partenaire du modèle cible.",,
 "Clear Selection","Effacer la sélection",,
 "Configuration",,,
 "Contact","Contact",,

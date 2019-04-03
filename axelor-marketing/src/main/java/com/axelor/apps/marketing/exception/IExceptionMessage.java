@@ -31,4 +31,10 @@ public interface IExceptionMessage {
 
   static final String REMINDER_EMAIL1 = /*$$(*/
       "Please add atleast one invited Partner or Lead." /*)*/;
+  
+  static final String CAMPAIGN_ERROR1 = /*$$(*/
+      "Cannot generate targets. Please check partner filter of Target Model." /*)*/;
+
+  static final String CAMPAIGN_ERROR2 = /*$$(*/
+      "Cannot generate targets. Please check lead filter of Target Model." /*)*/;
 }
