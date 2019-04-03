@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
@@ -33,7 +34,9 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
 
   public InvoiceGeneratorContract(Contract contract) throws AxelorException {
     super(
-        InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+        contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT
+            ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+            : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         contract.getCompany(),
         contract.getPartner(),
         null,

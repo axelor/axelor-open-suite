@@ -2,10 +2,24 @@
 
 ## [Unreleased 5.1.6]
 ## Features
+- Menu entry for MetaPermission object in administration / User management.
+- TAX : Added typeSelect (Tax type) and filter in accounting reports
+
 ## Improvements
+CRM : Convert leads (change title and change the translation of title).
+- Sequence : Add sequence code select missing translation
+
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
+- Account : fix reverse charge tax computation.
+- Contract : Specify type when generating the invoice.
+- Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
+- Remove mapping between Product Family and Product Category.
+- Fix NPE when planning with tracking number.
+- Invoice : cannot cancel an advance payment invoice.
+- Direct Debits : Fix NPE when partner.activeUmr is null
 - Product: Cost sheet group is not displayed twice in form view
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -18,6 +32,7 @@
 - Sale Order Line: new button showing the future qty of the product.
 - Account : Display technicalOriginSelect as tag in Move form.
 - Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
+- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
 
 ## Improvements
 - Data config : rename field 'Fields'
