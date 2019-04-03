@@ -54,10 +54,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -112,7 +113,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap =
         getAllSaleOrderLinePerDate(saleOrder);
 
-    for (LocalDate estimatedDeliveryDate : saleOrderLinePerDateMap.keySet()) {
+    for (LocalDate estimatedDeliveryDate :
+        saleOrderLinePerDateMap
+            .keySet()
+            .stream()
+            .filter(x -> x != null)
+            .sorted((x, y) -> x.compareTo(y))
+            .collect(Collectors.toList())) {
 
       List<SaleOrderLine> saleOrderLineList = saleOrderLinePerDateMap.get(estimatedDeliveryDate);
 
@@ -121,7 +128,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
+    Optional<List<SaleOrderLine>> saleOrderLineList =
+        Optional.ofNullable(saleOrderLinePerDateMap.get(null));
+    if (saleOrderLineList.isPresent()) {
 
+      Optional<StockMove> stockMove = createStockMove(saleOrder, null, saleOrderLineList.get());
+
+      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
+    }
     return stockMoveList;
   }
 
@@ -178,7 +192,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
 
-    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new TreeMap<>();
+    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new HashMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 

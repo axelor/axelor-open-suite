@@ -41,7 +41,6 @@
 - Fix future qty computation.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
-- Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
 - Product: Cost sheet group is not displayed twice in form view
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
@@ -63,6 +62,7 @@
 - Leave to justify : add a try catch to trace the exception with TraceBackService.
 - FIXED ASSETS : Issues with cents in depreciation tables
 - Sale order line: do not block on partial delivery with requested reserved quantity.
+- Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
 
 ## [5.1.5] - 2019-03-30
 ## Features
