@@ -23,8 +23,10 @@
             <button name="printListBtn" title="Print (list)" icon="fa-print" onClick="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
 	    </toolbar>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
-			<field name="id"/>
-	        <field name="createdOn"/>
+	    	<field name="createdOn" colSpan="4"/>
+	        <field name="startDateTime" colSpan="4"/>
+	        <field name="endDateTime" colSpan="4"/>
+	        <field name="id"/>
 	        <field name="createdBy"/>
 	        <field name="endDate" colSpan="6"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" canEdit="false"/>

@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.6]
 ## Features
+- MRP : Add the start date time and end date time
+
 ## Improvements
 CRM : Convert leads (change title and change the translation of title).
 
