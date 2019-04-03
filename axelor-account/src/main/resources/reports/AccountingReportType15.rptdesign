@@ -247,14 +247,15 @@ left outer join public.account_account as Account on (MoveLine.account = Account
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.base_period as Period on (Move.period = Period.id)
-									
+left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
+left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id)
 where 
 (AccountingReport.currency = Move.company_currency) AND
 AccountingReport.year = Period.year
 and AccountType.technical_type_select = 'receivable'
 AND  Move.ignore_in_accounting_ok = false 
 and (Move.status_select = 3 OR Move.status_select = 2)
-
+AND Tax.type_select = 1	
 group by AccountingReport.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
