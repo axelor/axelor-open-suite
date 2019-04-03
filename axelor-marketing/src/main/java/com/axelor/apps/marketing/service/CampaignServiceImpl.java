@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Set;
 import javax.mail.MessagingException;
 
@@ -189,6 +190,10 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void generateEvents(Campaign campaign) {
 
+    LocalDateTime eventStartDateTime = campaign.getEventStartDateTime();
+    Long duration = campaign.getDuration();
+    LocalDateTime eventEndDateTime = eventStartDateTime.plusSeconds(duration);
+
     for (Partner partner : campaign.getPartnerSet()) {
       Event event = new Event();
       event.setPartner(partner);
@@ -198,8 +203,9 @@ public class CampaignServiceImpl implements CampaignService {
               : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(campaign.getEventStartDateTime());
-      event.setDuration(campaign.getDuration());
+      event.setStartDateTime(eventStartDateTime);
+      event.setEndDateTime(eventEndDateTime);
+      event.setDuration(duration);
       event.setTeam(
           campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
@@ -214,8 +220,9 @@ public class CampaignServiceImpl implements CampaignService {
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(campaign.getEventStartDateTime());
-      event.setDuration(campaign.getDuration());
+      event.setStartDateTime(eventStartDateTime);
+      event.setEndDateTime(eventEndDateTime);
+      event.setDuration(duration);
       event.setTeam(
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
