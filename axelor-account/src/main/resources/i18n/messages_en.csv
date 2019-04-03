@@ -391,6 +391,7 @@
 "Amount remaining to allocate",,,
 "Amount to reimburse",,,
 "An accounting moveline must have either a credit value or a debit value.",,,
+"An analytic distribution is set in product but the account used do not allow analytic distribution",,,
 "Analytic",,,
 "Analytic Acc.",,,
 "Analytic Account",,,
