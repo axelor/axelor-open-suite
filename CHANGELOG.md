@@ -23,6 +23,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Product: Cost sheet group is not displayed twice in form view
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
+- CURRENCY Conversion: Avoid creating line if conversion is not available. 
 
 ## [5.1.5] - 2019-03-30
 ## Features
