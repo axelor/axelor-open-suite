@@ -20,6 +20,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
 - Product: Cost sheet group is not displayed twice in form view
+- Stock Location : Added fr translation for two boolean fields
 
 
 ## [5.1.5] - 2019-03-30
