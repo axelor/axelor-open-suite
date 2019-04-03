@@ -30,6 +30,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Sale Order Line: new button showing the future qty of the product.
 - Account : Display technicalOriginSelect as tag in Move form.
 - Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
+- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
 
 ## Improvements
 - Data config : rename field 'Fields'
