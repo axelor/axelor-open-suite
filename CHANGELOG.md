@@ -9,6 +9,7 @@
 CRM : Convert leads (change title and change the translation of title).
 - Sequence : Add sequence code select missing translation
 - Product : Remove BOM Value while copying.
+- STOCK MOVE : realDate should not fill when cancelling a planned move
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -21,8 +22,8 @@ CRM : Convert leads (change title and change the translation of title).
 - Direct Debits : Fix NPE when partner.activeUmr is null
 - Product: Cost sheet group is not displayed twice in form view
 - Stock Location : Added fr translation for two boolean fields
-- CURRENCY Conversion: conversion line added without the conversion rate
-
+- AccountConfig : Specify filters for accounts.
+- CURRENCY Conversion: Avoid creating line if conversion is not available. 
 
 ## [5.1.5] - 2019-03-30
 ## Features
