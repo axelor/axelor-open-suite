@@ -293,7 +293,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      if (invoiceLine.getAccount() == null
+      Account account = invoiceLine.getAccount();
+
+      if (account == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
           && invoiceLineService.isAccountRequired(invoiceLine)) {
         throw new AxelorException(
@@ -301,6 +303,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
+      }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (invoiceLine.getAnalyticDistributionTemplate() != null
+              || !invoiceLine.getAnalyticMoveLineList().isEmpty())) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
       }
     }
 

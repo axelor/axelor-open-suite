@@ -391,6 +391,7 @@
 "Amount remaining to allocate","Montant restant à allouer",,
 "Amount to reimburse","Montant à rembourser",,
 "An accounting moveline must have either a credit value or a debit value.","Une ligne d'écriture doit soit avoir une valeur au crédit, soit avoir une valeur au débit.",,
+"An analytic distribution is set in product but the account used do not allow analytic distribution","Au moins un des produits contient un modèle de répartition analytique alors que le compte comptable choisi n'autorise pas la distribution analytique.",,
 "Analytic","Analytique",,
 "Analytic Acc.","Compte analytique",,
 "Analytic Account","Compte analytique",,

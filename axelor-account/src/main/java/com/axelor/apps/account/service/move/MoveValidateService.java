@@ -163,6 +163,16 @@ public class MoveValidateService {
             I18n.get(IExceptionMessage.MOVE_10),
             account.getName());
       }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (moveLine.getAnalyticDistributionTemplate() != null
+              || !moveLine.getAnalyticMoveLineList().isEmpty())) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+      }
     }
 
     this.validateWellBalancedMove(move);
