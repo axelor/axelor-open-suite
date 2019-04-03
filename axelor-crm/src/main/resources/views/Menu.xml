@@ -222,8 +222,8 @@
 	</action-view>
 	
 	<menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="25"
-		 title="Sale quotations" action="sc.root.sale.quotations" />
-	
+		 title="Sale quotations" action="sc.root.sale.quotations" if="__config__.app.isApp('sale')"/>
+
 	<!-- CRM Dashboard Entry for CRM.... -->
 
 	
