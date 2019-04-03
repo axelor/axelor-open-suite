@@ -8,6 +8,7 @@
 ## Improvements
 CRM : Convert leads (change title and change the translation of title).
 - Sequence : Add sequence code select missing translation
+- Product : Remove BOM Value while copying.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
