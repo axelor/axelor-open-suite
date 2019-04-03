@@ -52,25 +52,29 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.config.AccountConfigSupplychainService;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.axelor.apps.base.db.Batch;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected StockMoveRepository stockMoverepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
   protected MoveCreateService moveCreateService;
   protected MoveLineService moveLineService;
   protected AccountConfigSupplychainService accountConfigSupplychainService;
@@ -91,6 +95,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   @Inject
   public AccountingCutOffServiceImpl(
       StockMoveRepository stockMoverepository,
+      StockMoveLineRepository stockMoveLineRepository,
       MoveCreateService moveCreateService,
       MoveLineService moveLineService,
       AccountConfigSupplychainService accountConfigSupplychainService,
@@ -108,6 +113,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       ReconcileService reconcileService) {
 
     this.stockMoverepository = stockMoverepository;
+    this.stockMoveLineRepository = stockMoveLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveLineService = moveLineService;
     this.accountConfigSupplychainService = accountConfigSupplychainService;
@@ -335,9 +341,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
         Product product = stockMoveLine.getProduct();
 
-        if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
-            || product == null
-            || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+        if (checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
           continue;
         }
 
@@ -355,6 +359,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     return move.getMoveLineList();
+  }
+
+  protected boolean checkStockMoveLine(StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct){
+    if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+            || product == null
+            || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+      return true;
+    }
+
+    return false;
   }
 
   protected MoveLine generateProductMoveLine(
@@ -583,5 +597,33 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
     }
+  }
+
+  public List<Long> getStockMoveLines(Batch batch){
+    int offset = 0;
+    Boolean includeNotStockManagedProduct = batch.getSupplychainBatch().getIncludeNotStockManagedProduct();
+
+    List<StockMoveLine> stockMoveLineList;
+    List<Long> stockMoveLineIdList = new ArrayList<>();
+
+    Query<StockMove> stockMoveQuery = stockMoverepository.all().filter(":batch MEMBER OF self.batchSet").bind("batch", batch);
+    List<Long> stockMoveIdList = stockMoveQuery.select("id").fetch(0, 0).stream().map(m -> (Long) m.get("id")).collect(Collectors.toList());
+
+    Query<StockMoveLine> stockMoveLineQuery = stockMoveLineRepository.all().filter("self.stockMove.id IN :stockMoveIdList").bind("stockMoveIdList", stockMoveIdList);
+
+    while(!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
+      offset += stockMoveLineList.size();
+
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        Product product = stockMoveLine.getProduct();
+        if (!checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
+          stockMoveLineIdList.add(stockMoveLine.getId());
+        }
+      }
+
+      JPA.clear();
+    }
+
+    return stockMoveLineIdList;
   }
 }

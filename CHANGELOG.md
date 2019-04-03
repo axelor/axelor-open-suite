@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.6]
 ## Features
 - Menu entry for MetaPermission object in administration / User management.
+- Cut-off : new button showing the stock move lines processed.
 
 ## Improvements
 CRM : Convert leads (change title and change the translation of title).
