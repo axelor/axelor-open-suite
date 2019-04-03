@@ -4,6 +4,7 @@
 ## Features
 ## Improvements
 CRM : Convert leads (change title and change the translation of title).
+- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -11,6 +12,8 @@ CRM : Convert leads (change title and change the translation of title).
 - Contract : Specify type when generating the invoice.
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 - Remove mapping between Product Family and Product Category.
+- Fix NPE when planning with tracking number.
+- Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
 
 ## [5.1.5] - 2019-03-30
@@ -48,7 +51,6 @@ CRM : Convert leads (change title and change the translation of title).
 - Invoice: Always print after validation.
 - Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
 - HR : Add new column 'periodTotal' in timesheet validate grid.
-- Sequence : Add sequence code select missing translation
 
 ## Bug Fixes
 - Configurator : Fix demo data
