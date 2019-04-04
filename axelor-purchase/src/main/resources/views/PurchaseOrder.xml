@@ -382,6 +382,8 @@
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
+		<action name="action-purchase-order-record-set-supplier-partner-from-partner" if="_partner!=null"/>
+		<action name="action-group-purchase-order-partner-onchange" if="_partner!=null"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
@@ -680,5 +682,9 @@
 		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
+	
+	<action-record name="action-purchase-order-record-set-supplier-partner-from-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="supplierPartner" expr="eval: __repo__(Partner).find(_partner.id)" />
+	</action-record>
 
 </object-views>
