@@ -110,5 +110,6 @@
 - Employee : Fix issue of not saving each phase of creation process
 - TeamTask : Fix issue of creating new record from calendar view
 - Marketing : Fix error when trying to generate an event per target
+- Contract : Fix import error in data-init. 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
