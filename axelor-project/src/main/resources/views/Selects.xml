@@ -42,4 +42,8 @@
 		<option value="2">Project phase</option>
 	</selection>
 
+	<selection name="sequence.generic.code.select" id="project.sequence.generic.code.select">
+		<option value="project">Project</option>
+	</selection>
+
 </object-views>
