@@ -72,6 +72,7 @@
 - Quality : Major updates in axelor-quality module
 - Business Project : Addition of new field statusSelect in InvoicingProject.
 - Generating supplier order from partner form.
+- Mobile App : Add configuration for quality app on mobile app
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
