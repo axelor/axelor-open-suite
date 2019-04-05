@@ -6,10 +6,12 @@
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
 
 ## Improvements
-CRM : Convert leads (change title and change the translation of title).
+- CRM : Convert leads (change title and change the translation of title).
 - Sequence : Add sequence code select missing translation
 - Product : Remove BOM Value while copying.
 - STOCK MOVE : realDate should not fill when cancelling a planned move
+- ManufOrder : Move automaticEmail fields to ProductionConfig
+- General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 
 ## Bug Fixes
