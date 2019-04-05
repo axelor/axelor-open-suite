@@ -220,9 +220,6 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-	
-	<menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="25"
-		 title="Sale quotations" action="sc.root.sale.quotations" if="__config__.app.isApp('sale')"/>
 
 	<!-- CRM Dashboard Entry for CRM.... -->
 
