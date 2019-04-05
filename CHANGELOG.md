@@ -11,6 +11,7 @@ CRM : Convert leads (change title and change the translation of title).
 - Product : Remove BOM Value while copying.
 - STOCK MOVE : realDate should not fill when cancelling a planned move
 - ManufOrder : Move automaticEmail fields to ProductionConfig
+- General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.

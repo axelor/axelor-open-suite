@@ -337,6 +337,7 @@
 "AccountingReportType2000.totalPerAnalyticJournal","Total par journal analytique",,
 "AccountingReportType6.title","Balance Auxiliaire des comptes",,
 "AccountingReportType7.dueDate","Echéance",,
+"AccountingReportType7.journalCode","Journal",,
 "AccountingReportType7.reconcileGroup","Let.",,
 "AccountingReportType7.title","Grand livre auxiliaire",,
 "Acquisitions",,,

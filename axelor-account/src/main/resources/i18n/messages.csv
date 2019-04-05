@@ -337,6 +337,7 @@
 "AccountingReportType2000.totalPerAnalyticJournal",,,
 "AccountingReportType6.title",,,
 "AccountingReportType7.dueDate",,,
+"AccountingReportType7.journalCode",,,
 "AccountingReportType7.reconcileGroup",,,
 "AccountingReportType7.title",,,
 "Acquisitions",,,
