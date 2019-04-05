@@ -51,10 +51,6 @@
                 grid-view="payment-schedule-line-grid"
                 form-view="payment-schedule-line-form"/>
 		</panel-tabs>
-		<panel sidebar="true" name="actions">
-      <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
-        onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
-		</panel>
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">
 			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
@@ -65,6 +61,9 @@
 			<field name="waitDebtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
 				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+		</panel>
+		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
+			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
 		</panel>
 	</form>
 
