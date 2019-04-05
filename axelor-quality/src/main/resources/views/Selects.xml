@@ -45,11 +45,17 @@
 	</selection>
 
 	<selection name="quality.measuring.point.measuring.note.select">
+		<option value="0" icon="img/rating/rating-0.00.png">0</option>
 		<option value="1" icon="img/rating/rating-1.00.png">1</option>
 		<option value="2" icon="img/rating/rating-2.00.png">2</option>
 		<option value="3" icon="img/rating/rating-3.00.png">3</option>
 		<option value="4" icon="img/rating/rating-4.00.png">4</option>
 		<option value="5" icon="img/rating/rating-5.00.png">5</option>
 	</selection>
-	
+
+	<selection name="quality.measuring.point.measuring.type.select">
+		<option value="1">Note</option>
+		<option value="2">Conformity</option>
+	</selection>
+
 </object-views>
