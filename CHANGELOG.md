@@ -14,6 +14,7 @@
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
+- PURCHASE ORDER PRINTING : Change titles and add productStandard
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
