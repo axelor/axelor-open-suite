@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"0",,,
 "1",,,
 "2",,,
 "3",,,
@@ -20,6 +21,7 @@
 "Configuration",,,
 "Confirm",,,
 "Confirmed",,,
+"Conformity",,,
 "Control Frequency",,,
 "Control Points",,,
 "Control comment",,,
@@ -48,6 +50,7 @@
 "Inspector signature",,,
 "Label",,,
 "Low",,,
+"Measuring Type",,,
 "Measuring point list",,,
 "Measuring points",,,
 "My alerts",,,

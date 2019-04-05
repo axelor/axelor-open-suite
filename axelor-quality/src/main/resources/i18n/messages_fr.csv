@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"0",,,
 "1",,,
 "2",,,
 "3",,,
@@ -20,6 +21,7 @@
 "Configuration",,,
 "Confirm","Confirmer",,
 "Confirmed","Confirmé",,
+"Conformity","Conformité",,
 "Control Frequency","Fréquence de contrôle",,
 "Control Points","Points de contrôle",,
 "Control comment","Commentaire du contrôle",,
@@ -48,6 +50,7 @@
 "Inspector signature","Signature de l'inspecteur",,
 "Label","Libellé",,
 "Low","Faible",,
+"Measuring Type","Type de mesure",,
 "Measuring point list","Liste des points de mesure",,
 "Measuring points",,,
 "My alerts","Mes alertes",,
