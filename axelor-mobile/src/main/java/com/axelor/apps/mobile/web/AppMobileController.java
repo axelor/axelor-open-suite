@@ -52,8 +52,8 @@ public class AppMobileController {
     data.put(
         "isTaskAppEnable", appService.isApp("project") ? appMobile.getIsTaskAppEnable() : false);
     data.put(
-        "isQaulityAppEnable",
-        appService.isApp("quality") ? appMobile.getIsQaulityAppEnable() : false);
+        "isQualityAppEnable",
+        appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 
