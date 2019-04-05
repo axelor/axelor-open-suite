@@ -11,7 +11,7 @@
       		<field name="isLeaveAppEnable" widget="boolean-switch" if="__config__.app.isApp('leave')"/>
       		<field name="isExpenseAppEnable" widget="boolean-switch" if="__config__.app.isApp('expense')"/>
       		<field name="isTaskAppEnable" widget="boolean-switch" if="__config__.app.isApp('project')"/>
-      		<field name="isQaulityAppEnable" widget="boolean-switch" if="__config__.app.isApp('quality')"/>
+      		<field name="isQualityAppEnable" widget="boolean-switch" if="__config__.app.isApp('quality')"/>
 			<field name="offlineRecordLimit"/>
 		</panel>
 		<panel-tabs name="mainPanelTab" showIf="isSaleAppEnable || isCrmAppEnable" >
