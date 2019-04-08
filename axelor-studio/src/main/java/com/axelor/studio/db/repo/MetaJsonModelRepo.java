@@ -15,17 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.studio.db.repo;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.repo.ProductStockRepository;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
+import com.axelor.studio.db.AppBuilder;
 
-public class ProductProductionRepository extends ProductStockRepository {
+public class MetaJsonModelRepo extends MetaJsonModelRepository {
 
   @Override
-  public Product copy(Product product, boolean deep) {
-    Product copy = super.copy(product, deep);
-    copy.setDefaultBillOfMaterial(null);
-    return copy;
+  public MetaJsonModel save(MetaJsonModel jsonModel) {
+    jsonModel = super.save(jsonModel);
+
+    if (jsonModel.getMenu() != null) {
+      AppBuilder appBuilder = jsonModel.getAppBuilder();
+      if (appBuilder != null) {
+        jsonModel
+            .getMenu()
+            .setConditionToCheck("__config__.app.isApp('" + appBuilder.getCode() + "')");
+      } else {
+        jsonModel.getMenu().setConditionToCheck(null);
+      }
+    }
+    return jsonModel;
   }
 }

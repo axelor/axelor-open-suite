@@ -4,6 +4,8 @@
 ## Features
 - Menu entry for MetaPermission object in administration / User management.
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
+- STOCK MOVE : tracking on invoice field
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -14,6 +16,7 @@
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
+- MANUFORDER : Translate the "Outsourced" tag
 - PURCHASE ORDER PRINTING : Change titles and add productStandard
 
 ## Bug Fixes
