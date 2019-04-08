@@ -167,7 +167,8 @@ public class MoveValidateService {
       if (account != null
           && !account.getAnalyticDistributionAuthorized()
           && (moveLine.getAnalyticDistributionTemplate() != null
-              || !moveLine.getAnalyticMoveLineList().isEmpty())) {
+              || (moveLine.getAnalyticMoveLineList() != null
+                  && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
