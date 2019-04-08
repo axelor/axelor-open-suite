@@ -17,6 +17,7 @@
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
 - MANUFORDER : Translate the "Outsourced" tag
+- STOCK LOCATION : Add 'Totals per Product Family' in Report
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
