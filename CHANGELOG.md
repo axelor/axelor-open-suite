@@ -19,6 +19,7 @@
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
 - MANUFORDER : Translate the "Outsourced" tag
 - PURCHASE ORDER PRINTING : Change titles and add productStandard
+- DEBT RECOVERY : french translation of debt recovery settings
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
