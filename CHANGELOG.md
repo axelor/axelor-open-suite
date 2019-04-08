@@ -6,6 +6,7 @@
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
 - STOCK MOVE : tracking on invoice field
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- DEBT RECOVERY : add color in debt recovery lines in grid view
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
