@@ -20,7 +20,7 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 
-public class ProductProductionRepository extends ProductStockRepository{
+public class ProductProductionRepository extends ProductStockRepository {
 
   @Override
   public Product copy(Product product, boolean deep) {
@@ -28,5 +28,4 @@ public class ProductProductionRepository extends ProductStockRepository{
     copy.setDefaultBillOfMaterial(null);
     return copy;
   }
-
 }
