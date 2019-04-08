@@ -20,6 +20,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.service.ReconcileGroupService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,7 +36,11 @@ public class ReconcileGroupController {
             .find(request.getContext().asType(ReconcileGroup.class).getId());
 
     if (reconcileGroup != null) {
-      Beans.get(ReconcileGroupService.class).unletter(reconcileGroup);
+      try {
+        Beans.get(ReconcileGroupService.class).unletter(reconcileGroup);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
     }
     response.setReload(true);
   }

@@ -256,17 +256,12 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void unletter(ReconcileGroup reconcileGroup) {
-    List<MoveLine> moveLineList =
-        moveLineRepository.all().filter("self.reconcileGroup = ?", reconcileGroup.getId()).fetch();
+  public void unletter(ReconcileGroup reconcileGroup) throws AxelorException {
+    List<Reconcile> reconcileList =
+        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
 
-    if (moveLineList != null && !moveLineList.isEmpty()) {
-      for (MoveLine moveLine : moveLineList) {
-        moveLine.setReconcileGroup(null);
-        moveLineRepository.save(moveLine);
-      }
-      reconcileGroup.setUnletteringDate(Beans.get(AppBaseService.class).getTodayDate());
-      reconcileGroupRepository.save(reconcileGroup);
+    for (Reconcile reconcile : reconcileList) {
+      Beans.get(ReconcileService.class).unreconcile(reconcile);
     }
   }
 }
