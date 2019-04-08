@@ -203,6 +203,7 @@
 "PurchaseOrder.paymentMode",,,
 "PurchaseOrder.priceExclTax",,,
 "PurchaseOrder.priceInclTax",,,
+"PurchaseOrder.productStandard",,,
 "PurchaseOrder.purchaseInfo",,,
 "PurchaseOrder.qtyUnit",,,
 "PurchaseOrder.quote",,,

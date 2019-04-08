@@ -205,7 +205,6 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   public void remove(Reconcile reconcile) throws AxelorException {
     MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
-    reconcile.setReconcileGroup(null);
 
     // update move lines
     List<MoveLine> moveLineToRemoveList =
@@ -217,11 +216,11 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     reconcileList
         .stream()
         .map(Reconcile::getDebitMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
+        .forEach(moveLine -> moveLine.setReconcileGroup(null));
     reconcileList
         .stream()
         .map(Reconcile::getCreditMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
+        .forEach(moveLine -> moveLine.setReconcileGroup(null));
 
     // update status
     updateStatus(reconcileGroup);
@@ -230,7 +229,13 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList =
-        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+        reconcileRepository
+            .all()
+            .filter(
+                "self.reconcileGroup = ?1 AND self.statusSelect != ?2",
+                reconcileGroup.getId(),
+                ReconcileRepository.STATUS_CANCELED)
+            .fetch();
     int status = reconcileGroup.getStatusSelect();
     if (CollectionUtils.isNotEmpty(reconcileList)
         && isBalanced(reconcileList)
@@ -239,7 +244,9 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
-        reconcileGroupRepository.remove(reconcileGroup);
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
+        reconcileGroup.setUnletteringDate((Beans.get(AppBaseService.class).getTodayDate()));
+        reconcileGroupRepository.save(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
         Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
@@ -253,7 +260,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     List<MoveLine> moveLineList =
         moveLineRepository.all().filter("self.reconcileGroup = ?", reconcileGroup.getId()).fetch();
 
-    if (moveLineList != null || !moveLineList.isEmpty()) {
+    if (moveLineList != null && !moveLineList.isEmpty()) {
       for (MoveLine moveLine : moveLineList) {
         moveLine.setReconcileGroup(null);
         moveLineRepository.save(moveLine);
