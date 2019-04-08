@@ -47,23 +47,26 @@ import java.util.List;
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   @Override
-  public String printInvoice(Invoice invoice, boolean forceRefresh)
+  public String printInvoice(
+      Invoice invoice, boolean forceRefresh, String format, Integer reportType)
       throws AxelorException, IOException {
-    String fileName = getInvoiceFilesName(false);
-    return PdfTool.getFileLinkFromPdfFile(printCopiesToFile(invoice, forceRefresh), fileName);
+    String fileName = getInvoiceFilesName(false, format);
+    return PdfTool.getFileLinkFromPdfFile(
+        printCopiesToFile(invoice, forceRefresh, reportType), fileName);
   }
 
   @Override
-  public File printCopiesToFile(Invoice invoice, boolean forceRefresh)
+  public File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
       throws AxelorException, IOException {
-    File file = getPrintedInvoice(invoice, forceRefresh);
+    File file = getPrintedInvoice(invoice, forceRefresh, reportType);
     int copyNumber = invoice.getInvoicesCopySelect();
     return PdfTool.printCopiesToFile(file, copyNumber);
   }
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
-  public File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException {
+  public File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+      throws AxelorException {
 
     // if invoice is ventilated (or just validated for advance payment invoices)
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
@@ -71,30 +74,36 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
             && invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED)) {
 
       // return a previously generated printing if possible
-      if (!forceRefresh && invoice.getPrintedPDF() != null) {
+      if (!forceRefresh
+          && invoice.getPrintedPDF() != null
+          && reportType != null
+          && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
         Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
         return path.toFile();
       } else {
 
         // generate a new printing
-        return printAndSave(invoice);
+        return reportType != null
+                && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
+            ? print(invoice, reportType)
+            : printAndSave(invoice, reportType);
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
       // don't save
-      return print(invoice);
+      return print(invoice, reportType);
     }
   }
 
-  public File print(Invoice invoice) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(invoice);
+  public File print(Invoice invoice, Integer reportType) throws AxelorException {
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
     return reportSettings.generate().getFile();
   }
 
-  public File printAndSave(Invoice invoice) throws AxelorException {
+  public File printAndSave(Invoice invoice, Integer reportType) throws AxelorException {
 
-    ReportSettings reportSettings = prepareReportSettings(invoice);
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
     MetaFile metaFile;
 
     reportSettings.toAttach(invoice);
@@ -121,15 +130,16 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         new ThrowConsumer<Invoice>() {
           @Override
           public void accept(Invoice invoice) throws Exception {
-            printedInvoices.add(printCopiesToFile(invoice, false));
+            printedInvoices.add(printCopiesToFile(invoice, false, null));
           }
         });
-    String fileName = getInvoiceFilesName(true);
+    String fileName = getInvoiceFilesName(true, "pdf");
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
   }
 
   @Override
-  public ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException {
+  public ReportSettings prepareReportSettings(Invoice invoice, Integer reportType)
+      throws AxelorException {
 
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
@@ -149,7 +159,10 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 
-    return reportSetting.addParam("InvoiceId", invoice.getId()).addParam("Locale", locale);
+    return reportSetting
+        .addParam("InvoiceId", invoice.getId())
+        .addParam("Locale", locale)
+        .addParam("ReportType", reportType == null ? 0 : reportType);
   }
 
   /**
@@ -157,11 +170,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
    *
    * @param plural if there is one or multiple invoices.
    */
-  protected String getInvoiceFilesName(boolean plural) {
+  protected String getInvoiceFilesName(boolean plural, String format) {
 
     return I18n.get(plural ? "Invoices" : "Invoice")
         + " - "
         + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + ".pdf";
+        + "."
+        + format;
   }
 }

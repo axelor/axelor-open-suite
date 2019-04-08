@@ -37,7 +37,8 @@ public interface InvoicePrintService {
    * @return the file link to the printed invoice.
    * @throws AxelorException
    */
-  String printInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException, IOException;
+  String printInvoice(Invoice invoice, boolean forceRefresh, String format, Integer reportType)
+      throws AxelorException, IOException;
 
   /**
    * Print the invoice with the desired number of copies and return the file.
@@ -50,7 +51,8 @@ public interface InvoicePrintService {
    * @throws AxelorException
    * @throws IOException
    */
-  File printCopiesToFile(Invoice invoice, boolean forceRefresh) throws AxelorException, IOException;
+  File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
+      throws AxelorException, IOException;
 
   /**
    * Take the stored report on the invoice, if the invoice is ventilated and the file is available,
@@ -62,7 +64,8 @@ public interface InvoicePrintService {
    *     changes made to invoice between last print and current state won't appear on printed copy.
    * @return a file with the invoice as PDF.
    */
-  File getPrintedInvoice(Invoice invoice, boolean forceRefresh) throws AxelorException;
+  File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+      throws AxelorException;
 
   /**
    * Print an invoice but doesn't save the generated file in the invoice.
@@ -71,7 +74,7 @@ public interface InvoicePrintService {
    * @return a file of the invoice printing.
    * @throws AxelorException
    */
-  public File print(Invoice invoice) throws AxelorException;
+  public File print(Invoice invoice, Integer reportType) throws AxelorException;
 
   /**
    * Print an invoice, then save the generated file in this invoice.
@@ -80,7 +83,7 @@ public interface InvoicePrintService {
    * @return a metafile of the invoice printing.
    * @throws AxelorException
    */
-  File printAndSave(Invoice invoice) throws AxelorException;
+  File printAndSave(Invoice invoice, Integer reportType) throws AxelorException;
 
   /**
    * Print a list of invoices in the same output.
@@ -98,5 +101,5 @@ public interface InvoicePrintService {
    * @return the report settings to print the given invoice
    * @throws AxelorException
    */
-  ReportSettings prepareReportSettings(Invoice invoice) throws AxelorException;
+  ReportSettings prepareReportSettings(Invoice invoice, Integer reportType) throws AxelorException;
 }
