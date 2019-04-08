@@ -472,7 +472,8 @@ public class InvoicingProjectService {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
-      fileList.add(Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice()));
+      fileList.add(
+          Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice(), null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
