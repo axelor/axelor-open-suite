@@ -6,6 +6,7 @@
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
 - STOCK MOVE : tracking on invoice field
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- DEBT RECOVERY : add color in debt recovery lines in grid view
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -17,6 +18,9 @@
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
 - MANUFORDER : Translate the "Outsourced" tag
+- PURCHASE ORDER PRINTING : Change titles and add productStandard
+- DEBT RECOVERY : french translation of debt recovery settings
+- DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
 - STOCK LOCATION : Add 'Totals per Product Family' in Report
 
 ## Bug Fixes
