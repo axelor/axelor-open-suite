@@ -196,7 +196,13 @@ public class CampaignServiceImpl implements CampaignService {
 
     for (Partner partner : campaign.getPartnerSet()) {
       Event event = new Event();
-      event.setPartner(partner);
+
+      if (partner.getIsContact()) {
+        event.setContactPartner(partner);
+      } else {
+        event.setPartner(partner);
+      }
+
       event.setUser(
           campaign.getGenerateEventPerPartnerOrLead()
               ? partner.getUser()
