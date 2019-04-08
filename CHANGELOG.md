@@ -17,6 +17,7 @@
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
 - MANUFORDER : Translate the "Outsourced" tag
+- DEBT RECOVERY : french translation of debt recovery settings
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
