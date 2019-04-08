@@ -19,7 +19,6 @@
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     <many-to-one name="advanceMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Advance move line"/>
     <string name="debitNumber" title="Direct debit Nbr"/>
-    <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit management"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line"/>
     <many-to-one name="advanceOrPaymentMove" ref="com.axelor.apps.account.db.Move" title="Advance/Payment move"/>
     <boolean name="fromReject" title="From rejection" default="false"/>

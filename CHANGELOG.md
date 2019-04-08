@@ -5,6 +5,7 @@
 
 ## Improvements
 - Remove Pack Feature from Product.
+- Account : Remove DirectDebitManagement
 
 ## [Unreleased 5.2.0]
 ## Features
