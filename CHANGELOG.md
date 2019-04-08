@@ -4,6 +4,7 @@
 ## Features
 - Menu entry for MetaPermission object in administration / User management.
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
+- STOCK MOVE : tracking on invoice field
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 
 ## Improvements
