@@ -37,6 +37,7 @@
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
 - CURRENCY Conversion: Avoid creating line if conversion is not available. 
+- DEBT RECOVERY : don't add batch to anomalies
 
 ## [5.1.5] - 2019-03-30
 ## Features
