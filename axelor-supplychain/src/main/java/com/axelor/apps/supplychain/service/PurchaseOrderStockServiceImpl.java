@@ -54,9 +54,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,7 +243,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected Map<LocalDate, List<PurchaseOrderLine>> getAllPurchaseOrderLinePerDate(
       PurchaseOrder purchaseOrder) {
 
-    Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap = new HashMap<>();
+    Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap = new TreeMap<>();
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 

@@ -54,10 +54,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -178,7 +178,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
 
-    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new HashMap<>();
+    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new TreeMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
