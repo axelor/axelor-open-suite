@@ -4,6 +4,8 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
+    	<hilite if="$get('debtRecoveryMethodLine.manualValidationOk')" color="warning"/>
+    	<hilite if="batchSet.length &gt; 0" color="success"/>
         <field name="name"/>
         <field name="referenceDate"/>
         <field name="debtRecoveryDate"/>
@@ -11,6 +13,8 @@
         <field name="debtRecoveryMethodLine"/>
         <field name="balanceDue"/>
         <field name="balanceDueDebtRecovery"/>
+        <field name="debtRecoveryMethodLine.manualValidationOk" hidden="true" />
+        <field name="batchSet" hidden="true" />
     </grid>
 
 	<form name="debt-recovery-form" title="Debt Recovery"
@@ -51,10 +55,6 @@
                 grid-view="payment-schedule-line-grid"
                 form-view="payment-schedule-line-form"/>
 		</panel-tabs>
-		<panel sidebar="true" name="actions">
-      <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
-        onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
-		</panel>
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">
 			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
@@ -65,6 +65,9 @@
 			<field name="waitDebtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
 				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+		</panel>
+		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
+			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
 		</panel>
 	</form>
 

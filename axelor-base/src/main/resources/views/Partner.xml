@@ -103,6 +103,9 @@
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload"
 		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
+		<toolbar>
+			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')"/>
+		</toolbar>
 		<panel-include view="partner-form" />
 	</form>
 
