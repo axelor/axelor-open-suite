@@ -8,6 +8,7 @@
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - DEBT RECOVERY : add color in debt recovery lines in grid view
 - DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
