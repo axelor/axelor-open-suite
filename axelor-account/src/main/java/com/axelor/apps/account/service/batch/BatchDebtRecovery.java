@@ -166,7 +166,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   protected void incrementAnomaly(Partner partner) {
     findBatch();
     partner = partnerRepository.find(partner.getId());
-    addBatchToModel(partner);
+    // addBatchToModel(partner);
     _incrementAnomaly();
   }
 
