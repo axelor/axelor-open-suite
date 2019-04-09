@@ -24,6 +24,7 @@
 - DEBT RECOVERY : french translation of debt recovery settings
 - DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
 - STOCK LOCATION : Add 'Totals per Product Family' in Report
+- TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -41,6 +42,7 @@
 - Sale order line : Fix delivered qty not increase if stock move is internal.
 - DEBT RECOVERY : don't add batch to model in case of anomalies
 - Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
+- TIMESHEET: Do not hide button to generate several lines.
 
 ## [5.1.5] - 2019-03-30
 ## Features
