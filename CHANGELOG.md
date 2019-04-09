@@ -39,6 +39,7 @@
 - CURRENCY Conversion: Avoid creating line if conversion is not available. 
 - Sale order line : Fix delivered qty not increase if stock move is internal.
 - DEBT RECOVERY : don't add batch to model in case of anomalies
+- Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
 
 ## [5.1.5] - 2019-03-30
 ## Features
