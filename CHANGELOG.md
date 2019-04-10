@@ -28,6 +28,7 @@
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
+- SaleOrder,PurchaseOrder,Invoice : fill automatically contact in contactPartner if only one contact in contactPartnerSet.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
