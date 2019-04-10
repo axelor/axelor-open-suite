@@ -55,6 +55,7 @@
 - TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
 - PARTNER : Fix can't change the address if partner is an employee.
 - DEBT RECOVERY : Fix unable to run debt recovery accounting batch.
+- Leave to justify : add a try catch to trace the exception with TraceBackService.
 
 ## [5.1.5] - 2019-03-30
 ## Features
