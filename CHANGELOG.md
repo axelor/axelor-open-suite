@@ -2,28 +2,23 @@
 
 ## [Unreleased 5.1.6]
 ## Features
-- Menu entry for MetaPermission object in administration / User management.
-- TAX : Added typeSelect (Tax type) and filter in accounting reports
-- STOCK MOVE : tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
-- DEBT RECOVERY : add color in debt recovery lines in grid view
-- DEBT RECOVERY : new button "Customer recovery" in partner form
-- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- Sequence : Add sequence code select missing translation
-- Product : Remove BOM Value while copying.
-- STOCK MOVE : realDate should not fill when cancelling a planned move
 - ManufOrder : Move automaticEmail fields to ProductionConfig
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
-- MANUFORDER : Translate the "Outsourced" tag
 - PURCHASE ORDER PRINTING : Change titles and add productStandard
-- DEBT RECOVERY : french translation of debt recovery settings
 - DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
 - STOCK LOCATION : Add 'Totals per Product Family' in Report
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- STOCK MOVE : added change tracking on invoice field
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
@@ -43,6 +38,13 @@
 - Sale order line : Fix delivered qty not increase if stock move is internal.
 - DEBT RECOVERY : don't add batch to model in case of anomalies
 - Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
+- DEBT RECOVERY : french translation of debt recovery settings
+- Sequence : Add sequence code select missing translation
+- Product : Remove BOM Value while copying.
+- STOCK MOVE : realDate should not fill when cancelling a planned move
+- MANUFORDER : Translate the "Outsourced" tag
+- TIMESHEET: Do not hide button to generate several lines.
+- TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
 - PARTNER : Fix can't change the address if partner is an employee.
 
 ## [5.1.5] - 2019-03-30
