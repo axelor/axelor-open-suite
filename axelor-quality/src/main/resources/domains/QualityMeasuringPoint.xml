@@ -11,7 +11,7 @@
 		<boolean name="compliant" title="Compliant"/>
 		<decimal name="coefficient" title="Coefficient"/>
 		<string name="observations" title="Observations"/>
-		<one-to-many name="photosList" title="Photos" ref="com.axelor.meta.db.MetaFile" orphanRemoval="true"/>
+		<one-to-many name="picturesList" title="Pictures" ref="com.axelor.apps.quality.db.QualityPictures" mappedBy="qualityMeasuringPoint"/>
 		<integer name="measuringTypeSelect" title="Measuring Type" selection="quality.measuring.point.measuring.type.select"/>
 
 	</entity>

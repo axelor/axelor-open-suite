@@ -16,7 +16,19 @@
 			<field name="measuringNote" widget="ImageSelect" x-labels="false" hidden="true" showIf="measuringTypeSelect == 1"/>
 			<field name="coefficient"/>
 			<field name="compliant" colSpan="3" widget="boolean-switch" hidden="true" showIf="measuringTypeSelect == 2" onChange="action-measuring-point-attrs-on-compliant-change"/>
-			<field name="photosList" colSpan="12"/>
+			<field name="picturesList" colSpan="12">
+				<editor onNew="action-quality-picture-record-on-new">
+					<panel name="mainPanel">
+						<panel name="imagePanel" colSpan="6">
+							<field name="metaFile" widget="Image" colSpan="12" showTitle="false"/>
+						</panel>
+						<panel name="detailsPanel" colSpan="6">
+							<field name="name" colSpan="12"/>
+							<field name="createDate" colSpan="6"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
 			<field name="observations" colSpan="12" widget="html"/>
 		</panel>
 	</form>

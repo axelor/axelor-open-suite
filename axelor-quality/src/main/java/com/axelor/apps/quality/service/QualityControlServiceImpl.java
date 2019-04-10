@@ -94,6 +94,7 @@ public class QualityControlServiceImpl implements QualityControlService {
     point.setSequence(model.getSequence());
     point.setNotes(model.getNotes());
     point.setControlFrequency(model.getControlFrequency());
+    point.setControlPointType(model.getControlPointType());
 
     for (QualityMeasuringPoint measuringPoint : model.getMeasuringPointList()) {
       measuringPoint = Beans.get(QualityMeasuringPointRepository.class).copy(measuringPoint, true);
