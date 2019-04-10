@@ -101,7 +101,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       int type,
       boolean taxed,
       BigDecimal taxRate,
-      SaleOrderLine saleOrderLine)
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     if (product != null) {
 
@@ -119,6 +120,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
+      stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 

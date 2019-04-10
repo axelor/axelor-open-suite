@@ -382,7 +382,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               StockMoveLineService.TYPE_SALES,
               saleOrderLine.getSaleOrder().getInAti(),
               taxRate,
-              saleOrderLine);
+              saleOrderLine,
+              null);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
