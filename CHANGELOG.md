@@ -24,6 +24,7 @@
 - DEBT RECOVERY : french translation of debt recovery settings
 - DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
 - STOCK LOCATION : Add 'Totals per Product Family' in Report
+- HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
