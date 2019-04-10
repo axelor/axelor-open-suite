@@ -19,6 +19,7 @@
 - STOCK MOVE : added change tracking on invoice field
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
+- HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -29,6 +30,7 @@
 - Fix NPE when planning with tracking number.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
+- Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
 - Product: Cost sheet group is not displayed twice in form view
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
@@ -43,6 +45,7 @@
 - MANUFORDER : Translate the "Outsourced" tag
 - TIMESHEET: Do not hide button to generate several lines.
 - TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
+- PARTNER : Fix can't change the address if partner is an employee.
 
 ## [5.1.5] - 2019-03-30
 ## Features
