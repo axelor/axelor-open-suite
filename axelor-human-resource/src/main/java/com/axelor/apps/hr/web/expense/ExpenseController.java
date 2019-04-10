@@ -154,7 +154,12 @@ public class ExpenseController {
     Map<String, Object> expenseMap =
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
+    if (expenseMap == null) {
+      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      return;
+    }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
+    response.setCanClose(true);
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())
