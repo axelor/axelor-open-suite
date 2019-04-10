@@ -9,6 +9,7 @@
 - DEBT RECOVERY : add color in debt recovery lines in grid view
 - DEBT RECOVERY : new button "Customer recovery" in partner form
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
