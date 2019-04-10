@@ -12,6 +12,7 @@
 		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>
 		<many-to-one name="optionalQualityProcess" ref="QualityProcess"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
+		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType"/>
 	</entity>
 
 </domain-models>
