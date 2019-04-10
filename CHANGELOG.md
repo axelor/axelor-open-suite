@@ -43,6 +43,7 @@
 - DEBT RECOVERY : don't add batch to model in case of anomalies
 - Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
 - PARTNER : Fix can't change the address if partner is an employee.
+- DEBT RECOVERY : Fix unable to run debt recovery accounting batch.
 
 ## [5.1.5] - 2019-03-30
 ## Features
