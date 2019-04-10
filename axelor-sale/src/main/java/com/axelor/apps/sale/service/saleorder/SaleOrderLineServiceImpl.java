@@ -549,9 +549,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (packLine.getQuantity() != null) {
         soLine.setQty(packLine.getQuantity().multiply(packQty));
       }
-      if(packLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-        soLine.setQty(packQty);
-      }
       soLine.setUnit(packLine.getUnit());
       soLine.setTypeSelect(packLine.getTypeSelect());
       soLine.setSequence(sequence);

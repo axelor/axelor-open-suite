@@ -14,9 +14,9 @@
     <form name="pack-line-form" title="PackLine" model="com.axelor.apps.sale.db.PackLine" onNew="action-pack-line-record-onnew" onLoad="action-pack-line-attrs-type-select"> 
 	    <panel name="packLinePanel">
 	    	<field name="product" onChange="action-pack-line-record-product-onchange" canEdit="false" form-view="product-form" grid-view="product-grid"/>
-	    	<field name="quantity"/>
-	    	<field name="productName"/>
 	    	<field name="price"/>
+	    	<field name="productName"/>
+	    	<field name="quantity" min="1"/>
 	    	<field name="typeSelect" onChange="action-pack-line-group-type-select-onchange"/>
 	    	<field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 	    	<field name="isShowTotal" hidden="true"/> 
@@ -39,16 +39,13 @@
     
     <action-record name="action-pack-line-record-type-select-onchange" model="com.axelor.apps.sale.db.PackLine">
     	<field name="product,unit" expr="eval: null" if="typeSelect == 1"/>
-    	<field name="quantity" expr="eval: 0.00" if="typeSelect == 1"/>
-    	<field name="quantity" expr="eval: 1.00" if="typeSelect != 1"/>
+    	<field name="quantity" expr="eval: 1.00" />
     	<field name="price" expr="eval: 0.00" if="typeSelect == 1"/>
     </action-record>
     
     <action-attrs name="action-pack-line-attrs-type-select">
     	<attribute name="hidden" for="isShowTotal,isHideUnitAmounts" expr="eval: typeSelect != 1"/>
-    	<attribute name="hidden" for="product,price,quantity,unit" expr="eval: typeSelect == 1"/>
-    	<attribute name="min" for="quantity" expr="eval: 0" if="typeSelect == 1"/>
-    	<attribute name="min" for="quantity" expr="eval: 1" if="typeSelect != 1"/>
+    	<attribute name="hidden" for="product,price,unit" expr="eval: typeSelect == 1"/>
     </action-attrs>
     
     <action-group name="action-pack-line-group-type-select-onchange">
