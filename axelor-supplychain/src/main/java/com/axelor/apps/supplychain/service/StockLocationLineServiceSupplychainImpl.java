@@ -63,35 +63,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
             lastFutureStockMoveDate,
             requestedReservedQty);
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-    Unit stockLocationLineUnit = stockLocationLine.getUnit();
-    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
-      requestedReservedQty =
-          unitConversionService.convert(
-              stockMoveLineUnit,
-              stockLocationLineUnit,
-              requestedReservedQty,
-              requestedReservedQty.scale(),
-              product);
-    }
-
-    if (current) {
-      if (isIncrement) {
-        stockLocationLine.setRequestedReservedQty(
-            computeRequestedReservedQty(stockLocationLine).add(requestedReservedQty));
-      } else {
-        stockLocationLine.setRequestedReservedQty(
-            computeRequestedReservedQty(stockLocationLine).subtract(requestedReservedQty));
-      }
-    }
+    stockLocationLine.setRequestedReservedQty(computeRequestedReservedQty(stockLocationLine));
     if (future) {
-      if (isIncrement) {
-        stockLocationLine.setRequestedReservedQty(
-            computeRequestedReservedQty(stockLocationLine).subtract(requestedReservedQty));
-      } else {
-        stockLocationLine.setRequestedReservedQty(
-            computeRequestedReservedQty(stockLocationLine).add(requestedReservedQty));
-      }
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
     return stockLocationLine;

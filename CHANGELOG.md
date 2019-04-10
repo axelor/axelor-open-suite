@@ -36,6 +36,7 @@
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 - Remove mapping between Product Family and Product Category.
 - Fix NPE when planning with tracking number.
+- Fix future qty computation.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
