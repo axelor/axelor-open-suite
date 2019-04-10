@@ -2,7 +2,15 @@
 
 ## [Unreleased 5.1.6]
 ## Features
+- Menu entry for MetaPermission object in administration / User management.
+- TAX : Added typeSelect (Tax type) and filter in accounting reports
+- STOCK MOVE : tracking on invoice field
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
