@@ -199,6 +199,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       int count = 0;
       for (DebtRecovery debtRecovery : debtRecoveries) {
+        String partnerName = debtRecovery.getAccountingSituation().getPartner().getName();
         try {
           DebtRecoveryHistory debtRecoveryHistory =
               debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
@@ -215,11 +216,7 @@ public class BatchDebtRecovery extends BatchStrategy {
           }
         } catch (Exception e) {
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get("Tiers") + " %s",
-                      debtRecovery.getAccountingSituation().getPartner().getName()),
-                  e),
+              new Exception(String.format(I18n.get("Tiers") + " %s", partnerName), e),
               IException.REMINDER,
               batch.getId());
           incrementAnomaly();
