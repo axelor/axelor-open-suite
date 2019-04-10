@@ -4994,7 +4994,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row["is_title_line"]</expression>
+                                                    <expression name="valueExpr" type="javascript">!row["is_title_line"] || row["quantity"] == 0</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
@@ -5014,6 +5014,28 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row._outer["is_title_line"] || row._outer["PackHideUnitAmounts"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">nb_decimal_digit_for_unit_price</property>
+                                                    <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
+                                                    <property name="dataType">integer</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))</VALUE-OF>]]></text-property>
+                                        </text>
+                                        <text id="4796">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">AppBaseDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || row._outer["PackHideUnitAmounts"] || row._outer["unit_price"] == 0</expression>
                                                 </structure>
                                             </list-property>
                                             <list-property name="boundDataColumns">
@@ -5076,7 +5098,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !row._outer["showTotal"]</expression>
+                                                    <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !row._outer["showTotal"] || vars["ex_total"] == 0</expression>
                                                 </structure>
                                             </list-property>
                                             <list-property name="boundDataColumns">
@@ -5113,7 +5135,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row["showTotal"]</expression>
+                                                    <expression name="valueExpr" type="javascript">!row["showTotal"] || vars["ex_total"] == 0</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
@@ -5146,7 +5168,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row._outer["showTotal"]</expression>
+                                                    <expression name="valueExpr" type="javascript">vars["in_total"] == 0 || !row._outer["showTotal"]</expression>
                                                 </structure>
                                             </list-property>
                                             <list-property name="boundDataColumns">
@@ -5185,7 +5207,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row["showTotal"]</expression>
+                                                    <expression name="valueExpr" type="javascript">vars["in_total"] == 0 || !row["showTotal"]</expression>
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
