@@ -171,8 +171,10 @@
 	</form>
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
-		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
-		<button name="editExpenseSelected" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
+		<panel name="mainPanel">
+			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
+			<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+		</panel>
 	</form>
 
 	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
