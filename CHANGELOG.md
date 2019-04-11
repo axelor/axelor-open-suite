@@ -30,6 +30,7 @@
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
 - SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
+- TRAINING : Field "calendar" not filled when a training event is created
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.

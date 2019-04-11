@@ -35,12 +35,12 @@ public class TrainingRegisterController {
   @Inject private TrainingRegisterRepository trainingRegisterRepo;
 
   @Inject private TrainingRegisterService trainingRegisterService;
-
+  
+  
   public void plan(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
     trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-
     Event event = trainingRegisterService.plan(trainingRegister);
 
     response.setReload(true);
@@ -53,6 +53,14 @@ public class TrainingRegisterController {
             .context("_showRecord", event.getId())
             .context("_user", trainingRegister.getEmployee().getUser())
             .map());
+  }
+   
+  public void updateEventCalendar(ActionRequest request, ActionResponse response) {
+      
+    TrainingRegister trainingRegister=request.getContext().asType(TrainingRegister.class);
+     
+    trainingRegisterService.updateEventCalendar(trainingRegister);
+     
   }
 
   public void complete(ActionRequest request, ActionResponse response) {
