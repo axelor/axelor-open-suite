@@ -69,7 +69,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
   protected ShippingCoefService shippingCoefService;
-  protected StockMoveLineService stockMoveLineService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
 
   @Inject
@@ -79,7 +79,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
-      StockMoveLineService stockMoveLineService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService) {
 
     this.unitConversionService = unitConversionService;
@@ -87,7 +87,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
     this.appBaseService = appBaseService;
     this.shippingCoefService = shippingCoefService;
-    this.stockMoveLineService = stockMoveLineService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
   }
 
@@ -291,9 +291,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
     }
-    if (stockMoveLine != null) {
-      stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-    }
     return stockMoveLine;
   }
 
@@ -369,27 +366,31 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       taxRate = taxLine.getValue();
     }
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
         qty,
+        BigDecimal.ZERO,
         priceDiscounted,
         companyUnitPriceUntaxed,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
         purchaseOrder.getInAti(),
-        taxRate);
+        taxRate,
+        null,
+        purchaseOrderLine);
   }
 
   protected StockMoveLine createTitleStockMoveLine(
       PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
@@ -397,7 +398,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         stockMove,
         2,
         purchaseOrderLine.getPurchaseOrder().getInAti(),
-        null);
+        null,
+        null,
+        purchaseOrderLine);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
