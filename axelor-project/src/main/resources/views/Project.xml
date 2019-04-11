@@ -18,7 +18,8 @@
 		<field name="code"/>
 		<field name="name"/>
         <field name="parentProject"/>
-		<field name="clientPartner"/>
+		<field name="clientPartner.partnerSeq"/>
+  		<field name="clientPartner.simpleFullName"/>
 		<field name="assignedTo"/>
 		<field name="fromDate" />
 		<field name="toDate" />
