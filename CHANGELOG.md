@@ -28,7 +28,8 @@
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
-- SaleOrder,PurchaseOrder,Invoice : fill automatically contact in contactPartner if only one contact in contactPartnerSet.
+- INVOICE : printing error from grid view.
+- SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -37,6 +38,7 @@
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 - Remove mapping between Product Family and Product Category.
 - Fix NPE when planning with tracking number.
+- Fix future qty computation.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
@@ -56,6 +58,10 @@
 - TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
 - PARTNER : Fix can't change the address if partner is an employee.
 - DEBT RECOVERY : Fix unable to run debt recovery accounting batch.
+- EXPENSE : complete my expense (Error message when no expense is selected)
+- Purchase Order Line: fix delivery state update on splitted stock move lines.
+- Leave to justify : add a try catch to trace the exception with TraceBackService.
+- FIXED ASSETS : Issues with cents in depreciation tables
 
 ## [5.1.5] - 2019-03-30
 ## Features

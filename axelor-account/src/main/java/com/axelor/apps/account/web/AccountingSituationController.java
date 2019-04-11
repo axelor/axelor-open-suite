@@ -92,28 +92,28 @@ public class AccountingSituationController {
       response.setValue("invoiceMessageTemplate", accountConfig.getInvoiceMessageTemplate());
     }
   }
-  
+
   /**
    * Open Debt Recovery record in form view
-   * 
+   *
    * @param request
    * @param response
    */
-  
   public void openDebtRecovery(ActionRequest request, ActionResponse response) {
-	AccountingSituation accountingSituation =
-		        request.getContext().asType(AccountingSituation.class);
-	  DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
-	  
-	  if(debtRecovery != null) {
-		  response.setView(ActionView.define(I18n.get("Debt Recovery"))
-				  .model(DebtRecovery.class.getName())
-				  .add("grid", "debt-recovery-grid")
-				  .add("form", "debt-recovery-form")
-				  .param("forceEdit", "true")
-				  .context("_showRecord", debtRecovery.getId())
-				  .map());
-		  response.setCanClose(true);
-	  }	  
+    AccountingSituation accountingSituation =
+        request.getContext().asType(AccountingSituation.class);
+    DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
+
+    if (debtRecovery != null) {
+      response.setView(
+          ActionView.define(I18n.get("Debt Recovery"))
+              .model(DebtRecovery.class.getName())
+              .add("grid", "debt-recovery-grid")
+              .add("form", "debt-recovery-form")
+              .param("forceEdit", "true")
+              .context("_showRecord", debtRecovery.getId())
+              .map());
+      response.setCanClose(true);
+    }
   }
 }
