@@ -372,11 +372,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
     }
     if (future) {
-      if (isIncrement) {
-        stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine).add(qty));
-      } else {
-        stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine).subtract(qty));
-      }
+      stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
 
