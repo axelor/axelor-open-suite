@@ -793,7 +793,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoice.setDecisionPfpTakenBy(AuthUtils.getUser());
     invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-    invoice.setReasonOfRefusalToPayStr(reasonOfRefusalToPayStr);
+    invoice.setReasonOfRefusalToPayStr(
+        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
 
     invoiceRepo.save(invoice);
   }
