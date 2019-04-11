@@ -60,6 +60,7 @@
 - EXPENSE : complete my expense (Error message when no expense is selected)
 - Purchase Order Line: fix delivery state update on splitted stock move lines.
 - Leave to justify : add a try catch to trace the exception with TraceBackService.
+- FIXED ASSETS : Issues with cents in depreciation tables
 
 ## [5.1.5] - 2019-03-30
 ## Features
