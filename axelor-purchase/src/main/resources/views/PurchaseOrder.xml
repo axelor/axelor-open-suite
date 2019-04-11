@@ -485,7 +485,7 @@
  		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
- 		<field name="contactPartner" expr="eval:null" />
+ 		<field name="contactPartner" expr="eval: supplierPartner?.contactPartnerSet?.size() == 1 ? supplierPartner?.contactPartnerSet[0] : null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
