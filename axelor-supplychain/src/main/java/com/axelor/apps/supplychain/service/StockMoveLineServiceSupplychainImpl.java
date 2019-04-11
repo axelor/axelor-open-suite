@@ -50,7 +50,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @RequestScoped
@@ -232,37 +231,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }
     return stockMoveLine;
-  }
-
-  /**
-   * This method is overridden to fill requested reserved quantity and avoid to override every
-   * method using reserved quantity.
-   */
-  @Override
-  public void updateLocations(
-      StockMoveLine stockMoveLine,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation,
-      Product product,
-      BigDecimal qty,
-      int fromStatus,
-      int toStatus,
-      LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
-      throws AxelorException {
-
-    super.updateLocations(
-        stockMoveLine,
-        fromStockLocation,
-        toStockLocation,
-        product,
-        qty,
-        fromStatus,
-        toStatus,
-        lastFutureStockMoveDate,
-        trackingNumber,
-        stockMoveLine.getRequestedReservedQty());
   }
 
   @Override

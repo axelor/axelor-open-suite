@@ -18,11 +18,8 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -32,43 +29,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
-
-  @Override
-  public StockLocationLine updateLocation(
-      StockLocationLine stockLocationLine,
-      Unit stockMoveLineUnit,
-      Product product,
-      BigDecimal qty,
-      boolean current,
-      boolean future,
-      boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
-      throws AxelorException {
-
-    stockLocationLine =
-        super.updateLocation(
-            stockLocationLine,
-            stockMoveLineUnit,
-            product,
-            qty,
-            current,
-            future,
-            isIncrement,
-            lastFutureStockMoveDate,
-            requestedReservedQty);
-
-    stockLocationLine.setRequestedReservedQty(computeRequestedReservedQty(stockLocationLine));
-    if (future) {
-      stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
-    }
-    return stockLocationLine;
-  }
 
   @Override
   public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
@@ -108,33 +71,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   public StockLocationLine updateLocationFromProduct(
       StockLocationLine stockLocationLine, Product product) throws AxelorException {
     stockLocationLine = super.updateLocationFromProduct(stockLocationLine, product);
-    stockLocationLine.setRequestedReservedQty(computeRequestedReservedQty(stockLocationLine));
+    Beans.get(ReservedQtyService.class).updateRequestedReservedQty(stockLocationLine);
     return stockLocationLine;
-  }
-
-  protected BigDecimal computeRequestedReservedQty(StockLocationLine stockLocationLine)
-      throws AxelorException {
-    // requested reserved qty is the sum of the qties in planned stock move lines.
-
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-    Product product = stockLocationLine.getProduct();
-
-    BigDecimal requestedReservedQty = BigDecimal.ZERO;
-
-    // compute from stock move lines
-    List<StockMoveLine> stockMoveLineList = findOutgoingPlannedStockMoveLines(stockLocationLine);
-
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      BigDecimal qtyToAdd =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              stockLocationLine.getUnit(),
-              stockMoveLine.getRequestedReservedQty(),
-              stockMoveLine.getRequestedReservedQty().scale(),
-              product);
-      requestedReservedQty = requestedReservedQty.add(qtyToAdd);
-    }
-
-    return requestedReservedQty;
   }
 }
