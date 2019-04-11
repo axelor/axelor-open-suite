@@ -28,6 +28,7 @@
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
+- INVOICE : printing error from grid view.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
