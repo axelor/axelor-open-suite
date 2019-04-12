@@ -85,6 +85,7 @@
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
+		<field name="mainPartner"/>
 		<field name="jobTitle"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
@@ -569,7 +570,9 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
 		<field name="emailAddress.address" title="Email"/>
+		<field name="mainPartner"/>
 		<field name="partnerCategory" />
 		<field name="mainAddress" />
 		<field name="titleSelect" />
@@ -586,8 +589,10 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{mainAddress.fullName}}<br/>
-			    {{fixedPhone}}<br/>
+			    <span ng-if="fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/>  {{fixedPhone}}<br/></span>
+			    <span  ng-if="mobilePhone"><i class='fa fa-mobile'/>  {{mobilePhone}}<br/></span>
 			    {{emailAddress.address}}<br/>
+			    {{mainPartner.fullName}}<br/>
 			    {{partnerCategory.name}}</span>
 			  </div>
 			</div>
