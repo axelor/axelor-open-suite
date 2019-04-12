@@ -14,6 +14,7 @@
 - CONTACT : add mobile phone in card view
 - CONTACT : display mainPartner in card and grid view
 - DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
