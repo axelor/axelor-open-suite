@@ -11,6 +11,7 @@
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : display mainPartner in card and grid view
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
