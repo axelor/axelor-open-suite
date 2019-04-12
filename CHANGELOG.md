@@ -30,6 +30,7 @@
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
 - SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
+- PROJECT : grid view ( replace partner fullname column with partner.partnerSeq and partner.simpleFullname columns )
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
