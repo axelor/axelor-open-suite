@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -392,6 +393,9 @@ public class DebtRecoveryService {
 
     DebtRecovery debtRecovery =
         this.getDebtRecovery(partner, company); // ou getDebtRecovery si existe
+    debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
+    debtRecovery.setPartnerFullName(partner.getFullName());
+    debtRecovery.setCurrency(partner.getCurrency());
 
     BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
 
