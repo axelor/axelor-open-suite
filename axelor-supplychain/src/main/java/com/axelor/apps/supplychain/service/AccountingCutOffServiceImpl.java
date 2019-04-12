@@ -609,7 +609,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     Query<StockMove> stockMoveQuery = stockMoverepository.all().filter(":batch MEMBER OF self.batchSet").bind("batch", batch);
     List<Long> stockMoveIdList = stockMoveQuery.select("id").fetch(0, 0).stream().map(m -> (Long) m.get("id")).collect(Collectors.toList());
 
-    Query<StockMoveLine> stockMoveLineQuery = stockMoveLineRepository.all().filter("self.stockMove.id IN :stockMoveIdList").bind("stockMoveIdList", stockMoveIdList);
+    Query<StockMoveLine> stockMoveLineQuery = stockMoveLineRepository.all().filter("self.stockMove.id IN :stockMoveIdList").bind("stockMoveIdList", stockMoveIdList).order("id");
 
     while(!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
       offset += stockMoveLineList.size();
