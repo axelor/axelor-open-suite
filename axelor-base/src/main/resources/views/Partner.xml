@@ -570,6 +570,7 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
 		<field name="emailAddress.address" title="Email"/>
 		<field name="mainPartner"/>
 		<field name="partnerCategory" />
@@ -588,7 +589,8 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{mainAddress.fullName}}<br/>
-			    {{fixedPhone}}<br/>
+			    <span ng-if="fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/>  {{fixedPhone}}<br/></span>
+			    <span  ng-if="mobilePhone"><i class='fa fa-mobile'/>  {{mobilePhone}}<br/></span>
 			    {{emailAddress.address}}<br/>
 			    {{mainPartner.fullName}}<br/>
 			    {{partnerCategory.name}}</span>
