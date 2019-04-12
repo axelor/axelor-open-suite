@@ -754,7 +754,7 @@
 	</action-validate>
 	
 	<action-validate name="action-stock-move-validate-shipment-informations">
-		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Shipment Informations field must be filled to realize the stock move."/>
+		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Please filled supplier shipment date and supplier shipment reference."/>
 	</action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
