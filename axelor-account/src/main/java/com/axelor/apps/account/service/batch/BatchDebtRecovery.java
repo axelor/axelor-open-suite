@@ -134,8 +134,8 @@ public class BatchDebtRecovery extends BatchStrategy {
           if (remindedOk) {
             DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
             addBatchToModel(debtRecovery);
+            incrementDone(partner);
           }
-          incrementDone(partner);
         } catch (AxelorException e) {
           TraceBackService.trace(
               new AxelorException(
