@@ -70,6 +70,7 @@
 - FIXED ASSETS : Issues with cents in depreciation tables
 - Sale order line: do not block on partial delivery with requested reserved quantity.
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
+- PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
 
 ## [5.1.5] - 2019-03-30
 ## Features
