@@ -15,6 +15,7 @@
 - CONTACT : display mainPartner in card and grid view
 - DEBT RECOVERY : new fields partner,company and currency added.
 - MRP FORECAST : Large form view
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
