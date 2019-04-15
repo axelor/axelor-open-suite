@@ -156,6 +156,16 @@ myJSONObject =eval('('+ data +')');]]></method>
                     <property name="name">yearMonth</property>
                     <property name="dataType">date-time</property>
                 </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">count</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">totalHours</property>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -202,6 +212,12 @@ myJSONObject =eval('('+ data +')');]]></method>
                 </structure>
                 <structure>
                     <property name="columnName">yearMonth</property>
+                </structure>
+                <structure>
+                    <property name="columnName">count</property>
+                </structure>
+                <structure>
+                    <property name="columnName">totalHours</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -281,6 +297,16 @@ myJSONObject =eval('('+ data +')');]]></method>
                         <property name="name">yearMonth</property>
                         <property name="dataType">date-time</property>
                     </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">count</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">totalHours</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Scripted Data Source</property>
@@ -292,6 +318,8 @@ count = 0;]]></method>
 	var month = myJSONObject.data[count].month;
 	row["code"] = myJSONObject.data[count].code;
 	row[monthName]=myJSONObject.data[count].count;
+	row["count"]=myJSONObject.data[count].count;
+	row["totalHours"]=myJSONObject.data[count].totalHours;
 	row["month"] = month;
 	row["yearMonth"] = myJSONObject.data[count].yearMonth;
 	count++;
@@ -300,6 +328,76 @@ count = 0;]]></method>
 return false;]]></method>
         </script-data-set>
     </data-sets>
+    <cubes>
+        <tabular-cube name="MpsCharge" id="5179">
+            <property name="dimensions">
+                <tabular-dimension name="code" id="5180">
+                    <property name="defaultHierarchy">NewTabularHierarchy</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy" id="5181">
+                            <property name="levels">
+                                <tabular-level name="code" id="5182">
+                                    <property name="dataType">string</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">totalHours</property>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">code</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Group" id="5183">
+                    <property name="isTimeType">true</property>
+                    <property name="defaultHierarchy">NewTabularHierarchy2</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy2" id="5184">
+                            <property name="levels">
+                                <tabular-level name="Year" id="5185">
+                                    <property name="dataType">integer</property>
+                                    <property name="dateTimeLevelType">year</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">DateTime</property>
+                                            <property name="dataType">date-time</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">yearMonth</property>
+                                </tabular-level>
+                                <tabular-level name="Month" id="5186">
+                                    <property name="dataType">integer</property>
+                                    <property name="dateTimeLevelType">month</property>
+                                    <property name="dateTimeFormat">MMM</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">DateTime</property>
+                                            <property name="dataType">date-time</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">yearMonth</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+            </property>
+            <property name="measureGroups">
+                <tabular-measure-group name="Summary Field" id="5187">
+                    <property name="measures">
+                        <tabular-measure name="count" id="5188">
+                            <expression name="measureExpression" type="javascript">dataSetRow["count"]</expression>
+                            <property name="dataType">decimal</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+            </property>
+            <property name="dataSet">MpsChargeDS</property>
+        </tabular-cube>
+    </cubes>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="fontFamily">sans-serif</property>
@@ -530,1007 +628,280 @@ return false;]]></method>
                 <cell id="1243">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <table id="1073">
+                    <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5189">
+                        <property name="cube">MpsCharge</property>
+                        <property name="measures">
+                            <extended-item extensionName="MeasureView" id="5207">
+                                <property name="measure">count</property>
+                                <property name="detail">
+                                    <extended-item extensionName="AggregationCell" id="5208">
+                                        <property name="aggregationOnRow">code/code</property>
+                                        <property name="aggregationOnColumn">Group/Month</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="content">
+                                            <data id="5209">
+                                                <property name="textAlign">right</property>
+                                                <property name="resultSetColumn">count_code/code_Group/Month</property>
+                                            </data>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                                <property name="header">
+                                    <extended-item extensionName="CrosstabCell" id="5210">
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="rows">
+                            <extended-item extensionName="CrosstabView" id="5191">
+                                <property name="views">
+                                    <extended-item extensionName="DimensionView" id="5192">
+                                        <property name="dimension">code</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View" id="5193">
+                                                <property name="level">code/code</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">dimension["code"]["code"]["totalHours"]</expression>
+                                                        <property name="direction">asc</property>
+                                                        <property name="strength">-1</property>
+                                                    </sort-element>
+                                                </property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="5194">
+                                                        <property name="content">
+                                                            <data name="code" id="5195">
+                                                                <property name="resultSetColumn">code</property>
+                                                            </data>
+                                                        </property>
+                                                        <property name="fontSize">9pt</property>
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="columns">
+                            <extended-item extensionName="CrosstabView" id="5197">
+                                <property name="views">
+                                    <extended-item extensionName="DimensionView" id="5198">
+                                        <property name="dimension">Group</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View1" id="5199">
+                                                <property name="level">Group/Year</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="5200"/>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="LevelView" name="NewLevel View2" id="5202">
+                                                <property name="level">Group/Month</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="5203">
+                                                        <property name="content">
+                                                            <text id="5217">
+                                                                <property name="backgroundAttachment">scroll</property>
+                                                                <property name="backgroundPositionX">0%</property>
+                                                                <property name="backgroundPositionY">0%</property>
+                                                                <property name="backgroundRepeat">repeat</property>
+                                                                <property name="fontFamily">sans-serif</property>
+                                                                <property name="fontSize">9pt</property>
+                                                                <property name="fontWeight">bold</property>
+                                                                <property name="fontStyle">normal</property>
+                                                                <property name="fontVariant">normal</property>
+                                                                <property name="color">black</property>
+                                                                <property name="textLineThrough">none</property>
+                                                                <property name="textOverline">none</property>
+                                                                <property name="textUnderline">none</property>
+                                                                <property name="borderBottomColor">black</property>
+                                                                <property name="borderBottomStyle">none</property>
+                                                                <property name="borderBottomWidth">medium</property>
+                                                                <property name="borderLeftColor">black</property>
+                                                                <property name="borderLeftStyle">none</property>
+                                                                <property name="borderLeftWidth">medium</property>
+                                                                <property name="borderRightColor">black</property>
+                                                                <property name="borderRightStyle">none</property>
+                                                                <property name="borderRightWidth">medium</property>
+                                                                <property name="borderTopColor">black</property>
+                                                                <property name="borderTopStyle">none</property>
+                                                                <property name="borderTopWidth">medium</property>
+                                                                <property name="marginTop">0pt</property>
+                                                                <property name="marginLeft">0pt</property>
+                                                                <property name="marginBottom">0pt</property>
+                                                                <property name="marginRight">0pt</property>
+                                                                <property name="paddingTop">1pt</property>
+                                                                <property name="paddingLeft">1pt</property>
+                                                                <property name="paddingBottom">1pt</property>
+                                                                <property name="paddingRight">1pt</property>
+                                                                <property name="textAlign">center</property>
+                                                                <property name="textIndent">0em</property>
+                                                                <property name="letterSpacing">normal</property>
+                                                                <property name="lineHeight">normal</property>
+                                                                <property name="orphans">2</property>
+                                                                <property name="textTransform">none</property>
+                                                                <property name="whiteSpace">normal</property>
+                                                                <property name="widows">2</property>
+                                                                <property name="wordSpacing">normal</property>
+                                                                <property name="display">block</property>
+                                                                <property name="pageBreakAfter">auto</property>
+                                                                <property name="pageBreakBefore">auto</property>
+                                                                <property name="pageBreakInside">avoid</property>
+                                                                <property name="showIfBlank">false</property>
+                                                                <property name="canShrink">false</property>
+                                                                <property name="overflow">hidden</property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<span style="text-transform: capitalize;"><VALUE-OF>Formatter.format(dimension["Group"]["Month"]["DateTime"],"MMM")</VALUE-OF></span>
+]]></text-property>
+                                                            </text>
+                                                        </property>
+                                                        <property name="fontSize">9pt</property>
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="backgroundColor">#E5E5E5</property>
+                                                        <property name="borderTopStyle">solid</property>
+                                                        <property name="borderTopWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
+                                </property>
+                            </extended-item>
+                        </property>
+                        <property name="header">
+                            <extended-item extensionName="CrosstabCell" id="5204"/>
+                            <extended-item extensionName="CrosstabCell" id="5212">
+                                <property name="content">
+                                    <text id="5213">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomColor">black</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderBottomWidth">medium</property>
+                                        <property name="borderLeftColor">black</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderLeftWidth">medium</property>
+                                        <property name="borderRightColor">black</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderRightWidth">medium</property>
+                                        <property name="borderTopColor">black</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="borderTopWidth">medium</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">avoid</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.code')</VALUE-OF>]]></text-property>
+                                    </text>
+                                </property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="backgroundColor">#E5E5E5</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                            </extended-item>
+                            <extended-item extensionName="CrosstabCell" id="5190">
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                            </extended-item>
+                        </property>
+                        <property name="repeatColumnHeader">false</property>
+                        <property name="repeatRowHeader">false</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="width">7.9in</property>
-                        <property name="dataSet">MpsChargeDS</property>
+                        <structure name="toc"/>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">code</property>
-                                <text-property name="displayName">code</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["code"]</expression>
+                                <expression name="expression">dimension["code"]["code"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">january</property>
-                                <text-property name="displayName">january</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["january"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">february</property>
-                                <text-property name="displayName">february</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["february"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">march</property>
-                                <text-property name="displayName">march</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["march"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">april</property>
-                                <text-property name="displayName">april</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["april"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">may</property>
-                                <text-property name="displayName">may</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["may"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">june</property>
-                                <text-property name="displayName">june</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["june"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">july</property>
-                                <text-property name="displayName">july</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["july"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">august</property>
-                                <text-property name="displayName">august</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["august"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">september</property>
-                                <text-property name="displayName">september</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["september"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">october</property>
-                                <text-property name="displayName">october</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["october"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">november</property>
-                                <text-property name="displayName">november</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["november"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">december</property>
-                                <text-property name="displayName">december</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["december"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["january"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_1</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["february"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_2</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["march"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_3</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["april"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_4</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["may"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_5</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["june"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_6</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["july"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_7</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["august"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_8</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["september"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_9</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["october"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_10</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["november"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_11</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["december"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_12</property>
-                                <property name="dataType">decimal</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>NewTableGroup1</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["Aggregation"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_13</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["january"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_14</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["february"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_15</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["march"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_16</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["april"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_17</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["may"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_18</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["june"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_19</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["july"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_20</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["august"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_21</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["september"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_22</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["october"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_23</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["november"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation_24</property>
-                                <property name="dataType">decimal</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["december"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">month</property>
-                                <text-property name="displayName">month</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["month"]</expression>
+                                <property name="name">Year</property>
+                                <expression name="expression">dimension["Group"]["Year"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">yearMonth</property>
-                                <text-property name="displayName">yearMonth</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["yearMonth"]</expression>
+                                <property name="name">Month</property>
+                                <expression name="expression" type="javascript">dimension["Group"]["Month"]["DateTime"]</expression>
                                 <property name="dataType">date-time</property>
                             </structure>
-                        </list-property>
-                        <column id="1142">
-                            <property name="width">7.8%</property>
-                        </column>
-                        <column id="1143">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1144">
-                            <property name="width">7.55%</property>
-                        </column>
-                        <column id="1145">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1146">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1147">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1148">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1149">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1150">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1151">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1152">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1153">
-                            <property name="width">7.5%</property>
-                        </column>
-                        <column id="1154">
-                            <property name="width">7.6%</property>
-                        </column>
-                        <header>
-                            <row id="3923">
-                                <property name="backgroundColor">#E5E5E5</property>
-                                <property name="fontSize">8.5pt</property>
-                                <cell id="3924">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3959">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.code')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3925">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3938">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.january')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3926">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3960">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.february')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3927">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3961">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.march')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3928">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3962">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.april')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3929">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3963">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.may')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3930">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3964">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.june')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3931">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3965">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.july')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3932">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3966">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.august')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3933">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3967">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.september')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3934">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3968">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.october')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3935">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3969">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.november')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="3936">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <text id="3970">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>Packages.com.axelor.i18n.I18n.get('MpsCharge.december')</VALUE-OF></B>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                        </header>
-                        <group id="1155">
-                            <property name="groupName">NewTableGroup1</property>
-                            <expression name="keyExpr" type="javascript">row["code"]</expression>
-                            <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["code"]</expression>
+                            <structure>
+                                <property name="name">count_code/code_Group/Month</property>
+                                <expression name="expression">measure["count"]</expression>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>code/code</value>
+                                    <value>Group/Month</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
                             </structure>
-                            <property name="hideDetail">true</property>
-                            <list-property name="sort">
-                                <structure>
-                                    <expression name="key" type="javascript">row["january"]</expression>
-                                    <property name="direction">asc</property>
-                                    <property name="strength">-1</property>
-                                </structure>
-                            </list-property>
-                            <header>
-                                <row id="1156">
-                                    <property name="fontSize">8.5pt</property>
-                                    <cell id="1157">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <text id="1280">
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["code"]</VALUE-OF></B>]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="1158">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1185">
-                                            <property name="resultSetColumn">Aggregation</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1159">
-                                        <property name="backgroundAttachment">scroll</property>
-                                        <property name="backgroundImageType">url</property>
-                                        <property name="backgroundPositionX">0%</property>
-                                        <property name="backgroundPositionY">0%</property>
-                                        <property name="backgroundRepeat">repeat</property>
-                                        <property name="backgroundSizeHeight">auto</property>
-                                        <property name="backgroundSizeWidth">auto</property>
-                                        <property name="fontFamily">serif</property>
-                                        <property name="fontSize">10pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="fontStyle">normal</property>
-                                        <property name="fontVariant">normal</property>
-                                        <property name="color">black</property>
-                                        <property name="textLineThrough">none</property>
-                                        <property name="textOverline">none</property>
-                                        <property name="textUnderline">none</property>
-                                        <property name="borderBottomColor">black</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">black</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">black</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">black</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginBottom">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="paddingTop">1pt</property>
-                                        <property name="paddingLeft">1pt</property>
-                                        <property name="paddingBottom">1pt</property>
-                                        <property name="paddingRight">1pt</property>
-                                        <property name="textAlign">right</property>
-                                        <property name="textIndent">0em</property>
-                                        <property name="letterSpacing">normal</property>
-                                        <property name="lineHeight">normal</property>
-                                        <property name="orphans">2</property>
-                                        <property name="textTransform">none</property>
-                                        <property name="whiteSpace">normal</property>
-                                        <property name="widows">2</property>
-                                        <property name="wordSpacing">normal</property>
-                                        <property name="display">block</property>
-                                        <property name="pageBreakAfter">auto</property>
-                                        <property name="pageBreakBefore">auto</property>
-                                        <property name="pageBreakInside">avoid</property>
-                                        <property name="showIfBlank">false</property>
-                                        <property name="canShrink">false</property>
-                                        <property name="overflow">hidden</property>
-                                        <data id="1198">
-                                            <property name="resultSetColumn">Aggregation_1</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1160">
-                                        <property name="backgroundAttachment">scroll</property>
-                                        <property name="backgroundImageType">url</property>
-                                        <property name="backgroundPositionX">0%</property>
-                                        <property name="backgroundPositionY">0%</property>
-                                        <property name="backgroundRepeat">repeat</property>
-                                        <property name="backgroundSizeHeight">auto</property>
-                                        <property name="backgroundSizeWidth">auto</property>
-                                        <property name="fontFamily">serif</property>
-                                        <property name="fontSize">10pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="fontStyle">normal</property>
-                                        <property name="fontVariant">normal</property>
-                                        <property name="color">black</property>
-                                        <property name="textLineThrough">none</property>
-                                        <property name="textOverline">none</property>
-                                        <property name="textUnderline">none</property>
-                                        <property name="borderBottomColor">black</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">black</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">black</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">black</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginBottom">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="paddingTop">1pt</property>
-                                        <property name="paddingLeft">1pt</property>
-                                        <property name="paddingBottom">1pt</property>
-                                        <property name="paddingRight">1pt</property>
-                                        <property name="textAlign">right</property>
-                                        <property name="textIndent">0em</property>
-                                        <property name="letterSpacing">normal</property>
-                                        <property name="lineHeight">normal</property>
-                                        <property name="orphans">2</property>
-                                        <property name="textTransform">none</property>
-                                        <property name="whiteSpace">normal</property>
-                                        <property name="widows">2</property>
-                                        <property name="wordSpacing">normal</property>
-                                        <property name="display">block</property>
-                                        <property name="pageBreakAfter">auto</property>
-                                        <property name="pageBreakBefore">auto</property>
-                                        <property name="pageBreakInside">avoid</property>
-                                        <property name="showIfBlank">false</property>
-                                        <property name="canShrink">false</property>
-                                        <property name="overflow">hidden</property>
-                                        <data id="1199">
-                                            <property name="resultSetColumn">Aggregation_2</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1161">
-                                        <property name="backgroundAttachment">scroll</property>
-                                        <property name="backgroundImageType">url</property>
-                                        <property name="backgroundPositionX">0%</property>
-                                        <property name="backgroundPositionY">0%</property>
-                                        <property name="backgroundRepeat">repeat</property>
-                                        <property name="backgroundSizeHeight">auto</property>
-                                        <property name="backgroundSizeWidth">auto</property>
-                                        <property name="fontFamily">serif</property>
-                                        <property name="fontSize">10pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="fontStyle">normal</property>
-                                        <property name="fontVariant">normal</property>
-                                        <property name="color">black</property>
-                                        <property name="textLineThrough">none</property>
-                                        <property name="textOverline">none</property>
-                                        <property name="textUnderline">none</property>
-                                        <property name="borderBottomColor">black</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftColor">black</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightColor">black</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopColor">black</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginBottom">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="paddingTop">1pt</property>
-                                        <property name="paddingLeft">1pt</property>
-                                        <property name="paddingBottom">1pt</property>
-                                        <property name="paddingRight">1pt</property>
-                                        <property name="textAlign">right</property>
-                                        <property name="textIndent">0em</property>
-                                        <property name="letterSpacing">normal</property>
-                                        <property name="lineHeight">normal</property>
-                                        <property name="orphans">2</property>
-                                        <property name="textTransform">none</property>
-                                        <property name="whiteSpace">normal</property>
-                                        <property name="widows">2</property>
-                                        <property name="wordSpacing">normal</property>
-                                        <property name="display">block</property>
-                                        <property name="pageBreakAfter">auto</property>
-                                        <property name="pageBreakBefore">auto</property>
-                                        <property name="pageBreakInside">avoid</property>
-                                        <property name="showIfBlank">false</property>
-                                        <property name="canShrink">false</property>
-                                        <property name="overflow">hidden</property>
-                                        <data id="1200">
-                                            <property name="resultSetColumn">Aggregation_3</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1162">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1201">
-                                            <property name="resultSetColumn">Aggregation_4</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1163">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1202">
-                                            <property name="resultSetColumn">Aggregation_5</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1164">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1203">
-                                            <property name="resultSetColumn">Aggregation_6</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1165">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1204">
-                                            <property name="resultSetColumn">Aggregation_7</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1166">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1205">
-                                            <property name="resultSetColumn">Aggregation_8</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1167">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1206">
-                                            <property name="resultSetColumn">Aggregation_9</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1168">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1207">
-                                            <property name="resultSetColumn">Aggregation_10</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1169">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="1208">
-                                            <property name="resultSetColumn">Aggregation_11</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                            </header>
-                        </group>
-                    </table>
+                            <structure>
+                                <property name="name">Month_1</property>
+                                <expression name="expression">dimension["Group"]["Month"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                        </list-property>
+                    </extended-item>
                 </cell>
             </row>
             <row id="1246">

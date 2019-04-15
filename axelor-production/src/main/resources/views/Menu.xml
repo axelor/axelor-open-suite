@@ -114,7 +114,7 @@
 	
 	<menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"
 		title="MPS Charge" action="manufacturing.root.mps.charge" order="43"
-		if="__user__.activeCompany.productionConfig.isMps"/>
+		if="__user__?.activeCompany?.productionConfig?.isMps"/>
 
  	<action-view name="manufacturing.root.mps.charge" title="Master Production Scheduling Charge"
 		model="com.axelor.apps.production.db.MpsCharge">

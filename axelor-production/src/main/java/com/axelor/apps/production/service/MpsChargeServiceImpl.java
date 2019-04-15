@@ -49,6 +49,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   final String TITLE_MONTH_NAME = "monthName";
   final String TITLE_COUNT = "count";
   final String TITLE_YEAR_MONTH = "yearMonth";
+  final String TITLE_TOTAL_HOURS = "totalHours";
 
   @Override
   public Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> countTotalHours(
@@ -195,6 +196,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
         totalHoursCountMap.entrySet()) {
 
       String mpsWeeklySchedualCode = totalHoursCount.getKey().getCode();
+      BigDecimal totalHours = totalHoursCount.getKey().getTotalHours();
 
       for (Map.Entry<YearMonth, BigDecimal> yearsMonthCount :
           totalHoursCount.getValue().entrySet()) {
@@ -212,6 +214,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
                     LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1), LocalTime.MIN)
                 .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         dataMap.put(TITLE_COUNT, yearsMonthCount.getValue());
+        dataMap.put(TITLE_TOTAL_HOURS, totalHours);
         dataMapList.add(dataMap);
       }
     }
