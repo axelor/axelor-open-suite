@@ -72,6 +72,7 @@
 - Sale order line: do not block on partial delivery with requested reserved quantity.
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
 - PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
+- DEBT RECOVERY BATCH : Fix not create debt recovery line if debtRecoveryHistoryList is null and balanceDueDebtRecovery is 0.
 
 ## [5.1.5] - 2019-03-30
 ## Features

@@ -182,18 +182,20 @@ public class DebtRecoverySessionService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
 
-    log.debug("Begin debtRecoveryInitialization service...");
+    if (debtRecovery != null) {
+      log.debug("Begin debtRecoveryInitialization service...");
 
-    debtRecovery.setDebtRecoveryMethodLine(null);
-    debtRecovery.setWaitDebtRecoveryMethodLine(null);
-    debtRecovery.setBalanceDue(BigDecimal.ZERO);
-    debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
-    debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
-    debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
+      debtRecovery.setDebtRecoveryMethodLine(null);
+      debtRecovery.setWaitDebtRecoveryMethodLine(null);
+      debtRecovery.setBalanceDue(BigDecimal.ZERO);
+      debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
+      debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
+      debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
 
-    log.debug("End debtRecoveryInitialization service");
+      log.debug("End debtRecoveryInitialization service");
 
-    debtRecoveryRepo.save(debtRecovery);
+      debtRecoveryRepo.save(debtRecovery);
+    }
   }
 
   /**
