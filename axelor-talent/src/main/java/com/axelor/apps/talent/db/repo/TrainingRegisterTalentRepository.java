@@ -46,7 +46,7 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
     }
 
     trainingRegister.setFullName(trainingRegisterService.computeFullName(trainingRegister));
-    
+
     trainingRegister = super.save(trainingRegister);
 
     trainingRegisterService.updateTrainingRating(trainingRegister.getTraining(), null);

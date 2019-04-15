@@ -36,8 +36,8 @@ public class TeamTaskController {
     try {
       TeamTask task = request.getContext().asType(TeamTask.class);
       TimerTeamTaskService service = Beans.get(TimerTeamTaskService.class);
-      if(task.getId() == null) {
-    	  return;
+      if (task.getId() == null) {
+        return;
       }
       Timer timer = service.find(task);
 
@@ -59,8 +59,8 @@ public class TeamTaskController {
   public void computeTotalTimerDuration(ActionRequest request, ActionResponse response) {
     try {
       TeamTask task = request.getContext().asType(TeamTask.class);
-      if(task.getId() == null) {
-    	  return;
+      if (task.getId() == null) {
+        return;
       }
       Duration duration = Beans.get(TimerTeamTaskService.class).compute(task);
       response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
