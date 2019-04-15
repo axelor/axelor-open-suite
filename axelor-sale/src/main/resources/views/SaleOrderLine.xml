@@ -342,6 +342,7 @@
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
@@ -359,7 +360,7 @@
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
-    	<action name="action-sale-order-line-record-is-form-readonly"/>
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
