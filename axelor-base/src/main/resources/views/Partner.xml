@@ -590,7 +590,7 @@
 			  <div class="span8">
 			    <span>{{mainAddress.fullName}}<br/>
 			    <span ng-if="fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/>  {{fixedPhone}}<br/></span>
-			    <span  ng-if="mobilePhone"><i class='fa fa-mobile'/>  {{mobilePhone}}<br/></span>
+			    <span  ng-if="mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{mobilePhone}}<br/></span>
 			    {{emailAddress.address}}<br/>
 			    {{mainPartner.fullName}}<br/>
 			    {{partnerCategory.name}}</span>
