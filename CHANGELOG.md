@@ -15,6 +15,7 @@
 - CONTACT : display mainPartner in card and grid view
 - DEBT RECOVERY : new fields partner,company and currency added.
 - MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
 - DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
 
 ## Improvements
