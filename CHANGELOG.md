@@ -37,6 +37,7 @@
 - INVOICE : printing error from grid view.
 - SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
 - TRAINING : Field "calendar" not filled when a training event is created
+- GANTT : Auto-filling and saving issues When creating a new task from the Gantt,the project field should be auto-filled.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
