@@ -37,6 +37,7 @@
 - INVOICE : printing error from grid view.
 - SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
 - TRAINING : Field "calendar" not filled when a training event is created
+- SALE ORDER : delivery tab button translate customerDeliveriesDetailsBtn title in french "Détail des livraisons client".
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
