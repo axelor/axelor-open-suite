@@ -44,6 +44,7 @@ public class TeamTaskServiceImpl implements TeamTaskService {
     List<LocalDate> taskDates =
         Beans.get(RepetitionService.class)
             .getDates(repetition, teamTask.getTaskDate(), teamTask.getRepetitionEndDate());
+    taskDates.sort(LocalDate::compareTo);
 
     taskDates.removeIf(date -> date.equals(teamTask.getTaskDate()));
 

@@ -260,13 +260,13 @@ public class RepetitionServiceImpl implements RepetitionService {
 
     LocalDate currentDate = startDate;
     do {
-      LocalDate lastDayOfThisWeek =
-          currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-      lastDayOfThisWeek = endDate.isBefore(lastDayOfThisWeek) ? endDate : lastDayOfThisWeek;
+      LocalDate firstDayOfThisWeek =
+          currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+      firstDayOfThisWeek = currentDate.isAfter(firstDayOfThisWeek) ? currentDate : firstDayOfThisWeek;
 
       for (Integer day : days) {
-        LocalDate date = currentDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(day)));
-        if (date.isBefore(lastDayOfThisWeek) || date.isEqual(lastDayOfThisWeek)) {
+        LocalDate date = firstDayOfThisWeek.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(day)));
+        if (DateTool.isBetween(startDate, endDate, date)) {
           dates.add(date);
         }
       }
@@ -289,9 +289,14 @@ public class RepetitionServiceImpl implements RepetitionService {
       lastDayOfThisMonth = endDate.isBefore(lastDayOfThisMonth) ? endDate : lastDayOfThisMonth;
 
       for (Integer dayOfMonth : daysOfMonth) {
-        LocalDate date = currentDate.withDayOfMonth(dayOfMonth);
-        if (DateTool.isBetween(currentDate, lastDayOfThisMonth, date)) {
-          dates.add(date);
+        try {
+          LocalDate date = currentDate.withDayOfMonth(dayOfMonth);
+
+          if (DateTool.isBetween(startDate, lastDayOfThisMonth, date)) {
+            dates.add(date);
+          }
+        } catch (DateTimeException e) {
+          // skip date
         }
       }
 
@@ -315,7 +320,7 @@ public class RepetitionServiceImpl implements RepetitionService {
 
       LocalDate date =
           currentDate.with(TemporalAdjusters.dayOfWeekInMonth(monthDay, DayOfWeek.of(day)));
-      if (DateTool.isBetween(currentDate, lastDayOfThisMonth, date)) {
+      if (DateTool.isBetween(startDate, lastDayOfThisMonth, date)) {
         dates.add(date);
       }
 

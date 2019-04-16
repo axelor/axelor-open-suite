@@ -12,7 +12,7 @@
   </grid>
 
   <form name="team-task-form" id="base-team-task-form" title="Task" model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew">
-    <panel showIf="nextTeamTask">
+    <panel showIf="nextTeamTask &amp;&amp; hasDateOrRepetitionChanged">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
     </panel>
 
@@ -33,7 +33,7 @@
     <panel-tabs>
       <panel name="repetitionPanel" title="Repetition">
         <field name="repetition" onChange="action-team-task-record-set-date-or-repetition-changed" domain="1 &lt;&gt; 1" canNew="true" grid-view="repetition-grid" form-view="repetition-form"/>
-        <field name="repetitionEndDate" requiredIf="repetition"/>
+        <field name="repetitionEndDate" onChange="action-team-task-record-set-date-or-repetition-changed" requiredIf="repetition"/>
         <field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
         <field name="isFirst" hidden="true"/>
         <field name="doUpdateNextTasks" hidden="true"/>
