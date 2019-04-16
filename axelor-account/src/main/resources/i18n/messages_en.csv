@@ -985,6 +985,7 @@
 "Invoice.advancePayment","Advance invoice",,
 "Invoice.advancePayments","Advance payments",,
 "Invoice.afterDiscount","after a discount of",,
+"Invoice.amountRemaining","Due amount",,
 "Invoice.bankDetails","Bank details",,
 "Invoice.bankingInfo","Banking info",,
 "Invoice.base","Base",,
