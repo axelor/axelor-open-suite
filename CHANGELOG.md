@@ -18,6 +18,7 @@
 - STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
 - DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
 - STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- STUDIO : Add a "Show in left menu" boolean in the menu section of custom model.
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).

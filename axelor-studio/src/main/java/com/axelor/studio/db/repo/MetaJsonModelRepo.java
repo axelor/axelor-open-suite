@@ -18,6 +18,7 @@
 package com.axelor.studio.db.repo;
 
 import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.AppBuilder;
 
@@ -27,15 +28,15 @@ public class MetaJsonModelRepo extends MetaJsonModelRepository {
   public MetaJsonModel save(MetaJsonModel jsonModel) {
     jsonModel = super.save(jsonModel);
 
-    if (jsonModel.getMenu() != null) {
+    MetaMenu metaMenu = jsonModel.getMenu();
+    if (metaMenu != null) {
       AppBuilder appBuilder = jsonModel.getAppBuilder();
       if (appBuilder != null) {
-        jsonModel
-            .getMenu()
-            .setConditionToCheck("__config__.app.isApp('" + appBuilder.getCode() + "')");
+        metaMenu.setConditionToCheck("__config__.app.isApp('" + appBuilder.getCode() + "')");
       } else {
-        jsonModel.getMenu().setConditionToCheck(null);
+        metaMenu.setConditionToCheck(null);
       }
+      metaMenu.setLeft(jsonModel.getMenuLeft());
     }
     return jsonModel;
   }
