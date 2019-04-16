@@ -298,6 +298,7 @@
 "Please configure the sale order invoicing product","Veuillez configurer le produit de facturation des commandes",,
 "Please confirm the sale order before invoicing.","Merci de confirmer la commande avant de facturer.",,
 "Please do not enter negative quantity for reservation.","Merci de ne pas renseigner une quantité négative pour la réservation.",,
+"Please enter amount to invoice.","Veuillez entrer un montant à facturer.",,
 "Please fill the product name.","Merci de renseigner le nom du produit",,
 "Please generate a stock move for this sale order before modifying allocated quantity.","Merci de générer un mouvement de stock pour cette commande avant de modifier la quantité allouée.",,
 "Please select an element to run calculation","Veuillez sélectionner un élément pour lancer le calcul",,

@@ -298,6 +298,7 @@
 "Please configure the sale order invoicing product",,,
 "Please confirm the sale order before invoicing.",,,
 "Please do not enter negative quantity for reservation.",,,
+"Please enter amount to invoice.",,,
 "Please fill the product name.",,,
 "Please generate a stock move for this sale order before modifying allocated quantity.",,,
 "Please select an element to run calculation",,,
