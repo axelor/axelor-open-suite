@@ -868,7 +868,7 @@ InvoiceSet.length > 0))"
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
-    	<field name="contactPartner" expr="eval:null" />
+    	<field name="contactPartner" expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
@@ -918,7 +918,7 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    	<attribute name="hidden" for="cancelBtn" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
+    	<attribute name="hidden" for="cancelBtn" expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
     </action-attrs>
 	
 	<action-attrs name="action-set-partner-domain">

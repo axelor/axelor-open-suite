@@ -203,10 +203,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
-        if (qtyWasDelivered) {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
-        } else {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+        if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
+          if (qtyWasDelivered) {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
+          } else {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+          }
         }
         if (saleOrderLine.getDeliveredQty().signum() == 0) {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);

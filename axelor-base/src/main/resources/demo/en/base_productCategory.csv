@@ -1,19 +1,19 @@
-"importId";"code";"name";"productFamily.importId"
-1;"HOST";"Hosting";1
-2;"MAIN";"Maintenance";1
-3;"SER";"Server";2
-4;"PRT";"Printer";2
-5;"HDD";"Hard Disk";3
-6;"PROC";"Processor";3
-7;"CASE";"Case";3
-8;"MEM";"Memory";3
-9;"MOB";"Motherboard";3
-10;"NPER";"Non-perishable";4
-11;"PER";"Perishable";4
-12;"TIMB";"Time based";5
-13;"PROB";"Project based";5
-14;"TRAN";"Transport";6
-15;"MEAL";"Meal";6
-16;"ACCO";"Accomodation";6
-17;"SCR";"Screen";2
-18;"PACK";"Package";2
+"importId";"code";"name"
+1;"HOST";"Hosting"
+2;"MAIN";"Maintenance"
+3;"SER";"Server"
+4;"PRT";"Printer"
+5;"HDD";"Hard Disk"
+6;"PROC";"Processor"
+7;"CASE";"Case"
+8;"MEM";"Memory"
+9;"MOB";"Motherboard"
+10;"NPER";"Non-perishable"
+11;"PER";"Perishable"
+12;"TIMB";"Time based"
+13;"PROB";"Project based"
+14;"TRAN";"Transport"
+15;"MEAL";"Meal"
+16;"ACCO";"Accomodation"
+17;"SCR";"Screen"
+18;"PACK";"Package"

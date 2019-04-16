@@ -79,7 +79,7 @@
 				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
-				<item title="Lines Generation Wizard" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generale-lines-panel-hidden-false"/>
+				<item title="Lines Generation Wizard" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>
 				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
 				<item title="Generate Lines From Realise Planning Project / Task" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
 			</menu>
@@ -119,7 +119,7 @@
 			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true and self." type="many-to-one" form-view="project-form" grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project" onChange="action-hr-timesheet-record-empty-product"/>
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
-			<button name="generateLinesBtn" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generale-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
+			<button name="generateLinesBtn" title="Generate lines" onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
 		</panel>
 		<panel name="linesPanel">
 			<panel-dashlet name="timesheetLineEditorPanel" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
@@ -299,7 +299,6 @@
 		<attribute name="hidden" for="cancelBtn" expr="eval: !(statusSelect == 1) &amp;&amp; !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
 		<attribute name="readonly" for="headPanel" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
-		<attribute name="hidden" for="generateLinesButton" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 		<attribute name="hidden" for="getTimeFromTask" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
 		<attribute name="readonly" for="timesheetLineList" expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
         <attribute name="hidden" for="timesheetLineList.product" expr="eval: !$showActivity"/>
@@ -319,14 +318,12 @@
 	    <attribute name="title" for="$logTime" expr="eval: timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Duration(in day per day)') : timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Duration(minutes by day)') : com.axelor.i18n.I18n.get('Duration(hours by day)')" />
 	</action-attrs>
 	
-	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-true">
+	<action-attrs name="action-timesheet-attrs-generate-lines-panel-hidden-true">
 		<attribute name="hidden" for="generateLinesPanel" expr="true"/>
-		<attribute name="hidden" for="generateLinesBtn" expr="false"/>
 	</action-attrs>
 	
-	<action-attrs name="action-timesheet-attrs-generale-lines-panel-hidden-false">
+	<action-attrs name="action-timesheet-attrs-generate-lines-panel-hidden-false">
 		<attribute name="hidden" for="generateLinesPanel" expr="false"/>
-		<attribute name="hidden" for="generateLinesBtn" expr="true"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">

@@ -51,6 +51,7 @@
 	<selection name='account.reconcile.group.status.select'>
 		<option value='1'>Temporary</option>
 		<option value='2'>Final</option>
+		<option value="3">Unlettered</option>
 	</selection>
 
 	<selection name='account.journal.status.select'>
@@ -383,17 +384,22 @@
 		<option value="1">Today</option>
 		<option value="2">Date of original move</option>
 	</selection>
-	
+
 	<selection name="invoice.report.type">
 		<option value="1">Proforma</option>
 		<option value="2">Original invoice</option>
 		<option value="3">Invoice with payments details</option>
 		<option value="4">Updated copy</option>
 	</selection>
-	
+
 	<selection name="invoice.report.format">
 		<option value="xls">Excel</option>
 		<option value="doc">Word</option>
 		<option value="pdf">PDF</option>
+	</selection>
+
+	<selection name="account.tax.type.select">
+		<option value="1">Collection</option>
+		<option value="2">Debit</option>
 	</selection>
 </object-views>

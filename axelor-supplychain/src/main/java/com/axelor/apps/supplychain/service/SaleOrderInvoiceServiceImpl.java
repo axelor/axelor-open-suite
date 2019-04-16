@@ -155,7 +155,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
+          I18n.get(IExceptionMessage.SO_INVOICE_AMOUNT_MAX));
     }
 
     return amount;

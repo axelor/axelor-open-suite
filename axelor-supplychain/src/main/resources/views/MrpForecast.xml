@@ -15,7 +15,7 @@
        	<field name="statusSelect"/>
     </grid>
     
-	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast">
+	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast" width="large">
 		<panel name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="8">
 				<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>

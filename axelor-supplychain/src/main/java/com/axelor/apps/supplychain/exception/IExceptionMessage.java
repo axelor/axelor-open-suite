@@ -37,6 +37,8 @@ public interface IExceptionMessage {
   static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
   static final String SO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
+  static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
+      "The amount to invoice is superior than the amount in the sale order" /*)*/;
   static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/
       "Please configure the sale order invoicing product" /*)*/;
   static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/

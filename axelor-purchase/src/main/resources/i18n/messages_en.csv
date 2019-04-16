@@ -204,6 +204,7 @@
 "PurchaseOrder.paymentMode","Payment Mode",,
 "PurchaseOrder.priceExclTax","Amount Excl. Tax",,
 "PurchaseOrder.priceInclTax","Amount Incl. Tax",,
+"PurchaseOrder.productStandard","Standard",,
 "PurchaseOrder.purchaseInfo","Purchase info.",,
 "PurchaseOrder.qtyUnit","Quantity",,
 "PurchaseOrder.quote","RFQ",,

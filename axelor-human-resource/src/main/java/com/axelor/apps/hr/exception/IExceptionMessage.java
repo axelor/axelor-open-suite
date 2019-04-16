@@ -186,6 +186,8 @@ public interface IExceptionMessage {
   String NO_TIMESHEET_CREATED = /*$$(*/
       "No timesheet line has been created because the duration is less than 1 minute" /*)*/;
 
+  static final String EXPENSE_NOT_SELECTED = /*$$(*/ "Please, select an expense" /*)*/;
+
   static final String BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP = /*$$(*/
       "Employment contracts exported : %s" /*)*/;
 }

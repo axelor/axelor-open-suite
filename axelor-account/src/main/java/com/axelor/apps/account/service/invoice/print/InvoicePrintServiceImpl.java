@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -45,6 +46,8 @@ import java.util.List;
 /** Implementation of the service printing invoices. */
 @Singleton
 public class InvoicePrintServiceImpl implements InvoicePrintService {
+
+  @Inject private InvoiceRepository invoiceRepo;
 
   @Override
   public String printInvoice(
@@ -122,8 +125,17 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   @Override
-  public String printInvoices(List<Long> ids) throws IOException {
+  public String printInvoices(List<Long> ids) throws IOException, AxelorException {
     List<File> printedInvoices = new ArrayList<>();
+    List<String> invalidPrintSettingsInvoiceIds = checkInvalidPrintSettingsInvoices(ids);
+
+    if (invalidPrintSettingsInvoiceIds.size() > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
+          invalidPrintSettingsInvoiceIds.toString());
+    }
+
     ModelTool.apply(
         Invoice.class,
         ids,
@@ -133,8 +145,22 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
             printedInvoices.add(printCopiesToFile(invoice, false, null));
           }
         });
+
     String fileName = getInvoiceFilesName(true, "pdf");
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
+  }
+
+  public List<String> checkInvalidPrintSettingsInvoices(List<Long> ids) {
+
+    List<String> invalidPrintSettingsInvoiceIds = new ArrayList<>();
+
+    for (Long id : ids) {
+      Invoice invoice = invoiceRepo.find(id);
+      if (invoice.getPrintingSettings() == null) {
+        invalidPrintSettingsInvoiceIds.add(invoice.getInvoiceId());
+      }
+    }
+    return invalidPrintSettingsInvoiceIds;
   }
 
   @Override
