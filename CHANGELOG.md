@@ -8,21 +8,40 @@
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - DEBT RECOVERY : add color in debt recovery lines in grid view
 - DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- Sequence : Add sequence code select missing translation
-- Product : Remove BOM Value while copying.
-- STOCK MOVE : realDate should not fill when cancelling a planned move
 - ManufOrder : Move automaticEmail fields to ProductionConfig
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
-- MANUFORDER : Translate the "Outsourced" tag
 - PURCHASE ORDER PRINTING : Change titles and add productStandard
-- DEBT RECOVERY : french translation of debt recovery settings
 - DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
 - STOCK LOCATION : Add 'Totals per Product Family' in Report
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- STOCK MOVE : added change tracking on invoice field
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- Menu entry for MetaPermission object in administration / User management.
+- HR : Update kilometric Allowance demo data(fr and en).
+- INVOICE : printing error from grid view.
+- SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
+- TRAINING : Field "calendar" not filled when a training event is created
+- GANTT : Auto-filling and saving issues When creating a new task from the Gantt,the project field should be auto-filled.
+- SALE ORDER : added translation for button customerDeliveriesDetailsBtn
+- PROJECT : Name on every button, button-group, item ( give name to items ).
+- Supplier arrival: Update error message.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -31,6 +50,7 @@
 - Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
 - Remove mapping between Product Family and Product Category.
 - Fix NPE when planning with tracking number.
+- Fix future qty computation.
 - Invoice : cannot cancel an advance payment invoice.
 - Direct Debits : Fix NPE when partner.activeUmr is null
 - Product: Cost sheet group is not displayed twice in form view
@@ -38,6 +58,29 @@
 - AccountConfig : Specify filters for accounts.
 - CURRENCY Conversion: Avoid creating line if conversion is not available. 
 - Sale Order : display error message of max quantity of an advance payment
+- Sale order line : Fix delivered qty not increase if stock move is internal.
+- DEBT RECOVERY : don't add batch to model in case of anomalies
+- Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
+- DEBT RECOVERY : french translation of debt recovery settings
+- Sequence : Add sequence code select missing translation
+- Product : Remove BOM Value while copying.
+- STOCK MOVE : realDate should not fill when cancelling a planned move
+- MANUFORDER : Translate the "Outsourced" tag
+- TIMESHEET: Do not hide button to generate several lines.
+- TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
+- PARTNER : Fix can't change the address if partner is an employee.
+- DEBT RECOVERY : Fix unable to run debt recovery accounting batch.
+- EXPENSE : complete my expense (Error message when no expense is selected)
+- Purchase Order Line: fix delivery state update on splitted stock move lines.
+- Leave to justify : add a try catch to trace the exception with TraceBackService.
+- FIXED ASSETS : Issues with cents in depreciation tables
+- Sale order line: do not block on partial delivery with requested reserved quantity.
+- Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
+- PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
+- DEBT RECOVERY BATCH : Fix not create debt recovery line if debtRecoveryHistoryList is null and balanceDueDebtRecovery is 0.
+- Sale Order Line: Fix readonly on new on latest ADK version.
+- DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
+- Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
 
 ## [5.1.5] - 2019-03-30
 ## Features

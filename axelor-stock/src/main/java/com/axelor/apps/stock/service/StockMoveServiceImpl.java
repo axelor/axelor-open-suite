@@ -292,10 +292,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
+    int initialStatus = stockMove.getStatusSelect();
 
-    updateLocations(stockMove, fromStockLocation, toStockLocation);
+    setPlannedStatus(stockMove);
 
-    stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+    updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
 
     stockMove.setCancelReason(null);
 
@@ -307,23 +308,37 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   /**
+   * Change status select to planned, then save.
+   *
+   * @param stockMove the stock move to be modified.
+   */
+  protected void setPlannedStatus(StockMove stockMove) {
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+    stockMoveRepo.save(stockMove);
+  }
+
+  /**
    * Update locations from a planned stock move, by copying stock move lines in the stock move then
    * updating locations.
    *
    * @param stockMove
    * @param fromStockLocation
    * @param toStockLocation
+   * @param initialStatus the initial status of the stock move.
    * @throws AxelorException
    */
   protected void updateLocations(
-      StockMove stockMove, StockLocation fromStockLocation, StockLocation toStockLocation)
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int initialStatus)
       throws AxelorException {
 
     copyPlannedStockMovLines(stockMove);
     stockMoveLineService.updateLocations(
         fromStockLocation,
         toStockLocation,
-        stockMove.getStatusSelect(),
+        initialStatus,
         StockMoveRepository.STATUS_PLANNED,
         stockMove.getPlannedStockMoveLineList(),
         stockMove.getEstimatedDate(),
@@ -352,22 +367,24 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
-    LOG.debug(
-        "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
 
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
     }
+
+    int initialStatus = stockMove.getStatusSelect();
 
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     checkExpirationDates(stockMove);
 
+    setRealizedStatus(stockMove);
     stockMoveLineService.updateLocations(
         stockMove.getFromStockLocation(),
         stockMove.getToStockLocation(),
-        stockMove.getStatusSelect(),
+        initialStatus,
         StockMoveRepository.STATUS_CANCELED,
         stockMove.getPlannedStockMoveLineList(),
         stockMove.getEstimatedDate(),
@@ -386,7 +403,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-    stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
     stockMove.setRealDate(appBaseService.getTodayDate());
     resetMasses(stockMove);
 
@@ -421,6 +437,16 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     return newStockSeq;
+  }
+
+  /**
+   * Change status select to realized, then save.
+   *
+   * @param stockMove the stock move to be modified.
+   */
+  protected void setRealizedStatus(StockMove stockMove) {
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
+    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -625,6 +651,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
 
     plan(newStockMove);
+    stockMove.setBackorderStockMove(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
@@ -720,15 +747,16 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void cancel(StockMove stockMove) throws AxelorException {
-    LOG.debug("Annulation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
-
-    if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+    LOG.debug("Annulation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
+    int initialStatus = stockMove.getStatusSelect();
+    setCancelStatus(stockMove);
+    if (initialStatus == StockMoveRepository.STATUS_PLANNED) {
       stockMoveLineService.updateLocations(
           stockMove.getFromStockLocation(),
           stockMove.getToStockLocation(),
-          stockMove.getStatusSelect(),
+          initialStatus,
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getPlannedStockMoveLineList(),
           stockMove.getEstimatedDate(),
@@ -737,7 +765,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.updateLocations(
           stockMove.getFromStockLocation(),
           stockMove.getToStockLocation(),
-          stockMove.getStatusSelect(),
+          initialStatus,
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getStockMoveLineList(),
           stockMove.getEstimatedDate(),
@@ -748,11 +776,19 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.clearPlannedStockMoveLineList();
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-        && stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
+        && initialStatus == StockMoveRepository.STATUS_REALIZED) {
       partnerProductQualityRatingService.undoCalculation(stockMove);
     }
+  }
 
+  /**
+   * Change status select to cancel, then save.
+   *
+   * @param stockMove the stock move to be modified.
+   */
+  protected void setCancelStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_CANCELED);
+    stockMoveRepo.save(stockMove);
   }
 
   @Override
