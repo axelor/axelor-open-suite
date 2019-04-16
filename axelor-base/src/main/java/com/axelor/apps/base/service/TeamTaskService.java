@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.db.Repetition;
 import com.axelor.team.db.TeamTask;
 
 public interface TeamTaskService {
 
-  /** Generates reccurent tasks from given {@link TeamTask} and {@link Frequency} */
-  void generateTasks(TeamTask teamTask, Frequency frequency);
+  /** Generates reccurent tasks from given {@link TeamTask} and {@link Repetition} */
+  void generateTasks(TeamTask teamTask, Repetition repetition);
 
   /**
    * Updates fields of next task of given {@link TeamTask}, recursively.
