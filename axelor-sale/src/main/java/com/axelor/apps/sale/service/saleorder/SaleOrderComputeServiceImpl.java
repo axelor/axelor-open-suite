@@ -21,12 +21,14 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +122,11 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(BigDecimal.ZERO);
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+
+      // skip title lines in computing total amounts
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        continue;
+      }
       saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
 
       // In the company accounting currency
@@ -176,5 +183,28 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       price = price.add(saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted()));
     }
     return price;
+  }
+
+  @Override
+  public void computePackTotal(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
+    if (!CollectionUtils.isEmpty(saleOrderLineList)) {
+      saleOrderLineList.sort(
+          (soLine1, soLine2) -> Integer.compare(soLine1.getSequence(), soLine2.getSequence()));
+
+      BigDecimal totalAmount = BigDecimal.ZERO;
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE
+            && saleOrderLine.getIsShowTotal()) {
+          saleOrderLine.setExTaxTotal(totalAmount);
+          totalAmount = BigDecimal.ZERO;
+        }
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+          totalAmount = totalAmount.add(saleOrderLine.getExTaxTotal());
+        }
+      }
+    }
+    saleOrder.setSaleOrderLineList(saleOrderLineList);
   }
 }

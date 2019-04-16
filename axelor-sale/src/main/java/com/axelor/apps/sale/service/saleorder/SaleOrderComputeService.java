@@ -63,4 +63,11 @@ public interface SaleOrderComputeService {
    * @return total price from the sale order lines
    */
   public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder);
+
+  /**
+   * Calculate pack total in sale order lines
+   *
+   * @param saleOrder
+   */
+  public void computePackTotal(SaleOrder saleOrder);
 }

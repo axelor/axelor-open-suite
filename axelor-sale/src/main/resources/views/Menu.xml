@@ -38,7 +38,7 @@
 	</action-view>
 	
 	<menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="12"
-		title="Pack" action="sc.root.sale.pack" />
+		title="Pack" action="sc.root.sale.pack" if="__config__.app.getApp('sale')?.enablePackManagement"/>
 
 	<action-view name="sc.root.sale.pack" title="Pack"
 		model="com.axelor.apps.sale.db.Pack" >

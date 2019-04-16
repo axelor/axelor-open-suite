@@ -16,7 +16,7 @@
 	    	<field name="product" onChange="action-pack-line-record-product-onchange" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	    	<field name="price"/>
 	    	<field name="productName"/>
-	    	<field name="quantity" min="1"/>
+	    	<field name="quantity"/>
 	    	<field name="typeSelect" onChange="action-pack-line-group-type-select-onchange"/>
 	    	<field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 	    	<field name="isShowTotal" hidden="true"/> 
