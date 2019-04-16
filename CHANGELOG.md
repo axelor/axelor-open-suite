@@ -41,6 +41,7 @@
 - GANTT : Auto-filling and saving issues When creating a new task from the Gantt,the project field should be auto-filled.
 - SALE ORDER : added translation for button customerDeliveriesDetailsBtn
 - PROJECT : Name on every button, button-group, item ( give name to items ).
+- Supplier arrival: Update error message.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
