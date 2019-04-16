@@ -42,6 +42,7 @@
 - SALE ORDER : added translation for button customerDeliveriesDetailsBtn
 - PROJECT : Name on every button, button-group, item ( give name to items ).
 - Supplier arrival: Update error message.
+- MetaJsonField : Add help for all conditional fields of MetaJsonField
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
