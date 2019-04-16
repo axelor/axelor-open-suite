@@ -77,6 +77,7 @@
 - PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
 - DEBT RECOVERY BATCH : Fix not create debt recovery line if debtRecoveryHistoryList is null and balanceDueDebtRecovery is 0.
 - Sale Order Line: Fix readonly on new on latest ADK version.
+- DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
 
 ## [5.1.5] - 2019-03-30
 ## Features
