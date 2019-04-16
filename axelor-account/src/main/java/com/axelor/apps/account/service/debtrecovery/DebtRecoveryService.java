@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.debtrecovery;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -343,13 +344,7 @@ public class DebtRecoveryService {
             .filter("self.partner = ?1 and self.company = ?2", partner, company)
             .fetchOne();
 
-    if (accountingSituation != null) {
-      if (accountingSituation.getDebtRecovery() != null) {
-        return accountingSituation.getDebtRecovery();
-      } else {
-        return this.createDebtRecovery(accountingSituation);
-      }
-    } else {
+    if (accountingSituation == null) {
       throw new AxelorException(
           accountingSituation,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -363,6 +358,8 @@ public class DebtRecoveryService {
           partner.getName(),
           company.getName());
     }
+
+    return accountingSituation.getDebtRecovery();
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -391,17 +388,12 @@ public class DebtRecoveryService {
           IllegalAccessException, IOException {
     boolean remindedOk = false;
 
-    DebtRecovery debtRecovery =
-        this.getDebtRecovery(partner, company); // ou getDebtRecovery si existe
-    debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
-    debtRecovery.setPartnerFullName(partner.getFullName());
-    debtRecovery.setCurrency(partner.getCurrency());
+    DebtRecovery debtRecovery = this.getDebtRecovery(partner, company); // getDebtRecovery si existe
 
     BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
 
     if (balanceDue.compareTo(BigDecimal.ZERO) > 0) {
 
-      debtRecovery.setBalanceDue(balanceDue);
       log.debug("balanceDue : {} ", balanceDue);
 
       BigDecimal balanceDueDebtRecovery =
@@ -411,6 +403,22 @@ public class DebtRecoveryService {
         log.debug("balanceDueDebtRecovery : {} ", balanceDueDebtRecovery);
 
         remindedOk = true;
+
+        if (debtRecovery == null) {
+          AccountingSituationRepository accSituationRepo =
+              Beans.get(AccountingSituationRepository.class);
+          AccountingSituation accountingSituation =
+              accSituationRepo
+                  .all()
+                  .filter("self.partner = ?1 and self.company = ?2", partner, company)
+                  .fetchOne();
+          debtRecovery = this.createDebtRecovery(accountingSituation);
+        }
+
+        debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
+        debtRecovery.setPartnerFullName(partner.getFullName());
+        debtRecovery.setCurrency(partner.getCurrency());
+        debtRecovery.setBalanceDue(balanceDue);
 
         List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company);
 
@@ -446,9 +454,10 @@ public class DebtRecoveryService {
               company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
-          if (debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery) != null) {
-            debtRecovery.setDebtRecoveryMethod(
-                debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery));
+          DebtRecoveryMethod debtRecoveryMethod =
+              debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
+          if (debtRecoveryMethod != null) {
+            debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
             debtRecoverySessionService.debtRecoverySession(debtRecovery);
           } else {
             throw new AxelorException(

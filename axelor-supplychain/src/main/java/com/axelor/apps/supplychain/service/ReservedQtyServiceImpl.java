@@ -67,17 +67,20 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
   @Override
   public void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException {
-    if (status == StockMoveRepository.STATUS_REALIZED) {
-      consolidateReservedQtyInStockMoveLineByProduct(stockMove);
-    }
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     if (stockMoveLineList != null) {
-      stockMove.getStockMoveLineList().sort(Comparator.comparing(StockMoveLine::getId));
+      // check quantities in stock move lines
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         if (status == StockMoveRepository.STATUS_PLANNED) {
           changeRequestedQtyLowerThanQty(stockMoveLine);
         }
         checkRequestedAndReservedQty(stockMoveLine);
+      }
+      if (status == StockMoveRepository.STATUS_REALIZED) {
+        consolidateReservedQtyInStockMoveLineByProduct(stockMove);
+      }
+      stockMove.getStockMoveLineList().sort(Comparator.comparing(StockMoveLine::getId));
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal qty = stockMoveLine.getRealQty();
         BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
         Product product = stockMoveLine.getProduct();
