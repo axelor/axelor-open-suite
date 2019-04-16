@@ -409,6 +409,7 @@
 "Terminate sale order on delivery",,,
 "The allocated quantity must not be greater than the quantity in the stock move line %s.",,,
 "The amount to be spread over the timetable is negative.",,,
+"The amount to invoice is superior than the amount in the sale order",,,
 "The batch has already been running this month. Are you sure to continue ?",,,
 "The client is required and must be the same for all sale orders",,,
 "The company is required and must be the same for all purchase orders",,,
