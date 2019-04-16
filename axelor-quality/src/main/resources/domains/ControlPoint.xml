@@ -15,7 +15,7 @@
 		<date name="controlPointDate" title="Date"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
 		<integer name="sequence" title="Sequence"/>
-		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType"/>
+		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType" required="true"/>
 
 		<extra-code>
 			<![CDATA[

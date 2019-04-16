@@ -38,8 +38,8 @@
 			<panel-related name="controlPointListPanel" field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onChange="action-quality-control-attrs-readonly-plan-button" onNew="save" orderBy="sequence" canMove="true"/>
 			<panel-related name="optionalControlPointListPanel" field="optionalControlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" hidden="true"/>
 			<panel-related name="qualityCorrectiveActionListPanel" field="qualityCorrectiveActionList" colSpan="12" grid-view="quality-corrective-action-grid" form-view="quality-corrective-action-form"/>
-			<field name="inspectorSignature" widget="binary-link"/>
-			<field name="customerSignature" widget="binary-link"/>
+			<field name="inspectorSignature" widget="Image"/>
+			<field name="customerSignature" widget="Image"/>
 		</panel>
 		<panel name="controlPointsPanel" sidebar="true">
 			<button name="chooseQualityProcessBtn" title="Choose quality process" onClick="save,action-quality-control-view-quality-process" showIf="statusSelect == 1"/>
