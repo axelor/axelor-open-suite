@@ -390,10 +390,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             .bind("stockLocationId", stockLocation.getId())
             .bind("productId", product.getId())
             .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .order("stockMove.reservationDateTime")
+            .order("stockMove.estimatedDate")
             .fetch();
-    stockMoveLineListToAllocate.sort(
-        Comparator.comparing(
-            stockMoveLine -> stockMoveLine.getStockMove().getReservationDateTime()));
     BigDecimal leftQtyToAllocate = qtyToAllocate;
     for (StockMoveLine stockMoveLine : stockMoveLineListToAllocate) {
       BigDecimal leftQtyToAllocateStockMove =

@@ -43,6 +43,7 @@
 - PROJECT : Name on every button, button-group, item ( give name to items ).
 - Supplier arrival: Update error message.
 - MetaJsonField : Add help for all conditional fields of MetaJsonField
+- Reserved qty: auto allocation is now also ordered by estimated date.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
