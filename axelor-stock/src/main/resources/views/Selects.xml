@@ -133,4 +133,8 @@
 		<option value="2">Validated</option>
 	</selection>
 
+	<selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
+		<option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
+	</selection>
+
 </object-views>

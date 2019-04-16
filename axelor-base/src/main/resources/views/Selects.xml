@@ -461,4 +461,19 @@
     <option value="ticket">Ticket</option>
   </selection>
 
+  <selection name="abc.analysis.type.select">
+	  <option value="com.axelor.apps.base.service.ABCAnalysisServiceImpl">Base</option>
+  </selection>
+
+  <selection name="abc.analysis.status.select">
+      <option value="1">Draft</option>
+	  <option value="2">Analyzing</option>
+      <option value="3">Finished</option>
+  </selection>
+
+  <selection name="abc.analysis.class.name">
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+  </selection>
 </object-views>

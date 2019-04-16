@@ -96,6 +96,17 @@
 			<context name="_user" value="__user__"/>
 		</filter>
 	</search-filters>
+
+	<menuitem name="sc-root-abc-analysis" title="ABC analysis" order="27"
+			  action="sale.root.abc.analysis" parent="sc-root-sale"/>
+
+	<action-view name="sale.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.type = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl"/>
+	</action-view>
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30" 
 			action="sc.hist.sale.orders" />

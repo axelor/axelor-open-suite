@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="abc-analysis-line-grid" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis lines" orderBy="cumulatedWorth">
+        <field name="product"/>
+        <field name="decimalWorth"/>
+        <field name="worth"/>
+        <field name="cumulatedWorth"/>
+        <field name="decimalQty"/>
+        <field name="qty"/>
+        <field name="cumulatedQty"/>
+        <field name="abcAnalysisClass">
+            <hilite if="abcAnalysisClass.name == 'A'" background="success"/>
+            <hilite if="abcAnalysisClass.name == 'B'" background="primary"/>
+            <hilite if="abcAnalysisClass.name == 'C'" background="info"/>
+        </field>
+    </grid>
+
+    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line">
+        <panel name="mainPanel">
+            <field name="product"/>
+            <field name="abcAnalysisClass"/>
+            <field name="decimalWorth"/>
+            <field name="decimalQty"/>
+            <field name="worth"/>
+            <field name="qty"/>
+        </panel>
+    </form>
+</object-views>
