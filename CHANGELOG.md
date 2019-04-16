@@ -57,6 +57,7 @@
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
 - CURRENCY Conversion: Avoid creating line if conversion is not available. 
+- Sale Order : display error message of max quantity of an advance payment
 - Sale order line : Fix delivered qty not increase if stock move is internal.
 - DEBT RECOVERY : don't add batch to model in case of anomalies
 - Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
