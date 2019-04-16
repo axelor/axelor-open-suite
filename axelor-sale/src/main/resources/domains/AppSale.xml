@@ -16,6 +16,7 @@
             title="Close opportunity when one of the linked sale orders is confirmed"/><boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
+		<boolean name="enablePackManagement" title="Pack Management"/>
 	</entity>
 
 </domain-models>
