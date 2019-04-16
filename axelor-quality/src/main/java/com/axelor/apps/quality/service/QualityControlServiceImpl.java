@@ -112,6 +112,9 @@ public class QualityControlServiceImpl implements QualityControlService {
       QualityControl qualityControl, List<ControlPoint> optionalControlPointList) {
 
     for (ControlPoint optionalControlPoint : optionalControlPointList) {
+      optionalControlPoint =
+          Beans.get(ControlPointRepository.class).copy(optionalControlPoint, true);
+      optionalControlPoint.setOptionalQualityControl(null);
       qualityControl.addControlPointListItem(optionalControlPoint);
     }
 
