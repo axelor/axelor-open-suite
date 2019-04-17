@@ -336,38 +336,41 @@ public class LeaveController {
   /* Count Tags displayed on the menu items */
 
   @Transactional
-  public void leaveReasonToJustify(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-    Boolean leaveToJustify = leave.getToJustifyLeaveReason();
-    LeaveLine leaveLine = null;
+  public void leaveReasonToJustify(ActionRequest request, ActionResponse response) {
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      Boolean leaveToJustify = leave.getToJustifyLeaveReason();
+      LeaveLine leaveLine = null;
 
-    if (!leaveToJustify) {
-      return;
-    }
-    Company company = leave.getCompany();
-    if (leave.getUser() == null) {
-      return;
-    }
-    if (company == null) {
-      company = leave.getUser().getActiveCompany();
-    }
-    if (company == null) {
-      return;
-    }
+      if (!leaveToJustify) {
+        return;
+      }
+      Company company = leave.getCompany();
+      if (leave.getUser() == null) {
+        return;
+      }
+      if (company == null) {
+        company = leave.getUser().getActiveCompany();
+      }
+      if (company == null) {
+        return;
+      }
 
-    hrConfigService.getLeaveReason(company.getHrConfig());
+      hrConfigService.getLeaveReason(company.getHrConfig());
 
-    Employee employee = leave.getUser().getEmployee();
+      Employee employee = leave.getUser().getEmployee();
 
-    LeaveReason leaveReason =
-        Beans.get(LeaveReasonRepository.class)
-            .find(company.getHrConfig().getToJustifyLeaveReason().getId());
+      LeaveReason leaveReason =
+          Beans.get(LeaveReasonRepository.class)
+              .find(company.getHrConfig().getToJustifyLeaveReason().getId());
 
-    if (employee != null) {
-      employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-      leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
-      response.setValue("leaveLine", leaveLine);
+      if (employee != null) {
+        employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+        leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+        response.setValue("leaveLine", leaveLine);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 

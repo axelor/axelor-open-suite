@@ -1201,22 +1201,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="width">1.6404166666666669cm</property>
                         </column>
                         <column id="4754">
-                            <property name="width">4.445cm</property>
+                            <property name="width">4.5cm</property>
                         </column>
                         <column id="4755">
-                            <property name="width">4.28625cm</property>
+                            <property name="width">4.5cm</property>
                         </column>
                         <column id="4756">
-                            <property name="width">2.460625cm</property>
+                            <property name="width">3.5cm</property>
                         </column>
                         <column id="4757">
-                            <property name="width">2.4077083333333333cm</property>
+                            <property name="width">2cm</property>
                         </column>
                         <column id="5911">
-                            <property name="width">2.4077083333333333cm</property>
+                            <property name="width">2cm</property>
                         </column>
                         <column id="6031">
-                            <property name="width">3.5189583333333334cm</property>
+                            <property name="width">3cm</property>
                         </column>
                         <column id="4758">
                             <property name="width">1.825625cm</property>
@@ -1326,7 +1326,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4770">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1413,7 +1413,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4771">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1500,7 +1500,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4772">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1587,7 +1587,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4149">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1674,7 +1674,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4773">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1763,7 +1763,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="5912">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -1852,7 +1852,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4774">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
                                         <property name="marginTop">1pt</property>
@@ -2063,6 +2063,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="4933">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="marginTop">1pt</property>
                                             <property name="marginLeft">2pt</property>
@@ -2141,6 +2142,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="5868">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <method name="onCreate"><![CDATA[vars["TotalCompanyValuation"] = vars["TotalCompanyValuation"]+row["company_total"]]]></method>
@@ -2193,6 +2195,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="6012">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["currency_symbol"]</VALUE-OF>]]></text-property>
@@ -2399,7 +2402,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                         <property name="overflow">hidden</property>
                                     </cell>
                                     <cell id="4920">
-                                        <property name="colSpan">6</property>
+                                        <property name="colSpan">1</property>
                                         <property name="rowSpan">1</property>
                                         <property name="backgroundAttachment">scroll</property>
                                         <property name="backgroundImageType">url</property>
@@ -2445,7 +2448,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                     </cell>
-                                    <cell id="6024">
+                                    <cell id="6039">
                                         <property name="backgroundAttachment">scroll</property>
                                         <property name="backgroundImageType">url</property>
                                         <property name="backgroundPositionX">0%</property>
@@ -2489,12 +2492,196 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                         <property name="showIfBlank">false</property>
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
+                                    </cell>
+                                    <cell id="6040">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                    </cell>
+                                    <cell id="6041">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                    </cell>
+                                    <cell id="6042">
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
+                                    </cell>
+                                    <cell id="6043">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="backgroundAttachment">scroll</property>
+                                        <property name="backgroundImageType">url</property>
+                                        <property name="backgroundPositionX">0%</property>
+                                        <property name="backgroundPositionY">0%</property>
+                                        <property name="backgroundRepeat">repeat</property>
+                                        <property name="backgroundSizeHeight">auto</property>
+                                        <property name="backgroundSizeWidth">auto</property>
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="fontVariant">normal</property>
+                                        <property name="color">black</property>
+                                        <property name="textLineThrough">none</property>
+                                        <property name="textOverline">none</property>
+                                        <property name="textUnderline">none</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="marginBottom">0pt</property>
+                                        <property name="marginRight">0pt</property>
+                                        <property name="paddingTop">1pt</property>
+                                        <property name="paddingLeft">1pt</property>
+                                        <property name="paddingBottom">1pt</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="textIndent">0em</property>
+                                        <property name="letterSpacing">normal</property>
+                                        <property name="lineHeight">normal</property>
+                                        <property name="orphans">2</property>
+                                        <property name="textTransform">none</property>
+                                        <property name="whiteSpace">normal</property>
+                                        <property name="widows">2</property>
+                                        <property name="wordSpacing">normal</property>
+                                        <property name="display">block</property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="pageBreakInside">auto</property>
+                                        <property name="showIfBlank">false</property>
+                                        <property name="canShrink">false</property>
+                                        <property name="overflow">hidden</property>
                                         <text id="4932">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="marginTop">1pt</property>
                                             <property name="marginLeft">2pt</property>
                                             <property name="textAlign">right</property>
-                                            <property name="display">block</property>
+                                            <property name="display">inline</property>
                                             <property name="dataSet">TranslateDS</property>
                                             <list-property name="paramBindings">
                                                 <structure>
@@ -2521,57 +2708,13 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                         </text>
-                                    </cell>
-                                    <cell id="6029">
-                                        <property name="backgroundAttachment">scroll</property>
-                                        <property name="backgroundImageType">url</property>
-                                        <property name="backgroundPositionX">0%</property>
-                                        <property name="backgroundPositionY">0%</property>
-                                        <property name="backgroundRepeat">repeat</property>
-                                        <property name="backgroundSizeHeight">auto</property>
-                                        <property name="backgroundSizeWidth">auto</property>
-                                        <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="fontStyle">normal</property>
-                                        <property name="fontVariant">normal</property>
-                                        <property name="color">black</property>
-                                        <property name="textLineThrough">none</property>
-                                        <property name="textOverline">none</property>
-                                        <property name="textUnderline">none</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <property name="marginTop">0pt</property>
-                                        <property name="marginLeft">0pt</property>
-                                        <property name="marginBottom">0pt</property>
-                                        <property name="marginRight">0pt</property>
-                                        <property name="paddingTop">1pt</property>
-                                        <property name="paddingLeft">1pt</property>
-                                        <property name="paddingBottom">1pt</property>
-                                        <property name="paddingRight">1pt</property>
-                                        <property name="textIndent">0em</property>
-                                        <property name="letterSpacing">normal</property>
-                                        <property name="lineHeight">normal</property>
-                                        <property name="orphans">2</property>
-                                        <property name="textTransform">none</property>
-                                        <property name="whiteSpace">normal</property>
-                                        <property name="widows">2</property>
-                                        <property name="wordSpacing">normal</property>
-                                        <property name="display">block</property>
-                                        <property name="pageBreakAfter">auto</property>
-                                        <property name="pageBreakBefore">auto</property>
-                                        <property name="pageBreakInside">auto</property>
-                                        <property name="showIfBlank">false</property>
-                                        <property name="canShrink">false</property>
-                                        <property name="overflow">hidden</property>
                                         <text id="5954">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="marginTop">1pt</property>
                                             <property name="marginLeft">2pt</property>
                                             <property name="textAlign">left</property>
-                                            <property name="display">block</property>
+                                            <property name="display">inline</property>
                                             <property name="dataSet">TranslateDS</property>
                                             <list-property name="paramBindings">
                                                 <structure>
@@ -2645,6 +2788,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="5839">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
                                             <method name="onCreate"><![CDATA[vars["TotalStockLocationValuation"] = vars["TotalStockLocationValuation"]+row["location_total"]]]></method>
@@ -2697,6 +2841,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                         <property name="canShrink">false</property>
                                         <property name="overflow">hidden</property>
                                         <text id="6011">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["currency_symbol"]</VALUE-OF>]]></text-property>
@@ -2707,6 +2852,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                         </group>
                         <detail>
                             <row id="4733">
+                                <property name="fontSize">8pt</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -2807,6 +2953,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4776">
+                                        <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
@@ -2857,6 +3004,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4777">
+                                        <property name="fontSize">8pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -2914,6 +3062,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4778">
+                                        <property name="fontSize">8pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["bom_name"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -2971,6 +3120,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4775">
+                                        <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["manuf_order_seq"]</VALUE-OF>]]></text-property>
@@ -3029,7 +3179,7 @@ else {row["translation"]}</VALUE-OF>]]></text-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4563">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontStyle">normal</property>
                                         <property name="color">#000000</property>
                                         <property name="marginRight">2pt</property>
@@ -3105,6 +3255,7 @@ else if (row["status_select"] == 5) { 'ManufOrder.standBy' }</value>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="5913">
+                                        <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["planned_end"]</VALUE-OF>]]></text-property>
@@ -3151,6 +3302,7 @@ else if (row["status_select"] == 5) { 'ManufOrder.standBy' }</value>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="4780">
+                                        <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["cost_price"]</VALUE-OF>]]></text-property>
@@ -3197,6 +3349,7 @@ else if (row["status_select"] == 5) { 'ManufOrder.standBy' }</value>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <text id="6010">
+                                        <property name="fontSize">8pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency_symbol"]</VALUE-OF>]]></text-property>

@@ -54,13 +54,13 @@
                 </editor>
             </field>
 		</panel>
-		<panel name="instructionsPanel">
+		<panel name="instructionsPanel" title="Control Instructions">
 			<field name="instructions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="notesPanel">
+		<panel name="notesPanel" title="Control comment">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="messageIfFailurePanel">
+		<panel name="messageIfFailurePanel" title="Failure reasons">
 			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
 		<panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">

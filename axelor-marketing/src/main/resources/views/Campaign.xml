@@ -9,7 +9,8 @@
         <field name="stageSelect"/>
     </grid>
 
-	<form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large">
+	<form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large"
+		onNew="action-campaign-attrs-on-new-on-load" onLoad="action-campaign-attrs-on-new-on-load">
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 				<item title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
@@ -29,7 +30,9 @@
 			</field>
 			<spacer name="nameSpacer"/>
 			<panel name="informationPanel" title="Informations" colSpan="12">
-				<field name="campaignType" canEdit="false" />
+				<field name="campaignType" canEdit="false" colSpan="4"/>
+				<field name="eventStartDateT" colSpan="4"/>
+				<field name="eventEndDateT" colSpan="4"/>
 				<spacer name="campaignTypeSpacer"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
@@ -38,15 +41,21 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel title="Target List" name="targetListPanel">
+				<field name="isAllowEditingOfTargets" colSpan="3" widget="boolean-switch" onChange="action-campaign-attrs-is-allow-editing-of-targets-on-change"/>
 				<panel-related name="targetModelSetPanel" field="targetModelSet" colSpan="12"/>
 				<button name="generateTargetsBtn" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
-				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
-				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" grid-view="lead-grid" form-view="lead-form" />
+				<button name="inviteSelectedTargetBtn" title="Invite selected targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" onClick="save,action-campaign-method-invite-selected-targets" colSpan="4"/>
+				<button name="inviteAllTargetsBtn" title="Invite all targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" colSpan="4" onClick="save,action-campaign-method-invite-all-targets"/>
+				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="partner-campaign-grid" form-view="partner-form" canEdit="false"/>
+				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="lead-campaign-grid" form-view="lead-form" canEdit="false"/>
 			</panel>
 			<panel name="emailingPanel" title="Emailing" showIf="emailing" colSpan="12">
 				<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
+				<field name="partnerReminderTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)"/>
+				<field name="leadReminderTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)"/>
 				<field name="emailAccount" showIf="emailing"/>
+				<panel-dashlet name="generatedEmailsPanel" action="dashlet.generated.emails" height="350" colSpan="12"/>
 			</panel>
 			<panel name="eventsPanel" title="Events" showIf="manageAnEventPerTarget" colSpan="12">
 				<field name="generateEventPerPartnerOrLead" widget="inline-checkbox" colSpan="12"/>
@@ -65,21 +74,37 @@
 			</panel>
 			<panel name="resultsPanel" title="Results">
 				<field name="report" widget="html" colSpan="12" />
-				<panel name="participationPanel" title="Participation" showIf="manageAttendees" colSpan="12">
-					<panel-related name="leadsPanel" field="leads" colSpan="12" grid-view="lead-grid" form-view="lead-form"/>
-					<panel-related name="partnersPanel" field="partners" colSpan="12" grid-view="partner-grid" form-view="partner-form"/>
+				<panel name="invitedPanel" title="Invited" showIf="manageAttendees" colSpan="12">
+					<panel-related name="invitedLeadSetPanel" field="invitedLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="invitedPartnerSetPanel" field="invitedPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
+					<button name="participateBtn" title="Participate" colSpan="3" onClick="save,action-campaign-method-participate-targets"/>
+					<button name="notParticipatingBtn" title="Not participating" colSpan="3" onClick="save,action-campaign-method-not-participate-targets"/>
+					<button name="sendReminderEmailBtn" title="Send a reminder" colSpan="4" onClick="save,action-campaign-validate-send-reminder-email,action-campaign-method-send-reminder-email,save" showIf="emailing"/>
+				</panel>
+				<panel name="enrolledPanel" title="Enrolled" showIf="manageAttendees" colSpan="12">
+					<panel-related name="leadsPanel" field="leads" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="partnersPanel" field="partners" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
+				</panel>
+				<panel name="notParticipatingPanel" title="Not participating" showIf="manageAttendees" colSpan="12">
+					<panel-related name="notParticipatingLeadSetPanel" field="notParticipatingLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="notParticipatingPartnerSetPanel" field="notParticipatingPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
 				</panel>
 				<panel name="emailingReportPanel" title="Emailing report" colSpan="12">
 					<field name="emailLog" widget="binary-link" showIf="emailing"/>
 				</panel>
 			</panel>
+			<panel-related name="campaignReminderListPanel" field="campaignReminderList" colSpan="12" showTitle="false" form-view="campaign-reminder-form" grid-view="campaign-reminder-grid"/>
+			<panel name="presencePanel" title="Presence" showIf="manageAttendees &amp;&amp; stageSelect &gt;= 2">
+				<panel-related name="presentLeadSetPanel" field="presentLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form"/>
+				<panel-related name="presentPartnerSetPanel" field="presentPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form"/>
+			</panel>
 		</panel-tabs>
 		<panel name="actionsPanel" sidebar="true">
-			<button name="planBtn" showIf="stageSelect == 0" title="Plan" onClick="save,action-campaign-record-plan"/>
-			<button name="startBtn" showIf="stageSelect == 1 || stageSelect == 3" title="Start" onClick="save,action-campaign-record-start"/>
-			<button name="suspendBtn" showIf="stageSelect == 2" title="Suspend" onClick="save,action-campaign-record-suspend"/>
-			<button name="endedBtn" showIf="stageSelect == 2" title="End" onClick="save,action-campaign-record-ended"/>
-			<button name="cancelBtn" showIf="stageSelect != 0" title="Cancel" onClick="save,action-campaign-record-cancel" css="btn-danger" icon="fa-times" />
+			<button name="planBtn" showIf="stageSelect == 0" title="Plan" onClick="save,action-campaign-record-plan,save,action-campaign-attrs-on-new-on-load"/>
+			<button name="startBtn" showIf="stageSelect == 1 || stageSelect == 3" title="Start" onClick="save,action-campaign-record-start,save,action-campaign-attrs-on-new-on-load"/>
+			<button name="suspendBtn" showIf="stageSelect == 2" title="Suspend" onClick="save,action-campaign-record-suspend,save,action-campaign-attrs-on-new-on-load"/>
+			<button name="endedBtn" showIf="stageSelect == 2" title="End" onClick="save,action-campaign-record-ended,save,action-campaign-attrs-on-new-on-load"/>
+			<button name="cancelBtn" showIf="stageSelect != 0" title="Cancel" onClick="save,action-campaign-record-cancel,save,action-campaign-attrs-on-new-on-load" css="btn-danger" icon="fa-times" />
 		</panel>
 	</form>
 
@@ -96,15 +121,25 @@
 	]]></template>
 	</kanban>
 
+	<action-attrs name="action-campaign-attrs-on-new-on-load">
+		<attribute name="hidden" expr="eval: stageSelect &lt; 2"
+			 for="invitedLeadSet.leadPresentAtEventBtn,leads.leadPresentAtEventBtn,notParticipatingLeadSet.leadPresentAtEventBtn,
+				invitedPartnerSet.partnerPresentAtEventBtn,partners.partnerPresentAtEventBtn,notParticipatingPartnerSet.partnerPresentAtEventBtn"/>
+	</action-attrs>
+
 	<action-attrs name="action-campaign-attrs-eventuser-domain">
   		<attribute name="domain" if="team != null" expr = "eval: &quot; self.activeTeam.id IN (${team.id}) &quot;" for="eventUser"/>
   		<attribute name="domain" if="team == null" expr = "eval: null" for="eventUser"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-campaign-attrs-team-value-fill">
   		<attribute  name="value" if="eval: team != null &amp;&amp; eventUser != null &amp;&amp; team != eventUser.activeTeam" expr="eval: null" for="eventUser"/>
 	</action-attrs>
-	
+
+	<action-attrs name="action-campaign-attrs-is-allow-editing-of-targets-on-change">
+		<attribute name="value" for="manageAttendees" expr="eval: false" if="!isAllowEditingOfTargets"/>
+	</action-attrs>
+
 	<action-record name="action-campaign-record-set-team" model="com.axelor.apps.marketing.db.Campaign">
   		<field name="team" expr="eval:eventUser.activeTeam" if="eventUser != null"/>
 	</action-record>
@@ -131,6 +166,10 @@
 
 	<action-method name="action-campaign-method-send-email">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendEmail"/>
+	</action-method>
+	
+	<action-method name="action-campaign-method-send-reminder-email">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="sendReminderEmail"/>
 	</action-method>
 	
 	<action-view name="action-lead-view-marketing-campaigns" title="Marketing Campaigns" model="com.axelor.apps.marketing.db.Campaign">
@@ -166,6 +205,12 @@
 		<domain>self.campaign.id = :_id AND self.statusSelect IN (2,3)</domain>
 	</action-view>
 	
+	 <action-view name="dashlet.generated.emails" title="Generated emails" model="com.axelor.apps.message.db.Message">
+    	<view type="grid" name="message-grid"/>
+    	<view type="form" name="message-form"/>
+    	<domain>self.relatedTo1Select = 'com.axelor.apps.marketing.db.Campaign' AND self.relatedTo1SelectId = :id</domain>
+    </action-view>
+	
 	<action-method name="action-campaign-generate-targets"  model="com.axelor.apps.marketing.db.Campaign">
 		<call class="com.axelor.apps.marketing.web.CampaignController" method="generateTargets"/>
 	</action-method>
@@ -173,5 +218,33 @@
 	<action-validate name="action-campaign-validate-send-email">
 		<error message="Please select at least one template" if="partnerTemplate == null &amp;&amp; leadTemplate == null"/>
 	</action-validate>
-     
+
+	<action-validate name="action-campaign-validate-send-reminder-email">
+		<error message="Please select at least one template" if="partnerReminderTemplate == null &amp;&amp; leadReminderTemplate == null"/>
+	</action-validate>
+
+	<action-method name="action-campaign-method-invite-selected-targets">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="inviteSelectedTargets"/>
+	</action-method>
+
+	<action-method name="action-campaign-method-invite-all-targets">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="inviteAllTargets"/>
+	</action-method>
+
+	<action-method name="action-campaign-method-participate-targets">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="addParticipatingTargets"/>
+	</action-method>
+
+	<action-method name="action-campaign-method-not-participate-targets">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="addNotParticipatingTargets"/>
+	</action-method>
+
+	<action-method name="action-campaign-method-mark-partner-present">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="markPartnerPresent"/>
+	</action-method>
+
+	<action-method name="action-campaign-method-mark-lead-present">
+		<call class="com.axelor.apps.marketing.web.CampaignController" method="markLeadPresent"/>
+	</action-method>
+
 </object-views>

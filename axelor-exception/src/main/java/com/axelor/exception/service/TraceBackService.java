@@ -60,7 +60,10 @@ public class TraceBackService {
     TraceBack traceBack = new TraceBack();
     traceBack.setException(e.toString());
     traceBack.setDate(ZonedDateTime.now());
-    traceBack.setError(e.getStackTrace()[0].toString());
+    traceBack.setError(
+        e.getStackTrace() != null && e.getStackTrace().length > 0
+            ? e.getStackTrace()[0].toString()
+            : e.getMessage());
 
     traceBack.setOrigin(origin);
     traceBack.setTypeSelect(typeSelect);

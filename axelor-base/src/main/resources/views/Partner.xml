@@ -85,6 +85,7 @@
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
+		<field name="mainPartner.simpleFullName" title="Main company"/>
 		<field name="jobTitle"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
@@ -103,6 +104,9 @@
 		  onNew="action-group-base-partner-onnew"
 		  onLoad="action-group-partner-onload"
 		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
+		<toolbar>
+			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')"/>
+		</toolbar>
 		<panel-include view="partner-form" />
 	</form>
 
@@ -566,7 +570,9 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
 		<field name="emailAddress.address" title="Email"/>
+		<field name="mainPartner.simpleFullName"/>
 		<field name="partnerCategory" />
 		<field name="mainAddress" />
 		<field name="titleSelect" />
@@ -583,8 +589,10 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{mainAddress.fullName}}<br/>
-			    {{fixedPhone}}<br/>
+			    <span ng-if="fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/>  {{fixedPhone}}<br/></span>
+			    <span  ng-if="mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{mobilePhone}}<br/></span>
 			    {{emailAddress.address}}<br/>
+			    <span  ng-if="mainPartner.simpleFullName"><strong><span x-translate>Companies</span></strong> : {{mainPartner.simpleFullName}}<br/></span>
 			    {{partnerCategory.name}}</span>
 			  </div>
 			</div>

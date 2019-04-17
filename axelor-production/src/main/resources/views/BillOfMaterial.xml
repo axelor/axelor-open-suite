@@ -62,7 +62,7 @@
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
 			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
             <field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
 		</panel>
 
@@ -79,7 +79,7 @@
                     </viewer>
   				</field>
 				<panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet" title="Components" colSpan="12" height="15" orderBy="priority" domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)" form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid" onChange="action-bill-of-material-record-count-number-of-components"/>
-				<button name="addComponentsEnMasseBtn" title="Add components en masse" onClick="action-bill-of-material-attrs-show-component-panel"/>
+				<button name="addComponentsEnMasseBtn" title="Add components in bulk" onClick="action-bill-of-material-attrs-show-component-panel"/>
 				<panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
 					<button name="addToComponents" title="Add to components" readonlyIf="!$rawMaterials" colSpan="3" css="btn-custom" onClick="save,action-bill-of-material-method-add-raw-materials,action-bill-of-material-attrs-hide-component-panel"/>
 					<field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false" canSelect="true" form-view="product-form" grid-view="product-grid"/>
@@ -128,7 +128,7 @@
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
 			<field name="wasteRate" min="0"/>
 			<panel name="subProcessConfigurationPanel" title="Sub-process configuration" showIf="defineSubBillOfMaterial" colSpan="12" hidden="true">
 				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
