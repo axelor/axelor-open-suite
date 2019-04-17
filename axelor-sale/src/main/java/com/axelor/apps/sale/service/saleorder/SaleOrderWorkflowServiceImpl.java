@@ -182,6 +182,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    saleOrder.setOrderBeingEdited(false);
 
     saleOrderRepo.save(saleOrder);
   }

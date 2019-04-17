@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -30,6 +31,7 @@ import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
@@ -49,17 +51,20 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   protected CostSheetGroupRepository costSheetGroupRepository;
   protected UnitConversionService unitConversionService;
   protected UnitRepository unitRepo;
+  protected WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
   public CostSheetLineServiceImpl(
       AppProductionService appProductionService,
       CostSheetGroupRepository costSheetGroupRepository,
       UnitConversionService unitConversionService,
-      UnitRepository unitRepo) {
+      UnitRepository unitRepo,
+      WeightedAveragePriceService weightedAveragePriceService) {
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
     this.unitConversionService = unitConversionService;
     this.unitRepo = unitRepo;
+    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   public CostSheetLine createCostSheetLine(
@@ -163,24 +168,41 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createConsumedProductCostSheetLine(
+      Company company,
       Product product,
       Unit unit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
-      boolean fromBOM)
+      int origin)
       throws AxelorException {
 
     Product parentProduct = parentCostSheetLine.getProduct();
 
-    BigDecimal price = getValuationPrice(product, parentProduct, fromBOM);
+    BigDecimal costPrice = null;
+    switch (origin) {
+      case ORIGIN_BILL_OF_MATERIAL:
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
 
-    BigDecimal costPrice =
+      case ORIGIN_MANUF_ORDER:
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getManufOrderCompValuMethodSelect(), company);
+        break;
+
+      default:
+        costPrice = BigDecimal.ZERO;
+    }
+
+    costPrice =
         unitConversionService
             .convert(
                 unit,
                 product.getUnit(),
-                price,
+                costPrice,
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
@@ -218,52 +240,26 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
-  protected BigDecimal getValuationPrice(Product product, Product parentProduct, boolean fromBOM) {
+  protected BigDecimal getComponentCostPrice(
+      Product product, int componentsValuationMethod, Company company) {
 
-    if (fromBOM) {
-      return getValuationPriceFromBOM(product);
-    } else {
-      return getValuationPriceFromManufOrder(product, parentProduct);
-    }
-  }
+    BigDecimal price = null;
 
-  protected BigDecimal getValuationPriceFromManufOrder(Product product, Product parentProduct) {
-
-    BigDecimal price;
-
-    if ((product.getProductSubTypeSelect().equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT)
-            || product
-                .getProductSubTypeSelect()
-                .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-        && parentProduct.getRealOrEstimatedPriceSelect().equals(ProductRepository.PRICE_METHOD_REAL)
-        && parentProduct
-            .getComponentsValuationMethod()
-            .equals(ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE)) {
-      price = product.getAvgPrice();
-    } else {
+    if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
+      price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
+    } else if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_COST) {
       price = product.getCostPrice();
     }
-
-    if (price.compareTo(BigDecimal.ZERO) == 0) {
+    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+      price = product.getCostPrice();
+    }
+    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+      price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
+    }
+    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       price = product.getPurchasePrice();
     }
-
-    return price;
-  }
-
-  protected BigDecimal getValuationPriceFromBOM(Product product) {
-
-    BigDecimal price = product.getCostPrice();
-
-    if (BigDecimal.ZERO.compareTo(price) >= 0) {
-      price = product.getAvgPrice();
-    }
-
-    if (BigDecimal.ZERO.compareTo(price) >= 0) {
-      price = product.getPurchasePrice();
-    }
-
-    if (BigDecimal.ZERO.compareTo(price) >= 0) {
+    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
         if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
           price = supplierCatalog.getPrice();
@@ -276,6 +272,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createConsumedProductWasteCostSheetLine(
+      Company company,
       Product product,
       Unit unit,
       int bomLevel,
@@ -283,6 +280,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal consumptionQty,
       BigDecimal wasteRate)
       throws AxelorException {
+
+    Product parentProduct = parentCostSheetLine.getProduct();
 
     BigDecimal qty =
         consumptionQty
@@ -297,7 +296,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .convert(
                 unit,
                 product.getUnit(),
-                getValuationPriceFromBOM(product),
+                getComponentCostPrice(product, parentProduct.getBomCompValuMethodSelect(), company),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(qty);
@@ -336,7 +335,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         consumptionQty,
         costPrice,
         unit,
-        prodHumanResource.getCostSheetGroup(),
+        null,
         CostSheetLineRepository.TYPE_HUMAN);
   }
 

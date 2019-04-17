@@ -90,8 +90,8 @@
     <action-validate name="action-budget-validate-exceed-line-amount">
 		<alert if="__config__.app.getApp('budget')?.manageMultiBudget
                   &amp;&amp;budgetDistributionList != null &amp;&amp; budgetDistributionList
-                  &amp;&amp; inTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
-			  message="Total amount is exceeded than budget."/>
+                  &amp;&amp; companyInTaxTotal &gt; budgetDistributionList?.sum{it.amount}"
+			  message="The total amount is greater than the budget distribution total."/>
 	</action-validate>
 	
 	<action-method name="action-budget-check-shared-dates">

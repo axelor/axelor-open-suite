@@ -93,4 +93,6 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_ORDER_DATE = /*$$(*/ "PurchaseOrder.orderDate"; /*)*/
   public static final String PURCHASE_ORDER_SUPPLIER_CODE = /*$$(*/
       "PurchaseOrder.supplierCode"; /*)*/
+  public static final String PURCHASE_ORDER_PRODUCT_PRODUCT_STANDARD = /*$$(*/
+      "PurchaseOrder.productStandard"; /*)*/
 }

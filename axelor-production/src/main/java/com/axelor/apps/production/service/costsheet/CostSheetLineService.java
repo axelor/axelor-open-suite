@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
@@ -27,6 +28,9 @@ import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface CostSheetLineService {
+
+  public static final int ORIGIN_BILL_OF_MATERIAL = 0;
+  public static final int ORIGIN_MANUF_ORDER = 1;
 
   public CostSheetLine createCostSheetLine(
       String name,
@@ -49,15 +53,17 @@ public interface CostSheetLineService {
       Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException;
 
   public CostSheetLine createConsumedProductCostSheetLine(
+      Company company,
       Product product,
       Unit unit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
-      boolean fromBOM)
+      int origin)
       throws AxelorException;
 
   public CostSheetLine createConsumedProductWasteCostSheetLine(
+      Company company,
       Product product,
       Unit unit,
       int bomLevel,

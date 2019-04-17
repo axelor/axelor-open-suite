@@ -91,6 +91,10 @@ public class MessageServiceImpl implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
     Message message =
         createMessage(
             content,
@@ -110,7 +114,7 @@ public class MessageServiceImpl implements MessageService {
             bccEmailAddressList,
             addressBlock,
             mediaTypeSelect,
-            Beans.get(EmailAccountRepository.class).find(emailAccount.getId()));
+            emailAccount);
 
     messageRepository.save(message);
 

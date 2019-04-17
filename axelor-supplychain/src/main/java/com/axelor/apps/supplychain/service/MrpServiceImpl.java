@@ -744,11 +744,11 @@ public class MrpServiceImpl implements MrpService {
           mrpForecastRepository
               .all()
               .filter(
-                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3",
+                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4",
                   this.productMap.keySet(),
                   this.stockLocationList,
                   today,
-                  today)
+                  MrpForecastRepository.STATUS_CONFIRMED)
               .fetch());
 
     } else {

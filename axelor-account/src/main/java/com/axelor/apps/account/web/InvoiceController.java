@@ -320,6 +320,7 @@ public class InvoiceController {
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

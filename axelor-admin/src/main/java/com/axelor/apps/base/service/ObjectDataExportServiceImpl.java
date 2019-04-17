@@ -110,7 +110,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
       ResourceBundle bundle = ObjectDataCommonService.getResourceBundle(language);
 
-      String[][] fieldsData = createFieldsData(line.getMetaFieldSet(), bundle);
+      String[][] fieldsData = createFieldsData(line.getToExportMetaFieldSet(), bundle);
 
       Map<String, String> selectMap = getSelectMap(Mapper.of(modelClass));
 
