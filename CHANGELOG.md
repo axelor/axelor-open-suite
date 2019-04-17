@@ -92,7 +92,7 @@
 - Lunch Voucher Line: added compute action on the grid view. 
 - MOVE LINE : Fix NPE in the balance calculation.
 - Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
-
+- SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty. 
 
 ## [5.1.5] - 2019-03-30
 ## Features

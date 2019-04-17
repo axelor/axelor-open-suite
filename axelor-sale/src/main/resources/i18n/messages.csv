@@ -447,7 +447,7 @@
 "The field %s is of type %s, but the configured script returned value is of type %s.",,,
 "The sale order was canceled",,,
 "The syntax of the script is correct.",,,
-"The total amount is zero.",,,
+"The total amount of quotation is zero. Do you want to proceed ?",,,
 "This Year To Date",,,
 "This sale order is completed.",,,
 "This script has errors, please see server logs for more details.",,,
