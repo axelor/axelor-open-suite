@@ -85,6 +85,7 @@
 - DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
 - MESSAGE : Error when an email address is null in a CC list of addresses
+- SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 
 ## [5.1.5] - 2019-03-30
 ## Features
