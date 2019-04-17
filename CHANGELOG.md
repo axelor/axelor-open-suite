@@ -18,6 +18,7 @@
 - STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
 - DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
 - STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
