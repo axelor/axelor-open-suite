@@ -19,6 +19,7 @@
 - DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
 - STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
+- Leave reason: choose unit between days and hours.
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -45,6 +46,7 @@
 - Supplier arrival: Update error message.
 - MetaJsonField : Add help for all conditional fields of MetaJsonField
 - Reserved qty: auto allocation is now also ordered by estimated date.
+- WeeklyPlanning: manage durations in hours and rename methods.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -88,6 +90,7 @@
 - MESSAGE : Error when an email address is null in a CC list of addresses
 - Budget Distrbution : warning message modified
 - Lunch Voucher Line: added compute action on the grid view. 
+- MOVE LINE : Fix NPE in the balance calculation.
 
 
 ## [5.1.5] - 2019-03-30
@@ -283,7 +286,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-- MOVE LINE : Fix NPE in the balance calculation.
 
 
 ## [5.1.2] - 2019-02-11
