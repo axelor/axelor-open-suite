@@ -75,6 +75,7 @@
 - Mobile App : Add configuration for quality app on mobile app
 - INVOICE : new process to print
 - QUALITY CONTROL : New report to print
+- PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
