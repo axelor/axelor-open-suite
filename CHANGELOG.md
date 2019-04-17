@@ -86,6 +86,7 @@
 - DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
 - MESSAGE : Error when an email address is null in a CC list of addresses
+- Budget Distrbution : warning message modified
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -223,7 +224,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Translation : Fix english translation of accounting export types.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
-
 
 ## [5.1.3] - 2019-02-21
 ## Features
