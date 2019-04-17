@@ -102,6 +102,7 @@
 - TeamsTask : New menu titles
 - Contract : partner / project filters improved
 - TeamTask : Set default typeSelect = 'task'
+- APP BUILDER : Remove JsonCreator object
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
