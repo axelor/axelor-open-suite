@@ -87,6 +87,8 @@
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
 - MESSAGE : Error when an email address is null in a CC list of addresses
 - Budget Distrbution : warning message modified
+- Lunch Voucher Line: added compute action on the grid view. 
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
