@@ -427,6 +427,13 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
 
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
       Umr receiverUmr = bankOrderLine.getPartner().getActiveUmr();
+
+      if (receiverUmr == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+      }
+
       /*
        * Direct Debit Transaction Information (mandatory)
        * Set of elements providing information specific to the individual transaction(s) included in the message.

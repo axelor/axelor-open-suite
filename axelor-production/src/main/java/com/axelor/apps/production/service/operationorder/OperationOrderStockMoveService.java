@@ -216,12 +216,14 @@ public class OperationOrderStockMoveService {
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(operationOrder, newStockMove);
 
-    // plan the stockmove
-    stockMoveService.plan(newStockMove);
+    if (!newStockMove.getStockMoveLineList().isEmpty()) {
+      // plan the stockmove
+      stockMoveService.plan(newStockMove);
 
-    operationOrder.addInStockMoveListItem(newStockMove);
-    newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
-    operationOrder.clearDiffConsumeProdProductList();
+      operationOrder.addInStockMoveListItem(newStockMove);
+      newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
+      operationOrder.clearDiffConsumeProdProductList();
+    }
   }
 
   /**

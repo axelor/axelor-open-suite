@@ -412,6 +412,7 @@
 
 	<action-group name="action-group-purchase-order-partner-onchange">
 		<action name="action-purchase-order-record-partner"/>
+		<action name="action-purchase-order-method-get-stock-location" if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
         <action name="action-purchase-order-attrs-hide-contact-partner"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 		<action name="action-purchase-order-method-fill-price-list"/>
@@ -484,9 +485,10 @@
  		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
- 		<field name="contactPartner" expr="eval:null" />
+ 		<field name="contactPartner" expr="eval: supplierPartner?.contactPartnerSet?.size() == 1 ? supplierPartner?.contactPartnerSet[0] : null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
+    	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
  	</action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">

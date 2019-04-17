@@ -41,9 +41,11 @@
 				<field name="employee" showIf="statusSelect == 1" />
 			</panel>
 		</panel>
-		<panel sidebar="true" name="actionsPanel" hideIf="statusSelect == 1 || statusSelect == 3">
+		<panel sidebar="true" name="actionsPanel">
+			<button name="openBtn" title="Open" onClick="save,action-job-application-status-open,save" colSpan="12" hideIf="statusSelect == 0"/>
+			<button name="rejectBtn" title="Rejected" onClick="save,action-job-application-status-reject,save" colSpan="12" showIf="statusSelect == 0"/>
 			<button name="hireBtn" title="Hire" onClick="save,action-job-application-confirmation,action-job-application-method-hire" colSpan="12" showIf="statusSelect == 0"/>
-			<button name="cancelBtn" title="Cancel" onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+			<button name="cancelBtn" title="Cancel" onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle" css="btn-danger" hideIf="statusSelect == 1 || statusSelect == 3"/>
 		</panel>
 		<panel sidebar="true" name="JobOfferInformationPanel" title="Job Offer Information" readonlyIf="statusSelect == 3">
 			<field name="jobPosition" colSpan="6" canEdit="false"/>
@@ -70,7 +72,11 @@
 			<panel name="contactPanel" title="Contact" colSpan="12">
 				<panel name="contactDetailsPanel" title="Contact details" colSpan="12">
 					<field name="mobilePhone" colSpan="3"/>
-					<field name="emailAddress" colSpan="3" canNew="true" canEdit="false"/>
+					<field name="emailAddress" canRemove="false" canSelect="false" canSuggest="false" colSpan="3" canNew="true" canEdit="true">
+            <editor x-show-titles="false">
+              <field name="address" colSpan="12" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" placeholder="user@mydomain.com"/>
+            </editor>
+					</field>
 					<field name="fixedPhone" colSpan="3"/>
 					<field name="fax" colSpan="3"/>
 					<field name="linkedInProfile" colSpan="3" widget="url"/>
@@ -123,7 +129,15 @@
     <action-attrs name="action-job-application-status-cancel">
     	<attribute name="value" for="statusSelect" expr="eval: 3"/>
     </action-attrs>
-    
+
+    <action-attrs name="action-job-application-status-open">
+      <attribute name="value" for="statusSelect" expr="eval: 0"/>
+    </action-attrs>
+
+    <action-attrs name="action-job-application-status-reject">
+      <attribute name="value" for="statusSelect" expr="eval: 2"/>
+    </action-attrs>
+
     <action-validate name="action-job-application-confirmation">
     	<alert message="A new employee form will be created. Do you confirm the creation ?"/>
     </action-validate>

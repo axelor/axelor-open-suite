@@ -14,7 +14,7 @@
 	</grid>
 	
 	<form name="training-register-form" title="Training register" model="com.axelor.apps.talent.db.TrainingRegister" width="large" 
-		onNew="action-training-register-default" onSave="action-training-register-update-old-rating">
+		onNew="action-training-register-default" onSave="action-group-training-register-save-click">
 		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
 		</panel>
@@ -31,6 +31,7 @@
 			<button name="completeBtn" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>
 			<button name="cancelBtn" title="Cancel" onClick="save,action-training-register-method-cancel"/>
 			<field name="ratingSelect" widget="SelectProgress"/>
+			<field name="calendar"/>
 		</panel>
 	</form>
 	
@@ -61,6 +62,10 @@
 	
 	<action-method name="action-training-register-method-plan">
 		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="plan"/>
+	</action-method>
+	
+	<action-method name="action-training-register-method-update-event-calendar">
+		<call class="com.axelor.apps.talent.web.TrainingRegisterController" method="updateEventCalendar"/>
 	</action-method>
 	
 	<action-method name="action-training-register-method-complete">
@@ -96,5 +101,10 @@
 			<context name="_employeeList" value="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
 		</filter>
 	</search-filters>
-	
+		
+	<action-group name="action-group-training-register-save-click">
+  		<action name="action-training-register-update-old-rating"/>
+  		<action if="__this__.calendar != null &amp;&amp; __this__.calendar != __self__?.calendar" name="action-training-register-method-update-event-calendar"/>
+	</action-group>
+
 </object-views>

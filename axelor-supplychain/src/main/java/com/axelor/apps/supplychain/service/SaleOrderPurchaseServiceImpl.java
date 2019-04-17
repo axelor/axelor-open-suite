@@ -118,7 +118,9 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
-            null,
+            supplierPartner.getContactPartnerSet().size() == 1
+                ? supplierPartner.getContactPartnerSet().iterator().next()
+                : null,
             supplierPartner.getCurrency(),
             null,
             saleOrder.getSaleOrderSeq(),

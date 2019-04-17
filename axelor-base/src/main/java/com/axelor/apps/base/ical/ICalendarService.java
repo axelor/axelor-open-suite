@@ -682,7 +682,7 @@ public class ICalendarService {
     }
 
     if (startDate == null || endDate == null) {
-      events = ICalendarStore.getModifiedEvents(collection, lastSynchro, allRemoteUids);
+      events = ICalendarStore.getModifiedEvents(collection, null, allRemoteUids);
     } else {
       events =
           ICalendarStore.getModifiedEventsInRange(

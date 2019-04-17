@@ -71,7 +71,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
 
-      if (!partner.getIsContact()) {
+      if (!partner.getIsContact() && !partner.getIsEmployee()) {
         partner.setMainAddress(null);
         if (partner.getPartnerAddressList() != null) {
           for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
