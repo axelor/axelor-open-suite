@@ -273,7 +273,7 @@
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
 			
 			<panel name="datesPanel" colSpan="6">
-				<field name="estimatedDate" readonlyIf="statusSelect != 1" colSpan="4"/>
+				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" colSpan="4"/>
 	            <field name="realDate" colSpan="4"/>
 	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
 			</panel>
@@ -371,9 +371,10 @@
         		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
-            	<field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
-                <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false"/>
-                <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
+              <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true" colSpan="4"/>
+              <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" colSpan="4"/>
+              <field name="backorderStockMove" readonly="true" colSpan="4" form-view="stock-move-form" grid-view="stock-move-grid"/>
+              <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
             </panel>
             <panel name="configPanel" title="Configuration">
             	<field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="3"/>
@@ -753,7 +754,7 @@
 	</action-validate>
 	
 	<action-validate name="action-stock-move-validate-shipment-informations">
-		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Shipment Informations field must be filled to realize the stock move."/>
+		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Please filled supplier shipment date and supplier shipment reference."/>
 	</action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"

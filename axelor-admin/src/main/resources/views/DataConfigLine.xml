@@ -15,7 +15,7 @@
 		 	<field name="tabName" />
 		 	<field name="typeSelect" onChange="action-data-config-type-select-change" colSpan="4" />
 		 	<field name="path" colSpan="8" />
-		 	<panel-related name="metaFieldSetPanel" field="metaFieldSet" canNew="false" canEdit="false" colSpan="12" 
+		 	<panel-related name="toExportMetaFieldSetPanel" field="toExportMetaFieldSet" canNew="false" canEdit="false" colSpan="12" 
 		 	domain="self.metaModel = :metaModel and (self.relationship is null or self.relationship not in ('ManyToMany','OneToMany'))">
 		 		<field name="name" />
 		 		<field name="label" />
@@ -24,7 +24,7 @@
 		 	<field name="resetPathSelect"  showIf="typeSelect == 0" />
 		 	<field name="record" showIf="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
 		 	<panel-related name="toDeleteMetaFieldSetsPanel" field="toDeleteMetaFieldSet" canNew="false" canEdit="false" colSpan="12" 
-		 	domain="self in :metaFieldSet">
+		 	domain="self in :toExportMetaFieldSet">
 		 		<field name="name" />
 		 		<field name="label" />
 		 		<field name="typeName" />
