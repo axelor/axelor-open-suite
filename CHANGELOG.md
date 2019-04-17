@@ -82,6 +82,7 @@
 - Sale Order Line: Fix readonly on new on latest ADK version.
 - DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
+- SaleOrder: fix error message of advanced payment with 0 amount to invoice
 
 ## [5.1.5] - 2019-03-30
 ## Features
