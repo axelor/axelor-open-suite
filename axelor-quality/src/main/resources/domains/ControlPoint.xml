@@ -13,7 +13,7 @@
 		<decimal name="controlFrequency" title="Control Frequency"/>
 		<string name="notes" title="Notes"/>
 		<date name="controlPointDate" title="Date"/>
-		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
+		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint" mappedBy="controlPoint"/>
 		<integer name="sequence" title="Sequence"/>
 		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType" required="true"/>
 

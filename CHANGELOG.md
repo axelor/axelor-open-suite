@@ -74,6 +74,7 @@
 - Generating supplier order from partner form.
 - Mobile App : Add configuration for quality app on mobile app
 - INVOICE : new process to print
+- QUALITY CONTROL : New report to print
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -100,6 +101,7 @@
 - Employment Contract : Add buttons to "Tools" in menubar and set form width to large
 - TeamsTask : New menu titles
 - Contract : partner / project filters improved
+- TeamTask : Set default typeSelect = 'task'
 - APP BUILDER : Remove JsonCreator object
 
 ## Bug Fixes

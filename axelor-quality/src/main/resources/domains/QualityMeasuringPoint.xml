@@ -13,6 +13,7 @@
 		<string name="observations" title="Observations"/>
 		<one-to-many name="picturesList" title="Pictures" ref="com.axelor.apps.quality.db.QualityPictures" mappedBy="qualityMeasuringPoint"/>
 		<integer name="measuringTypeSelect" title="Measuring Type" selection="quality.measuring.point.measuring.type.select"/>
+		<many-to-one name="controlPoint" ref="com.axelor.apps.quality.db.ControlPoint"/>
 
 	</entity>
 
