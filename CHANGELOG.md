@@ -91,6 +91,7 @@
 - Budget Distrbution : warning message modified
 - Lunch Voucher Line: added compute action on the grid view. 
 - MOVE LINE : Fix NPE in the balance calculation.
+- Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 
 
 ## [5.1.5] - 2019-03-30
