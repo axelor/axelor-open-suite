@@ -11,6 +11,13 @@
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 
 ## Improvements
@@ -31,6 +38,13 @@
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
 - SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
+- TRAINING : Field "calendar" not filled when a training event is created
+- GANTT : Auto-filling and saving issues When creating a new task from the Gantt,the project field should be auto-filled.
+- SALE ORDER : added translation for button customerDeliveriesDetailsBtn
+- PROJECT : Name on every button, button-group, item ( give name to items ).
+- Supplier arrival: Update error message.
+- MetaJsonField : Add help for all conditional fields of MetaJsonField
+- Reserved qty: auto allocation is now also ordered by estimated date.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -46,6 +60,8 @@
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
 - CURRENCY Conversion: Avoid creating line if conversion is not available. 
+- Sale Order : put default value 0 to amountToInvoice and advise user if the field is null
+- Sale Order : display error message of max quantity of an advance payment
 - Sale order line : Fix delivered qty not increase if stock move is internal.
 - DEBT RECOVERY : don't add batch to model in case of anomalies
 - Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
@@ -64,6 +80,12 @@
 - FIXED ASSETS : Issues with cents in depreciation tables
 - Sale order line: do not block on partial delivery with requested reserved quantity.
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
+- PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
+- DEBT RECOVERY BATCH : Fix not create debt recovery line if debtRecoveryHistoryList is null and balanceDueDebtRecovery is 0.
+- Sale Order Line: Fix readonly on new on latest ADK version.
+- DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
+- Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
+- MESSAGE : Error when an email address is null in a CC list of addresses
 
 ## [5.1.5] - 2019-03-30
 ## Features

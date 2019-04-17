@@ -58,6 +58,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       endDate = endDate.plusMonths(fixedAsset.getPeriodicityInMonth());
     }
     int counter = 1;
+    BigDecimal roundingDigit = BigDecimal.ZERO;
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
 
     while (depreciationDate.isBefore(endDate)) {
       FixedAssetLine fixedAssetLine = new FixedAssetLine();
@@ -78,6 +80,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 fixedAssetLine
                     .getResidualValue()
                     .divide(new BigDecimal(remainingYear), RoundingMode.HALF_EVEN);
+            roundingDigit =
+                fixedAssetLine
+                    .getResidualValue()
+                    .setScale(scale, RoundingMode.HALF_EVEN)
+                    .subtract(
+                        depreciationValue
+                            .setScale(scale, RoundingMode.HALF_EVEN)
+                            .multiply(new BigDecimal(remainingYear)));
+            depreciationValue =
+                depreciationValue.setScale(scale, RoundingMode.HALF_EVEN).add(roundingDigit);
+          } else if (counter == 4) {
+            depreciationValue = depreciationValue.subtract(roundingDigit);
           }
         } else {
           depreciationValue =
@@ -85,6 +99,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                   fixedAsset, fixedAssetLine.getResidualValue(), false);
         }
         depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+        depreciationValue = depreciationValue.setScale(scale, RoundingMode.HALF_EVEN);
       } else {
         if (counter == fixedAsset.getNumberOfDepreciation()) {
           depreciationValue =
@@ -114,11 +129,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               fixedAssetLine
                   .getDepreciation()
                   .multiply(new BigDecimal(fixedAsset.getNumberOfDepreciation()));
-          BigDecimal roundAddition = fixedAsset.getGrossValue().subtract(residualValueSum);
-          depreciationValue = depreciationValue.add(roundAddition);
+          roundingDigit = fixedAsset.getGrossValue().subtract(residualValueSum);
+          depreciationValue = depreciationValue.add(roundingDigit);
         }
       }
-      cumulativeValue = cumulativeValue.add(depreciationValue);
+      cumulativeValue =
+          cumulativeValue.add(depreciationValue).setScale(scale, RoundingMode.HALF_EVEN);
       counter++;
     }
     return fixedAsset;
