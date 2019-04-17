@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
@@ -31,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BudgetSupplychainService extends BudgetService {
 
@@ -89,22 +92,40 @@ public class BudgetSupplychainService extends BudgetService {
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        LocalDate orderDate = budgetDistribution.getInvoiceLine().getInvoice().getInvoiceDate();
-        if (orderDate != null) {
+        Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+        optionaldate.ifPresent(date -> {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
+            if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+                    && (toDate.isAfter(date) || toDate.isEqual(date))) {
               budgetLine.setAmountRealized(
-                  budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+                      budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
               break;
             }
           }
-        }
+        });
       }
     }
     return budget.getBudgetLineList();
+  }
+
+
+  @Override
+  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution){
+    InvoiceLine invoiceLine = budgetDistribution.getInvoiceLine();
+
+    if(invoiceLine == null){
+      return Optional.empty();
+    }
+
+    Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
+
+    if(invoice.getPurchaseOrder() != null){
+      return Optional.of(invoice.getPurchaseOrder().getOrderDate());
+    }
+
+    return super.getDate(budgetDistribution);
   }
 
   public void computeBudgetDistributionSumAmount(

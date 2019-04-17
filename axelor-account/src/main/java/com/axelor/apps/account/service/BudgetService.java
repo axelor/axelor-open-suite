@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -31,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BudgetService {
 
@@ -59,22 +61,39 @@ public class BudgetService {
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        LocalDate orderDate = budgetDistribution.getInvoiceLine().getInvoice().getInvoiceDate();
-        if (orderDate != null) {
+        Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+        optionaldate.ifPresent(date -> {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
+            if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+                    && (toDate.isAfter(date) || toDate.isEqual(date))) {
               budgetLine.setAmountRealized(
-                  budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+                      budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
               break;
             }
           }
-        }
+        });
       }
     }
     return budget.getBudgetLineList();
+  }
+
+  /**
+   *
+   * @param budgetDistribution
+   * @return returns an {@code Optional} because in some cases the child implementations can return a null value.
+   *
+   */
+  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution){
+    Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
+
+    LocalDate invoiceDate = invoice.getInvoiceDate();
+    if(invoiceDate != null){
+      return Optional.of(invoiceDate);
+    }
+
+    return Optional.of(invoice.getValidatedDate());
   }
 
   public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException {

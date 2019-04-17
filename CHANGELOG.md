@@ -115,5 +115,6 @@
 - Marketing : Fix error when trying to generate an event per target
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
+- Budget : Fix date value for invoices when updating the budget lines. 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
