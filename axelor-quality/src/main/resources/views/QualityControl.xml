@@ -25,7 +25,7 @@
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
 			<field name="reference" showTitle="false" colSpan="12" css="label-bold bold large"/>
 			<field name="name"/>
-			<field name="project"/>
+			<field name="project" required="true"/>
 			<field name="responsible"/>
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="startDate"/>
