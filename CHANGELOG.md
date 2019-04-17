@@ -100,6 +100,7 @@
 - Employment Contract : Add buttons to "Tools" in menubar and set form width to large
 - TeamsTask : New menu titles
 - Contract : partner / project filters improved
+- APP BUILDER : Remove JsonCreator object
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

@@ -28,8 +28,6 @@ import com.axelor.studio.db.repo.ChartBuilderRepo;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepo;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
-import com.axelor.studio.db.repo.JsonCreatorRepo;
-import com.axelor.studio.db.repo.JsonCreatorRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonFieldRepo;
@@ -48,7 +46,6 @@ public class StudioModule extends AxelorModule {
     bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
     bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
     bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
-    bind(JsonCreatorRepository.class).to(JsonCreatorRepo.class);
     bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
   }
 }
