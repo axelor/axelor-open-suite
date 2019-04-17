@@ -15,7 +15,7 @@
 	    <date name="endDate" title="End date" />
 	    <date name="deadLineDate" title="Deadline"/>
 	    <integer name="sequence" title="Sequence"/>
-	    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project" required="true"/>
+	    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 	    <one-to-many name="optionalControlPointList" title="Optional control point list" ref="ControlPoint" mappedBy="optionalQualityControl"/>
 	    <one-to-many name="qualityCorrectiveActionList" title="Corrective actions list" ref="QualityCorrectiveAction" mappedBy="qualityControl"/>
 	    <many-to-one name="inspectorSignature" title="Inspector signature" ref="com.axelor.meta.db.MetaFile"/>
