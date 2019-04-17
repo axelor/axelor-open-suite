@@ -195,8 +195,8 @@
 	<form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
 		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost">
 		<panel name="mainPanel">
-			<field name="lostReason" canEdit="false"/>
-			<field name="lostReasonStr" hideIf="!lostReason.freeText"/>
+			<field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
+			<field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
 			<field name="lostReason.freeText" hidden="true"/>
 		</panel>
 	</form>

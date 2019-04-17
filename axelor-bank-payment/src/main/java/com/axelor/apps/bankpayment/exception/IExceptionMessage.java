@@ -213,4 +213,6 @@ public interface IExceptionMessage {
       "No processed payment schedule lines" /*)*/;
   static final String BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE = /*$$(*/
       "Unknown direct debit data type" /*)*/;
+  static final String DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR = /*$$(*/
+      "Please add an Active UMR to the partner." /*)*/;
 }

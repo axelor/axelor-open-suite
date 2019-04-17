@@ -76,8 +76,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
                 I18n.get(IExceptionMessage.PARTNER_PRICE_LIST_DATE_INCONSISTENT),
-                previousTitle,
-                priceList.getTitle()),
+                previousTitle.replace("%", "%%"),
+                priceList.getTitle().replace("%", "%%")),
             partnerPriceList);
       }
       previousEndDate =
