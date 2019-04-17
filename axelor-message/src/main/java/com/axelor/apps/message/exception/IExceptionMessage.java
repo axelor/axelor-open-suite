@@ -52,4 +52,6 @@ public interface IExceptionMessage {
       "Email sending is in progress for %d messages." /*)*/;
   static final String MESSAGES_REGENERATED = /*$$(*/
       "%d messages has been regenerated successfully and %d errors append." /*)*/;
+  static final String SET_EMAIL_TEMPLATE_MESSAGE = /*$$(*/
+      "Please set the email template to send" /*)*/;
 }

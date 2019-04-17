@@ -134,8 +134,8 @@ public class BatchDebtRecovery extends BatchStrategy {
           if (remindedOk) {
             DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
             addBatchToModel(debtRecovery);
+            incrementDone(partner);
           }
-          incrementDone(partner);
         } catch (AxelorException e) {
           TraceBackService.trace(
               new AxelorException(
@@ -166,7 +166,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   protected void incrementAnomaly(Partner partner) {
     findBatch();
     partner = partnerRepository.find(partner.getId());
-    addBatchToModel(partner);
+    // addBatchToModel(partner);
     _incrementAnomaly();
   }
 
@@ -199,6 +199,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       int count = 0;
       for (DebtRecovery debtRecovery : debtRecoveries) {
+        String partnerName = debtRecovery.getAccountingSituation().getPartner().getName();
         try {
           DebtRecoveryHistory debtRecoveryHistory =
               debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
@@ -215,11 +216,7 @@ public class BatchDebtRecovery extends BatchStrategy {
           }
         } catch (Exception e) {
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get("Tiers") + " %s",
-                      debtRecovery.getAccountingSituation().getPartner().getName()),
-                  e),
+              new Exception(String.format(I18n.get("Tiers") + " %s", partnerName), e),
               IException.REMINDER,
               batch.getId());
           incrementAnomaly();

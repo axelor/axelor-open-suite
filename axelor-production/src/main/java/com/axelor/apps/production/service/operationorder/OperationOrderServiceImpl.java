@@ -30,9 +30,11 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -421,7 +423,16 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void checkConsumedStockMoveLineList(
+      OperationOrder operationOrder, OperationOrder oldOperationOrder) throws AxelorException {
+    Beans.get(ManufOrderService.class)
+        .checkRealizedStockMoveLineList(
+            operationOrder.getConsumedStockMoveLineList(),
+            oldOperationOrder.getConsumedStockMoveLineList());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
     this.updateDiffProdProductList(operationOrder);
@@ -435,10 +446,17 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
-    if (!stockMoveOpt.isPresent()) {
-      return;
+    StockMove stockMove;
+    if (stockMoveOpt.isPresent()) {
+      stockMove = stockMoveOpt.get();
+    } else {
+      stockMove =
+          Beans.get(ManufOrderStockMoveService.class)
+              ._createToConsumeStockMove(
+                  operationOrder.getManufOrder(), operationOrder.getManufOrder().getCompany());
+      operationOrder.addInStockMoveListItem(stockMove);
+      Beans.get(StockMoveService.class).plan(stockMove);
     }
-    StockMove stockMove = stockMoveOpt.get();
 
     Beans.get(ManufOrderService.class)
         .updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);

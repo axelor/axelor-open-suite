@@ -30,8 +30,8 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
-
-	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+    <string name="lostReasonStr" title="Lost reason" large="true"/>
+	  <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 
 	<extra-code>
 		<![CDATA[

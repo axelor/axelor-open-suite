@@ -707,6 +707,7 @@ StockMove.stock_move_seq,
 SaleOrder.sale_order_seq,
 SaleOrder.production_note,
 SaleOrder.external_reference,
+StockMove.delivery_condition,
 PurchaseOrder.purchase_order_seq,
 Partner.partner_seq as "CustomerCode",
 Partner.title_select,
@@ -1552,6 +1553,13 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">delivery_condition</property>
+                    <text-property name="displayName">delivery_condition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_condition"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4212">
                 <property name="width">2.99cm</property>
@@ -1688,6 +1696,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="4264">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["CustomerCode"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1726,6 +1740,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3425">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_edit_date"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1796,6 +1816,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3646">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["origin"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1834,6 +1860,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3693">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["user_name"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1878,6 +1910,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="4273">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["external_reference"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -1905,14 +1943,20 @@ order by StockMoveLine.sequence]]></xml-property>
                                 </text>
                             </cell>
                         </row>
-                        <row id="3658">
-                            <cell id="3659"/>
+                        <row id="4284">
+                            <cell id="4285"/>
                         </row>
                         <row id="3660">
                             <cell id="3661">
                                 <text id="4074">
                                     <property name="fontSize">10pt</property>
                                     <property name="textAlign">left</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row["tracking_number"]</expression>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[Tracking : <VALUE-OF>row["tracking_number"]</VALUE-OF>]]></text-property>
                                 </text>
@@ -2047,6 +2091,12 @@ row["first_name"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type_select"] == 2 &amp;&amp; !row._outer["to_address_str"]  || row._outer["type_select"] == 3 &amp;&amp; !row._outer["from_address_str"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -2080,14 +2130,17 @@ row["first_name"]
 	row["from_address_str"].replace(/\n/g, "<br>")
 }</VALUE-OF>]]></text-property>
                     </text>
-                    <label id="3644">
-                        <property name="fontSize">1pt</property>
-                    </label>
                     <text id="3803">
                         <property name="fontWeight">normal</property>
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">true</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -2110,6 +2163,7 @@ row["first_name"]
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <structure name="toc"/>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
@@ -2123,6 +2177,12 @@ row["first_name"]
                         <property name="textUnderline">underline</property>
                         <property name="marginLeft">2pt</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row._outer["production_note"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -2151,6 +2211,57 @@ row["first_name"]
                     <text id="4128">
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["production_note"] != null) row["production_note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                    </text>
+                    <label id="3644">
+                        <property name="fontSize">1pt</property>
+                    </label>
+                    <text id="4283">
+                        <property name="textUnderline">underline</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["delivery_condition"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'PickingStockMove.deliveryCondition'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="4287">
+                        <property name="marginLeft">2pt</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["delivery_condition"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'PickingStockMove.deliveryCondition'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["delivery_condition"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

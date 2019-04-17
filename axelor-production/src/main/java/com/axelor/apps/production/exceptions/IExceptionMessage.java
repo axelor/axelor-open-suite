@@ -36,6 +36,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for fabrication's orders" /*)*/;
 
+  static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
+      "You cannot delete realized stock move lines." /*)*/;
+
   /** Batch Compute work in progress valuation */
   static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
 
@@ -111,6 +114,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
       "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
 
+  static final String MANUF_ORDER_MISSING_TEMPLATE = /*$$(*/
+      "The template to send message for manufacturing order is missing." /*)*/;
+
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
 
@@ -124,4 +130,7 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
       "A cancel reason must be selected" /*)*/;
+
+  static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
+      "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
 }

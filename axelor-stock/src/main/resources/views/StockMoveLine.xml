@@ -73,7 +73,7 @@
             onSelect="action-stock-move-line-method-product-domain"
             form-view="product-form"
             grid-view="stock-move-line-product-grid"
-            width="250px"/>
+            width="250px" canEdit="false"/>
         <field name="productModel" domain="self.isModel = true "
             form-view="product-form" grid-view="product-grid"
             if="__config__.app.getApp('base').getManageProductVariants()"
@@ -182,6 +182,10 @@
 			</panel>
 			<field name="countryOfOrigin" hidden="true"/>
         </panel>
+        <panel-mail name="mailPanel">
+        	<mail-messages limit="4" />
+        	<mail-followers />
+        </panel-mail>
     </form>
 
 	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
@@ -327,6 +331,10 @@
             <field name="natureOfTransaction"/>
             <field name="countryOfOrigin"/>
         </panel>
+        <panel-mail name="mailPanel">
+        	<mail-messages limit="4" />
+        	<mail-followers />
+        </panel-mail>
     </form>
 
     <form model="com.axelor.apps.base.db.Wizard" title="Enter tracking numbers" name="stock-move-line-track-number-wizard-form" onNew="action-track-number-atts-from-stock-move-line">
@@ -445,8 +453,8 @@
         expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
       <attribute name="hidden" expr="eval: stockMove?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" for="countryOfOrigin" if="_parent == null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
 	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct,availableStatus" expr="_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3" if="_parent"/>
-	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: __parent__?.fromStockLocation?.typeSelect==3" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
-	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
+	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: __parent__?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
+	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
     </action-attrs>
 
     <action-group name="action-stock-move-line-group-qty-onchange">

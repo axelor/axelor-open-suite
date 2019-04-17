@@ -170,6 +170,10 @@
 	      <item title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
 	      <item title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
+        <item title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Deallocate all" action="save,action-sale-order-method-deallocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+				<item title="Reserve all" action="save,action-sale-order-method-reserve-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Cancel reservation" action="save,action-sale-order-method-cancel-reservation" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
 	    </menu>
 	  </menubar>
 	  <panel name="mainPanel">
@@ -268,6 +272,7 @@
 	      <panel name="otherInfoPanel" colSpan="3">
 	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
 	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
+	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="6" readonly="true" showIf="createdByInterco" name="createdByInterco"/>
 	    	</panel>
 	    </panel>
 	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
@@ -278,7 +283,7 @@
 	        </field>
 	      </panel>
 	      <panel name="deliveryAddressPanel" stacked="true">
-	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
@@ -307,11 +312,12 @@
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <field name="isNeedingConformityCertificate"/>
+	      <field name="isNeedingConformityCertificate" colSpan="3"/>
+	      <field name="isIspmRequired" readonly="true" colSpan="3"/>
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	    </panel>
-	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order"/>
+	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 2" action="action-view-show-invoices-from-sale-order"/>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
 		  	<field name="productionNote" widget="Html" colSpan="12"/>
 		  	<panel-dashlet name="manufOrdersPanel" action="action-sale-order-view-manuf-orders" colSpan="12"/>
@@ -349,7 +355,7 @@
 	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrderBtn" title="Complete manually sale order" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
 	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrderBtn" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
-	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-sale-order-validate-changes,save"/>
+	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-group-sale-order-validate-changes"/>
 	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMoveBtn" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-view-invoicing-wizard"/>
@@ -826,7 +832,6 @@
 		<action name="action-sale-order-record-from-partner"/>
 		<action name="action-sale-order-record-partner"/>
         <action name="action-partner-attrs-hide-contact-partner"/>
-		<action name="action-sale-order-validate-information"/>
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-record-compute-end-of-validity-date"/>
@@ -848,7 +853,6 @@
 	<action-group name="action-sale-group-onchange-client-partner">
 		<action name="action-sale-order-record-partner"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
-		<action name="action-sale-order-validate-information"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
 		<action name="action-sale-method-printing-settings-default-values"/>
 	</action-group>
@@ -880,6 +884,7 @@
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
 		<action name="action-sale-order-validate-check-on-confirm"/>
     	<action name="action-sale-order-method-confirm"/>
+		<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
@@ -892,7 +897,6 @@
 
 	<action-group name="action-sale-order-group-client-partner-change">
 		<action name="action-sale-order-record-partner"/>
-		<action name="action-sale-order-validate-information"/>
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-attrs-interco"
@@ -902,8 +906,16 @@
 		<action name="action-sale-order-record-set-contact-partner"/>
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"
+				if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
+		<action name="action-sale-order-attrs-set-is-ispm-required"
+				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
+
+  <action-group name="action-group-sale-order-validate-changes">
+    <action name="action-method-sale-order-validate-changes"/>
+  </action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
     	<attribute name="hidden" for="saleOrderLineList.exTaxTotal" expr="inAti"/>
@@ -911,17 +923,18 @@
     	<attribute name="hidden" for="saleOrderLineList.inTaxTotal" expr="!inAti"/>
     	<attribute name="hidden" for="saleOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
-    									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"/>
+    									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2" if="company != null"/>
     </action-attrs>
 
     <action-record name="action-sale-order-record-set-contact-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="contactPartner" expr="eval:null"/>
+    	<field name="contactPartner" expr="eval: clientPartner?.contactPartnerSet?.size() == 1 ? clientPartner.contactPartnerSet.collect{it}[0] : null"/>
     </action-record>
 
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>
     </action-record>
 
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
@@ -976,7 +989,11 @@
 	<action-method name="action-sale-order-method-price-list-domain">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="changePriceListDomain"/>
 	</action-method>
-
+	
+	<action-method name="action-sale-order-method-notify-stock-move-created">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="notifyStockMoveCreated"/>
+	</action-method>
+	
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="deliveryState" expr="eval: 1"/>
@@ -1061,9 +1078,9 @@
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 	</action-record>
 
-	<action-record name="action-record-so-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: contactPartner.mainPartner" if="contactPartner.mainPartner != null"/>
-    </action-record>
+		<action-record name="action-record-so-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
+		  <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
+		</action-record>
 
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
@@ -1152,18 +1169,19 @@
 		<view type="form" name="stock-move-form"/>
 		<domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = :saleOrder</domain>
 		<context name="saleOrder" expr="eval: __self__.id"/>
+		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   	</action-view>
     
     
 	<action-view name="action-view-open-quotation-lines" title="Quotation lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-all-form"/>
 		<domain>self.saleOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="action-view-open-sale-order-lines" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<view type="grid" name="sale-order-line-menu-grid"/>
-		<view type="form" name="sale-order-line-form"/>
+		<view type="form" name="sale-order-line-all-form"/>
 		<domain>self.saleOrder.statusSelect IN (:_status)</domain>
   		<context name="_status" expr="eval: status"/>
 	</action-view>
@@ -1189,10 +1207,6 @@
     <domain>self.generatedSaleOrderId = :id</domain>
 	</action-view>
 
-	<action-validate name="action-sale-order-validate-information">
-		<info message="${clientPartner?.saleOrderInformation}" if="clientPartner?.saleOrderInformation != null &amp;&amp; !clientPartner?.saleOrderInformation.isEmpty()"/>
-	</action-validate>
-
 	<action-validate name="action-validate-sale-order-check-selection">
 		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
 	</action-validate>
@@ -1200,7 +1214,7 @@
 	<action-validate name="action-validate-sale-quotation-check-selection">
 		<error message="You have to choose at least one sale quotation" if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
 	</action-validate>
-
+	
 	<action-record name="action-saleorder-record-template" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="template" expr="true"/>
 		<field name="templateUser" expr="eval: __user__"/>
@@ -1234,7 +1248,7 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="enableEditOrder"/>
 	</action-method>
 
-    <action-method name="action-sale-order-validate-changes">
+    <action-method name="action-method-sale-order-validate-changes">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges" />
     </action-method>
 

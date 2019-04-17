@@ -209,16 +209,21 @@ public class OperationOrderStockMoveService {
             operationOrder.getPlannedStartDateT().toLocalDate(),
             null,
             StockMoveRepository.TYPE_INTERNAL);
+    newStockMove.setOrigin(operationOrder.getOperationName());
+    newStockMove.setOriginId(operationOrder.getId());
+    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_OPERATION_ORDER);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     createNewStockMoveLines(operationOrder, newStockMove);
 
-    // plan the stockmove
-    stockMoveService.plan(newStockMove);
+    if (!newStockMove.getStockMoveLineList().isEmpty()) {
+      // plan the stockmove
+      stockMoveService.plan(newStockMove);
 
-    operationOrder.addInStockMoveListItem(newStockMove);
-    newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
-    operationOrder.clearDiffConsumeProdProductList();
+      operationOrder.addInStockMoveListItem(newStockMove);
+      newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
+      operationOrder.clearDiffConsumeProdProductList();
+    }
   }
 
   /**

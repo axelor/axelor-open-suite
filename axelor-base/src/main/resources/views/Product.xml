@@ -38,8 +38,11 @@
    			<panel name="namePanel" colSpan="5">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
-          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="4" css="label-bold bold large" placeholder="Code" />
-          				<field name="name" showTitle="false" colSpan="8" css="label-bold bold large" placeholder="Name"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true" 
+          					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
+          					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
+          				<field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name"/>
         			</editor>
       			</field>
     		</panel>
@@ -62,7 +65,6 @@
 					</viewer>
 				</field>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
-				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
     		<panel name="productInfoPanel" colSpan="10" >
       
@@ -79,7 +81,7 @@
       			</panel>
 		      	<panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
+		        	<field name="productCategory" canEdit="false" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
@@ -179,12 +181,12 @@
 	      			</panel>
 	      			<panel name="stockPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
-				        <button name="showAllStockMoveLineBtn" title="Show all stock move" colSpan="6" onClick="action-product-view-stock-move-line"/>
+				        <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6" onClick="action-product-view-stock-move-line"/>
 						<field name="avgPrice" hideIf="!stockManaged"/>
 				        <spacer name="avgPriceSpacer"/>
-				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id" />
-				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id" />
-				        <panel-dashlet name="stockHistoryReportPanel" colSpan="12" action="action-stock-history-report-for-product" showIf="id" />
+				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"  />
+				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id &amp;&amp; stockManaged"  />
+				        <panel-dashlet name="stockHistoryReportPanel" colSpan="12" action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"  />
 	      			</panel>
 	    		</panel>
                 <panel name="productionInformationsPanel"
@@ -193,8 +195,6 @@
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
-                    <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
-                    <field name="economicManufOrderQty"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
@@ -253,7 +253,7 @@
 					<button name="addTaskBtn" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
 					<panel-dashlet name="productTemplateTaskTreePanel" title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
 				</panel>
-            <panel name="linksPanel" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct" showIf="id">
+            <panel name="linksPanel" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged" showIf="id">
 				<panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet name="StockMoveLineConsumptionPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
 				<panel-dashlet name="StockMoveLineDashletPanel" colSpan="12" action="action-product-view-stock-move-line" showIf="id" />
@@ -355,6 +355,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
+      <action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
