@@ -734,4 +734,25 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void showPopUpInvoicingWizard(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrderServiceSupplychain.displayErrorMessageBtnGenerateInvoice(saleOrder);
+      response.setView(
+          ActionView.define("Invoicing")
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-invoicing-wizard-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(saleOrder.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

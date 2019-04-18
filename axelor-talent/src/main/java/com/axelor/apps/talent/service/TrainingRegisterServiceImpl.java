@@ -29,10 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +44,8 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
   @Inject protected TrainingRepository trainingRepo;
 
   @Inject protected TrainingSessionRepository trainingSessionRepo;
-  public static final String RELATED_TO_TRAINING_REGISTER = "com.axelor.apps.talent.db.TrainingRegister";
+  public static final String RELATED_TO_TRAINING_REGISTER =
+      "com.axelor.apps.talent.db.TrainingRegister";
 
   @Transactional
   @Override
@@ -111,7 +109,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     log.debug("Training: {}", training.getName());
     log.debug("Total trainings TR: {}", totalTrainingSize);
     log.debug("Total ratings:: training: {}", totalTrainingsRating);
-   
+
     double avgRating = totalTrainingSize == 0 ? 0 : totalTrainingsRating / totalTrainingSize;
 
     log.debug("Avg training rating : {}", avgRating);
@@ -157,25 +155,34 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
   @Transactional
   @Override
   public void updateEventCalendar(TrainingRegister trainingRegister) {
-   
-    Event event= eventRepo.all().filter("self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2" , RELATED_TO_TRAINING_REGISTER , trainingRegister.getId()).fetchOne();
-        
-    if(event != null) {
-    
+
+    Event event =
+        eventRepo
+            .all()
+            .filter(
+                "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2",
+                RELATED_TO_TRAINING_REGISTER,
+                trainingRegister.getId())
+            .fetchOne();
+
+    if (event != null) {
+
       event.setCalendar(trainingRegister.getCalendar());
       eventRepo.save(event);
-     
     }
-   
   }
 
   @Override
   public String computeFullName(TrainingRegister trainingRegister) {
-    
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
-       
-    return trainingRegister.getTraining().getName()+"-"+trainingRegister.getEmployee().getName()+"-"+trainingRegister.getFromDate().format(formatter)+"-"+trainingRegister.getToDate().format(formatter);
- 
+
+    return trainingRegister.getTraining().getName()
+        + "-"
+        + trainingRegister.getEmployee().getName()
+        + "-"
+        + trainingRegister.getFromDate().format(formatter)
+        + "-"
+        + trainingRegister.getToDate().format(formatter);
   }
-  
 }
