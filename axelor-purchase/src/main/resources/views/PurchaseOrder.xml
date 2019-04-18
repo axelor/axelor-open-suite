@@ -3,50 +3,50 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="Merge quotations"  action="purchase.order.merge"/>
-                <item title="See quotation lines" action="purchase-order-see-quotation-lines" />
-            </menu>
-        </menubar>
+  <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    <menubar>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+      </menu>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item title="Merge quotations"  action="purchase.order.merge"/>
+				<item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+      </menu>
+    </menubar>
 		<field name="purchaseOrderSeq"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="externalReference"/>
-        <field name="orderDate"/>
-        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="externalReference"/>
+    <field name="orderDate"/>
+    <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="statusSelect"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+  </grid>
 
-    <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
-            </menu>
-        </menubar>
+  <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+		<menubar>
+	    <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+	    </menu>
+	    <menu title="Tools" icon="fa-wrench" showTitle="true">
+        <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+	    </menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="externalReference"/>
-        <field name="orderDate"/>
-        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="externalReference"/>
+    <field name="orderDate"/>
+    <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="statusSelect"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+  </grid>
 
     <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		  <field name="purchaseOrderSeq"/>

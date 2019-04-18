@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="payroll-preparation-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-		 <field name="employee"/>
-		 <field name="company" grid-view="company-grid" form-view="company-form"/>
-		 <field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false" canView="false"/>
-		 <field name="exported" />
+		<field name="employee"/>
+		<field name="company" grid-view="company-grid" form-view="company-form" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false" canView="false"/>
+		<field name="exported" />
 	</grid>
 	
     <form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new">

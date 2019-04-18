@@ -5,7 +5,7 @@
 	
 	<grid name="appraisal-grid" title="Appraisals" model="com.axelor.apps.talent.db.Appraisal">
 		<field name="employee" />
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="appraisalType" />
 		<field name="toDate" />
 		<field name="reviewerEmployee" />
@@ -13,7 +13,7 @@
 	</grid>
 	
 	<grid name="appraisal-template-grid" title="Appraisal templates" model="com.axelor.apps.talent.db.Appraisal">
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="appraisalType" />
 		<field name="toDate" />
 		<field name="reviewerEmployee" />

@@ -4,7 +4,7 @@
 			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
 		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
 		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>

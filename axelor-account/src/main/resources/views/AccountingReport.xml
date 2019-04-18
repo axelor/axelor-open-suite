@@ -5,23 +5,23 @@
     
 <!--     ACCOUNTING REPORT -->
     
-    <grid name="accounting-report-grid" title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
-        <field name="ref"/>
-        <field name="date"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+	<grid name="accounting-report-grid" title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
+		<field name="ref"/>
+		<field name="date"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="currency"/>
 		<field name="exportTypeSelect"/>
 		<field name="typeSelect" selection="accounting.report.type.select"/>
-        <field name="dateFrom"/>
-        <field name="dateTo"/>
-        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-        <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-        <field name="totalDebit" aggregate="sum"/>
+	  <field name="dateFrom"/>
+	  <field name="dateTo"/>
+	  <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
+	  <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
+	  <field name="totalDebit" aggregate="sum"/>
 		<field name="totalCredit" aggregate="sum"/>
 		<field name="balance"/>
 		<field name="statusSelect"/>
 		<field name="publicationDateTime"/>
-    </grid>
+	</grid>
 
 	<form name="accounting-report-form" title="Accounting report" model="com.axelor.apps.account.db.AccountingReport"
 		onNew="action-accounting-report-record-default">

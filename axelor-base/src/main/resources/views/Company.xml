@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="address" form-view="address-form" grid-view="address-grid"/>
-    </grid>
+  <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
+	  <field name="name"/>
+	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+	  <field name="address" form-view="address-form" grid-view="address-grid"/>
+  </grid>
 
 	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
-		onSave="action-company-check-multi-banks">
+		onSave="action-company-check-multi-banks" canNew="_canNew">
 		<panel name="mainPanel" readonlyIf="$popup()">
 		    <panel name="logoPanel" colSpan="4">
 				<field name="logo" widget="Image"/>

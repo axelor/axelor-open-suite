@@ -3,10 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease"
-		orderBy="-sequenceNumber">
+	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease" orderBy="-sequenceNumber">
 		<field name="sequenceNumber" />
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="company.accountConfig.factorPartner" />
 		<field name="transmissionDate"/>
 		<field name="statusSelect" />

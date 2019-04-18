@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
-        <field name="company"/>
-        <field name="inChargeUser"/>
-        <field name="totalAmountExpected" aggregate="sum"/>
-    </grid>
+	<grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
+		<field name="name"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="inChargeUser"/>
+		<field name="totalAmountExpected" aggregate="sum"/>
+	</grid>
     
     <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
   		<panel name="mainPanel">

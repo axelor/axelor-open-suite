@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="stock-config-grid" title="Stock configurations" model="com.axelor.apps.stock.db.StockConfig">
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-    </grid>
+	<grid name="stock-config-grid" title="Stock configurations" model="com.axelor.apps.stock.db.StockConfig">
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</grid>
 
 	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default" width="large">
 	  <panel name="mainPanel" >
