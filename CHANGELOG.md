@@ -20,6 +20,7 @@
 - STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Leave reason: choose unit between days and hours.
+- Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - INVOICE LINE MENU : add new columns in grid view
 
 ## Improvements
