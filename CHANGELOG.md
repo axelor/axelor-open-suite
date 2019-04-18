@@ -104,6 +104,7 @@
 - Contract : partner / project filters improved
 - TeamTask : Set default typeSelect = 'task'
 - APP BUILDER : Remove JsonCreator object
+- TeamTask : copy object with empty fields
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
