@@ -105,8 +105,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
     if (!invoicePaymentList.isEmpty()) {
       try {
-        final BankOrder bankOrder =
-            Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
+        final BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
         findBatch().setBankOrder(bankOrder);
       } catch (AxelorException e) {
         TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());

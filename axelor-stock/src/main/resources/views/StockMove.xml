@@ -353,38 +353,35 @@
 
               <field name="modeOfTransport" />
             </panel>
+			<panel name="logisticalFormsPanel" title="Logistical forms" showIf="id &amp;&amp; typeSelect == 2">
+				<field name="fullySpreadOverLogisticalFormsFlag"/>
+	            <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12"/>
+			</panel>
+            <panel name="automaticMailPanel" title="Automatic mail" showIf="typeSelect == 2">
+              <panel name="plannedStockMovePanel" colSpan="12">
+                <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
+                <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              </panel>
+              <panel name="realStockMovePanel" colSpan="12">
+                <field name="realStockMoveAutomaticMail"/>
+                <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
+              </panel>
+            </panel>
             <panel name="notePanel" title="Note" colSpan="12">
         		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
-                <panel name="OriginPanel" itemSpan="3" colSpan="12">
-                  <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
-                  <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form" form-view="stock-move-form" showIf="reversionOriginStockMove" />
-                  <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" showIf="invoice"/>
-                  <field name="backorderStockMove" readonly="true" form-view="stock-move-form" grid-view="stock-move-grid" showIf="backorderStockMove"/>
-                </panel>
-                <field name="fullySpreadOverLogisticalFormsFlag" showIf="id &amp;&amp; typeSelect == 2"/>
-                <panel-dashlet name="ReversionPanel" action="action-stock-move-view-reversion" title="Reversions" colSpan="12" showIf="!isReversion"/>
-                <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12" showIf="id &amp;&amp; typeSelect == 2"/>
-                <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
-              	
+              <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true" colSpan="4"/>
+              <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" colSpan="4"/>
+              <field name="backorderStockMove" readonly="true" colSpan="4" form-view="stock-move-form" grid-view="stock-move-grid"/>
+              <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
             </panel>
-            
             <panel name="configPanel" title="Configuration">
-            	<field name="isWithBackorder" colSpan="6"/>
-                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false" colSpan="6"/>
-                <field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="6"/>
+            	<field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="3"/>
+            	<field name="isWithBackorder" colSpan="3"/>
+                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
-                <panel name="plannedStockMovePanel" colSpan="12" showIf="typeSelect == 2">
-                    <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
-                    <field name="realStockMoveAutomaticMail"/>
-                </panel>
-                <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
-                    <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
-                    <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
-                </panel>
             </panel>
-            
         </panel-tabs>
         <panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
@@ -766,12 +763,6 @@
         <view type="form" name="logistical-form-form" />
         <domain>self.id IN (:logisticalFormIdList)</domain>
         <context name="logisticalFormIdList" expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)" />
-    </action-view>
-    
-    <action-view name="action-stock-move-view-reversion" title="Reversions" model="com.axelor.apps.stock.db.StockMove">
-        <view type="grid" name="stock-move-grid" />
-        <view type="form" name="stock-move-form" />
-        <domain>self.reversionOriginStockMove =:id</domain>
     </action-view>
 
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
