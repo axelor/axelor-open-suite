@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    <field name="partnerSeq"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -19,57 +19,55 @@
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
 		<field name="mainAddress"/>
-		<field name="companyStr" />
+		<field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	 	<menubar>
-	        <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Contact PhoneBook" action="action-print-phonebook"/>
-	            <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
-	        </menu>
-	        <menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
-	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
-	        </menu>
-	    </menubar>
-	    <field name="partnerSeq"/>
-	    <field name="simpleFullName"/>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Contact PhoneBook" action="action-print-phonebook"/>
+        <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+      </menu>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+	      <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
+	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+      </menu>
+    </menubar>
+		<field name="partnerSeq"/>
+		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" placeholder="whatever@example.com"
-		  title="Email"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
 		<field name="mainAddress"/>
-		<field name="companyStr" />
+		<field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
-	    <menubar>
-	        <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Contact PhoneBook" action="action-print-phonebook"/>
-	            <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
-	        </menu>
-	        <menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
-	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
-	        </menu>
-	    </menubar>
-	    <field name="partnerSeq"/>
+	  <menubar>
+	    <menu title="Reports" icon="fa-files-o" showTitle="true">
+	      <item title="Contact PhoneBook" action="action-print-phonebook"/>
+	      <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+	    </menu>
+	    <menu title="Tools" icon="fa-wrench" showTitle="true">
+	      <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
+	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+	    </menu>
+	  </menubar>
+    <field name="partnerSeq"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
-		<field name="emailAddress.address" placeholder="whatever@example.com"
-		  title="Email"/>
+		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
 		<field name="partnerCategory" grid-view="partner-category-grid" form-view="partner-category-form"/>
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
 		<field name="mainAddress"/>
-		<field name="companyStr" />
+		<field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>

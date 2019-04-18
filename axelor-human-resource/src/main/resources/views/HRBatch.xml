@@ -7,9 +7,9 @@
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="actionSelect"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="description"/>
-    </grid>
+  </grid>
  
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain" onLoad="action-hr-batch-attrs-employee-set-domain">
 	  	<panel name="mainPanel">

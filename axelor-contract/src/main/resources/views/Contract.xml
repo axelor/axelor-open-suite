@@ -4,17 +4,16 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
               http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="contract-grid" title="Contracts"
-          model="com.axelor.apps.contract.db.Contract">
-        <field name="contractId"/>
-        <field name="name"/>
-        <field name="targetTypeSelect"/>
-        <field name="company"/>
-        <field name="partner"/>
-        <field name="startDate"/>
-        <field name="supposedEndDate"/>
-        <field name="statusSelect"/>
-    </grid>
+	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+		<field name="contractId"/>
+		<field name="name"/>
+		<field name="targetTypeSelect"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="partner"/>
+		<field name="startDate"/>
+		<field name="supposedEndDate"/>
+		<field name="statusSelect"/>
+	</grid>
 
     <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract" width="large" readonlyIf="statusSelect == 3"
           onNew="action-contract-record-default"

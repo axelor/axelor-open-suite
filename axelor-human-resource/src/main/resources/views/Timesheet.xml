@@ -11,7 +11,7 @@
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="sentDate"/>
@@ -28,7 +28,7 @@
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="sentDate"/>
@@ -45,7 +45,7 @@
 		<hilite color="danger" if="statusSelect == 4"/>
 		<hilite color="success" if="statusSelect == 3"/>
 		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="sentDate"/>
@@ -61,7 +61,7 @@
 		</menubar>
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/> 
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fromDate"/>
 		<field name="toDate"/>
 		<field name="sentDate"/>

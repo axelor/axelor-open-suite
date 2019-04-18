@@ -2,22 +2,21 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-					<item name="ganttWithUserItem" title="Gantt with user" action="action-project-open-popup-select-users"/>
-					<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
+				<item name="ganttWithUserItem" title="Gantt with user" action="action-project-open-popup-select-users"/>
+				<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
 		</menubar>
 		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
 		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
 		<field name="code"/>
 		<field name="name"/>
-        <field name="parentProject"/>
+    <field name="parentProject"/>
 		<field name="clientPartner"/>
 		<field name="assignedTo"/>
 		<field name="fromDate" />
@@ -31,7 +30,7 @@
 
 	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="clientPartner"/>
 	</grid>
 

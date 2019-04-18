@@ -485,8 +485,10 @@
 
 	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" >
-		<view type="grid" name="company-grid"/>
+		<view type="grid" name="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<view type="form" name="company-form"/>
+		<context name="_showRecord" expr="eval:__repo__(Company).all().fetchOne().getId()"  if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <context name="_canNew" expr="eval:__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</action-view>
 
 	<menuitem name="admin-root-user-configuration" parent="admin-root-user"

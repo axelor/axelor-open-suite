@@ -3,138 +3,137 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="statusSelect,-estimatedDate">
-    	<toolbar>
-			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
-    	</toolbar>
-    	<hilite if="statusSelect == 2 &amp;&amp; $moment(__date__).diff(estimatedDate, 'days') &gt; 0" color="danger"/>
-  		<hilite if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10" color="warning"/>
-        <field name="stockMoveSeq"/>
-        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedDate"/>
-        <field name="realDate"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="statusSelect"/>
-        <field name="origin"/>
-        <field name="availableStatusSelect">
-        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
-        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
-        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
-        </field>
-        <field name="typeSelect" hidden="true" />
-        <field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
-        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
-    </grid>
+  <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="statusSelect,-estimatedDate">
+    <toolbar>
+      <button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    </toolbar>
+  	<hilite if="statusSelect == 2 &amp;&amp; $moment(__date__).diff(estimatedDate, 'days') &gt; 0" color="danger"/>
+		<hilite if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10" color="warning"/>
+		<field name="stockMoveSeq"/>
+		<field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="estimatedDate"/>
+		<field name="realDate"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="statusSelect"/>
+    <field name="origin"/>
+    <field name="availableStatusSelect">
+	   	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+	   	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+	   	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
+    </field>
+		<field name="typeSelect" hidden="true" />
+		<field name="toAddressStr" hidden="true" form-view="address-form" grid-view="address-grid"/>
+		<button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+		<button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
+		  readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+  </grid>
     
-     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-    	<toolbar>
-			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+  <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    <toolbar>
+      <button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
-    	</toolbar>
+    </toolbar>
 		<field name="stockMoveSeq">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
-        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedDate"/>
-        <field name="realDate"/>
-        <field name="fromAddressStr" hidden="true"/>
-        <field name="toAddressStr"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+    <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+    <field name="estimatedDate"/>
+    <field name="realDate"/>
+    <field name="fromAddressStr" hidden="true"/>
+    <field name="toAddressStr"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="statusSelect"/>
-        <field name="origin"/>
-        <field name="availableStatusSelect">
-        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
-        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
-        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
-        </field>
-        <field name="pickingIsEdited" hidden="true" />
-        <field name="typeSelect" hidden="true" />
-        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
-    </grid>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="statusSelect"/>
+    <field name="origin"/>
+    <field name="availableStatusSelect">
+	  	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+	  	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+	  	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
+     </field>
+     <field name="pickingIsEdited" hidden="true" />
+     <field name="typeSelect" hidden="true" />
+     <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+     <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+  </grid>
     
-    <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-		<field name="stockMoveSeq"/>
-        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="realDate"/>
-        <field name="fromAddressStr" hidden="true"/>
-        <field name="toAddressStr"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+  <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    <field name="stockMoveSeq"/>
+    <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+    <field name="realDate"/>
+    <field name="fromAddressStr" hidden="true"/>
+    <field name="toAddressStr"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="origin"/>
-    </grid>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="origin"/>
+  </grid>
 
-     <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-    	<toolbar>
+  <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    <toolbar>
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
-    	</toolbar>
-        <field name="stockMoveSeq">
-			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
+    </toolbar>
+    <field name="stockMoveSeq">
+      <hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
 		</field>
-        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedDate"/>
-        <field name="realDate"/>
-        <field name="fromAddressStr" hidden="true"/>
-        <field name="toAddressStr"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+    <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+    <field name="estimatedDate"/>
+    <field name="realDate"/>
+    <field name="fromAddressStr" hidden="true"/>
+    <field name="toAddressStr"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="statusSelect"/>
-        <field name="origin"/>
-        <field name="availableStatusSelect">
-        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
-        	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
-        	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
-        </field>
-        <field name="availabilityRequest"/>
-        <field name="pickingIsEdited" hidden="true" />
-        <field name="typeSelect" hidden="true" />
-        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
-    </grid>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="statusSelect"/>
+    <field name="origin"/>
+    <field name="availableStatusSelect">
+	   	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+	   	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
+	   	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
+    </field>
+    <field name="availabilityRequest"/>
+    <field name="pickingIsEdited" hidden="true" />
+    <field name="typeSelect" hidden="true" />
+    <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+    <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+  </grid>
     
-    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-    	<toolbar>
-			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
-    	</toolbar>
-        <field name="stockMoveSeq"/>
-        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedDate"/>
-        <field name="realDate"/>
-        <field name="fromAddressStr"/>
-        <field name="toAddressStr" hidden="true"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+  <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    <toolbar>
+      <button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
+    </toolbar>
+		<field name="stockMoveSeq"/>
+		<field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="estimatedDate"/>
+		<field name="realDate"/>
+		<field name="fromAddressStr"/>
+		<field name="toAddressStr" hidden="true"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
-        <field name="statusSelect"/>
-        <field name="supplierShipmentRef"/>
-        <field name="origin"/>
-        <field name="typeSelect" hidden="true" />
-        <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
-        <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
-    </grid>
+    <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
+    <field name="statusSelect"/>
+    <field name="supplierShipmentRef"/>
+    <field name="origin"/>
+    <field name="typeSelect" hidden="true" />
+    <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+    <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
+  </grid>
     
-    <grid name="stock-move-mass-invoicing-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-        <field name="stockMoveSeq"/>
-        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="realDate"/>
-        <field name="fromAddressStr"/>
-        <field name="toAddressStr" hidden="true"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+  <grid name="stock-move-mass-invoicing-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
+    <field name="stockMoveSeq"/>
+    <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+    <field name="realDate"/>
+    <field name="fromAddressStr"/>
+    <field name="toAddressStr" hidden="true"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
-        <field name="supplierShipmentRef"/>
-        <field name="origin"/>
-    </grid>
-    
-    
+    <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
+    <field name="supplierShipmentRef"/>
+    <field name="origin"/>
+  </grid>
 
     <calendar name="stock-move-calendar" model="com.axelor.apps.stock.db.StockMove" eventStart="estimatedDate"
         eventLength="24" mode="month" colorBy="statusSelect" editable="false" title="Stock moves">

@@ -7,7 +7,7 @@
 		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
 		<hilite color="warning" if="statusSelect == 2"/>
 		<field name="expenseSeq"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -28,7 +28,7 @@
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="expenseSeq"/>
-		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>

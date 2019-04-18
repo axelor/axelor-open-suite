@@ -6,7 +6,7 @@
 	<grid name="crm-batch-grid" title="CRM batches" model="com.axelor.apps.crm.db.CrmBatch">
 		<field name="actionSelect" />
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 	</grid>

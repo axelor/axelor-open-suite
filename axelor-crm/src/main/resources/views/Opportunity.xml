@@ -3,42 +3,42 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
-    	<toolbar>
-    		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+  <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
+	 	<toolbar>
+	 		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 <!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
-    	</toolbar>
-    	<hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-  		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-  		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-  		<hilite background="success" if="salesStageSelect == 5"/>
-  		<hilite background="danger" if="salesStageSelect == 6"/>
+    </toolbar>
+	  <hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
+		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+		<hilite background="success" if="salesStageSelect == 5"/>
+		<hilite background="danger" if="salesStageSelect == 6"/>
 		<field name="name" required="true"/>
 		<field name="createdOn" hidden="true"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
 		<field name="salesStageSelect"/>
 		<field name="amount" aggregate="sum"/>
 		<field name="probability" aggregate="avg" widget="Progress"/>
-        <field name="expectedCloseDate"/>
-        <field name="user" form-view="user-form" grid-view="user-grid"/>
-        <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
-        <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
-        <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
-        <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
-    </grid>
+		<field name="expectedCloseDate"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+		<button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
+		<button name="closed-wonBtn" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
+		<button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
+  </grid>
 
-   <grid name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate" >
-		<hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-  		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-  		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-  		<hilite background="success" if="salesStageSelect == 5"/>
-  		<hilite background="danger" if="salesStageSelect == 6"/>
-		<field name="name" width="300"/>
-	   	<field name="company" form-view="company-form" grid-view="company-grid"/>
-	   	<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+  <grid name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate" >
+    <hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
+		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+		<hilite background="success" if="salesStageSelect == 5"/>
+		<hilite background="danger" if="salesStageSelect == 6"/>
+    <field name="name" width="300"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="createdOn" hidden="true"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
@@ -51,18 +51,16 @@
 		<button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
 	</grid>
 
-    
-    	 
-   <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
-   		<field name="name"/>
-   		<field name="user" form-view="user-form" grid-view="user-grid"/>
-	   	<field name="company" form-view="company-form" grid-view="company-grid"/>
-	   	<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="expectedCloseDate"/>
-        <field name="amount"/>
-	</grid>
+  <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
+		<field name="name"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+		<field name="expectedCloseDate"/>
+		<field name="amount"/>
+  </grid>
 	
 	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
         <field name="name"/>

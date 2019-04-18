@@ -3,17 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
-    	<field name="fromDate"/>
-   		<field name="toDate"/>
-   		<field name="company"/>
-    </grid>
+	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</grid>
     
-    <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-grid">
-    	<field name="fromDate"/>
-   		<field name="toDate"/>
-   		<field name="company"/>
-    </grid>
+	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Purchase Invoices Details" name="print-purchase-invoices-details-grid">
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</grid>
     
      <form model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-form"
     	onNew="action-print-invoices-details-record-on-new-sales">
