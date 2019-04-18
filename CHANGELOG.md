@@ -68,6 +68,7 @@
 - FIXED ASSETS : Issues with cents in depreciation tables
 - Sale order line: do not block on partial delivery with requested reserved quantity.
 - Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
+- SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 
 ## [5.1.5] - 2019-03-30
 ## Features

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +35,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -176,6 +179,29 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+    }
+  }
+
+  public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
+    Optional<List<Invoice>> invoices =
+        Optional.ofNullable(
+            Query.of(Invoice.class)
+                .filter(
+                    " self.saleOrder.id = ?1 AND self.statusSelect != ?2 AND (self.archived = NULL OR self.archived = ?3)",
+                    saleOrder.getId(),
+                    InvoiceRepository.STATUS_CANCELED,
+                    false)
+                .fetch());
+    if (invoices.isPresent()) {
+      Optional<BigDecimal> sumInvoices =
+          invoices.get().stream().map(Invoice::getExTaxTotal).reduce((x, y) -> x.add(y));
+      if (sumInvoices.isPresent() && sumInvoices.get().compareTo(saleOrder.getExTaxTotal()) >= 0) {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get("All of invoices have been generated for this sale order."),
+            saleOrder.getFullName());
+      }
     }
   }
 }

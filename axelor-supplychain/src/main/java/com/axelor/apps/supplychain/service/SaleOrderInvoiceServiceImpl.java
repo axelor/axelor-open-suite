@@ -107,8 +107,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       boolean isPercent,
       Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
-
     Invoice invoice;
+
     switch (operationSelect) {
       case SaleOrderRepository.INVOICE_ALL:
         invoice = generateInvoice(saleOrder);
@@ -240,6 +240,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSubTypeSelect,
       Account partnerAccount)
       throws AxelorException {
+
+    this.checkGenerateInvoice(saleOrder, percentToInvoice);
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
     Invoice invoice = invoiceGenerator.generate();
@@ -871,4 +873,59 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         manageAdvanceInvoice ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT : 0);
     return contextValues;
   }
+
+  public void checkGenerateInvoice(SaleOrder saleOrder, BigDecimal percentToInvoice)
+      throws AxelorException {
+
+    List<Invoice> invoicesss = this.getInvoices(saleOrder);
+
+    System.out.println(invoicesss);
+  }
+
+  //	  Optional<List<Invoice>> invoices =
+  //		        Optional.ofNullable(
+  //		            Query.of(Invoice.class)
+  //		                .filter(
+  //		                    " self.saleOrder.id = ?1 AND self.statusSelect != ?2",
+  //		                    saleOrder.getId(),
+  //		                    InvoiceRepository.STATUS_CANCELED)
+  //		                .fetch());
+  //
+  //	if (invoices.isPresent()) {
+  //	    if (invoices
+  //		          .get()
+  //		          .stream()
+  //		          .anyMatch(
+  //		              x -> x.getOperationSubTypeSelect() ==
+  // InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT && !x.getArchived())) {
+  //			    	throw new AxelorException(
+  //			  	          saleOrder,
+  //			  	          TraceBackRepository.CATEGORY_INCONSISTENCY,
+  //			  	          "FACTURE TOUT FACTURER EXISTE DEJA (logiquement en brouillon)");
+  ////			  	          I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
+  //			  	    }
+  //		      }
+  //		      Optional<BigDecimal> sumInvoices =
+  //		          invoices.get().stream().map(Invoice::getExTaxTotal).reduce((x, y) -> x.add(y));
+  //		      if (sumInvoices.isPresent()) {
+  //		    	  if(sumInvoices.get().compareTo(saleOrder.getExTaxTotal()) >= 0) {
+  //			    	  throw new AxelorException(
+  //				  	          saleOrder,
+  //				  	          TraceBackRepository.CATEGORY_INCONSISTENCY,
+  //				  	          "FACTURE EXISTANTE FONT DEJA LE TOTAL");
+  //	//			  	          I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
+  //				  	    }
+  //
+  //		    	  BigDecimal totalPercentToInvoice = sumInvoices.get().multiply(new
+  // BigDecimal("100").divide(saleOrder.getExTaxTotal(), 4,
+  // RoundingMode.HALF_EVEN)).add(percentToInvoice);
+  //		    	  if (totalPercentToInvoice.compareTo(new BigDecimal("100")) == 1) {
+  //					  throw new AxelorException(
+  //				  	          saleOrder,
+  //				  	          TraceBackRepository.CATEGORY_INCONSISTENCY,
+  //				  	          "FACTURE EXISTANTE + montant à payer supérieur au mpntant total");
+  //				//  	          I18n.get(IExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
+  //				 }
+  //			  }
+  //	}
 }
