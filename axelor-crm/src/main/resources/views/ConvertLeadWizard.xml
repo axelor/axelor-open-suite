@@ -8,11 +8,11 @@
 		    <button name="validateBtn"  hideIf="!$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; $selectContact == null &amp;&amp; $selectPartner.partnerTypeSelect == 1" title="Validate" onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
 	  	</toolbar>
 	  	<panel name="mainPanel" >
-	  		<field name="$leadToPartnerSelect" title="Lead to partner" required="true" type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select" onChange="action-convert-lead-attrs-lead-to-contact-select-reset"/> 
+	  		<field name="$leadToPartnerSelect" title="Convert lead into partner" required="true" type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select" onChange="action-convert-lead-attrs-lead-to-contact-select-reset"/> 
 		    <field name="$selectPartner" showIf="$leadToPartnerSelect == 2" requiredIf="$leadToPartnerSelect == 2" title="Select Partner" widget="ManyToOne" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid" target="com.axelor.apps.base.db.Partner" />
-		    <field name="$leadToContactSelect" showIf="$leadToPartnerSelect == 1  &amp;&amp; $partner.partnerTypeSelect != 2" title="Lead to contact" type="integer" selection-in="[1]" selection="crm.convert.lead.wizard.lead.to.contact.select" /> 
+		    <field name="$leadToContactSelect" showIf="$leadToPartnerSelect == 1  &amp;&amp; $partner.partnerTypeSelect != 2" title="Convert lead into contact" type="integer" selection-in="[1]" selection="crm.convert.lead.wizard.lead.to.contact.select" />
 		    <spacer name="leadContactSelectSpacer" showIf="$leadToPartnerSelect == 1"/>
-		    <field name="$leadToContactSelect" showIf="$leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2" title="Lead to contact" type="integer" selection="crm.convert.lead.wizard.lead.to.contact.select" /> 
+		    <field name="$leadToContactSelect" showIf="$leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2" title="Convert lead into contact" type="integer" selection="crm.convert.lead.wizard.lead.to.contact.select" />
 		    <field name="$selectContact" showIf="$leadToPartnerSelect == 2 &amp;&amp;  $leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2" requiredIf="$leadToPartnerSelect == 2 &amp;&amp;  $leadToContactSelect == 2" title="Select Contact" widget="ManyToOne" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid" target="com.axelor.apps.base.db.Partner" />
 	 		<field name="$selectPartner.partnerTypeSelect" hidden="true" />
 	 	</panel>

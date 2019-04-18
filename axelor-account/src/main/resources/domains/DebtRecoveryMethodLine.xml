@@ -15,6 +15,7 @@
   	<boolean name="manualValidationOk" title="Manual validation"/>
   	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
 	<string name="printingMessage" title="Message on printing" large="true"/>
+	<string name="specificPrintingMessage" title="Specific mention on printing" large="true"/>
   </entity>
 
  

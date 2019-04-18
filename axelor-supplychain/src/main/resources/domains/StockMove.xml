@@ -25,5 +25,9 @@
     ]]>
     </extra-code>
 
+	<track>
+		<field name="invoice"/>
+	</track>
+
   </entity>
 </domain-models>

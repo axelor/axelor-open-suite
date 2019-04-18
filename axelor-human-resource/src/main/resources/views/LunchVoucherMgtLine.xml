@@ -7,11 +7,11 @@
         <hilite if="statusSelect==2" color="danger"/>
         <field name="employee" width="150"/>
         <field name="canteenEntries" width="150" aggregate="sum" title="Canteen"
-               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"/>
+               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4" onChange="action-lunch-voucher-mgt-line-compute"/>
         <field name="daysOverseas" width="150" aggregate="sum" title="Overseas"
-               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"/>
+               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4" onChange="action-lunch-voucher-mgt-line-compute"/>
         <field name="invitation" width="150" aggregate="sum" title="Invitation"
-               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"/>
+               readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4" onChange="action-lunch-voucher-mgt-line-compute"/>
         <field name="inAdvanceNbr" width="150" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" width="150" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" width="150" title="Given"/>
@@ -44,7 +44,7 @@
         <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
         <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
         <field name="givenToEmployee" title="Given"/>
-        <field name="lunchVoucherMgt" hidden="true" />
+        <field name="lunchVoucherMgt" hidden="true"/>
     </grid>
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">

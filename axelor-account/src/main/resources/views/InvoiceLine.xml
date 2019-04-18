@@ -90,7 +90,7 @@
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>

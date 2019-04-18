@@ -8,7 +8,7 @@
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -40,7 +40,7 @@
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -74,7 +74,7 @@
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -107,7 +107,7 @@
     <grid name="invoice-supplier-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -141,7 +141,7 @@
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -844,7 +844,7 @@ InvoiceSet.length > 0))"
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
-    	<field name="contactPartner" expr="eval:null" />
+    	<field name="contactPartner" expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
@@ -894,7 +894,7 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    	<attribute name="hidden" for="cancelBtn" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
+    	<attribute name="hidden" for="cancelBtn" expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
     </action-attrs>
 	
 	<action-attrs name="action-set-partner-domain">
@@ -992,9 +992,13 @@ InvoiceSet.length > 0))"
     	<call class="com.axelor.apps.account.web.InvoiceController" method="massVentilation"/>
     </action-method>
 
-	<action-method name="action-invoice-method-show-invoice">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
-	</action-method>
+    <action-method name="action-invoice-method-show-invoice">
+        <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
+    </action-method>
+
+    <action-method name="action-invoice-method-show-invoices">
+        <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoices"/>
+    </action-method>
 
 	<action-method name="action-invoice-method-regenerate-and-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>

@@ -19,6 +19,7 @@
       // STATUS SELECT
       public static final int STATUS_TEMPORARY = 1;
       public static final int STATUS_FINAL = 2;
+      public static final int STATUS_UNLETTERED = 3;
 	]]></extra-code>
   </entity>
 

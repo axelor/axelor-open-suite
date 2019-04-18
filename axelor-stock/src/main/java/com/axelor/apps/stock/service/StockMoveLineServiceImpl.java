@@ -464,8 +464,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             fromStatus,
             toStatus,
             lastFutureStockMoveDate,
-            stockMoveLine.getTrackingNumber(),
-            BigDecimal.ZERO);
+            stockMoveLine.getTrackingNumber());
         weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
@@ -675,8 +674,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException {
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
@@ -691,8 +689,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -702,8 +699,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -716,8 +712,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -727,8 +722,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       default:
@@ -746,8 +740,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             lastFutureStockMoveDate,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -757,8 +750,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             lastFutureStockMoveDate,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -771,8 +763,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -782,8 +773,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       default:
