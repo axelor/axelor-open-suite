@@ -99,6 +99,10 @@ public class InvoicingProjectService {
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
+    Partner customerContact = project.getContactPartner();
+    if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
+      customerContact = customer.getContactPartnerSet().iterator().next();
+    }
     Company company = this.getRootCompany(project);
     if (company == null) {
       throw new AxelorException(
@@ -115,7 +119,7 @@ public class InvoicingProjectService {
             customer.getInPaymentMode(),
             partnerService.getInvoicingAddress(customer),
             customer,
-            null,
+            customerContact,
             customer.getCurrency(),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
@@ -144,6 +148,7 @@ public class InvoicingProjectService {
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
+    invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_GENERATED);
     invoicingProjectRepo.save(invoicingProject);
     return invoice;
   }
@@ -466,8 +471,9 @@ public class InvoicingProjectService {
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
-     
-      fileList.add(Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice()));
+
+      fileList.add(
+          Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice(), null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));

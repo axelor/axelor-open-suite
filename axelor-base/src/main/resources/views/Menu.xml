@@ -485,8 +485,10 @@
 
 	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" >
-		<view type="grid" name="company-grid"/>
+		<view type="grid" name="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<view type="form" name="company-form"/>
+		<context name="_showRecord" expr="eval:__repo__(Company).all().fetchOne().getId()"  if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <context name="_canNew" expr="eval:__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</action-view>
 
 	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
@@ -640,6 +642,13 @@
 	<action-view name="menu.advanced.export" title="Advanced export" model="com.axelor.apps.base.db.AdvancedExport">
 		<view type="grid" name="advanced-export-grid"/>
 		<view type="form" name="advanced-export-form"/>
+	</action-view>
+	
+	<menuitem title="Printing Setting" name="menu-printing-setting" parent="admin-root-maintenance" action="menu-printing-setting" />
+
+	<action-view name="menu-printing-setting" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
+		<view type="grid" name="printing-setting-grid"/>
+		<view type="form" name="printing-setting-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"

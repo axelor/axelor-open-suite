@@ -3,53 +3,50 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
-                <item title="See quotation lines" action="action-view-open-quotation-lines"/>
-            </menu>
-        </menubar>
-	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
-	    <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
-        <field name="endOfValidityDate" hidden="true"/>
-        <field name="saleOrderSeq"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
+  <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+		<menubar>
+		    <menu title="Reports" icon="fa-files-o" showTitle="true">
+	        <item title="Print" action="action-sale-order-method-show-sale-order"/>
+		    </menu>
+		    <menu title="Tools" icon="fa-wrench" showTitle="true">
+		      <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+		      <item title="See quotation lines" action="action-view-open-quotation-lines"/>
+		    </menu>
+		</menubar>
+		<hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
+		<hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
+	  <field name="endOfValidityDate" hidden="true"/>
+	  <field name="saleOrderSeq"/>
+	  <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="externalReference"/>
-        <field name="creationDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+	  <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+	  <field name="externalReference"/>
+	  <field name="creationDate"/>
+	  <field name="exTaxTotal" aggregate="sum"/>
+	  <field name="inTaxTotal" aggregate="sum"/>
+	  <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+	  <field name="statusSelect"/>
+	  <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+	  <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
 
-	<grid name="sale-order-grid" title="Sale orders"
-		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
-            </menu>
-        </menubar>
-		<hilite background="warning"
-			if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)" />
-		<hilite background="danger"
-			if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)" />
+	<grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+	  <menubar>
+	    <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-sale-order-method-show-sale-order"/>
+	    </menu>
+	    <menu title="Tools" icon="fa-wrench" showTitle="true">
+        <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+	    </menu>
+	  </menubar>
+		<hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)" />
+		<hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)" />
 		<field name="endOfValidityDate" hidden="true" />
 		<field name="saleOrderSeq" />
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-        <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="confirmationDateTime" />
@@ -60,34 +57,31 @@
 		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
 		<field name="salemanUser"/>
-		<button name="printBtn" title="Print" icon="fa-print"
-			onClick="action-sale-order-method-show-sale-order" />
-		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
-			onClick="action-send-by-email-with-template" />
+		<button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order" />
+		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template" />
 	</grid>
 
-	<grid name="sale-order-partner-grid" title="Sale orders"
-		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
-            </menu>
-        </menubar>
+	<grid name="sale-order-partner-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+    <menubar>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-sale-order-method-show-sale-order"/>
+      </menu>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+        <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+      </menu>
+    </menubar>
 		<field name="saleOrderSeq" />
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-        <field name="externalReference"/>
-        <field name="creationDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
+    <field name="externalReference"/>
+    <field name="creationDate"/>
+    <field name="exTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum"/>
 		<field name="externalReference"/>
 		<field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
 
     <grid name="sale-order-opportunity-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
@@ -135,7 +129,7 @@
 			<button name="confirmBtn" title="Confirmer" onClick="action-group-sale-order-merge-action" colSpan="12" width="200px"/>
 		</panel>
     </form>
-    
+
 	<form name="sale-order-template-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Create the quotation" onNew="action-sale-order-attrs-template-deafult-currency,action-sale-order-method-fill-price-list">
 		<panel name="mainPanel">
 			<field name="currency" type="many-to-one" target="com.axelor.apps.base.db.Currency" title="Currency" required="true" form-view="currency-form" grid-view="currency-grid"/>
@@ -178,6 +172,10 @@
 	      <item title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
 	      <item title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
+        <item title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Deallocate all" action="save,action-sale-order-method-deallocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+				<item title="Reserve all" action="save,action-sale-order-method-reserve-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item title="Cancel reservation" action="save,action-sale-order-method-cancel-reservation" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
 	    </menu>
 	  </menubar>
 	  <panel name="mainPanel">
@@ -470,10 +468,9 @@
 	  </panel-mail>
 	</form>
 
-	<grid name="sale-order-template-grid" title="Templates"
-		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+	<grid name="sale-order-template-grid" title="Templates" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<field name="title" />
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field  name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" /><field name="exTaxTotal" aggregate="sum"/>
@@ -499,12 +496,12 @@
 	  </panel>
 
 	  <panel-tabs name="mainPanelTab">
-	  
+
 	    <panel name="contentPanel" title="Content">
 	    	<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
 	    	<panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
-	    
+
 		<panel name="customerInformationPanel" title="Customer information">
 			<field name="clientPartner" onChange="action-sale-order-group-client-partner-change" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
 			<field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -535,7 +532,7 @@
 	          </viewer>
 	        </field>
 		</panel>
-		
+
 	    <panel name="otherInformationsPanel" title="Other informations" showTitle="false">
 	      <panel name="salesFollowUpPanel" title="Sales follow-up" colSpan="12">
 	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
@@ -556,7 +553,7 @@
 	    <panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
       		  <field name="project" domain="self.typeSelect = 'project'" form-view="project-form" grid-view="project-grid" colSpan="12"/>
        	</panel>
-       	
+
 	  </panel-tabs>
 
 	  <panel sidebar="true" name="actionsPanel" title="Actions">
@@ -596,21 +593,18 @@
 
 	</form>
 
-	<grid name="sale-order-grid-client" title="Sale orders"
-		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+	<grid name="sale-order-grid-client" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<field name="saleOrderSeq" />
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="creationDate" />
 		<field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum" />
+    <field name="inTaxTotal" aggregate="sum" />
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="statusSelect" />
-		<button name="printBtn" title="Print" icon="fa-print"
-			onClick="action-sale-order-method-show-sale-order" />
+    <field name="statusSelect" />
+		<button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order" />
 	</grid>
-
 
 	<form name="sale-order-form-client" title="Sale order"
 		model="com.axelor.apps.sale.db.SaleOrder" id="sale-order-form-client"
@@ -911,6 +905,8 @@
 		<action name="action-sale-order-record-set-contact-partner"/>
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-supplychain-sale-order-method-get-stock-location"
+				if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-method-change-sale-order-line-tax" if="template"/>
 		<action name="action-sale-order-method-compute" if="template"/>
@@ -919,7 +915,7 @@
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
-    <action name="action-sale-order-validate-changes"/>
+    <action name="action-method-sale-order-validate-changes"/>
   </action-group>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -932,13 +928,14 @@
     </action-attrs>
 
     <action-record name="action-sale-order-record-set-contact-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="contactPartner" expr="eval:null"/>
+    	<field name="contactPartner" expr="eval: clientPartner?.contactPartnerSet?.size() == 1 ? clientPartner.contactPartnerSet.collect{it}[0] : null"/>
     </action-record>
 
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>
     </action-record>
 
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1085,9 +1082,9 @@
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount" if="priceList"/>
 	</action-record>
 
-	<action-record name="action-record-so-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: contactPartner.mainPartner" if="contactPartner.mainPartner != null"/>
-    </action-record>
+		<action-record name="action-record-so-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
+		  <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
+		</action-record>
 
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
@@ -1289,7 +1286,7 @@
 	<action-attrs name="action-sale-order-attrs-availability-request-label">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 	</action-attrs>
-  
+
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
 	</action-method>
@@ -1297,15 +1294,15 @@
   <action-validate name="action-sale-order-validate-client-partner">
 		<error message="Please select a customer" if="!clientPartner"/>
 	</action-validate>
-	
+
 	<action-method name="action-sale-order-method-generate-sale-order-from-template-wizard">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateSaleOrderWizard"/>
 	</action-method>
-	
+
 	<action-method name="action-sale-order-method-change-sale-order-line-tax">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="updateSaleOrderLineTax"/>
 	</action-method>
-	
+
 	<action-attrs name="action-sale-order-attrs-template-deafult-currency">
 		<attribute name="value" for="currency" expr="eval: _clientPartnerCurrency" if="_clientPartnerCurrency"/>
 	</action-attrs>

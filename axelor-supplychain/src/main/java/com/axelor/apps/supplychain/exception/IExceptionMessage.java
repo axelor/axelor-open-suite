@@ -37,6 +37,8 @@ public interface IExceptionMessage {
   static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
   static final String SO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
+  static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
+      "The amount to invoice is superior than the amount in the sale order" /*)*/;
   static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/
       "Please configure the sale order invoicing product" /*)*/;
   static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
@@ -176,6 +178,15 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE = /*$$(*/
+      "Please do not enter negative quantity for reservation." /*)*/;
+
+  static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_HIGH = /*$$(*/
+      "The requested quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
+  static final String SALE_ORDER_LINE_ALLOCATED_QTY_TOO_HIGH = /*$$(*/
+      "The allocated quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
 
@@ -195,7 +206,7 @@ public interface IExceptionMessage {
 
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;
-  
+
   static final String SUPPLYCHAIN_MRP_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for MRP" /*)*/;
 }

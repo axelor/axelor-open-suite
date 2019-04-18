@@ -12,7 +12,7 @@
     <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
     <boolean name="hasDateOrFrequencyChanged" title="Date or frequency changed" readonly="true" default="false"/>
 
-    <string name="typeSelect" title="Type" selection="team.task.type.select"/>
+    <string name="typeSelect" title="Type" selection="team.task.type.select" default="task"/>
 
     <extra-code>
       // TYPE SELECT

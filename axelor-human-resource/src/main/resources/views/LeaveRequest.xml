@@ -3,33 +3,33 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
-		 <hilite color="danger" if="statusSelect == 4"/>
-		 <hilite color="success" if="statusSelect == 3"/>
-		 <hilite color="warning" if="statusSelect == 2"/>
-		 <field name="company" form-view="company-form" grid-view="company-grid"/>
-		 <field name="user" form-view="user-form" grid-view="user-grid"/>
-		 <field name="requestDate" />
-		 <field name="fromDate" />
-		 <field name="startOnSelect" />
-		 <field name="toDate" />
-		 <field name="endOnSelect" />
-		 <field name="statusSelect" />
+		<hilite color="danger" if="statusSelect == 4"/>
+		<hilite color="success" if="statusSelect == 3"/>
+		<hilite color="warning" if="statusSelect == 2"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="requestDate" />
+		<field name="fromDate" />
+		<field name="startOnSelect" />
+		<field name="toDate" />
+		<field name="endOnSelect" />
+		<field name="statusSelect" />
 	</grid>
 	
-	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
-		 <toolbar>
-			<button name="showSubordinateLeaveToValidateBtn" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
-		 </toolbar>
-		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
-  		<hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
-		 <field name="company" form-view="company-form" grid-view="company-grid"/>
-		 <field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
-		 <field name="requestDate" />
-		 <field name="fromDate" onChange="action-leave-request-validate-dates"/>
-		 <field name="startOnSelect" />
-		 <field name="toDate" onChange="action-leave-request-validate-dates"/>
-		 <field name="endOnSelect" />
-		 <field name="statusSelect" />
+  <grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
+    <toolbar>
+      <button name="showSubordinateLeaveToValidateBtn" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
+    </toolbar>
+    <hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
+    <hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
+		<field name="requestDate" />
+		<field name="fromDate" onChange="action-leave-request-validate-dates"/>
+		<field name="startOnSelect" />
+		<field name="toDate" onChange="action-leave-request-validate-dates"/>
+		<field name="endOnSelect" />
+		<field name="statusSelect" />
 	</grid>
 	
 	<form name="leave-request-form" title="Leave Request" model="com.axelor.apps.hr.db.LeaveRequest"

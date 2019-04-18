@@ -33,7 +33,6 @@ import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
@@ -47,7 +46,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -58,7 +56,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -115,22 +112,33 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap =
         getAllSaleOrderLinePerDate(saleOrder);
 
-    for (LocalDate estimatedDeliveryDate : saleOrderLinePerDateMap.keySet()) {
+    for (LocalDate estimatedDeliveryDate :
+        saleOrderLinePerDateMap
+            .keySet()
+            .stream()
+            .filter(x -> x != null)
+            .sorted((x, y) -> x.compareTo(y))
+            .collect(Collectors.toList())) {
 
       List<SaleOrderLine> saleOrderLineList = saleOrderLinePerDateMap.get(estimatedDeliveryDate);
 
-      StockMove stockMove = createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
+      Optional<StockMove> stockMove =
+          createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
 
-      if (stockMove != null && stockMove.getId() != null) {
-
-        stockMoveList.add(stockMove.getId());
-      }
+      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
+    Optional<List<SaleOrderLine>> saleOrderLineList =
+        Optional.ofNullable(saleOrderLinePerDateMap.get(null));
+    if (saleOrderLineList.isPresent()) {
 
+      Optional<StockMove> stockMove = createStockMove(saleOrder, null, saleOrderLineList.get());
+
+      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
+    }
     return stockMoveList;
   }
 
-  protected StockMove createStockMove(
+  protected Optional<StockMove> createStockMove(
       SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
 
@@ -147,30 +155,32 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
 
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      if (stockMove
-          .getStockMoveLineList()
-          .stream()
-          .noneMatch(
-              stockMoveLine ->
-                  stockMoveLine.getSaleOrderLine() != null
-                      && stockMoveLine.getSaleOrderLine().getTypeSelect()
-                          == SaleOrderLineRepository.TYPE_NORMAL)) {
-        stockMove.setFullySpreadOverLogisticalFormsFlag(true);
-      }
-
-      boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
-      stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
-
-      if (isNeedingConformityCertificate) {
-        stockMove.setSignatoryUser(
-            stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
-      }
-
-      stockMoveService.plan(stockMove);
+    if (stockMove.getStockMoveLineList() == null || stockMove.getStockMoveLineList().isEmpty()) {
+      return Optional.empty();
     }
 
-    return stockMove;
+    if (stockMove
+        .getStockMoveLineList()
+        .stream()
+        .noneMatch(
+            stockMoveLine ->
+                stockMoveLine.getSaleOrderLine() != null
+                    && stockMoveLine.getSaleOrderLine().getTypeSelect()
+                        == SaleOrderLineRepository.TYPE_NORMAL)) {
+      stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+    }
+
+    boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
+    stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
+
+    if (isNeedingConformityCertificate) {
+      stockMove.setSignatoryUser(
+          stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+    }
+
+    stockMoveService.plan(stockMove);
+
+    return Optional.of(stockMove);
   }
 
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
@@ -222,7 +232,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation = findSaleOrderToStockLocation(saleOrder);
+    StockLocation toStockLocation =
+        stockConfigService.getCustomerVirtualStockLocation(
+            stockConfigService.getStockConfig(company));
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -255,7 +267,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
-    return Beans.get(StockMoveRepository.class).save(stockMove);
+    return stockMove;
   }
 
   /**
@@ -288,59 +300,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setRealStockMoveMessageTemplate(mailSettings.getRealStockMoveMessageTemplate());
     stockMove.setPlannedStockMoveAutomaticMail(mailSettings.getPlannedStockMoveAutomaticMail());
     stockMove.setPlannedStockMoveMessageTemplate(mailSettings.getPlannedStockMoveMessageTemplate());
-  }
-
-  /**
-   * @param saleOrder
-   * @return the first default stock location corresponding to the partner and the company. Choose
-   *     first the external stock location, else virtual.
-   *     <p>null if there is no default stock location
-   */
-  protected StockLocation findSaleOrderToStockLocation(SaleOrder saleOrder) throws AxelorException {
-    Preconditions.checkNotNull(saleOrder, I18n.get("Sale order cannot be null."));
-
-    Partner partner = saleOrder.getClientPartner();
-    Company company = saleOrder.getCompany();
-
-    Preconditions.checkNotNull(partner, I18n.get("Partner cannot be null."));
-    Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
-
-    List<PartnerStockSettings> defaultStockLocations = partner.getPartnerStockSettingsList();
-
-    List<StockLocation> candidateStockLocations =
-        defaultStockLocations != null
-            ? defaultStockLocations
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(partnerStockSettings -> partnerStockSettings.getCompany().equals(company))
-                .map(PartnerStockSettings::getDefaultStockLocation)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-            : new ArrayList<>();
-
-    // check external or internal stock location
-    Optional<StockLocation> candidateNonVirtualStockLocation =
-        candidateStockLocations
-            .stream()
-            .filter(
-                stockLocation ->
-                    stockLocation.getTypeSelect() == StockLocationRepository.TYPE_EXTERNAL
-                        || stockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL)
-            .findAny();
-    if (candidateNonVirtualStockLocation.isPresent()) {
-      return candidateNonVirtualStockLocation.get();
-    } else {
-      // no external stock location found, search for virtual
-      return candidateStockLocations
-          .stream()
-          .filter(
-              stockLocation ->
-                  stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL)
-          .findAny()
-          .orElse(
-              stockConfigService.getCustomerVirtualStockLocation(
-                  stockConfigService.getStockConfig(company)));
-    }
   }
 
   @Override
@@ -412,7 +371,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               StockMoveLineService.TYPE_SALES,
               saleOrderLine.getSaleOrder().getInAti(),
               taxRate,
-              saleOrderLine);
+              saleOrderLine,
+              null);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);

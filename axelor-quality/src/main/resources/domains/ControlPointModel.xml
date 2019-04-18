@@ -6,12 +6,13 @@
 
 	<entity name="ControlPointModel" lang="java" cachable="true">
 		<string name="name" title="Control point name" required="true"/>
-		<integer name="priority" title="Priority"/>
+		<integer name="sequence" title="Sequence"/>
 		<decimal name="controlFrequency" title="Control Frequency"/>
 		<string name="notes" title="Notes"/>
 		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>
 		<many-to-one name="optionalQualityProcess" ref="QualityProcess"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>
+		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType" required="true"/>
 	</entity>
 
 </domain-models>

@@ -175,6 +175,10 @@
             <field name="natureOfTransaction"/>
 	        <field name="countryOfOrigin" hidden="true"/>
         </panel>
+        <panel-mail name="mailPanel">
+        	<mail-messages limit="4" />
+        	<mail-followers />
+        </panel-mail>
     </form>
 
 	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
@@ -320,6 +324,10 @@
             <field name="natureOfTransaction"/>
             <field name="countryOfOrigin"/>
         </panel>
+        <panel-mail name="mailPanel">
+        	<mail-messages limit="4" />
+        	<mail-followers />
+        </panel-mail>
     </form>
 
     <form model="com.axelor.apps.base.db.Wizard" title="Enter tracking numbers" name="stock-move-line-track-number-wizard-form" onNew="action-track-number-atts-from-stock-move-line">

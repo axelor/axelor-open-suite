@@ -89,11 +89,12 @@ public class QualityControlServiceImpl implements QualityControlService {
   public void createControlPointListItem(
       ControlPointModel model, ControlPoint point, QualityControl qualityControl) {
 
-    point.setStatusSelect(1);
+    point.setStatusSelect(ControlPointRepository.STATUS_ON_HOLD);
     point.setName(model.getName());
-    point.setPriority(model.getPriority());
+    point.setSequence(model.getSequence());
     point.setNotes(model.getNotes());
     point.setControlFrequency(model.getControlFrequency());
+    point.setControlPointType(model.getControlPointType());
 
     for (QualityMeasuringPoint measuringPoint : model.getMeasuringPointList()) {
       measuringPoint = Beans.get(QualityMeasuringPointRepository.class).copy(measuringPoint, true);
@@ -111,6 +112,9 @@ public class QualityControlServiceImpl implements QualityControlService {
       QualityControl qualityControl, List<ControlPoint> optionalControlPointList) {
 
     for (ControlPoint optionalControlPoint : optionalControlPointList) {
+      optionalControlPoint =
+          Beans.get(ControlPointRepository.class).copy(optionalControlPoint, true);
+      optionalControlPoint.setOptionalQualityControl(null);
       qualityControl.addControlPointListItem(optionalControlPoint);
     }
 

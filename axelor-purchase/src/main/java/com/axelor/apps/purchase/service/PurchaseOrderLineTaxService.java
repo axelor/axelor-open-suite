@@ -102,7 +102,7 @@ public class PurchaseOrderLineTaxService {
                 map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
 
             purchaseOrderLineRC.setExTaxBase(
-                purchaseOrderLineRC.getExTaxBase().subtract(purchaseOrderLine.getExTaxTotal()));
+                purchaseOrderLineRC.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
 
             purchaseOrderLineRC.setReverseCharged(true);
 

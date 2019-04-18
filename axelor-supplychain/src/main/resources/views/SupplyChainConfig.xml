@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="supply-chain-config-grid" title="Supply chain configurations" model="com.axelor.apps.supplychain.db.SupplyChainConfig">
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-    </grid>
+  <grid name="supply-chain-config-grid" title="Supply chain configurations" model="com.axelor.apps.supplychain.db.SupplyChainConfig">    
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
     
 	<form name="supply-chain-config-form" title="Supply chain configuration" model="com.axelor.apps.supplychain.db.SupplyChainConfig" onNew="action-supply-chain-config-record-default">
 		<panel name="mainPanel" >
@@ -16,7 +16,9 @@
 			<field name="hasOutSmForNonStorableProduct"/>
 			<field name="hasInSmForStorableProduct"/>
 			<field name="hasInSmForNonStorableProduct"/>
-				<field name="autoAllocateOnReceipt" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="4"/>
+				<field name="autoAllocateOnReceipt" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+				<field name="autoAllocateOnAllocation" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+				<field name="autoRequestReservedQty" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 	  	</panel>
 	
 	</form>

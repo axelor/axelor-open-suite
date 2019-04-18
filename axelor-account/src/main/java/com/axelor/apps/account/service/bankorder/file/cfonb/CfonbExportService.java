@@ -168,7 +168,7 @@ public class CfonbExportService {
       paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
       multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, true));
     }
-    
+
     String totalCFONB =
         this.createPaymentScheduleTotalCFONB(
             company, this.getTotalAmountPaymentSchedule(paymentScheduleLineList));

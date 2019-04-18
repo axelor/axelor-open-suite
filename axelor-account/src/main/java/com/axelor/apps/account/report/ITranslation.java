@@ -19,6 +19,7 @@ package com.axelor.apps.account.report;
 
 public interface ITranslation {
 
+  public static final String INVOICE_ADVANCE_PAYMENTS = /*$$(*/ "Invoice.advancePayments"; /*)*/
   public static final String INVOICE_DATE = /*$$(*/ "Invoice.date"; /*)*/
   public static final String INVOICE_PAYMENT_TERMS = /*$$(*/ "Invoice.paymentTerms"; /*)*/
   public static final String INVOICE_DUE_DATE = /*$$(*/ "Invoice.dueDate"; /*)*/
@@ -88,6 +89,7 @@ public interface ITranslation {
       "Invoice.supplierPartnerSeq"; /*)*/
   public static final String INVOICE_CUSTOMER_TAX_NUMBER = /*$$(*/
       "Invoice.customerTaxNumber"; /*)*/
+  public static final String INVOICE_AMOUNT_REMAINING = /*$$(*/ "Invoice.amountRemaining"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -134,6 +136,8 @@ public interface ITranslation {
       "AccountingReportType7.dueDate"; /*)*/
   public static final String ACCOUNTING_REPORT_7_RECONCILE_GROUP = /*$$(*/
       "AccountingReportType7.reconcileGroup"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_JOURNAL_DATE = /*$$(*/
+      "AccountingReportType7.journalCode"; /*)*/
 
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/
@@ -430,4 +434,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+
+  public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
+  public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/
+  public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
+      "InvoicePayment.payment_mode"; /*)*/
+  public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
 }

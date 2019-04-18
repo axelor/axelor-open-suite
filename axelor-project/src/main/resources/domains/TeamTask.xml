@@ -29,6 +29,8 @@
 		
 		<decimal name="plannedProgress" title="Planned progress" />
 		<many-to-many name="finishToStartSet" title="Predecessors tasks" ref="TeamTask" />
+		<many-to-many name="startToStartSet" title="Tasks to start before start" ref="TeamTask"/>
+		<many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="TeamTask"/>
 		<decimal name="durationHours" title="Duration hours" />
 		<date name="taskEndDate" title="Task end" />
 

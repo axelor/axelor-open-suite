@@ -6,20 +6,35 @@
 		<field name="name"/>
 		<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
 		<field name="compliant"/>
-		<field name="notCompliant"/>
 		<field name="observations"/>
 	</grid>
 
 	<form name="quality-measuring-point-form" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
+			<field name="measuringTypeSelect"/>
+			<field name="measuringNote" widget="ImageSelect" x-labels="false" hidden="true" showIf="measuringTypeSelect == 1"/>
 			<field name="coefficient"/>
-			<field name="compliant" colSpan="3" widget="boolean-switch"/>
-			<field name="notCompliant" colSpan="3" widget="boolean-switch"/>
-			<field name="photosList" colSpan="12"/>
+			<field name="compliant" colSpan="3" widget="boolean-switch" hidden="true" showIf="measuringTypeSelect == 2" onChange="action-measuring-point-attrs-on-compliant-change"/>
+			<field name="picturesList" colSpan="12">
+				<editor onNew="action-quality-picture-record-on-new">
+					<panel name="mainPanel">
+						<panel name="imagePanel" colSpan="6">
+							<field name="metaFile" widget="Image" colSpan="12" showTitle="false"/>
+						</panel>
+						<panel name="detailsPanel" colSpan="6">
+							<field name="name" colSpan="12"/>
+							<field name="createDate" colSpan="6"/>
+						</panel>
+					</panel>
+				</editor>
+			</field>
 			<field name="observations" colSpan="12" widget="html"/>
 		</panel>
 	</form>
+
+	<action-attrs name="action-measuring-point-attrs-on-compliant-change">
+		<attribute name="value" for="measuringNote" expr="eval: (compliant) ? 5 : 0"/>
+	</action-attrs>
 
 </object-views>

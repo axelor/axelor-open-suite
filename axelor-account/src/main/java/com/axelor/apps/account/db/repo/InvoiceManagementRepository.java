@@ -57,6 +57,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setPartnerAccount(null);
     copy.setJournal(null);
     copy.clearInvoicePaymentList();
+    copy.setPrintedPDF(null);
 
     return copy;
   }

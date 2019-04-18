@@ -8,8 +8,8 @@
 		<field name="paymentScheduleSeq" />
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
-    	<field name="typeSelect"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="typeSelect"/>
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="nbrTerm" />
 		<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>

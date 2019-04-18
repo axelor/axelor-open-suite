@@ -100,4 +100,12 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
 
     return super.validate(json, context);
   }
+
+  @Override
+  public TeamTask copy(TeamTask entity, boolean deep) {
+    entity.setProject(null);
+    entity.setProgressSelect(null);
+    entity.setTaskEndDate(null);
+    return super.copy(entity, deep);
+  }
 }

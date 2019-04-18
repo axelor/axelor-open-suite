@@ -463,8 +463,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             fromStatus,
             toStatus,
             lastFutureStockMoveDate,
-            stockMoveLine.getTrackingNumber(),
-            BigDecimal.ZERO);
+            stockMoveLine.getTrackingNumber());
         weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
@@ -475,8 +474,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
       throws AxelorException {
     StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getOrCreateStockLocationLine(stockLocation, stockMoveLine.getProduct());
+        stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
     if (stockLocationLine == null) {
       return;
     }
@@ -488,7 +487,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   protected void computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     BigDecimal oldQty = stockLocationLine.getCurrentQty();
     BigDecimal newPrice = stockMoveLine.getCompanyUnitPriceUntaxed();
@@ -502,7 +500,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       oldQty = BigDecimal.ZERO;
     }
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     Unit stockLocationLineUnit = stockLocationLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
@@ -534,6 +531,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
     if (denominator.compareTo(BigDecimal.ZERO) != 0) {
+      int scale = appBaseService.getNbDecimalDigitForUnitPrice();
       newAvgPrice = sum.divide(denominator, scale, RoundingMode.HALF_UP);
     } else {
       newAvgPrice = oldAvgPrice;
@@ -675,8 +673,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException {
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
@@ -691,8 +688,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -702,8 +698,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -716,8 +711,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -727,8 +721,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       default:
@@ -746,8 +739,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             lastFutureStockMoveDate,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -757,8 +749,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             lastFutureStockMoveDate,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -771,8 +762,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -782,8 +772,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber,
-            requestedReservedQty);
+            trackingNumber);
         break;
 
       default:
@@ -963,7 +952,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setDescription(product.getDescription());
     }
 
-    if (Beans.get(AppBaseService.class).getAppBase().getManageProductVariants()) {
+    if (appBaseService.getAppBase().getManageProductVariants()) {
       stockMoveLine.setProductModel(product.getParentProduct());
     }
 
@@ -1007,9 +996,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       endUnit = startUnit;
     }
 
-    netMass =
-        Beans.get(UnitConversionService.class)
-            .convert(startUnit, endUnit, product.getNetMass(), 10, product);
+    netMass = unitConversionService.convert(startUnit, endUnit, product.getNetMass(), 10, product);
     return netMass;
   }
 
@@ -1049,7 +1036,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
-          Beans.get(TrackingNumberRepository.class)
+          trackingNumberRepo
               .all()
               .filter(
                   "self.product.id = ?1 and self.trackingNumberSeq = ?2",

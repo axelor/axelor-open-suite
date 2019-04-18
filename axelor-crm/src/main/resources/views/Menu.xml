@@ -220,8 +220,7 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-	
-	  
+
 	<!-- CRM Dashboard Entry for CRM.... -->
 
 	

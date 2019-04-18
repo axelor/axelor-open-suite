@@ -14,10 +14,9 @@
         </panel>
     </form>
 
-    <grid name="configurator-prod-process-grid" title="Configurator Prod Process"
-          model="com.axelor.apps.production.db.ConfiguratorProdProcess">
-        <field name="name"/>
-        <field name="company"/>
-    </grid>
+  <grid name="configurator-prod-process-grid" title="Configurator Prod Process" model="com.axelor.apps.production.db.ConfiguratorProdProcess">
+		<field name="name"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
     
 </object-views>

@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.studio.db.repo;
+package com.axelor.apps.businesssupport.db.repo;
 
-import com.axelor.meta.db.MetaJsonField;
-import com.axelor.studio.db.JsonCreator;
-import java.util.List;
+import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
+import com.axelor.team.db.TeamTask;
 
-public class JsonCreatorRepo extends JsonCreatorRepository {
+public class TeamTaskBusinessSupportRepository extends TeamTaskHRRepository {
 
   @Override
-  public JsonCreator save(JsonCreator jsonCreator) {
-
-    List<MetaJsonField> fields = jsonCreator.getMetaJsonFields();
-    if (fields != null) {
-      for (MetaJsonField field : fields) {
-        field.setModel(jsonCreator.getMetaModel().getFullName());
-        field.setModelField(jsonCreator.getMetaField().getName());
-      }
-    }
-
-    return super.save(jsonCreator);
+  public TeamTask copy(TeamTask entity, boolean deep) {
+    entity.setTargetVersion(null);
+    return super.copy(entity, deep);
   }
 }

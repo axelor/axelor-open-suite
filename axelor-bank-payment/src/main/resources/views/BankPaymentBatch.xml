@@ -7,7 +7,7 @@
 	<grid name="bank-payment-batch-grid" title="Bank payment batches" model="com.axelor.apps.bankpayment.db.BankPaymentBatch">
 		<field name="code"/>
 		<field name="actionSelect"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="description"/>
 	</grid>
 	

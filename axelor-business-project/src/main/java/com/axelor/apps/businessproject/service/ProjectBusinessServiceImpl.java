@@ -64,10 +64,16 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
     Partner clientPartner = project.getClientPartner();
+    Partner contactPartner = project.getContactPartner();
+    if (contactPartner == null && clientPartner.getContactPartnerSet().size() == 1) {
+      contactPartner = clientPartner.getContactPartnerSet().iterator().next();
+    }
+
     Company company = project.getCompany();
 
     order.setProject(projectRepo.find(project.getId()));
     order.setClientPartner(clientPartner);
+    order.setContactPartner(contactPartner);
     order.setCompany(company);
 
     order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
@@ -75,7 +81,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         addressService.computeAddressStr(order.getMainInvoicingAddress()));
     order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
     order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
-    order.setContactPartner(project.getContactPartner());
     order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
     order.setCompanyBankDetails(
         Beans.get(AccountingSituationService.class)

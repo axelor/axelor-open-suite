@@ -31,7 +31,10 @@
 	<track>
       <field name="unitCostCalcSeq"/>
       <field name="statusSelect" />
-      <field name="executionDate"/>
+      <field name="calculationDate"/>
+      <field name="updateCostDate"/>
+      <field name="name"/>
+      <field name="allBomLevels"/>
     </track>
 
   </entity>

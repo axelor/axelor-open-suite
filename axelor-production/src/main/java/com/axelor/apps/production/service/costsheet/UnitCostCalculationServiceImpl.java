@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -140,6 +141,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     String[] headers = {
       I18n.get("Product_code"),
       I18n.get("Product_name"),
+      I18n.get("Product_currency"),
       I18n.get("Computed_cost"),
       I18n.get("Cost_to_apply")
     };
@@ -247,12 +249,14 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
+    BillOfMaterial billOfMaterial = product.getDefaultBillOfMaterial();
+
     CostSheet costSheet =
-        costSheetService.computeCostPrice(
-            product.getDefaultBillOfMaterial(), origin, unitCostCalculation);
+        costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
 
     UnitCostCalcLine unitCostCalcLine =
-        unitCostCalcLineService.createUnitCostCalcLine(product, level, costSheet);
+        unitCostCalcLineService.createUnitCostCalcLine(
+            product, billOfMaterial.getCompany(), level, costSheet);
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
     unitCostCalculationRepository.save(unitCostCalculation);
   }
@@ -277,11 +281,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
                   unitCostCalculation.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
-                  unitCostCalculation.getCompanySet())
+                  unitCostCalculation.getCompanySet(),
+                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
               .fetch());
     }
 
@@ -292,11 +298,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
-                  unitCostCalculation.getCompanySet())
+                  unitCostCalculation.getCompanySet(),
+                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
               .fetch());
     }
 
@@ -339,12 +347,29 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
   }
 
+  protected boolean hasValidBillOfMaterial(Product product) {
+
+    BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+
+    if (defaultBillOfMaterial != null
+        && (defaultBillOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_VALIDATED
+            || defaultBillOfMaterial.getStatusSelect()
+                == BillOfMaterialRepository.STATUS_APPLICABLE)
+        && (product.getProcurementMethodSelect()
+                == ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE
+            || product.getProcurementMethodSelect()
+                == ProductRepository.PROCUREMENT_METHOD_PRODUCE)) {
+      return true;
+    }
+    return false;
+  }
+
   protected void assignProductAndLevel(Product product) {
 
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
 
-    if (product.getDefaultBillOfMaterial() != null) {
+    if (hasValidBillOfMaterial(product)) {
       this.assignProductLevel(product.getDefaultBillOfMaterial(), 0);
     }
   }
@@ -401,7 +426,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         if (this.productMap.containsKey(subProduct.getId())) {
           this.assignProductLevel(subBillOfMaterial, level);
 
-          if (subProduct.getDefaultBillOfMaterial() != null) {
+          if (hasValidBillOfMaterial(subProduct)) {
             this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
           }
         }

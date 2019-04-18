@@ -60,9 +60,12 @@
 		<context name="_fromSale" expr="eval:true" />
 	</action-view>
 	
-	<menuitem name="sc-root-sale-quotations" parent="crm-root" order="25"
+	<menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="20"
 		 title="Sale quotations" action="sc.root.sale.quotations" />
 	
+	<menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="25"
+		 title="Sale quotations" action="sc.root.sale.quotations" if="__config__.app.isApp('sale')"/>
+
 	<action-view name="sc.root.sale.quotations" title="Sale quotations"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="cards" name="sale-order-quotation-cards" />
@@ -88,7 +91,7 @@
         <view type="calendar" name="sale-order-calendar" />
 		<view type="form" name="sale-order-form" />
 		<view-param name="search-filters" value="sale-order-filters"/>
-		<domain>self.template = false</domain>
+		<domain>self.template = false and self.statusSelect = 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
@@ -102,6 +105,21 @@
 			<context name="_user" value="__user__"/>
 		</filter>
 	</search-filters>
+	
+	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30" 
+			action="sc.hist.sale.orders" />
+
+	<action-view name="sc.hist.sale.orders" title="Historical" 
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="cards" name="sale-order-cards" />
+		<view type="grid" name="sale-order-grid" />
+        <view type="calendar" name="sale-order-calendar" />
+		<view type="form" name="sale-order-form" />
+		<view-param name="search-filters" value="sale-order-filters"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+		<context name="_template" expr="eval:false" />
+	</action-view>
 	
 	<menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"  order="40" icon="fa-bar-chart"/>
 		

@@ -5,7 +5,7 @@
 
   <grid name="dpae-grid" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
     <field name="employee"/>
-    <field name="company"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="contractType"/>
   </grid>
 

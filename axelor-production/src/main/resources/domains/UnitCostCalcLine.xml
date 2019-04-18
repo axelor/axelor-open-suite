@@ -9,6 +9,7 @@
 
 	<many-to-one name="unitCostCalculation" ref="com.axelor.apps.production.db.UnitCostCalculation" title="Cost price calculation"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	<decimal name="previousCost" title="Previous cost" precision="20" scale="10"/>
 	<decimal name="computedCost" title="Comput. cost" precision="20" scale="10"/>
 	<decimal name="costToApply" title="Cost to apply" precision="20" scale="10"/>

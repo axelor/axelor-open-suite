@@ -3258,7 +3258,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'InvoicingProjectAnnex.deadlineDate'</value>
+                                    <value type="javascript">'InvoicingProjectAnnex.deadline'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3485,7 +3485,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </row>
                 <row id="114">
                     <property name="fontWeight">bold</property>
-                    <property name="height">0.4375in</property>
                     <cell id="115">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -6410,13 +6409,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <column id="468">
                 <property name="width">1.5in</property>
             </column>
-            <column id="469"/>
-            <column id="470"/>
+            <column id="469">
+                <property name="width">1.1666666666666667in</property>
+            </column>
+            <column id="470">
+                <property name="width">1.1666666666666667in</property>
+            </column>
             <column id="471">
                 <property name="width">0.75in</property>
             </column>
             <column id="472">
-                <property name="width">0.75in</property>
+                <property name="width">1.1145833333333333in</property>
             </column>
             <column id="473"/>
             <column id="474">

@@ -296,15 +296,25 @@ public class InvoiceController {
         fileLink = invoicePrintService.printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
+        String format = context.get("format") != null ? context.get("format").toString() : "pdf";
+        Integer reportType =
+            context.get("reportType") != null
+                ? Integer.parseInt(context.get("reportType").toString())
+                : null;
         fileLink =
             invoicePrintService.printInvoice(
-                invoiceRepo.find(request.getContext().asType(Invoice.class).getId()), false);
+                invoiceRepo.find(Long.parseLong(context.get("id").toString())),
+                false,
+                format,
+                reportType);
         title = I18n.get("Invoice");
+        response.setCanClose(true);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -312,13 +322,17 @@ public class InvoiceController {
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    Invoice invoice = invoiceRepo.find(context.asType(Invoice.class).getId());
+    Invoice invoice = invoiceRepo.find(Long.parseLong(context.get("id").toString()));
+    Integer reportType =
+        context.get("reportType") != null
+            ? Integer.parseInt(context.get("reportType").toString())
+            : null;
 
     try {
-      response.setReload(true);
+      response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
-              .add("html", invoicePrintService.printInvoice(invoice, true))
+              .add("html", invoicePrintService.printInvoice(invoice, true, "pdf", reportType))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

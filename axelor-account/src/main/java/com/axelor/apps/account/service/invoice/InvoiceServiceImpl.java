@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -292,6 +293,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      Account account = invoiceLine.getAccount();
+
       if (invoiceLine.getAccount() == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
         throw new AxelorException(
@@ -300,6 +303,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             I18n.get(IExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
       }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (invoiceLine.getAnalyticDistributionTemplate() != null
+              || (invoiceLine.getAnalyticMoveLineList() != null
+                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+      }
     }
 
     log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
@@ -307,10 +321,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    // FIXME: Disabled temporary due to RM#14505
-    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    //    }
+    Beans.get(InvoicePrintService.class)
+        .printAndSave(invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE);
   }
 
   /**

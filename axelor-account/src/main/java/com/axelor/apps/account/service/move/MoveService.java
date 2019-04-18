@@ -514,6 +514,9 @@ public class MoveService {
   public Map<String, Object> computeTotals(Move move) {
 
     Map<String, Object> values = new HashMap<>();
+    if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+      return values;
+    }
     values.put("$totalLines", move.getMoveLineList().size());
 
     BigDecimal totalDebit =

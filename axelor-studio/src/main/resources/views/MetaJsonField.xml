@@ -39,27 +39,10 @@
     </action-record>
 
     <action-attrs name="action-studio-attrs-set-meta-json-field-defaults">
-      <attribute name="value" for="model" expr="eval:_parent.metaModel?.fullName"
-        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
-      <attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"
-        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
-  
       <attribute name="value" for="model" expr="eval:_parent.model"
         if="parentModel == 'com.axelor.studio.db.Wkf'" />
       <attribute name="value" for="modelField" expr="eval:_parent.jsonField"
         if="parentModel == 'com.axelor.studio.db.Wkf'" />
     </action-attrs>
-    
-    <form id="studio-json-field-form" name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onLoad="action-studio-attr-json-field-read-only-model">
-		<panel-include view="json-field-form" from="axelor-core"/>
-    	<panel name="mainPanel">
-    		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-    		<field name="jsonCreator" hidden="true"/>
-    	</panel>
-    </form>
-    
-    <action-attrs name="action-studio-attr-json-field-read-only-model">
-  		<attribute name="readonly" expr="eval: jsonCreator != null" for="model,modelField" />
-	</action-attrs>
     
 </object-views>

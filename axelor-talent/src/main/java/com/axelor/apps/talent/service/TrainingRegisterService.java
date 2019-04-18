@@ -33,4 +33,8 @@ public interface TrainingRegisterService {
   public Training updateTrainingRating(Training training, Long excludeId);
 
   public TrainingSession updateSessionRating(TrainingSession trainingSession, Long excludeId);
+
+  public void updateEventCalendar(TrainingRegister trainingRegister);
+
+  public String computeFullName(TrainingRegister trainingRegister);
 }

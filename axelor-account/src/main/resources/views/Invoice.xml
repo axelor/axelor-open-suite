@@ -5,138 +5,138 @@
 
     <!-- VUE GENERALE -->
 
-    <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
-	     	</menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
-	            <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
-	     	</menu>
+  <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <menubar>
+	    <menu title="Reports" icon="fa-files-o" showTitle="true">
+	      <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	  	</menu>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+ 	    </menu>
 		</menubar>
-    	<hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
+   	<hilite color="primary" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <field name="invoiceId"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
 		<field name="operationSubTypeSelect" widget="160"/>
-        <field name="invoiceDate" width="120"/>
-        <field name="dueDate" width="120"/>
-        <field name="exTaxTotal" aggregate="sum" width="120"/>
-        <field name="inTaxTotal" aggregate="sum" width="120"/>
-        <field name="amountRemaining" aggregate="sum" width="120"/>
-        <field name="currency" width="60"/>
-        <field name="statusSelect" width="100"/>
-        <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
-    </grid>
+    <field name="invoiceDate" width="120"/>
+    <field name="dueDate" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120"/>
+    <field name="inTaxTotal" aggregate="sum" width="120"/>
+    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="currency" width="60"/>
+    <field name="statusSelect" width="100"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+  </grid>
 
-    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+  <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
-	            <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
-	            <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
 			</menu>
 		</menubar>
 		<hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
+		<hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+		<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <field name="invoiceId"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
 		<field name="operationSubTypeSelect" widget="160"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" width="160"/>
-        <field name="invoiceDate" width="120"/>
-        <field name="dueDate" width="120"/>
-        <field name="exTaxTotal" aggregate="sum" width="120"/>
-        <field name="inTaxTotal" aggregate="sum" width="120"/>
-        <field name="amountRemaining" aggregate="sum" width="120"/>
-        <field name="currency" width="60"/>
-        <field name="statusSelect" width="100"/>
-        <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
-    </grid>
+    <field name="invoiceDate" width="120"/>
+    <field name="dueDate" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120"/>
+    <field name="inTaxTotal" aggregate="sum" width="120"/>
+    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="currency" width="60"/>
+    <field name="statusSelect" width="100"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+  </grid>
 
-    <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+  <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <menubar>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+				<item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+				<item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+				<item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
 				<item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 			</menu>
 		</menubar>
 		<hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
-        <field name="supplierInvoiceNb"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-        <field name="originDate"/>
-        <field name="invoiceDate"/>
-        <field name="dueDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency" />
-        <field name="statusSelect"/>
-        <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+		<hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <field name="invoiceId"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="supplierInvoiceNb"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
+    <field name="originDate"/>
+    <field name="invoiceDate"/>
+    <field name="dueDate"/>
+    <field name="exTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="amountRemaining" aggregate="sum"/>
+    <field name="currency" />
+    <field name="statusSelect"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
 
-    <grid name="invoice-supplier-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
-    	<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
-	     	</menu>
+  <grid name="invoice-supplier-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <menubar>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+      </menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
-   	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
-	     	</menu>
+	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+        <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+      </menu>
 		</menubar>
-    	<hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
-   		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
-        <field name="supplierInvoiceNb"/>
+	 	<hilite color="primary" if="statusSelect == 1"/>
+	  <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	  <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	  <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+		<field name="invoiceId"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="originDate"/>
-        <field name="invoiceDate"/>
-        <field name="dueDate"/>
-        <field name="exTaxTotal" aggregate="sum"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-        <field name="currency" />
-        <field name="statusSelect"/>
-        <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="originDate"/>
+		<field name="invoiceDate"/>
+		<field name="dueDate"/>
+		<field name="exTaxTotal" aggregate="sum"/>
+		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="amountRemaining" aggregate="sum"/>
+		<field name="currency" />
+		<field name="statusSelect"/>
+		<button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
 
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
@@ -183,15 +183,12 @@
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
           onNew="action-account-invoice-onnew-group"
           onLoad="action-account-invoice-onload-group" >
+          
+		<toolbar>
+			<button name="reportsBtn" title="Reports" icon="fa-print" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+		</toolbar>
 
         <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="printedPDF == null || (statusSelect != 3 &amp;&amp; !(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2))"/>
-                <item title="Show stored copy" action="action-invoice-method-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
-                <item title="Print updated copy" action="save,action-invoice-validate-regenerate-invoice,action-invoice-method-regenerate-and-show-invoice" readonlyIf="partner == null" showIf="(statusSelect == 3 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2)) &amp;&amp; printedPDF != null"/>
-                <item title="Print annex" action="action-invoice-business-project-method-print-annex" showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)" if-module="axelor-business-project"/>
-            </menu>
-
             <menu title="Tools" icon="fa-wrench" showTitle="true">
                 <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
             </menu>
@@ -483,6 +480,26 @@ InvoiceSet.length > 0))"
 			<mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
+	</form>
+	
+	<form name="invoice-reports-wizard-form" title="Reports"  model="com.axelor.apps.base.db.Wizard" onNew="action-invoice-reports-wizard-attrs-set-report-type-select">
+		<panel name="mainPanel">
+			<panel name="invoiceTypePanel" colSpan="6">
+				<field name="$reportType" title="Invoice type" type="integer" selection-in="[1]" selection="invoice.report.type" required="true" 
+					onChange="action-invoice-reports-wizard-attrs-set-format-select" 
+					showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)" colSpan="12" />
+				<field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]" selection="invoice.report.type" required="true" 
+					onChange="action-invoice-reports-wizard-attrs-set-format-select" 
+					showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null" colSpan="12"/>
+				<field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3,4]" selection="invoice.report.type" colSpan="12" 
+					required="true" onChange="action-invoice-reports-wizard-attrs-set-format-select" 
+					showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
+			</panel>
+			<panel name="formatPanel" colSpan="6">
+				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
+			</panel>
+			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+		</panel>
 	</form>
 
     <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
@@ -782,6 +799,12 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-method-fill-in-lines"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
 	</action-group>
+
+	<action-group name="action-invoice-group-report-print">
+		<action name="action-invoice-method-show-invoice" if="reportType != null &amp;&amp; reportType != 4"/>
+		<action name="action-invoice-validate-regenerate-invoice" if="reportType != null &amp;&amp; reportType == 4"/>
+		<action name="action-invoice-method-regenerate-and-show-invoice" if="reportType != null &amp;&amp; reportType == 4"/>
+	</action-group>
   
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
@@ -837,7 +860,7 @@ InvoiceSet.length > 0))"
 		<field name="address" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
-    	<field name="contactPartner" expr="eval:null" />
+    	<field name="contactPartner" expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null" />
     	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
@@ -887,7 +910,7 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    	<attribute name="hidden" for="cancelBtn" expr="statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
+    	<attribute name="hidden" for="cancelBtn" expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
     </action-attrs>
 	
 	<action-attrs name="action-set-partner-domain">
@@ -941,6 +964,18 @@ InvoiceSet.length > 0))"
       <attribute name="hidden" for="$duplicateInvoiceNbr" 
       expr="eval: !((supplierInvoiceNb != null &amp;&amp; id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.id != ?', supplierInvoiceNb , id).count() > 0)
                  || (supplierInvoiceNb != null &amp;&amp; id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ?', supplierInvoiceNb).count() > 0))"/>
+    </action-attrs>
+    
+    <action-attrs name="action-invoice-reports-wizard-attrs-set-format-select">
+    	<attribute name="readonly" for="$format" expr="eval: true" if="reportType != null &amp;&amp; reportType != 1"/>
+    	<attribute name="readonly" for="$format" expr="eval: false" if="reportType != null &amp;&amp; reportType == 1"/>
+    	<attribute name="value" for="$format" expr="eval: 'pdf'" if="reportType != null &amp;&amp; reportType != 1"/>
+    	<attribute name="readonly" for="$format" expr="eval: false" if="reportType == null"/>
+    	<attribute name="value" for="$format" expr="eval: null" if="reportType == null"/>
+    </action-attrs>
+    
+    <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
+    	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
     </action-attrs>
 
 	<!-- DOMAIN -->
@@ -1118,6 +1153,18 @@ InvoiceSet.length > 0))"
 		<view type="form" name="subrogation-release-form" />
 	  	<domain>:_invoice MEMBER OF self.invoiceSet</domain>
   		<context name="_invoice" expr="eval: __self__"/>
+	</action-view>
+	
+	<action-view name="action-invoice-view-reports-wizard" title="Reports" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="invoice-reports-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<context name="_statusSelect" expr="eval: statusSelect"/>
+		<context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
+		<context name="_printedPDF" expr="eval: printedPDF"/>
+		<context name="id" expr="eval: id"/>
 	</action-view>
 	
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
