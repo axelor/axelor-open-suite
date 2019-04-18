@@ -5,7 +5,7 @@
 
     <grid name="abc-analysis-class-grid" model="com.axelor.apps.base.db.ABCAnalysisClass" title="ABC classes" editable="true">
         <field name="name" required="true"/>
-        <field name="sequence"/>
+        <field name="sequence" hidden="true"/>
         <field name="worth" required="true"/>
         <field name="qty" required="true"/>
     </grid>

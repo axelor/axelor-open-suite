@@ -4,14 +4,16 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="abc-analysis-line-grid" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis lines" orderBy="cumulatedWorth">
-        <field name="product"/>
-        <field name="decimalWorth"/>
-        <field name="worth"/>
-        <field name="cumulatedWorth"/>
-        <field name="decimalQty"/>
-        <field name="qty"/>
-        <field name="cumulatedQty"/>
-        <field name="abcAnalysisClass">
+        <field name="product.code"/>
+        <field name="product.name"/>
+        <field name="product.productCategory"/>
+        <field name="decimalWorth" width="90px"/>
+        <field name="worth" width="95px"/>
+        <field name="cumulatedWorth" width="155px"/>
+        <field name="decimalQty" width="75px"/>
+        <field name="qty" width="80px"/>
+        <field name="cumulatedQty" width="130px"/>
+        <field name="abcAnalysisClass" width="80px">
             <hilite if="abcAnalysisClass.name == 'A'" background="success"/>
             <hilite if="abcAnalysisClass.name == 'B'" background="primary"/>
             <hilite if="abcAnalysisClass.name == 'C'" background="info"/>

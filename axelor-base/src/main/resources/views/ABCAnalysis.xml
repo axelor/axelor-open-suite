@@ -4,34 +4,38 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis">
-        <field name="type"/>
+        <field name="name"/>
         <field name="company"/>
         <field name="createdOn"/>
         <field name="createdBy"/>
         <field name="statusSelect"/>
     </grid>
 
-    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-record-default">
+    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-group-abc-analysis-onnew">
         <toolbar>
             <button name="runAnalysisBtn" title="Run analysis" onClick="save,action-method-abc-analysis-run-analysis" showIf="statusSelect == 1"/>
         </toolbar>
         <panel name="statusPanel" hidden="true">
             <field name="statusSelect"/>
+            <field name="type"/>
         </panel>
         <panel name="informationsPanel" title="Informations">
-            <field name="type" readonly="true"/>
+            <field name="name"/>
             <field name="company" onChange="action-abc-analysis-record-reset-stock-location" />
             <field name="createdOn"/>
             <field name="createdBy"/>
             <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates"/>
             <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates"/>
-            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"/>
+        </panel>
+        <panel name="descriptionPanel" title="Description" canCollapse="true" collapseIf="statusSelect != 1">
+            <field name="description" colSpan="12" showTitle="false" readonlyIf="statusSelect != 1"/>
         </panel>
         <panel name="classesProductsPanel" title="Classes and products" canCollapse="true" collapseIf="statusSelect != 1">
-            <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true"/>
-            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
-            <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
-            <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
+            <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect != 1"/>
+            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-attrs-abc-analysis-product-set-domain" readonlyIf="statusSelect != 1"/>
+            <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
+            <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
         </panel>
         <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800"/>
     </form>
@@ -63,7 +67,25 @@
         <field name="endDate" expr="eval:null" />
     </action-record>
 
+    <action-method name="action-method-abc-analysis-init-abc-classes">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="initABCClasses"/>
+    </action-method>
+
     <action-method name="action-method-abc-analysis-run-analysis">
         <call class="com.axelor.apps.base.web.ABCAnalysisController" method="runAnalysis"/>
     </action-method>
+
+    <action-group name="action-group-abc-analysis-onnew">
+        <action name="action-abc-analysis-record-default"/>
+        <action name="action-method-abc-analysis-init-abc-classes"/>
+    </action-group>
+
+    <action-attrs name="action-attrs-abc-analysis-product-set-domain">
+        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true&quot; "/>
+        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true&quot; "/>
+        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
+    </action-attrs>
 </object-views>

@@ -3,13 +3,18 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
+import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 import java.math.BigDecimal;
@@ -20,14 +25,20 @@ import static com.axelor.apps.tool.StringTool.getIdListString;
 
 public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
-    @Inject StockLocationService stockLocationService;
-    @Inject StockLocationLineRepository stockLocationLineRepository;
-    @Inject ABCAnalysisLineRepository abcAnalysisLineRepository;
+    private StockLocationService stockLocationService;
+    private StockLocationLineRepository stockLocationLineRepository;
 
     private final static String STOCK_MANAGED_TRUE = " AND self.stockManaged = TRUE";
 
+    @Inject
+    public ABCAnalysisServiceStockImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, StockLocationService stockLocationService, StockLocationLineRepository stockLocationLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
+        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository);
+        this.stockLocationService = stockLocationService;
+        this.stockLocationLineRepository = stockLocationLineRepository;
+    }
+
     @Override
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) {
+    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
         ABCAnalysisLine abcAnalysisLine =  super.createABCAnalysisLine(abcAnalysis, product);
         List<StockLocation> stockLocationList = stockLocationService.getAllLocationAndSubLocation(abcAnalysis.getStockLocation(), false);
         BigDecimal productQty = BigDecimal.ZERO;
@@ -43,9 +54,11 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
         while(!(stockLocationLineList = stockLocationLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
             offset += stockLocationLineList.size();
 
-            for(StockLocationLine purchaseOrderLine: stockLocationLineList){
-                productQty = productQty.add(purchaseOrderLine.getCurrentQty());
-                productWorth = productQty.add(purchaseOrderLine.getAvgPrice());
+            for(StockLocationLine stockLocationLine: stockLocationLineList){
+                BigDecimal convertedQty = unitConversionService.convert(stockLocationLine.getUnit(), product.getUnit(), stockLocationLine.getCurrentQty(), 5, product);
+                productQty = productQty.add(convertedQty);
+                productWorth = productQty.add(stockLocationLine.getAvgPrice());
+
             }
 
             super.incTotalQty(productQty);
@@ -54,7 +67,7 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
             JPA.clear();
         }
 
-        return super.setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        return setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
     }
 
     @Override

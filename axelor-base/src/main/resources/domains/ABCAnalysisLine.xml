@@ -8,7 +8,7 @@
     <entity name="ABCAnalysisLine" lang="java">
 
         <many-to-one name="abcAnalysis" ref="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis"/>
-        <many-to-one name="abcAnalysisClass" ref="com.axelor.apps.base.db.ABCAnalysisClass" title="ABC class"/>
+        <many-to-one name="abcAnalysisClass" ref="com.axelor.apps.base.db.ABCAnalysisClass" title="Class"/>
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
         <decimal name="decimalQty" title="Qty"/>
         <decimal name="qty" title="Qty (%)"/>

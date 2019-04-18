@@ -3,8 +3,12 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
+import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -12,11 +16,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
@@ -24,13 +24,18 @@ import static com.axelor.apps.tool.date.DateTool.toDate;
 import static com.axelor.apps.tool.date.DateTool.toLocalDateT;
 
 public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
-    @Inject SaleOrderLineRepository saleOrderLineRepository;
-    @Inject ABCAnalysisLineRepository abcAnalysisLineRepository;
+    private SaleOrderLineRepository saleOrderLineRepository;
 
     private final static String SELLABLE_TRUE = " AND self.sellable = TRUE";
 
+    @Inject
+    public ABCAnalysisServiceSaleImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
+        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository);
+        this.saleOrderLineRepository = saleOrderLineRepository;
+    }
+
     @Override
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) {
+    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
         ABCAnalysisLine abcAnalysisLine = super.createABCAnalysisLine(abcAnalysis, product);
         BigDecimal productQty = BigDecimal.ZERO;
         BigDecimal productWorth = BigDecimal.ZERO;
@@ -49,8 +54,9 @@ public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
             offset += saleOrderLineList.size();
 
             for(SaleOrderLine saleOrderLine: saleOrderLineList){
-                productQty = productQty.add(saleOrderLine.getQty());
-                productQty = productQty.add(saleOrderLine.getExTaxTotal());
+                BigDecimal convertedQty = unitConversionService.convert(saleOrderLine.getUnit(), product.getUnit(), saleOrderLine.getQty(), 5, product);
+                productQty = productQty.add(convertedQty);
+                productWorth = productWorth.add(saleOrderLine.getCompanyExTaxTotal());
             }
 
             super.incTotalQty(productQty);
@@ -59,7 +65,7 @@ public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
             JPA.clear();
         }
 
-        return super.setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        return setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
     }
 
     @Override

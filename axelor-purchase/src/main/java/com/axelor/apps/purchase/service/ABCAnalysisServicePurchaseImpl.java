@@ -3,8 +3,12 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
+import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -23,16 +27,19 @@ import static com.axelor.apps.tool.date.DateTool.toLocalDateT;
 
 public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
 
-    @Inject
-    PurchaseOrderLineRepository purchaseOrderLineRepository;
-    @Inject
-    ABCAnalysisLineRepository abcAnalysisLineRepository;
+    private PurchaseOrderLineRepository purchaseOrderLineRepository;
 
     private final static String PURCHASABLE_TRUE = " AND self.purchasable = TRUE";
 
+    @Inject
+    public ABCAnalysisServicePurchaseImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, PurchaseOrderLineRepository purchaseOrderLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
+        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository);
+        this.purchaseOrderLineRepository = purchaseOrderLineRepository;
+    }
+
     @Override
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) {
+    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
         ABCAnalysisLine abcAnalysisLine = super.createABCAnalysisLine(abcAnalysis, product);
         BigDecimal productQty = BigDecimal.ZERO;
         BigDecimal productWorth = BigDecimal.ZERO;
@@ -51,8 +58,9 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
             offset += purchaseOrderLineList.size();
 
             for(PurchaseOrderLine purchaseOrderLine: purchaseOrderLineList){
-                productQty = productQty.add(purchaseOrderLine.getQty());
-                productQty = productQty.add(purchaseOrderLine.getExTaxTotal());
+                BigDecimal convertedQty = unitConversionService.convert(purchaseOrderLine.getUnit(), product.getUnit(), purchaseOrderLine.getQty(), 2, product);
+                productQty = productQty.add(convertedQty);
+                productWorth = productWorth.add(purchaseOrderLine.getCompanyExTaxTotal());
             }
 
             super.incTotalQty(productQty);
@@ -61,7 +69,7 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
             JPA.clear();
         }
 
-        return super.setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        return setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
     }
 
     @Override

@@ -7,6 +7,8 @@
 
     <entity name="ABCAnalysis" lang="java">
 
+        <string name="name" title="Name"/>
+        <string name="description" title="Description" large="true"/>
         <string name="type" title="Type" selection="abc.analysis.type.select" default="com.axelor.apps.base.service.ABCAnalysisServiceImpl"/>
         <integer name="statusSelect" title="Status" selection="abc.analysis.status.select" default="1"/>
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>

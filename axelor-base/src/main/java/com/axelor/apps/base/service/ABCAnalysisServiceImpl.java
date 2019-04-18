@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -20,9 +21,11 @@ import java.util.*;
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
-    @Inject ABCAnalysisLineRepository abcAnalysisLineRepository;
-    @Inject ABCAnalysisRepository abcAnalysisRepository;
-    @Inject ProductRepository productRepository;
+    protected ABCAnalysisLineRepository abcAnalysisLineRepository;
+    protected UnitConversionService unitConversionService;
+    private ABCAnalysisRepository abcAnalysisRepository;
+    private ProductRepository productRepository;
+    private ABCAnalysisClassRepository abcAnalysisClassRepository;
 
     private BigDecimal totalQty = BigDecimal.ZERO;
     private BigDecimal totalWorth = BigDecimal.ZERO;
@@ -30,11 +33,45 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private BigDecimal cumulatedQty = BigDecimal.ZERO;
     private BigDecimal cumulatedWorth = BigDecimal.ZERO;
 
+    private List<ABCAnalysisClass> abcAnalysisClassList;
+
+    @Inject
+    public ABCAnalysisServiceImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
+        this.abcAnalysisLineRepository = abcAnalysisLineRepository;
+        this.unitConversionService = unitConversionService;
+        this.abcAnalysisRepository = abcAnalysisRepository;
+        this.productRepository = productRepository;
+        this.abcAnalysisClassRepository = abcAnalysisClassRepository;
+    }
+
+    @Override
+    public List<ABCAnalysisClass> initABCClasses() {
+        List<ABCAnalysisClass> abcAnalysisClassList = new ArrayList<>();
+
+        abcAnalysisClassList.add(createAbcClass("A", 0, BigDecimal.valueOf(80), BigDecimal.valueOf(20)));
+        abcAnalysisClassList.add(createAbcClass("B", 1, BigDecimal.valueOf(15), BigDecimal.valueOf(30)));
+        abcAnalysisClassList.add(createAbcClass("C", 2, BigDecimal.valueOf(5), BigDecimal.valueOf(50)));
+
+        return abcAnalysisClassList;
+    }
+
+    private ABCAnalysisClass createAbcClass(String name, Integer sequence, BigDecimal worth, BigDecimal qty){
+        ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
+
+        abcAnalysisClass.setName(name);
+        abcAnalysisClass.setSequence(sequence);
+        abcAnalysisClass.setWorth(worth);
+        abcAnalysisClass.setQty(qty);
+
+        return abcAnalysisClass;
+    }
+
     @Override
     @Transactional
-    public void runAnalysis(ABCAnalysis abcAnalysis) {
+    public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
 
         start(abcAnalysis);
+        getAbcAnalysisClassList(abcAnalysis);
         createABCAnalysisLineForEachProduct(abcAnalysis);
         doAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
         finish(abcAnalysisRepository.find(abcAnalysis.getId()));
@@ -45,6 +82,15 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private void start(ABCAnalysis abcAnalysis){
         abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_ANALYZING);
         abcAnalysisRepository.save(abcAnalysis);
+    }
+
+
+    private void getAbcAnalysisClassList(ABCAnalysis abcAnalysis){
+        Query<ABCAnalysisClass> abcAnalysisClassQuery = abcAnalysisClassRepository.all()
+                .filter("self.abcAnalysis.id = :abcAnalysisId")
+                .bind("abcAnalysisId", abcAnalysis.getId())
+                .order("sequence");
+        this.abcAnalysisClassList =  abcAnalysisClassQuery.fetch();
     }
 
     private Set<Product> getProductSet(ABCAnalysis abcAnalysis) {
@@ -90,7 +136,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void createABCAnalysisLineForEachProduct(ABCAnalysis abcAnalysis){
+    private void createABCAnalysisLineForEachProduct(ABCAnalysis abcAnalysis) throws AxelorException {
         Set<Product> productSet = getProductSet(abcAnalysis);
         for (Product product : productSet) {
             ABCAnalysisLine abcAnalysisLine = createABCAnalysisLine(abcAnalysis, product);
@@ -102,7 +148,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) {
+    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
         ABCAnalysisLine abcAnalysisLine = new ABCAnalysisLine();
 
         abcAnalysisLine.setAbcAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
@@ -133,22 +179,22 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
         while(!(abcAnalysisLineList = query.fetch(FETCH_LIMIT, offset)).isEmpty()){
             offset += abcAnalysisLineList.size();
-            abcAnalysisLineList.forEach(line -> analyzeLine(line, abcAnalysisRepository.find(abcAnalysis.getId())));
+            abcAnalysisLineList.forEach(this::analyzeLine);
             JPA.clear();
         }
     }
 
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void analyzeLine(ABCAnalysisLine abcAnalysisLine, ABCAnalysis abcAnalysis){
+    private void analyzeLine(ABCAnalysisLine abcAnalysisLine){
         computePercentage(abcAnalysisLine);
-        setABCAnalysisClass(abcAnalysisLine, abcAnalysis);
+        setABCAnalysisClass(abcAnalysisLine);
 
         abcAnalysisLineRepository.save(abcAnalysisLine);
     }
 
     private void computePercentage(ABCAnalysisLine abcAnalysisLine){
-        BigDecimal qty = abcAnalysisLine.getDecimalQty().divide(totalQty, 10, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
-        BigDecimal worth = abcAnalysisLine.getDecimalWorth().divide(totalWorth, totalWorth.scale(), RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100));
+        BigDecimal qty = abcAnalysisLine.getDecimalQty().divide(totalQty, 5, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100));
+        BigDecimal worth = abcAnalysisLine.getDecimalWorth().divide(totalWorth, 5, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100));
 
         incCumulatedQty(qty);
         incCumulatedWorth(worth);
@@ -160,13 +206,16 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
     }
 
-    private void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine, ABCAnalysis abcAnalysis){
-        List<ABCAnalysisClass> abcAnalysisClassList = abcAnalysis.getAbcAnalysisClassList();
-        abcAnalysisClassList.sort(Comparator.comparing(ABCAnalysisClass::getName));
+    private void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine){
+        BigDecimal maxQty = BigDecimal.ZERO;
+        BigDecimal maxWorth = BigDecimal.ZERO;
+
         for(ABCAnalysisClass abcAnalysisClass: abcAnalysisClassList){
-            if(abcAnalysisLine.getCumulatedWorth().compareTo(abcAnalysisClass.getWorth()) <= 0
-            && abcAnalysisLine.getCumulatedQty().compareTo(abcAnalysisClass.getQty()) <= 0){
-                abcAnalysisLine.setAbcAnalysisClass(abcAnalysisClass);
+            maxQty = maxQty.add(abcAnalysisClass.getQty());
+            maxWorth = maxWorth.add(abcAnalysisClass.getWorth());
+            if(abcAnalysisLine.getCumulatedWorth().compareTo(maxWorth) <= 0
+            && abcAnalysisLine.getCumulatedQty().compareTo(maxQty) <= 0){
+                abcAnalysisLine.setAbcAnalysisClass(abcAnalysisClassRepository.find(abcAnalysisClass.getId()));
                 break;
             }
         }
