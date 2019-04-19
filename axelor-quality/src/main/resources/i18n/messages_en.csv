@@ -112,6 +112,7 @@
 "QualityControl.project","PROJECT",,
 "QualityControl.projectClient","CUSTOMER",,
 "QualityControl.qualityControlTitle","QUALITY CONTROL",,
+"QualityControl.reference","Reference",,
 "QualityControl.responsible","RESPONSIBLE",,
 "QualityControl.total","Total",,
 "Reference",,,
