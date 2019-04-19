@@ -33,6 +33,7 @@
 - Stock Move : wrong qty in outgoing move printing
 - MRPLine : Specify views for proposalSelect. 
 - HR : Fix NoSuchField Error.
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
 
 ## [5.0.7] - 2018-12-13
 ## Features
