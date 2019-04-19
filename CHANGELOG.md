@@ -6,6 +6,7 @@
 ## Improvements
 - Remove Pack Feature from Product.
 - Account : Remove DirectDebitManagement
+- MENU BUILDER : Add selection support for icon and iconBackground
 
 ## [Unreleased 5.2.0]
 ## Features
