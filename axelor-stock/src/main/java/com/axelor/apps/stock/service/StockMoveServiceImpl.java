@@ -678,12 +678,12 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
     StockMove newStockMove =
         createStockMove(
-            stockMove.getFromAddress(),
             stockMove.getToAddress(),
+            stockMove.getFromAddress(),
             stockMove.getCompany(),
             stockMove.getPartner(),
-            stockMove.getFromStockLocation(),
             stockMove.getToStockLocation(),
+            stockMove.getFromStockLocation(),
             null,
             stockMove.getEstimatedDate(),
             null,
