@@ -361,13 +361,13 @@
                   <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                   <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form" form-view="stock-move-form" showIf="reversionOriginStockMove" />
                   <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" showIf="invoice"/>
-                  <field name="backorderStockMove" readonly="true" form-view="stock-move-form" grid-view="stock-move-grid" showIf="backorderStockMove"/>
+                  <button name="backOrderBtn" title="Backorder" colSpan="3" hidden="true" showIf="backorderId" onClick="action-stock-move-view-back-order"/>
+            	  <field name="backorderId" hidden="true"/>
                 </panel>
                 <field name="fullySpreadOverLogisticalFormsFlag" showIf="id &amp;&amp; typeSelect == 2"/>
                 <panel-dashlet name="ReversionPanel" action="action-stock-move-view-reversion" title="Reversions" colSpan="12" showIf="!isReversion"/>
                 <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12" showIf="id &amp;&amp; typeSelect == 2"/>
                 <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
-              	
             </panel>
             
             <panel name="configPanel" title="Configuration">
@@ -450,7 +450,18 @@
 	    <context name="stockMoveLineList" expr="eval:stockMoveLineList.findAll{ it.selected }" if="stockMoveLineList != null" />
 	    <context name="stockMove" expr="eval: __this__"/>
 	</action-view>
-	
+
+  <action-view name="action-stock-move-view-back-order" title="Backorder Stock Move" model="com.axelor.apps.stock.db.StockMove">
+    <view type="form" name="stock-move-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false" />
+    <view-param name="popup-save" value="true"/>
+    <view-param name="width" value="200"/>
+    <context name="_showRecord" expr="eval: backorderId"/>
+  </action-view>
+
 	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove" width="large">
     	<panel name="mainPanel">
 	        <panel-related name="stockMoveLineListPanel" field="stockMoveLineList" colSpan="12" grid-view="stock-move-line-split-grid" canEdit="true" form-view="stock-move-line-form"/>
@@ -488,7 +499,7 @@
 	    <view-param name="width" value="200" />
 	    <context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
-	
+
     <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
