@@ -12,7 +12,7 @@
 			<field name="controlPointType"/>
 		</panel>
 		<panel name="measuringPointPanel">
-			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-grid" form-view="quality-measuring-point-form"/>
+			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-model-grid" form-view="quality-measuring-point-model-form"/>
 		</panel>
 		<panel name="notesPanel">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>

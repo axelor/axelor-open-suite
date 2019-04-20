@@ -2,20 +2,18 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control">
-		<field name="name"/>
-		<field name="responsible"/>
-		<field name="controlPointDate"/>
+	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control" edit-icon="true">
+		<field name="name" width="700"/>
+		<field name="controlPointType" width="150"/>
+		<field name="statusSelect" width="130"/>
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
 		<panel name="mainPanel">
 			<field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true" colSpan="12"/>
-			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 			<field name="name"/>
-			<field name="responsible"/>
-			<field name="controlPointDate"/>
 			<field name="controlPointType"/>
+			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 		</panel>
 		<panel name="measuringPointPanel">
 			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-grid" form-view="quality-measuring-point-form"/>
