@@ -94,6 +94,7 @@
 - MOVE LINE : Fix NPE in the balance calculation.
 - Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 - Invoice : fix NPE when printing invoices.
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
 
 ## [5.1.5] - 2019-03-30
 ## Features
