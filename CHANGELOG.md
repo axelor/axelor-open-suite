@@ -48,6 +48,7 @@
 - MetaJsonField : Add help for all conditional fields of MetaJsonField
 - Reserved qty: auto allocation is now also ordered by estimated date.
 - WeeklyPlanning: manage durations in hours and rename methods.
+- PURCHASE ORDER PRINTING : Remove banking informations
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
