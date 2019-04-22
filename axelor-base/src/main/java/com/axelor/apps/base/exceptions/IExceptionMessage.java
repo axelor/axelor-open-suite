@@ -230,6 +230,9 @@ public interface IExceptionMessage {
 
   static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
 
+  static final String CALENDAR_NO_EVENTS_FOR_SYNC_ERROR = /*$$(*/
+      "Calendars are empty, there is no event to synchronize." /*)*/;
+
   /** Price list */
   String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
 

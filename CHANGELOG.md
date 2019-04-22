@@ -49,6 +49,7 @@
 - Reserved qty: auto allocation is now also ordered by estimated date.
 - WeeklyPlanning: manage durations in hours and rename methods.
 - PURCHASE ORDER PRINTING : Remove banking informations
+- ICalendar : Set error message if there is no event to synchronize
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
