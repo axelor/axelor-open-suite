@@ -99,6 +99,7 @@
 - Invoice : fix NPE when printing invoices.
 - LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
 - JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+- JOURNAL ENTRY EXPORT (FEC) : use move reference instead of move line reference
 
 ## [5.1.5] - 2019-03-30
 ## Features
