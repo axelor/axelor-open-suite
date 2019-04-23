@@ -1158,6 +1158,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
                 MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_DAYBOOK)
+            .order("move.validationDate")
             .order("date")
             .order("name")
             .fetch();
