@@ -21,7 +21,8 @@
 - MRPLine : Specify views for proposalSelect. 
 - HR : Fix NoSuchField Error.
 - JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
-- JOURNAL ENTRY EXPORT (FEC) : use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
 
 
 ## [5.0.8] - 2019-01-17
