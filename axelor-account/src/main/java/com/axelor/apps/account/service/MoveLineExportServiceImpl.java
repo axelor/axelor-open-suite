@@ -1172,7 +1172,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         Journal journal = move.getJournal();
         items[0] = journal.getCode();
         items[1] = journal.getName();
-        items[2] = moveLine.getName();
+        items[2] = moveLine.getMove().getReference();
         items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         items[4] = moveLine.getAccount().getCode();
         items[5] = moveLine.getAccount().getName();
