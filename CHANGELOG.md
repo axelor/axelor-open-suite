@@ -1,26 +1,42 @@
 # Changelog
 
+## [Unreleased 5.0.9]
+## Features
+## Improvements
+- HR : Update kilometric Allowance demo data(fr and en).
+- MOVE : Disable canEdit on journal
+- SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
+- VEHICLE : removed isArchived field.
+
+## Bug Fixes
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- EXPENSE : complete my expense (Error message when no expense is selected)
+- HR : Fix employeeSet domain.
+- Base : Updation of type in demo-data in Birt Template Parameter.
+- RECONCILE : Update missing sequence alert
+- Naming Tool : Missing reserved java litterals
+- Configurator: Fix total computation on sale order when generating sale order line.
+- Stock Move : wrong qty in outgoing move printing
+- MRPLine : Specify views for proposalSelect. 
+- HR : Fix NoSuchField Error.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+
+
 ## [5.0.8] - 2019-01-17
 ## Features
 - Account: add option to automatically create partners' accounts
 - Account: use partner name as default account name when creating from partner's account configuration screen.
-- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 
 ## Improvements
 - Disabled 'canEdit' attribute for some fields
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
-- Base : Updation of type in demo-data in Birt Template Parameter.
-- MOVE : Disable canEdit on journal
-- SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
-- RECONCILE : Update missing sequence alert
-- VEHICLE : removed isArchived field.
 - HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
-- Invoice Interco: assign account and taxLine to Invoice Line according to operationSelect.
 - MANUF. ORDER PRINTING: hide barcode column when it is empty.
 - Purchase Order: remove save on loading purchase order form.
 - Stock Chart: fix wrong action name.
@@ -28,11 +44,6 @@
 - Payment voucher: fix confirm button display on credit card supplier payments.
 - General balance report : fix wrong sums when we filter on some accounts of the same branch
 - Remove Inconsistency in selections
-- Naming Tool : Missing reserved java litterals
-- Configurator: Fix total computation on sale order when generating sale order line.
-- Stock Move : wrong qty in outgoing move printing
-- MRPLine : Specify views for proposalSelect. 
-- HR : Fix NoSuchField Error.
 
 ## [5.0.7] - 2018-12-13
 ## Features
@@ -1089,6 +1100,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Production Management
 - Multi-company, multi-currency and multi-lingual
 
+
+[Unreleased 5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...5.0-dev
 [5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6

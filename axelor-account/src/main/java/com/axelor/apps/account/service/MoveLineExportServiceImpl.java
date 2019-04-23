@@ -462,10 +462,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "ventes.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
   }
 
   /**
@@ -651,10 +648,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "avoirs.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
   }
 
   /**
@@ -841,10 +835,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "tresorerie.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
   }
 
   /**
@@ -1055,10 +1046,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "achats.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
   }
 
   @Override
@@ -1103,7 +1091,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format(
             "%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
     writeMoveLineToCsvFile(
-        accountingReport.getCompany(), fileName, allMoveLineData, accountingReport);
+        accountingReport.getCompany(), fileName, null, allMoveLineData, accountingReport);
   }
 
   /**
@@ -1257,7 +1245,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
     accountingReportRepo.save(accountingReport);
   }
 
@@ -1461,15 +1449,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect),
-    // allMoveLineData);
+    writeMoveLineToCsvFile(company, fileName, this.createHeaderForDetailFile(typeSelect), allMoveLineData, accountingReport);
   }
 
   private void writeMoveLineToCsvFile(
       Company company,
       String fileName,
+      String[] columnHeader,
       List<String[]> allMoveData,
       AccountingReport accountingReport)
       throws AxelorException, IOException {
@@ -1480,7 +1466,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       new File(filePath).mkdirs();
     }
     log.debug("Full path to export : {}{}", filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
+    CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
@@ -1510,7 +1496,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return sortMoveLineList;
   }
 
-  public String[] createHeaderForPayrollJournalEntry() {
+  public String[] createHeaderForJournalEntry() {
     String header =
         "JournalCode;"
             + "JournalLib;"
@@ -1529,7 +1515,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "DateLet;"
             + "ValidDate;"
             + "Montantdevise;"
-            + "IDevise;";
+            + "Idevise;";
     return header.split(";");
   }
 
