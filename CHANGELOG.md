@@ -101,6 +101,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
 - JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
 - JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
+- JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
 
 
 ## [5.1.5] - 2019-03-30
