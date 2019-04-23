@@ -102,6 +102,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
 - JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
 - JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
+- JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 
 
 ## [5.1.5] - 2019-03-30
