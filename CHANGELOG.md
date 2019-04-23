@@ -98,6 +98,7 @@
 - Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 - Invoice : fix NPE when printing invoices.
 - LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
 
 ## [5.1.5] - 2019-03-30
 ## Features
