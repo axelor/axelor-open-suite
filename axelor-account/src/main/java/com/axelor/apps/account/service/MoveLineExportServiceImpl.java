@@ -1188,8 +1188,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
         items[10] = moveLine.getDescription();
-        items[11] = moveLine.getDebit().toString();
-        items[12] = moveLine.getCredit().toString();
+        items[11] = moveLine.getDebit().toString().replace('.', ',');
+        items[12] = moveLine.getCredit().toString().replace('.', ',');
 
         ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
         if (reconcileGroup != null
@@ -1209,7 +1209,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[15] =
               move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
-        items[16] = moveLine.getCurrencyAmount().toString();
+        
+        items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
+
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
         }
