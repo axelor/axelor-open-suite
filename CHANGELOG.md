@@ -50,6 +50,7 @@
 - WeeklyPlanning: manage durations in hours and rename methods.
 - PURCHASE ORDER PRINTING : Remove banking informations
 - ICalendar : Set error message if there is no event to synchronize
+- Stock move mass invoicing: Creating a single invoice with a negative total amount will create a refund instead.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.

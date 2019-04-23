@@ -610,7 +610,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return false;
     }
     BigDecimal totalAmount =
-        invoicePayments.stream()
+        invoicePayments
+            .stream()
             .map(InvoicePayment::getAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
