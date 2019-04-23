@@ -21,42 +21,44 @@ import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.db.repo.BudgetLineRepository;
+import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BudgetSupplychainService extends BudgetService {
 
-  @Inject private AppAccountService appAccountService;
+  @Inject
+  public BudgetSupplychainService(BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
+    super(budgetLineRepository, budgetRepository);
+  }
 
   @Override
+  @Transactional
   public List<BudgetLine> updateLines(Budget budget) {
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
         budgetLine.setAmountCommitted(BigDecimal.ZERO);
         budgetLine.setAmountRealized(BigDecimal.ZERO);
       }
-      List<Integer> statusList = new ArrayList<Integer>();
-      if (appAccountService.isApp("budget")) {
-        String budgetStatus = appAccountService.getAppBudget().getBudgetStatusSelect();
-        if (!budgetStatus.isEmpty()) {
-          String[] numbers = budgetStatus.split(", ");
-          for (int c = 0; c < numbers.length; c++) statusList.add(Integer.parseInt(numbers[c]));
-        }
-      }
+      List<Integer> statusList = new ArrayList<>(Arrays.asList(3, 4));
       List<BudgetDistribution> budgetDistributionList = null;
       if (!statusList.isEmpty()) {
         budgetDistributionList =
             Beans.get(BudgetDistributionRepository.class)
                 .all()
                 .filter(
-                    "self.budget.id = ?1 AND (self.purchaseOrderLine.purchaseOrder.statusSelect in (?2) OR ?3 is null)",
+                    "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2)",
                     budget.getId(),
                     statusList,
                     statusList)
@@ -72,6 +74,7 @@ public class BudgetSupplychainService extends BudgetService {
                   && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
                 budgetLine.setAmountCommitted(
                     budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
+                budgetLineRepository.save(budgetLine);
                 break;
               }
             }
@@ -97,6 +100,7 @@ public class BudgetSupplychainService extends BudgetService {
                 && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
               budgetLine.setAmountRealized(
                   budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+              budgetLineRepository.save(budgetLine);
               break;
             }
           }
@@ -106,6 +110,7 @@ public class BudgetSupplychainService extends BudgetService {
     return budget.getBudgetLineList();
   }
 
+  @Transactional
   public BigDecimal computeTotalAmountCommitted(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
 
@@ -113,9 +118,30 @@ public class BudgetSupplychainService extends BudgetService {
       return BigDecimal.ZERO;
     }
 
-    return budgetLineList
-        .stream()
-        .map(BudgetLine::getAmountCommitted)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalAmountCommitted = budgetLineList
+            .stream()
+            .map(BudgetLine::getAmountCommitted)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    budget.setTotalAmountCommitted(totalAmountCommitted);
+    budgetRepository.save(budget);
+
+    return totalAmountCommitted;
+  }
+
+  public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+
+    if(purchaseOrderLineList == null){
+      return;
+    }
+
+    purchaseOrderLineList.forEach(purchaseOrderLine ->
+            purchaseOrderLine.getBudgetDistributionList().forEach(budgetDistributionLine -> {
+              Budget budget = budgetDistributionLine.getBudget();
+              updateLines(budget);
+              computeTotalAmountCommitted(budget);
+            }));
+
   }
 }

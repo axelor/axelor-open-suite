@@ -18,7 +18,10 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -26,6 +29,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,6 +37,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BudgetService {
+
+  protected BudgetLineRepository budgetLineRepository;
+  protected BudgetRepository budgetRepository;
+
+  @Inject
+  public BudgetService(BudgetLineRepository budgetLineRepository,
+                       BudgetRepository budgetRepository) {
+    this.budgetLineRepository = budgetLineRepository;
+    this.budgetRepository = budgetRepository;
+  }
 
   public BigDecimal compute(Budget budget) {
     BigDecimal total = BigDecimal.ZERO;
@@ -44,6 +58,7 @@ public class BudgetService {
     return total;
   }
 
+  @Transactional
   public BigDecimal computeTotalAmountRealized(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
 
@@ -51,12 +66,18 @@ public class BudgetService {
       return BigDecimal.ZERO;
     }
 
-    return budgetLineList
+    BigDecimal totalAmountRealized =  budgetLineList
         .stream()
         .map(BudgetLine::getAmountRealized)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    budget.setTotalAmountRealized(totalAmountRealized);
+    budgetRepository.save(budget);
+
+    return totalAmountRealized;
   }
 
+  @Transactional
   public List<BudgetLine> updateLines(Budget budget) {
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
@@ -81,6 +102,7 @@ public class BudgetService {
                 && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
               budgetLine.setAmountRealized(
                   budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+              budgetLineRepository.save(budgetLine);
               break;
             }
           }
@@ -174,5 +196,21 @@ public class BudgetService {
   @Transactional
   public void draft(Budget budget) {
     budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
+  }
+
+  public void updateBudgetLinesFromInvoice(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
+    if(invoiceLineList == null){
+      return;
+    }
+
+    invoiceLineList.forEach(invoiceLine ->
+            invoiceLine.getBudgetDistributionList().forEach(budgetDistributionLine -> {
+              Budget budget = budgetDistributionLine.getBudget();
+              updateLines(budget);
+              computeTotalAmountRealized(budget);
+            }));
+
   }
 }

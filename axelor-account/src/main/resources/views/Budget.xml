@@ -14,7 +14,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save, action-group-budget-update-amounts, save" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
+    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
   		<panel name="mainPanel">
   			<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect" readonly="true"/>
     		<field name="name" showTitle="false" colSpan="12">

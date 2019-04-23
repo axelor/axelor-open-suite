@@ -388,6 +388,13 @@ public class PurchaseOrderController {
     }
   }
 
+  public void cancel(ActionRequest request, ActionResponse response) {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+      purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
+      response.setReload(true);
+  }
+
   /**
    * Called on printing settings select. Set the domain for {@link PurchaseOrder#printingSettings}
    *
