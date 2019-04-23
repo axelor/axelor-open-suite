@@ -82,8 +82,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected MoveLineService moveLineService;
   protected PartnerService partnerService;
 
-  protected static final String DATE_FORMAT_YYYYMMDD = "YYYYMMdd";
-  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "YYYYMMddHHmmss";
+  protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
+  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
   @Inject
   public MoveLineExportServiceImpl(
