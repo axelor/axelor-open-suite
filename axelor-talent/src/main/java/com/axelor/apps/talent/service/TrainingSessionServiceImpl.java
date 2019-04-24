@@ -53,7 +53,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
   @Override
   public String computeFullName(TrainingSession trainingSession) {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YYYY HH:mm");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     return trainingSession.getFromDate().format(formatter)
         + " - "

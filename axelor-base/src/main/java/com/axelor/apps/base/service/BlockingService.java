@@ -66,7 +66,7 @@ public class BlockingService {
         blockingType,
         Beans.get(AppBaseService.class)
             .getTodayDate()
-            .format(DateTimeFormatter.ofPattern("YYYY-MM-dd")),
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         company.getId());
   }
 }
