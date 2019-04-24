@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.0]
 ## Features
 - Add Pack Feature in sale order.
+- FLEET : Manage rental cars and minor fixes
 
 ## Improvements
 - Remove Pack Feature from Product.
