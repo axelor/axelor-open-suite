@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="vehicle-rent-grid" title="Vehicle rent" model="com.axelor.apps.fleet.db.VehicleRent">
+		<field name="customer"/>
+		<field name="vehicleModel"/>
+		<field name="plateNo"/>
+		<field name="contractNo"/>
+		<field name="rentStartDate"/>
+		<field name="rentEndDate"/>
+		<field name="mileage"/>
+		<field name="unit"/>
+	</grid>
+
+	<form name="vehicle-rent-form" title="Vehicle rent" model="com.axelor.apps.fleet.db.VehicleRent" width="large">
+		<panel name="mainPanel">
+			<field name="customer" colSpan="3"/>
+			<field name="vehicleModel" colSpan="3"/>
+			<field name="plateNo" widget="ref-text" x-target-name="plateNo" x-target="com.axelor.apps.fleet.db.Vehicle" domain="self.vehicleModel = :vehicleModel and self.isRentalCar = true" colSpan="3"/>
+			<field name="contractNo" colSpan="3"/>
+			<field name="rentStartDate" colSpan="3"/>
+			<field name="rentEndDate" colSpan="3"/>
+			<field name="mileage" colSpan="3"/>
+			<field name="unit" domain="self.labelToPrinting = 'km' or self.labelToPrinting = 'miles'" colSpan="3"/>
+		</panel>
+	</form>
+
+</object-views>

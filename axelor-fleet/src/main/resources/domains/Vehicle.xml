@@ -32,7 +32,10 @@
 		<many-to-one name="image"  title="Image" ref="com.axelor.meta.db.MetaFile" />
 		<decimal name="carValue" title="Car value" />
 		<boolean name="isArchived" default="false" title="Archived"/>
-			
+		<boolean name="isRentalCar" title="Rental car"/>
+		<string name="fuelCardNumber" title="Fuel card number"/>
+		<string name="fuelCardCode" title="Fuel card code"/>
+		<one-to-many name="vehicleRepairList" title="Repairs" ref="com.axelor.apps.fleet.db.VehicleRepair"/>
 	</entity>
 
 </domain-models>
