@@ -461,7 +461,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "ventes.dat";
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -647,7 +652,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "avoirs.dat";
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -834,7 +844,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "tresorerie.dat";
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -1045,7 +1060,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "achats.dat";
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForHeaderFile(accountingReport.getTypeSelect()), allMoveData, accountingReport);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   @Override
@@ -1210,10 +1230,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[15] =
               move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
-        
+
         items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
-        if(moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
-        	items[16] = "-" + items[16];
+        if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          items[16] = "-" + items[16];
         }
 
         if (move.getCurrency() != null) {
@@ -1231,7 +1252,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
+    writeMoveLineToCsvFile(
+        company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
     accountingReportRepo.save(accountingReport);
   }
 
@@ -1435,7 +1457,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    writeMoveLineToCsvFile(company, fileName, this.createHeaderForDetailFile(typeSelect), allMoveLineData, accountingReport);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForDetailFile(typeSelect),
+        allMoveLineData,
+        accountingReport);
   }
 
   private void writeMoveLineToCsvFile(
