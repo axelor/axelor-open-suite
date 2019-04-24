@@ -103,9 +103,9 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setProject(null);
     entity.setProgressSelect(null);
     entity.setTaskEndDate(null);
+    entity.setMetaFile(null);
     return super.copy(entity, deep);
   }
 }

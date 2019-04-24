@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businesssupport.db.repo;
+package com.axelor.apps.businessproject.db.repo;
 
-import com.axelor.apps.businessproject.db.repo.TeamTaskBusinessProjectRepository;
+import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
 import com.axelor.team.db.TeamTask;
 
-public class TeamTaskBusinessSupportRepository extends TeamTaskBusinessProjectRepository {
+public class TeamTaskBusinessProjectRepository extends TeamTaskHRRepository {
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setTargetVersion(null);
+    entity.setSaleOrderLine(null);
+    entity.setInvoiceLine(null);
     return super.copy(entity, deep);
   }
 }
