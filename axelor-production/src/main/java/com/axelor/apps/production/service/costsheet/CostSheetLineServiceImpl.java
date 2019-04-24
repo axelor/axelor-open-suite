@@ -229,13 +229,12 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     costPrice = costPrice.multiply(consumptionQty);
     costPrice =
-        unitConversionService
-            .convert(
-                unit,
-                product.getUnit(),
-                costPrice,
-                appProductionService.getNbDecimalDigitForUnitPrice(),
-                product);
+        unitConversionService.convert(
+            unit,
+            product.getUnit(),
+            costPrice,
+            appProductionService.getNbDecimalDigitForUnitPrice(),
+            product);
 
     List<CostSheetLine> costSheetLineList =
         parentCostSheetLine.getCostSheetLineList() != null
