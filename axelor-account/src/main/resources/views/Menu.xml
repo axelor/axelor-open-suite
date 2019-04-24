@@ -46,7 +46,7 @@
 	</action-view>
 	
 	<menuitem name="invoice-root-purchase-supinvoices-my-awaiting-pfp" title="My awaiting PFP" action="invoice.root.purchase.supinvoices.my.awaiting.pfp" 
-		parent="invoice-root-purchase-supinvoices" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>		
+		parent="invoice-root" if="__config__.app.getApp('account').getActivatePassedForPayment()" order="16"/>		
 	
 	<action-view name="invoice.root.purchase.supinvoices.my.awaiting.pfp" title="awaitingPfpMenuTitle"
 		model="com.axelor.apps.account.db.Invoice" >
@@ -59,7 +59,7 @@
 	</action-view>
 		
 	<menuitem name="invoice-root-purchase-supinvoices-awaiting-pfp" title="awaitingPfpMenuTitle" action="invoice.root.purchase.supinvoices.awaiting.pfp" 
-		parent="invoice-root-purchase-supinvoices" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>		
+		parent="invoice-root" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser" order="17"/>		
 	
 	<action-view name="invoice.root.purchase.supinvoices.awaiting.pfp" title="awaitingPfpMenuTitle"
 		model="com.axelor.apps.account.db.Invoice" >
