@@ -81,7 +81,7 @@
       			</panel>
 		      	<panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
+		        	<field name="productCategory" canEdit="false" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
@@ -100,7 +100,8 @@
   			</panel>
     		<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
-					<field name="sellable" colSpan="12"/>
+					<field name="sellable" colSpan="6"/>
+					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
@@ -195,8 +196,6 @@
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
-                    <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
-                    <field name="economicManufOrderQty"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>

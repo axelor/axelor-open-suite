@@ -18,16 +18,21 @@
 
 	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine"
 		  canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false">
-		<field name="invoice.partner"/>
-		<field name="invoice.invoiceId"/>
-		<field name="product.code"/>
-		<field name="productName"/>
-		<field name="qty" aggregate="sum"/>
-		<field name="price" x-scale="2"/>
-        <field name="inTaxPrice" x-scale="2"/>
-		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="exTaxTotal" aggregate="sum"/>
-		<field name="inTaxTotal" aggregate="sum"/>
+		<field name="invoice.partner.partnerSeq" title="Partner code"/>
+  		<field name="invoice.partner.simpleFullName" title="Partner"/>
+ 	    <field name="invoice.invoiceId"/>
+ 	    <field name="invoice.invoiceDate" title="Date"/>
+  		<field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
+  		<field name="invoice.address.addressL7Country"/>
+  		<field name="product.code" title="product.code"/>
+  		<field name="productName"/>
+  		<field name="qty" aggregate="sum"/>
+  		<field name="price" x-scale="2"/>
+  		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+  		<field name="exTaxTotal" aggregate="sum"/>
+  		<field name="inTaxTotal" aggregate="sum"/>
+  		<field name="invoice.currency"/>
+  		<field name="invoice.companyExTaxTotal" title="WT amount in company currency" aggregate="sum"/> 
 	</grid>
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
@@ -90,7 +95,7 @@
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>

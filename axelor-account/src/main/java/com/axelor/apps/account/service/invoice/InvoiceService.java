@@ -132,6 +132,8 @@ public interface InvoiceService {
   @Transactional
   public void usherProcess(Invoice invoice);
 
+  String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
+
   /**
    * Créer un avoir.
    *

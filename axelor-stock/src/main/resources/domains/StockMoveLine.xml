@@ -74,6 +74,10 @@
 		public static final int STATUS_AVAILABLE_FOR_PRODUCT = 2;
 		public static final int STATUS_MISSING = 3;
     ]]></extra-code>
+    
+    <track>
+    	<field name="realQty"/>
+    </track>
   </entity>
 
   <enum name="Regime" numeric="true">

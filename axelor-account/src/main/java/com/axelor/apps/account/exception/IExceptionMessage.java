@@ -631,6 +631,8 @@ public interface IExceptionMessage {
       "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
   static final String VENTILATE_STATE_6 = /*$$(*/
       "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
+  static final String VENTILATE_STATE_7 = /*$$(*/
+      "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
@@ -783,4 +785,10 @@ public interface IExceptionMessage {
       "Pfp validator changed successfully" /*)*/;
   static final String USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION = /*$$(*/
       "No Accounting Situation related to %s." /*)*/;
+
+  /* Check refunds */
+  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed supplier refunds."; /*)*/
 }

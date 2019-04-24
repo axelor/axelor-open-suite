@@ -145,6 +145,15 @@
     <action-attrs name="action-partner-attrs-show-specific-tax-note">
         <attribute for="specificTaxNote" name="hidden" expr="eval: fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
     </action-attrs>
+    
+    <action-view name="action-partner-view-show-customer-debt-recovery" model="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery">
+    	<view name="debt-recovery-grid" type="grid"/>
+    	<view name="debt-recovery-form" type="form"/>
+    	<domain>self.accountingSituation.partner = :_partner</domain>
+    	<context name="_partner" expr="eval: __self__"/>
+    	<context name="_showSingle" expr="eval:true"/>
+    </action-view>
+    
 
 	
 </object-views>

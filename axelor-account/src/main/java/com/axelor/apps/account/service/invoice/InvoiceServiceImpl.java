@@ -300,7 +300,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      if (invoiceLine.getAccount() == null
+      Account account = invoiceLine.getAccount();
+
+      if (account == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
           && invoiceLineService.isAccountRequired(invoiceLine)) {
         throw new AxelorException(
@@ -308,6 +310,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
+      }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (invoiceLine.getAnalyticDistributionTemplate() != null
+              || (invoiceLine.getAnalyticMoveLineList() != null
+                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
       }
     }
 
@@ -360,6 +373,49 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       Beans.get(MoveRepository.class).save(move);
     }
+  }
+
+  @Override
+  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        long clientRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+        if (clientRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+        }
+      }
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        long supplierRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+
+        if (supplierRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private long getRefundsAmount(Long partnerId, int refundType) {
+    return invoiceRepo
+        .all()
+        .filter(
+            "self.partner.id = ?"
+                + " AND self.operationTypeSelect = ?"
+                + " AND self.statusSelect = ?"
+                + " AND self.amountRemaining > 0",
+            partnerId,
+            refundType,
+            InvoiceRepository.STATUS_VENTILATED)
+        .count();
   }
 
   /**

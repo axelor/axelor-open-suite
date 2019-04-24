@@ -24,6 +24,7 @@
 		<panel name="actionsPanel" title="Actions">
 			<field name="messageTemplateSet" form-view="template-form" grid-view="template-grid" colSpan="12"/>
 			<field name="printingMessage" widget="HTML" colSpan="12"/>
+			<field name="specificPrintingMessage" widget="HTML" colSpan="12"/>
 		</panel>
 	</form>
 

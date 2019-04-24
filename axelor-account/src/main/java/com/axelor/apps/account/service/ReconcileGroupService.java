@@ -113,6 +113,7 @@ public interface ReconcileGroupService {
    * Unletter every moveline and update unlettering date.
    *
    * @param reconcileGroup
+   * @throws AxelorException
    */
-  void unletter(ReconcileGroup reconcileGroup);
+  void unletter(ReconcileGroup reconcileGroup) throws AxelorException;
 }

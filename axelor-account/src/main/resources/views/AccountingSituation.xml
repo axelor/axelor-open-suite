@@ -40,8 +40,10 @@
 			<field name="invoiceAutomaticMail"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
-		<panel name="debtRecoveryProcessPanel" title="Debt recovery process">
-			<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
+		<panel name="debtRecoveryProcessPanel" title="Debt recovery process" hideIf="debtRecovery == null">
+			<field name="debtRecovery.debtRecoveryMethodLine.debtRecoveryLevelLabel" title="AccountingSituation.debtRecoveryLevelLabel" colSpan="3"/>
+			<field name="debtRecovery.balanceDueDebtRecovery" title="Balance due recoverable" colSpan="4"/>
+			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
 		</panel>
 
 		<panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
@@ -153,6 +155,10 @@
 
 	<action-method name="action-account-accounting-situation-set-outbd-domain">
 		<call class="com.axelor.apps.account.web.AccountingSituationController" method="createOutBankDetailsDomain"/>
+	</action-method>
+	
+	<action-method name="action-accounting-situation-method-open-debt-recovery">
+		<call class="com.axelor.apps.account.web.AccountingSituationController" method="openDebtRecovery"/>
 	</action-method>
 
  </object-views>
