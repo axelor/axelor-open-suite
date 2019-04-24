@@ -44,7 +44,32 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-
+	
+	<menuitem name="invoice-root-purchase-supinvoices-my-awaiting-pfp" title="My awaiting PFP" action="invoice.root.purchase.supinvoices.my.awaiting.pfp" 
+		parent="invoice-root" if="__config__.app.getApp('account').getActivatePassedForPayment()" order="16"/>		
+	
+	<action-view name="invoice.root.purchase.supinvoices.my.awaiting.pfp" title="awaitingPfpMenuTitle"
+		model="com.axelor.apps.account.db.Invoice" >
+		<view type="grid" name="invoice-supplier-grid" />
+		<view type="form" name="invoice-form" />
+		<view-param name="search-filters" value="supplier-invoices-filters"/>
+		<domain>self.operationTypeSelect = 1 and self.pfpValidateStatusSelect in (1,3) and self.pfpValidatorUser = :_currentUser and self.company.accountConfig.isManagePassedForPayment = true</domain>
+		<context name="_operationTypeSelect" expr="eval:1"/>
+		<context name="_currentUser" expr="eval:__user__"/>
+	</action-view>
+		
+	<menuitem name="invoice-root-purchase-supinvoices-awaiting-pfp" title="awaitingPfpMenuTitle" action="invoice.root.purchase.supinvoices.awaiting.pfp" 
+		parent="invoice-root" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser" order="17"/>		
+	
+	<action-view name="invoice.root.purchase.supinvoices.awaiting.pfp" title="awaitingPfpMenuTitle"
+		model="com.axelor.apps.account.db.Invoice" >
+		<view type="grid" name="invoice-supplier-grid" />
+		<view type="form" name="invoice-form" />
+		<view-param name="search-filters" value="supplier-invoices-filters"/>
+		<domain>self.operationTypeSelect = 1 and self.pfpValidateStatusSelect in (1,3)</domain>
+		<context name="_operationTypeSelect" expr="eval:1"/>
+	</action-view>
+		
 	<menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="20"
 		title="Suppl. Refunds" action="invoice.root.purchase.suprefunds" />
 
@@ -126,6 +151,21 @@
 		<view type="grid" name="payment-voucher-grid"/>
 		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
+	</action-view>
+	
+	<menuitem name="account-root-payments-suppl-invoices-to-pay"
+		parent="account-root-payments" title="Suppl. Invoices to pay"
+		action="account.root.payments.suppl.invoices.to.pay" />
+
+	<action-view name="account.root.payments.suppl.invoices.to.pay"
+		title="Suppl. Invoices to pay" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-supplier-grid"/>
+		<view type="form" name="invoice-form"/>
+		<view-param name="search-filters" value="supplier-invoices-filters"/>
+		<domain>self.operationTypeSelect = 1 and self.statusSelect = 3 and self.amountRemaining != 0 and self.pfpValidateStatusSelect in :_pfpStatus and self.company.accountConfig.isManagePassedForPayment = true</domain>
+		<context name="_operationTypeSelect" expr="eval:1"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context  name="_pfpStatus" expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
 	</action-view>
 
 	<menuitem name="account-root-periodic-processing" parent="account-root"

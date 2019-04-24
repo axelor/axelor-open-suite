@@ -61,7 +61,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -788,10 +787,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenBy(AuthUtils.getUser());
     invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
-    invoice.setReasonOfRefusalToPayStr(reasonOfRefusalToPayStr);
+    invoice.setReasonOfRefusalToPayStr(
+        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
 
     invoiceRepo.save(invoice);
   }
