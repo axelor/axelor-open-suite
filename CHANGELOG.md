@@ -104,6 +104,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
 - JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 - JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
 
 
 ## [5.1.5] - 2019-03-30
