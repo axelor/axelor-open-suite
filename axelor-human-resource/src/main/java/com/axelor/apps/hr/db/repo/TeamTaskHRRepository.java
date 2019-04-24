@@ -58,4 +58,12 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
     project.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(project));
   }
+
+  @Override
+  public TeamTask copy(TeamTask entity, boolean deep) {
+    entity.setTotalPlannedHrs(null);
+    entity.setTotalRealHrs(null);
+    entity.setProjectPlanningTimeList(null);
+    return super.copy(entity, deep);
+  }
 }

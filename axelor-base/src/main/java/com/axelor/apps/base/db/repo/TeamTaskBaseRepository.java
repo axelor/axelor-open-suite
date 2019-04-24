@@ -69,6 +69,7 @@ public class TeamTaskBaseRepository extends TeamTaskRepository {
   public TeamTask copy(TeamTask entity, boolean deep) {
     entity.setAssignedTo(null);
     entity.setTaskDate(null);
+    entity.setPriority(null);
     return super.copy(entity, deep);
   }
 }
