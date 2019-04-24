@@ -101,7 +101,7 @@
         <field name="currency" />
         <field name="statusSelect"/>
         <field name="pfpValidateStatusSelect" title="PFP" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-        <field name="decisionPfpTakenBy" title="PFP val." if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+        <field name="pfpValidatorUser" title="PFP val." if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 		<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>	
 		<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>        
         <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
@@ -364,9 +364,7 @@
 			</panel>
 			<panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">				
 				<panel name="pfpValidationPanel" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 )">
-					<field name="pfpValidateStatusSelect" colSpan="4"/>
-					<field name="pfpValidatorUser" hideIf="pfpValidateStatusSelect == 2" colSpan="4" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
-					<button name="sendPfpNotifyEmailBtn" hideIf="pfpValidateStatusSelect == 2 || $isSelectedPfpValidatorEqualsPartnerPfpValidator" colSpan="4" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>	
+					<field name="pfpValidateStatusSelect" hidden="true" colSpan="4"/>
 					<field name="reasonOfRefusalToPayStr" readonly="true" showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
@@ -434,8 +432,11 @@ InvoiceSet.length > 0))"
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (!company.accountConfig.isManagePassedForPayment || (( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
-            <field name="decisionPfpTakenBy" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)  &amp;&amp; decisionPfpTakenBy" colSpan="6" canView="false"/>
-			<field name="decisionPfpTakenDate" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)  &amp;&amp; decisionPfpTakenDate" colSpan="6"/>			
+			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
+			<panel colSpan="6">
+				<field name="decisionPfpTakenDate" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)  &amp;&amp; decisionPfpTakenDate" colSpan="12"/>			
+				<button name="sendPfpNotifyEmailBtn" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="(company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)) &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>			
+			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
         </panel>
@@ -948,13 +949,11 @@ InvoiceSet.length > 0))"
 	
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 2"/>
-		<field name="decisionPfpTakenBy" expr="eval: __user__"/>
 		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
 	</action-record>
 	
 	<action-record name="action-invoice-record-refusal-to-pay" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 3"/>
-		<field name="decisionPfpTakenBy" expr="eval: __user__"/>
 		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
 		<field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>			
 	</action-record>
@@ -1028,7 +1027,7 @@ InvoiceSet.length > 0))"
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-is-valid-pfp-validator-user">
-		<attribute name="value" for="$isValidPfpValidatorUser" expr="eval: __user__ == pfpValidatorUser"/>
+		<attribute name="value" for="$isValidPfpValidatorUser" expr="eval: __user__.isSuperPfpUser || __user__ == pfpValidatorUser"/>
 	</action-attrs>
     
 	<!-- DOMAIN -->

@@ -130,7 +130,6 @@
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
 	
-	<many-to-one name="decisionPfpTakenBy" ref="com.axelor.auth.db.User" title="PFP validator" readonly="true"/>
 	<date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
 	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
 	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
