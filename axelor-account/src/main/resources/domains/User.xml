@@ -8,6 +8,7 @@
   <entity name="User" sequential="true" lang="java">
   	<one-to-many name="substitutePfpValidatorList" ref="com.axelor.apps.account.db.SubstitutePfpValidator" title="Substitute PFP Validator"/>
   	<boolean name="isPfpValidator" title="PFP Validator"/>
+  	<boolean name="isSuperPfpUser" title="Super User"/>
   </entity>
 
 </domain-models>

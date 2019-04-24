@@ -85,7 +85,6 @@ public class CancelState extends WorkflowInvoice {
 
   protected void setPfpStatus() {
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
-    invoice.setDecisionPfpTakenBy(null);
     invoice.setDecisionPfpTakenDate(null);
   }
 }
