@@ -21,6 +21,7 @@
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Leave reason: choose unit between days and hours.
 - INVOICE LINE MENU : add new columns in grid view
+- Studio: Auto fill app name for new model when app is selected. Added help support. 
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -104,6 +105,11 @@
 - JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
 - JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 - JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
+- BPM : Fix create selection and buttons by wkf field.
+- Studio: Fix widget selection for M2M field and fix minor design issues. 
+- BPM : Fix save a new status field for custom model.
 - INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
 This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
 

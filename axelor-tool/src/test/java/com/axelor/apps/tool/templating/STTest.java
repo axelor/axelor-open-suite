@@ -93,7 +93,7 @@ public class STTest {
             + contact.getLastName().toUpperCase()
             + "</p>"
             + "<p><strong>DateOfBirth:</strong> "
-            + contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))
+            + contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             + "</p>"
             + "<p>&nbsp;</p>"
             + "<p><em>Contact me:</em>&nbsp;<a href='mailto:"
