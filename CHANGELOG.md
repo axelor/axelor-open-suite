@@ -53,6 +53,7 @@
 - ICalendar : Set error message if there is no event to synchronize
 - Stock move mass invoicing: Creating a single invoice with a negative total amount will create a refund instead.
 - INVOICE : Update invoice payment informations alignment in the total panel
+- EMPLOYEE : Update timesheet dashlet domain
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
