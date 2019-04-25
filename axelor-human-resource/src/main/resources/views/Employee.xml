@@ -3,11 +3,12 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
-		<toolbar>
+	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
+		 <toolbar>
 			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
-		</toolbar>	
-		 <field name="contactPartner.fullName"/>
+		 </toolbar>	
+		 <field name="contactPartner.partnerSeq"/>
+		 <field name="contactPartner.simpleFullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
 		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />

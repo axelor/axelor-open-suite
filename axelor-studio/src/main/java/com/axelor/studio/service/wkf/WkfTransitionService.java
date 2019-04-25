@@ -202,9 +202,11 @@ class WkfTransitionService {
     button.setWidgetAttrs("{\"colSpan\": \"3\"}");
     button.setOnClick(addButtonActions(transition, name));
 
-    Set<Role> buttonRoles = new HashSet<>();
-    buttonRoles.addAll(transition.getRoleSet());
-    button.setRoles(buttonRoles);
+    if (transition.getRoleSet() != null) {
+      Set<Role> buttonRoles = new HashSet<>();
+      buttonRoles.addAll(transition.getRoleSet());
+      button.setRoles(buttonRoles);
+    }
 
     log.debug("Adding button : {}", button.getName());
     wkfService.saveJsonField(button);

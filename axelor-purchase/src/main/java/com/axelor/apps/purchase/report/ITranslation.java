@@ -62,11 +62,6 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_AFTER_DISCOUNT = /*$$(*/
       "PurchaseOrder.afterDiscount"; /*)*/
   public static final String PURCHASE_ORDER_NOTE = /*$$(*/ "PurchaseOrder.note"; /*)*/
-  public static final String PURCHASE_ORDER_BANKING_INFO = /*$$(*/
-      "PurchaseOrder.bankingInfo"; /*)*/
-  public static final String PURCHASE_ORDER_CHEQUE = /*$$(*/ "PurchaseOrder.cheque"; /*)*/
-  public static final String PURCHASE_ORDER_BANK_DETAILS = /*$$(*/
-      "PurchaseOrder.bankDetails"; /*)*/
   public static final String PURCHASE_ORDER_STATE = /*$$(*/ "PurchaseOrder.state"; /*)*/
   public static final String PURCHASE_ORDER_DRAFT = /*$$(*/ "PurchaseOrder.draft"; /*)*/
   public static final String PURCHASE_ORDER_REQUESTED = /*$$(*/ "PurchaseOrder.requested"; /*)*/

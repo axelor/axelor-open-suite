@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -230,7 +231,8 @@ public class DebtRecoveryService {
         Move move = moveLine.getMove();
         // facture exigibles non bloquée en relance et dont la date de facture + délai
         // d'acheminement < date du jour
-        if (move.getInvoice() != null
+        if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
+            && move.getInvoice() != null
             && !move.getInvoice().getDebtRecoveryBlockingOk()
             && !move.getInvoice().getSchedulePaymentOk()
             && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
