@@ -108,6 +108,7 @@
 - APP BUILDER : Remove JsonCreator object
 - TeamTask : copy object with empty fields
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
+- EMPLOYEE : Update timesheet dashlet domain
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
