@@ -7,6 +7,7 @@
 - STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
 - STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
 - SALE ORDER : Fix NPE while changing contactPartner
+- EMPLOYEE : Fixed timesheet dashlet domain
 
 ## [5.0.9] - 2019-06-19
 ## Improvements
