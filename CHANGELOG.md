@@ -109,6 +109,8 @@
 - LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
 - BPM : Fix create selection and buttons by wkf field.
 - Studio: Fix widget selection for M2M field and fix minor design issues. 
+- BPM : Fix save a new status field for custom model.
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
