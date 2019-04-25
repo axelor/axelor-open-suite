@@ -247,7 +247,7 @@
         </panel>
 
         <panel name="invoicingInfoPanel" title="Invoicing informations" hideIf="company == null">
-            <field name="partner" canEdit="false" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+            <field name="partner" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect == 4) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
             <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
     		<field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true" readonly="true" colSpan="12">
       			<viewer><![CDATA[
@@ -541,7 +541,7 @@ InvoiceSet.length > 0))"
 		</panel>
 
 		<panel name="invoicingInfoPanel" title="Invoicing informations">
-			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
+			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect == 4) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-set-partner-domain" canView="false"/>
 			<field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
 			<field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true" readonly="true" colSpan="12">
@@ -923,7 +923,10 @@ InvoiceSet.length > 0))"
 	
 	<action-attrs name="action-set-partner-domain">
 		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isSupplier = true AND :company member of self.companySet&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
- 		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true AND :company member of self.companySet&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true AND :company member of self.companySet&quot;" if="(operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect == 1"/>
+ 		<attribute name="domain" for="partner" expr="eval:&quot;self.id != ${company.partner.id} AND self.isContact = false AND self.isCustomer = true AND :company member of self.companySet 
+ 			AND self.currency.id = ${currency.id} AND (${clientPartner?.id} = null OR (${clientPartner?.id} != null AND ${clientPartner?.salePartnerPriceList} = null OR self.salePartnerPriceList.id = ${clientPartner?.salePartnerPriceList?.id})
+ 				AND (${clientPartner?.fiscalPosition} = null OR self.fiscalPosition.id = ${clientPartner?.fiscalPosition?.id}))&quot;" if="statusSelect != 1 &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self = null&quot;"/>
 		<attribute for="contactPartner" name="domain" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')}) AND :company member of self.companySet&quot;" if="partner?.contactPartnerSet &amp;&amp; !partner.contactPartnerSet.isEmpty()"/>
 	</action-attrs>

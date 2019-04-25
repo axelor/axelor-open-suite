@@ -78,6 +78,7 @@
 - PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
 - AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it. 
 - Quality module : Changes in views.
+- Sale Order / Sale Invoice : Enable to change customer.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

@@ -267,7 +267,7 @@
 	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
-	      <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
+	      <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="statusSelect > 3" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
 	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
@@ -502,7 +502,7 @@
 	    </panel>
 
 		<panel name="customerInformationPanel" title="Customer information">
-			<field name="clientPartner" onChange="action-sale-order-group-client-partner-change" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" readonlyIf="statusSelect == 3"/>
+			<field name="clientPartner" onChange="action-sale-order-group-client-partner-change" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="contactPartner" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<panel name="mainInvoicingAddressPanel" stacked="true">
 				<field name="mainInvoicingAddress" canNew="true"
@@ -1127,7 +1127,10 @@
 	</action-attrs>
 
 	<action-attrs name="action-set-client-partner-domain">
- 		<attribute name="domain" for="clientPartner" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true) AND :company member of self.companySet&quot;"/>
+ 		<attribute name="domain" for="clientPartner" if="statusSelect &lt; 3" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true) AND :company member of self.companySet&quot;"/>
+ 		<attribute name="domain" for="clientPartner" if="statusSelect == 3" expr="eval:&quot;self.id != ${company.partner?.id} AND self.isContact = false and (self.isCustomer = true or self.isProspect = true) AND :company member of self.companySet
+ 			AND self.currency.id = ${currency.id} AND (${clientPartner?.id} = null OR (${clientPartner?.id} != null AND ${clientPartner?.salePartnerPriceList} = null OR self.salePartnerPriceList.id = ${clientPartner?.salePartnerPriceList?.id})
+ 				AND (${clientPartner?.fiscalPosition} = null OR self.fiscalPosition.id = ${clientPartner?.fiscalPosition?.id}))&quot;"/>
  	</action-attrs>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
