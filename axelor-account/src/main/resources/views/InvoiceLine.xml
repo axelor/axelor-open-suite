@@ -16,12 +16,11 @@
 	    <field name="typeSelect" hidden="true"/>
     </grid>
 
-	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine"
-		  canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false">
-		<field name="invoice.partner.partnerSeq" title="Partner code"/>
+	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true">
+  		<field name="invoice.partner.partnerSeq" title="Partner code"/>
   		<field name="invoice.partner.simpleFullName" title="Partner"/>
- 	    <field name="invoice.invoiceId"/>
- 	    <field name="invoice.invoiceDate" title="Date"/>
+  		<field name="invoice.invoiceId"/>
+ 		<field name="invoice.invoiceDate" title="Date"/>
   		<field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
   		<field name="invoice.address.addressL7Country"/>
   		<field name="product.code" title="product.code"/>
@@ -30,9 +29,9 @@
   		<field name="price" x-scale="2"/>
   		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
-  		<field name="inTaxTotal" aggregate="sum"/>
   		<field name="invoice.currency"/>
-  		<field name="invoice.companyExTaxTotal" title="WT amount in company currency" aggregate="sum"/> 
+  		<field name="companyExTaxTotal" title="WT amount in company currency" aggregate="sum" hidden="false"/>
+  		<field name="invoice.company.currency" title="Company currency"/>
 	</grid>
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
