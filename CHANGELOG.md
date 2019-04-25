@@ -21,6 +21,7 @@
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Leave reason: choose unit between days and hours.
 - INVOICE LINE MENU : add new columns in grid view
+- Studio: Auto fill app name for new model when app is selected. Added help support. 
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -107,7 +108,7 @@
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
 - LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
 - BPM : Fix create selection and buttons by wkf field.
-
+- Studio: Fix widget selection for M2M field and fix minor design issues. 
 
 ## [5.1.5] - 2019-03-30
 ## Features
