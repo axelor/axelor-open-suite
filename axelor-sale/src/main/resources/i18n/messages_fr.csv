@@ -1,7 +1,7 @@
 "key","message","comment","context"
 "%s : You must configure Sales module for company %s","%s : Veuillez configurer le module vente pour la société %s",,
 "A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
-"ABC analysis","Classement ABC",,
+"ABC analysis","Classification ABC",,
 "ATI","TTC",,
 "Accepted Credit","Montant encours accepté",,
 "Accounted Revenue","C.A. pris en compte",,

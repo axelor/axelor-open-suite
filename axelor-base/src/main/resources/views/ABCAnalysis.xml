@@ -20,16 +20,16 @@
             <field name="type"/>
         </panel>
         <panel name="informationsPanel" title="Informations">
-            <field name="name"/>
-            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" />
+            <field name="name" readonlyIf="statusSelect != 1" required="true"/>
+            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect != 1"/>
             <field name="createdOn"/>
             <field name="createdBy"/>
-            <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates"/>
-            <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates"/>
-            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"/>
+            <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect != 1"/>
+            <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect != 1"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect != 1"/>
         </panel>
         <panel name="descriptionPanel" title="Description" canCollapse="true" collapseIf="statusSelect != 1">
-            <field name="description" colSpan="12" showTitle="false" readonlyIf="statusSelect != 1"/>
+            <field name="description" colSpan="12" showTitle="false" readonlyIf="statusSelect != 1" widget="html"/>
         </panel>
         <panel name="classesProductsPanel" title="Classes and products" canCollapse="true" collapseIf="statusSelect != 1">
             <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect != 1"/>

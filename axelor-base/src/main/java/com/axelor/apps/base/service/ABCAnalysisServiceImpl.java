@@ -30,8 +30,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private BigDecimal totalQty = BigDecimal.ZERO;
     private BigDecimal totalWorth = BigDecimal.ZERO;
 
-    private BigDecimal cumulatedQty = BigDecimal.ZERO;
-    private BigDecimal cumulatedWorth = BigDecimal.ZERO;
+    private BigDecimal cumulatedQty = BigDecimal.valueOf(0, 3);
+    private BigDecimal cumulatedWorth = BigDecimal.valueOf(0, 3);
 
     private List<ABCAnalysisClass> abcAnalysisClassList;
 
@@ -193,8 +193,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     private void computePercentage(ABCAnalysisLine abcAnalysisLine){
-        BigDecimal qty = abcAnalysisLine.getDecimalQty().divide(totalQty, 5, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100));
-        BigDecimal worth = abcAnalysisLine.getDecimalWorth().divide(totalWorth, 5, RoundingMode.HALF_EVEN).multiply(BigDecimal.valueOf(100));
+        BigDecimal qty = abcAnalysisLine.getDecimalQty().multiply(BigDecimal.valueOf(100)).divide(totalQty, 3, RoundingMode.HALF_EVEN);
+        BigDecimal worth = abcAnalysisLine.getDecimalWorth().multiply(BigDecimal.valueOf(100)).divide(totalWorth, 3, RoundingMode.HALF_EVEN);
 
         incCumulatedQty(qty);
         incCumulatedWorth(worth);
@@ -209,12 +209,13 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine){
         BigDecimal maxQty = BigDecimal.ZERO;
         BigDecimal maxWorth = BigDecimal.ZERO;
+        BigDecimal lineCumulatedQty = abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal lineCumulatedWorth = abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_EVEN);
 
         for(ABCAnalysisClass abcAnalysisClass: abcAnalysisClassList){
             maxQty = maxQty.add(abcAnalysisClass.getQty());
             maxWorth = maxWorth.add(abcAnalysisClass.getWorth());
-            if(abcAnalysisLine.getCumulatedWorth().compareTo(maxWorth) <= 0
-            && abcAnalysisLine.getCumulatedQty().compareTo(maxQty) <= 0){
+            if(lineCumulatedQty.compareTo(maxQty) <= 0 && lineCumulatedWorth.compareTo(maxWorth) <= 0){
                 abcAnalysisLine.setAbcAnalysisClass(abcAnalysisClassRepository.find(abcAnalysisClass.getId()));
                 break;
             }

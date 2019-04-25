@@ -8,12 +8,12 @@
         <field name="product.name"/>
         <field name="product.productCategory"/>
         <field name="decimalWorth" width="90px"/>
-        <field name="worth" width="95px"/>
-        <field name="cumulatedWorth" width="155px"/>
+        <field name="worth" width="95px" x-scale="2"/>
+        <field name="cumulatedWorth" width="155px" x-scale="2"/>
         <field name="decimalQty" width="75px"/>
-        <field name="qty" width="80px"/>
-        <field name="cumulatedQty" width="130px"/>
-        <field name="abcAnalysisClass" width="80px">
+        <field name="qty" width="80px" x-scale="2"/>
+        <field name="cumulatedQty" width="130px" x-scale="2"/>
+        <field name="abcAnalysisClass" width="80px" >
             <hilite if="abcAnalysisClass.name == 'A'" background="success"/>
             <hilite if="abcAnalysisClass.name == 'B'" background="primary"/>
             <hilite if="abcAnalysisClass.name == 'C'" background="info"/>
@@ -26,8 +26,8 @@
             <field name="abcAnalysisClass"/>
             <field name="decimalWorth"/>
             <field name="decimalQty"/>
-            <field name="worth"/>
-            <field name="qty"/>
+            <field name="worth" x-scale="2"/>
+            <field name="qty" x-scale="2"/>
         </panel>
     </form>
 </object-views>

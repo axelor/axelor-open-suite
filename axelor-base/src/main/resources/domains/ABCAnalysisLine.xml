@@ -11,11 +11,11 @@
         <many-to-one name="abcAnalysisClass" ref="com.axelor.apps.base.db.ABCAnalysisClass" title="Class"/>
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
         <decimal name="decimalQty" title="Qty"/>
-        <decimal name="qty" title="Qty (%)"/>
-        <decimal name="cumulatedQty" title="Cumulated qty (%)" />
+        <decimal name="qty" title="Qty (%)" precision="6" scale="3"/>
+        <decimal name="cumulatedQty" title="Cumulated qty (%)" precision="6" scale="3"/>
         <decimal name="decimalWorth" title="Worth"/>
-        <decimal name="worth" title="Worth (%)"/>
-        <decimal name="cumulatedWorth" title="Cumulated worth (%)"/>
+        <decimal name="worth" title="Worth (%)" precision="6" scale="3"/>
+        <decimal name="cumulatedWorth" title="Cumulated worth (%)" precision="6" scale="3"/>
 
     </entity>
 
