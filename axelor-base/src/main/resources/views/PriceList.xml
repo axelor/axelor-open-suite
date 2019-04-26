@@ -44,6 +44,8 @@
 			<panel-related name="historizedPriceListPanel" field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
 			<button name="historizePriceListBtn" hideIf="!id || $popup()" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
+		<panel-dashlet name="salePartnerPriceListPanel" title="Partner price lists" action="action-price-list-dashlet-sale-partner-price-list" colSpan="12" showIf="typeSelect == 1"/>
+		<panel-dashlet name="purchasePartnerPriceListPanel" title="Partner price lists" action="action-price-list-dashlet-purchase-partner-price-list" colSpan="12" showIf="typeSelect == 2"/>
    </form>
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
@@ -99,6 +101,20 @@
 		<call class="com.axelor.apps.base.web.PriceListController"
 			  method="checkDates"/>
 	</action-method>
+	
+	<action-view name="action-price-list-dashlet-sale-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+		<view type="grid" name="partner-price-list-grid"/>
+		<view type="form" name="sale-partner-price-list-form"/>
+		<domain>:priceList MEMBER OF self.priceListSet</domain>
+		<context name="priceList" expr="eval: __self__"/>
+	</action-view>
+	
+	<action-view name="action-price-list-dashlet-purchase-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+		<view type="grid" name="partner-price-list-grid"/>
+		<view type="form" name="purchase-partner-price-list-form"/>
+		<domain>:priceList MEMBER OF self.priceListSet</domain>
+		<context name="priceList" expr="eval: __self__"/>
+	</action-view>
    
 </object-views>
 

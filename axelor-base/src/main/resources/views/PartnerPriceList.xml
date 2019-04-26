@@ -26,6 +26,7 @@
                    domain="self.typeSelect = 1"
                    colSpan="12"/>
         </panel>
+        <panel-dashlet name="customersPanel" title="Customers" action="action-partner-price-list-dashlet-customer" colSpan="12"/>
     </form>
 
     <form name="purchase-partner-price-list-form" title="Price lists"
@@ -43,6 +44,7 @@
                    domain="self.typeSelect = 2"
                    colSpan="12"/>
         </panel>
+        <panel-dashlet name="suppliersPanel" title="Suppliers" action="action-partner-price-list-dashlet-supplier" colSpan="12"/>
     </form>
 
     <action-record name="action-record-partner-price-list-record-sale-type"
@@ -59,4 +61,18 @@
         <call class="com.axelor.apps.base.web.PartnerPriceListController"
               method="checkDates"/>
     </action-method>
+    
+    <action-view name="action-partner-price-list-dashlet-customer" title="Customers" model="com.axelor.apps.base.db.Partner">
+    	<view type="grid" name="partner-customer-grid"/>
+    	<view type="form" name="partner-customer-form"/>
+    	<domain>self.salePartnerPriceList = :partnerPriceList</domain>
+    	<context name="partnerPriceList" expr="eval: id"/>
+    </action-view>
+    
+    <action-view name="action-partner-price-list-dashlet-supplier" title="Suppliers" model="com.axelor.apps.base.db.Partner">
+    	<view type="grid" name="partner-supplier-grid"/>
+    	<view type="form" name="partner-supplier-form"/>
+    	<domain>self.purchasePartnerPriceList = :partnerPriceList</domain>
+    	<context name="partnerPriceList" expr="eval: id"/>
+    </action-view>
 </object-views>
