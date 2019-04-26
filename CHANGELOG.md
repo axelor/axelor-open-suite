@@ -55,6 +55,7 @@
 - INVOICE : Update invoice payment informations alignment in the total panel
 - EMPLOYEE : Update timesheet dashlet domain
 - Studio: New widget for role selection.
+- MENUS : changed menu-title for purchase requests and supplier requests
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
