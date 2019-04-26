@@ -55,6 +55,7 @@
 - INVOICE : Update invoice payment informations alignment in the total panel
 - EMPLOYEE : Update timesheet dashlet domain
 - Studio: New widget for role selection.
+- INVOICE : delete readonly condition in invoiceDate
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
