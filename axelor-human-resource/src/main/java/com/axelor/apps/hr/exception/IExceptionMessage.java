@@ -185,4 +185,6 @@ public interface IExceptionMessage {
   /** TsTimer Service */
   String NO_TIMESHEET_CREATED = /*$$(*/
       "No timesheet line has been created because the duration is less than 1 minute" /*)*/;
+
+  static final String EXPENSE_NOT_SELECTED = /*$$(*/ "Please, select an expense" /*)*/;
 }

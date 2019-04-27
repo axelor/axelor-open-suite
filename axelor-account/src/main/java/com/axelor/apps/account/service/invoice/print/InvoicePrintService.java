@@ -88,8 +88,9 @@ public interface InvoicePrintService {
    * @param ids ids of the invoice.
    * @return the link to the generated file.
    * @throws IOException
+   * @throws AxelorException
    */
-  String printInvoices(List<Long> ids) throws IOException;
+  String printInvoices(List<Long> ids) throws IOException, AxelorException;
 
   /**
    * Prepare report settings for one invoice.

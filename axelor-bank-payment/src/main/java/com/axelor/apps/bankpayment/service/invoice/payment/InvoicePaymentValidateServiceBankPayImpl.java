@@ -96,9 +96,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     int typeSelect = paymentMode.getTypeSelect();
     int inOutSelect = paymentMode.getInOutSelect();
 
-    if ((typeSelect == PaymentModeRepository.TYPE_DD
-            || typeSelect == PaymentModeRepository.TYPE_TRANSFER)
-        && inOutSelect == PaymentModeRepository.OUT
+    if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
+            || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
+        && inOutSelect == PaymentModeRepository.OUT)
         && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
