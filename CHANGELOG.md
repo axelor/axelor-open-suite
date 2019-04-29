@@ -119,6 +119,8 @@
 This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - ManufOrder : Move automaticEmail fields to ProductionConfig
+- Configurator creator: fix field names on import.
+- Configurator creator: fix export with production module.
 
 
 ## [5.1.5] - 2019-03-30
