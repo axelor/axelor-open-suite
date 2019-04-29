@@ -52,6 +52,7 @@
 - INVOICE LINE MENU : add new columns in grid view
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Cut-off : new button showing the stock move lines processed.
+- INVOICE : delete readonly condition in invoiceDate
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
