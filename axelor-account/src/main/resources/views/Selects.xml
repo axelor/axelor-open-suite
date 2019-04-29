@@ -51,6 +51,7 @@
 	<selection name='account.reconcile.group.status.select'>
 		<option value='1'>Temporary</option>
 		<option value='2'>Final</option>
+		<option value="3">Unlettered</option>
 	</selection>
 
 	<selection name='account.journal.status.select'>
@@ -85,8 +86,8 @@
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
-		<option value="1000">Export payroll journal entry -> Administration</option>
-		<option value="1001">Export payroll journal entry -> Acc. Soft.</option>
+		<option value="1000">Export journal entry -> Administration</option>
+		<option value="1001">Export journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>
@@ -377,5 +378,10 @@
 	<selection name="account.move.template.type.type.select">
 		<option value="1">%</option>
 		<option value="2">Amount</option>
+	</selection>
+	
+	<selection name="account.tax.type.select">
+		<option value="1">Collection</option>
+		<option value="2">Debit</option>
 	</selection>
 </object-views>

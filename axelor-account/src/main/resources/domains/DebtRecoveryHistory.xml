@@ -9,7 +9,7 @@
   
   	<many-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery"/>
 	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Reached debt recovery method line" />
+	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="DebtRecoveryHistory.debtRecoveryMethodLine" />
 	<date name="debtRecoveryDate" title="Last debt recovery date"/>
 	<date name="referenceDate" title="Reference date"/>
 	<boolean name="setToIrrecoverableOK" title="Shift to irrecoverable"/>

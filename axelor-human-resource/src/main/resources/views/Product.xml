@@ -21,7 +21,8 @@
     	</toolbar>
 	    <panel name="mainPanel">
 			<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" required="true" if="!__config__.app.getApp('base').getGenerateProductSequence()"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" if="__config__.app.getApp('base').getGenerateProductSequence()" readonly="true"/>
 			<panel name="productTypologyPanel" title="Product typology" colSpan="12">
 				<field name="productTypeSelect" readonly="true" />
 				<field name="deductLunchVoucher" hideIf="!expense" />
@@ -107,7 +108,7 @@
               </panel>
               <panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
                 <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-                <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+                <field name="productCategory" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
               </panel>
             </panel>
           </panel>

@@ -107,8 +107,7 @@
 				<field name="product.isUnrenewed" hidden="true"/>	
         		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>
@@ -164,12 +163,13 @@
 				<field name="subTotalMarkup" readonly="true"/>
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
-			<panel name="deliveryPanel" title="Delivery" readonlyIf="$isReadOnly !== false">
-				<field name="desiredDelivDate"/>
-				<field name="estimatedDelivDate"/>
-				<field name="deliveredQty" readonly="true"/>
-				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			<panel name="deliveryPanel" title="Delivery">
+				<field name="desiredDelivDate" readonlyIf="$isReadOnly !== false"/>
+				<field name="estimatedDelivDate" readonlyIf="$isReadOnly !== false"/>
+				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
+				<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" colSpan="3" onClick="action-view-sale-order-line-view-planned-stock-move-lines" widget="info-button" if-module="axelor-supplychain"/>
+				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
+				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
 			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="invoicingDate"/>
@@ -342,6 +342,7 @@
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
@@ -355,10 +356,12 @@
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
 		<action name="action-sale-order-line-attrs-sub-line" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-sale-order-line-attrs-fill-estimated-date"/>
+		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+			<action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
-    	<action name="action-sale-order-line-record-is-form-readonly"/>
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
@@ -372,6 +375,7 @@
 		<action name="action-sale-order-attrs-hide-ati"/>
 		<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
 		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+      <action name="action-record-sale-order-line-future-qty" if="__config__.app.isApp('supplychain')"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -388,6 +392,7 @@
       <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
+      <action name="action-record-sale-order-line-future-qty" if="__config__.app.isApp('supplychain')"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -399,6 +404,7 @@
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action name="action-sale-order-pack-subline-method-update-qty" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-sale-order-line-compute-total-pack" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" />
+			<action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
 
 	<action-group name="action-group-sale-saleorderline-tax-line-onchange">
@@ -463,11 +469,11 @@
 	</action-attrs>
 	
     <!-- ACTION RECORD -->
-    
+
 	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 2 || saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || amountInvoiced == exTaxTotal) || saleOrder?.statusSelect == 4 || isSubLine"/>
+		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 2 || saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || (exTaxTotal &amp;&amp; exTaxTotal != 0 &amp;&amp; amountInvoiced == exTaxTotal)) || saleOrder?.statusSelect == 4 || isSubLine"/>
 	</action-record>
-  
+
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="qty" expr="eval: 1"/>
     </action-record>

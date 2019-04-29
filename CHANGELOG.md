@@ -1,14 +1,269 @@
 # Changelog
 
-## [Unreleased 5.1.3]
-
+## [Unreleased 5.1.6]
 ## Features
-- PRODUCTION PROCESS : new view organization
+- TAX : Added typeSelect (Tax type) and filter in accounting reports
+- TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
+- Leave reason: choose unit between days and hours.
+- Studio: Auto fill app name for new model when app is selected. Added help support. 
+- PRODUCTS : Differentiate a classic product from a customised one
+
+## Improvements
+- CRM : Convert leads (change title and change the translation of title).
+- General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
+- DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
+- DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
+- PURCHASE ORDER PRINTING : Change titles and add productStandard
+- DEBT RECOVERY : New title for fields debtRecoveryMethodLine and debtRecovery.accountingSituation.partner.
+- STOCK LOCATION : Add 'Totals per Product Family' in Report
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- STOCK MOVE : added change tracking on invoice field
+- Menu entry for MetaPermission object in administration / User management.
+- HR : Update kilometric Allowance demo data(fr and en).
+- INVOICE : printing error from grid view.
+- SaleOrder,PurchaseOrder,Invoice : automatically fill the contact if there is only one contact in contactPartnerSet of related partner.
+- TRAINING : Field "calendar" not filled when a training event is created
+- GANTT : Auto-filling and saving issues When creating a new task from the Gantt,the project field should be auto-filled.
+- SALE ORDER : added translation for button customerDeliveriesDetailsBtn
+- PROJECT : Name on every button, button-group, item ( give name to items ).
+- Supplier arrival: Update error message.
+- MetaJsonField : Add help for all conditional fields of MetaJsonField
+- Reserved qty: auto allocation is now also ordered by estimated date.
+- WeeklyPlanning: manage durations in hours and rename methods.
+- PURCHASE ORDER PRINTING : Remove banking informations
+- ICalendar : Set error message if there is no event to synchronize
+- Stock move mass invoicing: Creating a single invoice with a negative total amount will create a refund instead.
+- INVOICE : Update invoice payment informations alignment in the total panel
+- EMPLOYEE : Update timesheet dashlet domain
+- Studio: New widget for role selection.
+- STOCK MOVE : tracking on invoice field
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- INVOICE LINE MENU : add new columns in grid view
+- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
+- Cut-off : new button showing the stock move lines processed.
+- INVOICE : delete readonly condition in invoiceDate
+- INVOICE : copy invoice with empty fields
+- MENUS : changed menu-title for purchase requests and supplier requests
+- PURCHASE REQUEST : Generate PO from Purchase Request
+
+## Bug Fixes
+- Project : FIX NPE due to duplicate existing project.
+- Account : fix reverse charge tax computation.
+- Contract : Specify type when generating the invoice.
+- Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
+- Remove mapping between Product Family and Product Category.
+- Fix NPE when planning with tracking number.
+- Fix future qty computation.
+- Invoice : cannot cancel an advance payment invoice.
+- Direct Debits : Fix NPE when partner.activeUmr is null
+- Product: Cost sheet group is not displayed twice in form view
+- Stock Location : Added fr translation for two boolean fields
+- AccountConfig : Specify filters for accounts.
+- CURRENCY Conversion: Avoid creating line if conversion is not available. 
+- Sale Order : put default value 0 to amountToInvoice and advise user if the field is null
+- Sale Order : display error message of max quantity of an advance payment
+- Sale order line : Fix delivered qty not increase if stock move is internal.
+- DEBT RECOVERY : don't add batch to model in case of anomalies
+- Sale : Fill clientPartner from contactPartner if clientPartner is null in SaleOrder.
+- DEBT RECOVERY : french translation of debt recovery settings
+- Sequence : Add sequence code select missing translation
+- Product : Remove BOM Value while copying.
+- STOCK MOVE : realDate should not fill when cancelling a planned move
+- MANUFORDER : Translate the "Outsourced" tag
+- TIMESHEET: Do not hide button to generate several lines.
+- TIMESHEET: Typo in name of two actions, rename 'generale' into 'generate'.
+- PARTNER : Fix can't change the address if partner is an employee.
+- DEBT RECOVERY : Fix unable to run debt recovery accounting batch.
+- EXPENSE : complete my expense (Error message when no expense is selected)
+- Purchase Order Line: fix delivery state update on splitted stock move lines.
+- Leave to justify : add a try catch to trace the exception with TraceBackService.
+- FIXED ASSETS : Issues with cents in depreciation tables
+- Sale order line: do not block on partial delivery with requested reserved quantity.
+- Stock Move : generate outgoing stock moves from a saleOrder/purchaseOrder with different products and different estimated shipment date according to its most recent estimated shipment date
+- PURCHASE ORDER : Corrupted generated PDF attached when purchase order goes to the status requested
+- DEBT RECOVERY BATCH : Fix not create debt recovery line if debtRecoveryHistoryList is null and balanceDueDebtRecovery is 0.
+- Sale Order Line: Fix readonly on new on latest ADK version.
+- DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
+- Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
+- MESSAGE : Error when an email address is null in a CC list of addresses
+- Budget Distrbution : warning message modified
+- Lunch Voucher Line: added compute action on the grid view. 
+- MOVE LINE : Fix NPE in the balance calculation.
+- Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
+- Invoice : fix NPE when printing invoices.
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+- JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
+- JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
+- JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
+- JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
+- BPM : Fix create selection and buttons by wkf field.
+- Studio: Fix widget selection for M2M field and fix minor design issues. 
+- BPM : Fix save a new status field for custom model.
+- INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
+This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- ManufOrder : Move automaticEmail fields to ProductionConfig
+- Configurator creator: fix field names on import.
+- Configurator creator: fix export with production module.
+- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
+
+## [5.1.5] - 2019-03-30
+## Features
+- Sale Order Line: new option to keep requested qty equal to qty.
+- MRP : Add a status to MRP Forecasts
+- Studio: Set canEdit and canNew for relational fields from studio.
+- Sale Order: new button to modify reserved quantities in lines.
+- Stock Location Line: New buttons to allocate or deallocate every related stock move lines.
+- Supplychain Config: add an option to auto allocate reserved qty on other stock moves.
+- Sale Order Line: new button showing the future qty of the product.
+- Account : Display technicalOriginSelect as tag in Move form.
+- Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
+- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
+
+## Improvements
+- Data config : rename field 'Fields'
+- Reserved qty: Add data checks in service and in view.
+- ProdProcess : Change in description of phase view.
+- ManufOrder : Added new label 'Outsourced'
+- Production : Change title for durations.
+- TASKS : Project planning time line autofill
+- ManufOrder : Hide isConsProOnOperation on manufacturing order when it is false on production process.
+- MANUFACTURING : Hide WORKSHOP menu based on Manfacturing app config.
+- Manuf Order : Forbid to plan a manuf order if the BoM and prodProcess are not applicable.
+- Sale Order: notify the creation of stock move after modification.
+- PRINTING SETTING : create a new menu entry "Printing Setting" in Application Config > Technical maintenance.
+- User : calendarManagementList remove from user-preferences-form.
+- TRAINING : Added calendar for training event.
+- INVOICE : display current date in printing when invoiceDate = null
+- Sale Order : Hide 'Order being edited' flag when complete manually edited sale order.
+- Stock Location Line: Future quantity is now computed from a query.
+- Stock Location Line: Requested reserved quantity is now computed from a query.
+- PROJECT : Add mass update for "imputable" field
+- HR : Add buttons for status change in JobApplication and a menu of Skill.
+- Invoice: Always print after validation.
+- Bank Payment : Added validatedByUser and validateDate fields in BankReconciliation.
+- HR : Add new column 'periodTotal' in timesheet validate grid.
+
+## Bug Fixes
+- Configurator : Fix demo data
+- Employee : Fix issue on save of contact master detail.
+- BankPayment : Change in slice of nextOrderId in EbicsUser.
+- MANUF. ORDER : display message when no default email account found to send email
+- STOCK MOVE : address printing issue
+- Debt Recovery Batch : NPE fixed
+- Ticket : remove pop-up onNew.
+- Product : set 'stockManaged' false when product is of type 'service'.
+- Account : Manage JPA cache for BatchRealizeFixedAssetLine.
+- Calendar : Synchronisation anomaly fixed.
+- Contract : better naming and translation (fr) for the buttons
+- HR : Fix employeeSet domain.
+- Add missing french translation.
+- Business Project : Link Project when invoice generate from sale order.
+- HR : Remove search from emailAddress from Employee.
+- Business Project : Hide sale order in report on conditon.
+- Stock Move: reservation date time is now readonly.
+- Supplychain : Addition of french translation.
+- BANKORDERFILEFORMAT : added missing file format already supported in java code : 'pain.008.001.02.sbb' and 'pain.008.001.02.sdd'
+- Sale Order/Purchase Order : generate one stock move will be display in one grid view and form view
+- Fix action call when validating a modified sale order.
+- Fix calendar view call in HR module.
+- Sale : Fix NPE due to null packPriceSelect.
+- PRODUCT : automatic sequence with generateProductSequence = true
+- Sale Order: do not generate empty stock move.
+- Fix concurrency exception on invoice.
+- Invoice: does not copy printedPDF metafile.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
+- GANTT : Fixes for links start-start and end-end links
+- Sale Order Line: When being edited, editable when the amount is 0.
+- ManufOrder: Prevent the user from removing realized stock move lines.
+- ManufOrder: does not create empty stock moves.
+- INVOICE : Replaced static french word Acompte(s) lié(s) with translation
+- Bank Payment : Forbid to edit, delete and create new line in BankReconciliationLine grid-view from menu entry.
+- BANKRECONCILIATION : remove duplicate description column from unreconciled MoveLines grid.
+- Stock Move Line: stock move is readonly in form view.
+- FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
+- ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+
+
+## [5.1.4] - 2019-03-11
+## Features
+- MARKETING CAMPAIGN : Manage guests and attendees
+- MARKETING CAMPAIGN : Send a reminder to invited targets
+- MARKETING CAMPAIGN : Add a boolean in targetModelSet to allow the editing of the targets
+
+## Improvements
+- Marketing : Filter of selection list and allow to insert value without quotes in TargetList object.
+- BUDGET : the budget line dates must be 'inside' the bugdet date and the lines can't 'share' dates
+- Marketing : added a panel-dashlet showing the generated emails in campaign.
+- Studio: Dynamic fetching of records for relational fields
+- CUSTOMER DELIVERY : editable deliveryCondition
+- CRM : Addition of 'freeText' boolean in LostReason and 'lostReasonStr' in lead and opportunity.
+- Sale Order: if config is activated, create stock move after modifications validation.
+- Improve Manuf order calculation rules (allow to select if we want take into account the WAP price or cost price for
+in progress manuf order and for bill of material, and add a prorata method for in progress manuf order calculation of cost sheet)
+- FixedAsset / FixedAssetLine : Translations on Few Fields Of fixed-asset-form form.
+- MANUF. ORDER : show error when no default email account
+- Stock Location: fill company on creating inventory
+- Change the page numbering on invoices and orders printing.
+- BANK STATEMENT : hide runImportBtn when status = "imported"
+- BillOfMaterial : make 'unit' required and notEditable field.
+- APP ACCOUNT : put Configuration panel before payer panel
+- SALES : translate availability requests in french
+- MANUF ORDER : open popup on cost sheet calculation
+- SALE ORDER : Removed amount display from title lines on print
+- CUST. DELIVERY : new tags "not invoiced" and "invoiced"
+
+## Bug Fixes
+- StockMoveLine: Fix wrong price values in declaration of exchanges.
+- PARTNER BALANCE REPORT : edition date is always empty.
+- Shipping Coef: company is now required.
+- Purchase Order Controller: Better exception management.
+- Sale Order: added missing check on confirmed sale order modification
+- MANUF ORDER : error when finishMoAutomaticEmail = true
+- Stock Move Invoicing: get price from stock move lines instead of from product.
+- STOCKMOVELINE : Fix NPE
+- Partner Stock Settings: fix exception when there were no settings for a company.
+- Manuf Order: fix produced product quantities computation.
+- Fix NPE on finishing manuf order.
+- SaleOrder : Fixed error for action attrs to hide inAti field.
+- Timesheet :Fix lines generation error.
+- SALEORDER : birt report - product picture
+- Partner price list : Fix when select price lists and put them in a partner price list.
+- MOVELINE EXPORT : Fixed NPE that appears when we generate a FEC (journal entry file) and there is a moveLine without originDate.
+- INVOICE PRINTING : remove blank space that appear just behind the invoice lines and remove the line spacings in note. Improve page number alignment.
+- Purchase Order : Fix error display on product when fields in supplierCatalogList are empty.
+- MANUF ORDER : Cancel reason shouldn't be required for draft or planned manuf order
+- PRODPROCESS : reset version and status on copy
+- BILLOFMATERIAL : reset version and costsheet related info on copy
+- Production Process : Fix error at creation of workCenter with human type from ProdProcessLine.
+- ACCOUNTING MOVES : Fix error message display at the wrong time
+- ACCOUNTING MOVES : NPE clicking on autoTaxLineGenerateBtn
+- Exception: formatting error.
+- PRODUCT : If stockManaged is false , hide ( mrpFamily,productStockPanel,stockReportPanel,stockHistoryReportPanel,linksPanel )
+- Translation : Fix english translation of accounting export types.
+- WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
+- ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
+
+## [5.1.3] - 2019-02-21
+## Features
 - CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
-- ContractTemplate : Addition of demo-data.
-- SALE ORDER : ISPM 15
-- MARKETING CAMPAIGN : Added eventStartDateT and eventEndDateT fields.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"
@@ -21,8 +276,8 @@
 - PURCHASE/SALE ORDERS LINES : Add new information fields in view
 - Manuf Order: Copy origin in stock moves generated by partial finish.
 - PARTNER: Remove the pop up information when the partner create a sale order/purchase order and his label is not null.
-- Invoice : Hide columns for invoices.
-- Account : Show move refernce on Move remove.
+- Invoice : Hide useless columns in invoice grids.
+- Account : Show move reference on Move remove exception.
 - BOM : name depending on nbDecimalDigitForBomQty.
 - SUPPLYCHAIN Batch: show popup if cut-off batch was launched twice in a month
 - Bank Reconciliation: show a pop up to advise the user of an incomplete bank reconciliation line when validate
@@ -37,7 +292,14 @@
 - EmployeeBonusMgt: update key for translation and set panel to readonly.
 - APP BUILDER : Added menu "Selections"
 - CONTROL POINT : Added titles in comments panels
-- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
+- Model Studio: Added title property for object,removed not supported menu colors and fixed widgets of M2O. 
+- PRODUCTION PROCESS : new view organization
+- ContractTemplate : Addition of demo-data.
+- MARKETING CAMPAIGN : Added eventStartDateT and eventEndDateT fields.
+- SALE ORDER : ISPM 15 management on form view and printing.
+- SALE ORDER : notify when stock move is generated automatically from sale order
+- STOCK MOVE : Creation of specific grid views of mass invoicing. 
+>>>>>>> dev
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
@@ -51,6 +313,10 @@
 - PARTNER STOCK SETTING : lines added automatically in table
 - MARKETING : Fix an error when launching the emailing
 - PURCHASE ORDER : Don't apply control on receipt stock move on direct order
+- BANK ORDER : fix issues that appear when we try to merge some bank order manually or automatically from mass invoice payments!
+First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
+Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
+- STOCKMOVE : Fix Invoice NPE
 
 
 ## [5.1.2] - 2019-02-11
@@ -60,10 +326,10 @@
 - Prod process: add stock move realize order select.
 - Manuf Order: Add button to consume in stock moves.
 - BANK RECONCILIATION : Add a wizard to do a multiple reconcile for the same bank statement line.
-- ACCOUNT: Account: add option to automatically create partners' accounts (backport from 5.0-dev)
-- SALE ORDER : notify when stock move is generated automatically from sale order
+- ACCOUNT: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
+- Invoice: show user an info popup if not imputed refunds exist
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
@@ -135,7 +401,6 @@
 - Timesheet: exception for date conflicts.
 - HR module: code refactoring.
 - ACCOUNT MOVE : automatic reconcile the reversion move with original move, generate a reversion move with the same date as original move
-- STOCK MOVE : Creation of specific grid views of mass invoicing. 
 - STOCK MOVE : Date on report printing
 - ACCOUNTING REPORT : Improve general ledger report in order to have a partner general ledger with lettering and due date.
 - Sale Order: saving a sale order being edited does not change its status.
@@ -685,6 +950,11 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[Unreleased 5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...dev
+[5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
+[5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
+[5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
 [5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
 [5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+

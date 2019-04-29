@@ -19,10 +19,12 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
@@ -383,9 +385,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
-    stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+
     invoiceRepository.save(invoice);
-    return Optional.of(invoice);
+    if (invoice.getExTaxTotal().signum() < 0) {
+      Invoice refund = transformToRefund(invoice);
+      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
+      invoiceRepository.remove(invoice);
+      return Optional.of(refund);
+    } else {
+      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+      return Optional.of(invoice);
+    }
   }
 
   @Override
@@ -470,9 +480,55 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
-    stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+
     invoiceRepository.save(invoice);
-    return Optional.of(invoice);
+    if (invoice.getExTaxTotal().signum() < 0) {
+      Invoice refund = transformToRefund(invoice);
+      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
+      invoiceRepository.remove(invoice);
+      return Optional.of(refund);
+    } else {
+      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+      return Optional.of(invoice);
+    }
+  }
+
+  /**
+   * Change the operation type and invert all prices in the invoice.
+   *
+   * @param invoice an invoice
+   * @return the refund invoice
+   */
+  protected Invoice transformToRefund(Invoice invoice) throws AxelorException {
+    Invoice refund = new RefundInvoice(invoice).generate();
+    if (refund.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
+        invoiceLine.setPrice(invoiceLine.getPrice().negate());
+        invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
+        invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
+        invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
+        invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
+        invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
+        invoiceLine.setCompanyInTaxTotal(invoiceLine.getCompanyInTaxTotal().negate());
+      }
+    }
+    if (refund.getInvoiceLineTaxList() != null) {
+      for (InvoiceLineTax invoiceLineTax : refund.getInvoiceLineTaxList()) {
+        invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().negate());
+        invoiceLineTax.setTaxTotal(invoiceLineTax.getTaxTotal().negate());
+        invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().negate());
+        invoiceLineTax.setInTaxTotal(invoiceLineTax.getInTaxTotal().negate());
+        invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyInTaxTotal().negate());
+      }
+    }
+    refund.setExTaxTotal(refund.getExTaxTotal().negate());
+    refund.setInTaxTotal(refund.getInTaxTotal().negate());
+    refund.setCompanyExTaxTotal(refund.getCompanyExTaxTotal().negate());
+    refund.setCompanyInTaxTotal(refund.getCompanyInTaxTotal().negate());
+    refund.setTaxTotal(refund.getTaxTotal().negate());
+    refund.setAmountRemaining(refund.getAmountRemaining().negate());
+    refund.setCompanyTaxTotal(refund.getCompanyTaxTotal().negate());
+    return invoiceRepository.save(refund);
   }
 
   protected void fillInvoiceFromMultiStockMoveDefaultValues(

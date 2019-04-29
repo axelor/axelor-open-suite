@@ -167,5 +167,10 @@
 	<selection id="hr.object.data.config.model.select" name="object.data.config.model.select">
 		<option value="com.axelor.apps.hr.db.Employee">Employee</option>
 	</selection>
+    
+    <selection name="hr.leave.reason.unit.select">
+        <option value="1">Days</option>
+        <option value="2">Hours</option>
+    </selection>
 
 </object-views>

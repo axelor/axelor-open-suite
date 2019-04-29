@@ -527,6 +527,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
   static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
+      "Email is not sent. Please check email account configuration." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -535,6 +537,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_3 = /*$$(*/
       "Debt recovery method missing for the configuration." /*)*/;
   static final String DEBT_RECOVERY_4 = /*$$(*/ "Debt recovery level waiting for approval." /*)*/;
+  static final String DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND = /*$$(*/
+      "Debt recovery method line not found" /*)*/;
 
   /** Debt recovery session service */
   static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/ "Debt recovery method line missing." /*)*/;
@@ -624,6 +628,8 @@ public interface IExceptionMessage {
       "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
   static final String VENTILATE_STATE_6 = /*$$(*/
       "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
+  static final String VENTILATE_STATE_7 = /*$$(*/
+      "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
@@ -767,4 +773,10 @@ public interface IExceptionMessage {
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  /* Check refunds */
+  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed supplier refunds."; /*)*/
 }

@@ -54,4 +54,13 @@ public class BudgetController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkSharedDates(ActionRequest request, ActionResponse response) {
+    try {
+      Budget budget = request.getContext().asType(Budget.class);
+      budgetService.checkSharedDates(budget);
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+    }
+  }
 }

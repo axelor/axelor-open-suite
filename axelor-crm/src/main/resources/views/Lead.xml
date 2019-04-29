@@ -187,7 +187,9 @@
     <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead" title="Loss confirmation" >
 		<panel name="mainPanel">
 			<field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
+			<field name="lostReasonStr" colOffset="4" colSpan="4" hideIf="!lostReason.freeText"/>
 			<button name="lostReasonConfirmBtn" title="Confirm lost reason" onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4" colSpan="4"/>
+			<field name="lostReason.freeText" hidden="true"/>
 		</panel>
     </form>
 
@@ -220,7 +222,7 @@
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
-	
+
 	<action-condition name="action-lead-lost-reason-check">
 		<check error="A lost reason must be selected" field="lostReason" if="lostReason == null || lostReason == 0"/>
 	</action-condition>

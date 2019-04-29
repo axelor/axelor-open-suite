@@ -80,6 +80,9 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     } else if (entity.getStatusSelect() == STATUS_REALIZED) {
       entity.setArchived(true);
     } else {
+      if (entity.getStockMoveOrigin() != null) {
+        entity.getStockMoveOrigin().setBackorderId(null);
+      }
       super.remove(entity);
     }
   }
