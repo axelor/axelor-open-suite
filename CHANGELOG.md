@@ -55,6 +55,7 @@
 - INVOICE : delete readonly condition in invoiceDate
 - INVOICE : copy invoice with empty fields
 - MENUS : changed menu-title for purchase requests and supplier requests
+- PURCHASE REQUEST : Generate PO from Purchase Request
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
