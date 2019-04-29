@@ -18,8 +18,8 @@
     </form>
     
 	<action-attrs name="action-substitute-pfp-validator-attrs-domain-pfp-validator-user">
-	  <attribute name="domain" expr="eval: &quot; self.companySet.id in (${__parent__.companySet.isEmpty()?0:__parent__.companySet.id.join(', ')}) &quot;" for="substitutePfpValidatorUser"/>
+  	   <attribute name="domain" expr="eval: &quot; ${'self.id in (select u.id from User u join u.companySet c where c.id in (' + __parent__.companySet.id.join(',') + '))' }&quot;" for="substitutePfpValidatorUser" if="__parent__.companySet != null &amp;&amp; !__parent__.companySet.empty"/>
+  	   <attribute name="domain" expr="eval: &quot;self.id in (0)&quot;" for="substitutePfpValidatorUser" if="__parent__.companySet == null || __parent__.companySet.empty"/>
 	</action-attrs>
-
     
 </object-views>
