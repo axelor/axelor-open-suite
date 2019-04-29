@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
   protected ShippingCoefService shippingCoefService;
-  protected StockMoveLineService stockMoveLineService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
 
   @Inject
@@ -79,7 +81,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
-      StockMoveLineService stockMoveLineService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService) {
 
     this.unitConversionService = unitConversionService;
@@ -87,7 +89,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
     this.appBaseService = appBaseService;
     this.shippingCoefService = shippingCoefService;
-    this.stockMoveLineService = stockMoveLineService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
   }
 
@@ -117,7 +119,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap =
         getAllPurchaseOrderLinePerDate(purchaseOrder);
 
-    for (LocalDate estimatedDeliveryDate : purchaseOrderLinePerDateMap.keySet()) {
+    for (LocalDate estimatedDeliveryDate :
+        purchaseOrderLinePerDateMap
+            .keySet()
+            .stream()
+            .filter(x -> x != null)
+            .sorted((x, y) -> x.compareTo(y))
+            .collect(Collectors.toList())) {
 
       List<PurchaseOrderLine> purchaseOrderLineList =
           purchaseOrderLinePerDateMap.get(estimatedDeliveryDate);
@@ -130,7 +138,18 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         stockMoveIdList.addAll(stockMoveId);
       }
     }
+    Optional<List<PurchaseOrderLine>> purchaseOrderLineListDeliveryDateNull =
+        Optional.ofNullable(purchaseOrderLinePerDateMap.get(null));
+    if (purchaseOrderLineListDeliveryDateNull.isPresent()) {
 
+      List<Long> stockMoveId =
+          createStockMove(purchaseOrder, null, purchaseOrderLineListDeliveryDateNull.get());
+
+      if (stockMoveId != null && !stockMoveId.isEmpty()) {
+
+        stockMoveIdList.addAll(stockMoveId);
+      }
+    }
     return stockMoveIdList;
   }
 
@@ -291,9 +310,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
     }
-    if (stockMoveLine != null) {
-      stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-    }
     return stockMoveLine;
   }
 
@@ -369,27 +385,31 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       taxRate = taxLine.getValue();
     }
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
         qty,
+        BigDecimal.ZERO,
         priceDiscounted,
         companyUnitPriceUntaxed,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
         purchaseOrder.getInAti(),
-        taxRate);
+        taxRate,
+        null,
+        purchaseOrderLine);
   }
 
   protected StockMoveLine createTitleStockMoveLine(
       PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
@@ -397,7 +417,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         stockMove,
         2,
         purchaseOrderLine.getPurchaseOrder().getInAti(),
-        null);
+        null,
+        null,
+        purchaseOrderLine);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
