@@ -51,13 +51,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset);
     BigDecimal cumulativeValue = depreciationValue;
     LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
+    int numberOfDepreciation = fixedAsset.getNumberOfDepreciation();
     LocalDate endDate = depreciationDate.plusMonths(fixedAsset.getDurationInMonth());
     if (fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
         && fixedAsset.getComputationMethodSelect().equals("linear")
         && depreciationDate.isAfter(depreciationDate.with(TemporalAdjusters.firstDayOfYear()))) {
       endDate = endDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+      numberOfDepreciation++;
     }
     int counter = 1;
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    numberOfDepreciation--;
 
     while (depreciationDate.isBefore(endDate)) {
       FixedAssetLine fixedAssetLine = new FixedAssetLine();
@@ -69,6 +73,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
 
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
+      if (counter == numberOfDepreciation) {
+        depreciationValue = fixedAssetLine.getResidualValue();
+        cumulativeValue = cumulativeValue.add(depreciationValue);
+        depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+        counter++;
+        continue;
+      }
 
       if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
         if (counter > 2 && fixedAsset.getNumberOfDepreciation() > 3) {
@@ -110,7 +121,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
         }
       }
-      cumulativeValue = cumulativeValue.add(depreciationValue);
+      depreciationValue = depreciationValue.setScale(scale, RoundingMode.HALF_EVEN);
+      cumulativeValue =
+          cumulativeValue.add(depreciationValue).setScale(scale, RoundingMode.HALF_EVEN);
       counter++;
     }
     return fixedAsset;

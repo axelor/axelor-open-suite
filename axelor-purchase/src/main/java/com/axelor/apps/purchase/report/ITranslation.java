@@ -62,11 +62,6 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_AFTER_DISCOUNT = /*$$(*/
       "PurchaseOrder.afterDiscount"; /*)*/
   public static final String PURCHASE_ORDER_NOTE = /*$$(*/ "PurchaseOrder.note"; /*)*/
-  public static final String PURCHASE_ORDER_BANKING_INFO = /*$$(*/
-      "PurchaseOrder.bankingInfo"; /*)*/
-  public static final String PURCHASE_ORDER_CHEQUE = /*$$(*/ "PurchaseOrder.cheque"; /*)*/
-  public static final String PURCHASE_ORDER_BANK_DETAILS = /*$$(*/
-      "PurchaseOrder.bankDetails"; /*)*/
   public static final String PURCHASE_ORDER_STATE = /*$$(*/ "PurchaseOrder.state"; /*)*/
   public static final String PURCHASE_ORDER_DRAFT = /*$$(*/ "PurchaseOrder.draft"; /*)*/
   public static final String PURCHASE_ORDER_REQUESTED = /*$$(*/ "PurchaseOrder.requested"; /*)*/
@@ -93,4 +88,6 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_ORDER_DATE = /*$$(*/ "PurchaseOrder.orderDate"; /*)*/
   public static final String PURCHASE_ORDER_SUPPLIER_CODE = /*$$(*/
       "PurchaseOrder.supplierCode"; /*)*/
+  public static final String PURCHASE_ORDER_PRODUCT_PRODUCT_STANDARD = /*$$(*/
+      "PurchaseOrder.productStandard"; /*)*/
 }

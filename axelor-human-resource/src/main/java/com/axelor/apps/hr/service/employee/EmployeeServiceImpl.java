@@ -120,22 +120,19 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           employee.getName());
     }
 
-    LocalDate itDate = fromDate;
-
-    while (!itDate.isAfter(toDate)) {
+    LocalDate date = fromDate;
+    while (!date.isAfter(toDate)) {
       duration =
           duration.add(
-              new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-      itDate = itDate.plusDays(1);
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date)));
+      date = date.plusDays(1);
     }
 
-    if (publicHolidayPlanning != null) {
-      duration =
-          duration.subtract(
-              Beans.get(PublicHolidayHrService.class)
-                  .computePublicHolidayDays(
-                      fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
-    }
+    duration =
+        duration.subtract(
+            Beans.get(PublicHolidayHrService.class)
+                .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
   }
@@ -168,7 +165,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
 
-    Map<String, String> urlMap = new HashMap<String, String>();
+    Map<String, String> urlMap = new HashMap<>();
     name =
         firstName != null && name != null
             ? firstName + "+" + name

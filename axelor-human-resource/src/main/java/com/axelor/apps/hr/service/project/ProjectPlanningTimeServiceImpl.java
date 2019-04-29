@@ -171,7 +171,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       double dayHrs = 0;
       if (employee.getWeeklyPlanning() != null) {
-        dayHrs = weeklyPlanningService.workingDayValue(employee.getWeeklyPlanning(), date);
+        dayHrs = weeklyPlanningService.getWorkingDayValueInDays(employee.getWeeklyPlanning(), date);
       }
 
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {

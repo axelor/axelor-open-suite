@@ -40,8 +40,7 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -53,8 +52,7 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
   public void minStockRules(
@@ -75,8 +73,7 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
@@ -101,8 +98,7 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
-import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -29,6 +28,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -62,6 +62,8 @@ public class ManufOrderWorkflowService {
   protected OperationOrderRepository operationOrderRepo;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderRepository manufOrderRepo;
+
+  @Inject ProductionConfigRepository productionConfigRepo;
 
   @Inject
   public ManufOrderWorkflowService(
@@ -231,9 +233,12 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
-    AppProduction appProduction = Beans.get(AppProductionService.class).getAppProduction();
-    if (appProduction != null && appProduction.getFinishMoAutomaticEmail()) {
-      return this.sendMail(manufOrder, appProduction.getFinishMoMessageTemplate());
+    ProductionConfig productionConfig =
+        manufOrder.getCompany() != null
+            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
+            : null;
+    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
+      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
     }
     return true;
   }
@@ -271,9 +276,12 @@ public class ManufOrderWorkflowService {
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate());
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
-    AppProduction appProduction = Beans.get(AppProductionService.class).getAppProduction();
-    if (appProduction != null && appProduction.getPartFinishMoAutomaticEmail()) {
-      return this.sendMail(manufOrder, appProduction.getPartFinishMoMessageTemplate());
+    ProductionConfig productionConfig =
+        manufOrder.getCompany() != null
+            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
+            : null;
+    if (productionConfig != null && productionConfig.getPartFinishMoAutomaticEmail()) {
+      return this.sendMail(manufOrder, productionConfig.getPartFinishMoMessageTemplate());
     }
     return true;
   }
@@ -417,7 +425,10 @@ public class ManufOrderWorkflowService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE));
     }
-    if (Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne()
+    if (Beans.get(EmailAccountRepository.class)
+            .all()
+            .filter("self.isDefault = true AND self.isValid = true")
+            .fetchOne()
         == null) {
       return false;
     }
