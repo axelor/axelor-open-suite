@@ -6,6 +6,7 @@
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - Leave reason: choose unit between days and hours.
 - Studio: Auto fill app name for new model when app is selected. Added help support. 
+- PRODUCTS : Differentiate a classic product from a customised one
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
@@ -118,7 +119,10 @@
 This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - ManufOrder : Move automaticEmail fields to ProductionConfig
+- Configurator creator: fix field names on import.
+- Configurator creator: fix export with production module.
 - Factor demo data : good link between factor and his data
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
