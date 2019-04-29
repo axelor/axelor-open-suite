@@ -122,6 +122,14 @@
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: __self__"/>
 	</action-view>
+
+	<action-view name="action-batch-show-stock-move-lines" title="Stock move lines"
+				 model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-grid"/>
+		<view type="form" name="stock-move-line-form"/>
+		<domain>self.id IN :stockMovelineIdList</domain>
+		<context name="stockMovelineIdList" expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
+	</action-view>
 	
 	
 
