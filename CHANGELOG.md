@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased 5.1.6]
+## [5.1.6] - 2019-04-29
 ## Features
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
@@ -53,10 +53,10 @@
 - INVOICE LINE MENU : add new columns in grid view
 - EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Cut-off : new button showing the stock move lines processed.
-- INVOICE : delete readonly condition in invoiceDate
-- INVOICE : copy invoice with empty fields
 - MENUS : changed menu-title for purchase requests and supplier requests
 - PURCHASE REQUEST : Generate PO from Purchase Request
+- Invoice: show user an info popup if not imputed refunds exist
+- Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -123,6 +123,9 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Configurator creator: fix export with production module.
 - STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
 - Factor demo data : good link between factor and his data
+- INVOICE : copy invoice with empty fields
+- INVOICE : delete readonly condition in invoiceDate
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -135,7 +138,6 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Sale Order Line: new button showing the future qty of the product.
 - Account : Display technicalOriginSelect as tag in Move form.
 - Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
-- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -329,7 +331,6 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - ACCOUNT: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
-- Invoice: show user an info popup if not imputed refunds exist
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
@@ -949,8 +950,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
-[Unreleased 5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...dev
+[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
