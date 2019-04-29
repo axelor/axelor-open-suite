@@ -2,30 +2,13 @@
 
 ## [Unreleased 5.1.6]
 ## Features
-- Menu entry for MetaPermission object in administration / User management.
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
-- STOCK MOVE : tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
-- DEBT RECOVERY : add color in debt recovery lines in grid view
-- DEBT RECOVERY : new button "Customer recovery" in partner form
-- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
-- DEBT RECOVERY : add informations in Accounting Situation in partner form
-- CONTACT : add mobile phone in card view
-- CONTACT : display mainPartner in card and grid view
-- DEBT RECOVERY : new fields partner,company and currency added.
-- MRP FORECAST : Large form view
-- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
-- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
-- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
-- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
 - Leave reason: choose unit between days and hours.
-- INVOICE LINE MENU : add new columns in grid view
 - Studio: Auto fill app name for new model when app is selected. Added help support. 
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- ManufOrder : Move automaticEmail fields to ProductionConfig
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
@@ -36,7 +19,6 @@
 - DEBT RECOVERY : new button "Customer recovery" in partner form
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - STOCK MOVE : added change tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
@@ -55,6 +37,23 @@
 - INVOICE : Update invoice payment informations alignment in the total panel
 - EMPLOYEE : Update timesheet dashlet domain
 - Studio: New widget for role selection.
+- STOCK MOVE : tracking on invoice field
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- INVOICE LINE MENU : add new columns in grid view
+- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
+- Cut-off : new button showing the stock move lines processed.
+- INVOICE : delete readonly condition in invoiceDate
+- INVOICE : copy invoice with empty fields
 - MENUS : changed menu-title for purchase requests and supplier requests
 
 ## Bug Fixes
@@ -116,6 +115,8 @@
 - BPM : Fix save a new status field for custom model.
 - INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
 This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- ManufOrder : Move automaticEmail fields to ProductionConfig
 
 
 ## [5.1.5] - 2019-03-30
