@@ -78,12 +78,4 @@ public interface ConfiguratorCreatorService {
    * @param creator
    */
   void activate(ConfiguratorCreator creator);
-
-  /**
-   * Import configurator creators from default XML config file.
-   *
-   * @return the import log file.
-   * @param filePath
-   */
-  String importConfiguratorCreators(String filePath) throws IOException;
 }
