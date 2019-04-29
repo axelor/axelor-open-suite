@@ -122,6 +122,7 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Configurator creator: fix field names on import.
 - Configurator creator: fix export with production module.
 - STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
+- Factor demo data : good link between factor and his data
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -299,7 +300,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - SALE ORDER : ISPM 15 management on form view and printing.
 - SALE ORDER : notify when stock move is generated automatically from sale order
 - STOCK MOVE : Creation of specific grid views of mass invoicing. 
->>>>>>> dev
 
 ## Bug Fixes
 - INVOICES LINES : add informations company, currency and invoiceDate in invoice-line-menu-form.
