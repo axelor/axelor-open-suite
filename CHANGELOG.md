@@ -121,6 +121,7 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - ManufOrder : Move automaticEmail fields to ProductionConfig
 - Configurator creator: fix field names on import.
 - Configurator creator: fix export with production module.
+- Factor demo data : good link between factor and his data
 
 
 ## [5.1.5] - 2019-03-30
