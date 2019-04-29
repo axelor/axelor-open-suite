@@ -1,0 +1,22 @@
+buildscript {
+  repositories repos
+  dependencies {
+    classpath "com.diffplug.spotless:spotless-plugin-gradle:3.14.0"
+  }
+}
+
+apply plugin: com.diffplug.gradle.spotless.SpotlessPlugin
+
+spotless {
+  java {
+    target fileTree(projectDir) {
+      include '**/*.java'
+      exclude '**/build/**'
+    }
+    googleJavaFormat()
+  }
+}
+
+task formatCode(dependsOn: ['licenseFormat', 'spotlessApply'])
+
+build.dependsOn 'spotlessApply'

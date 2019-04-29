@@ -9,7 +9,6 @@ buildscript {
 	repositories repos
 	dependencies {
 		classpath "com.axelor:axelor-gradle:5.0.+"
-		classpath "com.diffplug.spotless:spotless-plugin-gradle:3.12.0"
 	}
 }
 
@@ -18,15 +17,10 @@ allprojects { repositories repos }
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
-apply plugin: "com.diffplug.gradle.spotless"
 
 apply from: "modules/abs/version.gradle"
 
-spotless { 
-	java {  
-		googleJavaFormat()
-	} 
-}
+apply from: './gradle/style.gradle'
 
 allprojects {
 
@@ -36,16 +30,13 @@ allprojects {
 	
 	apply plugin: 'idea'
 	apply plugin: 'eclipse'
-	apply plugin: "com.diffplug.gradle.spotless"
 
 	group = "com.axelor"
 	version = absVersion
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
-	
-	afterEvaluate { generateCode.finalizedBy( tasks.getByName('spotlessApply') ) }
-	
+
 }
 
 axelor {
