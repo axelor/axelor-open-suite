@@ -121,8 +121,8 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - ManufOrder : Move automaticEmail fields to ProductionConfig
 - Configurator creator: fix field names on import.
 - Configurator creator: fix export with production module.
+- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
 - Factor demo data : good link between factor and his data
-
 
 ## [5.1.5] - 2019-03-30
 ## Features
