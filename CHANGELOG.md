@@ -6,6 +6,7 @@
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - Leave reason: choose unit between days and hours.
 - Studio: Auto fill app name for new model when app is selected. Added help support. 
+- PRODUCTS : Differentiate a classic product from a customised one
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
