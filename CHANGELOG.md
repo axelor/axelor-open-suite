@@ -54,6 +54,7 @@
 - Cut-off : new button showing the stock move lines processed.
 - INVOICE : delete readonly condition in invoiceDate
 - INVOICE : copy invoice with empty fields
+- MENUS : changed menu-title for purchase requests and supplier requests
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
