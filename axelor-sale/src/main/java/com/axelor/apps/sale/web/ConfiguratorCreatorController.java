@@ -94,7 +94,8 @@ public class ConfiguratorCreatorController {
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
-      String importLog = Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
+      String importLog =
+          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
       response.setValue("importLog", importLog);
     } catch (Exception e) {
       TraceBackService.trace(e);

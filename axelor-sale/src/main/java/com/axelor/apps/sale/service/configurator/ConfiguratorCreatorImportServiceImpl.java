@@ -105,7 +105,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
    * importing, we need to fix these values.
    *
    * @param creator
-   * @throws AxelorException 
+   * @throws AxelorException
    */
   protected void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();

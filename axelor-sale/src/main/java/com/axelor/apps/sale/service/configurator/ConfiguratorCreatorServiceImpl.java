@@ -504,5 +504,4 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     field.setContextFieldValue(creator.getId().toString());
     field.setContextFieldTitle(creator.getName());
   }
-
 }

@@ -5,8 +5,8 @@ import java.io.IOException;
 public interface ConfiguratorCreatorImportService {
 
   /**
-   * Import configurator creators from given XML config file.
-   * Use the default path for XML config file.
+   * Import configurator creators from given XML config file. Use the default path for XML config
+   * file.
    *
    * @param filePath the path to the data file.
    * @return the import log file.
