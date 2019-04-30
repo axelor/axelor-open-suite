@@ -3,6 +3,7 @@
 ## Features
 - Add Pack Feature in sale order.
 - FLEET : Manage rental cars and minor fixes
+- Studio: New features - Label with color,multiline string,grid column sequence,form width and order by properties. 
 
 ## Improvements
 - Remove Pack Feature from Product.
