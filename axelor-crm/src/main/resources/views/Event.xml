@@ -315,6 +315,7 @@
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
     	<action name="action-event-method-add-guest"/>
+    	<action name="action-event-record-event-from-opportunity" if="_opportunity != null"/>
     </action-group>
 
     <action-group name="action-event-type-select-onchange-group">
@@ -384,6 +385,14 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="partner" expr="eval: _lead.partner"/>
     </action-record>
+    
+    <action-record name="action-event-record-event-from-opportunity" model="com.axelor.apps.crm.db.Event">
+    	<field name="lead" expr="eval: _opportunity.lead"/>
+    	<field name="partner" expr="eval: _opportunity.partner"/>
+    	<field if="_opportunity.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
+    	<field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    </action-record>
+    
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
 	    <field name="partner" expr="eval:_partner?.id != null ? __repo__(Partner).find(_partner.id) : _partner"/>
