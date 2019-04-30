@@ -22,6 +22,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -38,6 +39,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
+import com.axelor.apps.hr.db.repo.UserHRRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
 import com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl;
@@ -105,5 +107,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
     bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
     bind(TeamTaskProjectRepository.class).to(TeamTaskHRRepository.class);
+    bind(UserBaseRepository.class).to(UserHRRepository.class);
   }
 }

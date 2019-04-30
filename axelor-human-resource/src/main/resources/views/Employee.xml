@@ -40,7 +40,7 @@
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
-      <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
           <panel name="contactDetailsPanel" colSpan="10">
@@ -153,7 +153,7 @@
     <!-- END OF New employee wizard -->
 
     <panel name="contactPanel" showIf="stepByStepSelect == 5">
-      <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <panel name="imagePanel" colSpan="2">
             <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>

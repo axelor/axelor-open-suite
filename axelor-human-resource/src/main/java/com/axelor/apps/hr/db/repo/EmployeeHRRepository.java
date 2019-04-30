@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
@@ -44,5 +48,28 @@ public class EmployeeHRRepository extends EmployeeRepository {
     Employee copy = super.copy(entity, deep);
 
     return copy;
+  }
+
+  @Override
+  public void remove(Employee entity) {
+
+    if (entity.getUser() != null) {
+      UserHRRepository userRepo = Beans.get(UserHRRepository.class);
+      User user = userRepo.find(entity.getUser().getId());
+      if (user != null) {
+        user.setEmployee(null);
+        userRepo.save(user);
+      }
+    }
+
+    if (entity.getContactPartner() != null) {
+      PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
+      Partner partner = partnerRepo.find(entity.getContactPartner().getId());
+      if (partner != null) {
+        partner.setEmployee(null);
+        partnerRepo.save(partner);
+      }
+    }
+    super.remove(entity);
   }
 }
