@@ -289,15 +289,15 @@
                     <viewer>{{record.toAddressStr}}</viewer>
                 </field>
             </panel>
-            <field name="filterOnAvailableProducts" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
+            <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
 			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3 &amp;&amp; !isReversion" >
 					<field name="supplierShipmentDate"/>
 					<field name="supplierShipmentRef"/>
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
-				<field name="pickingIsEdited"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange"/>
-				<field name="availabilityRequest"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
-           		<field name="pickingEditDate" showIf="pickingEditDate" readonly="true"/>
+				<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
+				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" />
+           		<field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
             <field name="exTaxTotal" css="order-subtotal" showIf="id" readonly="true" showTitle="false">
@@ -314,10 +314,10 @@
         </panel>
 
         <panel-tabs name="mainPanelTab">
-            <panel name="stockMoveLineListPanel" title="Stock move lines" itemSpan="12" readonlyIf="company == null || fromStockLocation == null">
-              <panel-related name="stockMoveLineList1Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" readonlyIf="statusSelect == 3" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect != 2"/>
-              <panel-related name="stockMoveLineList2Panel" field="stockMoveLineList" height="6" onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-record-filter-on-available-products" readonlyIf="statusSelect == 3" grid-view="stock-move-line-planned-grid" form-view="stock-move-line-form" canMove="true" orderBy="sequence" showIf="statusSelect == 2"/>
-            </panel>
+			<panel-related name="stockMoveLineListPanel" field="stockMoveLineList" title="Stock move lines" height="6"
+              readonlyIf="company == null || fromStockLocation == null || statusSelect == 3" onChange="action-stock-move-line-change-group"
+              onNew="action-stock-move-line-record-filter-on-available-products" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
+              orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true" />
             <panel name="freightCarrierPanel" title="Freight Carrier">
                 <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
 				<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
@@ -371,9 +371,11 @@
         		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
-              <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true" colSpan="4"/>
-              <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" colSpan="4"/>
-              <field name="backorderStockMove" readonly="true" colSpan="4" form-view="stock-move-form" grid-view="stock-move-grid"/>
+              <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true" colSpan="3"/>
+              <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" colSpan="3"/>
+              <field name="stockMoveOrigin" readonly="true" colSpan="3" form-view="stock-move-form" grid-view="stock-move-grid" showIf="stockMoveOrigin"/>
+              <button name="backOrderBtn" title="Backorder" colSpan="3" hidden="true" showIf="backorderId" onClick="action-stock-move-view-back-order"/>
+              <field name="backorderId" hidden="true"/>
               <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
             </panel>
             <panel name="configPanel" title="Configuration">
@@ -447,7 +449,18 @@
 	    <context name="stockMoveLineList" expr="eval:stockMoveLineList.findAll{ it.selected }" if="stockMoveLineList != null" />
 	    <context name="stockMove" expr="eval: __this__"/>
 	</action-view>
-	
+
+  <action-view name="action-stock-move-view-back-order" title="Backorder Stock Move" model="com.axelor.apps.stock.db.StockMove">
+    <view type="form" name="stock-move-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false" />
+    <view-param name="popup-save" value="true"/>
+    <view-param name="width" value="200"/>
+    <context name="_showRecord" expr="eval: backorderId"/>
+  </action-view>
+
 	<form name="stock-move-split-into-2-form" title="Split into 2" model="com.axelor.apps.stock.db.StockMove" width="large">
     	<panel name="mainPanel">
 	        <panel-related name="stockMoveLineListPanel" field="stockMoveLineList" colSpan="12" grid-view="stock-move-line-split-grid" canEdit="true" form-view="stock-move-line-form"/>
@@ -485,7 +498,7 @@
 	    <view-param name="width" value="200" />
 	    <context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
-	
+
     <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
     	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
@@ -601,7 +614,7 @@
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
-
+	
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
@@ -665,7 +678,7 @@
 		<field name="electronicSignature" if="signatoryUser" expr="eval: (signatoryUser?.useSignatureForStock &amp;&amp; isConformityCertifSigned) ? signatoryUser.electronicSignature : null"/>
     <field name="signatoryUser" if="isConformityCertifSigned &amp;&amp; !signatoryUser" expr="eval: __user__"/>
 	</action-record>
-	
+  
 	<action-record name="action-stock-move-picking-is-edited-onchange" model="com.axelor.apps.stock.db.StockMove">
 		<field name="pickingEditDate" if="pickingIsEdited" expr="eval: __date__"/>
 	</action-record>

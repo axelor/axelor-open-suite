@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.debtrecovery;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -28,6 +29,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -36,6 +38,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -51,6 +54,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +71,7 @@ public class DebtRecoveryService {
   protected DebtRecoveryRepository debtRecoveryRepo;
 
   protected AppAccountService appAccountService;
+  protected MessageRepository messageRepo;
 
   @Inject
   public DebtRecoveryService(
@@ -77,7 +82,8 @@ public class DebtRecoveryService {
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       AccountConfigService accountConfigService,
       DebtRecoveryRepository debtRecoveryRepo,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      MessageRepository messageRepo) {
 
     this.debtRecoverySessionService = debtRecoverySessionService;
     this.debtRecoveryActionService = debtRecoveryActionService;
@@ -87,6 +93,7 @@ public class DebtRecoveryService {
     this.accountConfigService = accountConfigService;
     this.debtRecoveryRepo = debtRecoveryRepo;
     this.appAccountService = appAccountService;
+    this.messageRepo = messageRepo;
   }
 
   public void testCompanyField(Company company) throws AxelorException {
@@ -230,7 +237,8 @@ public class DebtRecoveryService {
         Move move = moveLine.getMove();
         // facture exigibles non bloquée en relance et dont la date de facture + délai
         // d'acheminement < date du jour
-        if (move.getInvoice() != null
+        if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
+            && move.getInvoice() != null
             && !move.getInvoice().getDebtRecoveryBlockingOk()
             && !move.getInvoice().getSchedulePaymentOk()
             && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
@@ -483,6 +491,18 @@ public class DebtRecoveryService {
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()
                   > levelDebtRecovery) {
             debtRecoveryActionService.runAction(debtRecovery);
+
+            DebtRecoveryHistory debtRecoveryHistory =
+                debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
+
+            if (CollectionUtils.isEmpty(
+                messageRepo
+                    .findByRelatedTo(
+                        Math.toIntExact(debtRecoveryHistory.getId()),
+                        DebtRecoveryHistory.class.getCanonicalName())
+                    .fetch())) {
+              debtRecoveryActionService.runMessage(debtRecovery);
+            }
           }
         } else {
           log.debug(

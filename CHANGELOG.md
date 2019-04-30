@@ -1,27 +1,22 @@
 # Changelog
 
-## [Unreleased 5.1.6]
+## [Unreleased 5.1.7]
 ## Features
-- Menu entry for MetaPermission object in administration / User management.
+## Improvements
+## Bug Fixes
+- SaleOrder: fix error message of advanced payment with 0 amount to invoice
+
+
+## [5.1.6] - 2019-04-29
+## Features
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
-- STOCK MOVE : tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
-- DEBT RECOVERY : add color in debt recovery lines in grid view
-- DEBT RECOVERY : new button "Customer recovery" in partner form
-- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
-- DEBT RECOVERY : add informations in Accounting Situation in partner form
-- CONTACT : add mobile phone in card view
-- CONTACT : display mainPartner in card and grid view
-- DEBT RECOVERY : new fields partner,company and currency added.
-- MRP FORECAST : Large form view
-- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
-- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
-- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- Leave reason: choose unit between days and hours.
+- Studio: Auto fill app name for new model when app is selected. Added help support. 
+- PRODUCTS : Differentiate a classic product from a customised one
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- ManufOrder : Move automaticEmail fields to ProductionConfig
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
@@ -32,7 +27,6 @@
 - DEBT RECOVERY : new button "Customer recovery" in partner form
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - STOCK MOVE : added change tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
@@ -42,6 +36,34 @@
 - SALE ORDER : added translation for button customerDeliveriesDetailsBtn
 - PROJECT : Name on every button, button-group, item ( give name to items ).
 - Supplier arrival: Update error message.
+- MetaJsonField : Add help for all conditional fields of MetaJsonField
+- Reserved qty: auto allocation is now also ordered by estimated date.
+- WeeklyPlanning: manage durations in hours and rename methods.
+- PURCHASE ORDER PRINTING : Remove banking informations
+- ICalendar : Set error message if there is no event to synchronize
+- Stock move mass invoicing: Creating a single invoice with a negative total amount will create a refund instead.
+- INVOICE : Update invoice payment informations alignment in the total panel
+- EMPLOYEE : Update timesheet dashlet domain
+- Studio: New widget for role selection.
+- STOCK MOVE : tracking on invoice field
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- INVOICE LINE MENU : add new columns in grid view
+- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
+- Cut-off : new button showing the stock move lines processed.
+- MENUS : changed menu-title for purchase requests and supplier requests
+- PURCHASE REQUEST : Generate PO from Purchase Request
+- Invoice: show user an info popup if not imputed refunds exist
+- Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -82,7 +104,35 @@
 - Sale Order Line: Fix readonly on new on latest ADK version.
 - DEBT RECOVERT BATCH : Fix not create debt recovery line if no messageTemplateSet in DebtRecoveryMethodLine in debtRecoveryMethod.
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
-- SaleOrder: fix error message of advanced payment with 0 amount to invoice
+- MESSAGE : Error when an email address is null in a CC list of addresses
+- Budget Distrbution : warning message modified
+- Lunch Voucher Line: added compute action on the grid view. 
+- MOVE LINE : Fix NPE in the balance calculation.
+- Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
+- Invoice : fix NPE when printing invoices.
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+- JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
+- JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
+- JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
+- JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
+- BPM : Fix create selection and buttons by wkf field.
+- Studio: Fix widget selection for M2M field and fix minor design issues. 
+- BPM : Fix save a new status field for custom model.
+- INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
+This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- ManufOrder : Move automaticEmail fields to ProductionConfig
+- Configurator creator: fix field names on import.
+- Configurator creator: fix export with production module.
+- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
+- Factor demo data : good link between factor and his data
+- INVOICE : copy invoice with empty fields
+- INVOICE : delete readonly condition in invoiceDate
+
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -95,7 +145,6 @@
 - Sale Order Line: new button showing the future qty of the product.
 - Account : Display technicalOriginSelect as tag in Move form.
 - Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
-- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -220,7 +269,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Translation : Fix english translation of accounting export types.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
-
 
 ## [5.1.3] - 2019-02-21
 ## Features
@@ -910,7 +958,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...dev
+[Unreleased 5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...dev
+[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3

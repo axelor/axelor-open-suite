@@ -3412,7 +3412,6 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                         <property name="paddingLeft">1pt</property>
                         <property name="paddingBottom">2pt</property>
                         <property name="paddingRight">1pt</property>
-                        <property name="textAlign">center</property>
                         <property name="resultSetColumn">external_delivery_comment</property>
                     </data>
                 </cell>
