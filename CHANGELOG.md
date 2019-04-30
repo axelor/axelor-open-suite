@@ -80,6 +80,7 @@
 - Quality module : Changes in views.
 - OPPORTUNITY : Changes on opportunityType field.
 - INVOICE : Change form view's organization to fit the SaleOrder view.
+- OPPORTUNITY : Create event from opportunity.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

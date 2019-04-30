@@ -16,7 +16,7 @@
 	
 	<selection name="crm.event.related.to.select">
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
-		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+		<option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid" data-form="opportunity-form">Opportunity</option>
 		<option value="com.axelor.apps.crm.db.Event">Event</option>
 	</selection>
 	

@@ -86,7 +86,8 @@
     <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
         <menubar>
             <menu title="Tools" showTitle="true" icon="fa-wrench">
-                <item if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Convert into quotation" action="action-sale-group-generate-sale-order"/>
+                <item if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Create a quotation" action="action-sale-group-generate-sale-order"/>
+                <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
             </menu>
         </menubar>
         <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
@@ -133,12 +134,12 @@
                 <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
                 <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
                 <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
-				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 				<field name="lostReason" readonly="true" showIf="lostReason != null"/>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
-				<field name="partner" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="lead" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
+				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
 			</panel>
 			<panel name="postitPanel" title="Memo" canCollapse="true">
 				<field name="memo" showTitle="false" colSpan="12"/>
@@ -231,6 +232,13 @@
     	<action name="action-opportunity-set-closed-lost"/>
     	<action name="save"/>
     </action-group>
+    
+    <action-view name="action-opportunity-view-schedule-event" model="com.axelor.apps.crm.db.Event" title="Create event">
+  		<view type="form" name="event-form"/>
+    	<view type="grid" name="event-grid"/>
+    	<context name="_opportunity" expr="eval: __this__"/>
+	</action-view>
+
 
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
