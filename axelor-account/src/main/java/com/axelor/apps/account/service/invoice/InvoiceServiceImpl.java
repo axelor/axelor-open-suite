@@ -368,6 +368,49 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  @Override
+  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        long clientRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+        if (clientRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+        }
+      }
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        long supplierRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+
+        if (supplierRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private long getRefundsAmount(Long partnerId, int refundType) {
+    return invoiceRepo
+        .all()
+        .filter(
+            "self.partner.id = ?"
+                + " AND self.operationTypeSelect = ?"
+                + " AND self.statusSelect = ?"
+                + " AND self.amountRemaining > 0",
+            partnerId,
+            refundType,
+            InvoiceRepository.STATUS_VENTILATED)
+        .count();
+  }
+
   /**
    * Créer un avoir.
    *

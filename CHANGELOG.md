@@ -86,6 +86,9 @@
 - QUALITY CONTROL : New report to print
 - PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
 - AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it. 
+- Quality module : Changes in views.
+- OPPORTUNITY : Changes on opportunityType field.
+- INVOICE : Change form view's organization to fit the SaleOrder view.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -115,6 +118,8 @@
 - TeamTask : Set default typeSelect = 'task'
 - APP BUILDER : Remove JsonCreator object
 - TeamTask : copy object with empty fields
+- ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
+- PRICE LIST : hide O2M historized price lists in pop-up view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

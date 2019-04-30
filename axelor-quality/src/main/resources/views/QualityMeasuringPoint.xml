@@ -2,11 +2,16 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="quality-measuring-point-grid" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+	<grid name="quality-measuring-point-grid" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint" edit-icon="true">
 		<field name="name"/>
 		<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
-		<field name="compliant"/>
 		<field name="observations"/>
+	</grid>
+
+	<grid name="quality-measuring-point-model-grid" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint" edit-icon="true">
+		<field name="name"/>
+		<field name="measuringTypeSelect"/>
+		<field name="coefficient"/>
 	</grid>
 
 	<form name="quality-measuring-point-form" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
@@ -30,6 +35,14 @@
 				</editor>
 			</field>
 			<field name="observations" colSpan="12" widget="html"/>
+		</panel>
+	</form>
+
+	<form name="quality-measuring-point-model-form" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint">
+		<panel name="mainPanel">
+			<field name="name"/>
+			<field name="measuringTypeSelect"/>
+			<field name="coefficient"/>
 		</panel>
 	</form>
 

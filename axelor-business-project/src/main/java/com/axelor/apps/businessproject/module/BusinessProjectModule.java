@@ -22,6 +22,7 @@ import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
+import com.axelor.apps.businessproject.db.repo.TeamTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
@@ -50,6 +51,7 @@ import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectI
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
+import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
@@ -100,5 +102,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(WorkflowValidationServiceSupplychainImpl.class)
         .to(WorkflowValidationServiceProjectImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceProjectImpl.class);
+    bind(TeamTaskHRRepository.class).to(TeamTaskBusinessProjectRepository.class);
   }
 }

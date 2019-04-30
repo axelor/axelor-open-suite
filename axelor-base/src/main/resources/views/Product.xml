@@ -95,7 +95,8 @@
   		<panel-tabs name="productSpecificAttributes" title="Product specific attributes">
   			<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
-					<field name="sellable" colSpan="12"/>
+					<field name="sellable" colSpan="6"/>
+					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
