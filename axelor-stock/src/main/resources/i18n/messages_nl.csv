@@ -16,6 +16,7 @@
 "A cancel reason must be selected","Er moet een annuleringsreden worden gekozen",,
 "A partial stock move has been generated (%s)","Er is een gedeeltelijke voorraadmutatie gegenereerd (%s)",,
 "ABC analysis",,,
+"AbcAnalysis.stockLocation",,,
 "Account selection to carrier","Account selectie naar drager",,
 "Add","Toevoegen",,
 "Address","Adres",,

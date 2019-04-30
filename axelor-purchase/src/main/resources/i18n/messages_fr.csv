@@ -3,6 +3,8 @@
 "A tax line is missing","Il manque une ligne de taxe",,
 "ABC analysis","Classification ABC",,
 "ATI",,,
+"AbcAnalysis.endDate","Date de fin : ",,
+"AbcAnalysis.startDate","Date de début : ",,
 "Accept",,,
 "Accept and generate PO","Accepter",,
 "Accepted",,,
@@ -12,7 +14,7 @@
 "All requests accepted","Toutes les demandes acceptées",,
 "All requests sent","Toutes les demandes envoyées",,
 "Amount","Montant",,
-"Amount A.T.I.","Montant T.T.C.",,q
+"Amount A.T.I.","Montant T.T.C.",,
 "Amount Tax","Montant taxe",,
 "Amount invoiced W.T.",,,
 "Amount to be spread over the timetable",,,

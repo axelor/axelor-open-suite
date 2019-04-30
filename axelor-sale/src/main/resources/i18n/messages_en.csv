@@ -3,6 +3,8 @@
 "A cancel reason must be selected",,,
 "ABC analysis",,,
 "ATI",,,
+"AbcAnalysis.endDate","End date: ",,
+"AbcAnalysis.startDate","Start date: ",,
 "Accepted Credit",,,
 "Accounted Revenue",,,
 "Action",,,

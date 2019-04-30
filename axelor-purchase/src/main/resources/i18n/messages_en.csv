@@ -3,6 +3,8 @@
 "A tax line is missing",,,
 "ABC analysis",,,
 "ATI",,,
+"AbcAnalysis.endDate","End date: ",,
+"AbcAnalysis.startDate","Start date: ",,
 "Accept",,,
 "Accept and generate PO",,,
 "Accepted",,,

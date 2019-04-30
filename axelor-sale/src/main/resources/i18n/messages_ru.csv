@@ -3,6 +3,8 @@
 "A cancel reason must be selected","Должна быть выбрана причина отмены.",,
 "ABC analysis",,,
 "ATI","АТИ",,
+"AbcAnalysis.endDate",,,
+"AbcAnalysis.startDate",,,
 "Accepted Credit","Принятый кредит",,
 "Accounted Revenue","Бухгалтерские доходы",,
 "Action","Действие",,

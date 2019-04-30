@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -29,8 +30,8 @@ public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
     private final static String SELLABLE_TRUE = " AND self.sellable = TRUE";
 
     @Inject
-    public ABCAnalysisServiceSaleImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
-        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository);
+    public ABCAnalysisServiceSaleImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, SaleOrderLineRepository saleOrderLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository, SequenceService sequenceService) {
+        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository, sequenceService);
         this.saleOrderLineRepository = saleOrderLineRepository;
     }
 

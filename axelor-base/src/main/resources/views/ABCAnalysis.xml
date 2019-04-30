@@ -4,6 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis">
+        <field name="abcAnalysisSequence"/>
         <field name="name"/>
         <field name="company"/>
         <field name="createdOn"/>
@@ -11,15 +12,27 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-group-abc-analysis-onnew">
+    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-group-abc-analysis-onnew" onSave="action-abc-analysis-method-set-sequence">
         <toolbar>
             <button name="runAnalysisBtn" title="Run analysis" onClick="save,action-method-abc-analysis-run-analysis" showIf="statusSelect == 1"/>
         </toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-abc-analysis-method-print-report"/>
+            </menu>
+        </menubar>
         <panel name="statusPanel" hidden="true">
             <field name="statusSelect"/>
             <field name="type"/>
         </panel>
-        <panel name="informationsPanel" title="Informations">
+        <panel name="informationsPanel">
+            <field name="abcAnalysisSequence" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
+                <viewer>
+                    <![CDATA[
+                        <span>{{record.abcAnalysisSequence}}</span>
+                    ]]>
+                </viewer>
+            </field>
             <field name="name" readonlyIf="statusSelect != 1" required="true"/>
             <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect != 1"/>
             <field name="createdOn"/>
@@ -88,4 +101,12 @@
         <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
     </action-attrs>
+
+    <action-method name="action-abc-analysis-method-set-sequence">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="setSequence"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-print-report">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
+    </action-method>
 </object-views>

@@ -8,6 +8,7 @@
     <entity name="ABCAnalysis" lang="java">
 
         <string name="name" title="Name"/>
+        <string name="abcAnalysisSequence" namecolumn="true" title="ABC Analysis N°" readonly="true"/>
         <string name="description" title="Description" large="true"/>
         <string name="type" title="Type" selection="abc.analysis.type.select" default="com.axelor.apps.base.service.ABCAnalysisServiceImpl"/>
         <integer name="statusSelect" title="Status" selection="abc.analysis.status.select" default="1"/>

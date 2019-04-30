@@ -16,6 +16,7 @@
 "A cancel reason must be selected","Должна быть выбрана причина отмены.",,
 "A partial stock move has been generated (%s)","Произошло частичное перемещение запасов (%s)",,
 "ABC analysis",,,
+"AbcAnalysis.stockLocation",,,
 "Account selection to carrier","Выбор аккаунта перевозчику",,
 "Add","Добавить",,
 "Address","Адрес",,

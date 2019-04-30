@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
@@ -21,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
-import static com.axelor.apps.tool.StringTool.getIdListString;
 
 public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
@@ -31,8 +31,8 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
     private final static String STOCK_MANAGED_TRUE = " AND self.stockManaged = TRUE";
 
     @Inject
-    public ABCAnalysisServiceStockImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, StockLocationService stockLocationService, StockLocationLineRepository stockLocationLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
-        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository);
+    public ABCAnalysisServiceStockImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, StockLocationService stockLocationService, StockLocationLineRepository stockLocationLineRepository, ABCAnalysisClassRepository abcAnalysisClassRepository, SequenceService sequenceService) {
+        super(abcAnalysisLineRepository, unitConversionService, abcAnalysisRepository, productRepository, abcAnalysisClassRepository, sequenceService);
         this.stockLocationService = stockLocationService;
         this.stockLocationLineRepository = stockLocationLineRepository;
     }

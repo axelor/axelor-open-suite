@@ -16,6 +16,7 @@
 "A cancel reason must be selected","Um motivo de cancelamento deve ser selecionado",,
 "A partial stock move has been generated (%s)","Um movimento de estoque parcial foi gerado (%s)",,
 "ABC analysis",,,
+"AbcAnalysis.stockLocation",,,
 "Account selection to carrier","Seleção de conta para operadora",,
 "Add","Adicionar",,
 "Address","Morada",,

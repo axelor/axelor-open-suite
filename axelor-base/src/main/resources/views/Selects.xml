@@ -98,6 +98,7 @@
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="product">Product</option>
+        <option value="abcAnalysis">ABC Analysis</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

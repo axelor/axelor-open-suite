@@ -1,16 +1,23 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -23,6 +30,7 @@ import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LI
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     protected ABCAnalysisLineRepository abcAnalysisLineRepository;
     protected UnitConversionService unitConversionService;
+    private SequenceService sequenceService;
     private ABCAnalysisRepository abcAnalysisRepository;
     private ProductRepository productRepository;
     private ABCAnalysisClassRepository abcAnalysisClassRepository;
@@ -33,15 +41,18 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private BigDecimal cumulatedQty = BigDecimal.valueOf(0, 3);
     private BigDecimal cumulatedWorth = BigDecimal.valueOf(0, 3);
 
+    private final String abcAnalysisSequenceCode = "abcAnalysis";
+
     private List<ABCAnalysisClass> abcAnalysisClassList;
 
     @Inject
-    public ABCAnalysisServiceImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, ABCAnalysisClassRepository abcAnalysisClassRepository) {
+    public ABCAnalysisServiceImpl(ABCAnalysisLineRepository abcAnalysisLineRepository, UnitConversionService unitConversionService, ABCAnalysisRepository abcAnalysisRepository, ProductRepository productRepository, ABCAnalysisClassRepository abcAnalysisClassRepository, SequenceService sequenceService) {
         this.abcAnalysisLineRepository = abcAnalysisLineRepository;
         this.unitConversionService = unitConversionService;
         this.abcAnalysisRepository = abcAnalysisRepository;
         this.productRepository = productRepository;
         this.abcAnalysisClassRepository = abcAnalysisClassRepository;
+        this.sequenceService = sequenceService;
     }
 
     @Override
@@ -242,5 +253,38 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     private void finish(ABCAnalysis abcAnalysis){
         abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_FINISHED);
         abcAnalysisRepository.save(abcAnalysis);
+    }
+
+    @Override
+    public void setSequence(ABCAnalysis abcAnalysis) {
+        String abcAnalysisSequence = abcAnalysis.getAbcAnalysisSequence();
+
+        if(abcAnalysisSequence != null && !abcAnalysisSequence.isEmpty()){
+            return;
+        }
+
+        Sequence sequence = sequenceService.getSequence(abcAnalysisSequenceCode, abcAnalysis.getCompany());
+
+        if(sequence == null) {
+            return;
+        }
+
+        abcAnalysis.setAbcAnalysisSequence(sequenceService.getSequenceNumber(sequence));
+
+    }
+
+    @Override
+    public String printReport(ABCAnalysis abcAnalysis) throws AxelorException{
+        String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSequence();
+
+        return
+                ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
+                        .addParam("abcAnalysisId", abcAnalysis.getId())
+                        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                        .addParam("__locale", "en_US")
+                        .toAttach(abcAnalysis)
+                        .generate()
+                        .getFileLink();
+
     }
 }

@@ -3,6 +3,8 @@
 "A cancel reason must be selected","Deve essere selezionato un motivo di annullamento",,
 "ABC analysis",,,
 "ATI","ATI",,
+"AbcAnalysis.endDate",,,
+"AbcAnalysis.startDate",,,
 "Accepted Credit","Credito accettato",,
 "Accounted Revenue","Entrate contabilizzate",,
 "Action","Azione",,

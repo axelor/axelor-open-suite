@@ -3,6 +3,8 @@
 "A cancel reason must be selected","Un motif d'annulation doit être sélectionné",,
 "ABC analysis","Classification ABC",,
 "ATI","TTC",,
+"AbcAnalysis.endDate","Date de fin : ",,
+"AbcAnalysis.startDate","Date de début : ",,
 "Accepted Credit","Montant encours accepté",,
 "Accounted Revenue","C.A. pris en compte",,
 "Action","Action",,

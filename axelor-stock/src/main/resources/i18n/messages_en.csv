@@ -16,6 +16,7 @@
 "A cancel reason must be selected",,,
 "A partial stock move has been generated (%s)",,,
 "ABC analysis",,,
+"AbcAnalysis.stockLocation","Stock location: ",,
 "Account selection to carrier",,,
 "Add",,,
 "Address",,,
