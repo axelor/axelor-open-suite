@@ -5,6 +5,8 @@
 - AVAILABITY REQUEST : error message if product stock is less than realQty
 
 ## Improvements
+- Project : Reset the progression when we copy a Project
+
 ## Bug Fixes
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 
