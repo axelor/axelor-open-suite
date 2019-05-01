@@ -5,6 +5,7 @@
 - AVAILABITY REQUEST : error message if product stock is less than realQty
 
 ## Improvements
+- SALE ORDER : line not editable if availability request = true
 - Project : Reset the progression when we copy a Project
 
 ## Bug Fixes
