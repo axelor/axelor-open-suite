@@ -5,6 +5,7 @@
 - AVAILABITY REQUEST : error message if product stock is less than realQty
 
 ## Improvements
+- EMPLOYEE : form view (disable canEdit on kilometricAllowParam and put validation on endDate should be invalid if before startDate)
 ## Bug Fixes
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 
