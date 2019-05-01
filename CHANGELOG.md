@@ -6,6 +6,7 @@
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
+- Project : Reset the progression when we copy a Project
 
 ## Bug Fixes
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
