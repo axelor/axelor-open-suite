@@ -5,6 +5,8 @@
 - AVAILABITY REQUEST : error message if product stock is less than realQty
 
 ## Improvements
+- SALE ORDER : line not editable if availability request = true
+
 ## Bug Fixes
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 
