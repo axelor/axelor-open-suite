@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.7]
 ## Features
+- AVAILABITY REQUEST : error message if product stock is less than realQty
+
 ## Improvements
 ## Bug Fixes
 
