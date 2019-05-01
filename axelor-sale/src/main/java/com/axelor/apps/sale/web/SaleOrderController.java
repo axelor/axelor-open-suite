@@ -522,8 +522,12 @@ public class SaleOrderController {
             .find(request.getContext().asType(SaleOrder.class).getId());
 
     try {
-      Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+      boolean checkAvailabiltyRequest =
+          Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
+      if (checkAvailabiltyRequest) {
+        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

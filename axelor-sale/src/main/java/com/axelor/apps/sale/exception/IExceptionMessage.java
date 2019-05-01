@@ -70,4 +70,7 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_ON_GENERATING_TYPE_ERROR = /*$$(*/
       "The field %s is of type %s, but the configured script returned value is of type %s." /*)*/;
+
+  static final String SALE_ORDER_EDIT_ORDER_NOTIFY = /*$$(*/
+      "At least one sale order line has a stock move with availability request." /*)*/;
 }
