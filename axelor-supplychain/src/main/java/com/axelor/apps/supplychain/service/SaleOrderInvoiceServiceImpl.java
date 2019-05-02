@@ -107,7 +107,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       boolean isPercent,
       Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
-
+	  
     Invoice invoice;
     switch (operationSelect) {
       case SaleOrderRepository.INVOICE_ALL:

@@ -11,6 +11,7 @@
 - Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
 
 ## Bug Fixes
+- SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 
 
@@ -139,7 +140,6 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Factor demo data : good link between factor and his data
 - INVOICE : copy invoice with empty fields
 - INVOICE : delete readonly condition in invoiceDate
-
 
 ## [5.1.5] - 2019-03-30
 ## Features
