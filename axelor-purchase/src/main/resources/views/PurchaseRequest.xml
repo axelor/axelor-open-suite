@@ -40,6 +40,9 @@
     </grid>
     
     <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<toolbar>
+    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
+    	</toolbar>
     	<hilite if="statusSelect == 2" color="info"/>
     	<hilite if="statusSelect == 3" color="primary"/>
     	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
@@ -120,15 +123,28 @@
     
     <form name="purchase-request-wizard-generate-po-form"  title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest" >
     	<panel name="mainPanel">
-    		<field name="$groupBySupplier" title="Group by supplier" type="boolean" />
+    		<field name="$groupBySupplier" title="Group by supplier" type="boolean" onChange="action-purchase-request-set-group-by-delivery-address"/>
     		<spacer name="supplierSpacer"/>
-    		<field name="$groupByProduct" title="Group by product" type="boolean" />
+    		<field name="$groupByProduct" title="Group by product" type="boolean" onChange="action-purchase-request-set-group-by-delivery-address-and-supplier"/>
     		<spacer name="productSpacer"/>
-    		<field name="$groupByDeliveryAddress" title="Group by delivery address" type="boolean" />
+    		<field name="$groupByDeliveryAddress" title="Group by delivery address" type="boolean" onChange="action-purchase-request-set-group-by-supplier"/>
     		<spacer name="deliverySpacer"/>
-    		<button name="generatePOBtn" title="Generate PO" />
+    		<button name="generatePOBtn" title="Generate PO" onClick="action-purchase-request-method-generate-po"/>
     	</panel>
     </form>
+    
+    <action-attrs name="action-purchase-request-set-group-by-delivery-address">
+    	<attribute name="value" for="$groupByDeliveryAddress" expr="eval: groupBySupplier"/>
+    </action-attrs>
+    
+    <action-attrs name="action-purchase-request-set-group-by-supplier">
+    	<attribute name="value" for="$groupBySupplier" expr="eval: groupByDeliveryAddress"/>
+    </action-attrs>
+    
+    <action-attrs name="action-purchase-request-set-group-by-delivery-address-and-supplier">
+    	<attribute name="value" for="$groupByDeliveryAddress" expr="eval: groupByProduct"/>
+    	<attribute name="value" for="$groupBySupplier" expr="eval: groupByProduct"/>
+    </action-attrs>
 	
 	<action-attrs name="action-purchase-request-set-delivery-address-domain">
 		<attribute if="company?.partner != null" name="domain" expr="eval:&quot; self.id  in ( &quot; + ([0] + company.partner.partnerAddressList.findAll{it->it.isDeliveryAddr}.collect{it->it.address.id}).join(',') + &quot;)&quot;" for="deliveryAddress"/>
@@ -193,12 +209,17 @@
 		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="acceptRequest"/>
 	</action-method>
 	
+	<action-method name="action-purchase-request-method-generate-po">
+		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="generatePo"/>
+	</action-method>
+	
 	<action-view name="action-purchase-request-open-generate-po-wizard" title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest">
 		<view type="form" name="purchase-request-wizard-generate-po-form"/>
 		<view-param name="popup" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false" />
+		<context name="_ids" expr="eval: _ids"/>
 	</action-view>
 	
 	

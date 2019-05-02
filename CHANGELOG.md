@@ -1,31 +1,35 @@
 # Changelog
 
-## [Unreleased 5.1.6]
+## [Unreleased 5.1.7]
 ## Features
-- Menu entry for MetaPermission object in administration / User management.
-- TAX : Added typeSelect (Tax type) and filter in accounting reports
-- STOCK MOVE : tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
-- DEBT RECOVERY : add color in debt recovery lines in grid view
-- DEBT RECOVERY : new button "Customer recovery" in partner form
-- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
-- TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
-- DEBT RECOVERY : add informations in Accounting Situation in partner form
-- CONTACT : add mobile phone in card view
-- CONTACT : display mainPartner in card and grid view
-- DEBT RECOVERY : new fields partner,company and currency added.
-- MRP FORECAST : Large form view
-- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
-- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
-- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
-- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
-- Leave reason: choose unit between days and hours.
+- AVAILABITY REQUEST : error message if product stock is less than realQty
+
+## Improvements
+- SALE ORDER : line not editable if availability request = true
+- Project : Reset the progression when we copy a Project
+- EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
+- Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
+- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
+- SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
+- Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
+
+## Bug Fixes
+- SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
+- SaleOrder: fix error message of advanced payment with 0 amount to invoice
+
+
+## [5.1.6] - 2019-04-29
+## Features
+- TAX : Added typeSelect (Tax type) and filter in accounting reports
+- TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
+- Leave reason: choose unit between days and hours.
 - INVOICE LINE MENU : add new columns in grid view
+- Studio: Auto fill app name for new model when app is selected. Added help support. 
+- PRODUCTS : Differentiate a classic product from a customised one
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- ManufOrder : Move automaticEmail fields to ProductionConfig
 - General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
@@ -36,7 +40,6 @@
 - DEBT RECOVERY : new button "Customer recovery" in partner form
 - SALE ORDER : Display invoicing panel tab when status >= finalized quotation
 - STOCK MOVE : added change tracking on invoice field
-- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - Menu entry for MetaPermission object in administration / User management.
 - HR : Update kilometric Allowance demo data(fr and en).
 - INVOICE : printing error from grid view.
@@ -49,6 +52,31 @@
 - MetaJsonField : Add help for all conditional fields of MetaJsonField
 - Reserved qty: auto allocation is now also ordered by estimated date.
 - WeeklyPlanning: manage durations in hours and rename methods.
+- PURCHASE ORDER PRINTING : Remove banking informations
+- ICalendar : Set error message if there is no event to synchronize
+- Stock move mass invoicing: Creating a single invoice with a negative total amount will create a refund instead.
+- INVOICE : Update invoice payment informations alignment in the total panel
+- EMPLOYEE : Update timesheet dashlet domain
+- Studio: New widget for role selection.
+- STOCK MOVE : tracking on invoice field
+- DEBT RECOVERY : add color in debt recovery lines in grid view
+- DEBT RECOVERY : new button "Customer recovery" in partner form
+- SALE ORDER : Display invoicing panel tab when status >= finalized quotation
+- DEBT RECOVERY : add informations in Accounting Situation in partner form
+- CONTACT : add mobile phone in card view
+- CONTACT : display mainPartner in card and grid view
+- DEBT RECOVERY : new fields partner,company and currency added.
+- MRP FORECAST : Large form view
+- STOCKMOVE LINE : add tracking to fields realQty,requestedReservedQty and reservedQty
+- DEBT RECOVERY METHOD LINE : add new text field "Specific mention on printing".
+- STOCK MOVE : Addition of new m2o 'backorderStockMove' for link to Backorder.
+- INVOICE LINE MENU : add new columns in grid view
+- EMPLOYEE : Display partner.simpleFullName and partner.code on grid
+- Cut-off : new button showing the stock move lines processed.
+- MENUS : changed menu-title for purchase requests and supplier requests
+- PURCHASE REQUEST : Generate PO from Purchase Request
+- Invoice: show user an info popup if not imputed refunds exist
+- Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
@@ -95,6 +123,28 @@
 - MOVE LINE : Fix NPE in the balance calculation.
 - Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 - Invoice : fix NPE when printing invoices.
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+- JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
+- JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
+- JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
+- JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
+- BPM : Fix create selection and buttons by wkf field.
+- Studio: Fix widget selection for M2M field and fix minor design issues. 
+- BPM : Fix save a new status field for custom model.
+- INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
+This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
+- CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
+- ManufOrder : Move automaticEmail fields to ProductionConfig
+- Configurator creator: fix field names on import.
+- Configurator creator: fix export with production module.
+- STOCKMOVE : when picking stock move is edited, stock move line's field are readonly.
+- Factor demo data : good link between factor and his data
+- INVOICE : copy invoice with empty fields
+- INVOICE : delete readonly condition in invoiceDate
 
 ## [5.1.5] - 2019-03-30
 ## Features
@@ -107,7 +157,6 @@
 - Sale Order Line: new button showing the future qty of the product.
 - Account : Display technicalOriginSelect as tag in Move form.
 - Account : Allow unlettering in ReconcileGroup object and fill unlettering date.
-- Stock Move : estimatedDate is editable in Draft and Planified status of stock move.
 
 ## Improvements
 - Data config : rename field 'Fields'
@@ -301,7 +350,6 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - ACCOUNT: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
-- Invoice: show user an info popup if not imputed refunds exist
 - SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
@@ -922,7 +970,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...dev
+[Unreleased 5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...dev
+[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
 [5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3

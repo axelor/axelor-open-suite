@@ -404,7 +404,7 @@ InvoiceSet.length > 0))"
 				<field name="externalReference"/>
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -440,7 +440,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
@@ -559,7 +559,7 @@ InvoiceSet.length > 0))"
 				<field name="externalReference"/>
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -609,7 +609,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
