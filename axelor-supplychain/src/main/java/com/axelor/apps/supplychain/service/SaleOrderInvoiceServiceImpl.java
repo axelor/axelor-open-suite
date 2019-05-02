@@ -147,6 +147,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException {
     BigDecimal total = Beans.get(SaleOrderComputeService.class).getTotalSaleOrderPrice(saleOrder);
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      if (amount.compareTo(BigDecimal.ZERO) == 0) {
+        return BigDecimal.ZERO;
+      } else {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SO_INVOICE_AMOUNT_MAX));
+      }
+    }
     if (!isPercent) {
       amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_EVEN);
     }

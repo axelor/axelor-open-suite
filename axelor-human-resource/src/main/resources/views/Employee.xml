@@ -142,9 +142,9 @@
 							<field name="plateNo"/>
 							<field name="vehicleModel"/>
 							<field name="vehicleMake"/>
-							<field name="kilometricAllowParam" widget="SuggestBox"/>
-							<field name="startDate"/>
-							<field name="endDate"/>
+							<field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
+							<field name="startDate" onChange="action-employee-validate-dates"/>
+							<field name="endDate" onChange="action-employee-validate-dates"/>
                             <field name="vehicleRegistrationCertificate" widget="Image"/>
 						</editor>
 					</field>
@@ -187,8 +187,7 @@
 		]]>
 		</template>
 	</cards>
-
-
+	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
@@ -266,7 +265,11 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-
+    
+	<action-condition name="action-employee-validate-dates">
+		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
+	</action-condition>
+	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"

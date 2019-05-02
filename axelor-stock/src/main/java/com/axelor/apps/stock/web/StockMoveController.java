@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.AppStockRepository;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -26,6 +28,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -69,6 +72,10 @@ public class StockMoveController {
   @Inject private StockMoveService stockMoveService;
 
   @Inject private StockMoveRepository stockMoveRepo;
+
+  @Inject private StockLocationService stockLocationService;
+
+  @Inject private AppStockRepository appStockRepo;
 
   public void plan(ActionRequest request, ActionResponse response) {
 
@@ -518,6 +525,30 @@ public class StockMoveController {
         stockMoveLine.setFilterOnAvailableProducts(stockMove.getFilterOnAvailableProducts());
       }
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+    }
+  }
+
+  public void verifyProductStock(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    AppStock appStock = appStockRepo.all().fetchOne();
+    if (stockMove.getAvailabilityRequest()
+        && stockMove.getStockMoveLineList() != null
+        && appStock.getIsVerifyProductStock()
+        && stockMove.getFromStockLocation() != null) {
+      try {
+        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+          BigDecimal productStock =
+              stockLocationService.getRealQty(
+                  stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
+          if (productStock.compareTo(stockMoveLine.getRealQty()) < 0) {
+            response.setValue("availabilityRequest", false);
+            response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR));
+            break;
+          }
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 }

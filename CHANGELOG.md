@@ -2,9 +2,18 @@
 
 ## [Unreleased 5.1.7]
 ## Features
+- AVAILABITY REQUEST : error message if product stock is less than realQty
+
 ## Improvements
+- SALE ORDER : line not editable if availability request = true
+- Project : Reset the progression when we copy a Project
+- EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
+- Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
+
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
+- SaleOrder: fix error message of advanced payment with 0 amount to invoice
+
 
 ## [5.1.6] - 2019-04-29
 ## Features
