@@ -1346,6 +1346,8 @@
 "Test connection to QAS webservice","Тестовое подключение к веб-сервису QAS",,
 "Test mapping service connection","Тестирование подключения сервиса отображения карт",,
 "Testing","Испытания",,
+"The analysis must be completed before the report can be printed.",,,
+"The classes total quantity and total worth must equal 100%.",,,
 "The currency exchange rate from '%s' to '%s' for date %s must be different from zero.","Курс обмена валюты от %s до %s для даты %s должен отличаться от нуля.",,
 "The end date has to be greater than or equal to the start date.","Дата окончания должна быть больше или равна дате начала.",,
 "The end date is before the begin date.","Дата окончания - до даты начала.",,

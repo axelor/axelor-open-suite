@@ -1352,6 +1352,8 @@
 "Test connection to QAS webservice",,,
 "Test mapping service connection",,,
 "Testing",,,
+"The analysis must be completed before the report can be printed.",,,
+"The classes total quantity and total worth must equal 100%.",,,
 "The currency exchange rate from '%s' to '%s' for date %s must be different from zero.",,,
 "The end date has to be greater than or equal to the start date.",,,
 "The end date is before the begin date.",,,

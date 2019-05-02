@@ -12,9 +12,9 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-group-abc-analysis-onnew" onSave="action-abc-analysis-method-set-sequence">
+    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-group-onnew" onSave="action-abc-analysis-method-set-sequence">
         <toolbar>
-            <button name="runAnalysisBtn" title="Run analysis" onClick="save,action-method-abc-analysis-run-analysis" showIf="statusSelect == 1"/>
+            <button name="runAnalysisBtn" title="Run analysis" onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis" showIf="statusSelect == 1"/>
         </toolbar>
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -46,11 +46,11 @@
         </panel>
         <panel name="classesProductsPanel" title="Classes and products" canCollapse="true" collapseIf="statusSelect != 1">
             <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect != 1"/>
-            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-attrs-abc-analysis-product-set-domain" readonlyIf="statusSelect != 1"/>
+            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-abc-analysis-attrs-product-set-domain" readonlyIf="statusSelect != 1"/>
             <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
             <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
         </panel>
-        <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800"/>
+        <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800" readonly="true"/>
     </form>
 
     <action-record name="action-abc-analysis-record-default" model="com.axelor.apps.base.db.ABCAnalysis">
@@ -80,20 +80,12 @@
         <field name="endDate" expr="eval:null" />
     </action-record>
 
-    <action-method name="action-method-abc-analysis-init-abc-classes">
-        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="initABCClasses"/>
-    </action-method>
-
-    <action-method name="action-method-abc-analysis-run-analysis">
-        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="runAnalysis"/>
-    </action-method>
-
-    <action-group name="action-group-abc-analysis-onnew">
+    <action-group name="action-abc-analysis-group-onnew">
         <action name="action-abc-analysis-record-default"/>
-        <action name="action-method-abc-analysis-init-abc-classes"/>
+        <action name="action-abc-analysis-method-init-abc-classes"/>
     </action-group>
 
-    <action-attrs name="action-attrs-abc-analysis-product-set-domain">
+    <action-attrs name="action-abc-analysis-attrs-product-set-domain">
         <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true&quot; "/>
         <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
@@ -102,6 +94,18 @@
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
     </action-attrs>
 
+    <action-method name="action-abc-analysis-method-init-abc-classes">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="initABCClasses"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-check-classes">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="checkClasses"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-run-analysis">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="runAnalysis"/>
+    </action-method>
+
     <action-method name="action-abc-analysis-method-set-sequence">
         <call class="com.axelor.apps.base.web.ABCAnalysisController" method="setSequence"/>
     </action-method>
@@ -109,4 +113,5 @@
     <action-method name="action-abc-analysis-method-print-report">
         <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
     </action-method>
+
 </object-views>

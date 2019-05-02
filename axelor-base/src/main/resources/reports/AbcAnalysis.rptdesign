@@ -22,29 +22,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">4</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">4</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -119,6 +99,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -437,13 +420,19 @@ LEFT JOIN base_product_category category on product.product_category = category.
 LEFT JOIN base_abc_analysis_class class on ABCLine.abc_analysis_class = class.id
 where ABC.id = ?;]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisNameDS" id="177">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisHeaderDS" id="177">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">abc_analysis_sequence</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">abc_analysis_sequence</text-property>
                     <text-property name="heading">abc_analysis_sequence</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -466,6 +455,11 @@ where ABC.id = ?;]]></xml-property>
                         <property name="name">abc_analysis_sequence</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -477,10 +471,24 @@ where ABC.id = ?;]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select abc_analysis_sequence
-from base_abc_analysis
-where id=?;]]></xml-property>
+            <xml-property name="queryText"><![CDATA[select 
+	abc_analysis_sequence,
+	MetaFile.file_path as logo_path 
+from base_abc_analysis abc_analysis
+left outer join base_company Company on (Company.id = abc_analysis.company)
+left outer join meta_file MetaFile on (MetaFile.id = Company.logo)
+where abc_analysis.id=?;
+
+
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -565,7 +573,6 @@ select
 	from base_abc_analysis ABC
 	LEFT JOIN base_company Company on ABC.company = Company.id
 	LEFT JOIN auth_user on ABC.created_by = auth_user.id
-	LEFT JOIN stock_stock_location stock_location on ABC.stock_location = stock_location.id
 	where ABC.id = abc_analysis_id;
 ELSE
 return query
@@ -1025,6 +1032,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="orientation">landscape</property>
+            <property name="topMargin">0in</property>
             <page-footer>
                 <grid id="199">
                     <column id="211">
@@ -1045,7 +1053,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             <text id="270">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">center</property>
-                                <property name="dataSet">abcAnalysisNameDS</property>
+                                <property name="dataSet">abcAnalysisHeaderDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
                                         <property name="name">abc_analysis_sequence</property>
@@ -1107,7 +1115,30 @@ WHERE message_key = ? AND language = ?]]></xml-property>
         </text>
         <grid id="264">
             <property name="fontSize">9pt</property>
-            <property name="height">1.65625in</property>
+            <property name="height">0.65625in</property>
+            <property name="dataSet">abcAnalysisHeaderDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">abc_analysis_sequence</property>
+                    <text-property name="displayName">abc_analysis_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["abc_analysis_sequence"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="4020">
+                <property name="suppressDuplicates">false</property>
+                <property name="width">5cm</property>
+            </column>
+            <column id="4028">
+                <property name="suppressDuplicates">false</property>
+                <property name="width">100%</property>
+            </column>
             <column id="265">
                 <property name="suppressDuplicates">false</property>
                 <property name="width">100%</property>
@@ -1117,7 +1148,29 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 <property name="borderLeftStyle">none</property>
                 <property name="borderRightStyle">none</property>
                 <property name="borderTopStyle">none</property>
-                <property name="height">40px</property>
+                <property name="height">54px</property>
+                <cell id="4019">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <text id="4026">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">
+		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD>"
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4027">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
                 <cell id="267">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
@@ -1128,25 +1181,43 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <text id="179">
                         <property name="fontSize">16pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">abcAnalysisNameDS</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">abc_analysis_sequence</property>
-                                <text-property name="displayName">abc_analysis_sequence</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["abc_analysis_sequence"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
+                        <property name="textAlign">right</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[ABC Analysis N°<VALUE-OF>row["abc_analysis_sequence"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
+            <row id="4030">
+                <property name="borderBottomStyle">solid</property>
+                <property name="borderBottomWidth">thin</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">9px</property>
+                <cell id="4031">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
+                <cell id="4032">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
+                <cell id="4033">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
+            </row>
         </grid>
         <grid id="25">
             <property name="fontSize">9pt</property>
-            <property name="height">1.1875in</property>
+            <property name="marginTop">10px</property>
+            <property name="height">2.1979166666666665in</property>
             <property name="dataSet">abcAnalysisDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1273,7 +1344,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="183">
-                <property name="height">30px</property>
                 <cell id="184">
                     <text id="188">
                         <property name="dataSet">TranslationDS</property>
@@ -1384,6 +1454,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="196">
+                        <property name="textAlign">justify</property>
                         <property name="dataSet">TranslationDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1745,7 +1816,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
     <Type>Linear</Type>
     <Title>
       <Caption>
-        <Value>CumulatedQty=Cumulated Qty (%)</Value>
+        <Value>Cumulated Qty (%)</Value>
         <Font>
           <Size>11.0</Size>
           <Bold>true</Bold>
@@ -1753,6 +1824,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
             <horizontalAlignment>Center</horizontalAlignment>
             <verticalAlignment>Center</verticalAlignment>
           </Alignment>
+          <Rotation>0.0</Rotation>
         </Font>
       </Caption>
       <Background xsi:type="attribute:ColorDefinition">
@@ -1784,7 +1856,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
       <Type>Linear</Type>
       <Title>
         <Caption>
-          <Value>CumulatedWorth=Cumulated Worth (%)</Value>
+          <Value>Cumulated worth (%)</Value>
           <Font>
             <Size>11.0</Size>
             <Bold>true</Bold>
@@ -1792,6 +1864,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
               <horizontalAlignment>Center</horizontalAlignment>
               <verticalAlignment>Center</verticalAlignment>
             </Alignment>
+            <Rotation>90.0</Rotation>
           </Font>
         </Caption>
         <Background xsi:type="attribute:ColorDefinition">
@@ -1821,7 +1894,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
       <TitlePosition>Left</TitlePosition>
       <SeriesDefinitions>
         <Query>
-          <Definition></Definition>
+          <Definition>row[&quot;class_name&quot;]</Definition>
           <Grouping>
             <GroupType>Text</GroupType>
           </Grouping>
@@ -1835,15 +1908,39 @@ WHERE message_key = ? AND language = ?]]></xml-property>
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
+            <Red>232</Red>
+            <Green>172</Green>
+            <Blue>57</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
             <Red>242</Red>
             <Green>88</Green>
             <Blue>106</Blue>
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
-            <Red>232</Red>
-            <Green>172</Green>
-            <Blue>57</Blue>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
@@ -2013,6 +2110,12 @@ WHERE message_key = ? AND language = ?]]></xml-property>
             <Green>128</Green>
             <Blue>0</Blue>
           </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Entries>
         </SeriesPalette>
         <Series xsi:type="type:LineSeries">
           <Visible>true</Visible>
@@ -2055,7 +2158,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
               <AggregateExpression>Sum</AggregateExpression>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier>Series 1</SeriesIdentifier>
+          <SeriesIdentifier></SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -2064,9 +2167,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
           </DataPoint>
           <LabelPosition>Above</LabelPosition>
           <Stacked>false</Stacked>
-          <Cursor>
-            <Type>Auto</Type>
-          </Cursor>
           <Markers>
             <Type>Box</Type>
             <Size>4</Size>
@@ -2087,7 +2187,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
             <Visible>true</Visible>
           </LineAttributes>
           <PaletteLineColor>true</PaletteLineColor>
-          <Curve>false</Curve>
         </Series>
         <Grouping>
           <GroupType>Text</GroupType>
@@ -2202,6 +2301,9 @@ WHERE message_key = ? AND language = ?]]></xml-property>
       </Scale>
       <Origin>
         <Type>Min</Type>
+        <Value xsi:type="data:NumberDataElement">
+          <Value>0.0</Value>
+        </Value>
       </Origin>
       <PrimaryAxis>true</PrimaryAxis>
       <Percent>false</Percent>
@@ -3157,7 +3259,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <list-property name="highlightRules">
                             <structure>
                                 <property name="operator">eq</property>
-                                <property name="backgroundColor">#57B663</property>
+                                <property name="backgroundColor">#50A6DA</property>
                                 <property name="color">#FFFFFF</property>
                                 <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
                                 <simple-property-list name="value1">
@@ -3166,7 +3268,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                             <structure>
                                 <property name="operator">eq</property>
-                                <property name="backgroundColor">#2E8BC5</property>
+                                <property name="backgroundColor">#E8AC39</property>
                                 <property name="color">#FFFFFF</property>
                                 <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
                                 <simple-property-list name="value1">
@@ -3174,28 +3276,12 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                 </simple-property-list>
                             </structure>
                             <structure>
-                                <property name="operator">eq</property>
-                                <property name="backgroundColor">#47BEDB</property>
+                                <property name="operator">ge</property>
+                                <property name="backgroundColor">#F2586A</property>
                                 <property name="color">#FFFFFF</property>
                                 <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
                                 <simple-property-list name="value1">
                                     <value type="javascript">2</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="operator">eq</property>
-                                <property name="color">#FFFFFF</property>
-                                <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
-                                <simple-property-list name="value1">
-                                    <value type="javascript">3</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="operator">eq</property>
-                                <property name="color">#FFFFFF</property>
-                                <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
-                                <simple-property-list name="value1">
-                                    <value type="javascript">4</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>

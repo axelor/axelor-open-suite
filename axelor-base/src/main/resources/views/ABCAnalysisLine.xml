@@ -9,25 +9,25 @@
         <field name="product.productCategory"/>
         <field name="decimalWorth" width="90px"/>
         <field name="worth" width="95px" x-scale="2"/>
-        <field name="cumulatedWorth" width="155px" x-scale="2"/>
+        <field name="cumulatedWorth" width="160px" x-scale="2"/>
         <field name="decimalQty" width="75px"/>
         <field name="qty" width="80px" x-scale="2"/>
-        <field name="cumulatedQty" width="130px" x-scale="2"/>
+        <field name="cumulatedQty" width="135px" x-scale="2"/>
         <field name="abcAnalysisClass" width="80px" >
-            <hilite if="abcAnalysisClass.name == 'A'" background="success"/>
-            <hilite if="abcAnalysisClass.name == 'B'" background="primary"/>
-            <hilite if="abcAnalysisClass.name == 'C'" background="info"/>
+            <hilite if="abcAnalysisClass.name == 'A'" background="primary"/>
+            <hilite if="abcAnalysisClass.name == 'B'" background="warning"/>
+            <hilite if="abcAnalysisClass.name == 'C'" background="danger"/>
         </field>
     </grid>
 
-    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line">
+    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line" canEdit="false" canNew="false">
         <panel name="mainPanel">
-            <field name="product"/>
-            <field name="abcAnalysisClass"/>
-            <field name="decimalWorth"/>
-            <field name="decimalQty"/>
-            <field name="worth" x-scale="2"/>
-            <field name="qty" x-scale="2"/>
+            <field name="product" readonly="true"/>
+            <field name="abcAnalysisClass" readonly="true"/>
+            <field name="decimalWorth" readonly="true"/>
+            <field name="decimalQty" readonly="true"/>
+            <field name="worth" x-scale="2" readonly="true"/>
+            <field name="qty" x-scale="2" readonly="true"/>
         </panel>
     </form>
 </object-views>

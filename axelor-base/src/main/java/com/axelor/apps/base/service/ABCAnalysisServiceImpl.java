@@ -11,12 +11,14 @@ import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -275,16 +277,37 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
     @Override
     public String printReport(ABCAnalysis abcAnalysis) throws AxelorException{
+        if(abcAnalysis.getStatusSelect() != ABCAnalysisRepository.STATUS_FINISHED){
+            throw new AxelorException(
+                    abcAnalysis,
+                    TraceBackRepository.TYPE_FUNCTIONNAL,
+                    I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
+        }
+
         String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSequence();
 
         return
                 ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
                         .addParam("abcAnalysisId", abcAnalysis.getId())
                         .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                        .addParam("__locale", "en_US")
                         .toAttach(abcAnalysis)
                         .generate()
                         .getFileLink();
 
+    }
+
+    @Override
+    public void checkClasses(ABCAnalysis abcAnalysis) throws AxelorException {
+        List<ABCAnalysisClass> abcAnalysisClassList = abcAnalysis.getAbcAnalysisClassList();
+        BigDecimal totalQty = abcAnalysisClassList.stream().map(ABCAnalysisClass::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalWorth = abcAnalysisClassList.stream().map(ABCAnalysisClass::getWorth).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal comparisonValue = new BigDecimal(100);
+
+        if(totalQty.compareTo(comparisonValue) != 0 || totalWorth.compareTo(comparisonValue) != 0){
+            throw new AxelorException(
+                    abcAnalysis,
+                    TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                    I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_QTY_OR_WORTH));
+        }
     }
 }

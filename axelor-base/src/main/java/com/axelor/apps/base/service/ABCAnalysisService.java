@@ -10,5 +10,5 @@ public interface ABCAnalysisService {
     List<ABCAnalysisClass> initABCClasses();
     void setSequence(ABCAnalysis abcAnalysis);
     String printReport(ABCAnalysis abcAnalysis) throws AxelorException;
-
+    void checkClasses(ABCAnalysis abcAnalysis) throws AxelorException;
 }

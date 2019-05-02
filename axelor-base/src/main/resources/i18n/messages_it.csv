@@ -1346,6 +1346,8 @@
 "Test connection to QAS webservice","Test di connessione al servizio web QAS",,
 "Test mapping service connection","Collegamento del servizio di mappatura dei test",,
 "Testing","Test",,
+"The analysis must be completed before the report can be printed.",,,
+"The classes total quantity and total worth must equal 100%.",,,
 "The currency exchange rate from '%s' to '%s' for date %s must be different from zero.","Il tasso di cambio da %s a %s per la data %s deve essere diverso da zero.",,
 "The end date has to be greater than or equal to the start date.","La data di fine deve essere maggiore o uguale alla data di inizio.",,
 "The end date is before the begin date.","La data di fine è anteriore alla data di inizio.",,

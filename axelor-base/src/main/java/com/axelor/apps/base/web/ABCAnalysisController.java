@@ -55,6 +55,15 @@ public class ABCAnalysisController {
             response.setError(e.getMessage());
         }
 
+    }
 
+    public void checkClasses(ActionRequest request, ActionResponse response){
+        ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
+
+        try {
+            Beans.get(ABCAnalysisServiceImpl.class).checkClasses(abcAnalysis);
+        } catch (AxelorException e) {
+            response.setError(e.getMessage());
+        }
     }
 }
