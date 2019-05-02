@@ -9,6 +9,8 @@
 - Project : Reset the progression when we copy a Project
 - EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
 - Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
+- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
+- SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
 - Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 
 ## Bug Fixes
