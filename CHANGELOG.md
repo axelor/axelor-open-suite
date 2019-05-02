@@ -19,6 +19,7 @@
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 - SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
+- Translation: fix existing and add missing translations.
 
 ## [5.1.6] - 2019-04-29
 ## Features

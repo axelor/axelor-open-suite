@@ -48,8 +48,8 @@ public interface IExceptionMessage {
   static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
   static final String SO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
-	  "All invoices have been generated for this sale order." /*)*/;
-  
+      "All invoices have been generated for this sale order." /*)*/;
+
   /** Sale order Purchase Service */
   static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
 
