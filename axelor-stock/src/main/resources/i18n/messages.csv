@@ -466,7 +466,7 @@
 "Product model",,,
 "Product name",,,
 "Product quantity in other stock locations",,,
-"Product stock is not enough for availabity request",,,
+"Product stock for %s is not enough for availability request",,,
 "Product tracking number",,,
 "Product type",,,
 "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery",,,
