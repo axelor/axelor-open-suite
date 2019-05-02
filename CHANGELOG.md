@@ -17,7 +17,7 @@
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
-
+- SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
 
 ## [5.1.6] - 2019-04-29
 ## Features

@@ -1261,7 +1261,7 @@
 	</action-method>
 
 	<action-validate name="action-sale-order-validate-check-on-confirm">
-		<alert message="The total amount is zero." if="exTaxTotal == 0"/>
+		<alert message="The total amount of quotation is zero. Do you want to proceed ?" if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
 	</action-validate>
 
 	<action-record name="action-sale-record-update-info-company" model="com.axelor.apps.sale.db.SaleOrder">
