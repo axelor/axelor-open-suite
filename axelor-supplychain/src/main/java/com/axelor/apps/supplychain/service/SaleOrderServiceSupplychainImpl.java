@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -33,6 +35,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -45,6 +48,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,16 +98,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-  public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-    super.enableEditOrder(saleOrder);
+  public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+    boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
-    List<StockMove> stockMoves =
+    List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
                 StockMoveRepository.ORIGIN_SALE_ORDER,
                 saleOrder.getId(),
                 StockMoveRepository.STATUS_PLANNED)
             .fetch();
+    List<StockMove> stockMoves =
+        !allStockMoves.isEmpty()
+            ? allStockMoves
+                .stream()
+                .filter(stockMove -> !stockMove.getAvailabilityRequest())
+                .collect(Collectors.toList())
+            : allStockMoves;
+    checkAvailabiltyRequest =
+        stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
@@ -119,6 +132,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
         stockMoveRepository.remove(stockMove);
       }
     }
+    return checkAvailabiltyRequest;
   }
 
   /**
@@ -176,6 +190,29 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+    }
+  }
+
+  public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
+    List<Invoice> invoices =
+        Query.of(Invoice.class)
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
+                + "(self.archived = NULL OR self.archived = false)")
+            	.bind("saleOrderId",saleOrder.getId())
+            	.bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetch();
+    BigDecimal sumInvoices =
+        invoices
+            .stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce((x, y) -> x.add(y))
+            .orElse(BigDecimal.ZERO);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
   }
 }

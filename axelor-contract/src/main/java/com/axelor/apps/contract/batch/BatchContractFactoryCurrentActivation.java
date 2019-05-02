@@ -44,7 +44,7 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
             "self.currentContractVersion.supposedActivationDate <= :date "
                 + "AND self.currentContractVersion.statusSelect = :status "
                 + "AND :batch NOT MEMBER of self.batchSet")
-        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))
+        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         .bind("status", ContractVersionRepository.WAITING_VERSION)
         .bind("batch", batch);
   }

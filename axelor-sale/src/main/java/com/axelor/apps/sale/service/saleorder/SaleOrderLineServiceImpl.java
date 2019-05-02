@@ -79,6 +79,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     saleOrderLine.setSubLineList(null);
     saleOrderLine.setPackPriceSelect(null);
+    saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
 
     if (appSaleService.getAppSale().getProductPackMgt()
         && saleOrderLine
@@ -233,7 +234,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     line.setUnit(null);
     line.setCompanyCostPrice(null);
     line.setDiscountAmount(null);
-    line.setDiscountTypeSelect(null);
+    line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     line.setPrice(null);
     line.setInTaxPrice(null);
     line.setExTaxTotal(null);
