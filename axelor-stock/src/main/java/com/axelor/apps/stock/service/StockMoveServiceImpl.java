@@ -651,7 +651,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
 
     plan(newStockMove);
-    return Optional.of(stockMoveRepo.save(newStockMove));
+    newStockMove.setStockMoveOrigin(stockMove);
+    stockMoveRepo.save(newStockMove);
+    stockMove.setBackorderId(newStockMove.getId());
+    return Optional.of(newStockMove);
   }
 
   protected StockMoveLine copySplittedStockMoveLine(StockMoveLine stockMoveLine)

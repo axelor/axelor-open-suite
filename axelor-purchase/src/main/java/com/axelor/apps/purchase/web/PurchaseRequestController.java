@@ -17,9 +17,14 @@
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -53,6 +58,41 @@ public class PurchaseRequestController {
       purchaseRequestService.acceptRequest(purchaseRequests);
 
       response.setReload(true);
+    }
+  }
+
+  public void generatePo(ActionRequest request, ActionResponse response) {
+    @SuppressWarnings("unchecked")
+    List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
+    Boolean groupBySupplier = (Boolean) request.getContext().get("groupBySupplier");
+    groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
+    Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
+    groupByProduct = groupByProduct == null ? false : groupByProduct;
+    Boolean groupByDeliveryAddress = (Boolean) request.getContext().get("groupByDeliveryAddress");
+    groupByDeliveryAddress = groupByDeliveryAddress == null ? false : groupByDeliveryAddress;
+    if (!requestIds.isEmpty()) {
+      try {
+        List<PurchaseRequest> purchaseRequests =
+            purchaseRequestRepo.all().filter("self.id in (?1)", requestIds).fetch();
+        response.setCanClose(true);
+        List<PurchaseOrder> purchaseOrderList =
+            purchaseRequestService.generatePo(
+                purchaseRequests, groupBySupplier, groupByProduct, groupByDeliveryAddress);
+        ActionViewBuilder actionViewBuilder =
+            ActionView.define(
+                    String.format(
+                        "Purchase Order%s generated", (purchaseOrderList.size() > 1 ? "s" : "")))
+                .model(PurchaseOrder.class.getName())
+                .add("grid", "purchase-order-quotation-grid")
+                .add("form", "purchase-order-form")
+                .context("_showSingle", true)
+                .domain(
+                    String.format(
+                        "self.id in (%s)", StringTool.getIdListString(purchaseOrderList)));
+        response.setView(actionViewBuilder.map());
+      } catch (AxelorException e) {
+        response.setFlash(e.getMessage());
+      }
     }
   }
 }

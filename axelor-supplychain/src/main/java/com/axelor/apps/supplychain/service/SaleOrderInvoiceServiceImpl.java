@@ -107,8 +107,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       boolean isPercent,
       Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
+	  
     Invoice invoice;
-
     switch (operationSelect) {
       case SaleOrderRepository.INVOICE_ALL:
         invoice = generateInvoice(saleOrder);
@@ -154,7 +154,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
+          I18n.get(IExceptionMessage.SO_INVOICE_AMOUNT_MAX));
     }
 
     return amount;
@@ -240,7 +240,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSubTypeSelect,
       Account partnerAccount)
       throws AxelorException {
-
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 
     Invoice invoice = invoiceGenerator.generate();
@@ -872,5 +871,4 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         manageAdvanceInvoice ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT : 0);
     return contextValues;
   }
-
 }

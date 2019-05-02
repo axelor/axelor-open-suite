@@ -1269,7 +1269,7 @@ return cp*nbOrdi_1</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>costTypeSelect</metaField>
+				<metaField>productTypeSelect</metaField>
 				<formula>'storable'</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>

@@ -187,10 +187,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
         Query.of(Invoice.class)
             .filter(
                 " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
-                + "(self.archived = NULL OR self.archived = :isArchived)")
+                + "(self.archived = NULL OR self.archived = false)")
             	.bind("saleOrderId",saleOrder.getId())
             	.bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            	.bind("isArchived", false)
             .fetch();
     BigDecimal sumInvoices =
         invoices
