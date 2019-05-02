@@ -12,6 +12,7 @@
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
 - SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
 - Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
+- Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -23,6 +24,7 @@
 - TAX : Added typeSelect (Tax type) and filter in accounting reports
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - Leave reason: choose unit between days and hours.
+- INVOICE LINE MENU : add new columns in grid view
 - Studio: Auto fill app name for new model when app is selected. Added help support. 
 - PRODUCTS : Differentiate a classic product from a customised one
 

@@ -678,14 +678,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
-    StockMove newStockMove = new StockMove();
+    StockMove newStockMove =
+        createStockMove(
+            stockMove.getToAddress(),
+            stockMove.getFromAddress(),
+            stockMove.getCompany(),
+            stockMove.getPartner(),
+            stockMove.getToStockLocation(),
+            stockMove.getFromStockLocation(),
+            null,
+            stockMove.getEstimatedDate(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            stockMove.getIncoterm(),
+            0);
 
-    newStockMove.setCompany(stockMove.getCompany());
-    newStockMove.setPartner(stockMove.getPartner());
-    newStockMove.setFromStockLocation(stockMove.getToStockLocation());
-    newStockMove.setToStockLocation(stockMove.getFromStockLocation());
-    newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
-    newStockMove.setFromAddress(stockMove.getFromAddress());
     if (stockMove.getToAddress() != null) newStockMove.setFromAddress(stockMove.getToAddress());
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
       newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
@@ -718,7 +728,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    newStockMove.setRealDate(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany()));
@@ -731,13 +740,24 @@ public class StockMoveServiceImpl implements StockMoveService {
                 + " "
                 + stockMove.getStockMoveSeq()
                 + " )"));
+    if (stockMove.getPartner() != null) {
+      newStockMove.setShipmentMode(stockMove.getPartner().getShipmentMode());
+      newStockMove.setFreightCarrierMode(stockMove.getPartner().getFreightCarrierMode());
+      newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
+    }
+    newStockMove.setReversionOriginStockMove(stockMove);
+    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setNote(stockMove.getNote());
+    newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
+    newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
+    newStockMove.setGrossMass(stockMove.getGrossMass());
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
     newStockMove.setIsReversion(true);
+    newStockMove.setIsWithBackorder(stockMove.getIsWithBackorder());
     newStockMove.setOrigin(stockMove.getOrigin());
     newStockMove.setOriginId(stockMove.getOriginId());
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
 
-    plan(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
