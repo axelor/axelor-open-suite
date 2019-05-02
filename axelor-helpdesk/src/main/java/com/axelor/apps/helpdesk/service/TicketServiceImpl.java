@@ -190,7 +190,8 @@ public class TicketServiceImpl implements TicketService {
   private void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
       throws AxelorException {
 
-    if (weeklyPlanningService.workingDayValue(company.getWeeklyPlanning(), fromDate.toLocalDate())
+    if (weeklyPlanningService.getWorkingDayValueInDays(
+                company.getWeeklyPlanning(), fromDate.toLocalDate())
             == 0
         || publicHolidayService.checkPublicHolidayDay(
             fromDate.toLocalDate(), company.getPublicHolidayEventsPlanning())) {

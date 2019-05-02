@@ -1180,8 +1180,6 @@ PurchaseOrder.ex_tax_total,
 PurchaseOrder.in_tax_total,
 PurchaseOrder.tax_total,
 Currency.code as "CurrencyCode",
-DefBankDetail.iban,
-Bank.code as "bic",
 Company.name as "CompanyName",
 PurchaseOrder.notes,
 PurchaseOrder.price_display,
@@ -1221,8 +1219,6 @@ left outer join base_address as Address on (PartnerAddress.address = Address.id)
 left outer join base_country as Country on (Address.addressl7country = Country.id)
 left outer join account_payment_condition as PaymentCond on (Partner.payment_condition = PaymentCond.id)
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
-left outer join base_bank_details as DefBankDetail on (PurchaseOrder.company_bank_details = DefBankDetail.id)
-left outer join base_bank as Bank on (DefBankDetail.bank = Bank.id)
 left outer join account_payment_mode as PaymentMode on (PurchaseOrder.payment_mode = PaymentMode.id)
 left outer join base_printing_settings as PrintingSettings on (PrintingSettings.id = PurchaseOrder.printing_settings)
 left outer join auth_user as BuyerUser on PurchaseOrder.buyer_user = BuyerUser.id
@@ -2316,18 +2312,6 @@ from base_app_base]]></xml-property>
                     <property name="name">CurrencyCode</property>
                     <text-property name="displayName">CurrencyCode</text-property>
                     <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">iban</property>
-                    <text-property name="displayName">iban</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">bic</property>
-                    <text-property name="displayName">bic</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["bic"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -7357,178 +7341,6 @@ row["first_name"]
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["notes"] != null) row["notes"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
-                        </row>
-                        <row id="3554">
-                            <cell id="3555"/>
-                            <cell id="3556"/>
-                            <cell id="3558"/>
-                        </row>
-                        <row id="3549">
-                            <cell id="3550">
-                                <property name="colSpan">2</property>
-                                <property name="rowSpan">1</property>
-                                <property name="borderBottomColor">#606062</property>
-                                <property name="borderBottomStyle">solid</property>
-                                <property name="borderBottomWidth">thin</property>
-                                <text id="3559">
-                                    <property name="fontSize">11pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="color">#606062</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'PurchaseOrder.bankingInfo'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3553">
-                                <property name="borderBottomColor">#606062</property>
-                                <property name="borderBottomStyle">solid</property>
-                                <property name="borderBottomWidth">thin</property>
-                            </cell>
-                        </row>
-                        <row id="3560">
-                            <cell id="3561">
-                                <property name="colSpan">2</property>
-                                <property name="rowSpan">1</property>
-                                <text id="3580">
-                                    <property name="fontSize">10pt</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'PurchaseOrder.cheque'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]</VALUE-OF> : </b>Labelled by <VALUE-OF>row._outer["CompanyName"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3564"/>
-                        </row>
-                        <row id="3565">
-                            <cell id="3566">
-                                <property name="colSpan">2</property>
-                                <property name="rowSpan">1</property>
-                                <text id="3581">
-                                    <property name="fontSize">10pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["iban"] == null &amp;&amp; row._outer["bic"] == null</expression>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'PurchaseOrder.bankDetails'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3569"/>
-                        </row>
-                        <row id="3575">
-                            <cell id="3576">
-                                <text id="3582">
-                                    <property name="fontSize">9pt</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["iban"] == null</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">auto</property>
-                                    <text-property name="content"><![CDATA[IBAN :]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3577">
-                                <text id="3596">
-                                    <property name="fontSize">9pt</property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["iban"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3579"/>
-                        </row>
-                        <row id="3570">
-                            <cell id="3571">
-                                <text id="3593">
-                                    <property name="fontSize">9pt</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["bic"] == null</expression>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">auto</property>
-                                    <text-property name="content"><![CDATA[BIC :]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3572">
-                                <text id="3597">
-                                    <property name="fontSize">9pt</property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["bic"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                            <cell id="3574"/>
                         </row>
                         <row id="3588">
                             <cell id="3589"/>

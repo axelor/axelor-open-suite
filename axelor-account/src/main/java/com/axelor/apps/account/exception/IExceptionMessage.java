@@ -527,6 +527,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
   static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
+      "Email is not sent. Please check email account configuration." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -771,4 +773,10 @@ public interface IExceptionMessage {
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  /* Check refunds */
+  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed supplier refunds."; /*)*/
 }

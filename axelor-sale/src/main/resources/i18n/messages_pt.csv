@@ -448,7 +448,7 @@
 "The field %s is of type %s, but the configured script returned value is of type %s.","O campo %s é do tipo %s, mas o script configurado é do tipo %s.",,
 "The sale order was canceled","A ordem de venda foi cancelada",,
 "The syntax of the script is correct.","A sintaxe do script está correta.",,
-"The total amount is zero.","O montante total é zero.",,
+"The total amount of quotation is zero. Do you want to proceed ?",,,
 "This Year To Date","Este ano até à data",,
 "This sale order is completed.","Esta ordem de venda está concluída.",,
 "This script has errors, please see server logs for more details.","Este script tem erros, por favor veja os logs do servidor para mais detalhes.",,

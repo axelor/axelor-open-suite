@@ -448,7 +448,7 @@
 "The field %s is of type %s, but the configured script returned value is of type %s.","Het veld %s is van het type %s, maar de geconfigureerde scriptwaarde is van het type %s.",,
 "The sale order was canceled","De verkooporder werd geannuleerd",,
 "The syntax of the script is correct.","De syntaxis van het script is correct.",,
-"The total amount is zero.","Het totale bedrag is nul.",,
+"The total amount of quotation is zero. Do you want to proceed ?",,,
 "This Year To Date","Dit jaar tot op heden",,
 "This sale order is completed.","Deze verkooporder is afgerond.",,
 "This script has errors, please see server logs for more details.","Dit script heeft fouten, zie server logs voor meer details.",,
