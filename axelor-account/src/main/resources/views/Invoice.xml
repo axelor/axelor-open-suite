@@ -257,15 +257,15 @@
                		<span x-translate style="color:red">Watch out, this partner has no active bank details</span>
            		]]></viewer>
     		</field>
+    		<field name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+           	<field name="partnerTaxNbr" readonlyIf="statusSelect != 1" hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <panel name="addressPanel" stacked="true">
                 <field name="address" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-address" onChange="action-method-invoice-address-str" canEdit="false" canNew="true" form-view="address-partner-address-form" grid-view="address-grid"/>
                 <field name="addressStr" readonlyIf="statusSelect &gt; 1" height="5">
                     <viewer>{{record.addressStr}}</viewer>
                 
               	</field>
-            </panel> 
-            <field name="bankDetails" colSpan="3" canEdit="false" widget="SuggestBox" onSelect="action-invoice-attrs-bank-details-from-partner-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-           	<field name="partnerTaxNbr" colSpan="3" readonlyIf="statusSelect != 1" hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+            </panel>    
             <field name="saleOrder"  canEdit="false" onChange="action-invoice-group-saleorder-onchange" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
             <field name="purchaseOrder" domain="self.supplierPartner = :partner AND self.company = :company" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
             
