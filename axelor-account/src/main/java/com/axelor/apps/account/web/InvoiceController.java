@@ -290,7 +290,7 @@ public class InvoiceController {
 
   /** Method to generate invoice as a Pdf */
   @SuppressWarnings("unchecked")
-  public void showInvoices(ActionRequest request, ActionResponse response) {
+  public void showInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     String fileLink;
     String title;
