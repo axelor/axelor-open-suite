@@ -186,5 +186,5 @@ public interface IExceptionMessage {
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
 
   static final String STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR = /*$$(*/
-      "Product stock is not enough for availabity request" /*)*/;
+      "Product stock for %s is not enough for availability request" /*)*/;
 }

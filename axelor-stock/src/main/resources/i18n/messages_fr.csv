@@ -466,7 +466,7 @@
 "Product model","Modèle de produit",,
 "Product name","Nom du produit",,
 "Product quantity in other stock locations","Quantité du produit dans les autres emplacements",,
-"Product stock is not enough for availabity request","Le stock est insuffisant pour une demande de mise à disposition",,
+"Product stock for %s is not enough for availability request","Le stock est insuffisant pour le(s) produit(s) %s pour une demande de mise à disposition",,
 "Product tracking number","No de suivi du produit",,
 "Product type","Type de produit",,
 "Product's stocks %s (%s) are not in sufficient quantity to realize the delivery","Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison",,
