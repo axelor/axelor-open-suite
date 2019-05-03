@@ -13,6 +13,7 @@
 - SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
 - Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
+- Timesheet : Set conditions on dates for generate lines automatically
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
