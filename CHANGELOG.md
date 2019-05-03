@@ -16,6 +16,7 @@
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
 - Configurator Prod Process and BOM: add new fields.
+- Availability Request: cannot lower reserved quantity.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
