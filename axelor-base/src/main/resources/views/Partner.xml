@@ -283,6 +283,11 @@
 						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 					</panel>
 				</panel>
+				
+				<panel name="employeePanel" hidden="true">
+    				<button name="openEmployeeFormBtn" title="Open employee form" colSpan="6" onClick="action-partner-view-open-employee-form"/>
+ 		 		</panel>
+				
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
 					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
@@ -492,6 +497,11 @@
 			</panel>
 			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
+		
+		<panel name="employeePanel" hidden="true" sidebar="true">
+        	<button name="openEmployeeFormBtn" title="Open employee form" onClick="action-partner-view-open-employee-form"/>
+      	</panel>
+		
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
@@ -686,6 +696,7 @@
 		<action name="action-partner-attrs-change-name"/>
 		<action name="action-partner-attrs-show-specific-tax-note"/>
 		<action name="action-partner-method-set-social-network-url"/>
+		<action name="action-partner-attrs-hide-employee-panel"/>
 		<action name="action-partner-account-attrs-hide-supplier-account"/>
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
@@ -748,6 +759,7 @@
     </action-group>
     
     <action-group name="action-group-partner-contact-onload">
+    	<action name="action-partner-attrs-hide-employee-panel"/>
     	<action name="action-partner-method-check-name"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
@@ -786,6 +798,12 @@
 	
 	<action-attrs name="action-partner-attrs-hide-customer-recovery-btn">
 		<attribute name="hidden" for="customerRecoveryBtn" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-hide-employee-panel">
+		<attribute name="hidden" for="employeePanel" 
+		expr="eval:!( __this__.employee != null &amp;&amp; __user__.employee != null  &amp;&amp; 
+		(__user__.employee.hrManager &amp;&amp;  __user__ == __this__.employee.managerUser))"/>
 	</action-attrs>
 
     <action-record name="action-partner-record-set-balance"
@@ -927,6 +945,12 @@
 		<domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
 		<context name="partnerId" expr="eval: id"/>
 	</action-view>
+
+	<action-view name="action-partner-view-open-employee-form" model="com.axelor.apps.hr.db.Employee" title="Employee">
+    	<view name="employee-form" type="form"/>
+        <view name="employee-grid" type="grid"/>
+        <context name="_showRecord" expr="eval:employee.id"/>
+   	</action-view>
 
 	<action-method name="action-convert-into-individual-partner">
 		<call class="com.axelor.apps.base.web.PartnerController" method="convertToIndividualPartner"/>

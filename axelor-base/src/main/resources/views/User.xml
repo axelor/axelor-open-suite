@@ -55,7 +55,7 @@
 			<panel name="stepContactPanel" showIf="stepStatusSelect == 2" colSpan="12">
 				<panel name="contactInformationPanel" title="Contact Information" showIf="id &amp;&amp; [2,5].indexOf(stepStatusSelect) > -1" colSpan="12">
 	      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
-	      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true" form-view="partner-employee-form" grid-view="partner-employee-grid">
+	      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)" form-view="partner-employee-form" grid-view="partner-employee-grid">
 	        			<editor x-viewer="true">
 	          				<field name="fullName" readonly="true"/>
 	          				<field name="fixedPhone" />
@@ -140,7 +140,7 @@
         <panel-tabs name="mainPanelTab" showIf="stepStatusSelect == 5">
     		<panel name="contactInformationPanel" title="Contact Information" showIf="id &amp;&amp; [2,5].indexOf(stepStatusSelect) > -1">
       			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
-      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true" form-view="partner-employee-form" grid-view="partner-employee-grid">
+      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)" form-view="partner-employee-form" grid-view="partner-employee-grid">
         			<editor x-viewer="true">
           				<field name="fullName" readonly="true"/>
           				<field name="fixedPhone" />
@@ -240,13 +240,13 @@
     </action-record>
     
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; (partner?.isClient || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isClient &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
     </action-record>
     
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; (partner?.isClient || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isClient &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
     </action-record>
     
     <action-validate name="action-user-check-company">
