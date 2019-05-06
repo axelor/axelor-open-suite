@@ -21,6 +21,7 @@
 - SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 - Translation: fix existing and add missing translations.
+- Bill of material: added a menu showing personalized bills of materials. 
 
 ## [5.1.6] - 2019-04-29
 ## Features
