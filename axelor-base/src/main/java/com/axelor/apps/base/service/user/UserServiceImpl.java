@@ -29,9 +29,12 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JpaSecurity;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -46,8 +49,11 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.validation.ValidationException;
@@ -59,7 +65,9 @@ import org.slf4j.LoggerFactory;
 /** UserService is a class that implement all methods for user informations */
 public class UserServiceImpl implements UserService {
 
-  @Inject private UserRepository userRepo;
+  @Inject protected UserRepository userRepo;
+  @Inject protected PermissionRepository permissionRepo;
+  @Inject protected JpaSecurity jpaSecurity;
 
   public static final String DEFAULT_LOCALE = "en";
 
@@ -80,6 +88,8 @@ public class UserServiceImpl implements UserService {
   private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
+
+  private static final String PERM_META_FILE_COMPANY_LOGO_BASE = "perm.meta.file.company.logo";
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -167,7 +177,57 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    return company.getLogo();
+    final MetaFile logo = company.getLogo();
+
+    if (logo != null
+        && !jpaSecurity.isPermitted(JpaSecurity.CAN_READ, MetaFile.class, logo.getId())) {
+      grantReadPermissionToUserOnCompanyLogo(company);
+    }
+
+    return logo;
+  }
+
+  @Transactional
+  void grantReadPermissionToUserOnCompanyLogo(Company company) {
+    final User user = getUser();
+
+    if (user == null) {
+      return;
+    }
+
+    final String logoPermissionName =
+        String.format("%s.%s", PERM_META_FILE_COMPANY_LOGO_BASE, company.getCode());
+    final Permission logoPermission =
+        Optional.ofNullable(permissionRepo.findByName(logoPermissionName))
+            .orElseGet(
+                () -> {
+                  final Permission permission = new Permission();
+                  permission.setName(logoPermissionName);
+                  permission.setObject(MetaFile.class.getName());
+                  permission.setCanRead(true);
+                  return permissionRepo.save(permission);
+                });
+
+    logoPermission.setCondition(String.format("self.id = %d", company.getLogo().getId()));
+    final Set<Permission> permissions =
+        Optional.ofNullable(user.getPermissions()).orElse(Collections.emptySet());
+    boolean logoPermissionFound = false;
+
+    for (final Iterator<Permission> it = permissions.iterator(); it.hasNext(); ) {
+      final Permission permission = it.next();
+
+      if (permission.getName().startsWith(PERM_META_FILE_COMPANY_LOGO_BASE)) {
+        if (permission.getName().equals(logoPermissionName)) {
+          logoPermissionFound = true;
+        } else {
+          user.removePermission(permission);
+        }
+      }
+    }
+
+    if (!logoPermissionFound) {
+      user.addPermission(logoPermission);
+    }
   }
 
   @Override
