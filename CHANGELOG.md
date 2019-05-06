@@ -22,6 +22,7 @@
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 - Translation: fix existing and add missing translations.
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
+- Stock Move: automatic mail configuration is retrieved from the company stock config
 
 ## [5.1.6] - 2019-04-29
 ## Features

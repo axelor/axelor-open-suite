@@ -260,7 +260,7 @@
         </panel>
 
         <panel name="stockMoveInformationPanel" title="Stock move information">
-            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-record-update-info-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
             <field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
             <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
@@ -510,6 +510,7 @@
     
     <action-group name="action-group-stock-stockmove-onnew">
     	<action name="action-stock-move-record-new"/>
+        <action name="action-stock-move-record-mail-configuration"/>
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
@@ -575,6 +576,11 @@
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	</action-group>
+
+    <action-group name="action-stock-move-group-onchange-company">
+        <action name="action-stock-move-record-update-info-company"/>
+        <action name="action-stock-move-record-mail-configuration"/>
+    </action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
     	<attribute name="title" for="stockMoveInformationPanel" expr="eval: com.axelor.i18n.I18n.get('Internal move information')" if="typeSelect == 1"/>
@@ -688,6 +694,17 @@
 		<field name="isConformityCertifSigned" if="!isNeedingConformityCertificate" expr="eval: false"/>
 		<field name="electronicSignature" if="!isNeedingConformityCertificate" expr="eval:null"/>
 	</action-record>
+
+    <action-record name="action-stock-move-record-mail-configuration" model="com.axelor.apps.stock.db.StockMove">
+        <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="plannedStockMoveAutomaticMail" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"/>
+        <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="realStockMoveAutomaticMail" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"/>
+        <field if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail" name="plannedStockMoveMessageTemplate" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveMessageTemplate"/>
+        <field if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail" name="realStockMoveMessageTemplate" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveMessageTemplate"/>
+        <field if="company == null" name="plannedStockMoveAutomaticMail" expr="eval: false"/>
+        <field if="company == null" name="realStockMoveAutomaticMail" expr="eval: false"/>
+        <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
+        <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
+    </action-record>
 	
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
