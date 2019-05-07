@@ -44,7 +44,7 @@
 			<panel-related name="historizedPriceListPanel" field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
 			<button name="historizePriceListBtn" hideIf="!id" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
-		<panel-dashlet name="PartnerPriceListPanel" title="Partner price lists" action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
+		<panel-dashlet name="partnerPriceListPanel" title="Partner price lists" action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
    </form>
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
