@@ -208,7 +208,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             .map(Invoice::getExTaxTotal)
             .reduce((x, y) -> x.add(y))
             .orElse(BigDecimal.ZERO);
-    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) >= 0) {
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

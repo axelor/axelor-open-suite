@@ -23,6 +23,7 @@
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 - Translation: fix existing and add missing translations.
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
+- SaleOrder : when amount = 0, we can only choose Invoice All.
 - Stock Move: automatic mail configuration is retrieved from the company stock config
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 

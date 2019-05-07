@@ -869,16 +869,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
-    Map<String, Integer> contextValues = new HashMap<>();
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
 
+    Map<String, Integer> contextValues = new HashMap<>();
     contextValues.put(
         "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 ? SaleOrderRepository.INVOICE_ALL : 0);
-    contextValues.put("invoiceFraction", SaleOrderRepository.INVOICE_PART);
-    contextValues.put("invoiceLines", SaleOrderRepository.INVOICE_LINES);
+        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
+            ? SaleOrderRepository.INVOICE_ALL
+            : 0);
+    contextValues.put(
+        "invoiceFraction",
+        appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()
+                || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
+            ? 0
+            : SaleOrderRepository.INVOICE_PART);
+    contextValues.put(
+        "invoiceLines",
+        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
     contextValues.put(
         "invoiceAdvPayment",
-        manageAdvanceInvoice ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT : 0);
+        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
+            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
+            : 0);
     return contextValues;
   }
 
