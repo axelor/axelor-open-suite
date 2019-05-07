@@ -14,6 +14,7 @@
 - Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - Timesheet : Set conditions on dates for generate lines automatically
+- Debt Recovery : delete canEdit from fields
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -21,6 +22,10 @@
 - SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 - Translation: fix existing and add missing translations.
+- Logistical Form : wrong french translation for LogisticalFormLine.qty
+- SaleOrder : when amount = 0, we can only choose Invoice All.
+- Stock Move: automatic mail configuration is retrieved from the company stock config
+- SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 - StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
 
 ## [5.1.6] - 2019-04-29

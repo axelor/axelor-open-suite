@@ -198,7 +198,7 @@
 "LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2}","Nombre de colis/palettes : {0} – Masse brute total ({1}) : {2}",,
 "LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>","Palette n<sup>o</sup> <strong>{0}</strong> – Dimensions (cm) : <strong>{1}</strong> – Masse brute ({2}) : <strong>{3}</strong>",,
 "LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>","Colis n<sup>o</sup> <strong>{0}</strong> – Dimensions (cm) : <strong>{1}</strong> – Masse brute ({2}) : <strong>{3}</strong>",,
-"LogisticalFormLine.qty","Code client :",,
+"LogisticalFormLine.qty","Quantité",,
 "LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1}","BL n<sup>o</sup> {0} / Réf. n<sup>o</sup> {1}",,
 "MRP","CBN",,
 "MRP Type","Type d'encours",,

@@ -11,13 +11,7 @@
 				   type="selection"
 				   selection="supplychain.sale.order.invoicing.wizard.select"
                    selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment]"
-				   required="true" if="!__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
-			<field name="operationSelect" title="Operation choice"
-				   type="selection"
-				   selection="supplychain.sale.order.invoicing.wizard.select"
-                   selection-in="[invoiceAll, invoiceLines, invoiceAdvPayment]"
-				   required="true" if="__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
-
+				   required="true"/>
 		</panel>
         <panel name="amountPanel" showIf="[2,3,4].includes($number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"
