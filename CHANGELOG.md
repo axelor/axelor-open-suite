@@ -82,6 +82,7 @@
 - INVOICE : Change form view's organization to fit the SaleOrder view.
 - OPPORTUNITY : Create event from opportunity.
 - PARTNER : Link to employee form and changed domain
+- PRICE LIST : Add dashlets to display partner
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
