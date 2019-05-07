@@ -49,6 +49,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,7 +65,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -741,7 +741,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
 
-    Query q = JPA.em().createQuery(query, BigDecimal.class);
+    javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
@@ -880,5 +880,37 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         "invoiceAdvPayment",
         manageAdvanceInvoice ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT : 0);
     return contextValues;
+  }
+
+  @Override
+  public void displayErrorMessageIfSaleOrderIsInvoiceable(
+      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
+    List<Invoice> invoices =
+        Query.of(Invoice.class)
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
+                    + "(self.archived = NULL OR self.archived = false)")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetch();
+    if (isPercent) {
+      amountToInvoice =
+          (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
+              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
+    }
+    BigDecimal sumInvoices =
+        invoices
+            .stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .add(amountToInvoice);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
+          saleOrder.getSaleOrderSeq());
+    }
   }
 }
