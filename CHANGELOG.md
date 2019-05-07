@@ -26,6 +26,7 @@
 - SaleOrder : when amount = 0, we can only choose Invoice All.
 - Stock Move: automatic mail configuration is retrieved from the company stock config
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
+- StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
 
 ## [5.1.6] - 2019-04-29
 ## Features
