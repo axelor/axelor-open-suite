@@ -128,5 +128,6 @@
 - Marketing : Fix error when trying to generate an event per target
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
+- BoM:  added a menu showing personalized bills of materials
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
