@@ -83,6 +83,7 @@
 - OPPORTUNITY : Create event from opportunity.
 - PARTNER : Link to employee form and changed domain
 - PRICE LIST : Add dashlets to display partner
+- SALE ORDER : Recompute unit price when hideDiscount is true.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
