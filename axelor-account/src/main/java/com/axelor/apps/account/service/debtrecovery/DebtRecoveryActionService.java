@@ -251,7 +251,7 @@ public class DebtRecoveryActionService {
       message = Beans.get(MessageRepository.class).save(message);
       message = Beans.get(MessageService.class).sendMessage(message);
 
-      if (message.getMailAccount() == null) {
+      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk() && message.getMailAccount() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
