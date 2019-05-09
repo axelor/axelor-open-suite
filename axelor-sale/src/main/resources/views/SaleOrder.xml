@@ -266,9 +266,9 @@
 	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
 	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
-	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
-	      <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
-	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" canEdit="!$isParentOpportunity" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
+	      <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-set-client-partner-domain" canEdit="!$isParentOpportunity" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
+	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" canEdit="!$isParentOpportunity" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
 	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
 	      <panel name="otherInfoPanel" colSpan="3">
@@ -279,13 +279,13 @@
 	    </panel>
 	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
 	      <panel name="mainInvoicingAddressPanel" stacked="true">
-	        <field name="mainInvoicingAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="mainInvoicingAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" canEdit="!$isParentOpportunity" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="mainInvoicingAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.mainInvoicingAddressStr}}]]></viewer>
 	        </field>
 	      </panel>
 	      <panel name="deliveryAddressPanel" stacked="true">
-	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" canEdit="!$isParentOpportunity" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
@@ -309,8 +309,8 @@
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
-	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
-	      <field name="freightCarrierMode" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
+	      <field name="shipmentMode" canEdit="!$isParentOpportunity" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
+	      <field name="freightCarrierMode" canEdit="!$isParentOpportunity" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
@@ -332,7 +332,7 @@
       <panel name="businessProjectPanel" title="Business project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" if-module="axelor-business-project">
         <field name="$_projectGeneratorType" title="Type of project's elements generated" x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
         <field name="$_elementStartDate" title="Start date" widget="date-time" type="datetime"/>
-        <field name="project" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid"/>
+        <field name="project" canEdit="!$isParentOpportunity" domain="self.clientPartner = :clientPartner" form-view="project-form" grid-view="project-grid"/>
         <field name="toInvoiceViaTask" hidden="true" showIf="$_projectGeneratorType == 'TASK_BY_LINE' || $_projectGeneratorType == 'TASK_TEMPLATE'"/>
         <panel name="projectDetailsPanel" colSpan="12">
           <button name="updateLinesBtn" title="Update lines with selected project" onClick="save,action-business-project-sale-order-method-update-lines,save" readonlyIf="!project"/>
@@ -413,7 +413,7 @@
 	  </panel>
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
-	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid"/>
+	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid" canEdit="!$isParentOpportunity"/>
 	    <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
         <viewer>
           <![CDATA[
@@ -447,7 +447,7 @@
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="duration" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" canEdit="!$isParentOpportunity" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -460,6 +460,8 @@
 	  </panel>
 	  <panel name="internalNotePanel" title="Internal Note" colSpan="12" sidebar="true">
 	    <field name="internalNote" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+<!-- 	    Dummy field to set canEdit false when this form-view is open from opportunity-form -->
+	    <field name="$isParentOpportunity" type="boolean" hidden="true"/> 
 	  </panel>
 	  <panel-mail name="mailPanel">
 	    <mail-messages limit="4"/>
@@ -869,8 +871,14 @@
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
         <action name="action-sale-order-attrs-availability-request-label"/>
+        <action name="action-sale-order-record-set-clientPartner-from-opportunity" if="isParentOpportunity"/>
+        <action name="action-sale-order-group-client-partner-change" if="isParentOpportunity &amp;&amp; clientPartner != null"/>
     </action-group>
 
+    <action-record name="action-sale-order-record-set-clientPartner-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="clientPartner" expr="eval:_parent?.partner"/>
+    </action-record>
+    
     <action-group name="action-group-sale-saleorder-onload">
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     	<action name="action-partner-attrs-hide-contact-partner" />
@@ -1291,6 +1299,7 @@
 	
 	<action-attrs name="action-sale-order-attrs-availability-request-label">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+		<attribute name="value" for="$isParentOpportunity" expr="eval: (_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity') ? true : false" />
 	</action-attrs>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">

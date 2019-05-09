@@ -84,6 +84,7 @@
 - PARTNER : Link to employee form and changed domain
 - PRICE LIST : Add dashlets to display partner
 - SALE ORDER : Recompute unit price when hideDiscount is true.
+- OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
