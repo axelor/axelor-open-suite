@@ -312,4 +312,12 @@ public interface SaleOrderInvoiceService {
    */
   void displayErrorMessageIfSaleOrderIsInvoiceable(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+
+  /**
+   * Display error message if all invoices have been generated for the sale order
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 }
