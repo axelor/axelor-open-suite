@@ -192,7 +192,7 @@
 	</kanban>
 
 	<form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
-		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost">
+		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost,action-opportunity-method-cancel-saleorders">
 		<panel name="mainPanel">
 			<field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
 			<field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>

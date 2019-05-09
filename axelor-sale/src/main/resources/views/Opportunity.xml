@@ -22,4 +22,8 @@
 		<call class="com.axelor.apps.sale.web.OpportunitySaleOrderController" method="generateSaleOrder"/>
 	</action-method>
 	
+	<action-method name="action-opportunity-method-cancel-saleorders">
+    	<call class="com.axelor.apps.sale.web.OpportunitySaleOrderController" method="cancelSaleOrders"/>
+    </action-method>
+	
 </object-views>	
