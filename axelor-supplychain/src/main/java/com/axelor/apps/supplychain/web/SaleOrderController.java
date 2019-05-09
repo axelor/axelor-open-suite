@@ -748,7 +748,7 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = saleOrderRepo.find(saleOrder.getId());
-      saleOrderServiceSupplychain.displayErrorMessageBtnGenerateInvoice(saleOrder);
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
           ActionView.define("Invoicing")
               .model(SaleOrder.class.getName())
