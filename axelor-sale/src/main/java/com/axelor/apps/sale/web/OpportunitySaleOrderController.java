@@ -20,6 +20,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
@@ -57,7 +58,10 @@ public class OpportunitySaleOrderController {
     List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
     if (saleOrderList != null && !saleOrderList.isEmpty()) {
       for (SaleOrder saleOrder : saleOrderList) {
-        saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+        if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+          saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+        }
       }
     }
   }
