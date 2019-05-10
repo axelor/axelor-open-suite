@@ -320,6 +320,10 @@
 				<panel-dashlet name="advancePaymentInvoicesDashletPanel" action="action-project-dashlet-advance-payment-invoices" colSpan="12" 
 					if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
 			</panel>
+			<panel title="Analytic" name="analyticPanel" showIf="isBusinessProject"
+			     if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<panel-dashlet name="analyticDashletPanel" action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
+    		</panel>
 			<panel title="Wiki"  name="wikiPanel" >
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
