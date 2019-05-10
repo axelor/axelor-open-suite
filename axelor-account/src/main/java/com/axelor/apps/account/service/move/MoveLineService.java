@@ -62,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1116,5 +1117,17 @@ public class MoveLineService {
     newOrUpdatedMoveLine.setDate(date);
 
     return newOrUpdatedMoveLine;
+  }
+
+  public void validateMoveLine(MoveLine moveLine) throws AxelorException {
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+        && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
+        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_LINE_7),
+          moveLine.getAccount().getCode());
+    }
   }
 }

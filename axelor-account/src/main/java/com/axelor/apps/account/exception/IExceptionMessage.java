@@ -153,6 +153,8 @@ public interface IExceptionMessage {
       "Account missing on the tax line : %s (company : %s)" /*)*/;
   static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
+  static final String MOVE_LINE_7 = /*$$(*/
+      "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;

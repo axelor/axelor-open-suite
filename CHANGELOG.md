@@ -29,6 +29,7 @@
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 - StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
 - Configurator Creator: more fixes to import/export feature.
+- ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 
 ## [5.1.6] - 2019-04-29
 ## Features
