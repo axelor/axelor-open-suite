@@ -25,7 +25,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-
 import java.util.List;
 import javax.persistence.PersistenceException;
 
@@ -57,10 +56,10 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       }
     }
     try {
-	  Beans.get(MoveLineService.class).validateMoveLine(entity);
-	} catch (Exception e) {
-	  throw new PersistenceException(e);
-	}
+      Beans.get(MoveLineService.class).validateMoveLine(entity);
+    } catch (Exception e) {
+      throw new PersistenceException(e);
+    }
     return super.save(entity);
   }
 }
