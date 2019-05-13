@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Product" canSave="false" width="large" onNew="action-group-stock-details-by-product-on-new">	
+      <panel name="MainFilters" itemSpan="4" colSpan="12">
+          <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators"/>
+          <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-group-supplychain-update-indicators, action-record-empty-company-and-stock-location"/>
+          <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
+      </panel>
+      <panel name="mainPanelIndicators" showIf="$product">
+        <panel name="indicators" title="Indicators" colSpan="12">
+            <panel name="stockIndicators" colSpan="12" itemSpan="4">
+               <button name="$realQty" title="Real quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-default-realized"/>
+               <button name="$futureQty" title="Future quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-default-planned"/>
+               <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved-planned"/>
+            </panel>
+            <panel name="supplychainIndicators" colSpan="12" itemSpan="3">
+               <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart" widget="info-button" onClick="action-supplychain-sale-order-product-planned"/>
+               <button name="$purchaseOrderQty" title="Purchase order quantity" icon="fa-shopping-cart"  widget="info-button" onClick="action-supplychain-purchase-order-product-planned"/>
+               <button name="$availableQty" title="Available stock" icon="fa-building-o" widget="info-button"/>
+               <button name="$requestedReservedQty" title="Requested reserved quantity" icon="fa-building-o" widget="info-button" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()" onClick="action-suppplychain-stock-location-line-view-reserved-stock-move-lines"/>
+            </panel>
+            <panel name="productionIndicators" colSpan="12" itemSpan="4" if-module="axelor-production">
+               <button name="$buildingQty" title="Building quantity" icon="fa-cogs" widget="info-button"/>
+               <button name="$consumeManufOrderQty" title="Consume manuf order quantity" icon="fa-cogs" widget="info-button" />
+               <button name="$missingManufOrderQty" title="Missing manuf order quantity" icon="fa-cogs" widget="info-button" />
+            </panel>
+       </panel>
+       <panel-dashlet name="dashlet-views-stock-location-line-view-by-product" colSpan="12"  action="action-stock-location-line-view-by-product" showIf="$product" readonly="true" />
+     </panel>
+	</form>
+  
+  <action-group name="action-group-supplychain-update-indicators">
+     <action name="action-method-update-indicators"/>
+     <action name="action-attrs-reload-panel-dashlet"/>
+  </action-group>
+  
+  <action-record name="action-record-empty-company-and-stock-location" model="com.axelor.apps.base.db.Product">
+      <field name="$stockLocation" expr="eval: null" if="!$company"/>
+  </action-record>
+  
+  <action-group name="action-group-stock-details-by-product-on-new">
+    <action name="action-record-stock-details-by-product-init-product"/>
+    <action name="action-method-update-indicators"/>
+  </action-group>
+  
+  <action-record name="action-record-stock-details-by-product-init-product" model="com.axelor.apps.base.db.Product">
+      <field name="$product" expr="eval: _product"/>
+  </action-record>
+  
+  <action-attrs name="action-attrs-reload-panel-dashlet">
+      <attribute name="refresh" for="dashlet-views-stock-location-line-view-by-product" expr="eval: true"/>
+  </action-attrs>
+  
+  <action-method name="action-method-update-indicators" >
+    <call class="com.axelor.apps.supplychain.web.ProductController" method="setIndicatorsOfProduct"/>
+  </action-method>
+  
+  <action-view name="action-stock-location-line-view-for-a-product" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
+      <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <context name="_product" expr="eval:__self__"/>
+  </action-view>
+  
+  <action-view name="action-suppplychain-stock-location-line-view-reserved-stock-move-lines" title="Reserved stock move lines" 
+    model="com.axelor.apps.stock.db.StockMoveLine">
+      <view type="grid" name="stock-move-line-all-grid-planned"/>
+      <view type="form" name="stock-move-line-all-form"/>
+      <domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)
+      AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      <context name="productId" expr="eval: product?.id"/>
+      <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>
+  
+    
+  <action-view name="action-supplychain-stock-move-line-product-reserved-planned" title="${product.fullName} plan. st. move"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid-planned"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :productId 
+    AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+    AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>
+  
+  
+  <action-view name="action-supplychain-stock-move-line-product-default-planned" title="${product.fullName} plan. st. move"
+    model="com.axelor.apps.stock.db.StockMoveLine" >
+    <view type="grid" name="stock-move-line-all-grid-planned"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.stockMove.statusSelect = 2 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :productId  
+    AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+    AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>  
+  
+  <action-view name="action-supplychain-stock-move-line-product-default-realized" title="${product.fullName} real st. move"
+    model="com.axelor.apps.stock.db.StockMoveLine" >
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.stockMove.statusSelect = 3 and (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect = 1) and self.product.id = :productId 
+    AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+    AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>
+  
+  <action-view name="action-supplychain-purchase-order-product-planned" title="${product.fullName} purchase order"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" >
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.statusSelect = 3 and (self.purchaseOrderLineList.product.id = :productId)
+    AND (self.stockLocation.id = :locationId OR :locationId IS NULL)
+    AND (self.company.id = :companyId OR :companyId IS NULL)</domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>
+  
+   <action-view name="action-supplychain-sale-order-product-planned" title="${product.fullName} sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" >
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.statusSelect = 3 and (self.saleOrderLineList.product.id = :productId)
+    AND (self.stockLocation.id = :locationId OR :locationId IS NULL)
+    AND (self.company.id = :companyId OR :companyId IS NULL)</domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="companyId" expr="eval: company?.id "/>
+  </action-view>
+  
+    
+</object-views>

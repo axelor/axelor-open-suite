@@ -513,6 +513,7 @@
 "Starting Date",,,
 "Starting duration (hh:mm:ss)",,,
 "Status",,,
+"Status considered to filter a manuf order",,,
 "Stock Location",,,
 "Stock location",,,
 "Stock location for produced product","Stock location for produced product",,

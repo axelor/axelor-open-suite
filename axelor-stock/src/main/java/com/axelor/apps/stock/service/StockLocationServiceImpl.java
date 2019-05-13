@@ -99,10 +99,10 @@ public class StockLocationServiceImpl implements StockLocationService {
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
-      if (locationId == null) {
+      if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
-          BigDecimal qty = BigDecimal.ZERO;
+          BigDecimal qty = BigDecimal.ZERO.setScale(2);
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
                 stockLocationLineService.getOrCreateStockLocationLine(
@@ -132,7 +132,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
         if (stockLocationLine != null) {
           Unit stockLocationLineUnit = stockLocationLine.getUnit();
-          BigDecimal qty = BigDecimal.ZERO;
+          BigDecimal qty = BigDecimal.ZERO.setScale(2);
 
           qty =
               qtyType.equals("real")
@@ -149,7 +149,7 @@ public class StockLocationServiceImpl implements StockLocationService {
       }
     }
 
-    return null;
+    return BigDecimal.ZERO.setScale(2);
   }
 
   @Override

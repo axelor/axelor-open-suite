@@ -513,6 +513,7 @@
 "Starting Date","Date de début",,
 "Starting duration (hh:mm:ss)","Temps démarrage (hh:mm:ss)",,
 "Status","Statut",,
+"Status considered to filter a manuf order","Status à prendre en compte sur les ordres de fabrication",,
 "Stock Location",,,
 "Stock location",,,
 "Stock location for produced product","Emplacement des produits finis",,
