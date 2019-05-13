@@ -53,6 +53,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl {
 
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
       moveValidateService.validateMultiple(getMoveListToValidate(period));
+      period = periodRepo.find(period.getId());
     }
 
     super.close(period);

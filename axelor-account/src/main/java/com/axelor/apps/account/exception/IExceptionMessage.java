@@ -311,6 +311,15 @@ public interface IExceptionMessage {
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
 
+  /** Batch close / open the year account */
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
+      "Report for close/open annual accounts batch:" /*)*/;
+
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_SINGULAR = /*$$(*/
+      "%d account treated successfully," /*)*/;
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
+      "%d accounts treated successfully," /*)*/;
+
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
@@ -441,6 +450,10 @@ public interface IExceptionMessage {
       "%s : You must configure a factor credit account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_42 = /*$$(*/
       "%s : You must configure a factor debit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_43 = /*$$(*/
+      "%s : You must configure a year opening account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_44 = /*$$(*/
+      "%s : You must configure a year closure account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;

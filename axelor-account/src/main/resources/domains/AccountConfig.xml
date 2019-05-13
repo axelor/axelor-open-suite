@@ -37,6 +37,9 @@
 		<many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
 		<many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
 		<many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
+		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>
+		<many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account" title="Year closure account"/>
+		
 
         <!-- Automatic account creation for partners -->
         <integer name="partnerAccountGenerationModeSelect" selection="account.create.mode.select" default="0" title="Automatic partner account creation mode"/>
