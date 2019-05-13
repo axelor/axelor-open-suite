@@ -35,22 +35,36 @@
     		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="mainPanel" >
-   			<panel name="namePanel" colSpan="5">
+   			<panel name="namePanel" colSpan="4">
     			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
         			<editor x-show-titles="false">
-          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="4" css="label-bold bold large" placeholder="Code" />
-          				<field name="name" showTitle="false" colSpan="8" css="label-bold bold large" placeholder="Name"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true" 
+          					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
+          				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
+          					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
+          				<field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name"/>
         			</editor>
       			</field>
     		</panel>
-    		<panel name="actionsPanel" colSpan="7">
+    		<panel name="actionsPanel" colSpan="8">
        			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="9" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+				<panel name="tagsPanel" colSpan="2" if="__config__.app.isApp('sale')" if-module="axelor-sale">
+					<field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
+						<viewer depends="configurator">
+							<![CDATA[
+								<h4 style="text-align: right;">
+									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.configurator != null" x-translate>Customised</span>
+								</h4>
+							]]>
+						</viewer>
+					</field>
+				</panel>
+      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
        	 			<button name="$reservedQtyBtn" title="Allocated qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     	  			<field name="isModel" hidden="true"/>
-			</panel>
+				</panel>
       		</panel>
     		<panel name="imagePanel" colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image">
@@ -62,7 +76,6 @@
 					</viewer>
 				</field>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
-				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
     		<panel name="productInfoPanel" colSpan="10" >
       
@@ -79,7 +92,7 @@
       			</panel>
 		      	<panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-		        	<field name="productCategory" canEdit="false" colSpan="12" domain="self.productFamily = :productFamily" form-view="product-category-form" grid-view="product-category-grid"/>
+		        	<field name="productCategory" canEdit="false" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
@@ -98,7 +111,8 @@
   			</panel>
     		<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
-					<field name="sellable" colSpan="12"/>
+					<field name="sellable" colSpan="6"/>
+					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
@@ -193,8 +207,6 @@
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
-                    <field name="costSheetGroup" showIf="productSubTypeSelect == 3"/>
-                    <field name="economicManufOrderQty"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
@@ -305,6 +317,7 @@
 		<field name="productFamily" />
 		<field name="productCategory" />
 		<field name="internalDescription"/>
+		<field name="configurator.id"/>
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
@@ -319,6 +332,9 @@
 			  </div>
 			</div>
 			<div class="span12" ng-bind-html="internalDescription"></div>
+			<div class="span12" style="margin-left:0px;">
+	  			<span class="label label-important" ng-show="record.configurator.id" x-translate>Customised</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -355,6 +371,7 @@
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
+      <action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
@@ -560,6 +577,12 @@
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>
+		</filter>
+		<filter title="Classic products">
+			<domain>self.configurator IS NULL</domain>
+		</filter>
+		<filter title="Customised products">
+			<domain>self.configurator IS NOT NULL</domain>
 		</filter>
 	</search-filters>
 	

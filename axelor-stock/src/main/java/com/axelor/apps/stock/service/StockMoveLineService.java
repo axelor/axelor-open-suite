@@ -143,8 +143,7 @@ public interface StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(

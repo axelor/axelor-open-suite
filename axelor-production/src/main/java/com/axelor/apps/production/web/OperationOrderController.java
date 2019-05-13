@@ -292,6 +292,25 @@ public class OperationOrderController {
   }
 
   /**
+   * Called from operation order form, on consumed stock move line change. Call {@link
+   * OperationOrderService#checkConsumedStockMoveLineList(OperationOrder, OperationOrder)}
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConsumedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      OperationOrder oldOperationOrder =
+          Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderService.class)
+          .checkConsumedStockMoveLineList(operationOrder, oldOperationOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
+  /**
    * Called from operation order form, on consumed stock move line change.
    *
    * @param request

@@ -658,8 +658,8 @@ public class ICalendarService {
       LocalDateTime startDate,
       LocalDateTime endDate)
       throws IOException, URISyntaxException, ParseException, ObjectStoreException,
-          ConstraintViolationException, DavException, ParserConfigurationException,
-          ParserException {
+          ConstraintViolationException, DavException, ParserConfigurationException, ParserException,
+          AxelorException {
 
     final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;
 
@@ -682,12 +682,19 @@ public class ICalendarService {
     }
 
     if (startDate == null || endDate == null) {
-      events = ICalendarStore.getModifiedEvents(collection, lastSynchro, allRemoteUids);
+      events = ICalendarStore.getModifiedEvents(collection, null, allRemoteUids);
     } else {
       events =
           ICalendarStore.getModifiedEventsInRange(
               collection, lastSynchro, allRemoteUids, startDate, endDate);
     }
+
+    if (events == null || events.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CALENDAR_NO_EVENTS_FOR_SYNC_ERROR));
+    }
+
     for (VEvent item : events) {
       modifiedRemoteEvents.put(item.getUid().getValue(), item);
     }

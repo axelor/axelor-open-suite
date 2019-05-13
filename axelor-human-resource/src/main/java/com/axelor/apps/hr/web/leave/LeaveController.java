@@ -51,7 +51,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -159,6 +158,7 @@ public class LeaveController {
   public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
+
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
     long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
@@ -204,11 +204,7 @@ public class LeaveController {
                 leaveRequest.getUser().getEmployee().getName()));
         return;
       }
-      if (leaveRequest
-              .getLeaveLine()
-              .getQuantity()
-              .subtract(leaveRequest.getDuration())
-              .compareTo(BigDecimal.ZERO)
+      if (leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).signum()
           < 0) {
         if (!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue()
             && !leaveService.willHaveEnoughDays(leaveRequest)) {
@@ -273,7 +269,9 @@ public class LeaveController {
       }
       Beans.get(PeriodService.class)
           .checkPeriod(
-              leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
+              leaveRequest.getCompany(),
+              leaveRequest.getToDateT().toLocalDate(),
+              leaveRequest.getFromDateT().toLocalDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -338,38 +336,41 @@ public class LeaveController {
   /* Count Tags displayed on the menu items */
 
   @Transactional
-  public void leaveReasonToJustify(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-    Boolean leaveToJustify = leave.getToJustifyLeaveReason();
-    LeaveLine leaveLine = null;
+  public void leaveReasonToJustify(ActionRequest request, ActionResponse response) {
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      Boolean leaveToJustify = leave.getToJustifyLeaveReason();
+      LeaveLine leaveLine = null;
 
-    if (!leaveToJustify) {
-      return;
-    }
-    Company company = leave.getCompany();
-    if (leave.getUser() == null) {
-      return;
-    }
-    if (company == null) {
-      company = leave.getUser().getActiveCompany();
-    }
-    if (company == null) {
-      return;
-    }
+      if (!leaveToJustify) {
+        return;
+      }
+      Company company = leave.getCompany();
+      if (leave.getUser() == null) {
+        return;
+      }
+      if (company == null) {
+        company = leave.getUser().getActiveCompany();
+      }
+      if (company == null) {
+        return;
+      }
 
-    hrConfigService.getLeaveReason(company.getHrConfig());
+      hrConfigService.getLeaveReason(company.getHrConfig());
 
-    Employee employee = leave.getUser().getEmployee();
+      Employee employee = leave.getUser().getEmployee();
 
-    LeaveReason leaveReason =
-        Beans.get(LeaveReasonRepository.class)
-            .find(company.getHrConfig().getToJustifyLeaveReason().getId());
+      LeaveReason leaveReason =
+          Beans.get(LeaveReasonRepository.class)
+              .find(company.getHrConfig().getToJustifyLeaveReason().getId());
 
-    if (employee != null) {
-      employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-      leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
-      response.setValue("leaveLine", leaveLine);
+      if (employee != null) {
+        employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
+        leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+        response.setValue("leaveLine", leaveLine);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 

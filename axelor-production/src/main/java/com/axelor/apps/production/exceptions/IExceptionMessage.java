@@ -107,6 +107,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to create the bill of material." /*)*/;
 
+  String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
+      "Too many recursive calls to import the bill of material configurator." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -132,5 +135,5 @@ public interface IExceptionMessage {
       "A cancel reason must be selected" /*)*/;
 
   static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
-      "Automatic email was not sent because no default email account was found : please create one." /*)*/;
+      "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
 }

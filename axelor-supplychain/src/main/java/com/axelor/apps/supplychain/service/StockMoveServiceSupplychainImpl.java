@@ -90,8 +90,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
-    LOG.debug(
-        "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
@@ -131,7 +130,21 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
     }
 
+    detachNonDeliveredStockMoveLines(stockMove);
+
     return newStockSeq;
+  }
+
+  @Override
+  public void detachNonDeliveredStockMoveLines(StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() == null) {
+      return;
+    }
+    stockMove
+        .getStockMoveLineList()
+        .stream()
+        .filter(line -> line.getRealQty().signum() == 0)
+        .forEach(line -> line.setSaleOrderLine(null));
   }
 
   @Override
@@ -204,10 +217,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
-        if (qtyWasDelivered) {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
-        } else {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+        if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
+          if (qtyWasDelivered) {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
+          } else {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+          }
         }
         if (saleOrderLine.getDeliveredQty().signum() == 0) {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);

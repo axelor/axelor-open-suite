@@ -44,6 +44,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
@@ -180,8 +181,8 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form on clicking realize button. Call {@link
-   * ManufOrderStockMoveService#realizeStockMovesAndCreateOneEmpty(ManufOrder, List)} with in stock
-   * move list to consume material used in manuf order.
+   * ManufOrderStockMoveService#consumeInStockMoves(ManufOrder)} to consume material used in manuf
+   * order.
    *
    * @param request
    * @param response
@@ -410,7 +411,7 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form, on consumed stock move line change. Call {@link
-   * ManufOrderService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
+   * ManufOrderService#checkConsumedStockMoveLineList(ManufOrder, ManufOrder)}.
    *
    * @param request
    * @param response
@@ -427,7 +428,8 @@ public class ManufOrderController {
   }
 
   /**
-   * Called from manuf order form, on consumed stock move line change.
+   * Called from manuf order form, on consumed stock move line change. Call {@link
+   * ManufOrderService#updateConsumedStockMoveFromManufOrder(ManufOrder)}.
    *
    * @param request
    * @param response
@@ -446,7 +448,7 @@ public class ManufOrderController {
 
   /**
    * Called from manuf order form, on clicking "compute cost price" button. Call {@link
-   * CostSheetService#computeCostPrice(ManufOrder)}.
+   * CostSheetService#computeCostPrice(ManufOrder, int, LocalDate)}.
    *
    * @param request
    * @param response

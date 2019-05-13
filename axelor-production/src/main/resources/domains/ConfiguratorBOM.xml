@@ -28,6 +28,8 @@
         <one-to-many name="configuratorBomList" ref="com.axelor.apps.production.db.ConfiguratorBOM" mappedBy="parentConfiguratorBOM" title="Configurators BOMs"/>
         <many-to-one name="parentConfiguratorBOM" ref="com.axelor.apps.production.db.ConfiguratorBOM" title="Parent Configurator BOM"/>
 
+        <integer name="statusSelect" title="Status" selection="production.bill.of.material.status.select" default="2"/>
+
         <string name="useCondition" title="Condition"/>
 
         <!--we don't want a real database relation between configurator and

@@ -460,7 +460,8 @@ public class WkfService {
     metaService.removeMetaActions(Joiner.on(",").join(actions));
   }
 
-  private void setTrackOnSave(Wkf wkf, boolean remove) {
+  @Transactional
+  public void setTrackOnSave(Wkf wkf, boolean remove) {
     if (wkf.getIsJson()) {
       MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
       if (jsonModel != null) {

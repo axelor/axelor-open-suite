@@ -197,6 +197,18 @@ public interface ManufOrderService {
       throws AxelorException;
 
   /**
+   * Check between a new and an old stock move line list whether a realized stock move line has been
+   * deleted.
+   *
+   * @param stockMoveLineList a stock move line list from view context.
+   * @param oldStockMoveLineList a stock move line list from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkRealizedStockMoveLineList(
+      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
+      throws AxelorException;
+
+  /**
    * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock
    * move to match the stock move line list. The list can be from manuf order or operation order.
    *

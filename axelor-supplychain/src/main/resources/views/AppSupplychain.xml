@@ -16,6 +16,7 @@
 			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
 			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-allow-timetable-invoicing"/>
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
+			<field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel name="purchaseOrderPanel" title="Purchase order">
 			<field name="supplStockMoveMgtOnPO" readonlyIf="supplierStockMoveGenerationAuto || terminatePurchaseOrderOnReceipt" widget="boolean-switch" colSpan="4"/>

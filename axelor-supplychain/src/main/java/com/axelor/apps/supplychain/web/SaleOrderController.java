@@ -39,6 +39,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -98,6 +99,7 @@ public class SaleOrderController {
                   .add("form", "stock-move-form")
                   .add("grid", "stock-move-grid")
                   .param("forceEdit", "true")
+                  .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
@@ -179,7 +181,8 @@ public class SaleOrderController {
           Partner supplierPartner = null;
           List<Long> saleOrderLineIdSelected = new ArrayList<>();
 
-          // Check if supplier partners of each sale order line are the same. If it is, send the
+          // Check if supplier partners of each sale order line are the same. If it is,
+          // send the
           // partner id to view to load this partner by default into select
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.isSelected()) {
@@ -240,6 +243,9 @@ public class SaleOrderController {
       boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+
+      Beans.get(SaleOrderInvoiceService.class)
+          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -331,7 +337,8 @@ public class SaleOrderController {
         fromPopup = true;
       }
     }
-    // Check if currency, clientPartner and company are the same for all selected sale orders
+    // Check if currency, clientPartner and company are the same for all selected
+    // sale orders
     Currency commonCurrency = null;
     Partner commonClientPartner = null;
     Company commonCompany = null;
@@ -339,13 +346,16 @@ public class SaleOrderController {
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all sale orders
+    // Useful to determine if a difference exists between contact partners of all
+    // sale orders
     boolean existContactPartnerDiff = false;
     PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale orders
+    // Useful to determine if a difference exists between price lists of all sale
+    // orders
     boolean existPriceListDiff = false;
     StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all sale orders
+    // Useful to determine if a difference exists between stock locations of all
+    // sale orders
     boolean existLocationDiff = false;
 
     SaleOrder saleOrderTemp;
@@ -618,6 +628,7 @@ public class SaleOrderController {
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
       }
+      response.setValue("amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -658,6 +669,99 @@ public class SaleOrderController {
           String.format(
               I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#allocateAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).allocateAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#deallocateAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).deallocateAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#reserveAll(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void reserveAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).reserveAll(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from the toolbar in sale order form view. Call {@link
+   * com.axelor.apps.supplychain.service.SaleOrderReservedQtyService#cancelReservation(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderReservedQtyService.class).cancelReservation(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showPopUpInvoicingWizard(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      response.setView(
+          ActionView.define("Invoicing")
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-invoicing-wizard-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(saleOrder.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
