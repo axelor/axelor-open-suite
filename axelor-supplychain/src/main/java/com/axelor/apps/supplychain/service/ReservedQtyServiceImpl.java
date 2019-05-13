@@ -33,10 +33,12 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -545,7 +547,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
 
     checkBeforeUpdatingQties(stockMoveLine, newReservedQty);
-    checkAvailabilityRequest(stockMoveLine, newReservedQty, true);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getBlockDeallocationOnAvailabilityRequest()) {
+      checkAvailabilityRequest(stockMoveLine, newReservedQty, false);
+    }
 
     // update requested reserved qty
     if (newReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
@@ -583,7 +589,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
 
     checkBeforeUpdatingQties(stockMoveLine, newReservedQty);
-    checkAvailabilityRequest(stockMoveLine, newReservedQty, false);
+    if (Beans.get(AppSupplychainService.class)
+        .getAppSupplychain()
+        .getBlockDeallocationOnAvailabilityRequest()) {
+      checkAvailabilityRequest(stockMoveLine, newReservedQty, true);
+    }
 
     BigDecimal diffReservedQuantity =
         newReservedQty.subtract(saleOrderLine.getRequestedReservedQty());
