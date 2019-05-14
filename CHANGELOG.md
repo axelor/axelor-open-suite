@@ -33,6 +33,7 @@
 - ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 - Move: fix NPE in move excess payment service.
 - ADVANCE SEARCH : error when define sub bill of material = true
+- SaleOrderLine: Display product available qty on product grid view.
 
 ## [5.1.6] - 2019-04-29
 ## Features
