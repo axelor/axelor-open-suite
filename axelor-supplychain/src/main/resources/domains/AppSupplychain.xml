@@ -42,6 +42,7 @@
         <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
         <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
         <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
+    <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
 	</entity>
 
 </domain-models>

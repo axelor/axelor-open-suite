@@ -925,4 +925,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
   }
+
+  @Override
+  public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
+    List<Invoice> invoices =
+        Query.of(Invoice.class)
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
+                    + "(self.archived = NULL OR self.archived = false)")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetch();
+    BigDecimal sumInvoices =
+        invoices
+            .stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce((x, y) -> x.add(y))
+            .orElse(BigDecimal.ZERO);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
 }

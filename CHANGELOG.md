@@ -15,6 +15,8 @@
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
+- Configurator Prod Process and BOM: add new fields.
+- Availability Request: cannot lower reserved quantity.
 - PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO 
 
 ## Bug Fixes
@@ -28,6 +30,10 @@
 - Stock Move: automatic mail configuration is retrieved from the company stock config
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 - StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
+- Configurator Creator: more fixes to import/export feature.
+- ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
+- Move: fix NPE in move excess payment service.
+- ADVANCE SEARCH : error when define sub bill of material = true
 
 ## [5.1.6] - 2019-04-29
 ## Features

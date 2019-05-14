@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -67,12 +66,10 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
 
           @Override
           public void imported(Model arg0) {
-            if (arg0.getClass().equals(ConfiguratorCreator.class)) {
-              try {
-                completeAfterImport((ConfiguratorCreator) arg0);
-              } catch (AxelorException e) {
-                importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
-              }
+            try {
+              completeAfterImport(arg0);
+            } catch (AxelorException e) {
+              importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
             }
           }
 
@@ -93,8 +90,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     return importLog.toString();
   }
 
+  protected void completeAfterImport(Object arg0) throws AxelorException {
+    if (arg0.getClass().equals(ConfiguratorCreator.class)) {
+      completeAfterImport((ConfiguratorCreator) arg0);
+    }
+  }
+
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
-    creator.setIndicators(new ArrayList<MetaJsonField>());
     fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
     configuratorCreatorService.updateIndicators(creator);
