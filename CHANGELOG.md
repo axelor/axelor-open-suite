@@ -32,6 +32,7 @@
 - Configurator Creator: more fixes to import/export feature.
 - ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 - Move: fix NPE in move excess payment service.
+- ADVANCE SEARCH : error when define sub bill of material = true
 
 ## [5.1.6] - 2019-04-29
 ## Features
