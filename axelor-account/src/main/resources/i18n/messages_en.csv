@@ -856,6 +856,7 @@
 "Financial Accounts",,,
 "Financial Accounts Management",,,
 "First depreciation date",,,
+"First depreciation date cannot be before Acquisition date.",,,
 "Fiscal position",,,
 "Fiscal positions",,,
 "Fiscal year",,,
