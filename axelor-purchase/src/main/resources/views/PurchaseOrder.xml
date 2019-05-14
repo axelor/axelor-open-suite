@@ -400,6 +400,7 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
+    	<action name="action-purchase-order-validate-purchase-order-line"/>
     	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
     	<action name="action-purchase-order-method-validate"/>
@@ -593,7 +594,11 @@
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
 	</action-validate>
-
+	
+	<action-validate name="action-purchase-order-validate-purchase-order-line">
+		<error message="Please enter at least one detail line." if="purchaseOrderLineList?.isEmpty()"/>
+	</action-validate>
+	
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>

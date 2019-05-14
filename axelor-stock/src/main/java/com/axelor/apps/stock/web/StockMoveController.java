@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.AppStockRepository;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -26,6 +28,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -44,6 +47,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -57,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringJoiner;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +74,10 @@ public class StockMoveController {
   @Inject private StockMoveService stockMoveService;
 
   @Inject private StockMoveRepository stockMoveRepo;
+
+  @Inject private StockLocationService stockLocationService;
+
+  @Inject private AppStockRepository appStockRepo;
 
   public void plan(ActionRequest request, ActionResponse response) {
 
@@ -518,6 +527,36 @@ public class StockMoveController {
         stockMoveLine.setFilterOnAvailableProducts(stockMove.getFilterOnAvailableProducts());
       }
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+    }
+  }
+
+  public void verifyProductStock(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    AppStock appStock = appStockRepo.all().fetchOne();
+    StringJoiner notAvailableProducts = new StringJoiner(",");
+    if (stockMove.getAvailabilityRequest()
+        && stockMove.getStockMoveLineList() != null
+        && appStock.getIsVerifyProductStock()
+        && stockMove.getFromStockLocation() != null) {
+      try {
+        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+          BigDecimal productStock =
+              stockLocationService.getRealQty(
+                  stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
+          if (productStock.compareTo(stockMoveLine.getRealQty()) < 0) {
+            notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
+          }
+        }
+        if (!Strings.isNullOrEmpty(notAvailableProducts.toString())) {
+          response.setValue("availabilityRequest", false);
+          response.setFlash(
+              String.format(
+                  I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
+                  notAvailableProducts));
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 }

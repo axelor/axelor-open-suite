@@ -54,6 +54,8 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountingCloseAnnualService;
+import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -235,5 +237,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(AccountingCloseAnnualService.class).to(AccountingCloseAnnualServiceImpl.class);
   }
 }

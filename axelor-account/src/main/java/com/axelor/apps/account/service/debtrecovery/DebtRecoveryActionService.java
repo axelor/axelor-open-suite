@@ -246,9 +246,17 @@ public class DebtRecoveryActionService {
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
           IllegalAccessException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
+
     for (Message message : messageSet) {
-      Beans.get(MessageRepository.class).save(message);
-      Beans.get(MessageService.class).sendMessage(message);
+      message = Beans.get(MessageRepository.class).save(message);
+      message = Beans.get(MessageService.class).sendMessage(message);
+
+      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+          && message.getMailAccount() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
+      }
     }
   }
 

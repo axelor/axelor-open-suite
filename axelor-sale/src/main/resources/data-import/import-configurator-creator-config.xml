@@ -8,12 +8,13 @@
   
     <!--  Import configuratorBOMs -->
           
-  	<bind node="configurator-boms/configurator-bom" type="com.axelor.apps.production.db.ConfiguratorBOM" search="self.importId = :importId">
+  	<bind node="configurator-boms/configurator-bom" type="com.axelor.apps.production.db.ConfiguratorBOM" update="true" search="self.importId = :importId">
        <bind node="name" to="name"/>
        <bind node="importId" to="importId"/>
        <bind node="companyCode" to="company" search="self.code = :companyCode" if="companyCode">
          <bind node="text()" to="code" alias="companyCode"/>
        </bind>
+       <bind node="statusSelect" to="statusSelect"/>
        <bind node="nameFormula" to="nameFormula"/>
        <bind node="defNameAsFormula" to="defNameAsFormula"/>
        <bind node="productCode" to="product" search="self.code = :productCode" if="productCode">
@@ -34,15 +35,31 @@
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
        
-       <bind node="configuratorProdProcess" to="configuratorProdProcess" search="self.importId = :importId" if="configProdProcessName">
+       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName">
        	 <bind node="importId" to="importId"/>
+         <bind node="statusSelect" to="statusSelect"/>
          <bind node="name" to="name" alias="configProdProcessName"/>
+         <bind node="code" to="code"/>
+         <bind node="codeFormula" to="codeFormula"/>
+         <bind node="defCodeAsFormula" to="defCodeAsFormula"/>
          <bind node="companyCode" to="company" search="self.code = :companyCode" if="companyCode">
-	       <bind node="text()" to="code" alias="companyCode"/>
-	     </bind>
+           <bind node="text()" to="code" alias="companyCode"/>
+         </bind>
          <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
            <bind node="text()" to="id" alias="stockLocationId"/>
          </bind>
+         <bind node="stockLocationFormula" to="stockLocationFormula"/>
+         <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
+         <bind node="producedProductStockLocation" to="producedProductStockLocation" search="self.id = :producedProductStockLocationId" if="producedProductStockLocationId">
+           <bind node="text()" to="id" alias="producedProductStockLocationId"/>
+         </bind>
+         <bind node="producedProductStockLocationFormula" to="producedProductStockLocationFormula"/>
+         <bind node="defProducedProductStockLocationAsFormula" to="defProducedProductStockLocationAsFormula"/>
+         <bind node="workshopStockLocation" to="workshopStockLocation" search="self.id = :workshopStockLocationId" if="workshopStockLocationId">
+           <bind node="text()" to="id" alias="workshopStockLocationId"/>
+         </bind>
+         <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
+         <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
          <bind node="configuratorProdProcessLineList/configuratorProdProcessLine" to="configuratorProdProcessLineList">
            <bind node="name" to="name"/>
            <bind node="priority" to="priority"/>
@@ -70,7 +87,7 @@
        <bind node="defProdProcessAsFormula" to="defProdProcessAsFormula"/>
        <bind node="defProdProcessAsConfigurator" to="defProdProcessAsConfigurator"/>
        
-	   <bind node="parentConfiguratorBOMId" to="parentConfiguratorBOM" search="self.importId = :parentConfigBOMImportId" create="false">
+	   <bind node="parentConfiguratorBOMId" to="parentConfiguratorBOM" update="true" search="self.importId = :parentConfigBOMImportId" create="false">
          <bind node="text()" to="importId" alias="parentConfigBOMImportId"/>
        </bind>
        
@@ -82,7 +99,7 @@
    
    <!--  Import configurator creators  -->
    
-     <bind node="configurator-creators/configurator-creator" type="com.axelor.apps.sale.db.ConfiguratorCreator" search="self.importId = :importId">
+     <bind node="configurator-creators/configurator-creator" type="com.axelor.apps.sale.db.ConfiguratorCreator" update="true" search="self.importId = :importId">
      
        <bind node="importId" to="importId"/>
        <bind node="name" to="name"/>
