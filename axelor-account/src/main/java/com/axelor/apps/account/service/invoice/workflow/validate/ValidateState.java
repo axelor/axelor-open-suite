@@ -21,8 +21,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -33,7 +31,6 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class ValidateState extends WorkflowInvoice {
@@ -82,20 +79,6 @@ public class ValidateState extends WorkflowInvoice {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
-    }
-
-    if (Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment()
-        && (Beans.get(AccountConfigService.class)
-                .getAccountConfig(invoice.getCompany())
-                .getIsManagePassedForPayment()
-            && (invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-            && invoice.getPfpValidatorUser() == null)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_NO_PFP_VALIDATOR_FOR_SUPPLIER));
     }
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
