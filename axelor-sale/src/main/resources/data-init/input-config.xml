@@ -17,7 +17,9 @@
 	
     <input file="base_objectDataConfig.csv" separator=";" type="com.axelor.apps.base.db.DataConfigLine">
     	<bind to="objectDataConfig" search="self.modelSelect = :modelSelect">
+    		<bind to="title" column="title"/>
     		<bind to="modelSelect" column="modelSelect" />
+    		<bind to="statusSelect" column="status"/>
     	</bind>
     	<bind to="metaModel" column="metaModel" search="self.name = :metaModel" />
     	<bind to="toExportMetaFieldSet" column="fields" search="self.name in :fields and self.metaModel.name = :metaModel" eval="fields.split(',') as List" />
