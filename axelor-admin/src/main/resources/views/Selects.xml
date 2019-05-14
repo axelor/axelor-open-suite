@@ -12,6 +12,12 @@
 		<option value="com.axelor.auth.db.User">User</option>
 	</selection>
 	
+	<selection name="object.data.config.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+		<option value="3">Cancelled</option>
+	</selection>
+	
 	<selection name="object.data.export.format.select">
 		<option value="csv">CSV</option>
 		<option value="xlsx">Excel</option>
