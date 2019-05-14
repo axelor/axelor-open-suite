@@ -81,8 +81,16 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
     @Override
     @Transactional
-    public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+    public void reset(ABCAnalysis abcAnalysis) {
+        abcAnalysisLineRepository.all().filter("self.abcAnalysis.id = :abcAnalysisId").bind("abcAnalysisId", abcAnalysis.getId()).remove();
+        abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_DRAFT);
+        abcAnalysisRepository.save(abcAnalysis);
+    }
 
+    @Override
+    @Transactional
+    public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
+        reset(abcAnalysis);
         start(abcAnalysis);
         getAbcAnalysisClassList(abcAnalysis);
         createABCAnalysisLineForEachProduct(abcAnalysis);

@@ -14,7 +14,7 @@
 
     <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-group-onnew" onSave="action-abc-analysis-method-set-sequence">
         <toolbar>
-            <button name="runAnalysisBtn" title="Run analysis" onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis" showIf="statusSelect == 1"/>
+            <button name="runAnalysisBtn" title="Run analysis" onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis" prompt="Are you sure you want run the analysis ? It can take a long time." showIf="statusSelect != 2"/>
         </toolbar>
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
@@ -34,21 +34,21 @@
                 </viewer>
             </field>
             <field name="name" readonlyIf="statusSelect != 1" required="true"/>
-            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect != 1"/>
+            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect == 2"/>
             <field name="createdOn"/>
             <field name="createdBy"/>
-            <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect != 1"/>
-            <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect != 1"/>
-            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect != 1"/>
+            <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect == 2"/>
         </panel>
         <panel name="descriptionPanel" title="Description" canCollapse="true" collapseIf="statusSelect != 1">
-            <field name="description" colSpan="12" showTitle="false" readonlyIf="statusSelect != 1" widget="html"/>
+            <field name="description" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel name="classesProductsPanel" title="Classes and products" canCollapse="true" collapseIf="statusSelect != 1">
-            <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect != 1"/>
-            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-abc-analysis-attrs-product-set-domain" readonlyIf="statusSelect != 1"/>
-            <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
-            <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12" readonlyIf="statusSelect != 1"/>
+            <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-abc-analysis-attrs-product-set-domain" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12" readonlyIf="statusSelect == 2"/>
         </panel>
         <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800" readonly="true"/>
     </form>

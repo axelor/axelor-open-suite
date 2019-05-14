@@ -26,26 +26,6 @@
             <property name="id">4</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">4</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">4</property>
-        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -189,6 +169,12 @@
                     <text-property name="heading">category_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_symbol</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency_symbol</text-property>
+                    <text-property name="heading">currency_symbol</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">decimal_worth</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">decimal_worth</text-property>
@@ -270,41 +256,46 @@
                     </structure>
                     <structure>
                         <property name="position">4</property>
+                        <property name="name">currency_symbol</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
                         <property name="name">decimal_worth</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">worth</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">cumulated_worth</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">decimal_qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">cumulated_qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">class_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">class_sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -335,55 +326,62 @@
                 </structure>
                 <structure>
                     <property name="position">4</property>
+                    <property name="name">currency_symbol</property>
+                    <property name="nativeName">currency_symbol</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">decimal_worth</property>
                     <property name="nativeName">decimal_worth</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">worth</property>
                     <property name="nativeName">worth</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">cumulated_worth</property>
                     <property name="nativeName">cumulated_worth</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">decimal_qty</property>
                     <property name="nativeName">decimal_qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">cumulated_qty</property>
                     <property name="nativeName">cumulated_qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">class_name</property>
                     <property name="nativeName">class_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">class_sequence</property>
                     <property name="nativeName">class_sequence</property>
                     <property name="dataType">integer</property>
@@ -394,6 +392,7 @@
 	product.code product_code, 
 	product.name product_name,
 	category.name category_name,
+	currency.symbol currency_symbol,
 	ABCLine.decimal_worth, 
 	ABCLine.worth,
 	ABCLine.cumulated_worth,  
@@ -404,10 +403,13 @@
 	class.sequence class_sequence
 from base_abc_analysis_line ABCLine
 LEFT JOIN base_abc_analysis ABC on ABCLine.abc_analysis = ABC.id
+LEFT JOIN base_company Company on ABC.company = Company.id
+LEFT JOIN base_currency currency on Company.currency = currency.id
 LEFT JOIN base_product product on ABCLine.product = product.id
 LEFT JOIN base_product_category category on product.product_category = category.id 
 LEFT JOIN base_abc_analysis_class class on ABCLine.abc_analysis_class = class.id
-where ABC.id = ?;]]></xml-property>
+where ABC.id = ?
+order by ABCLine.cumulated_worth;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisHeaderDS" id="177">
             <list-property name="columnHints">
@@ -1438,12 +1440,13 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="193">
-                <property name="height">0.625in</property>
                 <cell id="194">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="196">
+                        <property name="marginLeft">0px</property>
                         <property name="textAlign">justify</property>
+                        <property name="pageBreakInside">avoid</property>
                         <property name="dataSet">TranslationDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2751,6 +2754,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
             <property name="borderLeftStyle">none</property>
             <property name="borderRightStyle">none</property>
             <property name="borderTopStyle">none</property>
+            <property name="width">10.447916666666666in</property>
             <property name="dataSet">abcAnalysisLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -2769,6 +2773,12 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="name">category_name</property>
                     <text-property name="displayName">category_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["category_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">currency_symbol</property>
+                    <text-property name="displayName">currency_symbol</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency_symbol"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2820,26 +2830,37 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
-            <column id="167"/>
+            <column id="167">
+                <property name="width">95px</property>
+            </column>
             <column id="168"/>
             <column id="169">
                 <property name="textAlign">center</property>
+                <property name="width">95px</property>
+            </column>
+            <column id="4037">
+                <property name="textAlign">center</property>
+                <property name="width">70px</property>
             </column>
             <column id="171">
                 <property name="textAlign">center</property>
-                <property name="width">65px</property>
+                <property name="width">70px</property>
             </column>
             <column id="172">
                 <property name="textAlign">center</property>
-                <property name="width">130px</property>
+                <property name="width">115px</property>
+            </column>
+            <column id="4043">
+                <property name="textAlign">center</property>
+                <property name="width">55px</property>
             </column>
             <column id="174">
                 <property name="textAlign">center</property>
-                <property name="width">65px</property>
+                <property name="width">60px</property>
             </column>
             <column id="175">
                 <property name="textAlign">center</property>
-                <property name="width">125px</property>
+                <property name="width">110px</property>
             </column>
             <column id="176">
                 <property name="textAlign">center</property>
@@ -2963,6 +2984,43 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4034">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4038">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.worth'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" ("+row._outer["currency_symbol"]+")"</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="123">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2997,7 +3055,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" (%)"</VALUE-OF></b>]]></text-property>
                         </text>
                     </cell>
                     <cell id="125">
@@ -3016,6 +3074,43 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
                                         <value type="javascript">'AbcAnalysisLine.cumulatedWorth'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4040">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4044">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.qty'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -3071,7 +3166,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" (%)"</VALUE-OF></b>]]></text-property>
                         </text>
                     </cell>
                     <cell id="131">
@@ -3191,6 +3286,18 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             <property name="resultSetColumn">category_name</property>
                         </data>
                     </cell>
+                    <cell id="4035">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="4047">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["decimal_worth"] + row["currency_symbol"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="144">
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
@@ -3213,6 +3320,18 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <text id="235">
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["cumulated_worth"]</VALUE-OF>%]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4041">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="4048">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["decimal_qty"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="150">
@@ -3310,6 +3429,13 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                     </cell>
+                    <cell id="4036">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
                     <cell id="161">
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3318,6 +3444,13 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="162">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="4042">
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
