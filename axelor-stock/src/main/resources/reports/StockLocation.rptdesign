@@ -507,7 +507,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
 		Currency.code AS currency_code, ProductFamily.name as product_family,
 		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
-		StockLocationLine.avg_price as "wap", Product.cost_type_select
+		StockLocationLine.avg_price as "wap", Product.cost_type_select,
+		StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
@@ -520,6 +521,8 @@ LEFT JOIN
 	base_unit AS Unit ON (Unit.id = Product.unit)
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Location.company)
+LEFT OUTER JOIN 
+	stock_stock_config AS StockConfig ON (StockConfig.company = Company.id) 
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
 where StockLocationLine.current_qty != 0	and Location.type_select in (1,2) and Location.id in (@INJECTID)
@@ -1036,6 +1039,20 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">is_display_sale_value_in_printing</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_accounting_value_in_printing</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4453">
                 <property name="width">1.8in</property>
@@ -1058,6 +1075,12 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
             <row id="4459">
                 <property name="verticalAlign">middle</property>
                 <property name="height">0.635cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4460">
                     <property name="backgroundColor">#606062</property>
                     <property name="color">#FFFFFF</property>
@@ -1128,6 +1151,12 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
             </row>
             <row id="4466">
                 <property name="height">0.15in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <cell id="4467"/>
                 <cell id="4468"/>
                 <cell id="4469"/>
@@ -1189,9 +1218,38 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4656">
+                <cell id="4656"/>
+                <cell id="4657"/>
+                <cell id="4658"/>
+            </row>
+            <row id="5237">
+                <property name="verticalAlign">middle</property>
+                <property name="height">0.15in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
+                <cell id="5238"/>
+                <cell id="5239"/>
+                <cell id="5240"/>
+                <cell id="5241"/>
+                <cell id="5242"/>
+                <cell id="5243"/>
+            </row>
+            <row id="5244">
+                <property name="verticalAlign">middle</property>
+                <property name="height">0.635cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
+                <cell id="5245">
                     <property name="backgroundColor">#606062</property>
-                    <text id="4413">
+                    <text id="5251">
                         <property name="color">white</property>
                         <property name="marginTop">0pt</property>
                         <property name="marginLeft">2pt</property>
@@ -1224,8 +1282,8 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
                     </text>
                 </cell>
-                <cell id="4657">
-                    <data id="4481">
+                <cell id="5246">
+                    <data id="5252">
                         <property name="marginLeft">3pt</property>
                         <structure name="numberFormat">
                             <property name="category">Custom</property>
@@ -1235,12 +1293,15 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                         <property name="resultSetColumn">totalSalePrice</property>
                     </data>
                 </cell>
-                <cell id="4658">
-                    <text id="4627">
+                <cell id="5247">
+                    <text id="5253">
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="5248"/>
+                <cell id="5249"/>
+                <cell id="5250"/>
             </row>
         </grid>
         <table id="4484">
@@ -1430,6 +1491,20 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">is_display_sale_value_in_printing</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_accounting_value_in_printing</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1451,9 +1526,21 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                 <property name="width">1.5cm</property>
             </column>
             <column id="4506">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <column id="4557">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <column id="4639">
