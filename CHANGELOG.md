@@ -18,6 +18,7 @@
 - Configurator Prod Process and BOM: add new fields.
 - Availability Request: cannot lower reserved quantity.
 - PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO 
+- FIXED ASSET : Change in the process of calculation
 - LOCATION FINANCIAL DATA : new booleans to manage different printing
 
 ## Bug Fixes

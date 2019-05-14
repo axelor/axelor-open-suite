@@ -856,6 +856,7 @@
 "Financial Accounts","Comptes comptables",,
 "Financial Accounts Management","Paramétrages de compte comptable",,
 "First depreciation date","Première date d'amortissement",,
+"First depreciation date cannot be before Acquisition date.","La date du premier amortissement ne peut être antérieure à la date d'acquisition",,
 "Fiscal position","Position fiscale",,
 "Fiscal positions","Positions fiscales",,
 "Fiscal year","Année fiscale",,
