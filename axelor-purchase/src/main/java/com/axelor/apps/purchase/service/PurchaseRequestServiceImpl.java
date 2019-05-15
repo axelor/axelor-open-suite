@@ -96,8 +96,10 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                product.getName(),
-                product.getDescription(),
+                purchaseRequest.getNewProduct()
+                    ? purchaseRequest.getProductTitle()
+                    : product.getName(),
+                purchaseRequest.getNewProduct() ? null : product.getDescription(),
                 purchaseRequest.getQuantity(),
                 purchaseRequest.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
@@ -120,7 +122,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
         purchaseOrderList != null && !purchaseOrderList.isEmpty()
             ? purchaseOrderList
                 .stream()
-                .filter(po -> po.getSupplierPartner().equals(purchaseRequest.getSupplier()))
+                .filter(po -> po.getSupplierPartner().equals(purchaseRequest.getSupplierUser()))
                 .findFirst()
                 .orElse(null)
             : null;
@@ -150,13 +152,13 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             AuthUtils.getUser(),
             purchaseRequest.getCompany(),
             null,
-            purchaseRequest.getSupplier().getCurrency(),
+            purchaseRequest.getSupplierUser().getCurrency(),
             null,
             null,
             null,
             LocalDate.now(),
             null,
-            purchaseRequest.getSupplier(),
+            purchaseRequest.getSupplierUser(),
             null));
   }
 }
