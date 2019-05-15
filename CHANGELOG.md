@@ -87,6 +87,7 @@
 - OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
 - PROJECT : Add an analytic tab.
 - OBJECT DATA CONFIG : UX improvements
+- ANALYTIC MOVE LINE : Link to project
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
