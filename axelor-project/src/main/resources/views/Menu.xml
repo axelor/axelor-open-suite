@@ -18,7 +18,7 @@
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
 		<view type="kanban" name="project-kanban"/>
-		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect</domain>
+		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect and self.isTemplate = false</domain>
 		<context name="_fromProject" expr="eval:true"/>
 		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PROJECT"/>
 	</action-view>
@@ -28,7 +28,7 @@
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
 		<view type="kanban" name="project-kanban"/>
-		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect</domain>
+		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect and self.isTemplate = false</domain>
 		<context name="_fromProject" expr="eval:true"/>
 		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PHASE"/>
 	</action-view>
@@ -99,6 +99,14 @@
 	<action-view name="project.resource" title="Resources" model="com.axelor.apps.project.db.Resource">
 		<view type="grid" name="resource-grid" />
 		<view type="form" name="resource-form" />
+	</action-view>
+	
+		
+	<menuitem name="project-template" parent="project-configurations" order="33" title="Project template" action="project.template"/>
+	<action-view name="project.template" title="Project template" model="com.axelor.apps.project.db.Project">
+		<view type="grid" name="project-template-grid"/>
+		<view type="form" name="project-template-form"/>
+		<domain>self.isTemplate = true</domain>
 	</action-view>
 
 </object-views>

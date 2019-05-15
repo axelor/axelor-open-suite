@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
@@ -42,7 +43,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeService {
+public class ProjectPlanningTimeServiceImpl extends ProjectTemplateServiceImpl
+    implements ProjectPlanningTimeService {
 
   private static final Logger log = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
 
@@ -59,6 +61,19 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Inject private ProductRepository productRepo;
 
   @Inject private UserRepository userRepo;
+
+  @Override
+  public TeamTask copyTeamTask(TeamTask task, Project projectCopy) {
+    TeamTask taskCopy = super.copyTeamTask(task, projectCopy);
+    if (task.getProjectPlanningTimeList() != null) {
+      for (ProjectPlanningTime plan : task.getProjectPlanningTimeList()) {
+        ProjectPlanningTime planCopy = planningTimeRepo.copy(plan, false);
+        planCopy.setProject(projectCopy);
+        taskCopy.addProjectPlanningTimeListItem(planCopy);
+      }
+    }
+    return taskCopy;
+  }
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {

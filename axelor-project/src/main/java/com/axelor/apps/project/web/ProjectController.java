@@ -18,18 +18,45 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectTemplateService;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ProjectController {
+
+  @Inject ProjectTemplateService projectTemplateService;
+  @Inject ProjectRepository projectRepository;
 
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     if (project.getTeam() != null) {
       project.getTeam().getMembers().forEach(project::addMembersUserSetItem);
       response.setValue("membersUserSet", project.getMembersUserSet());
+    }
+  }
+
+  public void generateProjectFromTemplate(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (project.getId() != null) {
+      Project projectCopy =
+          projectTemplateService.generateProjectFromTemplate(
+              projectRepository.find(project.getId()));
+      if (projectCopy != null) {
+        response.setView(
+            ActionView.define("Project")
+                .model(Project.class.getName())
+                .add("form", "project-form")
+                .add("grid", "project-grid")
+                .domain(
+                    "self.isProject = true and self.projectTypeSelect = 1 and self.isTemplate = false")
+                .context("_showRecord", projectCopy.getId().toString())
+                .map());
+      }
     }
   }
 }

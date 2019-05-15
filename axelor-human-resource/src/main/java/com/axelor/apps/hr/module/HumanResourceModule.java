@@ -76,6 +76,7 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
+import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -107,6 +108,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
     bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
     bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
+    bind(ProjectTemplateServiceImpl.class).to(ProjectPlanningTimeServiceImpl.class);
     bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
     bind(TeamTaskProjectRepository.class).to(TeamTaskHRRepository.class);
     bind(UserBaseRepository.class).to(UserHRRepository.class);

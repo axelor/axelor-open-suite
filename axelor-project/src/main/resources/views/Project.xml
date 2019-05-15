@@ -33,7 +33,17 @@
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="clientPartner"/>
 	</grid>
-
+	
+	<grid  name="project-template-grid" model="com.axelor.apps.project.db.Project" title="Project template">
+		<field name="code"/>
+		<field name="name"/>
+        <field name="parentProject"/>
+        <field name="clientPartner"/>
+        <field name="projectTypeSelect"/>
+		<field name="assignedTo"/>
+		<button name="createProjectBtn" readonlyIf="projectTypeSelect == 2" icon="fa-copy" title="Create project from this template" onClick="action-project-method-generate-project-from-template" />
+	</grid>
+	
 	<form name="project-form" title="Project"
 		model="com.axelor.apps.project.db.Project" onLoad="action-project-on-load-group"
 		onNew="action-project-group-on-new-project">
@@ -433,6 +443,173 @@
 		</panel>
 	</form>
 	
+	
+	<form name="project-template-form" title="Project template"
+		model="com.axelor.apps.project.db.Project" onLoad="action-project-on-load-group"
+		onNew="action-project-group-on-new-project,action-project-template-attrs-istemplate-onnew">
+
+		<panel name="mainPanel">
+		
+			<field name="$viewerTag" showTitle="false" readonly="true" colSpan="12">
+				<viewer>
+					<![CDATA[
+						<h4 class="text-right">
+							<span class="label label-default" style="background-color: #2185D0;margin: 5px 0 !important; line-height: initial;" ng-show="record.isTemplate" x-translate>Template</span>
+						</h4>				
+					]]>				
+				</viewer>			
+			</field>
+			<field name="isTemplate" hidden="true"/>   <!-- hidden field used to show $viewerTag -->
+			
+			<panel name="informationPanel" colSpan="10">
+				<field name="fullName" showTitle="false" colSpan="12"
+					css="label-bold bold large">
+					<editor x-show-titles="false">
+						<field name="code" showTitle="false" colSpan="3"
+							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
+						<field name="name" showTitle="false" colSpan="9"
+							css="label-bold bold large" />
+					</editor>
+				</field>
+			</panel>
+			
+		</panel>
+		
+		<panel name="detailsPanel">
+			<panel name="generalInfoPanel" colSpan="12">
+				<field name="company" form-view="company-form" grid-view="company-grid"
+					colSpan="3"  canEdit="false"/>
+				<field name="clientPartner" domain="self.isCustomer = true AND :company member of self.companySet" onChange="action-project-method-get-partner-data"
+					requiredIf="isBusinessProject" form-view="partner-form" grid-view="partner-grid"
+					colSpan="3" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					showIf="isBusinessProject" />
+				<field name="currency" colSpan="3"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					showIf="isBusinessProject" canEdit="false"/>
+				<field name="priceList" colSpan="3"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					showIf="isBusinessProject" canEdit="false"/>
+				<field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+					form-view="partner-form" grid-view="partner-grid" colSpan="6"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					showIf="isBusinessProject" />
+					<field name="customerAddress" grid-view="address-grid" form-view="address-form"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+         			showIf="isBusinessProject" domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
+			</panel>
+				<field name="description" colSpan="12" widget="html" />
+		</panel>
+
+		<panel-tabs name="mainPanelTab">
+			
+			<panel title="Task Tree" name="taskTreePanel" showIf="isProject">
+				<panel title="Phases" name="phasesPanel"
+					showIf="isProject &amp;&amp; childProjectList.length > 0" colSpan="12" showTitle="false">
+					<button name="addPhaseBtn" title="New" colSpan="2"
+						css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-view-phase-new" />
+					<button name="allPhasesBtn" title="All phases" colSpan="4"
+						css="btn-custom text-left" icon="fa-tasks" onClick="save,action-project-view-phase-all" />
+					<button name="allPhaseTasksBtn" title="All phase tasks" colSpan="6"
+						css="btn-custom text-left" icon="fa-tasks"
+						onClick="save,action-project-phase-view-show-phase-task" />
+					<panel-dashlet name="projectPhaseTreeDashletPanel" title="Phases" colSpan="12"
+						action="tree:project-phase-tree" />
+				</panel>
+				<button name="addTaskBtn" title="New task" colSpan="2"
+					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-task" />
+				<button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-ticket" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+				<button name="allTaskBtn" title="All tasks" colSpan="2"
+					css="btn-custom text-left" icon="fa-tasks"
+					onClick="action-project-view-show-related-tasks" />
+				<panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree" colSpan="12"
+					action="action-view-show-project-task-tree" />
+				<panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing" colSpan="12" 
+					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')" canSearch="true"/>
+			</panel>
+			
+			<panel title="Members" name="membersPanel">
+				<field name="team" title="Team"
+					readonlyIf="synchronize || extendsMembersFromParent" colSpan="6"
+					canNew="false" canEdit="false" />
+				<field name="synchronize" readonlyIf="extendsMembersFromParent"
+					colSpan="2" widget="boolean-switch" />
+				<field name="extendsMembersFromParent" hidden="true"
+					showIf="projectTypeSelect == 2" colSpan="3" widget="boolean-switch" />
+				<field name="membersUserSet" colSpan="12"
+					widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" />
+				<button name="importMemberBtn" title="Import all members"
+					showIf="team != null" readonlyIf="extendsMembersFromParent" colSpan="3"
+					onClick="action-project-method-import-members" />
+			</panel>
+			
+			<panel title="Invoicing" name="invoicingPanel"  showIf="isBusinessProject"
+				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<field name="teamTaskInvoicing" colSpan="4" onChange="action-project-record-set-invoicing-type"/>
+				<field name="isInvoicingExpenses" colSpan="4" />
+				<field name="isInvoicingPurchases" colSpan="4" />
+				<field name="invoicingType" showIf="teamTaskInvoicing" colSpan="6"/>
+				<field name="invoicingComment" colSpan="12" />
+			</panel>
+			
+			<panel title="Configurations" name="configurationsPanel" >
+				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
+					domain="self.isActivity = true" form-view="product-activity-form"
+					grid-view="product-activity-grid" />
+				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
+				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
+				<field name="excludeTimesheetEditor" />
+				<field name="childProjectList" hidden="true" />
+				<field name="sequence" hidden="true" />
+				<field name="excludePlanning" if-module="axelor-business-project"
+					showIf="isProject" />
+				<field name="imputable" colSpan="4" widget="boolean-switch"
+					if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
+			</panel>
+		</panel-tabs>
+
+		<panel name="actionPanel" sidebar="true" hideIf="projectTypeSelect == 2">
+			<button name="createProjectBtn" icon="fa-copy" title="Create project from this template"  onClick="save,action-project-method-generate-project-from-template"/>
+		</panel>
+		
+		<panel name="characteristicsPanel" title="Characteristics" colSpan="12"
+			sidebar="true" canCollapse="true">
+			<panel name="configPanel" colSpan="12">
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					name="isProject" colSpan="6" widget="boolean-switch" />
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
+				
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
+				
+				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
+			</panel>
+		
+			<panel if-module="axelor-business-project" name="project"
+				showIf="isProject" colSpan="12">
+				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"
+					requiredIf="isProject" />
+				<field name="parentProject" showIf="projectTypeSelect == 2" canEdit="false"
+					form-view="project-form" grid-view="project-grid" domain="self.isTemplate=true AND self.projectTypeSelect=1"
+					requiredIf="projectTypeSelect == 2" />
+			</panel>
+		</panel>
+		
+		<panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true" canCollapse="true">
+			<field name="assignedTo" title="Person In Charge" canNew="false"
+				canView="false" canEdit="false" onChange="action-attrs-project-add-member"
+				form-view="user-form" grid-view="user-grid" />
+		</panel>
+		<panel name="datePanel" title="Dates" colSpan="12" sidebar="true"
+			canCollapse="true"><spacer/>
+			<field name="fromDate" colSpan="6" />
+			<field name="toDate" colSpan="6" />
+			<field name="dueDate" showIf="isProject" colSpan="6" />
+		</panel>
+	</form>
+	
+	
 	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
@@ -583,8 +760,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-set-parent-project-domain" model="com.axelor.apps.project.db.Project">
-		<attribute name="domain" for="parentProject" expr="eval:&quot;self.isProject = true AND self.projectTypeSelect = 1 AND self.id != :id&quot;" if="id != null"/>
-		<attribute name="domain" for="parentProject" expr="eval:&quot;self.isProject = true AND self.projectTypeSelect = 1&quot;" if="id == null"/>
+		<attribute name="domain" for="parentProject" expr="eval:&quot;self.isProject = true AND self.isTemplate = false AND self.projectTypeSelect = 1 AND self.id != :id&quot;" if="id != null"/>
+		<attribute name="domain" for="parentProject" expr="eval:&quot;self.isProject = true AND self.isTemplate = false AND self.projectTypeSelect = 1&quot;" if="id == null"/>
 	</action-attrs>
 
 	<action-record name="action-project-record-init-type" model="com.axelor.apps.project.db.Project">
@@ -743,6 +920,7 @@
 		<context name="_projectId" expr="eval:id" />
 	</action-view>
 	
+	
 	<action-record name="action-project-record-bind-customer-project" model="com.axelor.apps.project.db.Project">
 		<field name="clientPartner" expr="eval: project?.clientPartner"/>
 	</action-record>
@@ -766,6 +944,14 @@
      <action-method name="action-project-view-show-invoicing-projects">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="showInvoicingProjects"/>
 	</action-method>
+		
+	<action-method name="action-project-method-generate-project-from-template">
+		<call class="com.axelor.apps.project.web.ProjectController" method="generateProjectFromTemplate"/>
+	</action-method>	
+		
+	<action-attrs name="action-project-template-attrs-istemplate-onnew">
+		<attribute name="value" for="isTemplate" expr="eval:true"/>
+	</action-attrs>
 		
   	<action-attrs name="action-project-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
