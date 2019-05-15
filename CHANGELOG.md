@@ -37,6 +37,7 @@
 - Move: fix NPE in move excess payment service.
 - ADVANCE SEARCH : error when define sub bill of material = true
 - SaleOrderLine: Display product available qty on product grid view.
+- Sale Order: added a whitespace between qty and unit in the sale order report.
 
 ## [5.1.6] - 2019-04-29
 ## Features
