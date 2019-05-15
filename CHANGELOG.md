@@ -20,6 +20,7 @@
 - PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO 
 - FIXED ASSET : Change in the process of calculation
 - LOCATION FINANCIAL DATA : new booleans to manage different printing
+- Sale Order Line: improve the logic of requested quantity.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

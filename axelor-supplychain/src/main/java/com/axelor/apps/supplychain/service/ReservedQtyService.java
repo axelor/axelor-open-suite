@@ -185,9 +185,10 @@ public interface ReservedQtyService {
    * @param saleOrderLine
    * @param product
    * @param newReservedQty
+   * @return the new allocated quantity
    * @throws AxelorException
    */
-  void updateRequestedReservedQuantityInStockMoveLines(
+  BigDecimal updateRequestedReservedQuantityInStockMoveLines(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException;
 
