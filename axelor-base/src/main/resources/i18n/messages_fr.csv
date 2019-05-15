@@ -1365,6 +1365,7 @@
 "The product pulled-off date must be greater than the launch date.","La date de retrait doit être supérieure à la date de lancement.",,
 "The tags below can be used as a prefix or a suffix","Les variables ci-dessous peuvent être utilisées en tant que préfixe ou suffixe",,
 "The to date is incorrect","La date d'arrivée est incorrecte",,
+"The worth and quantity value of each class must be greater than 0.","La valeur et la quantité de chaque classe doivent être supérieures à 0.",,
 "There is no configured sequence for product","Aucune séquence configurée pour les produits",,
 "There is no matching address in the QAS base","Aucune addresse correspondante dans la base QAS",,
 "There is no records to export.",,,

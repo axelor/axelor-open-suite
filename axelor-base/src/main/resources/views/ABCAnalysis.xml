@@ -12,7 +12,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-group-onnew" onSave="action-abc-analysis-method-set-sequence">
+    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-group-onnew" onSave="action-abc-analysis-method-set-sequence, action-abc-analysis-method-check-classes">
         <toolbar>
             <button name="runAnalysisBtn" title="Run analysis" onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis" prompt="Are you sure you want run the analysis ? It can take a long time." showIf="statusSelect != 2"/>
         </toolbar>

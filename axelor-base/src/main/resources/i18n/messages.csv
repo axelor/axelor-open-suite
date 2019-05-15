@@ -1365,6 +1365,7 @@
 "The product pulled-off date must be greater than the launch date.",,,
 "The tags below can be used as a prefix or a suffix",,,
 "The to date is incorrect",,,
+"The worth and quantity value of each class must be greater than 0.",,,
 "There is no configured sequence for product",,,
 "There is no matching address in the QAS base",,,
 "There is no records to export.",,,

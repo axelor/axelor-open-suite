@@ -307,9 +307,23 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     @Override
     public void checkClasses(ABCAnalysis abcAnalysis) throws AxelorException {
         List<ABCAnalysisClass> abcAnalysisClassList = abcAnalysis.getAbcAnalysisClassList();
-        BigDecimal totalQty = abcAnalysisClassList.stream().map(ABCAnalysisClass::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalWorth = abcAnalysisClassList.stream().map(ABCAnalysisClass::getWorth).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal classQty, classWorth;
+        BigDecimal totalQty = BigDecimal.ZERO, totalWorth = BigDecimal.ZERO;
         BigDecimal comparisonValue = new BigDecimal(100);
+
+        for(ABCAnalysisClass abcAnalysisClass: abcAnalysisClassList){
+            classQty = abcAnalysisClass.getQty();
+            classWorth = abcAnalysisClass.getWorth();
+            if (classQty.compareTo(BigDecimal.ZERO) <= 0 || classWorth.compareTo(BigDecimal.ZERO) <= 0){
+                throw new AxelorException(
+                        abcAnalysis,
+                        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                        I18n.get(IExceptionMessage.ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH));
+            }
+
+            totalQty = totalQty.add(classQty);
+            totalWorth = totalWorth.add(classWorth);
+        }
 
         if(totalQty.compareTo(comparisonValue) != 0 || totalWorth.compareTo(comparisonValue) != 0){
             throw new AxelorException(

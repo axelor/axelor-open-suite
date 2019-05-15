@@ -1365,6 +1365,7 @@
 "The product pulled-off date must be greater than the launch date.","De datum waarop het product wordt afgevoerd, moet groter zijn dan de lanceringsdatum.",,
 "The tags below can be used as a prefix or a suffix","De onderstaande tags kunnen gebruikt worden als voorvoegsel of achtervoegsel",,
 "The to date is incorrect","De tot op heden is onjuist",,
+"The worth and quantity value of each class must be greater than 0.",,,
 "There is no configured sequence for product","Er is geen geconfigureerde volgorde voor het product",,
 "There is no matching address in the QAS base","Er is geen overeenkomend adres in de QAS-basis",,
 "There is no records to export.","Er zijn geen records om te exporteren.",,

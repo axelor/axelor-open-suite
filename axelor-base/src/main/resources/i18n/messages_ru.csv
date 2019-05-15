@@ -1365,6 +1365,7 @@
 "The product pulled-off date must be greater than the launch date.","Дата снятия изделия с производства должна быть больше, чем дата запуска.",,
 "The tags below can be used as a prefix or a suffix","Приведенные ниже теги могут использоваться в качестве префикса или суффикса.",,
 "The to date is incorrect","На сегодняшний день это неправильно.",,
+"The worth and quantity value of each class must be greater than 0.",,,
 "There is no configured sequence for product","Нет настроенной последовательности действий для продукта",,
 "There is no matching address in the QAS base","В базе QAS нет совпадающих адресов",,
 "There is no records to export.","Записи для экспорта отсутствуют.",,
