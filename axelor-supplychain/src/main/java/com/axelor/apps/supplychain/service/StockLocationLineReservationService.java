@@ -34,6 +34,7 @@ public interface StockLocationLineReservationService {
    * For every stock move lines, put reserved quantity at 0 without changing requested quantity.
    *
    * @param stockLocationLine
+   * @throws AxelorException
    */
-  void deallocateAll(StockLocationLine stockLocationLine);
+  void deallocateAll(StockLocationLine stockLocationLine) throws AxelorException;
 }

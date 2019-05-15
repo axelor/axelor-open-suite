@@ -3,6 +3,7 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
@@ -10,6 +11,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -73,7 +75,12 @@ public class ConfiguratorCreatorImportServiceProductionImpl
     }
 
     // recursive call for child BOMs
-    List<ConfiguratorBOM> childConfiguratorBomList = configuratorBom.getConfiguratorBomList();
+    List<ConfiguratorBOM> childConfiguratorBomList =
+        Beans.get(ConfiguratorBOMRepository.class)
+            .all()
+            .filter("self.parentConfiguratorBOM.id = :parentId")
+            .bind("parentId", configuratorBom.getId())
+            .fetch();
     if (childConfiguratorBomList != null) {
       for (ConfiguratorBOM childConfiguratorBom : childConfiguratorBomList) {
         updateAttributeNameInFormulas(childConfiguratorBom, oldName, newName, counter + 1);

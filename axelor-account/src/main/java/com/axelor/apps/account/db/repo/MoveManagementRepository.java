@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -105,6 +106,7 @@ public class MoveManagementRepository extends MoveRepository {
               analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
             }
           }
+          Beans.get(MoveLineService.class).validateMoveLine(moveLine);
         }
       }
       return super.save(move);
