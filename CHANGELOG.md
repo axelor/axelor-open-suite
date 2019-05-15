@@ -36,6 +36,7 @@
 - Configurator Creator: more fixes to import/export feature.
 - ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 - Move: fix NPE in move excess payment service.
+- Raw Material Requirement: when the raw material requirement name is null, it's not printed on the report.
 - ADVANCE SEARCH : error when define sub bill of material = true
 - SaleOrderLine: Display product available qty on product grid view.
 - Sale Order: added a whitespace between qty and unit in the sale order report.
