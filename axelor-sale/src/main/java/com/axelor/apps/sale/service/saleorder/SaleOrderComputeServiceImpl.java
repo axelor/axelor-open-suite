@@ -196,7 +196,11 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-          saleOrderLine.setExTaxTotal(totalAmount);
+          if (saleOrderLine.getIsShowTotal()) {
+            saleOrderLine.setExTaxTotal(totalAmount);
+          } else {
+            saleOrderLine.setExTaxTotal(BigDecimal.ZERO);
+          }
           totalAmount = BigDecimal.ZERO;
         }
         if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
