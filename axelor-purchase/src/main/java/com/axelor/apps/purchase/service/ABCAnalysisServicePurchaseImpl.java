@@ -17,16 +17,15 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
 
-    private PurchaseOrderLineRepository purchaseOrderLineRepository;
+    protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 
     private final static String PURCHASABLE_TRUE = " AND self.purchasable = TRUE";
 
@@ -37,17 +36,17 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
     }
 
     @Override
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
-        ABCAnalysisLine abcAnalysisLine = super.createABCAnalysisLine(abcAnalysis, product);
+    protected Optional<ABCAnalysisLine> createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
+        ABCAnalysisLine abcAnalysisLine = null;
         BigDecimal productQty = BigDecimal.ZERO;
         BigDecimal productWorth = BigDecimal.ZERO;
         List<PurchaseOrderLine> purchaseOrderLineList;
         int offset = 0;
 
         Query<PurchaseOrderLine> purchaseOrderLineQuery = purchaseOrderLineRepository.all()
-                .filter("self.purchaseOrder.statusSelect = :status AND self.purchaseOrder.validationDate >= :startDate AND self.purchaseOrder.validationDate <= :endDate AND self.product.id = :productId")
-                .bind("status", PurchaseOrderRepository.STATUS_VALIDATED)
+                .filter("(self.purchaseOrder.statusSelect = :statusValidated OR self.purchaseOrder.statusSelect = :statusFinished) AND self.purchaseOrder.validationDate >= :startDate AND self.purchaseOrder.validationDate <= :endDate AND self.product.id = :productId")
+                .bind("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED)
+                .bind("statusFinished", PurchaseOrderRepository.STATUS_FINISHED)
                 .bind("startDate", abcAnalysis.getStartDate())
                 .bind("endDate", abcAnalysis.getEndDate())
                 .bind("productId", product.getId())
@@ -55,6 +54,11 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
 
         while(!(purchaseOrderLineList = purchaseOrderLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
             offset += purchaseOrderLineList.size();
+            abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
+
+            if (abcAnalysisLine == null) {
+                abcAnalysisLine = super.createABCAnalysisLine(abcAnalysis, product).get();
+            }
 
             for(PurchaseOrderLine purchaseOrderLine: purchaseOrderLineList){
                 BigDecimal convertedQty = unitConversionService.convert(purchaseOrderLine.getUnit(), product.getUnit(), purchaseOrderLine.getQty(), 2, product);
@@ -68,7 +72,11 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
             JPA.clear();
         }
 
-        return setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        if(abcAnalysisLine != null){
+            setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        }
+
+        return Optional.ofNullable(abcAnalysisLine);
     }
 
     @Override

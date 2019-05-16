@@ -1,14 +1,12 @@
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
-import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -23,12 +21,11 @@ public class ABCAnalysisController {
     public void runAnalysis(ActionRequest request, ActionResponse response) {
         ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
         try {
-            Class<? extends ABCAnalysisServiceImpl> clazz = (Class<? extends  ABCAnalysisServiceImpl>) Class.forName(abcAnalysis.getType());
+            Class<? extends ABCAnalysisServiceImpl> clazz = (Class<? extends  ABCAnalysisServiceImpl>) Class.forName(abcAnalysis.getTypeSelect());
             Beans.get(clazz).runAnalysis(Beans.get(ABCAnalysisRepository.class).find(abcAnalysis.getId()));
             response.setReload(true);
         } catch (ClassNotFoundException | AxelorException e ) {
-            TraceBackService.trace(response, e);
-            response.setError(e.getMessage());
+            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
     }
 
@@ -40,7 +37,7 @@ public class ABCAnalysisController {
     public void setSequence(ActionRequest request, ActionResponse response) {
         ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
         Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
-        response.setValue("abcAnalysisSequence", abcAnalysis.getAbcAnalysisSequence());
+        response.setValue("abcAnalysisSeq", abcAnalysis.getAbcAnalysisSeq());
     }
 
     public void printReport(ActionRequest request, ActionResponse response){
@@ -48,7 +45,7 @@ public class ABCAnalysisController {
         ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
 
         try{
-            String name = I18n.get("ABC Analysis N°") + " " + abcAnalysis.getAbcAnalysisSequence();
+            String name = I18n.get("ABC Analysis N°") + " " + abcAnalysis.getAbcAnalysisSeq();
             String fileLink = Beans.get(ABCAnalysisServiceImpl.class).printReport(abcAnalysis);
             response.setView(ActionView.define(name).add("html", fileLink).map());
         } catch (AxelorException e){

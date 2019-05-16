@@ -17,16 +17,16 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
-    private StockLocationService stockLocationService;
-    private StockLocationLineRepository stockLocationLineRepository;
+    protected StockLocationService stockLocationService;
+    protected StockLocationLineRepository stockLocationLineRepository;
 
     private final static String STOCK_MANAGED_TRUE = " AND self.stockManaged = TRUE";
 
@@ -38,8 +38,8 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
     }
 
     @Override
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
-        ABCAnalysisLine abcAnalysisLine =  super.createABCAnalysisLine(abcAnalysis, product);
+    protected Optional<ABCAnalysisLine> createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
+        ABCAnalysisLine abcAnalysisLine = null;
         List<StockLocation> stockLocationList = stockLocationService.getAllLocationAndSubLocation(abcAnalysis.getStockLocation(), false);
         BigDecimal productQty = BigDecimal.ZERO;
         BigDecimal productWorth = BigDecimal.ZERO;
@@ -53,6 +53,11 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
         while(!(stockLocationLineList = stockLocationLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
             offset += stockLocationLineList.size();
+            abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
+
+            if (abcAnalysisLine == null) {
+                abcAnalysisLine = super.createABCAnalysisLine(abcAnalysis, product).get();
+            }
 
             for(StockLocationLine stockLocationLine: stockLocationLineList){
                 BigDecimal convertedQty = unitConversionService.convert(stockLocationLine.getUnit(), product.getUnit(), stockLocationLine.getCurrentQty(), 5, product);
@@ -67,7 +72,11 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
             JPA.clear();
         }
 
-        return setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        if (abcAnalysisLine != null) {
+            setQtyWorth(abcAnalysisLineRepository.find(abcAnalysisLine.getId()), productQty, productWorth);
+        }
+
+        return Optional.ofNullable(abcAnalysisLine);
     }
 
     @Override

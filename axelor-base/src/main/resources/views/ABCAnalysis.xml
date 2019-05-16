@@ -3,8 +3,8 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis">
-        <field name="abcAnalysisSequence"/>
+    <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" orderBy="-abcAnalysisSeq">
+        <field name="abcAnalysisSeq"/>
         <field name="name"/>
         <field name="company"/>
         <field name="createdOn"/>
@@ -23,13 +23,13 @@
         </menubar>
         <panel name="statusPanel" hidden="true">
             <field name="statusSelect"/>
-            <field name="type"/>
+            <field name="typeSelect"/>
         </panel>
         <panel name="informationsPanel">
-            <field name="abcAnalysisSequence" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
+            <field name="abcAnalysisSeq" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
                 <viewer>
                     <![CDATA[
-                        <span>{{record.abcAnalysisSequence}}</span>
+                        <span>{{record.abcAnalysisSeq}}</span>
                     ]]>
                 </viewer>
             </field>
@@ -37,9 +37,9 @@
             <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect == 2"/>
             <field name="createdOn"/>
             <field name="createdBy"/>
-            <field name="startDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
-            <field name="endDate" showIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
-            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; type=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect == 2"/>
+            <field name="startDate" showIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="endDate" showIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; typeSelect=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; typeSelect=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect == 2"/>
         </panel>
         <panel name="descriptionPanel" title="Description" canCollapse="true" collapseIf="statusSelect != 1">
             <field name="description" colSpan="12" showTitle="false" widget="html"/>
@@ -56,7 +56,7 @@
     <action-record name="action-abc-analysis-record-default" model="com.axelor.apps.base.db.ABCAnalysis">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
         <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-        <field name="type" expr="eval: _type"/>
+        <field name="typeSelect" expr="eval: _type"/>
     </action-record>
 
     <action-record name="action-abc-analysis-record-reset-stock-location" model="com.axelor.apps.base.db.ABCAnalysis">
@@ -86,11 +86,11 @@
     </action-group>
 
     <action-attrs name="action-abc-analysis-attrs-product-set-domain">
-        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true&quot; "/>
-        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true&quot; "/>
-        <attribute name="domain" for="productSet" if="type == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
                    expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
     </action-attrs>
 

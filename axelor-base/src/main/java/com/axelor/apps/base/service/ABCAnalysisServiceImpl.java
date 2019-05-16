@@ -1,6 +1,5 @@
 package com.axelor.apps.base.service;
 
-import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
@@ -15,6 +14,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -22,20 +22,23 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     protected ABCAnalysisLineRepository abcAnalysisLineRepository;
     protected UnitConversionService unitConversionService;
-    private SequenceService sequenceService;
-    private ABCAnalysisRepository abcAnalysisRepository;
-    private ProductRepository productRepository;
-    private ABCAnalysisClassRepository abcAnalysisClassRepository;
+    protected SequenceService sequenceService;
+    protected ABCAnalysisRepository abcAnalysisRepository;
+    protected ProductRepository productRepository;
+    protected ABCAnalysisClassRepository abcAnalysisClassRepository;
 
     private BigDecimal totalQty = BigDecimal.ZERO;
     private BigDecimal totalWorth = BigDecimal.ZERO;
@@ -88,19 +91,18 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     @Override
-    @Transactional
     public void runAnalysis(ABCAnalysis abcAnalysis) throws AxelorException {
         reset(abcAnalysis);
         start(abcAnalysis);
         getAbcAnalysisClassList(abcAnalysis);
-        createABCAnalysisLineForEachProduct(abcAnalysis);
+        createAllABCAnalysisLine(abcAnalysis);
         doAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
         finish(abcAnalysisRepository.find(abcAnalysis.getId()));
 
     }
 
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void start(ABCAnalysis abcAnalysis){
+    @Transactional
+    protected void start(ABCAnalysis abcAnalysis){
         abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_ANALYZING);
         abcAnalysisRepository.save(abcAnalysis);
     }
@@ -156,37 +158,55 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         return "self.productFamily in (?1) AND self.productTypeSelect = ?2";
     }
 
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void createABCAnalysisLineForEachProduct(ABCAnalysis abcAnalysis) throws AxelorException {
-        Set<Product> productSet = getProductSet(abcAnalysis);
-        for (Product product : productSet) {
-            ABCAnalysisLine abcAnalysisLine = createABCAnalysisLine(abcAnalysis, product);
-            if(abcAnalysisLine.getDecimalWorth().compareTo(BigDecimal.ZERO) == 0 ||
-                    abcAnalysisLine.getDecimalQty().compareTo(BigDecimal.ZERO) == 0){
-                abcAnalysisLineRepository.remove(abcAnalysisLineRepository.find(abcAnalysisLine.getId()));
+    protected void createAllABCAnalysisLine(ABCAnalysis abcAnalysis) throws AxelorException {
+        int offset = 0;
+
+        List<Product> productList;
+        Query<Product> productQuery = productRepository.all()
+                .filter("self.id IN (" + StringTool.getIdListString(getProductSet(abcAnalysis)) + ")");
+
+        while(!(productList = productQuery.fetch(FETCH_LIMIT, offset)).isEmpty()){
+            abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
+            offset += productList.size();
+
+            for (Product product : productList) {
+                createABCAnalysisLineForEachProduct(abcAnalysis, product);
             }
+
+            JPA.clear();
         }
     }
 
     @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    protected ABCAnalysisLine createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
+    protected void createABCAnalysisLineForEachProduct(ABCAnalysis abcAnalysis, Product product) throws AxelorException{
+        Optional<ABCAnalysisLine> optionalAbcAnalysisLine = createABCAnalysisLine(abcAnalysis, product);
+        optionalAbcAnalysisLine.ifPresent(abcAnalysisLine -> {
+            abcAnalysisLine = abcAnalysisLineRepository.find(abcAnalysisLine.getId());
+            if(abcAnalysisLine.getDecimalWorth().compareTo(BigDecimal.ZERO) == 0 ||
+                    abcAnalysisLine.getDecimalQty().compareTo(BigDecimal.ZERO) == 0){
+                abcAnalysisLineRepository.remove(abcAnalysisLineRepository.find(abcAnalysisLine.getId()));
+            }
+        });
+    }
+
+    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+    protected Optional<ABCAnalysisLine> createABCAnalysisLine(ABCAnalysis abcAnalysis, Product product) throws AxelorException {
         ABCAnalysisLine abcAnalysisLine = new ABCAnalysisLine();
 
-        abcAnalysisLine.setAbcAnalysis(abcAnalysisRepository.find(abcAnalysis.getId()));
+        abcAnalysisLine.setAbcAnalysis(abcAnalysis);
         abcAnalysisLine.setProduct(productRepository.find(product.getId()));
 
         abcAnalysisLineRepository.save(abcAnalysisLine);
 
-        return abcAnalysisLine;
+        return Optional.of(abcAnalysisLine);
     }
 
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    protected ABCAnalysisLine setQtyWorth(ABCAnalysisLine abcAnalysisLine, BigDecimal decimalQty, BigDecimal decimalWorth){
+    @Transactional
+    protected void setQtyWorth(ABCAnalysisLine abcAnalysisLine, BigDecimal decimalQty, BigDecimal decimalWorth){
         abcAnalysisLine.setDecimalQty(decimalQty);
         abcAnalysisLine.setDecimalWorth(decimalWorth);
         abcAnalysisLineRepository.save(abcAnalysisLine);
 
-        return abcAnalysisLine;
     }
 
     protected void doAnalysis(ABCAnalysis abcAnalysis) {
@@ -205,8 +225,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         }
     }
 
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void analyzeLine(ABCAnalysisLine abcAnalysisLine){
+    @Transactional
+    protected void analyzeLine(ABCAnalysisLine abcAnalysisLine){
         computePercentage(abcAnalysisLine);
         setABCAnalysisClass(abcAnalysisLine);
 
@@ -227,7 +247,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
     }
 
-    private void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine){
+    protected void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine){
         BigDecimal maxQty = BigDecimal.ZERO;
         BigDecimal maxWorth = BigDecimal.ZERO;
         BigDecimal lineCumulatedQty = abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_EVEN);
@@ -259,15 +279,15 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         this.cumulatedWorth = this.cumulatedWorth.add(cumulatedWorth);
     }
 
-    @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-    private void finish(ABCAnalysis abcAnalysis){
+    @Transactional
+    protected void finish(ABCAnalysis abcAnalysis){
         abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_FINISHED);
         abcAnalysisRepository.save(abcAnalysis);
     }
 
     @Override
     public void setSequence(ABCAnalysis abcAnalysis) {
-        String abcAnalysisSequence = abcAnalysis.getAbcAnalysisSequence();
+        String abcAnalysisSequence = abcAnalysis.getAbcAnalysisSeq();
 
         if(abcAnalysisSequence != null && !abcAnalysisSequence.isEmpty()){
             return;
@@ -279,7 +299,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
             return;
         }
 
-        abcAnalysis.setAbcAnalysisSequence(sequenceService.getSequenceNumber(sequence));
+        abcAnalysis.setAbcAnalysisSeq(sequenceService.getSequenceNumber(sequence));
 
     }
 
@@ -292,7 +312,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
                     I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
         }
 
-        String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSequence();
+        String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSeq();
 
         return
                 ReportFactory.createReport(IReport.ABC_ANALYSIS, name)

@@ -104,7 +104,7 @@
 		model="com.axelor.apps.base.db.ABCAnalysis">
 		<view type="grid" name="abc-analysis-grid"/>
 		<view type="form" name="abc-analysis-form"/>
-		<domain>self.type = :_type</domain>
+		<domain>self.typeSelect = :_type</domain>
 		<context name="_type" expr="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl"/>
 	</action-view>
 	
