@@ -454,19 +454,23 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  public void updateRequestedReservedQuantityInStockMoveLines(
+  public BigDecimal updateRequestedReservedQuantityInStockMoveLines(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException {
 
-    saleOrderLine.setRequestedReservedQty(newReservedQty);
     List<StockMoveLine> stockMoveLineList = getPlannedStockMoveLines(saleOrderLine);
-    BigDecimal allocatedRequestedQty = saleOrderLine.getRequestedReservedQty();
+    BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
+    BigDecimal allocatedRequestedQty = newReservedQty.subtract(deliveredQty);
+    if (allocatedRequestedQty.signum() < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW));
+    }
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       BigDecimal stockMoveRequestedQty =
           convertUnitWithProduct(
               saleOrderLine.getUnit(), stockMoveLine.getUnit(), allocatedRequestedQty, product);
-      BigDecimal requestedQtyInStockMoveLine =
-          stockMoveLine.getRealQty().min(stockMoveRequestedQty);
+      BigDecimal requestedQtyInStockMoveLine = stockMoveLine.getQty().min(stockMoveRequestedQty);
       stockMoveLine.setRequestedReservedQty(requestedQtyInStockMoveLine);
       BigDecimal saleOrderRequestedQtyInStockMoveLine =
           convertUnitWithProduct(
@@ -476,6 +480,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
               product);
       allocatedRequestedQty = allocatedRequestedQty.subtract(saleOrderRequestedQtyInStockMoveLine);
     }
+    saleOrderLine.setRequestedReservedQty(newReservedQty.subtract(allocatedRequestedQty));
+    return saleOrderLine.getRequestedReservedQty().subtract(deliveredQty);
   }
 
   protected List<StockMoveLine> getPlannedStockMoveLines(SaleOrderLine saleOrderLine) {
@@ -486,6 +492,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
                 + "AND self.stockMove.statusSelect = :planned")
         .bind("saleOrderLineId", saleOrderLine.getId())
         .bind("planned", StockMoveRepository.STATUS_PLANNED)
+        .order("id")
         .fetch();
   }
 
@@ -553,9 +560,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       checkAvailabilityRequest(stockMoveLine, newReservedQty, false);
     }
 
+    BigDecimal newRequestedReservedQty = newReservedQty.add(saleOrderLine.getDeliveredQty());
     // update requested reserved qty
-    if (newReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
-      updateRequestedReservedQty(saleOrderLine, newReservedQty);
+    if (newRequestedReservedQty.compareTo(saleOrderLine.getRequestedReservedQty()) > 0) {
+      updateRequestedReservedQty(saleOrderLine, newRequestedReservedQty);
     }
 
     StockLocationLine stockLocationLine =
@@ -599,8 +607,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         newReservedQty.subtract(saleOrderLine.getRequestedReservedQty());
 
     // update in stock move line and sale order line
-    updateRequestedReservedQuantityInStockMoveLines(
-        saleOrderLine, stockMoveLine.getProduct(), newReservedQty);
+    BigDecimal newAllocatedQty =
+        updateRequestedReservedQuantityInStockMoveLines(
+            saleOrderLine, stockMoveLine.getProduct(), newReservedQty);
 
     StockLocationLine stockLocationLine =
         stockLocationLineService.getStockLocationLine(
@@ -615,8 +624,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockLocationLine.getRequestedReservedQty().add(diffReservedQuantityLocation));
 
     // update reserved qty
-    if (newReservedQty.compareTo(saleOrderLine.getReservedQty()) < 0) {
-      updateReservedQty(saleOrderLine, newReservedQty);
+    if (newAllocatedQty.compareTo(saleOrderLine.getReservedQty()) < 0) {
+      updateReservedQty(saleOrderLine, newAllocatedQty);
     }
   }
 
