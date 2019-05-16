@@ -135,5 +135,6 @@
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
 - BUSINESS PROJECT : Report printing Division by zero
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
