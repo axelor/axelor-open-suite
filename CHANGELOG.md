@@ -17,7 +17,7 @@
 - Debt Recovery : delete canEdit from fields
 - Configurator Prod Process and BOM: add new fields.
 - Availability Request: cannot lower reserved quantity.
-- PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO 
+- PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO
 - FIXED ASSET : Change in the process of calculation
 - LOCATION FINANCIAL DATA : new booleans to manage different printing
 - Sale Order Line: improve the logic of requested quantity.
@@ -32,6 +32,7 @@
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
 - SaleOrder : when amount = 0, we can only choose Invoice All.
 - Stock Move: automatic mail configuration is retrieved from the company stock config
+- Configurator BOM: change type of formula fields and useCondition field to text.
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 - StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
 - Configurator Creator: more fixes to import/export feature.
