@@ -28,6 +28,7 @@
 - PURCHASE ORDER : Updated Error Message for delivery date
 - INVENTORY : new selection for formatSelect
 - Reserved Qty: Add tracking for allocated and requested quantity.
+- Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

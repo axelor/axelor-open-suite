@@ -40,6 +40,14 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeReservedQty"/>
 	</action-method>
 
+  <action-method name="action-supplychain-sale-order-line-allocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-line-deallocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="deallocateAll"/>
+  </action-method>
+
 	<action-method name="action-method-sale-order-line-change-requested-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
 	</action-method>

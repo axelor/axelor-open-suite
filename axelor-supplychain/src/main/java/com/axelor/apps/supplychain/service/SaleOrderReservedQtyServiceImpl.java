@@ -44,7 +44,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
             : saleOrder.getSaleOrderLineList();
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      reservedQtyService.updateReservedQty(saleOrderLine, saleOrderLine.getRequestedReservedQty());
+      reservedQtyService.allocateAll(saleOrderLine);
     }
   }
 

@@ -231,4 +231,11 @@ public interface ReservedQtyService {
    * @throws AxelorException
    */
   void updateReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
+
+  /**
+   * Create a reservation and allocate as much quantity as we can.
+   *
+   * @param saleOrderLine
+   */
+  void allocateAll(SaleOrderLine saleOrderLine) throws AxelorException;
 }

@@ -828,4 +828,33 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
     stockLocationLine.setReservedQty(reservedQty);
   }
+
+  @Override
+  public void allocateAll(SaleOrderLine saleOrderLine) throws AxelorException {
+    // request the maximum quantity
+    updateRequestedReservedQty(saleOrderLine, saleOrderLine.getQty());
+    StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
+
+    // search for the maximum quantity that can be allocated.
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(
+            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+    BigDecimal availableQtyToBeReserved =
+        stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+    Product product = stockMoveLine.getProduct();
+    BigDecimal availableQtyToBeReservedSaleOrderLine =
+        convertUnitWithProduct(
+                saleOrderLine.getUnit(),
+                stockLocationLine.getUnit(),
+                availableQtyToBeReserved,
+                product)
+            .add(saleOrderLine.getReservedQty());
+    BigDecimal qtyThatWillBeAllocated =
+        saleOrderLine.getQty().min(availableQtyToBeReservedSaleOrderLine);
+
+    // allocate it
+    if (qtyThatWillBeAllocated.compareTo(saleOrderLine.getReservedQty()) > 0) {
+      updateReservedQty(saleOrderLine, qtyThatWillBeAllocated);
+    }
+  }
 }
