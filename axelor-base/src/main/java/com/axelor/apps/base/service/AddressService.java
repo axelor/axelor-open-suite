@@ -92,4 +92,11 @@ public interface AddressService {
    * @return the string field corresponding to the given address.
    */
   String computeAddressStr(Address address);
+
+  /**
+   * Auto-completes some fields of the address thanks to the input zip.
+   *
+   * @param address
+   */
+  public void autocompleteAddress(Address address);
 }
