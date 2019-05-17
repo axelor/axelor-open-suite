@@ -17,15 +17,23 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -38,6 +46,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +55,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Inject FixedAssetRepository fixedAssetRepo;
 
   @Inject FixedAssetLineService fixedAssetLineService;
+
+  @Inject private MoveCreateService moveCreateService;
+
+  @Inject private MoveRepository moveRepo;
 
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
@@ -120,10 +133,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     float prorataTemporis = 1;
     if (isFirstYear && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+
+      LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
+      LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
+
       long monthsBetweenDates =
           ChronoUnit.MONTHS.between(
-                  fixedAsset.getAcquisitionDate(), fixedAsset.getFirstDepreciationDate())
-              + 1;
+              acquisitionDate.withDayOfMonth(1), depreciationDate.withDayOfMonth(1));
+
+      monthsBetweenDates += (Math.abs(acquisitionDate.getYear() - depreciationDate.getYear()) * 12);
       prorataTemporis = monthsBetweenDates / fixedAsset.getPeriodicityInMonth().floatValue();
     }
     return new BigDecimal(prorataTemporis).setScale(scale, RoundingMode.HALF_EVEN);
@@ -209,13 +227,19 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
+
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) <= 0) {
-        BigDecimal cumulativeDepreciation =
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()).add(disposalAmount);
+
+        FixedAssetLine depreciationFixedAssetLine =
+            generateProrataDepreciationLine(fixedAsset, disposalDate);
 
         FixedAssetLine fixedAssetLine = new FixedAssetLine();
+        BigDecimal depreciationValue =
+            depreciationFixedAssetLine.getResidualValue().subtract(disposalAmount).abs();
+        BigDecimal cumulativeDepreciation =
+            depreciationFixedAssetLine.getCumulativeDepreciation().add(depreciationValue);
         fixedAssetLine.setDepreciationDate(disposalDate);
-        fixedAssetLine.setDepreciation(disposalAmount);
+        fixedAssetLine.setDepreciation(depreciationValue);
         fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
         fixedAssetLine.setResidualValue(
             fixedAsset.getGrossValue().subtract(cumulativeDepreciation));
@@ -227,15 +251,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.setDisposalValue(fixedAsset.getDisposalValue().add(disposalAmount));
         fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
 
+        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
+        fixedAsset.setDisposalDate(disposalDate);
+        fixedAsset.setDisposalValue(disposalAmount);
+
+        fixedAssetLineService.realize(depreciationFixedAssetLine);
         fixedAssetLineService.realize(fixedAssetLine);
+        generateDisposalMove(fixedAssetLine);
       }
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
       }
-      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
-      fixedAsset.setDisposalDate(disposalDate);
-      fixedAsset.setDisposalValue(disposalAmount);
     }
     List<FixedAssetLine> fixedAssetLineList =
         fixedAsset
@@ -249,5 +276,133 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAsset.removeFixedAssetLineListItem(fixedAssetLine);
     }
     fixedAssetRepo.save(fixedAsset);
+  }
+
+  private FixedAssetLine generateProrataDepreciationLine(
+      FixedAsset fixedAsset, LocalDate disposalDate) {
+    FixedAssetLine previousFixedAssetLine =
+        fixedAsset.getFixedAssetLineList().get(fixedAsset.getFixedAssetLineList().size() - 1);
+    long monthsBetweenDates =
+        ChronoUnit.MONTHS.between(
+            previousFixedAssetLine.getDepreciationDate().withDayOfMonth(1),
+            disposalDate.withDayOfMonth(1));
+
+    FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationDate(disposalDate);
+    BigDecimal prorataTemporis =
+        new BigDecimal(monthsBetweenDates / fixedAsset.getPeriodicityInMonth().floatValue());
+
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    float depreciationRate = 1f / fixedAsset.getNumberOfDepreciation() * 100f;
+    BigDecimal ddRate = BigDecimal.ONE;
+    if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
+      ddRate = fixedAsset.getDegressiveCoef();
+    }
+    BigDecimal deprecationValue =
+        fixedAsset
+            .getResidualValue()
+            .multiply(new BigDecimal(depreciationRate))
+            .multiply(ddRate)
+            .multiply(prorataTemporis)
+            .divide(new BigDecimal(100), scale);
+
+    fixedAssetLine.setDepreciation(deprecationValue);
+    fixedAssetLine.setCumulativeDepreciation(deprecationValue);
+    fixedAssetLine.setResidualValue(
+        fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
+    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
+    return fixedAssetLine;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  private void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+
+    Journal journal = fixedAsset.getJournal();
+    Company company = fixedAsset.getCompany();
+    Partner partner = fixedAsset.getPartner();
+    LocalDate date = fixedAsset.getAcquisitionDate();
+
+    // Creating move
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            partner,
+            date,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    if (move != null) {
+      List<MoveLine> moveLines = new ArrayList<MoveLine>();
+
+      String origin = fixedAsset.getReference();
+      Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
+      Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      Account purchaseAccount = fixedAsset.getPurchaseAccount();
+      BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
+      BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
+
+      // Creating accounting debit move line for charge account
+      MoveLine chargeAccountDebitMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              chargeAccount,
+              date,
+              null,
+              1,
+              chargeAmount,
+              BigDecimal.ZERO,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(chargeAccountDebitMoveLine);
+
+      // Creating accounting debit move line for deprecation account
+      MoveLine deprecationAccountDebitMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              depreciationAccount,
+              date,
+              null,
+              1,
+              cumulativeDepreciationAmount,
+              BigDecimal.ZERO,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(deprecationAccountDebitMoveLine);
+
+      // Creating accounting credit move line
+      MoveLine creditMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              purchaseAccount,
+              date,
+              null,
+              2,
+              BigDecimal.ZERO,
+              fixedAsset.getGrossValue(),
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(creditMoveLine);
+
+      move.getMoveLineList().addAll(moveLines);
+    }
+
+    moveRepo.save(move);
+
+    fixedAsset.setDisposalMove(move);
   }
 }
