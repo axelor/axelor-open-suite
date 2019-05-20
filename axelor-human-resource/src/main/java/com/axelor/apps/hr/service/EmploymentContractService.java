@@ -100,11 +100,11 @@ public class EmploymentContractService {
         employmentContract.getEndDate() == null ? "" : employmentContract.getEndDate().toString();
 
     Employee employee = employmentContract.getEmployee();
-    item[3] = employee.getName();
     item[4] = employee.getMaritalName();
 
     Partner contactPartner = employee.getContactPartner();
     if (contactPartner != null) {
+      item[3] = contactPartner.getName();
       item[5] = contactPartner.getFirstName();
 
       Address mainAddress = contactPartner.getMainAddress();

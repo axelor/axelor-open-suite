@@ -135,7 +135,8 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
     }
 
     for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-      if (accountingSituation.getCompany().equals(company)) {
+      if (accountingSituation.getCompany() != null
+          && accountingSituation.getCompany().equals(company)) {
         return accountingSituation;
       }
     }

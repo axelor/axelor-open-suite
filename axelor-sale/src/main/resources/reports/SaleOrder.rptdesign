@@ -1542,6 +1542,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="displayName">EstimatedDeliveryDate</text-property>
                     <text-property name="heading">EstimatedDeliveryDate</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">price_discounted</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">price_discounted</text-property>
+                    <text-property name="heading">price_discounted</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1686,6 +1692,11 @@ where SaleOrder.id = ?]]></xml-property>
                         <property name="position">26</property>
                         <property name="name">EstimatedDeliveryDate</property>
                         <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">price_discounted</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1873,6 +1884,13 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">price_discounted</property>
+                    <property name="nativeName">price_discounted</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	SOLine.id, 
@@ -1883,7 +1901,7 @@ where SaleOrder.id = ?]]></xml-property>
 	(CASE WHEN SaleOrder.in_ati
 		THEN SOLine.in_tax_price
 		ELSE SOLine.price END)
-		as "unit_price", 
+		as "unit_price",
 	SOLine.ex_tax_total, 
 	SOLine.in_tax_total,
 	SOLine.total_pack,
@@ -1908,7 +1926,8 @@ where SaleOrder.id = ?]]></xml-property>
 	SOLine.is_sub_line,
 	CustomerCatalog.product_customer_code as "CustomerProductCode",
 	CustomerCatalog.product_customer_name as "CustomerProductName",
-	SOLine.estimated_deliv_date as "EstimatedDeliveryDate"
+	SOLine.estimated_deliv_date as "EstimatedDeliveryDate",
+	SOLine.price_discounted as "price_discounted"
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join sale_sale_order_line as ParentSOLine on (ParentSOLine.id = SOLine.parent_line)
@@ -2153,7 +2172,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">nb_decimal_digit_for_unit_price</property>
                     <property name="nativeName">nb_decimal_digit_for_unit_price</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
@@ -4353,6 +4371,12 @@ row["ClientPartFirstName"]
                                 <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">price_discounted</property>
+                                <text-property name="displayName">price_discounted</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["price_discounted"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
                         <column id="4515">
                             <list-property name="visibility">
@@ -5003,9 +5027,9 @@ row["ClientPartFirstName"]
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(!row._outer["is_sub_line"] &amp;&amp; !row._outer["is_pack_line"]  &amp;&amp; !row._outer["is_title_line"]  ) {Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>
-<I><VALUE-OF>if(row._outer["is_sub_line"] &amp;&amp; row._outer["parent_pack_price_select"] == 1){Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF></I>
-<B><VALUE-OF>if(row._outer["is_pack_line"] &amp;&amp; row._outer["pack_price_select"] == 0) {Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF></B>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(!row._outer["is_sub_line"] &amp;&amp; !row._outer["is_pack_line"]  &amp;&amp; !row._outer["is_title_line"]  ) {if( row._outer._outer["hideDiscount"] == false) { Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}else {Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}}</VALUE-OF>
+<I><VALUE-OF>if(row._outer["is_sub_line"] &amp;&amp; row._outer["parent_pack_price_select"] == 1){if( row._outer._outer["hideDiscount"] == false) { Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))} else {Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}}</VALUE-OF></I>
+<B><VALUE-OF>if(row._outer["is_pack_line"] &amp;&amp; row._outer["pack_price_select"] == 0) {if( row._outer._outer["hideDiscount"] == false) { Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))} else {Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}}</VALUE-OF></B>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4152">

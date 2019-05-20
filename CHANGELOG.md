@@ -82,6 +82,12 @@
 - INVOICE : Change form view's organization to fit the SaleOrder view.
 - OPPORTUNITY : Create event from opportunity.
 - PARTNER : Link to employee form and changed domain
+- PRICE LIST : Add dashlets to display partner
+- SALE ORDER : Recompute unit price when hideDiscount is true.
+- OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
+- PROJECT : Add an analytic tab.
+- OBJECT DATA CONFIG : UX improvements
+- ANALYTIC MOVE LINE : Link to project
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -129,5 +135,7 @@
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
 - BoM:  added a menu showing personalized bills of materials
+- BUSINESS PROJECT : Report printing Division by zero
+- UnitCostCalculation : Fixed the date format in the csv export name file.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

@@ -31,7 +31,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.db.MetaField;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.ibm.icu.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,6 +45,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
+
+  @Inject private MailMessageRepository mailMessageRepo;
 
   public void anonymize(ObjectDataConfig objectDataConfig, Long recordId) throws AxelorException {
 
@@ -64,7 +68,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           if (reset == DataConfigLineRepository.RESET_DELETE) {
             deleteLink(mapper, line.getPath(), data);
           } else {
-            replaceLink(mapper, line.getPath(), data, rootModel, line.getRecord());
+            replaceLink(mapper, line.getPath(), data, rootModel, line.getRecordSelectId());
           }
         }
 
@@ -93,7 +97,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
   @Transactional
   public void replaceLink(
-      Mapper mapper, String path, List<? extends Model> data, String rootModel, String recordValue)
+      Mapper mapper, String path, List<? extends Model> data, String rootModel, Long recordValue)
       throws ClassNotFoundException, AxelorException {
 
     path = path.split("\\.")[0];
@@ -102,14 +106,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
       return;
     }
     Class<? extends Model> klass = (Class<? extends Model>) Class.forName(rootModel);
-    Property nameField = Mapper.of(klass).getNameField();
-    if (nameField == null) {
-      return;
-    }
 
     JpaRepository<? extends Model> repo = JpaRepository.of(klass);
-    Model object =
-        repo.all().filter("self." + nameField.getName() + " = ?1", recordValue).fetchOne();
+    Model object = repo.all().filter("self.id = ?1", recordValue).fetchOne();
     if (object == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -137,6 +136,14 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
         mapper.set(record, field, object);
       }
       JPA.save(record);
+
+      mailMessageRepo
+          .all()
+          .filter(
+              "self.relatedId = ?1 AND self.relatedModel = ?2",
+              record.getId(),
+              mapper.getBeanClass().getName())
+          .delete();
     }
   }
 

@@ -20,7 +20,9 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -28,11 +30,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class OpportunitySaleOrderController {
 
   @Inject private OpportunitySaleOrderService opportunitySaleOrderService;
+  @Inject private SaleOrderWorkflowService saleOrderWorkflowService;
 
   public void generateSaleOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -47,5 +51,20 @@ public class OpportunitySaleOrderController {
             .param("forceEdit", "true")
             .context("_showRecord", String.valueOf(saleOrder.getId()))
             .map());
+  }
+
+  public void cancelSaleOrders(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
+      List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
+      if (saleOrderList != null && !saleOrderList.isEmpty()) {
+        for (SaleOrder saleOrder : saleOrderList) {
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+              || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+            saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+          }
+        }
+      }
+    }
   }
 }
