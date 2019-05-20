@@ -24,6 +24,7 @@
 - Translation: fix existing and add missing translations.
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
 - Stock Move: automatic mail configuration is retrieved from the company stock config
+- Stock Move: unused description field removed
 
 ## [5.1.6] - 2019-04-29
 ## Features
