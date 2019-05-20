@@ -48,6 +48,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/** This is the main implementation for {@link ReservedQtyService}. */
 public class ReservedQtyServiceImpl implements ReservedQtyService {
 
   protected StockLocationLineService stockLocationLineService;
@@ -84,7 +85,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       stockMove.getStockMoveLineList().sort(Comparator.comparing(StockMoveLine::getId));
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal qty = stockMoveLine.getRealQty();
-        BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
+        // requested quantity is quantity requested is the line subtracted by the quantity already
+        // allocated
+        BigDecimal requestedReservedQty =
+            stockMoveLine.getRequestedReservedQty().subtract(stockMoveLine.getReservedQty());
         Product product = stockMoveLine.getProduct();
         if (product == null) {
           continue;
@@ -369,7 +373,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     realReservedQty = stockLocationQty.min(leftToAllocate);
 
     allocateReservedQuantityInSaleOrderLines(
-        realReservedQty, stockLocation, product, stockLocationLineUnit);
+        realReservedQty, stockLocation, product, stockLocationLineUnit, Optional.of(stockMoveLine));
     updateReservedQty(stockLocationLine);
   }
 
@@ -379,6 +383,24 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockLocation stockLocation,
       Product product,
       Unit stockLocationLineUnit)
+      throws AxelorException {
+    return allocateReservedQuantityInSaleOrderLines(
+        qtyToAllocate, stockLocation, product, stockLocationLineUnit, Optional.empty());
+  }
+
+  /**
+   * The new parameter allocated stock move line is used if we are allocating a stock move line.
+   * This method will reallocate the lines with the same stock move (and the same product) before
+   * other stock move lines.
+   *
+   * <p>We are using an optional because in the basic use of the method, the argument is empty.
+   */
+  protected BigDecimal allocateReservedQuantityInSaleOrderLines(
+      BigDecimal qtyToAllocate,
+      StockLocation stockLocation,
+      Product product,
+      Unit stockLocationLineUnit,
+      Optional<StockMoveLine> allocatedStockMoveLine)
       throws AxelorException {
     List<StockMoveLine> stockMoveLineListToAllocate =
         stockMoveLineRepository
@@ -395,6 +417,23 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             .order("stockMove.reservationDateTime")
             .order("stockMove.estimatedDate")
             .fetch();
+
+    if (allocatedStockMoveLine.isPresent()) {
+      // put stock move lines with the same stock move on the beginning of the list.
+      stockMoveLineListToAllocate.sort(
+          // Note: this comparator imposes orderings that are inconsistent with equals.
+          (sml1, sml2) -> {
+            if (sml1.getStockMove().equals(sml2.getStockMove())) {
+              return 0;
+            } else if (sml1.getStockMove().equals(allocatedStockMoveLine.get().getStockMove())) {
+              return -1;
+            } else if (sml2.getStockMove().equals(allocatedStockMoveLine.get().getStockMove())) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+    }
     BigDecimal leftQtyToAllocate = qtyToAllocate;
     for (StockMoveLine stockMoveLine : stockMoveLineListToAllocate) {
       BigDecimal leftQtyToAllocateStockMove =
