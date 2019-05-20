@@ -12,6 +12,7 @@
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -408,7 +409,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
 - MANUF. ORDER : notify by automatic email when MO finished or partially finished
 - ContractTemplate : Addition of demo-data.
-- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking.
 
 ## Improvements
 - STOCK MOVE: field "availableRequest" is editable from a sale order (generate customer deliveries) and in tabs "delivery information"

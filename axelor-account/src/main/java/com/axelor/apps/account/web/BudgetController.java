@@ -32,25 +32,22 @@ import java.util.List;
 @Singleton
 public class BudgetController {
 
-  @Inject protected BudgetService budgetService;
-  @Inject protected BudgetRepository budgetRepository;
-
   public void compute(ActionRequest request, ActionResponse response) {
     Budget budget = request.getContext().asType(Budget.class);
-    response.setValue("totalAmountExpected", budgetService.compute(budget));
+    response.setValue("totalAmountExpected", Beans.get(BudgetService.class).compute(budget));
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) {
     Budget budget = request.getContext().asType(Budget.class);
     budget = Beans.get(BudgetRepository.class).find(budget.getId());
-    List<BudgetLine> budgetLineList = budgetService.updateLines(budget);
+    List<BudgetLine> budgetLineList = Beans.get(BudgetService.class).updateLines(budget);
     response.setValue("budgetLineList", budgetLineList);
   }
 
   public void generatePeriods(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      response.setValue("budgetLineList", budgetService.generatePeriods(budget));
+      response.setValue("budgetLineList", Beans.get(BudgetService.class).generatePeriods(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -59,29 +56,33 @@ public class BudgetController {
   public void checkSharedDates(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      budgetService.checkSharedDates(budget);
+      Beans.get(BudgetService.class).checkSharedDates(budget);
     } catch (Exception e) {
       response.setError(e.getMessage());
     }
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
-    Budget budget = request.getContext().asType(Budget.class);
-    budget = budgetRepository.find(budget.getId());
-    budgetService.validate(budget);
-    response.setReload(true);
+    try{
+      Budget budget = request.getContext().asType(Budget.class);
+      budget = Beans.get(BudgetRepository.class).find(budget.getId());
+      Beans.get(BudgetService.class).validate(budget);
+      response.setReload(true);
+    } catch (Exception e){
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void draft(ActionRequest request, ActionResponse response) {
     Budget budget = request.getContext().asType(Budget.class);
-    budget = budgetRepository.find(budget.getId());
-    budgetService.draft(budget);
+    budget = Beans.get(BudgetRepository.class).find(budget.getId());
+    Beans.get(BudgetService.class).draft(budget);
     response.setReload(true);
   }
 
   public void computeTotalAmountRealized(ActionRequest request, ActionResponse response){
     Budget budget = request.getContext().asType(Budget.class);
-    budget = budgetRepository.find(budget.getId());
-    response.setValue("totalAmountRealized", budgetService.computeTotalAmountRealized(budget));
+    budget = Beans.get(BudgetRepository.class).find(budget.getId());
+    response.setValue("totalAmountRealized", Beans.get(BudgetService.class).computeTotalAmountRealized(budget));
   }
 }

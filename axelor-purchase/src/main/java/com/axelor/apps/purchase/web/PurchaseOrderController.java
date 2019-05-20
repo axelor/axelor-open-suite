@@ -389,10 +389,14 @@ public class PurchaseOrderController {
   }
 
   public void cancel(ActionRequest request, ActionResponse response) {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
-      purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
-      response.setReload(true);
+      try{
+        PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+        purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+        purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
+        response.setReload(true);
+      } catch (Exception e){
+        TraceBackService.trace(response, e);
+      }
   }
 
   /**

@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.BudgetLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
@@ -35,6 +37,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class BudgetSupplychainService extends BudgetService {
 
@@ -51,36 +54,34 @@ public class BudgetSupplychainService extends BudgetService {
         budgetLine.setAmountCommitted(BigDecimal.ZERO);
         budgetLine.setAmountRealized(BigDecimal.ZERO);
       }
-      List<Integer> statusList = new ArrayList<>(Arrays.asList(3, 4));
       List<BudgetDistribution> budgetDistributionList = null;
-      if (!statusList.isEmpty()) {
-        budgetDistributionList =
-            Beans.get(BudgetDistributionRepository.class)
-                .all()
-                .filter(
-                    "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2)",
-                    budget.getId(),
-                    statusList,
-                    statusList)
-                .fetch();
-        for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-          LocalDate orderDate =
-              budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
-          if (orderDate != null) {
-            for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-              LocalDate fromDate = budgetLine.getFromDate();
-              LocalDate toDate = budgetLine.getToDate();
-              if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                  && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
-                budgetLine.setAmountCommitted(
-                    budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
-                budgetLineRepository.save(budgetLine);
-                break;
-              }
+      budgetDistributionList =
+          Beans.get(BudgetDistributionRepository.class)
+              .all()
+              .filter(
+                  "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2,?3)",
+                  budget.getId(),
+                  3,
+                  4)
+              .fetch();
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        LocalDate orderDate =
+            budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
+        if (orderDate != null) {
+          for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+            LocalDate fromDate = budgetLine.getFromDate();
+            LocalDate toDate = budgetLine.getToDate();
+            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
+                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
+              budgetLine.setAmountCommitted(
+                  budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
+              budgetLineRepository.save(budgetLine);
+              break;
             }
           }
         }
       }
+
       budgetDistributionList =
           Beans.get(BudgetDistributionRepository.class)
               .all()
@@ -91,23 +92,39 @@ public class BudgetSupplychainService extends BudgetService {
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        LocalDate orderDate = budgetDistribution.getInvoiceLine().getInvoice().getInvoiceDate();
-        if (orderDate != null) {
+        Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+        optionaldate.ifPresent(date -> {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
-                && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
+            if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+                    && (toDate.isAfter(date) || toDate.isEqual(date))) {
               budgetLine.setAmountRealized(
-                  budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-              budgetLineRepository.save(budgetLine);
+                      budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
               break;
             }
           }
-        }
+        });
       }
     }
     return budget.getBudgetLineList();
+  }
+
+  @Override
+  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution){
+    InvoiceLine invoiceLine = budgetDistribution.getInvoiceLine();
+
+    if(invoiceLine == null){
+      return Optional.empty();
+    }
+
+    Invoice invoice = invoiceLine.getInvoice();
+
+    if(invoice.getPurchaseOrder() != null){
+      return Optional.of(invoice.getPurchaseOrder().getOrderDate());
+    }
+
+    return super.getDate(budgetDistribution);
   }
 
   @Transactional
@@ -136,12 +153,11 @@ public class BudgetSupplychainService extends BudgetService {
       return;
     }
 
-    purchaseOrderLineList.forEach(purchaseOrderLine ->
-            purchaseOrderLine.getBudgetDistributionList().forEach(budgetDistributionLine -> {
-              Budget budget = budgetDistributionLine.getBudget();
-              updateLines(budget);
-              computeTotalAmountCommitted(budget);
-            }));
+    purchaseOrderLineList.stream().flatMap(x -> x.getBudgetDistributionList().stream()).forEach(budgetDistribution -> {
+      Budget budget = budgetDistribution.getBudget();
+      updateLines(budget);
+      computeTotalAmountCommitted(budget);
+    });
 
   }
 }
