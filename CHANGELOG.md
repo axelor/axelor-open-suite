@@ -134,6 +134,7 @@
 - Marketing : Fix error when trying to generate an event per target
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
+- BoM:  added a menu showing personalized bills of materials
 - BUSINESS PROJECT : Report printing Division by zero
 - UnitCostCalculation : Fixed the date format in the csv export name file.
 
