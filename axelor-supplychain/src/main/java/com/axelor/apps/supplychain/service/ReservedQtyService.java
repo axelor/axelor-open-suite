@@ -27,6 +27,12 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
+/**
+ * A service which contains all methods managing the reservation feature. The purpose of this
+ * service is to update accordingly all reservedQty and requestedReservedQty fields in
+ * SaleOrderLine, StockMoveLine and StockLocationLine. The reservation is computed from stock move
+ * lines then fields in sale order lines and stock location lines are updated.
+ */
 public interface ReservedQtyService {
 
   /**
@@ -185,9 +191,10 @@ public interface ReservedQtyService {
    * @param saleOrderLine
    * @param product
    * @param newReservedQty
+   * @return the new allocated quantity
    * @throws AxelorException
    */
-  void updateRequestedReservedQuantityInStockMoveLines(
+  BigDecimal updateRequestedReservedQuantityInStockMoveLines(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException;
 

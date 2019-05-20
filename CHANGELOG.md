@@ -15,6 +15,13 @@
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
+- Configurator Prod Process and BOM: add new fields.
+- Availability Request: cannot lower reserved quantity.
+- PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO
+- FIXED ASSET : Change in the process of calculation
+- LOCATION FINANCIAL DATA : new booleans to manage different printing
+- Sale Order Line: improve the logic of requested quantity.
+- MRP: Add the start date time and end date time
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -23,7 +30,20 @@
 - SaleOrder/PurchaseOrder : add error message if line list is empty when validate/finalise an order
 - Translation: fix existing and add missing translations.
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
+- SaleOrder : when amount = 0, we can only choose Invoice All.
 - Stock Move: automatic mail configuration is retrieved from the company stock config
+- Configurator BOM: change type of formula fields and useCondition field to text.
+- SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
+- StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
+- Configurator Creator: more fixes to import/export feature.
+- ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
+- Move: fix NPE in move excess payment service.
+- Raw Material Requirement: when the raw material requirement name is null, it's not printed on the report.
+- ADVANCE SEARCH : error when define sub bill of material = true
+- SaleOrderLine: Display product available qty on product grid view.
+- Sale Order: added a whitespace between qty and unit in the sale order report.
+- MoveLine: fix NPE in groovy action.
+- Reserved Qty: fix multiple allocations in sale order lines with same product.
 - Stock Move: unused description field removed
 
 ## [5.1.6] - 2019-04-29

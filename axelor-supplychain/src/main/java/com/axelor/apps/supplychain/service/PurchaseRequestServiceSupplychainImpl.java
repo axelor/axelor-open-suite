@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -36,16 +35,10 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
 
     PurchaseOrder purchaseOrder =
         super.getPoBySupplierAndDeliveryAddress(purchaseRequest, purchaseOrderList);
-    List<StockLocation> stockLocations =
-        stockLocationRepo
-            .all()
-            .filter("self.address = ?1", purchaseRequest.getDeliveryAddress())
-            .fetch();
-    StockLocation stockLocation = stockLocations.size() == 1 ? stockLocations.get(0) : null;
     purchaseOrder =
-        stockLocation != null
+        purchaseRequest.getStockLocation() != null
                 && purchaseOrder != null
-                && purchaseOrder.getStockLocation().equals(stockLocation)
+                && purchaseOrder.getStockLocation().equals(purchaseRequest.getStockLocation())
             ? purchaseOrder
             : null;
     return purchaseOrder;
@@ -56,12 +49,7 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
-    StockLocation stockLocation =
-        stockLocationRepo
-            .all()
-            .filter("self.address = ?1", purchaseRequest.getDeliveryAddress())
-            .fetchOne();
-    purchaseOrder.setStockLocation(stockLocation);
+    purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     return purchaseOrder;
   }
 }
