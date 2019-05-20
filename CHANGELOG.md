@@ -22,6 +22,7 @@
 - LOCATION FINANCIAL DATA : new booleans to manage different printing
 - Sale Order Line: improve the logic of requested quantity.
 - MRP: Add the start date time and end date time
+- LOCATION FINANCIAL DATA : Change report design
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

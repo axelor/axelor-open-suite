@@ -610,7 +610,7 @@
 "StockLocation.productName","Product Name",,
 "StockLocation.qtyUnit","Qty",,
 "StockLocation.saleValue","Sale Value",,
-"StockLocation.title","LOCATION FINANCIAL DATA",,
+"StockLocation.title","Location financial data",,
 "StockLocation.total","Total",,
 "StockLocation.totalAccountingValue","Total accounting value",,
 "StockLocation.totalSaleValue","Total sale value",,
