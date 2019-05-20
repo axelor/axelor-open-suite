@@ -48,6 +48,7 @@
 - MoveLine: fix NPE in groovy action.
 - Reserved Qty: fix multiple allocations in sale order lines with same product.
 - Stock Move: unused description field removed
+- Sale Order: show invoiced tag with multiple invoices.
 
 ## [5.1.6] - 2019-04-29
 ## Features
