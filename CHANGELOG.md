@@ -44,6 +44,7 @@
 - Sale Order: added a whitespace between qty and unit in the sale order report.
 - MoveLine: fix NPE in groovy action.
 - Reserved Qty: fix multiple allocations in sale order lines with same product.
+- Stock Move: unused description field removed
 
 ## [5.1.6] - 2019-04-29
 ## Features
