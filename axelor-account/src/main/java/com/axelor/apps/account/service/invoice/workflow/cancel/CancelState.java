@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
@@ -54,6 +55,11 @@ public class CancelState extends WorkflowInvoice {
     }
 
     setStatus();
+    if (Beans.get(AccountConfigService.class)
+        .getAccountConfig(invoice.getCompany())
+        .getIsManagePassedForPayment()) {
+      setPfpStatus();
+    }
     workflowService.afterCancel(invoice);
   }
 
@@ -75,5 +81,10 @@ public class CancelState extends WorkflowInvoice {
     invoice.setMove(null);
 
     Beans.get(MoveCancelService.class).cancel(move);
+  }
+
+  protected void setPfpStatus() {
+    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    invoice.setDecisionPfpTakenDate(null);
   }
 }

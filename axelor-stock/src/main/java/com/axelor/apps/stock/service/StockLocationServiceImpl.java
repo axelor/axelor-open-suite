@@ -102,7 +102,7 @@ public class StockLocationServiceImpl implements StockLocationService {
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
-          BigDecimal qty = BigDecimal.ZERO.setScale(2);
+          BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
                 stockLocationLineService.getOrCreateStockLocationLine(
@@ -132,7 +132,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
         if (stockLocationLine != null) {
           Unit stockLocationLineUnit = stockLocationLine.getUnit();
-          BigDecimal qty = BigDecimal.ZERO.setScale(2);
+          BigDecimal qty = BigDecimal.ZERO;
 
           qty =
               qtyType.equals("real")
@@ -149,7 +149,7 @@ public class StockLocationServiceImpl implements StockLocationService {
       }
     }
 
-    return BigDecimal.ZERO.setScale(2);
+    return BigDecimal.ZERO;
   }
 
   @Override

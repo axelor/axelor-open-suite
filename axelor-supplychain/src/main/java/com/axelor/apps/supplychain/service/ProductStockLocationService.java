@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.exception.AxelorException;
 import java.util.Map;
 
-public interface StockMoveProductService {
+public interface ProductStockLocationService {
 
   Map<String, Object> computeIndicators(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException;

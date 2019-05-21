@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.supplychain.service.StockMoveProductService;
+import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -37,25 +37,24 @@ public class ProductController {
       Long stockLocationId = 0L;
 
       LinkedHashMap<String, Object> productHashMap =
-          (LinkedHashMap<String, Object>) context.getOrDefault("product", null);
+          (LinkedHashMap<String, Object>) context.get("product");
       if (productHashMap != null) {
         productId = Long.valueOf(productHashMap.get("id").toString());
       } else {
-        // RETURN MAP BIGDECIMAL ZERO pour chaque champs ? sinon garde les anciennes valeurs
         return;
       }
       LinkedHashMap<String, Object> companyHashMap =
-          (LinkedHashMap<String, Object>) context.getOrDefault("company", null);
+          (LinkedHashMap<String, Object>) context.get("company");
       if (companyHashMap != null) {
         companyId = Long.valueOf(companyHashMap.get("id").toString());
       }
       LinkedHashMap<String, Object> stockLocationHashMap =
-          (LinkedHashMap<String, Object>) context.getOrDefault("stockLocation", null);
+          (LinkedHashMap<String, Object>) context.get("stockLocation");
       if (stockLocationHashMap != null) {
         stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
       }
       Map<String, Object> map =
-          Beans.get(StockMoveProductService.class)
+          Beans.get(ProductStockLocationService.class)
               .computeIndicators(productId, companyId, stockLocationId);
       response.setValues(map);
     } catch (Exception e) {

@@ -214,7 +214,7 @@
 "PurchaseOrder.statusRequested","Ordine di acquisto richiesto",,
 "PurchaseOrder.statusValidated","Ordine di acquisto convalidato",,
 "PurchaseOrder.supplier","Fornitore",,
-"PurchaseOrder.supplierCode",,,
+"PurchaseOrder.supplierCode","Supplier code",,
 "PurchaseOrder.supplyRef","Riferimento del fornitore",,
 "PurchaseOrder.tax","Tassa di soggiorno",,
 "PurchaseOrder.taxAmount","Imposta Importo",,

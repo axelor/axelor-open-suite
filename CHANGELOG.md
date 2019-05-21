@@ -16,6 +16,7 @@
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
 - Configurator Prod Process and BOM: add new fields.
+- Availability Request: cannot lower reserved quantity.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -31,6 +32,7 @@
 - Configurator Creator: more fixes to import/export feature.
 - ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 - Move: fix NPE in move excess payment service.
+- UnitCostCalculation : Fixed the date format in the csv export name file.
 
 ## [5.1.6] - 2019-04-29
 ## Features
@@ -38,12 +40,12 @@
 - TAX : Added typeSelect (Tax type : on debit / on payment) and filter in both tax accounting reports
 - Leave reason: choose unit between days and hours.
 - INVOICE LINE MENU : add new columns in grid view
-- Studio: Auto fill app name for new model when app is selected. Added help support. 
+- Studio: Auto fill app name for new model when app is selected. Added help support.
 - PRODUCTS : Differentiate a classic product from a customised one
 
 ## Improvements
 - CRM : Convert leads (change title and change the translation of title).
-- General Ledger & Partner General Ledger Printing : Display Journal in moveLine. 
+- General Ledger & Partner General Ledger Printing : Display Journal in moveLine.
 - DEBT RECOVERY : Hide validateDebtRecoveryBtn if waitDebtRecoveryMethodLine is null
 - DEBT RECOVERY : New translation of debtRecoveryMethod and debtRecoveryMethodLine
 - PURCHASE ORDER PRINTING : Change titles and add productStandard
@@ -90,12 +92,14 @@
 - PURCHASE REQUEST : Generate PO from Purchase Request
 - Invoice: show user an info popup if not imputed refunds exist
 - Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
+- SUPPL INVOICES : new buttons to validate payment
+- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
 - Account : fix reverse charge tax computation.
 - Contract : Specify type when generating the invoice.
-- Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected. 
+- Fixed Asset Acquisitions Report : Include Assets if no invoiceLine selected.
 - Remove mapping between Product Family and Product Category.
 - Fix NPE when planning with tracking number.
 - Fix future qty computation.
@@ -104,7 +108,7 @@
 - Product: Cost sheet group is not displayed twice in form view
 - Stock Location : Added fr translation for two boolean fields
 - AccountConfig : Specify filters for accounts.
-- CURRENCY Conversion: Avoid creating line if conversion is not available. 
+- CURRENCY Conversion: Avoid creating line if conversion is not available.
 - Sale Order : put default value 0 to amountToInvoice and advise user if the field is null
 - Sale Order : display error message of max quantity of an advance payment
 - Sale order line : Fix delivered qty not increase if stock move is internal.
@@ -132,7 +136,7 @@
 - Stock Move Line: fix bad check on reserved quantity when having tracking numbers.
 - MESSAGE : Error when an email address is null in a CC list of addresses
 - Budget Distrbution : warning message modified
-- Lunch Voucher Line: added compute action on the grid view. 
+- Lunch Voucher Line: added compute action on the grid view.
 - MOVE LINE : Fix NPE in the balance calculation.
 - Debt recovery batches no longer consider cancelle moves when searching for concerned invoices.
 - Invoice : fix NPE when printing invoices.
@@ -146,10 +150,10 @@
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
 - LOGISTICAL FORM : removed center alignment of field 'externalDeliveryComment'in report printing
 - BPM : Fix create selection and buttons by wkf field.
-- Studio: Fix widget selection for M2M field and fix minor design issues. 
+- Studio: Fix widget selection for M2M field and fix minor design issues.
 - BPM : Fix save a new status field for custom model.
 - INVOICE PAYMENT : Currently we manage the pending payment status only for Direct debit and transfer payment mode that generate a bank order and that is an outgoing payment mode.
-This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status. 
+This behavior is wrong for direct debit, only direct debit in incoming payment mode should manage the pending status.
 - CUSTOM MENU : Display the menu only if one of the app linked to the object is installed.
 - ManufOrder : Move automaticEmail fields to ProductionConfig
 - Configurator creator: fix field names on import.
@@ -234,6 +238,7 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Stock Move Line: stock move is readonly in form view.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
+- Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
 
 
 ## [5.1.4] - 2019-03-11
@@ -363,7 +368,7 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - ACCOUNT: add option to automatically create partners' accounts (backport from 5.0-dev)
 
 ## Improvements
-- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports 
+- SaleOrder, PurchaseOrder, PickingStockMove: added Customer/Supplier code on several reports
 - StockMove: ask if the user wants to manage backorder, if necessary
 - BPM: 'appBuilder' and "model" fields are now mandatory in workflow.
 - BPM: list of custom models is filtered accordingly the selected appBuilder.
