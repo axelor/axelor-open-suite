@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.1.7]
 ## Features
-- AVAILABITY REQUEST : error message if product stock is less than realQty
+- AVAILABITY REQUEST : error message if availableStock is less than realQty
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true

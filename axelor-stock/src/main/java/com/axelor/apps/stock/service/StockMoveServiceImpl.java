@@ -84,6 +84,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
+  @Inject private StockLocationService stockLocationService;
+
   @Inject
   public StockMoveServiceImpl(
       StockMoveLineService stockMoveLineService,
@@ -1252,5 +1254,13 @@ public class StockMoveServiceImpl implements StockMoveService {
         setPickingStockMoveEditDate(stockMove, userType);
       }
     }
+  }
+
+  @Override
+  public BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
+
+    return stockLocationService.getRealQty(
+        stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
   }
 }
