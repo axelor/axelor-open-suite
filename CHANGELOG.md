@@ -22,7 +22,9 @@
 - LOCATION FINANCIAL DATA : new booleans to manage different printing
 - Sale Order Line: improve the logic of requested quantity.
 - MRP: Add the start date time and end date time
+- FIXED ASSET : Change in disposal process
 - MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
+
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
@@ -42,6 +44,9 @@
 - ADVANCE SEARCH : error when define sub bill of material = true
 - SaleOrderLine: Display product available qty on product grid view.
 - Sale Order: added a whitespace between qty and unit in the sale order report.
+- MoveLine: fix NPE in groovy action.
+- Reserved Qty: fix multiple allocations in sale order lines with same product.
+- Stock Move: unused description field removed
 
 ## [5.1.6] - 2019-04-29
 ## Features

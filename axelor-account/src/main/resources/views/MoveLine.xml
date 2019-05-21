@@ -33,8 +33,8 @@
         <field name="dueDate"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
-    
-    
+
+
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
 		<field name="account.isTaxRequiredOnMoveLine" hidden="true" />
@@ -56,7 +56,7 @@
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
 	</grid>
-    
+
     <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
     groupBy="account" expandable="true"  >
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
@@ -82,7 +82,7 @@
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
-    
+
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -107,7 +107,7 @@
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
-    
+
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
@@ -119,7 +119,7 @@
             </panel>
 		</panel>
     </form>
-    
+
 	<form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
 	onLoad="action-move-line-attrs-collapse-irrecoverable-group"
 	onNew="action-account-move-line-onnew-group"
@@ -356,7 +356,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
-		<attribute name="readonly" for="informationsPanel" expr="eval: move.statusSelect == 3 || move.statusSelect == 4"/>
+		<attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
 		<attribute name="readonly" for="irrecoverablePanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 "/>
 	</action-attrs>
 	
