@@ -192,6 +192,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
 
+  static final String SALE_ORDER_LINE_AVAILABILITY_REQUEST = /*$$(*/
+      "The reservation for an availability requested stock move cannot be lowered." /*)*/;
+
   /** Account config supplychain service */
   static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
       "You must configure a forecasted invoiced customer account for the company %s" /*)*/;

@@ -34,6 +34,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
+import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -102,7 +103,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
+  public CostSheet computeCostPrice(
+      BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
 
     this.init();
 
@@ -120,7 +123,13 @@ public class CostSheetServiceImpl implements CostSheetService {
       costSheet.setCurrency(company.getCurrency());
     }
 
-    this._computeCostPrice(billOfMaterial.getCompany(), billOfMaterial, 0, producedCostSheetLine);
+    this._computeCostPrice(
+        billOfMaterial.getCompany(),
+        billOfMaterial,
+        0,
+        producedCostSheetLine,
+        origin,
+        unitCostCalculation);
 
     this.computeResidualProduct(billOfMaterial);
 
@@ -258,13 +267,16 @@ public class CostSheetServiceImpl implements CostSheetService {
       Company company,
       BillOfMaterial billOfMaterial,
       int bomLevel,
-      CostSheetLine parentCostSheetLine)
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     bomLevel++;
 
     // Cout des composants
-    this._computeToConsumeProduct(company, billOfMaterial, bomLevel, parentCostSheetLine);
+    this._computeToConsumeProduct(
+        company, billOfMaterial, bomLevel, parentCostSheetLine, origin, unitCostCalculation);
 
     // Cout des operations
     this._computeProcess(
@@ -279,7 +291,9 @@ public class CostSheetServiceImpl implements CostSheetService {
       Company company,
       BillOfMaterial billOfMaterial,
       int bomLevel,
-      CostSheetLine parentCostSheetLine)
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     if (billOfMaterial.getBillOfMaterialSet() != null) {
@@ -298,7 +312,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                   bomLevel,
                   parentCostSheetLine,
                   billOfMaterialLine.getQty(),
-                  CostSheetLineService.ORIGIN_BILL_OF_MATERIAL);
+                  origin,
+                  unitCostCalculation);
 
           BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
@@ -310,11 +325,14 @@ public class CostSheetServiceImpl implements CostSheetService {
                 bomLevel,
                 parentCostSheetLine,
                 billOfMaterialLine.getQty(),
-                wasteRate);
+                wasteRate,
+                origin,
+                unitCostCalculation);
           }
 
           if (billOfMaterialLine.getDefineSubBillOfMaterial()) {
-            this._computeCostPrice(company, billOfMaterialLine, bomLevel, costSheetLine);
+            this._computeCostPrice(
+                company, billOfMaterialLine, bomLevel, costSheetLine, origin, unitCostCalculation);
           }
         }
       }
@@ -597,7 +615,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           valuationQty,
-          CostSheetLineService.ORIGIN_MANUF_ORDER);
+          CostSheetService.ORIGIN_MANUF_ORDER,
+          null);
     }
   }
 

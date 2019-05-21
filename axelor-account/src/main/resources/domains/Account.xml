@@ -28,5 +28,7 @@
         <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true"/>
         <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line" massUpdate="true"/>
     	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true"/>
+   	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    	
     </entity>
 </domain-models>

@@ -24,8 +24,8 @@
 "axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"manageStockReservation";"Si cette option est activée, vous pourrez sur les lignes de devis/commandes clients réserver les quantités de produits que vous souhaitez. Les quantités seront ainsi considérées comme réservées en stock. Une fois la commande confirmée, vous pourrez sur les lignes de commande modifier les quantités réservées."
 
 
-"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"saleOrderFilterStatusSelect";"Vous pouvez sélectionner le status des commandes clients utilisés comme filtres dans la vue ""Détails des stocks par produit"". "
-"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"purchaseOrderFilterStatusSelect";"Vous pouvez sélectionner le status des commandes fournisseurs utilisés comme filtres dans la vue ""Détails des stocks par produit"". "
+"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"saleOrderFilterStatusSelect";"Vous pouvez sélectionner le statut des commandes clients utilisés comme filtres dans la vue ""Détails des stocks par produit"". "
+"axelor-supplychain";"AppSupplychain";"app-supplychain-config-form";"purchaseOrderFilterStatusSelect";"Vous pouvez sélectionner le statut des commandes fournisseurs utilisés comme filtres dans la vue ""Détails des stocks par produit"". "
 
 "axelor-supplychain";"SupplyChainConfig";"supply-chain-config-form";"hasOutSmForStorableProduct";"En cochant cette case, vous pourrez générer des bons de livraison pour les produits stockables."
 "axelor-supplychain";"SupplyChainConfig";"supply-chain-config-form";"hasOutSmForNonStorableProduct";"Si vous n'avez pas forcément besoin de générer un bon de livraison pour un produit non stockable de type service, vous pouvez laisser la case ""Générer BL pour produits non stockables ?"" décochée"

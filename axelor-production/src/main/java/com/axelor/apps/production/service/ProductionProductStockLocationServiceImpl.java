@@ -29,8 +29,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
-import com.axelor.apps.supplychain.service.StockMoveProductServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
@@ -44,12 +44,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ProductionStockMoveProductServiceImpl extends StockMoveProductServiceImpl {
+public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
   protected AppProductionService appProductionService;
 
   @Inject
-  public ProductionStockMoveProductServiceImpl(
+  public ProductionProductStockLocationServiceImpl(
       UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService,
       ProductRepository productRepository,
@@ -77,10 +77,11 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
 
-    BigDecimal consumeManufOrderQty = this.getConsumeManufOrderQty(product, company, stockLocation);
+    BigDecimal consumeManufOrderQty =
+        this.getConsumeManufOrderQty(product, company, stockLocation).setScale(2);
     BigDecimal availableQty =
         (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-    map.put("$buildingQty", this.getBuildingQty(product, company, stockLocation));
+    map.put("$buildingQty", this.getBuildingQty(product, company, stockLocation).setScale(2));
     map.put("$consumeManufOrderQty", consumeManufOrderQty);
     map.put(
         "$missingManufOrderQty",
@@ -91,11 +92,11 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
   protected BigDecimal getBuildingQty(Product product, Company company, StockLocation stockLocation)
       throws AxelorException {
     if (product == null || product.getUnit() == null) {
-      return BigDecimal.ZERO.setScale(2);
+      return BigDecimal.ZERO;
     }
     List<Integer> statusList = new ArrayList<>();
     statusList.add(ManufOrderRepository.STATUS_PLANNED);
-    String status = appProductionService.getAppProduction().getManufOrderFilterStatusSelect();
+    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
     }
@@ -103,8 +104,7 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
     List<Filter> queryFilter =
         Lists.newArrayList(
             new JPQLFilter(
-                ""
-                    + "self.product = :product "
+                "self.product = :product "
                     + " AND self.stockMove.statusSelect IN (:statusList) "
                     + " AND self.producedManufOrder IS NOT NULL "));
     if (company != null) {
@@ -127,14 +127,14 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
 
-    BigDecimal sumBuildingQty = BigDecimal.ZERO.setScale(2);
+    BigDecimal sumBuildingQty = BigDecimal.ZERO;
     if (!stockMoveLineList.isEmpty()) {
 
-      BigDecimal productBuildingQty = BigDecimal.ZERO.setScale(2);
+      BigDecimal productBuildingQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productBuildingQty = stockMoveLine.getQty();
-        if (stockMoveLine.getUnit() != unitConversion) {
+        if (!stockMoveLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unitConversion,
@@ -151,19 +151,18 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
   protected BigDecimal getConsumeManufOrderQty(
       Product product, Company company, StockLocation stockLocation) throws AxelorException {
     if (product == null || product.getUnit() == null) {
-      return BigDecimal.ZERO.setScale(2);
+      return BigDecimal.ZERO;
     }
     List<Integer> statusList = new ArrayList<>();
     statusList.add(ManufOrderRepository.STATUS_PLANNED);
-    String status = appProductionService.getAppProduction().getManufOrderFilterStatusSelect();
+    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
     }
     List<Filter> queryFilter =
         Lists.newArrayList(
             new JPQLFilter(
-                ""
-                    + "self.product = :product "
+                "self.product = :product "
                     + " AND self.stockMove.statusSelect IN (:statusList) "
                     + " AND (self.consumedManufOrder IS NOT NULL OR self.consumedOperationOrder IS NOT NULL) "));
     if (company != null) {
@@ -185,13 +184,13 @@ public class ProductionStockMoveProductServiceImpl extends StockMoveProductServi
             .bind("stockLocation", stockLocation)
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
-    BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO.setScale(2);
+    BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
     if (!stockMoveLineList.isEmpty()) {
-      BigDecimal productConsumeManufOrderQty = BigDecimal.ZERO.setScale(2);
+      BigDecimal productConsumeManufOrderQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productConsumeManufOrderQty = stockMoveLine.getQty();
-        if (stockMoveLine.getUnit() != unitConversion) {
+        if (!stockMoveLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unitConversion,

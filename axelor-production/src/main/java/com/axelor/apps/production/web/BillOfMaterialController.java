@@ -59,7 +59,10 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
     CostSheet costSheet =
-        costSheetService.computeCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
+        costSheetService.computeCostPrice(
+            billOfMaterialRepo.find(billOfMaterial.getId()),
+            CostSheetService.ORIGIN_BILL_OF_MATERIAL,
+            null);
 
     response.setView(
         ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))

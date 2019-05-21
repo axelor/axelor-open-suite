@@ -136,4 +136,12 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
       "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/ "Data import failed" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
+      "Uploaded file is not a CSV file" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
+      "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
 }

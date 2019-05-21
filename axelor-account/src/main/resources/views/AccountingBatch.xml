@@ -48,18 +48,27 @@
 			<field name="debtRecoveryTypeSelect"/>
 		</panel>
 
-		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
 		<panel name="accountCustomerPagePanel" title="Account calculation configuration" hideIf="actionSelect != 17">
-			<!--<group title="Update"    >-->
-			  <field name="updateCustAccountOk"/>
-			  <field name="updateDueCustAccountOk"/>
-			  <field name="updateDueDebtRecoveryCustAccountOk"/>
-			<!--</group>-->
+			 <field name="updateCustAccountOk"/>
+			 <field name="updateDueCustAccountOk"/>
+			 <field name="updateDueDebtRecoveryCustAccountOk"/>
 		</panel>
 		<panel name="moveLineExportPagePanel" title="Move Lines Export Config" hideIf="actionSelect != 18">
 			<field name="moveLineExportTypeSelect"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
+		</panel>
+		<panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts" hideIf="actionSelect != 21">
+<!-- 		TODO FILTER ON STATUS -->
+			<field name="closeYear"/>
+			<field name="openYear"/>
+			<field name="year" canEdit="false"/>		
+			<field name="allocatePerPartner"/>
+    		<field name="year.toDate" showIf="closeYear" hidden="true"/>
+    		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
+    		<field name="moveDescription"/>
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
+<!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >
 			<field name="createdOn" title="Created on"/>
@@ -77,6 +86,7 @@
 	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-fixed-asset-lines-realize" colSpan="12"/>
+	    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-method-action-close-annual-accounts" colSpan="12"/>
 	</panel>
 </form>
 
@@ -124,6 +134,10 @@
 	
 	<action-method name="action-accounting-batch-method-action-fixed-asset-lines-realize">
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionRealizeFixedAssetLines"/>
+	</action-method>
+	
+	<action-method name="action-accounting-batch-method-action-close-annual-accounts">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCloseAnnualAccounts"/>
 	</action-method>
 	
 

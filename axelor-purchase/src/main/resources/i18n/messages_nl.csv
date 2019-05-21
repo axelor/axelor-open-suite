@@ -214,7 +214,7 @@
 "PurchaseOrder.statusRequested","Aankooporder aangevraagd",,
 "PurchaseOrder.statusValidated","Aankooporder gevalideerd",,
 "PurchaseOrder.supplier","Leverancier",,
-"PurchaseOrder.supplierCode",,,
+"PurchaseOrder.supplierCode","Supplier code",,
 "PurchaseOrder.supplyRef","Referentie leverancier",,
 "PurchaseOrder.tax","Belasting",,
 "PurchaseOrder.taxAmount","Belasting Bedrag",,
