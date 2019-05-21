@@ -23,6 +23,7 @@
 - Sale Order Line: improve the logic of requested quantity.
 - MRP: Add the start date time and end date time
 - FIXED ASSET : Change in disposal process
+- MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
