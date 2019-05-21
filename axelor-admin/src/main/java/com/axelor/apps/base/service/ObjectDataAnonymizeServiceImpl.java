@@ -35,7 +35,7 @@ import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.ibm.icu.math.BigDecimal;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
