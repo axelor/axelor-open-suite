@@ -25,6 +25,7 @@ import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,7 +41,7 @@ public class EmployeeBonusController {
 
   @Inject EmployeeBonusService employeeBonusService;
 
-  public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void compute(ActionRequest request, ActionResponse response) {
     EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
 
     try {
@@ -50,7 +51,7 @@ public class EmployeeBonusController {
       Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
       Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      TraceBackService.trace(response, e);
     }
   }
 

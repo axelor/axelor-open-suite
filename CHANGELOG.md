@@ -137,5 +137,6 @@
 - BoM:  added a menu showing personalized bills of materials
 - BUSINESS PROJECT : Report printing Division by zero
 - UnitCostCalculation : Fixed the date format in the csv export name file.
+- BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
