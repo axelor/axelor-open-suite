@@ -99,7 +99,7 @@ public class StockLocationServiceImpl implements StockLocationService {
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
-      if (locationId == null) {
+      if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
           BigDecimal qty = BigDecimal.ZERO;
@@ -149,7 +149,7 @@ public class StockLocationServiceImpl implements StockLocationService {
       }
     }
 
-    return null;
+    return BigDecimal.ZERO;
   }
 
   @Override

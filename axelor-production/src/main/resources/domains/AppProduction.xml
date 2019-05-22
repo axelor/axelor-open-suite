@@ -28,6 +28,9 @@
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
+    
+        <string name="mOFilterOnStockDetailStatusSelect" title="Status considered to filter a manuf order" selection="production.manuf.order.status.select" default="3,4"/>
+      
 	</entity>
 
 </domain-models>

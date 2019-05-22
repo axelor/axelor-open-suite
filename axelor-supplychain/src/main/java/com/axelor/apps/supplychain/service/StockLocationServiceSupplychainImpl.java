@@ -50,7 +50,7 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
-      if (locationId == null) {
+      if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations();
         if (!stockLocations.isEmpty()) {
           BigDecimal reservedQty = BigDecimal.ZERO;

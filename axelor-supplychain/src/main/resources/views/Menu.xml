@@ -136,6 +136,13 @@
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
 		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
 	</action-view>
+  
+  <menuitem name="stock-root-stock-details-by-product" parent="stock-root" if="__config__.app.isApp('supplychain')"
+    title="Stock details by product" action="stock.root.stock.details.by.product" />
+    
+    <action-view name="stock.root.stock.details.by.product" title="Stock details by product" model="com.axelor.apps.base.db.Product">
+      <view type="form" name="supplychain-stock-details-by-product-form"/>
+    </action-view>
 	
 </object-views>
 

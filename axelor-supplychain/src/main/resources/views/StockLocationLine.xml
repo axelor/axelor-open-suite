@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="supplychain-stock-location-line-grid" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product"
+    	canNew="false" canDelete="false">
+        <field name="product" width="300"/>	
+        <field name="product.unit"  width="120"/>  
+        <field name="stockLocation.parentStockLocation.name" title="Parent Stock location"/>
+        <field name="stockLocation.name" title="Stock location"/>
+        <field name="currentQty" width="150"/> 
+        <field name="futureQty" title="Future quantity" width="150"/>
+        <field name="reservedQty" width="150"/>
+    </grid>
+	
+	<action-view name="action-stock-location-line-view-by-product" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="supplychain-stock-location-line-grid"/>
+        <view type="form" name="stock-location-line-form"/>
+    	<domain>self.product.id = :productId and self.stockLocation.typeSelect != 3 
+      and (:locationId is null or :locationId = self.stockLocation.id)
+      and (:companyId is null or :companyId = self.stockLocation.company.id)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+    	<context name="locationId" expr="eval: stockLocation?.id"/>
+        <context name="companyId" expr="eval: company?.id "/>
+    </action-view>
+    
+</object-views>	

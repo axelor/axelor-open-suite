@@ -41,6 +41,7 @@
 			</panel>
 			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
+                <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="production.manuf.order.status.select"/>
 			</panel>
 		</panel>
 		<panel name="actionsPanel">
