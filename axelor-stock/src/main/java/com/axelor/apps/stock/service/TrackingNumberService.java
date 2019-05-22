@@ -84,7 +84,7 @@ public class TrackingNumberService {
       throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get("Product cannot be null."));
     Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
-    Preconditions.checkNotNull(date, I18n.get("Date cannot be null."));
+    Preconditions.checkNotNull(date, I18n.get(IExceptionMessage.TRACK_NUMBER_DATE_MISSING));
 
     TrackingNumber trackingNumber = new TrackingNumber();
 
