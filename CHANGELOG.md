@@ -25,6 +25,7 @@
 - FIXED ASSET : Change in disposal process
 - MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
 - LOCATION FINANCIAL DATA : Change report design
+- PURCHASE ORDER : Updated Error Message for delivery date
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
