@@ -26,7 +26,7 @@
 			</field>
 			<field name="mediaTypeSelect" colSpan="6" />
 			<field name="metaModel" canEdit="false" form-view="meta-model-form"
-				grid-view="meta-model-grid" />
+				grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
 			<field name="target" hidden="true" />
 			<field name="templateContext" canEdit="false" form-view="template-context-form"
 				grid-view="template-context-grid" hidden="true" />
