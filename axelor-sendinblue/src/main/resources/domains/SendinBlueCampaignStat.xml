@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="sendinblue" package="com.axelor.apps.sendinblue.db" />
+
+	<entity name="SendinBlueCampaignStat" lang="java">
+
+		<many-to-one name="sendinBlueCampaign"
+			ref="com.axelor.apps.marketing.db.SendinBlueCampaign" title="Campaign" />
+		<long name="uniqueClicks" title="Unique clicks" />
+		<long name="clickers" title="Clickers" />
+		<long name="complaints" title="Complaints" />
+		<long name="delivered" title="Delivered" />
+		<long name="sent" title="Sent" />
+		<long name="hardBounces" title="Hard bounces" />
+		<long name="softBounces" title="Soft bounces" />
+		<long name="uniqueViews" title="Unique views" />
+		<long name="unsubscriptions" title="Unsubscriptions" />
+		<long name="viewed" title="Viewed" />
+
+		<finder-method name="findBySendinBlueCampaign" using="sendinBlueCampaign" />
+
+	</entity>
+
+</domain-models>

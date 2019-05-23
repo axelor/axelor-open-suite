@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="sendin-blue-contact-stat-grid" title="SendinBlue contact statistics"
+		model="com.axelor.apps.sendinblue.db.SendinBlueContactStat" groupBy="sendinBlueCampaign.campaign.name">
+		<field name="sendinBlueCampaign.campaign.name" title="Campaign" />
+		<field name="sendinBlueCampaign.campaignType" title="Campaign type" />
+		<field name="eventType" title="Event" />
+		<field name="eventDateTime" title="DateTime" />
+		<field name="eventCount" title="Count" />
+	</grid>
+
+	<form name="sendin-blue-contact-stat-form" title="SendinBlue contact statistic"
+		model="com.axelor.apps.sendinblue.db.SendinBlueContactStat">
+		<panel name="mainPanel" readonly="true">
+			<field name="emailAddress" title="Email" />
+			<field name="sendinBlueCampaign.campaign" title="Campaign" />
+			<field name="sendinBlueCampaign.campaignType" title="Campaign type" />
+			<field name="eventType" title="Event" />
+			<field name="eventDateTime" title="DateTime" />
+			<field name="eventCount" title="Count" />
+		</panel>
+	</form>
+
+	<action-view name="dashlet.sendinblue.contact.stat" title="SendinBlue campaign statistics"
+		model="com.axelor.apps.sendinblue.db.SendinBlueContactStat">
+		<view type="grid" name="sendin-blue-contact-stat-grid" />
+		<view type="form" name="sendin-blue-contact-stat-form" />
+		<domain>self.emailAddress.id = :id</domain>
+	</action-view>
+
+	<action-view name="dashlet.sendinblue.chart.contact.stat"
+		title="SendinBlue email statistics" model="com.axelor.apps.sendinblue.db.SendinBlueContactStat">
+		<view type="chart" name="chart.sendinblue.contact.stat" />
+		<context name="emailAddressId" expr="eval: id" />
+	</action-view>
+
+	<chart name="chart.sendinblue.contact.stat" title="SendinBlue email statistics">
+		<dataset type="jpql">
+		<![CDATA[
+			SELECT
+				COUNT(id) AS total,
+				eventType AS eventType
+			FROM
+				SendinBlueContactStat self
+			WHERE
+				self.emailAddress.id = :id
+			GROUP BY
+				eventType
+	    ]]>
+	    </dataset>
+		<category key="eventType" type="text" />
+		<series key="total" type="bar" />
+	</chart>
+
+</object-views>

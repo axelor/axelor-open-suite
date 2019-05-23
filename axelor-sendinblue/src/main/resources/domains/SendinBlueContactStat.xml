@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="sendinblue" package="com.axelor.apps.sendinblue.db" />
+
+	<entity name="SendinBlueContactStat" lang="java">
+
+		<many-to-one name="emailAddress"
+			ref="com.axelor.apps.message.db.EmailAddress" title="Email" />
+		<many-to-one name="sendinBlueCampaign"
+			ref="com.axelor.apps.marketing.db.SendinBlueCampaign" title="Campaign" />
+		<string name="eventType" title="Event" selection="sendinblue.event.type" />
+		<datetime name="eventDateTime" title="DateTime" />
+		<long name="eventCount" title="Count" />
+
+		<finder-method name="findByEmailAddress" using="emailAddress" />
+		<finder-method name="findBySendinBlueCampaign" using="sendinBlueCampaign" />
+
+	</entity>
+
+</domain-models>

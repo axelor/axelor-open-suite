@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form name="app-sendinblue-config-form" title="App sendinblue" canDelete="false"
+		canNew="false" width="large" model="com.axelor.apps.base.db.AppSendinblue">
+		<panel name="mainPanel">
+			<field name="uri" colSpan="5" />
+			<field name="apiKey" help="Specify Version3 API key" colSpan="5" />
+			<button name="authBtn" title="Authenticate"
+				onClick="save,action-sendinblue-method-authenticate" colSpan="2" />
+		</panel>
+		<panel name="contactPanel" title="Contact">
+			<button name="addContactFieldBtn" title="Add Contact Fields"
+				onClick="save,action-sendinblue-method-add-contact-fields" colSpan="4" />
+			<field name="partnerSet" colSpan="12" grid-view="partner-grid"
+				form-view="partner-form" />
+			<field name="leadSet" colSpan="12" grid-view="lead-grid"
+				form-view="lead-form" />
+			<button name="exportContactsBtn" title="Export Contact"
+				onClick="save,action-sendinblue-method-export-contact-data" colSpan="4" />
+		</panel>
+		<panel name="marketingPanel">
+			<button name="exportTemplatesBtn" title="Export Template"
+				onClick="save,action-sendinblue-method-export-template-data"
+				colSpan="4" />
+			<button name="importEventsBtn" title="Import Event"
+				onClick="save,action-sendinblue-method-import-event-data" colSpan="4" />
+			<button name="importContactStatBtn" title="Import SendinBlue Contact Stat"
+				onClick="save,action-sendinblue-method-import-contact-stat-data"
+				colSpan="4" />
+			<button name="exportCampaignsBtn" title="Export Campaign"
+				onClick="save,action-sendinblue-method-export-campaign-data"
+				colSpan="4" />
+			<button name="importReportBtn" title="Import SendinBlue Report"
+				onClick="save,action-sendinblue-method-import-sendinblue-report-data"
+				colSpan="4" />
+			<button name="importCampaignStatBtn" title="Import SendinBlue Campaign Stat"
+				onClick="save,action-sendinblue-method-import-campaign-stat-data"
+				colSpan="4" />
+		</panel>
+	</form>
+
+	<action-method name="action-sendinblue-method-authenticate">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="authenticateSendinBlue" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-add-contact-fields">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="addContactFields" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-export-contact-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="exportContacts" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-export-template-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="exportTemplates" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-export-campaign-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="exportCampaigns" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-import-sendinblue-report-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="importCampaignReport" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-import-event-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="importEvents" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-import-contact-stat-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="importContactStat" />
+	</action-method>
+
+	<action-method name="action-sendinblue-method-import-campaign-stat-data">
+		<call class="com.axelor.apps.sendinblue.web.AppSendinBlueController"
+			method="importCampaignStat" />
+	</action-method>
+</object-views>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<selection name="marketing.sendinblue.campaign.type">
+		<option value="1">Partner Campaign</option>
+		<option value="2">Lead Campaign</option>
+		<option value="3">Partner Reminder Campaign</option>
+		<option value="4">Lead Reminder Campaign</option>
+	</selection>
+
+	<selection name="sendinblue.event.type">
+		<option value="requests">Requests</option>
+		<option value="delivered">Delivered</option>
+		<option value="opened">Opened</option>
+		<option value="deferred">Deferred</option>
+		<option value="clicks">Clicks</option>
+		<option value="bounces">Bounces</option>
+		<option value="hardBounces">Hard bounce</option>
+		<option value="softBounces">Soft bounce</option>
+		<option value="spam">Spam</option>
+		<option value="invalid">Invalid</option>
+		<option value="blocked">Blocked</option>
+
+		<option value="complaints">Complaints</option>
+		<option value="messageSent">Message sent</option>
+		<option value="adminUnsubscription">Admin unsubscription</option>
+		<option value="userUnsubscription">User unsubscription</option>
+	</selection>
+
+</object-views>

@@ -49,13 +49,16 @@
 				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="partner-campaign-grid" form-view="partner-form" canEdit="false"/>
 				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="lead-campaign-grid" form-view="lead-form" canEdit="false"/>
 			</panel>
-			<panel name="emailingPanel" title="Emailing" showIf="emailing" colSpan="12">
+			<panel name="emailingTemplatePanel" title="Templates" showIf="emailing" colSpan="12">
 				<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="leadTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
 				<field name="partnerReminderTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)"/>
 				<field name="leadReminderTemplate" domain="self.metaModel.name = 'Lead' AND self.mediaTypeSelect IN (4)"/>
 				<field name="emailAccount" showIf="emailing"/>
+			</panel>
+			<panel name="emailingReportingPanel" title="Reporting"  showIf="emailing" colSpan="12">
 				<panel-dashlet name="generatedEmailsPanel" action="dashlet.generated.emails" height="350" colSpan="12"/>
+				<panel-dashlet name="sendinBlueCampaignStatPanel" action="dashlet.sendinblue.campaign.stat" height="350" title="Campaign Statistics" colSpan="12" showIf="id" if-module="axelor-sendinblue" if="__config__.app.isApp('sendinblue') &amp;&amp; __config__.app.getApp('marketing').getManageSendinBlueApiEmailingReporting()"/>
 			</panel>
 			<panel name="eventsPanel" title="Events" showIf="manageAnEventPerTarget" colSpan="12">
 				<field name="generateEventPerPartnerOrLead" widget="inline-checkbox" colSpan="12"/>

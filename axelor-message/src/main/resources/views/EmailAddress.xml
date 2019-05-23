@@ -10,17 +10,25 @@
 		<field name="address"/>
 	</grid>
     
-    <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
+    <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" width="large">
     	<panel name="mainPanel" >
 			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" placeholder="user@mydomain.com" />
 			<field name="partner" if-module="axelor-base" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
+		<panel-dashlet action="dashlet.sendinblue.contact.stat" name="sendinBlueContactStatPanel" height="350" title="SendinBlue Campaign Reporting" colSpan="12" 
+				if-module="axelor-sendinblue" showIf="id" if="__config__.app.isApp('sendinblue') &amp;&amp; __config__.app.getApp('marketing').getManageSendinBlueApiEmailingReporting()"/>
+		<panel-dashlet action="dashlet.sendinblue.chart.contact.stat" name="sendinBlueChartContactStatPanel" height="350" title="SendinBlue Reporting" colSpan="12" 
+				if-module="axelor-sendinblue" showIf="id" if="__config__.app.isApp('sendinblue') &amp;&amp; __config__.app.getApp('marketing').getManageSendinBlueApiEmailingReporting()"/>
     </form>
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel name="mainPanel" >
 			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email"  placeholder="user@mydomain.com" />
-		</panel>	
+		</panel>
+		<panel-dashlet action="dashlet.sendinblue.contact.stat" name="sendinBlueContactStatPanel" height="350" title="SendinBlue Campaign Reporting" colSpan="12" 
+				if-module="axelor-sendinblue" showIf="id" if="__config__.app.isApp('sendinblue') &amp;&amp; __config__.app.getApp('marketing').getManageSendinBlueApiEmailingReporting()"/>
+		<panel-dashlet action="dashlet.sendinblue.chart.contact.stat" name="sendinBlueChartContactStatPanel" height="350" title="SendinBlue Reporting" colSpan="12" 
+				if-module="axelor-sendinblue" showIf="id" if="__config__.app.isApp('sendinblue') &amp;&amp; __config__.app.getApp('marketing').getManageSendinBlueApiEmailingReporting()"/>
     </form>
     
 </object-views>

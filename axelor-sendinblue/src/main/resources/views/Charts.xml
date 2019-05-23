@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<action-record name="action.sendinblue.chart.set.dates"
+		model="com.axelor.apps.sendinblue.db.SendinBlueReport">
+		<field name="fromDate" expr="eval:LocalDate.parse(__config__.app.getTodayDate().toString()).atStartOfDay().withDayOfMonth(1).withMonth(1)" />
+		<field name="toDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-record>
+
+	<chart name="chart.sendinblue.report.total.report" title="Report"
+		onInit="action.sendinblue.chart.set.dates">
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date" widget="required" x-required="true" />
+			<field type="date" name="toDate" title="To Date" widget="required" x-required="true" />
+		</search-fields>
+		<dataset type="rpc">com.axelor.apps.sendinblue.web.AppSendinBlueController:report</dataset>
+		<category key="eventType" type="text" />
+		<series key="total" type="bar" />
+	</chart>
+
+</object-views>

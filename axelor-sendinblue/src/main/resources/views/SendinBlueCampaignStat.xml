@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="sendin-blue-campaign-stat-grid" title="SendinBlue campaign statistics"
+		model="com.axelor.apps.sendinblue.db.SendinBlueCampaignStat">
+		<field name="sendinBlueCampaign.campaignType" title="Campaign type" />
+		<field name="uniqueClicks" title="Unique clicks" />
+		<field name="clickers" title="Clickers" />
+		<field name="complaints" title="Complaints" />
+		<field name="delivered" title="Delivered" />
+		<field name="sent" title="Sent" />
+		<field name="hardBounces" title="Hard bounces" />
+		<field name="softBounces" title="Soft bounces" />
+		<field name="uniqueViews" title="Unique views" />
+		<field name="unsubscriptions" title="Unsubscriptions" />
+		<field name="viewed" title="Viewed" />
+	</grid>
+
+	<form name="sendin-blue-campaign-stat-form" title="SendinBlue campaign statistic"
+		model="com.axelor.apps.sendinblue.db.SendinBlueCampaignStat">
+		<panel name="mainPanel" readonly="true">
+			<field name="sendinBlueCampaign.campaign" title="Campaign" />
+			<field name="sendinBlueCampaign.campaignType" title="Campaign type" />
+			<field name="uniqueClicks" title="Unique clicks" />
+			<field name="clickers" title="Clickers" />
+			<field name="complaints" title="Complaints" />
+			<field name="delivered" title="Delivered" />
+			<field name="sent" title="Sent" />
+			<field name="hardBounces" title="Hard bounces" />
+			<field name="softBounces" title="Soft bounces" />
+			<field name="uniqueViews" title="Unique views" />
+			<field name="unsubscriptions" title="Unsubscriptions" />
+			<field name="viewed" title="Viewed" />
+		</panel>
+	</form>
+
+	<action-view name="dashlet.sendinblue.campaign.stat" title="SendinBlue campaign statistics"
+		model="com.axelor.apps.sendinblue.db.SendinBlueCampaignStat">
+		<view type="grid" name="sendin-blue-campaign-stat-grid" />
+		<view type="form" name="sendin-blue-campaign-stat-form" />
+		<domain>self.sendinBlueCampaign.id IN (SELECT sc.id FROM SendinBlueCampaign sc WHERE sc.campaign.id = :id)</domain>
+	</action-view>
+
+</object-views>

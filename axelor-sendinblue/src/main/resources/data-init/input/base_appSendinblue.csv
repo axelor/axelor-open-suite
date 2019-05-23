@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Sendinblue";"sendinblue";52;"SendinBlue";"app-sendinblue.png";"Axelor-sendinblue";"marketing";102

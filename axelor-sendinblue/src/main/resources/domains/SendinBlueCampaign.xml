@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="marketing" package="com.axelor.apps.marketing.db" />
+
+	<entity name="SendinBlueCampaign" lang="java" sequential="true">
+
+		<long name="sendinBlueId" title="SendinBlue ID" />
+		<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign" />
+		<integer name="campaignType" title="Campaign type"
+			selection="marketing.sendinblue.campaign.type" />
+
+		<finder-method name="findBySendinBlueId" using="sendinBlueId" />
+
+		<extra-code>
+		<![CDATA[
+            // STATUS
+			public static final int PARTNER_CAMPAIGN = 1;
+			public static final int LEAD_CAMPAIGN = 2;
+			public static final int PARTNER_REMINDER_CAMPAIGN = 3;
+			public static final int LEAD_REMINDER_CAMPAIGN = 4;
+		]]>
+		</extra-code>
+
+	</entity>
+
+</domain-models>

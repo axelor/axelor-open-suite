@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="sendinblue" package="com.axelor.apps.sendinblue.db" />
+
+	<entity name="SendinBlueReport" lang="java">
+
+		<long name="requests" title="Requests" />
+		<long name="delivered" title="Delivered" />
+		<long name="hardBounces" title="Hard bounces" />
+		<long name="softBounces" title="Soft bounces" />
+		<long name="clicks" title="Clicks" />
+		<long name="uniqueClicks" title="Unique clicks" />
+		<long name="opens" title="Opens" />
+		<long name="uniqueOpens" title="Unique opens" />
+		<long name="spamReports" title="Spam reports" />
+		<long name="blocked" title="Blocked" />
+		<long name="invalid" title="Invalid" />
+		<long name="unsubscribed" title="Unsubscribed" />
+		<date name="fromDate" title="Date" />
+		<date name="toDate" title="To Date" />
+
+	</entity>
+
+</domain-models>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="sendinblue" package="com.axelor.apps.sendinblue.db" />
+
+	<entity name="SendinBlueEvent" lang="java">
+
+		<many-to-one name="emailAddress"
+			ref="com.axelor.apps.message.db.EmailAddress" title="Email Address" />
+		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
+			title="Partner" />
+		<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead"
+			title="Lead" />
+		<string name="email" title="Email" />
+		<string name="subject" title="Subject" />
+		<string name="messageId" title="Message id" />
+		<string name="event" title="Event" selection="sendinblue.event.type" />
+		<string name="reason" title="Reason" />
+		<string name="tag" title="Tag" />
+		<string name="fromEmail" title="From email" />
+		<string name="ip" title="IP" />
+		<datetime name="eventDate" title="Date" />
+
+		<extra-code>
+		<![CDATA[
+            // event
+			public static final String REQUESTS = "requests";
+			public static final String DELIVERED = "delivered";
+			public static final String OPENED = "opened";
+			public static final String DEFERRED = "deferred";
+			public static final String CLICKS = "clicks";
+			public static final String BOUNCES = "bounces";
+			public static final String HARD_BOUNCES = "hardBounces";
+			public static final String SOFT_BOUNCES = "softBounces";
+			public static final String SPAM = "spam";
+			public static final String INVALID = "invalid";
+			public static final String BLOCKED = "blocked";
+
+			public static final String COMPLAINTS = "complaints";
+			public static final String MESSAGE_SENT = "messageSent";
+			public static final String ADMIN_UNSUBSCRIPTION = "adminUnsubscription";
+			public static final String USER_UNSUBSCRIPTION = "userUnsubscription";
+		]]>
+		</extra-code>
+
+	</entity>
+
+</domain-models>

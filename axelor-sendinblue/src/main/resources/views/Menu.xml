@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<menuitem name="sendinblue-root" title="SendinBlue" icon="fa fa-bullseye"
+		if="__config__.app.isApp('sendinblue')" icon-background="violet" />
+
+	<menuitem name="sendinblue-server" parent="sendinblue-root"
+		title="SendinBlue server" action="sendinblue.server" />
+
+	<action-method name="sendinblue.server">
+		<call method="openServer" class="com.axelor.apps.sendinblue.web.AppSendinBlueController" />
+	</action-method>
+
+	<menuitem name="sendinblue-dashboard" parent="sendinblue-root"
+		title="Dashboard" action="sendinblue.dashboard" />
+
+	<action-view name="sendinblue.dashboard" model="com.axelor.apps.sendinblue.db.SendinBlueReport" title="Dashboard">
+		<view name="sendinblue.dashboard.report" type="dashboard" />
+	</action-view>
+
+</object-views>
