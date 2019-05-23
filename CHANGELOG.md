@@ -419,6 +419,7 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - PURCHASE REQUEST : Generate PO from Purchase Request
 - Invoice: show user an info popup if not imputed refunds exist
 - Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
+- Resolve the working of Open Street Map
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
