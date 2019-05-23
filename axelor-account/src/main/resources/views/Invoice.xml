@@ -81,6 +81,7 @@
 				<item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 				<item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
 				<item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+				<item title="See budget distribution lines" action="action-invoice-see-budget-distribution-lines"/>
 			</menu>
 		</menubar>
 		<hilite color="primary" if="statusSelect == 1"/>
@@ -117,7 +118,8 @@
 	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
 	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
-        <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+          <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+          <item title="See budget distribution lines" action="action-invoice-see-budget-overview-lines"/>
       </menu>
 		</menubar>
 	 	<hilite color="primary" if="statusSelect == 1"/>
@@ -284,7 +286,7 @@
 
               	</field>
             </panel>
-            
+
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
 		    <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
               <viewer>
@@ -410,6 +412,11 @@ InvoiceSet.length > 0))"
 					<field name="company.accountConfig.isManagePassedForPayment"/>
 				</panel>
 			</panel>
+            <panel name="budgetPanel" title="Budget" showIf="statusSelect &gt;= 2 &amp;&amp; statusSelect &lt; 4">
+                <panel-dashlet name="budgetDistributionPanel" title="Budget distribution" action="action-budget-distribution-view-budget-distribution" colSpan="12" readonly="true"/>
+            </panel>
+
+			<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false" showIf="(statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2) ||statusSelect == 3 || statusSelect == 4"/>
 
 			<panel  name="directDebitPanel" title="Direct debit" showIf="statusSelect == 3 &amp;&amp; schedulePaymentOk" showTitle="false">
 				<panel name="paymentSchedulePanel" title="Payment schedule" colSpan="12" >
