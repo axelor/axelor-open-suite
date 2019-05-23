@@ -52,6 +52,7 @@
 - Sale Order: show invoiced tag with multiple invoices.
 - Invoice: fix refunds grid view.
 - SaleOrder: show exception on confirm.
+- PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
 
 ## [5.1.6] - 2019-04-29
 ## Features
