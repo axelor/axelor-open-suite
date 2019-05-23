@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -111,8 +112,18 @@ public class TrackingNumberService {
           product.getCode());
     }
 
-    String seq = sequenceService.getSequenceNumber(trackingNumberConfiguration.getSequence());
-
+    Sequence sequence = trackingNumberConfiguration.getSequence();
+    String seq;
+    while (true) {
+      seq = sequenceService.getSequenceNumber(sequence);
+      if (trackingNumberRepo
+              .all()
+              .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
+              .count()
+          == 0) {
+        break;
+      }
+    }
     trackingNumber.setTrackingNumberSeq(seq);
 
     return trackingNumber;
