@@ -27,6 +27,7 @@
 - LOCATION FINANCIAL DATA : Change report design
 - PURCHASE ORDER : Updated Error Message for delivery date
 - INVENTORY : new selection for formatSelect
+- Reserved Qty: Add tracking for allocated and requested quantity.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

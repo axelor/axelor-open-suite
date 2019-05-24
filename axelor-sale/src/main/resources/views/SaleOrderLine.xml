@@ -208,6 +208,9 @@
 			<field name="saleOrder.statusSelect" />
 			<field name="saleOrder.orderBeingEdited" />
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
 	</form>
 
 	<form name="sale-order-line-template-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"

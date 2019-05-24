@@ -45,6 +45,11 @@
   	</extra-code>
   	
   	
+		<track on="UPDATE">
+			<field name="requestedReservedQty"/>
+			<field name="reservedQty"/>
+		</track>
+
   </entity>
 
 </domain-models>

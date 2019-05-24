@@ -7,6 +7,12 @@
     <entity name="StockLocationLine" lang="java">
         <decimal name="reservedQty" title="Allocated qty"/>
         <decimal name="requestedReservedQty" title="Requested reserved qty"/>
+
+        <track on="UPDATE">
+          <field name="requestedReservedQty"/>
+          <field name="reservedQty"/>
+        </track>
+
     </entity>
 
 </domain-models>
