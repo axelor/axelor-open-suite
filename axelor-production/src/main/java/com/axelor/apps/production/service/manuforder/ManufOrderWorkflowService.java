@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
-import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;

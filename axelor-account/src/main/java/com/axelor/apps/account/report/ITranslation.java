@@ -137,7 +137,6 @@ public interface ITranslation {
       "AccountingReportType7.reconcileGroup"; /*)*/
   public static final String ACCOUNTING_REPORT_7_JOURNAL_DATE = /*$$(*/
       "AccountingReportType7.journalCode"; /*)*/
-  
 
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/

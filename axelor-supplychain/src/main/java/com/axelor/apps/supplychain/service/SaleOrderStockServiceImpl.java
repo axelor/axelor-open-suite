@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -112,7 +113,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap =
         getAllSaleOrderLinePerDate(saleOrder);
 
-    for (LocalDate estimatedDeliveryDate : saleOrderLinePerDateMap.keySet()) {
+    for (LocalDate estimatedDeliveryDate :
+        saleOrderLinePerDateMap
+            .keySet()
+            .stream()
+            .filter(x -> x != null)
+            .sorted((x, y) -> x.compareTo(y))
+            .collect(Collectors.toList())) {
 
       List<SaleOrderLine> saleOrderLineList = saleOrderLinePerDateMap.get(estimatedDeliveryDate);
 
@@ -121,7 +128,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
+    Optional<List<SaleOrderLine>> saleOrderLineList =
+        Optional.ofNullable(saleOrderLinePerDateMap.get(null));
+    if (saleOrderLineList.isPresent()) {
 
+      Optional<StockMove> stockMove = createStockMove(saleOrder, null, saleOrderLineList.get());
+
+      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
+    }
     return stockMoveList;
   }
 
@@ -330,7 +344,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-      BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
+      BigDecimal requestedReservedQty =
+          saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
       BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
@@ -382,7 +397,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               StockMoveLineService.TYPE_SALES,
               saleOrderLine.getSaleOrder().getInAti(),
               taxRate,
-              saleOrderLine);
+              saleOrderLine,
+              null);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);

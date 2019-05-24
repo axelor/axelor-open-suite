@@ -172,17 +172,11 @@
 		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
     </action-view>
 
-	<action-view name="action-supplychain-sale-order-view-invoicing-wizard"
-				 title="Invoicing" model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="form" name="sale-order-invoicing-wizard-form"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="show-confirm" value="false" />
-		<view-param name="popup-save" value="false"/>
-		<view-param name="forceEdit" value="true" />
-		<context name="_showRecord" expr="eval: id"/>
-	</action-view>
-	
+	<action-group name="action-supplychain-sale-order-group-generate-invoice">
+		<action name="save"/>
+		<action name="action-sale-order-method-generate-invoice"/>
+	</action-group>
+   
 	<action-view name="action-sale-order-view-subscription-invoices" title="Invoiced periods"
 		model="com.axelor.apps.account.db.Invoice">
 		<view name="subscription-so-invoice-grid" type="grid"/>
@@ -226,6 +220,10 @@
 
 	<action-method name="action-sale-order-method-cancel-reservation">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="cancelReservation"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-generate-invoice">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="showPopUpInvoicingWizard"/>
 	</action-method>
 
 </object-views>

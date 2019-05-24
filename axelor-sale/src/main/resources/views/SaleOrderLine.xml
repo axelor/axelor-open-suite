@@ -104,10 +104,19 @@
 					]]></viewer>
 				</field>
 				
+				<field name="$availabiltyRequest" showIf="$availabiltyRequest" showTitle="false" type="boolean" colSpan="3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<viewer><![CDATA[
+						<h4>
+							<span class="label label-success" ng-show="record.$availabiltyRequest" x-translate>Availability request</span>
+						</h4>
+					]]></viewer>
+				</field>
+				
 				<field name="product.isUnrenewed" hidden="true"/>	
         		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>
@@ -342,6 +351,7 @@
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
@@ -355,11 +365,13 @@
 		<action name="action-supplychain-sale-order-line-attrs-hide-button"/>
 		<action name="action-sale-order-line-attrs-sub-line" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-sale-order-line-attrs-fill-estimated-date"/>
+		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
 			<action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     </action-group>
     
     <action-group name="action-group-sale-saleorderline-onload">
-    	<action name="action-sale-order-line-record-is-form-readonly"/>
+    	<action name="action-sale-order-line-attrs-show-availabilty-request" if="__config__.app.isApp('supplychain')"/>
+      <action name="action-sale-order-line-record-is-form-readonly"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
@@ -466,10 +478,14 @@
 		<attribute name="hidden" for="discountPanel,taxLine,marginPanel" expr="eval:parentLine.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
+	<action-attrs name="action-sale-order-line-attrs-show-availabilty-request">
+		<attribute name="value" for="$availabiltyRequest" expr="eval:  id &amp;&amp; __repo__(StockMoveLine).all().filter('self.saleOrderLine.id = ? AND self.stockMove.availabilityRequest = TRUE AND self.stockMove.statusSelect = 2', __self__?.id).count() > 0"/>
+	</action-attrs>
+	
     <!-- ACTION RECORD -->
 
 	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 2 || saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || (exTaxTotal &amp;&amp; exTaxTotal != 0 &amp;&amp; amountInvoiced == exTaxTotal)) || saleOrder?.statusSelect == 4 || isSubLine"/>
+		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 2 || saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || (exTaxTotal &amp;&amp; exTaxTotal != 0 &amp;&amp; amountInvoiced == exTaxTotal) || availabiltyRequest) || saleOrder?.statusSelect == 4 || isSubLine"/>
 	</action-record>
 
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">

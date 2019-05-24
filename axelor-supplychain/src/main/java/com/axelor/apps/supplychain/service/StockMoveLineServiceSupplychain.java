@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -30,7 +31,8 @@ public interface StockMoveLineServiceSupplychain {
 
   /**
    * Compared to the method in module stock, it adds the requested reserved qty. Allows to create
-   * stock move from supplychain module with requested reserved qty.
+   * stock move from supplychain module with requested reserved qty. We also add sale order line and
+   * purchase order line to create the link.
    *
    * @param product
    * @param productName
@@ -44,6 +46,7 @@ public interface StockMoveLineServiceSupplychain {
    * @param taxed
    * @param taxRate
    * @param saleOrderLine
+   * @param purchaseOrderLine
    * @return the created stock move line.
    * @throws AxelorException
    */
@@ -60,7 +63,8 @@ public interface StockMoveLineServiceSupplychain {
       int type,
       boolean taxed,
       BigDecimal taxRate,
-      SaleOrderLine saleOrderLine)
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
 
   /**

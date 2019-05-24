@@ -28,6 +28,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.mail.MessagingException;
 
 public interface LeaveService {
@@ -38,7 +39,7 @@ public interface LeaveService {
       throws AxelorException;
 
   public BigDecimal computeDuration(
-      LeaveRequest leave, LocalDate from, LocalDate to, int startOn, int endOn)
+      LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
