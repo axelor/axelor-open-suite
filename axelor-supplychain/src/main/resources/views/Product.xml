@@ -43,7 +43,7 @@
   
   <action-group name="action-group-stock-details-by-product-on-new">
     <action name="action-record-stock-details-by-product-init-product"/>
-    <action name="action-method-update-indicators"/>
+    <action name="action-method-update-indicators" if="$product"/>
   </action-group>
   
   <action-record name="action-record-stock-details-by-product-init-product" model="com.axelor.apps.base.db.Product">
