@@ -58,9 +58,15 @@
     <call class="com.axelor.apps.supplychain.web.ProductController" method="setIndicatorsOfProduct"/>
   </action-method>
   
-  <action-view name="action-stock-location-line-view-for-a-product" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
+  <action-view name="action-stock-location-line-view-for-a-product-from-product-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
       <view type="form" name="supplychain-stock-details-by-product-form"/>
       <context name="_product" expr="eval:__self__"/>
+  </action-view>
+  
+  <action-view name="action-stock-location-line-view-for-a-product-from-saleorderline-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
+      <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <view-param name="popup" value="true"/>
+      <context name="_product" expr="eval:product"/>
   </action-view>
   
   <action-view name="action-suppplychain-stock-location-line-view-reserved-stock-move-lines" title="Reserved stock move lines" 

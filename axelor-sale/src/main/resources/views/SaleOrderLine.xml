@@ -175,7 +175,7 @@
 				<field name="desiredDelivDate" readonlyIf="$isReadOnly !== false"/>
 				<field name="estimatedDelivDate" readonlyIf="$isReadOnly !== false"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
-				<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" colSpan="3" onClick="action-view-sale-order-line-view-planned-stock-move-lines" widget="info-button" if-module="axelor-supplychain"/>
+                <button name="$previewBtn" title="See the preview"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
