@@ -60,11 +60,7 @@
 					</field>
 				</panel>
       			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 			<button name="$previewBtn" title="See the preview" colSpan="4" onClick="action-stock-location-line-view-for-a-product" if-module="axelor-supplychain"/>
-              
-                    <button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-       	 			<button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
-       	 			<button name="$reservedQtyBtn" title="Allocated qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+       	 			<button name="$previewBtn" title="See stock details" colSpan="4" onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
     	  			<field name="isModel" hidden="true"/>
 				</panel>
       		</panel>

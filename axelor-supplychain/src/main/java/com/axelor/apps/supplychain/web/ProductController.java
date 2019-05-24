@@ -23,6 +23,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.MoreObjects;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class ProductController {
       Long stockLocationId = 0L;
 
       LinkedHashMap<String, Object> productHashMap =
-          (LinkedHashMap<String, Object>) context.get("product");
+          (LinkedHashMap<String, Object>) MoreObjects.firstNonNull(context.get("product"), context.get("$product"));
       if (productHashMap != null) {
         productId = Long.valueOf(productHashMap.get("id").toString());
       } else {
