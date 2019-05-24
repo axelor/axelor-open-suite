@@ -54,6 +54,7 @@
 - Invoice: fix refunds grid view.
 - SaleOrder: show exception on confirm.
 - PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
+- Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
 
 ## [5.1.6] - 2019-04-29
 ## Features
