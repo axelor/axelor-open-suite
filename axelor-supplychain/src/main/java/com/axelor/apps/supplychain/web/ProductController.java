@@ -24,7 +24,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.MoreObjects;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
