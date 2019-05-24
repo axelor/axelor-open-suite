@@ -85,7 +85,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         stockMoveRepository
             .all()
             .filter("self.id IN :stockMoveIdList")
-            .bind("stockMoveIdList", stockMoveIdList);
+            .bind("stockMoveIdList", stockMoveIdList)
+            .order("id");
     int offset = 0;
 
     while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {

@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.1.7]
 ## Features
-- AVAILABITY REQUEST : error message if product stock is less than realQty
+- AVAILABITY REQUEST : error message if availableStock is less than realQty
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
@@ -17,6 +17,18 @@
 - Debt Recovery : delete canEdit from fields
 - Configurator Prod Process and BOM: add new fields.
 - Availability Request: cannot lower reserved quantity.
+- PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO
+- FIXED ASSET : Change in the process of calculation
+- LOCATION FINANCIAL DATA : new booleans to manage different printing
+- Sale Order Line: improve the logic of requested quantity.
+- MRP: Add the start date time and end date time
+- FIXED ASSET : Change in disposal process
+- MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
+- LOCATION FINANCIAL DATA : Change report design
+- PURCHASE ORDER : Updated Error Message for delivery date
+- INVENTORY : new selection for formatSelect
+- Reserved Qty: Add tracking for allocated and requested quantity.
+- Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -27,12 +39,25 @@
 - Logistical Form : wrong french translation for LogisticalFormLine.qty
 - SaleOrder : when amount = 0, we can only choose Invoice All.
 - Stock Move: automatic mail configuration is retrieved from the company stock config
+- Configurator BOM: change type of formula fields and useCondition field to text.
 - SaleOrder: display error message when amount to invoice is greater than saleOrder's amount
 - StockMove: product from a stockMoveLine is not readonly when a stockmove is planned
 - Configurator Creator: more fixes to import/export feature.
 - ACCOUNTING MOVE : Display error when creating new move line with debit,credit and currency amount is zero.
 - Move: fix NPE in move excess payment service.
 - UnitCostCalculation : Fixed the date format in the csv export name file.
+- Raw Material Requirement: when the raw material requirement name is null, it's not printed on the report.
+- ADVANCE SEARCH : error when define sub bill of material = true
+- SaleOrderLine: Display product available qty on product grid view.
+- Sale Order: added a whitespace between qty and unit in the sale order report.
+- MoveLine: fix NPE in groovy action.
+- Reserved Qty: fix multiple allocations in sale order lines with same product.
+- Stock Move: unused description field removed
+- Sale Order: show invoiced tag with multiple invoices.
+- Invoice: fix refunds grid view.
+- SaleOrder: show exception on confirm.
+- PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
+- Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
 
 ## [5.1.6] - 2019-04-29
 ## Features
