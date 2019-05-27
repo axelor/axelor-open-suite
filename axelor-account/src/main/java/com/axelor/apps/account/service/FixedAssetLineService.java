@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface FixedAssetLineService {
 
   public void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  public void generateDisposalMove(
+      FixedAsset fixedAsset, BigDecimal chargeAmount, BigDecimal cumulativeDepreciationAmount)
+      throws AxelorException;
 }

@@ -66,6 +66,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     FixedAsset copy = super.copy(entity, deep);
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setReference(null);
+    copy.setResidualValue(entity.getGrossValue());
     for (FixedAssetLine fixedAssetLine : copy.getFixedAssetLineList()) {
       fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
     }
