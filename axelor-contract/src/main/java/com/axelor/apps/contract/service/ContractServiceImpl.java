@@ -187,6 +187,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         case ContractVersionRepository.BEGIN_INVOICING_MOMENT:
           contract.setInvoicingDate(contract.getInvoicePeriodStartDate());
           break;
+        case ContractVersionRepository.END_INVOICING_MOMENT_PLUS:
+          if (contract.getInvoicePeriodEndDate() != null) {
+            contract.setInvoicingDate(
+                contract.getInvoicePeriodEndDate().plusDays(version.getNumberOfDays()));
+          }
+          break;
+        case ContractVersionRepository.BEGIN_INVOICING_MOMENT_PLUS:
+          if (contract.getInvoicePeriodStartDate() != null) {
+            contract.setInvoicingDate(
+                contract.getInvoicePeriodStartDate().plusDays(version.getNumberOfDays()));
+          }
+          break;
         default:
           contract.setInvoicingDate(appBaseService.getTodayDate());
       }
