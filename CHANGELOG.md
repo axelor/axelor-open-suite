@@ -29,6 +29,7 @@
 - INVENTORY : new selection for formatSelect
 - Reserved Qty: Add tracking for allocated and requested quantity.
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
+- FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
