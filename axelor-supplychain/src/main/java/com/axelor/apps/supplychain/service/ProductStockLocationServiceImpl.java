@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -45,6 +39,11 @@ import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -83,12 +82,17 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
 
-    map.put("$realQty", stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(2));
     map.put(
-        "$futureQty", stockLocationService.getFutureQty(productId, stockLocationId, companyId).setScale(2));
+        "$realQty",
+        stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(2));
+    map.put(
+        "$futureQty",
+        stockLocationService.getFutureQty(productId, stockLocationId, companyId).setScale(2));
     map.put(
         "$reservedQty",
-        stockLocationServiceSupplychain.getReservedQty(productId, stockLocationId, companyId).setScale(2));
+        stockLocationServiceSupplychain
+            .getReservedQty(productId, stockLocationId, companyId)
+            .setScale(2));
     map.put(
         "$requestedReservedQty",
         this.getRequestedReservedQty(product, company, stockLocation).setScale(2));
@@ -105,7 +109,10 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       return BigDecimal.ZERO;
     }
     // JPQL request
-    List<Filter> queryFilter = Lists.newArrayList(new JPQLFilter("self.product = :product AND self.stockLocation.typeSelect != :typeSelect "));
+    List<Filter> queryFilter =
+        Lists.newArrayList(
+            new JPQLFilter(
+                "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
     }
@@ -161,7 +168,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     List<Filter> queryFilter =
         Lists.newArrayList(
             new JPQLFilter(
-                "self.product = :product" + " AND self.saleOrder.statusSelect IN (:statusList) AND self.saleOrder.deliveryState != :deliveryStateSaleOrder"));
+                "self.product = :product"
+                    + " AND self.saleOrder.statusSelect IN (:statusList) AND self.saleOrder.deliveryState != :deliveryStateSaleOrder"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.saleOrder.company = :company "));
     }
@@ -172,7 +180,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     List<SaleOrderLine> saleOrderLineList =
         Filter.and(queryFilter)
             .build(SaleOrderLine.class)
-            .bind("deliveryStateSaleOrder",SaleOrderRepository.DELIVERY_STATE_DELIVERED)
+            .bind("deliveryStateSaleOrder", SaleOrderRepository.DELIVERY_STATE_DELIVERED)
             .bind("product", product)
             .bind("statusList", statusList)
             .bind("company", company)
@@ -187,8 +195,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         productSaleOrderQty = saleOrderLine.getQty();
-        if(saleOrderLine.getDeliveryState() == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
-        	productSaleOrderQty = productSaleOrderQty.subtract(saleOrderLine.getDeliveredQty());
+        if (saleOrderLine.getDeliveryState()
+            == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          productSaleOrderQty = productSaleOrderQty.subtract(saleOrderLine.getDeliveredQty());
         }
         if (!saleOrderLine.getUnit().equals(unitConversion)) {
           productSaleOrderQty =
@@ -234,7 +243,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     List<PurchaseOrderLine> purchaseOrderLineList =
         Filter.and(queryFilter)
             .build(PurchaseOrderLine.class)
-            .bind("receiptStatePurchaseOrder",IPurchaseOrder.STATE_RECEIVED)
+            .bind("receiptStatePurchaseOrder", IPurchaseOrder.STATE_RECEIVED)
             .bind("product", product)
             .bind("statusList", statusList)
             .bind("company", company)
@@ -249,8 +258,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
         productPurchaseOrderQty = purchaseOrderLine.getQty();
-        if(purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-        	productPurchaseOrderQty = productPurchaseOrderQty.subtract(purchaseOrderLine.getReceivedQty());
+        if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
+          productPurchaseOrderQty =
+              productPurchaseOrderQty.subtract(purchaseOrderLine.getReceivedQty());
         }
         if (!purchaseOrderLine.getUnit().equals(unitConversion)) {
           productPurchaseOrderQty =

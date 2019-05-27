@@ -44,7 +44,8 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   }
 
   @Override
-  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId) throws AxelorException {
+  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();

@@ -48,6 +48,8 @@
   
   <action-record name="action-record-stock-details-by-product-init-product" model="com.axelor.apps.base.db.Product">
       <field name="$product" expr="eval: _product"/>
+      <field name="$company" expr="eval: _company"/>
+      <field name="$stockLocation" expr="eval: _stockLocation"/>
   </action-record>
   
   <action-attrs name="action-attrs-reload-panel-dashlet">
@@ -67,6 +69,8 @@
       <view type="form" name="supplychain-stock-details-by-product-form"/>
       <view-param name="popup" value="true"/>
       <context name="_product" expr="eval:product"/>
+      <context name="_stockLocation" expr="eval:saleOrder?.stockLocation"/>
+      <context name="_company" expr="eval:saleOrder?.company"/>
   </action-view>
   
   <action-view name="action-suppplychain-stock-location-line-view-requested-reserved" title="${product.fullName} requested reserved" 

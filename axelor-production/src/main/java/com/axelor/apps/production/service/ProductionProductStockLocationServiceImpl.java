@@ -114,9 +114,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
     }
     if (stockLocation != null) {
-      queryFilter.add(
-          new JPQLFilter(
-              "self.stockMove.toStockLocation = :stockLocation "));
+      queryFilter.add(new JPQLFilter("self.stockMove.toStockLocation = :stockLocation "));
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -174,9 +172,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
     }
     if (stockLocation != null) {
-      queryFilter.add(
-          new JPQLFilter(
-              "self.stockMove.fromStockLocation = :stockLocation "));
+      queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
     }
 
     List<StockMoveLine> stockMoveLineList =

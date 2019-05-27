@@ -170,7 +170,7 @@
         <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
 
-    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <grid name="invoice-refund-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
@@ -332,7 +332,7 @@
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
-					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid"/>
+					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
 				<panel colSpan="12"  name="irrecoverablePanel" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
@@ -370,11 +370,13 @@
 					</field>
 				</panel>
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
-				<field name="$isValidPfpValidatorUser" type="boolean" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="reasonOfRefusalToPay" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<panel name="pfpAccountConfigPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
+					<field name="$isValidPfpValidatorUser" type="boolean"/>
+					<field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator"/>
+					<field name="reasonOfRefusalToPay"/>
+					<field name="company.accountConfig"/>
+					<field name="company.accountConfig.isManagePassedForPayment"/>
+				</panel>
 			</panel>
 			<panel name="advancePaymentPanel" title="Advance payments" showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; 
 InvoiceSet.length > 0))"

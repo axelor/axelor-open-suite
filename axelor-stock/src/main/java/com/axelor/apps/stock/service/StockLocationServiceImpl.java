@@ -25,7 +25,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -90,22 +89,21 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
-	  List<Filter> queryFilter =
-		        Lists.newArrayList(
-		            new JPQLFilter(
-		            		"self.typeSelect != :stockLocationTypSelect"));
-	  if (companyId != null && companyId != 0L) {
-		  queryFilter.add(new JPQLFilter("self.company.id = :companyId "));
-	  }
-    return  Filter.and(queryFilter)
-            .build(StockLocation.class)
-            .bind("stockLocationTypSelect", StockLocationRepository.TYPE_VIRTUAL)
-            .bind("companyId", companyId)
-            .fetch();
+    List<Filter> queryFilter =
+        Lists.newArrayList(new JPQLFilter("self.typeSelect != :stockLocationTypSelect"));
+    if (companyId != null && companyId != 0L) {
+      queryFilter.add(new JPQLFilter("self.company.id = :companyId "));
+    }
+    return Filter.and(queryFilter)
+        .build(StockLocation.class)
+        .bind("stockLocationTypSelect", StockLocationRepository.TYPE_VIRTUAL)
+        .bind("companyId", companyId)
+        .fetch();
   }
 
   @Override
-  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType) throws AxelorException {
+  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
+      throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
@@ -165,12 +163,14 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId) throws AxelorException {
+  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
     return getQty(productId, locationId, companyId, "real");
   }
 
   @Override
-  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId) throws AxelorException {
+  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
     return getQty(productId, locationId, companyId, "future");
   }
 

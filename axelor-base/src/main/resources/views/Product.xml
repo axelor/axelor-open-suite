@@ -573,7 +573,7 @@
 			<domain>self.productVariantConfig != null</domain>
 		</filter>
 		<filter title="Define sub bill of material">
-			<domain>self.subTypeProductSelect = 3</domain>
+			<domain>self.productSubTypeSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>

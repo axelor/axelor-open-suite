@@ -42,6 +42,8 @@
 	<boolean name="isWithBackorder" title="Manage backorder"/>
 	
 	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"/>
+	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing"/>
+	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing"/>
 
   </entity>
   

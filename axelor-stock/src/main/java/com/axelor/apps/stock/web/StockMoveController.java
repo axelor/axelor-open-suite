@@ -28,7 +28,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -74,8 +73,6 @@ public class StockMoveController {
   @Inject private StockMoveService stockMoveService;
 
   @Inject private StockMoveRepository stockMoveRepo;
-
-  @Inject private StockLocationService stockLocationService;
 
   @Inject private AppStockRepository appStockRepo;
 
@@ -540,10 +537,8 @@ public class StockMoveController {
         && stockMove.getFromStockLocation() != null) {
       try {
         for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          BigDecimal productStock =
-              stockLocationService.getRealQty(
-                  stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId(), null);
-          if (productStock.compareTo(stockMoveLine.getRealQty()) < 0) {
+          BigDecimal availableStock = stockMoveService.getAvailableStock(stockMove, stockMoveLine);
+          if (availableStock.compareTo(stockMoveLine.getRealQty()) < 0) {
             notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
           }
         }

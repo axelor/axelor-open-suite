@@ -38,7 +38,8 @@ public class ProductController {
       Long stockLocationId = 0L;
 
       LinkedHashMap<String, Object> productHashMap =
-          (LinkedHashMap<String, Object>) MoreObjects.firstNonNull(context.get("product"), context.get("$product"));
+          (LinkedHashMap<String, Object>)
+              MoreObjects.firstNonNull(context.get("product"), context.get("$product"));
       if (productHashMap != null) {
         productId = Long.valueOf(productHashMap.get("id").toString());
       } else {

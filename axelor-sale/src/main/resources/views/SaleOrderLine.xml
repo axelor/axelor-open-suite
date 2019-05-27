@@ -14,12 +14,16 @@
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
 		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+    <button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
+		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price" x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 		<field name="estimatedDelivDate"/>
+    <field name="saleOrder.statusSelect" hidden="true"/>
+    <field name="saleOrder.orderBeingEdited" hidden="true"/>
 	</grid>
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
@@ -115,7 +119,8 @@
 				<field name="product.isUnrenewed" hidden="true"/>	
         		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>
@@ -207,6 +212,9 @@
 			<field name="saleOrder.statusSelect" />
 			<field name="saleOrder.orderBeingEdited" />
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
 	</form>
 
 	<form name="sale-order-line-template-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"

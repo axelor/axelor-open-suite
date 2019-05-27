@@ -28,11 +28,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -377,5 +379,17 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     return newStockMoveLine;
+  }
+
+  @Override
+  public BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(stockMove.getFromStockLocation(), stockMoveLine.getProduct());
+
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
+    }
+    return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
   }
 }
