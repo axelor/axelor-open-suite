@@ -88,6 +88,7 @@
 - PROJECT : Add an analytic tab.
 - OBJECT DATA CONFIG : UX improvements
 - ANALYTIC MOVE LINE : project field title changed and domain filter added.
+- Inventory : Addtion of new field typeSelect and change in product doman filter.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
