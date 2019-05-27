@@ -41,10 +41,8 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +226,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   @Transactional
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial) {
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial) throws AxelorException {
 
     TempBomTree bomTree;
     bomTree =
@@ -259,7 +257,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Transactional
-  public TempBomTree getSubBomTree(BillOfMaterialLine bomLine, TempBomTree parent) {
+  public TempBomTree getSubBomTree(BillOfMaterialLine bomLine, TempBomTree parent)
+      throws AxelorException {
 
     TempBomTree bomTree;
     bomTree =
@@ -299,7 +298,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return bomTree;
   }
 
-  private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree) {
+  private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree)
+      throws AxelorException {
 
     List<Long> validBomLineIds = new ArrayList<Long>();
 
@@ -311,7 +311,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return validBomLineIds;
   }
 
-  public void removeInvalidTree(List<Long> validBomLineIds, TempBomTree bomTree) {
+  public void removeInvalidTree(List<Long> validBomLineIds, TempBomTree bomTree)
+      throws AxelorException {
 
     List<TempBomTree> invalidBomTrees =
         tempBomTreeRepo
@@ -322,7 +323,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     log.debug("Invalid bom trees: {}", invalidBomTrees);
 
     for (TempBomTree invalidBomTree : invalidBomTrees) {
-      this.tempBomTreeRecursiveRemove(invalidBomTree);
+      this.tempBomTreeRecursiveRemove(invalidBomTree, 0);
     }
   }
 
@@ -332,12 +333,18 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
    * @param tempBomTree
    */
   @Transactional
-  protected void tempBomTreeRecursiveRemove(TempBomTree tempBomTree) {
+  protected void tempBomTreeRecursiveRemove(TempBomTree tempBomTree, int recursionLevel)
+      throws AxelorException {
+    if (recursionLevel >= 100) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TEMP_BOM_TREE_ABORT_RECURSION));
+    }
     List<TempBomTree> childBomTrees =
         tempBomTreeRepo.all().filter("self.parent = ?1", tempBomTree).fetch();
     if (!childBomTrees.isEmpty()) {
       for (TempBomTree childBomTree : childBomTrees) {
-        this.tempBomTreeRecursiveRemove(childBomTree);
+        this.tempBomTreeRecursiveRemove(childBomTree, recursionLevel + 1);
       }
     }
 
@@ -359,8 +366,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         + " - "
         + bom.getId();
   }
-  
-  
+
   @Override
   public List<BillOfMaterialLine> addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {

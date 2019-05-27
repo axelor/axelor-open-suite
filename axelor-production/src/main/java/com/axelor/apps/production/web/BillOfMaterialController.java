@@ -170,14 +170,19 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
 
-    TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
+    try {
 
-    response.setView(
-        ActionView.define(I18n.get("Bill of material"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
+
+      response.setView(
+          ActionView.define(I18n.get("Bill of material"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
@@ -213,7 +218,7 @@ public class BillOfMaterialController {
             "billOfMaterialLineList",
             billOfMaterialService.addRawMaterials(billOfMaterial.getId(), rawMaterials));
         response.setValue("$rawMaterials", new ArrayList<LinkedHashMap<String, Object>>());
-      }      
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
