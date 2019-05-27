@@ -139,5 +139,6 @@
 - BUSINESS PROJECT : Report printing Division by zero
 - UnitCostCalculation : Fixed the date format in the csv export name file.
 - BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
+- PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
