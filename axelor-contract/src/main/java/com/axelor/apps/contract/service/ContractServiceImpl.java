@@ -377,8 +377,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
-    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
-    Invoice invoice = invoiceGenerator.generate();
+    Invoice invoice = generateInvoice(contract);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     invoiceRepository.save(invoice);
 
@@ -459,6 +458,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     increaseInvoiceDates(contract);
 
     return invoiceRepository.save(invoice);
+  }
+
+  public Invoice generateInvoice(Contract contract) throws AxelorException {
+    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
+    Invoice invoice = invoiceGenerator.generate();
+
+    return invoice;
   }
 
   @Override
