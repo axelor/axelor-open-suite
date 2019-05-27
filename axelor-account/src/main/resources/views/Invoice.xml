@@ -370,11 +370,13 @@
 					</field>
 				</panel>
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
-				<field name="$isValidPfpValidatorUser" type="boolean" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="reasonOfRefusalToPay" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<panel name="pfpAccountConfigPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
+					<field name="$isValidPfpValidatorUser" type="boolean"/>
+					<field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator"/>
+					<field name="reasonOfRefusalToPay"/>
+					<field name="company.accountConfig"/>
+					<field name="company.accountConfig.isManagePassedForPayment"/>
+				</panel>
 			</panel>
 			<panel name="advancePaymentPanel" title="Advance payments" showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; 
 InvoiceSet.length > 0))"
