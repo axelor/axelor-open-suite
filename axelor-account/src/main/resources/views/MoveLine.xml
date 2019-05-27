@@ -3,36 +3,36 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
-    	<toolbar>
-    		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
-            <button name="calculateBtn" title="Calculation" onClick="action-account-move-line-method-calculate-balance"/>
-    	</toolbar>
-    	<hilite color="info" if="$get('move.statusSelect') == 1"/>
-    	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
-        <field name="name"/>
-        <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
-   		<field name="move.period" width="100" canView="false"/>
-        <field name="move.journal" width="140"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
-        <field name="account.analyticDistributionAuthorized" hidden="true"/>
-        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
-        <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"/>
-        <field name="debit" aggregate="sum" width="100"/>
-        <field name="credit" aggregate="sum" width="100"/>
-        <field name="amountRemaining" aggregate="sum" width="100"/>
-    	<field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
-        <field name="move.statusSelect" width="90"/>
-        <field name="reconcileGroup"/>
-        <field name="origin"/>
-        <field name="description"/>
-        <field name="dueDate"/>
-        <field name="analyticMoveLineList" hidden="true"/>
-    </grid>
+  <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
+  	<toolbar>
+  		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
+      <button name="calculateBtn" title="Calculation" onClick="action-account-move-line-method-calculate-balance"/>
+  	</toolbar>
+  	<hilite color="info" if="$get('move.statusSelect') == 1"/>
+  	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
+    <field name="name"/>
+    <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+ 		<field name="move.period" width="100" canView="false"/>
+    <field name="move.journal" width="140"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
+    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    <field name="move.company" form-view="company-form" grid-view="company-grid" width="120" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="debit" aggregate="sum" width="100"/>
+    <field name="credit" aggregate="sum" width="100"/>
+    <field name="amountRemaining" aggregate="sum" width="100"/>
+  	<field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
+    <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" 
+      grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+		<field name="move.statusSelect" width="90"/>
+		<field name="reconcileGroup"/>
+		<field name="origin"/>
+		<field name="description"/>
+		<field name="dueDate"/>
+		<field name="analyticMoveLineList" hidden="true"/>
+  </grid>
     
     
     <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
@@ -57,31 +57,31 @@
         <field name="analyticMoveLineList" hidden="true"/>
 	</grid>
     
-    <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
+  <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
     groupBy="account" expandable="true"  >
-    	<hilite color="info" if="$get('move.statusSelect') == 1"/>
-    	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
-        <field name="name"/>
-        <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
-   		<field name="move.period" canView="false"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
-        <field name="account.analyticDistributionAuthorized" hidden="true"/>
-        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
-        <field name="move.company" form-view="company-form" grid-view="company-grid"/>
-        <field name="debit" aggregate="sum"/>
-        <field name="credit" aggregate="sum"/>
-        <field name="amountRemaining" aggregate="sum"/>
-       	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
-        <field name="move.statusSelect"/>
-        <field name="reconcileGroup"/>
-        <field name="origin"/>
-        <field name="description"/>
-        <field name="analyticMoveLineList" hidden="true"/>
-    </grid>
+		<hilite color="info" if="$get('move.statusSelect') == 1"/>
+		<hilite color="danger" if="$get('move.statusSelect') == 4"/>
+    <field name="name"/>
+    <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+ 		<field name="move.period" canView="false"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
+    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    <field name="move.company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="debit" aggregate="sum"/>
+    <field name="credit" aggregate="sum"/>
+    <field name="amountRemaining" aggregate="sum"/>
+   	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
+    <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+	    grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
+	    requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+    <field name="move.statusSelect"/>
+    <field name="reconcileGroup"/>
+    <field name="origin"/>
+    <field name="description"/>
+    <field name="analyticMoveLineList" hidden="true"/>
+  </grid>
     
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>

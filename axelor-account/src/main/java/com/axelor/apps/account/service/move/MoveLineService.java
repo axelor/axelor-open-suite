@@ -511,7 +511,8 @@ public class MoveLineService {
             !invoiceLineTax.getSubTotalExcludingFixedAssets().equals(BigDecimal.ZERO);
         Account account;
         MoveLine moveLine;
-        if (hasFixedAssets) {
+        if (hasFixedAssets
+            && invoiceLineTax.getCompanySubTotalOfFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
           account = taxAccountService.getAccount(tax, company, isPurchase, true);
           if (account == null) {
             throw new AxelorException(
@@ -543,7 +544,9 @@ public class MoveLineService {
           moveLines.add(moveLine);
         }
 
-        if (hasOtherAssets) {
+        if (hasOtherAssets
+            && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
+                != 0) {
           account = taxAccountService.getAccount(tax, company, isPurchase, false);
           if (account == null) {
             throw new AxelorException(

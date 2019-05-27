@@ -3,50 +3,50 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="Merge quotations"  action="purchase.order.merge"/>
-                <item title="See quotation lines" action="purchase-order-see-quotation-lines" />
-            </menu>
-        </menubar>
+  <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+    <menubar>
+      <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+      </menu>
+      <menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item title="Merge quotations"  action="purchase.order.merge"/>
+				<item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+      </menu>
+    </menubar>
 		<field name="purchaseOrderSeq"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="externalReference"/>
-        <field name="orderDate"/>
-        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="externalReference"/>
+    <field name="orderDate"/>
+    <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="statusSelect"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+  </grid>
 
-    <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-        <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-            </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
-            </menu>
-        </menubar>
+  <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+		<menubar>
+	    <menu title="Reports" icon="fa-files-o" showTitle="true">
+        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+	    </menu>
+	    <menu title="Tools" icon="fa-wrench" showTitle="true">
+        <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+	    </menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-        <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="externalReference"/>
-        <field name="orderDate"/>
-        <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-        <field name="inTaxTotal" aggregate="sum"/>
-        <field name="statusSelect"/>
-        <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="externalReference"/>
+    <field name="orderDate"/>
+    <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="statusSelect"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
-    </grid>
+  </grid>
 
     <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		  <field name="purchaseOrderSeq"/>
@@ -113,7 +113,8 @@
         <field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
 				<panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
-          <field name="interco" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+          <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
       	</panel>
@@ -127,7 +128,7 @@
 				<panel-related name="purchaseOrderLineTaxListPanel" field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" colSpan="12">
-				<field name="deliveryDate" colSpan="3"/>
+				<field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
 		        <field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 		        <field name="stockLocation.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
 	  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
@@ -300,6 +301,9 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
+		<toolbar>
+    			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
+		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -378,6 +382,8 @@
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
+		<action name="action-purchase-order-record-set-supplier-partner-from-partner" if="_partner!=null"/>
+		<action name="action-group-purchase-order-partner-onchange" if="_partner!=null"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
@@ -408,8 +414,8 @@
 
 	<action-group name="action-group-purchase-order-partner-onchange">
 		<action name="action-purchase-order-record-partner"/>
+		<action name="action-purchase-order-method-get-stock-location" if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
         <action name="action-purchase-order-attrs-hide-contact-partner"/>
-		<action name="action-purchase-order-validate-information"/>
         <action name="action-purchase-order-method-fill-company-bank-details"/>
 		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
@@ -481,10 +487,11 @@
  		<field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition" if="supplierPartner?.paymentCondition == null"/>
  		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
 		<field name="paymentMode" expr="eval: company?.accountConfig?.outPaymentMode" if="supplierPartner?.outPaymentMode == null"/>
- 		<field name="contactPartner" expr="eval:null" />
+ 		<field name="contactPartner" expr="eval: supplierPartner?.contactPartnerSet?.size() == 1 ? supplierPartner?.contactPartnerSet[0] : null" />
     	<field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     	<field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
+    	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
  	</action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -563,14 +570,14 @@
 	<action-view name="purchase-order-see-quotation-lines" title="See quotation lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
 		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect in (1,2)</domain>
 	</action-view>
 
 	<action-view name="purchase-order-see-purchase-order-lines" title="See purchase order lines"
 		model="com.axelor.apps.purchase.db.PurchaseOrderLine">
 		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
+		<view type="form" name="purchase-order-line-all-form"/>
 		<domain>self.purchaseOrder.statusSelect IN (:status)</domain>
   		<context name="status" expr="eval: _status"/>
 	</action-view>
@@ -588,10 +595,6 @@
 
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
-	</action-validate>
-
-	<action-validate name="action-purchase-order-validate-information">
-		<info message="${supplierPartner.purchaseOrderInformation}" if="supplierPartner?.purchaseOrderInformation != null"/>
 	</action-validate>
 
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -617,6 +620,10 @@
 
 	<action-method name="action-purchase-order-method-merge-supplychain" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')" />
+	</action-method>
+	
+	<action-method name="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateEstimatedDelivDate"/>
 	</action-method>
 
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">
@@ -675,5 +682,9 @@
 		<attribute name="hidden" for="duplicateReferenceLabel" expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
+	
+	<action-record name="action-purchase-order-record-set-supplier-partner-from-partner" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="supplierPartner" expr="eval: __repo__(Partner).find(_partner.id)" />
+	</action-record>
 
 </object-views>

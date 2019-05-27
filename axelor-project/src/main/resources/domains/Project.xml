@@ -37,7 +37,7 @@
 		<decimal name="sequence" title="Sequence" />
 		<integer name="orderByState"/>
 	  
-		<boolean name="imputable" default="1"/>
+		<boolean name="imputable" default="true" massUpdate="true"/>
 	  
 		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
 		<many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
@@ -57,6 +57,8 @@
 	 	
         <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
+
+      	<string name="projectSeq" title="Project number"/>
 
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
         <finder-method name="findByName" using="name"/>

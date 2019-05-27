@@ -45,14 +45,9 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected SequenceService sequenceService;
   protected PartnerRepository partnerRepo;
@@ -107,10 +102,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     Query q =
         JPA.em()
             .createQuery(
-                "select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
+                "select count(*) FROM SaleOrder as self WHERE self.statusSelect in (?1 , ?2) AND self.clientPartner = ?3 ");
     q.setParameter(1, SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    q.setParameter(2, saleOrder.getClientPartner());
-    if ((long) q.getSingleResult() == 1) {
+    q.setParameter(2, SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    q.setParameter(3, saleOrder.getClientPartner());
+    if ((long) q.getSingleResult() == 0) {
       saleOrder.getClientPartner().setIsCustomer(false);
       saleOrder.getClientPartner().setIsProspect(true);
     }
@@ -181,6 +177,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    saleOrder.setOrderBeingEdited(false);
 
     saleOrderRepo.save(saleOrder);
   }

@@ -277,18 +277,20 @@ public abstract class InvoiceGenerator {
               .findFirst()
               .orElse(null);
     } else if (accountingSituation != null) {
-      if (paymentMode.equals(partner.getOutPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-      } else if (paymentMode.equals(partner.getInPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyInBankDetails();
-      }
-      if (companyBankDetails == null) {
-        companyBankDetails = company.getDefaultBankDetails();
-        List<BankDetails> allowedBDs =
-            Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-        if (!allowedBDs.contains(companyBankDetails)) {
-          companyBankDetails = null;
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
         }
+      }
+    }
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);

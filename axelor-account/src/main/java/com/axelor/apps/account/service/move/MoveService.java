@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,6 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -419,9 +421,14 @@ public class MoveService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Move generateReverse(Move move) throws AxelorException {
+  public Move generateReverse(
+      Move move,
+      boolean isAutomaticReconcile,
+      boolean isAutomaticAccounting,
+      boolean isUnreconcileOriginalMove)
+      throws AxelorException {
 
-    LocalDate todayDate = appAccountService.getTodayDate();
+    LocalDate todayDate = move.getDate();
 
     Move newMove =
         moveCreateService.createMove(
@@ -438,26 +445,54 @@ public class MoveService {
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
 
+    boolean validatedMove =
+        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+            || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       log.debug("Moveline {}", moveLine);
-      Boolean isDebit = true;
-      BigDecimal amount = moveLine.getCredit();
-      if (amount.compareTo(BigDecimal.ZERO) == 0) {
-        isDebit = false;
-      }
+      Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+
       MoveLine newMoveLine =
           moveLineService.createMoveLine(
               newMove,
               moveLine.getPartner(),
               moveLine.getAccount(),
               moveLine.getCurrencyAmount(),
-              isDebit,
+              !isDebit,
               todayDate,
               moveLine.getCounter(),
               moveLine.getName(),
               null);
       newMove.addMoveLineListItem(newMoveLine);
+
+      if (isUnreconcileOriginalMove) {
+        List<Reconcile> reconcileList =
+            Beans.get(ReconcileRepository.class)
+                .all()
+                .filter(
+                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                    ReconcileRepository.STATUS_CANCELED,
+                    moveLine)
+                .fetch();
+        for (Reconcile reconcile : reconcileList) {
+          reconcileService.unreconcile(reconcile);
+        }
+      }
+
+      if (validatedMove && isAutomaticReconcile) {
+        if (isDebit) {
+          reconcileService.reconcile(moveLine, newMoveLine, false, true);
+        } else {
+          reconcileService.reconcile(newMoveLine, moveLine, false, true);
+        }
+      }
     }
+
+    if (validatedMove && isAutomaticAccounting) {
+      moveValidateService.validate(newMove);
+    }
+
     return moveRepository.save(newMove);
   }
 
@@ -479,6 +514,9 @@ public class MoveService {
   public Map<String, Object> computeTotals(Move move) {
 
     Map<String, Object> values = new HashMap<>();
+    if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+      return values;
+    }
     values.put("$totalLines", move.getMoveLineList().size());
 
     BigDecimal totalDebit =

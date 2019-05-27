@@ -21,6 +21,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
@@ -51,9 +53,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
 
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDesiredDelivDate(null);
-      saleOrderLine.setEstimatedDelivDate(null);
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setDesiredDelivDate(null);
+        saleOrderLine.setEstimatedDelivDate(null);
+      }
     }
 
     return copy;
@@ -62,6 +66,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
     try {
+      if (Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement()) {
+        Beans.get(SaleOrderComputeService.class).computePackTotal(saleOrder);
+      }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
       computeSubMargin(saleOrder);
@@ -91,10 +98,13 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   public void computeFullName(SaleOrder saleOrder) {
     try {
-      if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
-        saleOrder.setFullName(
-            saleOrder.getSaleOrderSeq() + "-" + saleOrder.getClientPartner().getName());
-      else saleOrder.setFullName(saleOrder.getClientPartner().getName());
+      if (saleOrder.getClientPartner() != null) {
+        String fullName = saleOrder.getClientPartner().getName();
+        if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) {
+          fullName = saleOrder.getSaleOrderSeq() + "-" + fullName;
+        }
+        saleOrder.setFullName(fullName);
+      }
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }

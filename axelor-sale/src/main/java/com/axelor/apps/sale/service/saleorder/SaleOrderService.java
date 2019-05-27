@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface SaleOrderService {
 
@@ -47,13 +49,22 @@ public interface SaleOrderService {
   void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
   /**
-   * Validate changes.
+   * Check modified confirmed order before saving it.
    *
    * @param saleOrder
    * @param saleOrderView
    * @throws AxelorException
    */
-  void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
+  void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
+      throws AxelorException;
+
+  /**
+   * Validate changes.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void validateChanges(SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Sort detail lines by sequence.
@@ -61,4 +72,11 @@ public interface SaleOrderService {
    * @param saleOrder
    */
   void sortSaleOrderLineList(SaleOrder saleOrder);
+
+  /**
+   * Convert PackLines of pack into SaleOrderLines.
+   *
+   * @param saleOrder
+   */
+  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty);
 }

@@ -16,7 +16,7 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
+		<view type="form" name="stock-move-customer-deliveries-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
@@ -29,10 +29,11 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-form"/>
+        <view type="form" name="stock-move-customer-returns-form"/>
         <view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+        <context name="_isReversion" expr="eval: true"/>
     </action-view>
 
 	<menuitem name="stock-root-suparrivals" parent="stock-root-stock-moves"
@@ -42,7 +43,7 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
+		<view type="form" name="stock-move-supplier-arrivals-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
@@ -56,11 +57,12 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-form"/>
+        <view type="form" name="stock-move-supplier-returns-form"/>
         <view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
         <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+        <context name="_isReversion" expr="eval: true"/>
     </action-view>
 
 	<menuitem name="stock-root-internal" parent="stock-root-stock-moves"
@@ -70,7 +72,7 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
+		<view type="form" name="stock-move-internal-move-form"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.typeSelect = :_typeSelect</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
@@ -89,6 +91,7 @@
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect = :_statusSelect AND self.availabilityRequest = TRUE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
 		<context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
 	</action-view>
 
 		

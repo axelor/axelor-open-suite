@@ -150,4 +150,22 @@ public class LunchVoucherMgtController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkPayPeriod(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+    try {
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void checkLeavePeriod(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+    try {
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
 }

@@ -42,13 +42,30 @@ public interface IExceptionMessage {
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move has already been validated" /*)*/;
+      "You can't remove this record, because the move %s has already been validated" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
+
+  /** AccountingSituationService * */
+  static final String ACCOUNTING_SITUATION_1 = /*$$(*/
+      "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+
+  static final String ACCOUNTING_SITUATION_2 = /*$$(*/
+      "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_3 = /*$$(*/
+      "Invalid automatic partner account creation mode, this is a bug that should be reported." /*)*/;
+  static final String ACCOUNTING_SITUATION_4 = /*$$(*/
+      "You have to enter a prefix for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_5 = /*$$(*/
+      "You have to select a sequence for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_6 = /*$$(*/
+      "You have to enter a prefix for automatic employee account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_7 = /*$$(*/
+      "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s" /*)*/;
 
   /** Mail service */
   static final String MAIL_1 = /*$$(*/
@@ -518,6 +535,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_3 = /*$$(*/
       "Debt recovery method missing for the configuration." /*)*/;
   static final String DEBT_RECOVERY_4 = /*$$(*/ "Debt recovery level waiting for approval." /*)*/;
+  static final String DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND = /*$$(*/
+      "Debt recovery method line not found" /*)*/;
 
   /** Debt recovery session service */
   static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/ "Debt recovery method line missing." /*)*/;
@@ -607,6 +626,8 @@ public interface IExceptionMessage {
       "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
   static final String VENTILATE_STATE_6 = /*$$(*/
       "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
+  static final String VENTILATE_STATE_7 = /*$$(*/
+      "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
@@ -750,4 +771,10 @@ public interface IExceptionMessage {
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  /* Check refunds */
+  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed supplier refunds."; /*)*/
 }

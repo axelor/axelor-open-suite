@@ -39,9 +39,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -53,7 +51,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -155,7 +152,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SO_INVOICE_QTY_MAX));
+          I18n.get(IExceptionMessage.SO_INVOICE_AMOUNT_MAX));
     }
 
     return amount;
@@ -306,9 +303,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 PriceListLineRepository.AMOUNT_TYPE_NONE,
                 lineAmountToInvoice,
                 null,
-                false,
-                false,
-                0) {
+                false) {
               @Override
               public List<InvoiceLine> creates() throws AxelorException {
 
@@ -509,8 +504,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    Map<SaleOrderLine, InvoiceLine> packLineMap = Maps.newHashMap();
-    boolean setPack = Beans.get(AppSaleService.class).getAppSale().getProductPackMgt();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
       if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
@@ -518,36 +511,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             this.createInvoiceLine(
                 invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
-        if (setPack
-            && !invoiceLineList.isEmpty()
-            && (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK
-                || saleOrderLine.getIsSubLine())) {
-          packLineMap.put(saleOrderLine, invoiceLines.get(0));
-        }
         saleOrderLine.setInvoiced(true);
       }
     }
-
-    if (setPack) {
-      for (SaleOrderLine saleOrderLine : packLineMap.keySet()) {
-        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-          InvoiceLine invoiceLine = packLineMap.get(saleOrderLine);
-          if (invoiceLine == null) {
-            continue;
-          }
-          BigDecimal totalPack = BigDecimal.ZERO;
-          for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-            InvoiceLine subInvoiceLine = packLineMap.get(subLine);
-            if (subInvoiceLine != null) {
-              totalPack = totalPack.add(subInvoiceLine.getExTaxTotal());
-              subInvoiceLine.setParentLine(invoiceLine);
-            }
-          }
-          invoiceLine.setTotalPack(totalPack);
-        }
-      }
-    }
-
     return invoiceLineList;
   }
 
@@ -557,11 +523,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
-
-    Integer packPriceSelect = saleOrderLine.getPackPriceSelect();
-    if (saleOrderLine.getIsSubLine() && saleOrderLine.getParentLine() != null) {
-      packPriceSelect = saleOrderLine.getParentLine().getPackPriceSelect();
-    }
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
@@ -575,9 +536,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             false,
             saleOrderLine,
             null,
-            null,
-            saleOrderLine.getIsSubLine(),
-            packPriceSelect) {
+            null) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

@@ -39,7 +39,7 @@
 		<option value="2">Outgoing move</option>
 		<option value="3">Incoming move</option>
 	</selection>
-
+	
 	<selection name="stock.stock.rules.use.case.select">
 		<option value="1">Used for MRP</option>
 		<option value="2">Stock control</option>
@@ -89,9 +89,9 @@
 	</selection>
 
     <selection name="logistical.form.status.select">
-        <option value="1">LogisticalForm.Provision</option>
-        <option value="2">LogisticalForm.Carrier validated</option>
-        <option value="3">LogisticalForm.Collected</option>
+        <option value="1">Provision</option>
+        <option value="2">Carrier validated</option>
+        <option value="3">Collected</option>
     </selection>
 
     <selection name="logistical.form.account.to.carrier.select">

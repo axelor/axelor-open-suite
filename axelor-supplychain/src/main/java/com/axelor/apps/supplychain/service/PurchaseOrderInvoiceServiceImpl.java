@@ -152,9 +152,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             false,
             null,
             purchaseOrderLine,
-            null,
-            false,
-            0) {
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

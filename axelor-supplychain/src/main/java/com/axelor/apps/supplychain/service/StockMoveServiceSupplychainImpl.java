@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -43,14 +42,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
-    implements StockMoveServiceSupplychain {
+public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -115,7 +110,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
-        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+        purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
       } else {
         Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
@@ -204,10 +199,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
 
-        if (qtyWasDelivered) {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
-        } else {
-          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+        if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
+          if (qtyWasDelivered) {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
+          } else {
+            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
+          }
         }
         if (saleOrderLine.getDeliveredQty().signum() == 0) {
           saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
@@ -242,10 +239,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    */
   protected void finishOrValidatePurchaseOrderStatus(PurchaseOrder purchaseOrder) {
 
-    if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    if (purchaseOrder.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     } else {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     }
   }
 
@@ -269,67 +266,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
         }
         if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
         } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
         } else {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
         }
       }
     }
-  }
-
-  @Override
-  public List<StockMoveLine> addSubLines(List<StockMoveLine> moveLines) {
-
-    if (moveLines == null) {
-      return moveLines;
-    }
-
-    List<StockMoveLine> lines = new ArrayList<StockMoveLine>();
-    lines.addAll(moveLines);
-    for (StockMoveLine line : lines) {
-      if (line.getSubLineList() == null) {
-        continue;
-      }
-      for (StockMoveLine subLine : line.getSubLineList()) {
-        if (subLine.getStockMove() == null) {
-          moveLines.add(subLine);
-        }
-      }
-    }
-    return moveLines;
-  }
-
-  @Override
-  public List<StockMoveLine> removeSubLines(List<StockMoveLine> moveLines) {
-
-    if (moveLines == null) {
-      return moveLines;
-    }
-
-    List<StockMoveLine> subLines = new ArrayList<StockMoveLine>();
-    for (StockMoveLine packLine : moveLines) {
-      if (packLine != null
-          && packLine.getLineTypeSelect() != null
-          && packLine.getLineTypeSelect() == 2
-          && packLine.getSubLineList() != null) {
-        packLine.getSubLineList().removeIf(it -> it.getId() != null && !moveLines.contains(it));
-        subLines.addAll(packLine.getSubLineList());
-      }
-    }
-    Iterator<StockMoveLine> lines = moveLines.iterator();
-
-    while (lines.hasNext()) {
-      StockMoveLine subLine = lines.next();
-      if (subLine.getId() != null
-          && subLine.getParentLine() != null
-          && !subLines.contains(subLine)) {
-        lines.remove();
-      }
-    }
-
-    return moveLines;
   }
 
   /**

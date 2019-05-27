@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,9 +33,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -47,18 +51,25 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +85,7 @@ public class InvoicingProjectService {
 
   @Inject protected PartnerService partnerService;
 
-  @Inject protected TeamTaskBusinessService teamTaskBusinessService;
+  @Inject protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
 
@@ -82,10 +93,16 @@ public class InvoicingProjectService {
 
   protected int sequence = 0;
 
+  protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
+
   @Transactional
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
+    Partner customerContact = project.getContactPartner();
+    if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
+      customerContact = customer.getContactPartnerSet().iterator().next();
+    }
     Company company = this.getRootCompany(project);
     if (company == null) {
       throw new AxelorException(
@@ -102,7 +119,7 @@ public class InvoicingProjectService {
             customer.getInPaymentMode(),
             partnerService.getInvoicingAddress(customer),
             customer,
-            null,
+            customerContact,
             customer.getCurrency(),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
@@ -131,6 +148,7 @@ public class InvoicingProjectService {
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);
+    invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_GENERATED);
     invoicingProjectRepo.save(invoicingProject);
     return invoice;
   }
@@ -159,7 +177,7 @@ public class InvoicingProjectService {
         expenseService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        teamTaskBusinessService.createInvoiceLines(
+        teamTaskBusinessProjectService.createInvoiceLines(
             invoice, teamTaskList, folder.getTeamTaskSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
@@ -205,9 +223,7 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null,
-            false,
-            0) {
+            null) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -255,9 +271,7 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null,
-            false,
-            0) {
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
@@ -439,5 +453,34 @@ public class InvoicingProjectService {
     toInvoiceCount += Beans.get(TeamTaskRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
+  }
+
+  public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
+    String title =
+        I18n.get("InvoicingProjectAnnex")
+            + "-"
+            + Beans.get(AppBaseService.class)
+                .getTodayDateTime()
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
+
+    ReportSettings reportSettings =
+        ReportFactory.createReport(IReport.INVOICING_PROJECT_ANNEX, title)
+            .addParam("InvProjectId", invoicingProject.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null));
+
+    if (invoicingProject.getAttachAnnexToInvoice()) {
+      List<File> fileList = new ArrayList<>();
+      MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+      fileList.add(
+          Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice(), null));
+      fileList.add(reportSettings.generate().getFile());
+
+      MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
+      metaFile.setFileName(title + ".pdf");
+      metaFiles.attach(metaFile, null, invoicingProject);
+      return;
+    }
+    reportSettings.toAttach(invoicingProject).generate();
   }
 }

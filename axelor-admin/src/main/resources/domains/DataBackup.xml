@@ -15,6 +15,8 @@
 		<datetime name="backupDate" title="Backup On" />
 		<datetime name="restoreDate" title="Restored On" />
 		<integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
+		<boolean name="isRelativeDate" title="Relative Date"/>
+		<boolean name="updateImportId" title="Update Import Id"/>
 		<extra-code>
 	   		<![CDATA[
 				// DATABACKUP STATUS

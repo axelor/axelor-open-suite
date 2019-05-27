@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="forecast-recap-grid" title="Forecast Recaps" model="com.axelor.apps.cash.management.db.ForecastRecap">
-       <field name="company"/>
-       <field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
-       <field name="fromDate"/>
-       <field name="toDate"/>
-    </grid>
+	<grid name="forecast-recap-grid" title="Forecast Recaps" model="com.axelor.apps.cash.management.db.ForecastRecap">
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+	</grid>
  
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
 	 	onNew="action-forecast-recap-record-default-on-new">

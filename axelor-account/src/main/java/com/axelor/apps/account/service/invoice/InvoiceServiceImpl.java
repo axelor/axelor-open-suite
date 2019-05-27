@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -292,14 +293,26 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      Account account = invoiceLine.getAccount();
+
       if (invoiceLine.getAccount() == null
-          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && invoiceLineService.isAccountRequired(invoiceLine)) {
+          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
+      }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (invoiceLine.getAnalyticDistributionTemplate() != null
+              || (invoiceLine.getAnalyticMoveLineList() != null
+                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
       }
     }
 
@@ -308,10 +321,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    // FIXME: Disabled temporary due to RM#14505
-    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    //    }
+    Beans.get(InvoicePrintService.class)
+        .printAndSave(invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE);
   }
 
   /**
@@ -355,6 +366,49 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
       Beans.get(MoveRepository.class).save(move);
     }
+  }
+
+  @Override
+  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        long clientRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+        if (clientRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+        }
+      }
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        long supplierRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+
+        if (supplierRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private long getRefundsAmount(Long partnerId, int refundType) {
+    return invoiceRepo
+        .all()
+        .filter(
+            "self.partner.id = ?"
+                + " AND self.operationTypeSelect = ?"
+                + " AND self.statusSelect = ?"
+                + " AND self.amountRemaining > 0",
+            partnerId,
+            refundType,
+            InvoiceRepository.STATUS_VENTILATED)
+        .count();
   }
 
   /**

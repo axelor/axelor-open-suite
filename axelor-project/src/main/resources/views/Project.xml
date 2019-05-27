@@ -2,27 +2,27 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-					<item title="Gantt with user" action="action-project-open-popup-select-users"/>
-					<item title="Gantt with project" action="action-project-open-popup-select-projects"/>
+				<item name="ganttWithUserItem" title="Gantt with user" action="action-project-open-popup-select-users"/>
+				<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
 		</menubar>
 		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
 		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
 		<field name="code"/>
 		<field name="name"/>
-        <field name="parentProject"/>
+    <field name="parentProject"/>
 		<field name="clientPartner"/>
 		<field name="assignedTo"/>
 		<field name="fromDate" />
 		<field name="toDate" />
 		<field name="dueDate" />
+		<field name="imputable" width="90"/>
 		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
@@ -30,7 +30,7 @@
 
 	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="clientPartner"/>
 	</grid>
 
@@ -39,15 +39,15 @@
 		onNew="action-project-group-on-new-project">
 		<menubar>
 			<menu title="Reports" showTitle="true" icon="fa-files-o">
-				<item if-module="axelor-business-project" title="Planification and costs"
+				<item if-module="axelor-business-project" name="planificationAndCostsItem" title="Planification and costs"
 					action="save,action-project-method-print-planif-and-cost" />
 				<item if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					title="Financial Report" showIf="isBusinessProject"
+				name="financialReportItem" title="Financial Report" showIf="isBusinessProject"
 					action="save,action-project-method-print-project" />
 			</menu>
 			<menu title="Tools" showTitle="true" icon="fa-wrench">
-				<item title="Gantt" showIf="isProject" action="action-project-open-gantt" />
-				<item title="Book resource" showIf="isProject"
+				<item name="ganttItem" title="Gantt" showIf="isProject" action="action-project-open-gantt" />
+				<item name="bookResourceItem" title="Book resource" showIf="isProject" if=" __config__.app.getApp('project')?.resourceManagement"
 					action="save,action-project-book-resource" />
 			</menu>
 		</menubar>
@@ -70,7 +70,10 @@
 						</viewer>
 				</field>
 			</panel>
-			<panel name="informationPanel" colSpan="12">
+			<panel name="seqPanel" colSpan="2" if="__config__.app.getApp('project')?.generateProjectSequence">
+				<field name="projectSeq" showTitle="false" colSpan="12" css="label-bold bold large" readonly="true"/>
+			</panel>
+			<panel name="informationPanel" colSpan="10">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
@@ -100,6 +103,9 @@
 					form-view="partner-form" grid-view="partner-grid" colSpan="6"
 					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					showIf="isBusinessProject" />
+					<field name="customerAddress" grid-view="address-grid" form-view="address-form"
+					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          showIf="isBusinessProject" domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
 			</panel>
 			<field name="progress" showIf="isProject" widget="Progress" colSpan="12">
 				<editor>
@@ -123,8 +129,9 @@
 					<panel-dashlet name="projectPhaseTreeDashletPanel" title="Phases" colSpan="12"
 						action="tree:project-phase-tree" />
 				</panel>
-				<button name="addTaskBtn" title="New" colSpan="2"
+				<button name="addTaskBtn" title="New task" colSpan="2"
 					css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-task" />
+				<button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left" icon="fa-plus" onClick="save,action-project-add-ticket" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				<button name="allTaskBtn" title="All tasks" colSpan="2"
 					css="btn-custom text-left" icon="fa-tasks"
 					onClick="action-project-view-show-related-tasks" />
@@ -345,6 +352,13 @@
 					showIf="isProject" />
 				<field name="imputable" colSpan="4" widget="boolean-switch"
 					if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
+			</panel>
+			<panel title="Contracts" name="contractPanel" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<button name="createNewCustomerContract" title="Create new customer contract" colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
+				<button name="createNewSupplierContract" title="Create new supplier contract" colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
+				<panel-dashlet name="customerContractPanel" title="Customer contracts" action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="supplierContractPanel" title="Supplier contracts" action="action-project-dashlet-supplier-contracts" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="contractInvoicePanel" title="Invoices" action="action-project-dashlet-contract-invoices" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 		<panel name="attrsPanel">
@@ -621,6 +635,7 @@
 		<view type="grid" name="team-task-grid" />
 		<view type="form" name="team-task-form" />
 		<domain>self.project.id = :_id OR self.project.parentProject.id = :_id</domain>
+		<context name="_project" expr="eval:__this__"/>
 	</action-view>
 	
 	<action-view name="action-project-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
@@ -638,6 +653,19 @@
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<context name="_project" expr="eval:__this__"/>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+	</action-view>
+
+	<action-view name="action-project-add-ticket" model="com.axelor.team.db.TeamTask" title="Ticket">
+		<view name="team-task-form" type="form"/>
+		<view name="team-task-grid" type="grid"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="popup-save" value="true"/>
+		<view-param name="show-confirm" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceTitle" value="true"/>
+		<context name="_project" expr="eval:__this__"/>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
 	</action-view>
 
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
@@ -786,4 +814,34 @@
 		<attribute name="readonly" for="project" expr="eval:true" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
 	</action-attrs>
 
+	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
+		<view type="form" name="contract-form"/>
+		<context name="_xTargetType" expr="eval:1"/>
+		<context name="_project" expr="eval:__self__"/>
+	</action-view>
+
+	<action-view name="action-project-view-create-new-supplier-contract" title="Create new supplier contract" model="com.axelor.apps.contract.db.Contract">
+		<view type="form" name="contract-form"/>
+		<context name="_xTargetType" expr="eval:2"/>
+		<context name="_project" expr="eval:__self__"/>
+	</action-view>
+
+	<action-view name="action-project-dashlet-customer-contracts" title="Customer contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.project.id = :id AND self.targetTypeSelect = 1 AND self.statusSelect != 3</domain>
+	</action-view>
+
+	<action-view name="action-project-dashlet-supplier-contracts" title="Supplier contracts" model="com.axelor.apps.contract.db.Contract">
+		<view type="grid" name="contract-grid"/>
+		<view type="form" name="contract-form"/>
+		<domain>self.project.id = :id AND self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
+	</action-view>
+
+	<action-view name="action-project-dashlet-contract-invoices" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.contract.project.id = :_id</domain>
+	</action-view>
+	
 </object-views>

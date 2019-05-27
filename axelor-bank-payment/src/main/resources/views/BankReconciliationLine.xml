@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
    
-    <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" editable="true">
+    <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false" canNew="false">
         <field name="effectDate"/>
         <field name="name"/>
         <field name="reference"/>

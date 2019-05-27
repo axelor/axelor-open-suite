@@ -34,6 +34,10 @@ public class ContractRepository extends AbstractContractRepository {
       if (contract.getContractId() == null) {
         contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
       }
+
+      ContractVersion currentContractVersion = contract.getCurrentContractVersion();
+      currentContractVersion.setIsConsumptionManagement(contract.getIsConsumptionManagement());
+
       return super.save(contract);
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

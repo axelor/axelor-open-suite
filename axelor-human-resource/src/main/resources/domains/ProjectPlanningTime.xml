@@ -19,6 +19,8 @@
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
 	  <decimal name="realHours" title="Real hours"/>
 	  <integer name="typeSelect" title="Type" selection="hr.project.planning.time.type"/>
+	  <time name="startTime" title="Start time"/>
+	  <time name="endTime" title="End time"/>
 	  
 	  <string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -32,7 +34,7 @@
 				fullName += "-" + project.getCode();
 			}
 			
-			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 			if (!fullName.isEmpty()) {
 				fullName += "-" + dateStr;
 			}

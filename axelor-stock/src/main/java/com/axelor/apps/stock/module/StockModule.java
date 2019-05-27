@@ -59,6 +59,8 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.StockMoveToolServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
@@ -97,5 +99,6 @@ public class StockModule extends AxelorModule {
     bind(ConformityCertificatePrintService.class).to(ConformityCertificatePrintServiceImpl.class);
     bind(StockLocationLineRepository.class).to(StockLocationLineStockRepository.class);
     bind(StockCorrectionService.class).to(StockCorrectionServiceImpl.class);
+    bind(WeightedAveragePriceService.class).to(WeightedAveragePriceServiceImpl.class);
   }
 }

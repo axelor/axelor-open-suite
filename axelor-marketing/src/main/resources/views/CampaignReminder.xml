@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="campaign-reminder-grid" title="Campaign reminders" model="com.axelor.apps.marketing.db.CampaignReminder">
+		<field name="typeSelect"/>
+		<field name="assignToSelect"/>
+		<field name="duration"/>
+		<field name="durationTypeSelect"/>
+	</grid>
+
+	<form name="campaign-reminder-form" title="Campaign reminders" model="com.axelor.apps.marketing.db.CampaignReminder"
+		onNew="action-campaign-reminder-record-default">
+		<panel name="mainPanel">
+			<field name="typeSelect" readonly="true"/>
+			<field name="assignToSelect"/>
+			<field name="duration"/>
+			<field name="durationTypeSelect"/>
+		</panel>
+	</form>
+
+	<action-record name="action-campaign-reminder-record-default" model="com.axelor.apps.marketing.db.CampaignReminder">
+		<field name="duration" expr="1"/>
+		<field name="assignToSelect" expr="1"/>
+	</action-record>
+
+</object-views>

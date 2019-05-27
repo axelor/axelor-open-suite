@@ -8,6 +8,7 @@
   <entity name="BudgetDistribution" lang="java" cachable="true">
   
     <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
+    <decimal name="budgetAmountAvailable"/>
   	
   </entity>
 

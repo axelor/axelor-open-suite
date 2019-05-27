@@ -19,6 +19,7 @@ package com.axelor.apps.production.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -26,24 +27,29 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
-  private CostSheetService costSheetService;
+  protected CostSheetService costSheetService;
+  protected ManufOrderRepository manufOrderRepository;
 
   protected static final int FETCH_LIMIT = 1;
 
   @Inject
-  public BatchComputeWorkInProgressValuation(CostSheetService costSheetService) {
+  public BatchComputeWorkInProgressValuation(
+      CostSheetService costSheetService, ManufOrderRepository manufOrderRepository) {
     this.costSheetService = costSheetService;
+    this.manufOrderRepository = manufOrderRepository;
   }
 
   @Override
@@ -51,6 +57,11 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     ProductionBatch productionBatch = batch.getProductionBatch();
     Company company = productionBatch.getCompany();
     StockLocation workshopStockLocation = productionBatch.getWorkshopStockLocation();
+
+    if (productionBatch.getValuationDate() == null) {
+      productionBatch.setValuationDate(Beans.get(AppBaseService.class).getTodayDate());
+    }
+    LocalDate valuationDate = productionBatch.getValuationDate();
 
     List<ManufOrder> manufOrderList = null;
     Map<String, Object> bindValues = new HashMap<String, Object>();
@@ -79,18 +90,22 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     int offset = 0;
 
-    while (!(manufOrderList = manufOrderQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      try {
-        costSheetService.computeCostPrice(
-            manufOrderList.get(0),
-            CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-            productionBatch.getValuationDate());
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e, IExceptionMessage.MANUF_ORDER_NO_GENERATION, batch.getId());
+    while (!(manufOrderList = manufOrderQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+
+      for (ManufOrder manufOrder : manufOrderList) {
+        ++offset;
+        try {
+          costSheetService.computeCostPrice(
+              manufOrderRepository.find(manufOrder.getId()),
+              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+              valuationDate);
+          incrementDone();
+          JPA.clear();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, IExceptionMessage.MANUF_ORDER_NO_GENERATION, batch.getId());
+        }
       }
-      offset++;
     }
   }
 

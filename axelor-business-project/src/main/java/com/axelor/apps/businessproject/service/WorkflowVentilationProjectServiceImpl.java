@@ -38,6 +38,7 @@ import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSu
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class WorkflowVentilationProjectServiceImpl
     extends WorkflowVentilationServiceSupplychainImpl {
@@ -70,6 +71,7 @@ public class WorkflowVentilationProjectServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
     InvoicingProject invoicingProject =
@@ -94,6 +96,9 @@ public class WorkflowVentilationProjectServiceImpl
       for (Project project : invoicingProject.getProjectSet()) {
         project.setInvoiced(true);
       }
+
+      invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
+      invoicingProjectRepo.save(invoicingProject);
     }
   }
 }

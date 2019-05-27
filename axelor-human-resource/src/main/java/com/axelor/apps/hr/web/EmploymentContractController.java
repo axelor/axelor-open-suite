@@ -21,10 +21,12 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.service.EmploymentContractService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
 
 @Singleton
 public class EmploymentContractController {
@@ -50,5 +52,16 @@ public class EmploymentContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void exportEmploymentContract(ActionRequest request, ActionResponse response)
+      throws IOException {
+    EmploymentContract employmentContract =
+        Beans.get(EmploymentContractRepository.class)
+            .find(request.getContext().asType(EmploymentContract.class).getId());
+
+    employmentContractService.exportEmploymentContract(employmentContract);
+
+    response.setReload(true);
   }
 }

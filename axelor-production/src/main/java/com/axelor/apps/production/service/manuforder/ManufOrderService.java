@@ -99,8 +99,6 @@ public interface ManufOrderService {
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);
 
-  public BigDecimal getProducedQuantity(ManufOrder manufOrder);
-
   /**
    * Generate waste stock move.
    *
@@ -177,6 +175,38 @@ public interface ManufOrderService {
    * @throws AxelorException
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Check the realized consumed stock move lines in manuf order has not changed.
+   *
+   * @param manufOrder a manuf order from context.
+   * @param oldManufOrder a manuf order from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkConsumedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException;
+
+  /**
+   * Check the realized produced stock move lines in manuf order has not changed.
+   *
+   * @param manufOrder a manuf order from context.
+   * @param oldManufOrder a manuf order from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkProducedStockMoveLineList(ManufOrder manufOrder, ManufOrder oldManufOrder)
+      throws AxelorException;
+
+  /**
+   * Check between a new and an old stock move line list whether a realized stock move line has been
+   * deleted.
+   *
+   * @param stockMoveLineList a stock move line list from view context.
+   * @param oldStockMoveLineList a stock move line list from database.
+   * @throws AxelorException if the check fails.
+   */
+  void checkRealizedStockMoveLineList(
+      List<StockMoveLine> stockMoveLineList, List<StockMoveLine> oldStockMoveLineList)
+      throws AxelorException;
 
   /**
    * Compute {@link ManufOrder#diffConsumeProdProductList}, then add and remove lines to the stock

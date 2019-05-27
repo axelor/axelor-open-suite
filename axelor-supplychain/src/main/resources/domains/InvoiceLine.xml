@@ -12,9 +12,6 @@
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
   	
-  	<many-to-one name="parentLine" ref="com.axelor.apps.account.db.InvoiceLine" />
-   	<one-to-many name="subLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="parentLine" title="Pack lines"/>
-  	
   </entity>
   
 </domain-models>

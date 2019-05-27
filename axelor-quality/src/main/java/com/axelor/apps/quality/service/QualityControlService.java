@@ -17,12 +17,20 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.apps.quality.db.QualityProcess;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface QualityControlService {
 
   @Transactional
-  public void preFillOperations(QualityControl control) throws AxelorException;
+  public void preFillOperations(QualityControl control, QualityProcess qualityProcess)
+      throws AxelorException;
+
+  @Transactional
+  public void preFillOperationsFromOptionals(
+      QualityControl qualityControl, List<ControlPoint> optionalControlPointList);
 }

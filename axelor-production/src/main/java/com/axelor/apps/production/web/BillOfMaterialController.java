@@ -27,6 +27,7 @@ import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -61,7 +62,10 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
     CostSheet costSheet =
-        costSheetService.computeCostPrice(billOfMaterialRepo.find(billOfMaterial.getId()));
+        costSheetService.computeCostPrice(
+            billOfMaterialRepo.find(billOfMaterial.getId()),
+            CostSheetService.ORIGIN_BILL_OF_MATERIAL,
+            null);
 
     response.setView(
         ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
@@ -137,13 +141,16 @@ public class BillOfMaterialController {
             .map());
   }
 
-  public void validateProdProcess(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateProdProcess(ActionRequest request, ActionResponse response) {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
       if (billOfMaterial.getProdProcess().getIsConsProOnOperation()) {
-        Beans.get(ProdProcessService.class)
-            .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+        try {
+          Beans.get(ProdProcessService.class)
+              .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+        } catch (AxelorException e) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        }
       }
     }
   }
@@ -181,7 +188,7 @@ public class BillOfMaterialController {
               .context("_tempBomTreeId", tempBomTree.getId())
               .map());
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 

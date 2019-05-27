@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-    <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
-        <field name="inventorySeq"/>
-        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="dateT"/>
-        <field name="statusSelect"/>
-        <field name="company" />
-    </grid>
+  <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
+		<field name="inventorySeq"/>
+		<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="dateT"/>
+		<field name="statusSelect"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
 
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
@@ -75,8 +75,8 @@
         </panel-tabs>
 
 		<panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-            <field name="productFamily" canEdit="false" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
-            <field name="productCategory" canEdit="false" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+            <field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
+            <field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
 			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
             <field name="excludeOutOfStock" colSpan="3"/>
             <field name="includeObsolete" colSpan="3"/>
@@ -140,6 +140,7 @@
 	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	    <field name="stockLocation" expr="eval:_location"/>
+	    <field name="company" expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">
@@ -192,23 +193,10 @@
 	<action-attrs  name="action-inventory-attrs-set-location-domain">
   		<attribute name="domain" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
 	</action-attrs>
-	
-	<action-attrs name="action-inventory-on-change-product-family">
-		<attribute name="value" for="productCategory" expr="eval:null" />    
-	</action-attrs>
-	
-	<action-attrs name="action-inventory-on-change-product-category">
-		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(productCategory.productFamily.id)" if="productFamily == null &amp;&amp; productCategory.productFamily != null"/>    
-	</action-attrs>
 
 	<action-attrs name="action-inventory-on-change-product">
 		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
 		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
-	</action-attrs>
-		
-	<action-attrs name="action-inventory-on-select-product-category">
-		<attribute name="domain" for="productCategory" expr="eval:&quot;self.productFamily.id = ${productFamily.id}&quot;" if="productFamily != null"/>
-		<attribute name="domain" for="productCategory" expr="eval:null" if="productFamily == null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">

@@ -241,7 +241,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (model != null) {
 
       mrpLine.addMrpLineOriginListItem(this.createMrpLineOrigin(model));
-      mrpLine.setRelatedToSelectName(this.computeReleatedName(model));
+      mrpLine.setRelatedToSelectName(this.computeRelatedName(model));
     }
   }
 
@@ -265,7 +265,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     return copyMrpLineOrigin;
   }
 
-  protected String computeReleatedName(Model model) {
+  protected String computeRelatedName(Model model) {
 
     if (model instanceof SaleOrderLine) {
 

@@ -213,7 +213,8 @@ public class BatchLeaveManagement extends BatchStrategy {
       BigDecimal totalQty = leaveLine.getTotalQuantity().add(dayNumber);
 
       try {
-        int integer = LeaveLine.class.getField("quantity").getAnnotation(Digits.class).integer();
+        int integer =
+            LeaveLine.class.getDeclaredField("quantity").getAnnotation(Digits.class).integer();
         BigDecimal limit = new BigDecimal((long) Math.pow(10, integer));
         if (qty.compareTo(limit) >= 0 || totalQty.compareTo(limit) >= 0) {
           throw new AxelorException(
