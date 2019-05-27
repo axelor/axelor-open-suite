@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -33,6 +34,9 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.filter.Filter;
+import com.axelor.rpc.filter.JPQLFilter;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -85,22 +89,30 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
   }
 
-  public List<StockLocation> getNonVirtualStockLocations() {
-    return stockLocationRepo
-        .all()
-        .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
-        .fetch();
+  protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
+	  List<Filter> queryFilter =
+		        Lists.newArrayList(
+		            new JPQLFilter(
+		            		"self.typeSelect != :stockLocationTypSelect"));
+	  if (companyId != null && companyId != 0L) {
+		  queryFilter.add(new JPQLFilter("self.company.id = :companyId "));
+	  }
+    return  Filter.and(queryFilter)
+            .build(StockLocation.class)
+            .bind("stockLocationTypSelect", StockLocationRepository.TYPE_VIRTUAL)
+            .bind("companyId", companyId)
+            .fetch();
   }
 
   @Override
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException {
+  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType) throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
       if (locationId == null || locationId == 0L) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations();
+        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
           BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
@@ -153,13 +165,13 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException {
-    return getQty(productId, locationId, "real");
+  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId) throws AxelorException {
+    return getQty(productId, locationId, companyId, "real");
   }
 
   @Override
-  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException {
-    return getQty(productId, locationId, "future");
+  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId) throws AxelorException {
+    return getQty(productId, locationId, companyId, "future");
   }
 
   public List<Long> getBadStockLocationLineId() {

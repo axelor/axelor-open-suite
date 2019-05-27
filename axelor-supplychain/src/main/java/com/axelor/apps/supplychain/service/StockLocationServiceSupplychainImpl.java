@@ -44,14 +44,14 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   }
 
   @Override
-  public BigDecimal getReservedQty(Long productId, Long locationId) throws AxelorException {
+  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId) throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
       if (locationId == null || locationId == 0L) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations();
+        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
           BigDecimal reservedQty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {

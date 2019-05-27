@@ -23,5 +23,5 @@ import java.math.BigDecimal;
 
 public interface StockLocationServiceSupplychain extends StockLocationService {
 
-  public BigDecimal getReservedQty(Long productId, Long locationId) throws AxelorException;
+  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId) throws AxelorException;
 }

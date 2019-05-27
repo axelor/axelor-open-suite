@@ -542,7 +542,7 @@ public class StockMoveController {
         for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
           BigDecimal productStock =
               stockLocationService.getRealQty(
-                  stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
+                  stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId(), null);
           if (productStock.compareTo(stockMoveLine.getRealQty()) < 0) {
             notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
           }
