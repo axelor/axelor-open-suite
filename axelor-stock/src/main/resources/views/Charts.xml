@@ -64,7 +64,7 @@
 	</chart>
 
 	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
-	       title="Product deliveries in qty by country by family" stacked="true">
+	       title="Product deliveries in qty by country by accounting family" stacked="true">
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 		</search-fields>
