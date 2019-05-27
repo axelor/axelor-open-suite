@@ -120,6 +120,7 @@
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
 - PRICE LIST : hide O2M historized price lists in pop-up view
 - MARKETING : Precise domain for model in message template
+- Change titles for productFamily.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

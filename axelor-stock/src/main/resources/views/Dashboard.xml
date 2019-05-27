@@ -16,7 +16,7 @@
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
-	<action-view title="Product deliveries in qty by country by family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
+	<action-view title="Product deliveries in qty by country by accounting family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
