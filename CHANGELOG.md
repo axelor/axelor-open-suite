@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.7]
 ## Features
 - AVAILABITY REQUEST : error message if availableStock is less than realQty
+- USER : filter assigned to user in partner form
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
