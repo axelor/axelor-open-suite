@@ -59,6 +59,7 @@
 - SaleOrder: show exception on confirm.
 - PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
 - Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
+- CUT-OFF: fix wrong views in the show move lines action view and fix exception when the id list is empty.
 
 ## [5.1.6] - 2019-04-29
 ## Features
