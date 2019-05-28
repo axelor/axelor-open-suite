@@ -189,12 +189,14 @@
 	</action-attrs>
 
 	<action-group name="action-timesheet-group-confirm">
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 		<action name="save"/>
 		<action name="action-timesheet-method-confirm"/>
 		<action name="action-timesheet-attrs-buttons"/>
 	</action-group>
 
     <action-group name="action-timesheet-group-continue">
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
         <action name="save"/>
         <action name="action-timesheet-method-continue"/>
         <action name="action-timesheet-attrs-buttons"/>
