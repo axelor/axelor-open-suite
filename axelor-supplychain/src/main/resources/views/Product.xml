@@ -7,7 +7,7 @@
       <panel name="MainFilters" itemSpan="4" colSpan="12">
           <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-group-supplychain-update-indicators, action-record-empty-company-and-stock-location"/>
-          <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
+          <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = :company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
       </panel>
       <panel name="mainPanelIndicators" showIf="$product">
         <panel name="indicators" title="Indicators" colSpan="12">
@@ -26,6 +26,9 @@
                <button name="$buildingQty" title="Building quantity" icon="fa-cogs" widget="info-button"/>
                <button name="$consumeManufOrderQty" title="Consume manuf order quantity" icon="fa-cogs" widget="info-button" />
                <button name="$missingManufOrderQty" title="Missing manuf order quantity" icon="fa-cogs" widget="info-button" />
+            </panel>
+            <panel name="projectedStockPanel" colSpan="12" itemSpan="4" >
+               <button name="$projectedStock" title="See projected stock" onClick="action-supplychain-method-projected-stock" showIf="$stockLocation"/>
             </panel>
        </panel>
        <panel-dashlet name="dashlet-views-stock-location-line-view-by-product" colSpan="12"  action="action-stock-location-line-view-by-product" showIf="$product" readonly="true" />
@@ -156,6 +159,19 @@
     <context name="locationId" expr="eval: stockLocation?.id "/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: com.axelor.apps.tool.StringTool.getIntegerList(__config__.app.getApp('supplychain').getsOFilterOnStockDetailStatusSelect()) ?: [__repo__(SaleOrder).STATUS_ORDER_CONFIRMED]" />
+  </action-view>
+  
+  
+  
+  <!-- PROJECTED STOCK -->
+  <action-method name="action-supplychain-method-projected-stock">
+    <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showProjectedStock"/>
+  </action-method>
+  
+  <action-view name="action-stock-location-line-view-for-a-product-from-saleorderline-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
+      <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <view-param name="popup" value="true"/>
+      <context name="_product" expr="eval:product"/>
   </action-view>
   
     

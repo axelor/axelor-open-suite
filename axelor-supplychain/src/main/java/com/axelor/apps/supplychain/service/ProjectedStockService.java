@@ -17,27 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.exception.AxelorException;
-import java.time.LocalDate;
+import java.util.List;
 
-public interface MrpService {
+public interface ProjectedStockService {
 
-  public void runCalculation(Mrp mrp) throws AxelorException;
-
-  public void generateProposals(Mrp mrp) throws AxelorException;
-
-  public void reset(Mrp mrp);
-
-  /**
-   * Search for the end date of the mrp. If the end date field in mrp is blank, search in the lines
-   * the last date.
-   *
-   * @param mrp
-   * @return the mrp end date
-   */
-  public LocalDate findMrpEndDate(Mrp mrp);
-
-  public Mrp completeProjectedStock(Mrp mrp, Product product) throws AxelorException;
+  List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
+      throws AxelorException;
 }
