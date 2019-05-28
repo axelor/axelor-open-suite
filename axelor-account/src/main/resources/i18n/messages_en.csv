@@ -764,7 +764,6 @@
 "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal.",,,
 "Disposal move",,,
 "Disposal value",,,
-"Disposal value cannot be higher then the current residual value",,,
 "Do not export",,,
 "Do not shift into irrecoverable",,,
 "Document Subtype",,,

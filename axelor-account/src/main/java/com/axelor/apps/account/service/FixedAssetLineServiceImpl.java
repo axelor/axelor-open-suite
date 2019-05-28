@@ -156,10 +156,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void generateDisposalMove(
-      FixedAsset fixedAsset, BigDecimal chargeAmount, BigDecimal cumulativeDepreciationAmount)
-      throws AxelorException {
+  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
 
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
@@ -183,6 +182,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
+      BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
+      BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
 
       // Creating accounting debit move line for charge account
       MoveLine chargeAccountDebitMoveLine =
