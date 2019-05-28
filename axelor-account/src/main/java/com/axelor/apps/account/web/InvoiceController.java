@@ -831,6 +831,8 @@ public class InvoiceController {
         Currency currency = null;
 
         List<Long> invoiceToPay = new ArrayList<>();
+        Boolean isActivatePassedForPayment =
+            Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
 
         for (Long invoiceId : invoiceIdList) {
           Invoice invoice = invoiceRepo.find(invoiceId);
@@ -866,7 +868,8 @@ public class InvoiceController {
             response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
             return;
           }
-          if (invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
+          if (isActivatePassedForPayment
+              && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
             response.setError(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION);
             return;
           }
