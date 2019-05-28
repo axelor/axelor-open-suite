@@ -284,8 +284,8 @@
 				</panel>
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
-					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
+						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -942,7 +942,11 @@
     <action-validate name="action-partner-validate-partner-stock-settings-list">
     	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
-
+   	 
+   	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 2"/>
+	</action-attrs>
+   	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
