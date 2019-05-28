@@ -123,6 +123,7 @@
 - MARKETING : Precise domain for model in message template
 - Change titles for productFamily.
 - CONTRACT : Set project on generated invoices
+- Employee : Fix issue of not able to delete employmentContract in employmentContractList
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

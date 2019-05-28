@@ -127,7 +127,7 @@
       </field>
     </panel>
 
-    <panel-related name="employmentContractsSBSPanel" field="employmentContractList" form-view="employment-contract-form" grid-view="employment-contract-employee-grid" showIf="stepByStepSelect == 2"/>
+    <panel-related name="employmentContractsSBSPanel" field="employmentContractList" onChange="action-employee-attrs-remove-main-contract" form-view="employment-contract-form" grid-view="employment-contract-employee-grid" showIf="stepByStepSelect == 2"/>
     <!-- END OF Employment contract -->
 
     <!-- Leaves and timesheets -->
@@ -252,7 +252,7 @@
           </panel>
         </panel>
 
-        <field name="employmentContractList" colSpan="12" form-view="employment-contract-form" grid-view="employment-contract-employee-grid"/>
+        <field name="employmentContractList" onChange="action-employee-attrs-remove-main-contract" colSpan="12" form-view="employment-contract-form" grid-view="employment-contract-employee-grid"/>
       </panel>
 
       <panel name="leaveListPanel" title="Leave List" if="__config__.app.isApp('leave')">
@@ -412,6 +412,11 @@
         <domain>self.user = :__user__</domain>
 	</action-view>
 
+	<action-attrs name="action-employee-attrs-remove-main-contract">
+		<attribute name="value" expr="eval: null" for="mainEmploymentContract"
+			if="mainEmploymentContract != null &amp;&amp; (employmentContractList == null || !employmentContractList.contains(mainEmploymentContract))"/>
+	</action-attrs>
+	
 	<action-method name="action-employee-method-show-annual-report">
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="showAnnualReport"/>
 	</action-method>
