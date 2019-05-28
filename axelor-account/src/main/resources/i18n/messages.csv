@@ -1021,6 +1021,7 @@
 "Invoice.priceExclTax",,,
 "Invoice.priceInclTax",,,
 "Invoice.productCode",,,
+"Invoice.proformaInvoice",,,
 "Invoice.purchaseInvoiceAdvPaymentNo",,,
 "Invoice.purchaseInvoiceBalanceNo",,,
 "Invoice.purchaseInvoiceNo",,,
