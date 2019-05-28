@@ -18,6 +18,8 @@
 	<selection name="contract.version.invoicing.moment.select">
 		<option value="1">End of period</option>
 		<option value="2">Start of period</option>
+		<option value="3">End of period plus</option>
+		<option value="4">Start of period plus</option>
 	</selection>
 
 	<selection name="contract.invoice.period.statut.select">

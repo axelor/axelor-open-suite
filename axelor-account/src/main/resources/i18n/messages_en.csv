@@ -1021,6 +1021,7 @@
 "Invoice.priceExclTax","Price excl. Tax",,
 "Invoice.priceInclTax","Price incl. Tax",,
 "Invoice.productCode","Product Code",,
+"Invoice.proformaInvoice","PROFORMA INVOICE N°",,
 "Invoice.purchaseInvoiceAdvPaymentNo","ADVANCE PURCHASE INVOICE N°",,
 "Invoice.purchaseInvoiceBalanceNo","BALANCE PURCHASE INVOICE N°",,
 "Invoice.purchaseInvoiceNo","PURCHASE INVOICE N°",,

@@ -321,9 +321,9 @@
     </action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product families" action="referential.conf.product.family" order="180"/>
+		title="Product accounting families" action="referential.conf.product.family" order="180"/>
 
-	<action-view name="referential.conf.product.family" title="Product families"
+	<action-view name="referential.conf.product.family" title="Product accounting families"
 		model="com.axelor.apps.base.db.ProductFamily" >
 		<view type="grid" name="product-family-grid"/>
 		<view type="form" name="product-family-form"/>

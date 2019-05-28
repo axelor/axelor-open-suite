@@ -1021,6 +1021,7 @@
 "Invoice.priceExclTax","Prix HT",,
 "Invoice.priceInclTax","Prix TTC",,
 "Invoice.productCode","Code Produit",,
+"Invoice.proformaInvoice","FACTURE PROFORMA N°",,
 "Invoice.purchaseInvoiceAdvPaymentNo","FACTURE D'AVOIR FOURNISSEUR N°",,
 "Invoice.purchaseInvoiceBalanceNo","FACTURE DE SOLDE FOURNISSEUR N°",,
 "Invoice.purchaseInvoiceNo","FACTURE FOURNISSEUR N°",,

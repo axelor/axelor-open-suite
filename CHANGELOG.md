@@ -88,6 +88,7 @@
 - PROJECT : Add an analytic tab.
 - OBJECT DATA CONFIG : UX improvements
 - ANALYTIC MOVE LINE : project field title changed and domain filter added.
+- CONTRACT : Set Invoice date with newly added options for invoicing Moment
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -120,6 +121,8 @@
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
 - PRICE LIST : hide O2M historized price lists in pop-up view
 - MARKETING : Precise domain for model in message template
+- Change titles for productFamily.
+- CONTRACT : Set project on generated invoices
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -139,6 +142,8 @@
 - BUSINESS PROJECT : Report printing Division by zero
 - UnitCostCalculation : Fixed the date format in the csv export name file.
 - BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
+- INVOICE :  Hide Due amount in report while printing "Original invoice / Updated copy"
 - PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
+
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

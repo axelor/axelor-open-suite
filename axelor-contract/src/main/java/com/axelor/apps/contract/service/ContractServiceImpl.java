@@ -187,6 +187,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         case ContractVersionRepository.BEGIN_INVOICING_MOMENT:
           contract.setInvoicingDate(contract.getInvoicePeriodStartDate());
           break;
+        case ContractVersionRepository.END_INVOICING_MOMENT_PLUS:
+          if (contract.getInvoicePeriodEndDate() != null) {
+            contract.setInvoicingDate(
+                contract.getInvoicePeriodEndDate().plusDays(version.getNumberOfDays()));
+          }
+          break;
+        case ContractVersionRepository.BEGIN_INVOICING_MOMENT_PLUS:
+          if (contract.getInvoicePeriodStartDate() != null) {
+            contract.setInvoicingDate(
+                contract.getInvoicePeriodStartDate().plusDays(version.getNumberOfDays()));
+          }
+          break;
         default:
           contract.setInvoicingDate(appBaseService.getTodayDate());
       }
@@ -377,8 +389,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
-    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
-    Invoice invoice = invoiceGenerator.generate();
+    Invoice invoice = generateInvoice(contract);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     invoiceRepository.save(invoice);
 
@@ -459,6 +470,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     increaseInvoiceDates(contract);
 
     return invoiceRepository.save(invoice);
+  }
+
+  public Invoice generateInvoice(Contract contract) throws AxelorException {
+    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
+    Invoice invoice = invoiceGenerator.generate();
+
+    return invoice;
   }
 
   @Override
