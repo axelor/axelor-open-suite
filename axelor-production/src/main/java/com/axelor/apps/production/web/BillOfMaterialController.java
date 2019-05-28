@@ -188,7 +188,7 @@ public class BillOfMaterialController {
               .context("_tempBomTreeId", tempBomTree.getId())
               .map());
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
