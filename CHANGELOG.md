@@ -57,6 +57,7 @@
 - PURCHASE REQUEST : Generate PO from Purchase Request
 - Invoice: show user an info popup if not imputed refunds exist
 - Stock Move : estimatedDate is now editable in Draft and Planified status of stock move.
+- Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
 
 ## Bug Fixes
 - Project : FIX NPE due to duplicate existing project.
