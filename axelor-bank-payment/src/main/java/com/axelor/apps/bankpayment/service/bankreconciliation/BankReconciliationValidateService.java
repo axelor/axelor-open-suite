@@ -29,7 +29,10 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -85,6 +88,8 @@ public class BankReconciliationValidateService {
     }
 
     bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
+    bankReconciliation.setValidatedByUser(AuthUtils.getUser());
+    bankReconciliation.setValidatedDate(Beans.get(AppBaseService.class).getTodayDate());
 
     bankReconciliationRepository.save(bankReconciliation);
   }

@@ -19,6 +19,7 @@ package com.axelor.studio.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepo;
@@ -27,11 +28,10 @@ import com.axelor.studio.db.repo.ChartBuilderRepo;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepo;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
-import com.axelor.studio.db.repo.JsonCreatorRepo;
-import com.axelor.studio.db.repo.JsonCreatorRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonFieldRepo;
+import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.WkfRepository;
 
@@ -46,6 +46,6 @@ public class StudioModule extends AxelorModule {
     bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
     bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
     bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
-    bind(JsonCreatorRepository.class).to(JsonCreatorRepo.class);
+    bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
   }
 }

@@ -73,6 +73,8 @@
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
+    <long name="backorderId" title="Backorder Id"/>
+    <many-to-one name="stockMoveOrigin" ref="com.axelor.apps.stock.db.StockMove" title="Stock Move Origin"/>
 
     <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
     <long name="originId" title="Origin Id" />
@@ -80,6 +82,9 @@
 	<boolean name="availabilityRequest" title="Availability request"/>
 
     <many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Correction Reason"/>
+
+	<boolean name="pickingIsEdited" title="Outgoing Stock Move is edited"/>
+	<date name="pickingEditDate" title="Outgoing Stock Move edit date"/>
 
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
@@ -102,6 +107,10 @@
 		public static final int STATUS_PARTIALLY_AVAILABLE = 2;
 		public static final int STATUS_UNAVAILABLE = 3;
 
+		// USER TYPE
+		public static final String USER_TYPE_SENDER = "Sender";
+		public static final String USER_TYPE_SALESPERSON = "Salesperson";
+		
 		// TYPE SELECT
 		public static final int TYPE_INTERNAL = 1;
 		public static final int TYPE_OUTGOING = 2;
@@ -126,6 +135,8 @@
       <field name="estimatedDate" />
       <field name="cancelReason" />
       <field name="realDate" if="statusSelect == 3" />
+      <field name="pickingIsEdited" />
+      <field name="availabilityRequest" />
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">Draft move</message>
       <message if="statusSelect == 2" tag="info">Planned move</message>

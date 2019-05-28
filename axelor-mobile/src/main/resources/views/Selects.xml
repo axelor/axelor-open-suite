@@ -10,6 +10,7 @@
 		<option value="expense">Expenses</option>
 		<option value="leave">Leaves</option>
 		<option value="task">Task</option>
+		<option value="quality">Quality</option>
 	</selection>
 
 </object-views>

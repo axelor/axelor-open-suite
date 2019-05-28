@@ -19,10 +19,11 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -33,30 +34,7 @@ import java.util.List;
 
 public class InvoiceLineController {
 
-  @Inject private InvoiceLineRepository invoiceLineRepo;
-
   @Inject private InvoiceLineService invoiceLineService;
-
-  public void getProductPrice(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-    Integer parentPackPriceSelect = (Integer) context.getParent().get("packPriceSelect");
-
-    if (invoiceLine.getPackPriceSelect() == InvoiceLineRepository.SUBLINE_PRICE_ONLY
-        && invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK) {
-      response.setValue("price", 0.00);
-      response.setValue("inTaxPrice", 0.00);
-    } else if (parentPackPriceSelect != null) {
-      if (invoiceLine.getIsSubLine() != null) {
-        if (parentPackPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY
-            && invoiceLine.getIsSubLine()) {
-          response.setValue("price", 0.00);
-          response.setValue("inTaxPrice", 0.00);
-        }
-      }
-    }
-  }
 
   public List<InvoiceLine> updateQty(
       List<InvoiceLine> invoiceLines, BigDecimal oldKitQty, BigDecimal newKitQty, Invoice invoice)
@@ -110,74 +88,6 @@ public class InvoiceLineController {
     return invoiceLines;
   }
 
-  public void updateSubLineQty(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    InvoiceLine packLine = request.getContext().asType(InvoiceLine.class);
-    BigDecimal oldKitQty = BigDecimal.ONE;
-    BigDecimal newKitQty = BigDecimal.ZERO;
-    List<InvoiceLine> subLines = null;
-
-    Context context = request.getContext();
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
-
-    Invoice invoice = this.getInvoice(context);
-
-    if (packLine.getOldQty() == null || packLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
-      if (packLine.getId() != null) {
-        InvoiceLine line = invoiceLineRepo.find(packLine.getId());
-        if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
-          oldKitQty = line.getQty();
-        }
-      }
-    } else {
-      oldKitQty = packLine.getOldQty();
-    }
-
-    if (packLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-      newKitQty = packLine.getQty();
-    }
-
-    if (packLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK) {
-      subLines = this.updateQty(packLine.getSubLineList(), oldKitQty, newKitQty, invoice);
-    }
-
-    response.setValue("oldQty", newKitQty);
-    response.setValue("subLineList", subLines);
-  }
-
-  public void resetPackData(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    InvoiceLine packLine = request.getContext().asType(InvoiceLine.class);
-
-    if (packLine.getPackPriceSelect() == InvoiceLineRepository.PACK_PRICE_ONLY) {
-      List<InvoiceLine> subLines = packLine.getSubLineList();
-      if (subLines != null) {
-        for (InvoiceLine line : subLines) {
-          line.setPrice(BigDecimal.ZERO);
-          line.setInTaxPrice(BigDecimal.ZERO);
-          line.setPriceDiscounted(BigDecimal.ZERO);
-          line.setExTaxTotal(BigDecimal.ZERO);
-          line.setInTaxTotal(BigDecimal.ZERO);
-          line.setCompanyInTaxTotal(BigDecimal.ZERO);
-          line.setCompanyExTaxTotal(BigDecimal.ZERO);
-        }
-      }
-      response.setValue("subLineList", subLines);
-    } else {
-      response.setValue("price", BigDecimal.ZERO);
-      response.setValue("inTaxPrice", BigDecimal.ZERO);
-      response.setValue("priceDiscounted", BigDecimal.ZERO);
-      response.setValue("exTaxTotal", BigDecimal.ZERO);
-      response.setValue("inTaxTotal", BigDecimal.ZERO);
-      response.setValue("companyExTaxTotal", BigDecimal.ZERO);
-      response.setValue("companyInTaxTotal", BigDecimal.ZERO);
-    }
-  }
-
   public Invoice getInvoice(Context context) {
 
     Context parentContext = context.getParent();
@@ -192,5 +102,16 @@ public class InvoiceLineController {
     }
 
     return invoice;
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+    Beans.get(InvoiceLineSupplychainService.class)
+        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
+
+    response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
   }
 }

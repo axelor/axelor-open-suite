@@ -47,7 +47,6 @@
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
 		<option value='storable'>Product</option>
-		<option value='pack'>Pack</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -450,5 +449,15 @@
 		<option value="pl">Polish Beta</option>
 		<option value="ru">Russian Beta</option>
 	</selection>
-	
+
+  <selection name="frequency.base.type.select">
+    <option value="monthDays">Month days</option>
+    <option value="everyNWeeks">Every N weeks</option>
+  </selection>
+
+  <selection name="team.task.type.select">
+    <option value="task">Task</option>
+    <option value="ticket">Ticket</option>
+  </selection>
+
 </object-views>

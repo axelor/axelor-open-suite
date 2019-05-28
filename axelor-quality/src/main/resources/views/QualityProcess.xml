@@ -5,17 +5,19 @@
 	<grid name="quality-process-grid" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">
 		<field name="name"/>
 		<field name="code"/>
-		<field name="product"/>
 	</grid>
 	
-	<form name="quality-process-form" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">		
+	<form name="quality-process-form" title="Quality process" width="large" model="com.axelor.apps.quality.db.QualityProcess">
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="code"/>
-			<field name="product"/>
 		</panel>
 		<panel name="controlPointModelPanel">
-			<panel-related name="controlPointModelListPanel" field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+			<panel-related name="controlPointModelListPanel" field="controlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+			<panel-related name="optionalControlPointModelListPanel" field="optionalControlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form"/>
+		</panel>
+		<panel name="qualityCorrectiveActionPanel">
+			<panel-related name="qualityCorrectiveActionListPanel" field="qualityCorrectiveActionList" colSpan="12" grid-view="quality-corrective-action-model-grid" form-view="quality-corrective-action-model-form"/>
 		</panel>
 	</form>
 		

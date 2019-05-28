@@ -108,6 +108,9 @@ public interface ContractService {
   void terminateContract(Contract contract, Boolean isManual, LocalDate date)
       throws AxelorException;
 
+  /** Closes the contract */
+  void close(Contract contract, LocalDate date);
+
   /**
    * Invoicing the contract
    *

@@ -112,6 +112,13 @@
 		<view type="form" name="raw-material-requirement-report-form"/>
 	</action-view>
 	
+	<menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root" title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
+
+	<action-view name="manufacturing.root.cost.calculations" title="Cost calculations" model="com.axelor.apps.production.db.UnitCostCalculation">
+		<view type="grid" name="cost-calculations-grid"/>
+		<view type="form" name="cost-calculations-form"/>
+	</action-view>
+
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
@@ -246,8 +253,8 @@
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
 	</action-view>
-	
-	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop"/>
+	 
+	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop" if="__config__.app.getApp('production').manageWorkshop" />
 	
 	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">
 		<view type="grid" name="stock-location-grid"/>

@@ -15,10 +15,6 @@
 		<decimal name="reservedQty" title="Allocated Qty" />
 		<decimal name="requestedReservedQty" title="Requested reserved qty"/>
 
-		<many-to-one name="parentLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
-		<one-to-many name="subLineList" ref="com.axelor.apps.stock.db.StockMoveLine"
-			mappedBy="parentLine" title="Pack lines" />
-
 		<finder-method name="findAllBySaleOrder"
 			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
 			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id" />
@@ -45,6 +41,11 @@
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
 	      orderBy="stockMove.realDate,id" all="true"/>
+		
+		<track>
+			<field name="requestedReservedQty"/>
+			<field name="reservedQty"/>
+		</track>
 
 	</entity>
 </domain-models>

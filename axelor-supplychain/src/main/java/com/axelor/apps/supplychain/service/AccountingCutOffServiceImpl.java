@@ -414,7 +414,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amountInCurrency = saleOrderLine.getExTaxTotal();
       }
     }
-    if (BigDecimal.ZERO.compareTo(totalQty) == 0) {
+    if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
       return null;
     }
 

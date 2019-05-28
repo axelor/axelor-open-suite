@@ -31,7 +31,7 @@
 
 		<panel name="actionPanel" showIf="operationSelect &lt; 5">
 			<button name="createInvoiceBtn" title="Generate the invoice"
-					onClick="action-method-sale-order-invoicing-wizard-generate"/>
+					onClick="action-group-sale-order-invoicing-wizard-generate"/>
 		</panel>
         <panel name="taxAmountPanel" hidden="true">
 			<field name="amountInvoiced" hidden="true"/>
@@ -49,10 +49,9 @@
 		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll || isSubline" min="0"/>
+			   readonlyIf="invoiceAll" min="0"/>
         <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
-		<field name="isSubline" hidden="true" />
 	</grid>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
@@ -92,4 +91,13 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController"
 			  method="fillDefaultValueWizard"/>
 	</action-method>
+  
+      <action-group name="action-group-sale-order-invoicing-wizard-generate">
+      <action name="action-validate-sale-order-invoicing-check-field"/>
+      <action name="action-method-sale-order-invoicing-wizard-generate"/>
+    </action-group>
+    
+    <action-validate name="action-validate-sale-order-invoicing-check-field">
+       <error message="Please enter amount to invoice." if="!amountToInvoice"/>
+    </action-validate>
 </object-views>

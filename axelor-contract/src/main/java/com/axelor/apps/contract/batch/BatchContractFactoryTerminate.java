@@ -44,7 +44,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
                 + " OR self.currentContractVersion.supposedEndDate <= :date)"
                 + " AND self.statusSelect = :status"
                 + " AND :batch NOT MEMBER of self.batchSet")
-        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")))
+        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         .bind("status", ContractRepository.ACTIVE_CONTRACT)
         .bind("batch", batch);
   }

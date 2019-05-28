@@ -17,16 +17,30 @@
  */
 package com.axelor.apps.quality.web;
 
+import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.apps.quality.db.QualityProcess;
+import com.axelor.apps.quality.db.repo.ControlPointRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
+import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
+import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class QualityControlController {
@@ -60,11 +74,68 @@ public class QualityControlController {
    * @param response
    * @throws AxelorException
    */
+  @SuppressWarnings("unchecked")
   public void preFillOperations(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
+    LinkedHashMap<String, Object> qualityProcessMap =
+        (LinkedHashMap<String, Object>) request.getContext().get("qualityProcess");
+    LinkedHashMap<String, Object> qualityControlMap =
+        (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
+
+    QualityProcess qualityProcess =
+        Beans.get(QualityProcessRepository.class)
+            .find(((Integer) qualityProcessMap.get("id")).longValue());
+    QualityControl qualityControl =
+        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+
+    qualityControlService.preFillOperations(qualityControl, qualityProcess);
+
+    response.setCanClose(true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void preFillOperationsFromOptionals(ActionRequest request, ActionResponse response) {
+
+    Set<Map<String, Object>> optionalControlPoints = new HashSet<Map<String, Object>>();
+    List<ControlPoint> optionalControlPointList = new ArrayList<ControlPoint>();
+
+    Collection<Map<String, Object>> optionalControlPointSet =
+        (Collection<Map<String, Object>>) request.getContext().get("optionalControlPointSet");
+
+    if (optionalControlPointSet != null) {
+      optionalControlPoints.addAll(optionalControlPointSet);
+    }
+
+    for (Map<String, Object> optionalControlPointData : optionalControlPoints) {
+      ControlPoint optionalControlPoint =
+          Beans.get(ControlPointRepository.class)
+              .find(Long.parseLong(optionalControlPointData.get("id").toString()));
+      optionalControlPointList.add(optionalControlPoint);
+    }
+
+    LinkedHashMap<String, Object> qualityControlMap =
+        (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
+    QualityControl qualityControl =
+        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+
+    qualityControlService.preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
+
+    response.setCanClose(true);
+  }
+
+  public void printQualityControl(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
     QualityControl qualityControl = request.getContext().asType(QualityControl.class);
-    qualityControl = qualityControlRepo.find(qualityControl.getId());
-    qualityControlService.preFillOperations(qualityControl);
-    response.setReload(true);
+    qualityControl = Beans.get(QualityControlRepository.class).find(qualityControl.getId());
+
+    String fileLink;
+    String title = Beans.get(QualityControlPrintServiceImpl.class).getFileName(qualityControl);
+    fileLink =
+        Beans.get(QualityControlPrintServiceImpl.class)
+            .printQualityControl(qualityControl, ReportSettings.FORMAT_PDF);
+
+    response.setView(ActionView.define(title).add("html", fileLink).map());
   }
 }

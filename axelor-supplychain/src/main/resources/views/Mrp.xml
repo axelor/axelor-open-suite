@@ -6,6 +6,7 @@
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
+        <field name="mrpSeq"/>
         <field name="createdOn"/>
         <field name="createdBy"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6"/>
@@ -22,18 +23,28 @@
             <button name="printWeeksBtn" title="Print (weekly breakdown)" icon="fa-print" onClick="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
             <button name="printListBtn" title="Print (list)" icon="fa-print" onClick="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
 	    </toolbar>
+	    <panel name="infoPanel">
+			<field name="mrpSeq" showTitle="false" colSpan="12">
+				<viewer depends="mrpSeq"><![CDATA[
+					<h3>
+						<span ng-show="record.mrpSeq" x-translate>MRP</span>
+						{{record.mrpSeq}}
+					</h3>
+				]]></viewer>
+			</field>
+			<field name="createdOn" colSpan="4"/>
+			<field name="createdBy" colSpan="4"/>
+			<field name="endDate" colSpan="4"/>
+			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" canEdit="false"/>
+			<field name="stockLocation.company" colSpan="4"/>
+	    </panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/>
-	        <field name="createdOn"/>
-	        <field name="createdBy"/>
-	        <field name="endDate" colSpan="6"/>
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" canEdit="false"/>
-	        <field name="stockLocation.company"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet" canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
-	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
+	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
 	    </panel>
 	    <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
 	        <field name="statusSelect" hidden="true"/>

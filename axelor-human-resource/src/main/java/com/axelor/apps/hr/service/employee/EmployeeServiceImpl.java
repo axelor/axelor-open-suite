@@ -19,13 +19,17 @@ package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -35,6 +39,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -120,22 +125,19 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           employee.getName());
     }
 
-    LocalDate itDate = fromDate;
-
-    while (!itDate.isAfter(toDate)) {
+    LocalDate date = fromDate;
+    while (!date.isAfter(toDate)) {
       duration =
           duration.add(
-              new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-      itDate = itDate.plusDays(1);
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date)));
+      date = date.plusDays(1);
     }
 
-    if (publicHolidayPlanning != null) {
-      duration =
-          duration.subtract(
-              Beans.get(PublicHolidayHrService.class)
-                  .computePublicHolidayDays(
-                      fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
-    }
+    duration =
+        duration.subtract(
+            Beans.get(PublicHolidayHrService.class)
+                .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
   }
@@ -168,17 +170,12 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
 
-    Map<String, String> urlMap = new HashMap<String, String>();
+    Map<String, String> urlMap = new HashMap<>();
     name =
         firstName != null && name != null
             ? firstName + "+" + name
             : name == null ? firstName : name;
     name = name == null ? "" : name;
-    urlMap.put(
-        "google",
-        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
-            + name
-            + "' target='_blank' />");
     urlMap.put(
         "facebook",
         "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
@@ -202,5 +199,53 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
             + "' target='_blank' />");
 
     return urlMap;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Long generateNewDPAE(Employee employee) throws AxelorException {
+    EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
+    if (mainEmploymentContract == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          employee.getName());
+    }
+
+    Company payCompany = mainEmploymentContract.getPayCompany();
+    Partner employer = payCompany.getPartner();
+
+    DPAE newDPAE = new DPAE();
+
+    // Employer
+    newDPAE.setRegistrationCode(employer.getRegistrationCode());
+    newDPAE.setMainActivityCode(employer.getMainActivityCode());
+    newDPAE.setCompany(payCompany);
+    newDPAE.setCompanyAddress(employer.getMainAddress());
+    newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
+    newDPAE.setHealthService(employer.getHealthService());
+    newDPAE.setHealthServiceAddress(employer.getHealthServiceAddress());
+
+    // Employee
+    newDPAE.setLastName(employee.getContactPartner().getName());
+    newDPAE.setFirstName(employee.getContactPartner().getFirstName());
+    newDPAE.setSocialSecurityNumber(employee.getSocialSecurityNumber());
+    newDPAE.setSexSelect(employee.getSexSelect());
+    newDPAE.setDateOfBirth(employee.getBirthDate());
+    newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth());
+    newDPAE.setCityOfBirth(employee.getCityOfBirth());
+    newDPAE.setCountryOfBirth(employee.getCountryOfBirth());
+
+    // Contract
+    newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
+    newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
+    newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
+    newDPAE.setContractType(mainEmploymentContract.getContractType());
+    newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
+
+    employee.addDpaeListItem(newDPAE);
+
+    Beans.get(EmployeeRepository.class).save(employee);
+    return newDPAE.getId();
   }
 }

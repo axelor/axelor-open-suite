@@ -15,7 +15,7 @@
 	  <panel name="mainPanel">
 	    <field name="product" onChange="action-bom-line-record-on-product-change" domain="self.stockManaged='true'" form-view="product-form" grid-view="product-grid"/>
 	    <field name="qty" colSpan="3" x-scale="2"/>
-	    <field name="unit" readonlyIf="billOfMaterial != null" colSpan="3" canEdit="false"/>
+	    <field name="unit" readonlyIf="billOfMaterial != null" colSpan="3" canEdit="false" required="true"/>
 	    <field name="billOfMaterial" readonlyIf="product == null" canNew="true" canEdit="billOfMaterial.isSpecific" onChange="action-bom-line-record-on-bom-change" onSelect="action-bill-of-material-line-attrs-bom-domain-onselect"/>
 	    <field name="priority"/>
 	    <field name="billOfMaterial.isSpecific"/>

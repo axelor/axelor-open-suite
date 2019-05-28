@@ -19,8 +19,9 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -28,6 +29,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.team.db.TeamTask;
@@ -42,18 +46,18 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskBusinessService teamTaskBusinessService;
+  private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   private TeamTaskRepository teamTaskRepository;
 
   @Inject
   public ProjectGeneratorFactoryTask(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskBusinessService teamTaskBusinessService,
+      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
       TeamTaskRepository teamTaskRepository) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
-    this.teamTaskBusinessService = teamTaskBusinessService;
+    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
   }
 
@@ -68,14 +72,24 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   @Override
   @Transactional
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
+      boolean isTaskGenerated =
+          teamTaskRepository
+                  .all()
+                  .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
+                  .fetch()
+                  .size()
+              > 0;
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+          && !(isTaskGenerated)) {
+
         TeamTask task =
-            teamTaskBusinessService.create(saleOrderLine, project, project.getAssignedTo());
+            teamTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
           task.setTeamTaskInvoicing(true);
@@ -84,9 +98,21 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
         task.setTaskDate(startDate.toLocalDate());
         task.setUnitPrice(product.getSalePrice());
+        task.setExTaxTotal(saleOrderLine.getExTaxTotal());
+        if (project.getTeamTaskInvoicing()
+            && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE) {
+          task.setToInvoice(true);
+        } else if (project.getTeamTaskInvoicing()) {
+          task.setToInvoice(false);
+        }
         teamTaskRepository.save(task);
         tasks.add(task);
       }
+    }
+    if (tasks == null || tasks.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
     }
 
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))

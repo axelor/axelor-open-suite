@@ -84,8 +84,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected BigDecimal exTaxTotal;
   protected BigDecimal inTaxTotal;
   protected Integer typeSelect = 0;
-  protected boolean isSubLine = false;
-  protected Integer packPriceSelect = 0;
 
   public static final int DEFAULT_SEQUENCE = 0;
 
@@ -108,9 +106,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       BigDecimal qty,
       Unit unit,
       int sequence,
-      boolean isTaxInvoice,
-      boolean isSubLine,
-      Integer packPriceSelect) {
+      boolean isTaxInvoice) {
 
     this(invoice);
 
@@ -123,8 +119,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.isTaxInvoice = isTaxInvoice;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
     this.currencyService = new CurrencyService(this.today);
-    this.isSubLine = isSubLine;
-    this.packPriceSelect = packPriceSelect;
   }
 
   protected InvoiceLineGenerator(
@@ -143,21 +137,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       int discountTypeSelect,
       BigDecimal exTaxTotal,
       BigDecimal inTaxTotal,
-      boolean isTaxInvoice,
-      boolean isSubLine,
-      Integer packPriceSelect) {
+      boolean isTaxInvoice) {
 
-    this(
-        invoice,
-        product,
-        productName,
-        description,
-        qty,
-        unit,
-        sequence,
-        isTaxInvoice,
-        isSubLine,
-        packPriceSelect);
+    this(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
     this.price = price;
     this.inTaxPrice = inTaxPrice;
@@ -188,7 +170,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     InvoiceLine invoiceLine = new InvoiceLine();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    boolean accountRequired = isAccountRequired();
     Partner partner = invoice.getPartner();
     Company company = invoice.getCompany();
 
@@ -197,7 +178,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setProduct(product);
 
     invoiceLine.setProductName(productName);
-    if (product != null && accountRequired) {
+    if (product != null) {
       invoiceLine.setProductCode(product.getCode());
       Account account =
           accountManagementService.getProductAccount(
@@ -213,19 +194,17 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setPrice(price);
     invoiceLine.setInTaxPrice(inTaxPrice);
 
-    invoiceLine.setIsSubLine(isSubLine);
     invoiceLine.setPriceDiscounted(priceDiscounted);
     invoiceLine.setQty(qty);
     invoiceLine.setUnit(unit);
 
     invoiceLine.setTypeSelect(typeSelect);
-    invoiceLine.setPackPriceSelect(packPriceSelect);
 
-    if (taxLine == null && accountRequired) {
+    if (taxLine == null) {
       this.determineTaxLine();
     }
 
-    if (product != null && accountRequired) {
+    if (product != null) {
       Tax tax =
           Beans.get(AccountManagementService.class)
               .getProductTax(product, company, null, isPurchase);
@@ -259,10 +238,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     return invoiceLine;
   }
 
-  public boolean isAccountRequired() {
-    return true;
-  }
-
   public void determineTaxLine() throws AxelorException {
 
     if (product != null) {
@@ -282,7 +257,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   public void computeTotal() {
 
-    if (typeSelect == InvoiceLineRepository.TYPE_TITLE || !isAccountRequired()) {
+    if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
       return;
     }
 
@@ -302,7 +277,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException {
 
-    if (typeSelect == InvoiceLineRepository.TYPE_TITLE || !isAccountRequired()) {
+    if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
       return;
     }
 

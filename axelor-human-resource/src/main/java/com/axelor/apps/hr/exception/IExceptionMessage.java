@@ -73,8 +73,11 @@ public interface IExceptionMessage {
   static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
   static final String TIMESHEET_DATE_CONFLICT = /*$$(*/
-      "There is a conflict between the dates entered and the dates in the lines : %s" /*)*/;
+      "There is a conflict between the timesheet input dates and the dates of the following lines: %s" /*)*/;
   static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
+  static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
+  static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
+      "The date of timesheet line %d can't be empty" /*)*/;
   static final String GENERAL_EMPLOYEE_ACTIVITY = /*$$(*/
       "Please, enter an activity for the employee %s" /*)*/;
   static final String TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING = /*$$(*/
@@ -182,4 +185,9 @@ public interface IExceptionMessage {
   /** TsTimer Service */
   String NO_TIMESHEET_CREATED = /*$$(*/
       "No timesheet line has been created because the duration is less than 1 minute" /*)*/;
+
+  static final String EXPENSE_NOT_SELECTED = /*$$(*/ "Please, select an expense" /*)*/;
+
+  static final String BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP = /*$$(*/
+      "Employment contracts exported : %s" /*)*/;
 }

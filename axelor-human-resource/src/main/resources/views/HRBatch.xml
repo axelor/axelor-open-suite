@@ -7,9 +7,9 @@
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="actionSelect"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="description"/>
-    </grid>
+  </grid>
  
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain" onLoad="action-hr-batch-attrs-employee-set-domain">
 	  	<panel name="mainPanel">
@@ -64,6 +64,12 @@
                 <panel-related name="employeeSetPanel" field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
                 <button name="leaveManagementBatchBtn" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
             </panel>
+            
+            <panel title="Export des salariés" hidden="true" showIf="actionSelect == 6">
+            	<field name="employmentContractExportTypeSelect" colSpan="4"/>
+            	<spacer name="employmentContractExportSpacer" colSpan="8"/>
+            	<button name="employmentContractExportBatchBtn" readonlyIf="employmentContractExportTypeSelect == null" title="Employment contract export batch" onClick="save,action-hrbatch-method-hr-batch" colSpan="4"/>
+            </panel>
 
 			<panel name="informationsPanel" title="Informations">
 				<field name="createdOn" title="Created on"/>
@@ -88,7 +94,7 @@
 
     <action-attrs name="action-hr-batch-attrs-employee-set-domain">
         <attribute for="employeeSet" name="domain" expr="eval: null"/>
-        <attribute for="employeeSet" name="domain" expr="eval: &quot;self.payCompany.id = ${company.id}&quot;" if="eval: company != null"/>
+        <attribute for="employeeSet" name="domain" expr="eval: &quot;self.mainEmploymentContract.payCompany.id = ${company.id}&quot;" if="eval: company != null"/>
     </action-attrs>
 	
 

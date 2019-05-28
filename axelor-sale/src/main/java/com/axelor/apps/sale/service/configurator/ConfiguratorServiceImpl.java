@@ -203,7 +203,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       saleOrderLine =
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
-    saleOrder.addSaleOrderLineListItem(saleOrderLine);
     Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 
     Beans.get(SaleOrderRepository.class).save(saleOrder);
@@ -217,8 +216,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     if (saleOrderLine.getProduct() != null) {
-      saleOrderLineService.computeProductInformation(
-          saleOrderLine, saleOrderLine.getSaleOrder(), null);
+      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
     }
   }
 

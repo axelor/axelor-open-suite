@@ -20,9 +20,9 @@ package com.axelor.apps.mobile.web;
 import com.axelor.apps.base.db.AppMobile;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,19 +30,30 @@ import java.util.stream.Collectors;
 
 public class AppMobileController {
 
+  @Inject AppService appService;
+
   public void getAppMobile(ActionRequest request, ActionResponse response) {
 
     Map<String, Object> data = new HashMap<>();
 
-    AppMobile appMobile = (AppMobile) Beans.get(AppService.class).getApp("mobile");
+    AppMobile appMobile = (AppMobile) appService.getApp("mobile");
 
     data.put("isAppMobileEnable", appMobile.getActive());
-    data.put("isSaleAppEnable", appMobile.getIsSaleAppEnable());
-    data.put("isCrmAppEnable", appMobile.getIsCrmAppEnable());
-    data.put("isTimesheetAppEnable", appMobile.getIsTimesheetAppEnable());
-    data.put("isLeaveAppEnable", appMobile.getIsLeaveAppEnable());
-    data.put("isExpenseAppEnable", appMobile.getIsExpenseAppEnable());
-    data.put("isTaskAppEnable", appMobile.getIsTaskAppEnable());
+    data.put("isSaleAppEnable", appService.isApp("sale") ? appMobile.getIsSaleAppEnable() : false);
+    data.put("isCrmAppEnable", appService.isApp("crm") ? appMobile.getIsCrmAppEnable() : false);
+    data.put(
+        "isTimesheetAppEnable",
+        appService.isApp("timesheet") ? appMobile.getIsTimesheetAppEnable() : false);
+    data.put(
+        "isLeaveAppEnable", appService.isApp("leave") ? appMobile.getIsLeaveAppEnable() : false);
+    data.put(
+        "isExpenseAppEnable",
+        appService.isApp("expense") ? appMobile.getIsExpenseAppEnable() : false);
+    data.put(
+        "isTaskAppEnable", appService.isApp("project") ? appMobile.getIsTaskAppEnable() : false);
+    data.put(
+        "isQualityAppEnable",
+        appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 

@@ -42,15 +42,13 @@
 
         <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
         <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
+        <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
         <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
         
         <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
         <integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
-        <boolean name="isSubLine" title="Sub line" readonly="true"/>
-        <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
-        <decimal name="totalPack" title="Total for pack lines"/>
 
         <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
         <string name="taxCode" readonly="true"/>
@@ -74,10 +72,6 @@
         <extra-code><![CDATA[
 		public static final int TYPE_NORMAL = 0;
 		public static final int TYPE_TITLE = 1;
-		public static final int TYPE_PACK = 2;
-		
-		public static final int PACK_PRICE_ONLY = 0;
-		public static final int SUBLINE_PRICE_ONLY = 1;
         ]]></extra-code>
         
     </entity>

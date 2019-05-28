@@ -14,7 +14,7 @@
         <many-to-one name="kilometricAllowParam" ref="com.axelor.apps.hr.db.KilometricAllowParam" title="Kilometric Allowance Param" />
         <date name="startDate" title="Start Date"/>
         <date name="endDate" title="End Date"/>
-        <binary name="vehicleRegistrationCertificate" encrypted="true"/>
+        <binary name="vehicleRegistrationCertificate" title="Registration certificate" encrypted="true"/>
 
     </entity>
 

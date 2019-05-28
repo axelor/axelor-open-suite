@@ -6,7 +6,7 @@
 	<grid name="training-grid" title="Trainings" model="com.axelor.apps.talent.db.Training">
 		<field name="name" />
 		<field name="category" />
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="duration" />
 		<field name="mandatoryTraining" />
 	</grid>

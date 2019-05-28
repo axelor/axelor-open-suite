@@ -28,9 +28,9 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
   protected ShippingCoefService shippingCoefService;
-  protected StockMoveLineService stockMoveLineService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
 
   @Inject
@@ -79,7 +81,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
-      StockMoveLineService stockMoveLineService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService) {
 
     this.unitConversionService = unitConversionService;
@@ -87,7 +89,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
     this.appBaseService = appBaseService;
     this.shippingCoefService = shippingCoefService;
-    this.stockMoveLineService = stockMoveLineService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
   }
 
@@ -117,7 +119,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap =
         getAllPurchaseOrderLinePerDate(purchaseOrder);
 
-    for (LocalDate estimatedDeliveryDate : purchaseOrderLinePerDateMap.keySet()) {
+    for (LocalDate estimatedDeliveryDate :
+        purchaseOrderLinePerDateMap
+            .keySet()
+            .stream()
+            .filter(x -> x != null)
+            .sorted((x, y) -> x.compareTo(y))
+            .collect(Collectors.toList())) {
 
       List<PurchaseOrderLine> purchaseOrderLineList =
           purchaseOrderLinePerDateMap.get(estimatedDeliveryDate);
@@ -130,7 +138,18 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         stockMoveIdList.addAll(stockMoveId);
       }
     }
+    Optional<List<PurchaseOrderLine>> purchaseOrderLineListDeliveryDateNull =
+        Optional.ofNullable(purchaseOrderLinePerDateMap.get(null));
+    if (purchaseOrderLineListDeliveryDateNull.isPresent()) {
 
+      List<Long> stockMoveId =
+          createStockMove(purchaseOrder, null, purchaseOrderLineListDeliveryDateNull.get());
+
+      if (stockMoveId != null && !stockMoveId.isEmpty()) {
+
+        stockMoveIdList.addAll(stockMoveId);
+      }
+    }
     return stockMoveIdList;
   }
 
@@ -286,15 +305,30 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           createProductStockMoveLine(
               purchaseOrderLine,
               qty,
-              purchaseOrderLine.getProduct().getControlOnReceipt() ? qualityStockMove : stockMove);
+              needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove);
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
     }
-    if (stockMoveLine != null) {
-      stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
-    }
     return stockMoveLine;
+  }
+
+  /**
+   * @param product
+   * @param purchaseOrder
+   * @return true if product needs a control on receipt and if the purchase order is not a direct
+   *     order
+   */
+  protected boolean needControlOnReceipt(PurchaseOrderLine purchaseOrderLine) {
+
+    Product product = purchaseOrderLine.getProduct();
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+
+    if (product.getControlOnReceipt()
+        && !purchaseOrder.getStockLocation().getDirectOrderLocation()) {
+      return true;
+    }
+    return false;
   }
 
   protected StockMoveLine createProductStockMoveLine(
@@ -313,7 +347,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .getCompanyExTaxTotal()
               .divide(
                   purchaseOrderLine.getQty(),
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                  appBaseService.getNbDecimalDigitForUnitPrice(),
                   RoundingMode.HALF_EVEN);
     }
 
@@ -342,10 +376,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     BigDecimal shippingCoef =
         shippingCoefService.getShippingCoef(
             product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany(), qty);
-    if (shippingCoef.compareTo(BigDecimal.ONE) != 0) {
-      priceDiscounted = priceDiscounted.multiply(shippingCoef);
-      companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
-    }
+    priceDiscounted = priceDiscounted.multiply(shippingCoef);
+    companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
     BigDecimal taxRate = BigDecimal.ZERO;
     TaxLine taxLine = purchaseOrderLine.getTaxLine();
@@ -353,27 +385,31 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       taxRate = taxLine.getValue();
     }
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
         qty,
+        BigDecimal.ZERO,
         priceDiscounted,
         companyUnitPriceUntaxed,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
         purchaseOrder.getInAti(),
-        taxRate);
+        taxRate,
+        null,
+        purchaseOrderLine);
   }
 
   protected StockMoveLine createTitleStockMoveLine(
       PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
@@ -381,7 +417,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         stockMove,
         2,
         purchaseOrderLine.getPurchaseOrder().getInAti(),
-        null);
+        null,
+        null,
+        purchaseOrderLine);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
@@ -460,7 +498,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     if (purchaseOrder.getPurchaseOrderLineList() == null
         || purchaseOrder.getPurchaseOrderLineList().isEmpty()) {
-      return IPurchaseOrder.STATE_NOT_RECEIVED;
+      return PurchaseOrderRepository.STATE_NOT_RECEIVED;
     }
 
     int receiptState = -1;
@@ -469,22 +507,24 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
       if (this.isStockMoveProduct(purchaseOrderLine, purchaseOrder)) {
 
-        if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_NOT_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        if (purchaseOrderLine.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_NOT_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_NOT_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_NOT_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_NOT_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_NOT_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-          return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+          return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
         }
       }
     }

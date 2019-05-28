@@ -6,7 +6,7 @@
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
 	onNew="action-group-supplychain-saleorder-onnew"
 	onLoad="action-group-business-project-saleorder-onload"
-    onSave="action-supplychain-saleorder-onsave">
+	onSave="action-supplychain-saleorder-onsave">
 		<panel-include view="sale-order-form" from="axelor-sale"/>
 	</form>
 	

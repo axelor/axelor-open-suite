@@ -204,6 +204,20 @@ public class InvoiceController {
     }
   }
 
+  public void checkNotImputedRefunds(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = invoiceRepo.find(invoice.getId());
+
+    try {
+      String msg = invoiceService.checkNotImputedRefunds(invoice);
+      if (msg != null) {
+        response.setFlash(msg);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Fonction appeler par le bouton générer un avoir.
    *
@@ -276,7 +290,7 @@ public class InvoiceController {
 
   /** Method to generate invoice as a Pdf */
   @SuppressWarnings("unchecked")
-  public void showInvoice(ActionRequest request, ActionResponse response) {
+  public void showInvoices(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     String fileLink;
     String title;
@@ -296,15 +310,25 @@ public class InvoiceController {
         fileLink = invoicePrintService.printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
+        String format = context.get("format") != null ? context.get("format").toString() : "pdf";
+        Integer reportType =
+            context.get("reportType") != null
+                ? Integer.parseInt(context.get("reportType").toString())
+                : null;
         fileLink =
             invoicePrintService.printInvoice(
-                invoiceRepo.find(request.getContext().asType(Invoice.class).getId()), false);
+                invoiceRepo.find(Long.parseLong(context.get("id").toString())),
+                false,
+                format,
+                reportType);
         title = I18n.get("Invoice");
+        response.setCanClose(true);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -312,13 +336,17 @@ public class InvoiceController {
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    Invoice invoice = invoiceRepo.find(context.asType(Invoice.class).getId());
+    Invoice invoice = invoiceRepo.find(Long.parseLong(context.get("id").toString()));
+    Integer reportType =
+        context.get("reportType") != null
+            ? Integer.parseInt(context.get("reportType").toString())
+            : null;
 
     try {
-      response.setReload(true);
+      response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
-              .add("html", invoicePrintService.printInvoice(invoice, true))
+              .add("html", invoicePrintService.printInvoice(invoice, true, "pdf", reportType))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -821,13 +849,13 @@ public class InvoiceController {
           if (invoice.getCompany() == null
               || company == null
               || !invoice.getCompany().equals(company)) {
-            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY);
+            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
             return;
           }
           if (invoice.getCurrency() == null
               || currency == null
               || !invoice.getCurrency().equals(currency)) {
-            response.setError(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY);
+            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
             return;
           }
 
@@ -835,7 +863,7 @@ public class InvoiceController {
         }
 
         if (invoiceToPay.isEmpty()) {
-          response.setError(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY);
+          response.setError(I18n.get(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY));
         }
 
         response.setView(

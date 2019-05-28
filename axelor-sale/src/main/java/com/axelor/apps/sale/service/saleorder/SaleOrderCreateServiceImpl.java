@@ -224,13 +224,34 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   @Override
   @Transactional
-  public SaleOrder createSaleOrder(SaleOrder context) {
+  public SaleOrder createSaleOrder(
+      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
+      throws AxelorException {
     SaleOrder copy = saleOrderRepo.copy(context, true);
+    copy.setCreationDate(appSaleService.getTodayDate());
+    copy.setCurrency(wizardCurrency);
+    copy.setPriceList(wizardPriceList);
+
+    saleOrderService.computeEndOfValidityDate(copy);
+
+    this.updateSaleOrderLineList(copy);
+
+    saleOrderComputeService.computeSaleOrder(copy);
+
     copy.setTemplate(false);
     copy.setTemplateUser(null);
-    copy.setCreationDate(appSaleService.getTodayDate());
-    saleOrderService.computeEndOfValidityDate(copy);
+
     return copy;
+  }
+
+  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        Beans.get(SaleOrderLineService.class).fillPrice(saleOrderLine, saleOrder);
+        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
+      }
+    }
   }
 
   @Override

@@ -23,6 +23,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
@@ -36,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -90,7 +92,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3),
-            template.getMetaModel().getFullName());
+            I18n.get(IExceptionMessage.SET_EMAIL_TEMPLATE_MESSAGE));
       }
       initMaker(objectId, model, tag);
     }
@@ -177,7 +179,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             addressBlock,
             mediaTypeSelect,
             getMailAccount());
-    message.setTemplate(template);
+
+    message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
 
     message = Beans.get(MessageRepository.class).save(message);
 
@@ -234,7 +237,11 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       return emailAddressList;
     }
 
-    for (String recipient : recipients.split(RECIPIENT_SEPARATOR)) {
+    for (String recipient :
+        Splitter.onPattern(RECIPIENT_SEPARATOR)
+            .trimResults()
+            .omitEmptyStrings()
+            .splitToList(recipients)) {
       emailAddressList.add(getEmailAddress(recipient));
     }
     return emailAddressList;

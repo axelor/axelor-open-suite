@@ -1,7 +1,22 @@
 # Changelog
+## [Unreleased 5.3.0]
+## Features
+- Add Pack Feature in sale order.
+- FLEET : Manage rental cars and minor fixes
+- Studio: New features - Label with color,multiline string,grid column sequence,form width and order by properties. 
+
+## Improvements
+- Remove Pack Feature from Product.
+- Account : Remove DirectDebitManagement
+- MENU BUILDER : Add selection support for icon and iconBackground
+- Custom Model : Hide menu panel and allows to create menu from menubuilder only
 
 ## [Unreleased 5.2.0]
 ## Features
+- Employee: added DPAE
+- TeamTask: added Frequency
+- Employee: added wizard when creating new employee
+- LogisticalForm: if config enabled, send an email on first save
 - SaleOrder: added boolean to invoice via generated task
 - Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
 - TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
@@ -44,8 +59,43 @@
 - Purchase Request : Addition of M2M 'purchaseOrderSet'
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 - Invoicing project : Menu organisation
+- Business Project : Addition of required contion on parentTaskTemplate. 
+- TeamTask : Added relation with saleOrderLine and InvoiceLine.
+- Project module : ProjectPlanningTime ( Start time / End time )
+- TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
+- MOVE : improve reversion process.
+- SaleOrder : Task By product and Task_By_Line Invoicing
+- SALE ORDER : Update in 'Quotations template' working process and view.
+- Business Project : Addition of new m2o field 'customerAddress'.
+- Base : Additon of new object 'MailingListMessage' along with views, parent menu and sub-menus.
+- DataBackup : Relative date
+- BUSINESS PROJECT : Connect Contract to Project
+- PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
+- WEEKLY PLANNING : Add a type and minor changes
+- TeamTask : Business Project module / TeamTask.toInvoice (Package)
+- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence. 
+- InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
+- HR : Add CSV export support for Employment Contracts from its view and HR batch
+- MRP : Generate new sequence on save
+- TeamTask : Separate tasks and tickets
+- DataBackup : update importId when its null with format IDDDMMYYHHMM
+- Project : Added dashlet view of contract invoices
+- Quality : Major updates in axelor-quality module
+- Business Project : Addition of new field statusSelect in InvoicingProject.
+- Generating supplier order from partner form.
+- Mobile App : Add configuration for quality app on mobile app
+- INVOICE : new process to print
+- QUALITY CONTROL : New report to print
+- PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
+- AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it. 
+- Quality module : Changes in views.
+- OPPORTUNITY : Changes on opportunityType field.
+- INVOICE : Change form view's organization to fit the SaleOrder view.
 
 ## Improvements
+- Contract: added button to manually close contract if termination date was set in the future
+- ContractLine: hide `isConsumptionLine` if not activated in Contract config
+- Employee: refactored view (Add a creation workflow and allow to automatically create or link a user)
 - SaleOrder: refactored 'Business Project' panel
 - TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
@@ -60,6 +110,19 @@
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
 - Moible: Add new app setting for 'Task'
+- JobPosition : Hide statusOpenBtn on statusSelect = 2.
+- Purchase Order : remove IPurchaseOrder deprecated class
+- Project module : Add metaFile field on TeamTask
+- Event : Allowing to suppress unsynchronized events. 
+- Employee : Add new fields 'birthDepartment' and 'cityofBirth'
+- Employment Contract : Add buttons to "Tools" in menubar and set form width to large
+- TeamsTask : New menu titles
+- Contract : partner / project filters improved
+- TeamTask : Set default typeSelect = 'task'
+- APP BUILDER : Remove JsonCreator object
+- TeamTask : copy object with empty fields
+- ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
+- PRICE LIST : hide O2M historized price lists in pop-up view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -67,6 +130,13 @@
 - TeamTask : Resolve NPE by updating action of HR module.
 - Generation of Project/Phase from SaleOrder
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
-
+- Contract : Fix issue of not saving currentContractVersion fields in form view
+- ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
+- Accounting situation : added two fields (insurCreditDate and description) to manage the Credit Insurance.
+- Employee : Fix issue of not saving each phase of creation process
+- TeamTask : Fix issue of creating new record from calendar view
+- Marketing : Fix error when trying to generate an event per target
+- Contract : Fix import error in data-init. 
+- Sale Quotation : Move menu from CRM to Sale module.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

@@ -57,6 +57,9 @@ public class HrBatchService extends AbstractBatchService {
       case HrBatchRepository.ACTION_LEAVE_MANAGEMENT_RESET:
         batch = leaveManagementReset(hrBatch);
         break;
+      case HrBatchRepository.ACTION_EMPLOYMENT_CONTRACT_EXPORT:
+        batch = employmentContractExport(hrBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -91,5 +94,10 @@ public class HrBatchService extends AbstractBatchService {
   public Batch leaveManagementReset(HrBatch hrBatch) {
 
     return Beans.get(BatchLeaveManagementReset.class).run(hrBatch);
+  }
+
+  public Batch employmentContractExport(HrBatch hrBatch) {
+
+    return Beans.get(BatchEmploymentContractExport.class).run(hrBatch);
   }
 }

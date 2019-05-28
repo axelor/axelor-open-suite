@@ -29,3 +29,9 @@ Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
 <p>We are seeing a shortage of stock for the product $StockRules.product.fullName$ in the $StockRules.stockLocation.name$ location.</p>
 
 <p>Best Regards</p>";;;;2
+"Logistical form";"LogisticalForm";"1";;;;"true";;"New logistical form entered ($LogisticalForm.deliveryNumber$)";"<p>Hello,</p>
+
+<p>A new logistical form was entered.</p>
+<p>Its delivery number is $LogisticalForm.deliveryNumber$ and the delivered customer is $LogisticalForm.deliverToCustomerPartner.fullName$.</p>
+
+<p>Best regards</p>";"";;;"2"

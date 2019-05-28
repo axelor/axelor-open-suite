@@ -158,6 +158,9 @@ public class AccountingReportController {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     try {
+
+      int typeSelect = accountingReport.getTypeSelect();
+
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
           || accountingReport.getTypeSelect() == 0) {
@@ -166,17 +169,20 @@ public class AccountingReportController {
         return;
       }
 
-      logger.debug("Type selected : {}", accountingReport.getTypeSelect());
+      logger.debug("Type selected : {}", typeSelect);
 
-      if ((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_ADMINISTRATION
-          && accountingReport.getTypeSelect()
-              < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
+      if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
+          && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
 
         MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
         moveLineExportService.exportMoveLine(accountingReport);
 
       } else {
+
+        if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
+          typeSelect = AccountingReportRepository.REPORT_GENERAL_LEDGER;
+        }
 
         accountingReportService.setPublicationDateTime(accountingReport);
 
@@ -191,8 +197,7 @@ public class AccountingReportController {
 
         String fileLink =
             ReportFactory.createReport(
-                    String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
-                    name + "-${date}")
+                    String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelect), name + "-${date}")
                 .addParam("AccountingReportId", accountingReport.getId())
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
                 .addFormat(accountingReport.getExportTypeSelect())

@@ -156,8 +156,7 @@
         		<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
         	 </panel>
         	<panel name="calendarsConfigPanel" title="Calendars Configuration" showIf="[2,5].indexOf(stepStatusSelect) > -1">
-        		<panel-related name="followersCalUserSetPanel" field="followersCalUserSet" canEdit="false" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
-        		<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
+        		<panel-related name="followersCalUserSetPanel" field="followersCalUserSet" canEdit="false" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
 		    <panel name="electronicSignaturePanel" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')"  showIf="[2,5].indexOf(stepStatusSelect) > -1">
@@ -200,7 +199,6 @@
 			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related name="companySetPanel" title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
-			<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
 			<field name="receiveEmails"/>
 			<field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>

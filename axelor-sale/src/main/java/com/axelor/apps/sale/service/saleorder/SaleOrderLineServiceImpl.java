@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -38,6 +37,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -45,9 +45,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +65,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected AccountManagementService accountManagementService;
 
   @Override
-  public void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
@@ -77,88 +74,26 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
-    saleOrderLine.setSubLineList(null);
-    saleOrderLine.setPackPriceSelect(null);
-
-    if (appSaleService.getAppSale().getProductPackMgt()
-        && saleOrderLine
-            .getProduct()
-            .getProductTypeSelect()
-            .equals(ProductRepository.PRODUCT_TYPE_PACK)
-        && !saleOrderLine.getIsSubLine()) {
-      saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_PACK);
-      saleOrderLine.setPackPriceSelect(packPriceSelect);
-      saleOrderLine.setSubLineList(createPackLines(saleOrderLine, saleOrder));
-    }
-
-    fillPrice(saleOrderLine, saleOrder, packPriceSelect);
+    fillPrice(saleOrderLine, saleOrder);
   }
 
   @Override
-  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
-      throws AxelorException {
-
-    boolean taxRequired = checkTaxRequired(saleOrderLine, packPriceSelect);
-
-    if (taxRequired) {
-      fillTaxInformation(saleOrderLine, saleOrder);
-      saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
-      BigDecimal exTaxPrice;
-      BigDecimal inTaxPrice;
-      if (saleOrderLine.getProduct().getInAti()) {
-        inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
-        inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
-        saleOrderLine.setInTaxPrice(inTaxPrice);
-        saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
-      } else {
-        exTaxPrice = this.getExTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
-        exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
-        saleOrderLine.setPrice(exTaxPrice);
-        saleOrderLine.setInTaxPrice(
-            convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
-      }
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    fillTaxInformation(saleOrderLine, saleOrder);
+    saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
+    BigDecimal exTaxPrice;
+    BigDecimal inTaxPrice;
+    if (saleOrderLine.getProduct().getInAti()) {
+      inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
+      inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
+      saleOrderLine.setInTaxPrice(inTaxPrice);
+      saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
     } else {
-      saleOrderLine.setPrice(BigDecimal.ZERO);
-      saleOrderLine.setInTaxPrice(BigDecimal.ZERO);
-      saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
-      saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
-      saleOrderLine.setCompanyCostPrice(BigDecimal.ZERO);
+      exTaxPrice = this.getExTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
+      exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
+      saleOrderLine.setPrice(exTaxPrice);
+      saleOrderLine.setInTaxPrice(convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
     }
-  }
-
-  protected List<SaleOrderLine> createPackLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
-
-    Integer sequence = saleOrderLine.getSequence();
-    if (sequence == null) {
-      sequence = 0;
-    }
-    if (saleOrder.getSaleOrderLineList() != null && sequence == 0) {
-      for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-        if (orderLine.getSequence() > sequence) {
-          sequence = orderLine.getSequence();
-        }
-      }
-    }
-
-    if (saleOrderLine.getSequence() == null) {
-      saleOrderLine.setSequence(++sequence);
-    }
-
-    for (PackLine packLine : saleOrderLine.getProduct().getPackLines()) {
-      SaleOrderLine subLine = new SaleOrderLine();
-      Product subProduct = packLine.getProduct();
-      subLine.setProduct(subProduct);
-      subLine.setQty(new BigDecimal(packLine.getQuantity()).multiply(saleOrderLine.getQty()));
-      subLine.setIsSubLine(true);
-      computeProductInformation(subLine, saleOrder, saleOrderLine.getPackPriceSelect());
-      computeValues(saleOrder, subLine);
-      subLine.setSequence(++sequence);
-      subLines.add(subLine);
-    }
-
-    return subLines;
   }
 
   protected BigDecimal fillDiscount(
@@ -183,6 +118,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
       saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+    } else if (!saleOrder.getTemplate()) {
+      saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
+      saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     }
 
     return price;
@@ -191,36 +129,23 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
-    TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-    saleOrderLine.setTaxLine(taxLine);
+    if (saleOrder.getClientPartner() != null) {
+      TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+      saleOrderLine.setTaxLine(taxLine);
 
-    FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
 
-    Tax tax =
-        accountManagementService.getProductTax(
-            saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+      Tax tax =
+          accountManagementService.getProductTax(
+              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
-    TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
 
-    saleOrderLine.setTaxEquiv(taxEquiv);
-  }
-
-  @Override
-  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect) {
-
-    if (appSaleService.getAppSale().getProductPackMgt()) {
-
-      if (saleOrderLine.getIsSubLine()
-          && packPriceSelect == SaleOrderLineRepository.PACK_PRICE_ONLY) {
-        return false;
-      }
-      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK
-          && packPriceSelect == SaleOrderLineRepository.SUBLINE_PRICE_ONLY) {
-        return false;
-      }
+      saleOrderLine.setTaxEquiv(taxEquiv);
+    } else {
+      saleOrderLine.setTaxLine(null);
+      saleOrderLine.setTaxEquiv(null);
     }
-
-    return true;
   }
 
   @Override
@@ -457,6 +382,34 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (priceList != null) {
       PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+
+      if (saleOrder.getTemplate()) {
+        Integer manualDiscountAmountType = saleOrderLine.getDiscountTypeSelect();
+        BigDecimal manualDiscountAmount = saleOrderLine.getDiscountAmount();
+        Integer priceListDiscountAmountType = (Integer) discounts.get("discountTypeSelect");
+        BigDecimal priceListDiscountAmount = (BigDecimal) discounts.get("discountAmount");
+
+        if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
+            && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)
+            && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)) {
+          priceListDiscountAmount =
+              priceListDiscountAmount
+                  .multiply(new BigDecimal(100))
+                  .divide(price, 2, RoundingMode.HALF_UP);
+        } else if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
+            && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)
+            && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)) {
+          priceListDiscountAmount =
+              priceListDiscountAmount
+                  .multiply(price)
+                  .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+        }
+
+        if (manualDiscountAmount.compareTo(priceListDiscountAmount) > 0) {
+          discounts.put("discountAmount", manualDiscountAmount);
+          discounts.put("discountTypeSelect", manualDiscountAmountType);
+        }
+      }
     }
 
     return discounts;
@@ -480,20 +433,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       unit = saleOrderLine.getProduct().getUnit();
     }
     return unit;
-  }
-
-  @Override
-  public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine) {
-
-    BigDecimal totalPack = BigDecimal.ZERO;
-
-    if (saleOrderLine.getSubLineList() != null) {
-      for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-        totalPack = totalPack.add(subLine.getInTaxTotal());
-      }
-    }
-
-    return totalPack;
   }
 
   @Override
@@ -592,5 +531,46 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         product.getSaleProductMultipleQtyList(),
         product.getAllowToForceSaleQty(),
         response);
+  }
+
+  @Override
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal ConversionRate,
+      Integer sequence) {
+    if (packLine.getProductName() != null) {
+      SaleOrderLine soLine = new SaleOrderLine();
+
+      Product product = packLine.getProduct();
+      soLine.setProduct(product);
+      soLine.setProductName(packLine.getProductName());
+      if (packLine.getQuantity() != null) {
+        soLine.setQty(packLine.getQuantity().multiply(packQty));
+      }
+      soLine.setUnit(packLine.getUnit());
+      soLine.setTypeSelect(packLine.getTypeSelect());
+      soLine.setSequence(sequence);
+      if (packLine.getPrice() != null) {
+        soLine.setPrice(packLine.getPrice().multiply(ConversionRate));
+      }
+      soLine.setIsShowTotal(packLine.getIsShowTotal());
+      soLine.setIsHideUnitAmounts(packLine.getIsHideUnitAmounts());
+
+      if (product != null) {
+        if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
+          soLine.setDescription(product.getDescription());
+        }
+        try {
+          Beans.get(SaleOrderLineService.class).fillPrice(soLine, saleOrder);
+          Beans.get(SaleOrderLineService.class).computeValues(saleOrder, soLine);
+        } catch (AxelorException e) {
+          TraceBackService.trace(e);
+        }
+      }
+      return soLine;
+    }
+    return null;
   }
 }
