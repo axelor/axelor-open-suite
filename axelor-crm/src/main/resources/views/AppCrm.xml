@@ -7,6 +7,7 @@
 		<panel name="mainPanel">
 			<field name="assignableUsers"/>
 			<field name="groupsAssignable" showIf="assignableUsers == 1" widget="TagSelect" requiredIf="assignableUsers == 1"/>
+			<field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
 			<button name="generateCRMConfigurationsBtn" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
 			<panel-dashlet name="confCrmConfigPanel" action="admin.root.conf.crm.config" colSpan="12"/>
 		</panel>

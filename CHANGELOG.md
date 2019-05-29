@@ -32,6 +32,8 @@
 - Reserved Qty: Add tracking for allocated and requested quantity.
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
+- CRM : lead description in opportunity description
+
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -65,6 +67,7 @@
 - Sale Order : Modify name of attached file when finalize sale quotation.
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
+- SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
 
 ## [5.1.6] - 2019-04-29
 ## Features
