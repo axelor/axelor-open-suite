@@ -89,7 +89,7 @@
 - OBJECT DATA CONFIG : UX improvements
 - ANALYTIC MOVE LINE : project field title changed and domain filter added.
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
-- Inventory : Addtion of new field typeSelect and change in product doman filter.
+- Inventory : Added new field 'typeSelect' and change in product doman filter.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
