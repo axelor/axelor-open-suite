@@ -65,6 +65,10 @@
 				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 			</panel>
 		</panel-tabs>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<!-- ACTION METHOD -->

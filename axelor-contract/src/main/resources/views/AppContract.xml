@@ -26,6 +26,11 @@
 				<field name="isAdditionalBenefitManagement" colSpan="4" widget="boolean-switch" hidden="true" showIf="isInvoicingManagement"/>
 			</panel>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	
