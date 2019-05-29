@@ -19,7 +19,7 @@
 			<field name="displayProductDetailOnPrinting" widget="boolean-switch"/>
 			<field name="displaySupplierCodeOnPrinting" widget="boolean-switch"/>
 			<field name="purchaseOrderSupplierBox" widget="html" colSpan="12"/>
-			<field name="priceDisplay" widget="boolean-switch"/>
+			<field name="displayPriceOnQuotationRequest" widget="boolean-switch"/>
 		  	<field name="priceRequest" colSpan="12"/>
 		</panel>
     </form>

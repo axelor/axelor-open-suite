@@ -145,6 +145,6 @@
 - BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
 - INVOICE :  Hide Due amount in report while printing "Original invoice / Updated copy"
 - PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
-
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
