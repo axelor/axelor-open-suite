@@ -944,7 +944,7 @@
     </action-validate>
    	 
    	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
-		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 2"/>
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 1"/>
 	</action-attrs>
    	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
