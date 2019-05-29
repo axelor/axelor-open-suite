@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.util.List;
 
@@ -25,4 +26,12 @@ public interface StockMoveServiceSupplychain {
   public List<StockMoveLine> addSubLines(List<StockMoveLine> list);
 
   public List<StockMoveLine> removeSubLines(List<StockMoveLine> lines);
+
+  /**
+   * For all lines in this stock move with quantity equal to 0, we empty the link to sale order
+   * lines, allowing to delete non delivered sale order lines.
+   *
+   * @param stockMove
+   */
+  void detachNonDeliveredStockMoveLines(StockMove stockMove);
 }

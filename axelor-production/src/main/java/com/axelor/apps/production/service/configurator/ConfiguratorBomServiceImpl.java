@@ -123,7 +123,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
       prodProcess =
           confProdProcessService.generateProdProcessService(
-              configuratorBOM.getConfiguratorProdProcess(), attributes);
+              configuratorBOM.getConfiguratorProdProcess(), attributes, product);
     } else {
       prodProcess = configuratorBOM.getProdProcess();
     }
@@ -135,6 +135,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setQty(qty);
     billOfMaterial.setUnit(unit);
     billOfMaterial.setProdProcess(prodProcess);
+    billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {

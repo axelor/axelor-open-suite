@@ -587,6 +587,7 @@
 "Too many recursive calls to create the bill of material.","Trop d'appels récursif ont été fait pour générer la nomenclature.",,
 "Total Planned Duration",,,
 "Total Real Duration",,,
+"Too many recursive calls to import the bill of material configurator.",,,
 "Tracking number search",,,
 "Type",,,
 "Type select",,,

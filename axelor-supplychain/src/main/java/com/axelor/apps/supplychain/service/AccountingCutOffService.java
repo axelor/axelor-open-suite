@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -59,4 +60,6 @@ public interface AccountingCutOffService {
       boolean includeNotStockManagedProduct,
       boolean isReverse)
       throws AxelorException;
+
+  List<Long> getStockMoveLines(Batch batch);
 }

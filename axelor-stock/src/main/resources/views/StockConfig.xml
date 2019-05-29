@@ -70,6 +70,8 @@
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 			<field name="displayLineDetailsOnPrinting" widget="boolean-switch"/>
 			<field name="pickingOrderPrintingDetailed" widget="boolean-switch"/>
+			<field name="isDisplaySaleValueInPrinting" widget="boolean-switch"/>
+			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
 		</panel>
 	</form>
 	

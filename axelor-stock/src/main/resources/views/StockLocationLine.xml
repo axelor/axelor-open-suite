@@ -46,6 +46,9 @@
         <panel name="stockCorrectionPanel" sidebar="true">
 			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
         </panel>
+        <panel-mail name="mailsPanel">
+          <mail-messages />
+        </panel-mail>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -148,6 +151,9 @@
 		<panel name="stockCorrectionPanel" sidebar="true">
 			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
     </form>
     
     <action-group name="action-stock-location-line-group-onload">

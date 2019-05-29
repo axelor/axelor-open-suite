@@ -73,13 +73,13 @@
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">
 			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
-				grid-view="debt-recovery-method-grid" />
+				grid-view="debt-recovery-method-grid" canEdit="false"/>
 			<field name="debtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 			<field name="waitDebtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 		</panel>
 		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
 			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
