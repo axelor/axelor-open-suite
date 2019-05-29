@@ -5,6 +5,7 @@
 - AVAILABITY REQUEST : error message if availableStock is less than realQty
 - USER : filter assigned to user in partner form
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
+- TRACKING : Added all fields for all apps and also for company's configuration
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true

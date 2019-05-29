@@ -11,6 +11,11 @@
     
     <many-to-one name="expenseTaxAccount" ref="com.axelor.apps.account.db.Account" title="Expense tax account"/>
 	   
+	<track>
+		<field name="expenseJournal" on="UPDATE"/>
+		<field name="expenseTaxAccount" on="UPDATE"/>
+	</track>
+	
   </entity>
   
 </domain-models>
