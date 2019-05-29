@@ -65,6 +65,7 @@
 - Sale Order : Modify name of attached file when finalize sale quotation.
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
+- SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
 
 ## [5.1.6] - 2019-04-29
 ## Features
