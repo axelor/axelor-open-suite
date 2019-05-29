@@ -34,7 +34,6 @@
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
 
-
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
@@ -68,6 +67,7 @@
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Ticket : corrected appearance behavior of cancel button in the ticket form. 
 
 ## [5.1.6] - 2019-04-29
 ## Features
