@@ -6,7 +6,7 @@
 	<form name="app-crm-config-form" title="App Crm" model="com.axelor.apps.base.db.AppCrm" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
 			<field name="assignableUsers"/>
-			<field name="groupsAssignable" showIf="assignableUsers == 2" widget="TagSelect" requiredIf="assignableUsers == 2"/>
+			<field name="groupsAssignable" showIf="assignableUsers == 1" widget="TagSelect" requiredIf="assignableUsers == 1"/>
 			<button name="generateCRMConfigurationsBtn" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
 			<panel-dashlet name="confCrmConfigPanel" action="admin.root.conf.crm.config" colSpan="12"/>
 		</panel>
