@@ -17,10 +17,14 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -31,8 +35,11 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class SaleOrderWorkflowServiceProductionImpl
     extends SaleOrderWorkflowServiceSupplychainImpl {
@@ -69,6 +76,8 @@ public class SaleOrderWorkflowServiceProductionImpl
     this.appProductionService = appProductionService;
   }
 
+  @Inject ManufOrderWorkflowService manufOrderWorkflowService;
+
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
@@ -77,5 +86,61 @@ public class SaleOrderWorkflowServiceProductionImpl
     if (appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
       productionOrderSaleOrderService.generateProductionOrder(saleOrder);
     }
+  }
+
+  @Override
+  @Transactional
+  public void cancelSaleOrder(
+      SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
+
+    super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
+
+    try {
+      // Cancel the associated production/manuf orders
+      List<ManufOrder> manufOrderList =
+          Beans.get(ManufOrderRepository.class)
+              .all()
+              .filter(
+                  "self.saleOrder = ?1 and self.statusSelect != ?2",
+                  saleOrder.getId(),
+                  ManufOrderRepository.STATUS_CANCELED)
+              .fetch();
+
+      for (ManufOrder manufOrder : manufOrderList) {
+        manufOrderWorkflowService.cancel(manufOrder, cancelReason, cancelReasonStr);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public String cancelWarningAssociatedElements(SaleOrder saleOrder) {
+    String message = super.cancelWarningAssociatedElements(saleOrder);
+    String initialMessage = I18n.get("The following associated elements will be cancelled") + " : ";
+
+    // Associated production/manuf orders
+    List<ManufOrder> manufOrderList =
+        Beans.get(ManufOrderRepository.class)
+            .all()
+            .filter(
+                "self.saleOrder = ?1 and self.statusSelect != ?2",
+                saleOrder.getId(),
+                ManufOrderRepository.STATUS_CANCELED)
+            .fetch();
+
+    if (manufOrderList != null && !manufOrderList.isEmpty()) {
+      String manufOrderMessage = I18n.get("Manuf. order(s)") + " - ";
+      message =
+          message == null
+              ? message = initialMessage + manufOrderMessage
+              : message + ", " + manufOrderMessage;
+
+      for (ManufOrder manufOrder : manufOrderList) {
+        message = message + " " + manufOrder.getManufOrderSeq();
+      }
+    }
+
+    return message;
   }
 }

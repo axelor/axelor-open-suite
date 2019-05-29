@@ -18,6 +18,9 @@
       // TYPE SELECT
       public static final String TYPE_TASK = "task";
       public static final String TYPE_TICKET = "ticket";
+
+      // STATUS
+      public static final String STATUS_CANCELED = "canceled";
     </extra-code>
   </entity>
 

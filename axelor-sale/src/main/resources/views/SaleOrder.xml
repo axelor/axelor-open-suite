@@ -374,7 +374,7 @@
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" name="generatePOBtn" title="Generate purchase order" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
 	    <spacer name="btnSpacer"/>
-	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
+	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2 || statusSelect == 3)" colSpan="12" onClick="save,action-sale-order-method-cancel-warning-associated-elements,action-sale-order-view-cancel"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
@@ -1306,5 +1306,9 @@
 	<action-attrs name="action-sale-order-attrs-template-deafult-currency">
 		<attribute name="value" for="currency" expr="eval: _clientPartnerCurrency" if="_clientPartnerCurrency"/>
 	</action-attrs>
+
+	<action-method name="action-sale-order-method-cancel-warning-associated-elements">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="cancelWarningAssociatedElements"/>
+	</action-method>
 
 </object-views>

@@ -42,6 +42,7 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -706,6 +707,19 @@ public class SaleOrderController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelWarningAssociatedElements(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+    String message =
+        Beans.get(SaleOrderWorkflowServiceSupplychainImpl.class)
+            .cancelWarningAssociatedElements(saleOrder);
+
+    if (message != null) {
+      response.setAlert(message);
     }
   }
 }
