@@ -32,6 +32,7 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import javax.persistence.PersistenceException;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +111,7 @@ public class ProjectManagementRepository extends ProjectRepository {
   public Project copy(Project entity, boolean deep) {
     Project project = super.copy(entity, false);
     project.setStatusSelect(STATE_NEW);
+    project.setProgress(BigDecimal.ZERO);
     return project;
   }
 }

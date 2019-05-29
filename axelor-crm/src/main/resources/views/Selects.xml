@@ -133,5 +133,10 @@
 	<selection name="icalendar.synchronization.select" id="crm.icalendar.synchronization.select">
 		<option value="Event">CRM events</option>
 	</selection>
+	
+	<selection name="crm.app.crm.assignable.user.select">
+		<option value="1">All users</option>
+		<option value="2">Some user groups</option>
+	</selection>
 
 </object-views>

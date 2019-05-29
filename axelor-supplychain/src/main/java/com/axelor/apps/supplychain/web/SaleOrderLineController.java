@@ -233,4 +233,40 @@ public class SaleOrderLineController {
 
     response.setValue("supplierPartner", supplierPartner);
   }
+
+  /**
+   * Called from sale order form view, on clicking allocateAll button on one sale order line. Call
+   * {@link ReservedQtyService#allocateAll(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on clicking deallocate button on one sale order line. Call
+   * {@link ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal.ZERO)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, BigDecimal.ZERO);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

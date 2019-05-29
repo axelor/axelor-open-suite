@@ -107,6 +107,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to create the bill of material." /*)*/;
 
+  String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
+      "Too many recursive calls to import the bill of material configurator." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -142,5 +145,5 @@ public interface IExceptionMessage {
       "Uploaded file is not a CSV file" /*)*/;
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
-      "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+      "Please select an element (a product, a product category or a accounting family) to run calculation" /*)*/;
 }

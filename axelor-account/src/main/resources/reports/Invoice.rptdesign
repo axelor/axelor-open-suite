@@ -3479,7 +3479,10 @@ if(row["operation_type_select"] == "1" ){
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
+                                    <value type="javascript">if(params["ReportType"].value == 1){
+	'Invoice.proformaInvoice'
+}else{
+if(row["operation_type_select"] == "1" ){
 	if (row["operation_sub_type_select"] == "2") {
 			'Invoice.purchaseInvoiceAdvPaymentNo'
 	} else if (row["operation_sub_type_select"] == "3") {
@@ -3501,6 +3504,7 @@ if(row["operation_type_select"] == "1" ){
 	}
 }else if(row["operation_type_select"] == "4" ){
 'Invoice.refundNo'
+}
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -5002,7 +5006,7 @@ row["partnerFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null || params["ReportType"].value == 3</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -5467,7 +5471,6 @@ row["partnerFirstName"]
                             <column id="4531"/>
                             <column id="4535"/>
                             <row id="5252">
-                                <property name="height">10.874375cm</property>
                                 <cell id="5253">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -5723,7 +5726,7 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">params["ReportType"].value == null || params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -6453,6 +6456,8 @@ row["partnerFirstName"]
                                             </cell>
                                         </row>
                                         <row id="3524">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <cell id="3525">
                                                 <property name="backgroundAttachment">scroll</property>
@@ -6569,6 +6574,8 @@ row["partnerFirstName"]
                                             </cell>
                                         </row>
                                         <row id="4443">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -6704,6 +6711,12 @@ row["partnerFirstName"]
                                         </row>
                                         <row id="5301">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value == 1</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5302">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -6845,6 +6858,12 @@ row["partnerFirstName"]
                                         </row>
                                         <row id="5589">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value != 3</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5590">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>

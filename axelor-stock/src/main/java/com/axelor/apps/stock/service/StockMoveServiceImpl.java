@@ -84,6 +84,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
+  @Inject private StockLocationService stockLocationService;
+
   @Inject
   public StockMoveServiceImpl(
       StockMoveLineService stockMoveLineService,
@@ -111,7 +113,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
@@ -130,7 +132,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       ShipmentMode shipmentMode,
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
@@ -148,7 +150,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             toStockLocation,
             realDate,
             estimatedDate,
-            description,
+            note,
             typeSelect);
     stockMove.setPartner(clientPartner);
     stockMove.setShipmentMode(shipmentMode);
@@ -156,6 +158,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setCarrierPartner(carrierPartner);
     stockMove.setForwarderPartner(forwarderPartner);
     stockMove.setIncoterm(incoterm);
+    stockMove.setNote(note);
     stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
 
     return stockMove;
@@ -171,7 +174,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
@@ -185,7 +188,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       int typeSelect)
       throws AxelorException {
 
@@ -204,7 +207,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setEstimatedDate(estimatedDate);
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setToStockLocation(toStockLocation);
-    stockMove.setDescription(description);
+    stockMove.setNote(note);
     stockMove.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
@@ -678,14 +681,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
-    StockMove newStockMove = new StockMove();
+    StockMove newStockMove =
+        createStockMove(
+            stockMove.getToAddress(),
+            stockMove.getFromAddress(),
+            stockMove.getCompany(),
+            stockMove.getPartner(),
+            stockMove.getToStockLocation(),
+            stockMove.getFromStockLocation(),
+            null,
+            stockMove.getEstimatedDate(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            stockMove.getIncoterm(),
+            0);
 
-    newStockMove.setCompany(stockMove.getCompany());
-    newStockMove.setPartner(stockMove.getPartner());
-    newStockMove.setFromStockLocation(stockMove.getToStockLocation());
-    newStockMove.setToStockLocation(stockMove.getFromStockLocation());
-    newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
-    newStockMove.setFromAddress(stockMove.getFromAddress());
     if (stockMove.getToAddress() != null) newStockMove.setFromAddress(stockMove.getToAddress());
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING)
       newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
@@ -718,7 +731,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    newStockMove.setRealDate(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany()));
@@ -731,13 +743,24 @@ public class StockMoveServiceImpl implements StockMoveService {
                 + " "
                 + stockMove.getStockMoveSeq()
                 + " )"));
+    if (stockMove.getPartner() != null) {
+      newStockMove.setShipmentMode(stockMove.getPartner().getShipmentMode());
+      newStockMove.setFreightCarrierMode(stockMove.getPartner().getFreightCarrierMode());
+      newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
+    }
+    newStockMove.setReversionOriginStockMove(stockMove);
+    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setNote(stockMove.getNote());
+    newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
+    newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
+    newStockMove.setGrossMass(stockMove.getGrossMass());
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
     newStockMove.setIsReversion(true);
+    newStockMove.setIsWithBackorder(stockMove.getIsWithBackorder());
     newStockMove.setOrigin(stockMove.getOrigin());
     newStockMove.setOriginId(stockMove.getOriginId());
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
 
-    plan(newStockMove);
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
@@ -1231,5 +1254,13 @@ public class StockMoveServiceImpl implements StockMoveService {
         setPickingStockMoveEditDate(stockMove, userType);
       }
     }
+  }
+
+  @Override
+  public BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
+
+    return stockLocationService.getRealQty(
+        stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
   }
 }
