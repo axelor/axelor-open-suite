@@ -59,7 +59,7 @@
     		<field name="grossValue" readonlyIf="statusSelect &gt; 1" onChange="action-fixed-asset-record-set-residual-value"/>
         	<field name="residualValue" readonly="true"/>
         	<field name="disposalValue" showIf="statusSelect == 4" readonly="true"/>
-        	<field name="disposalMove" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid"/>
+        	<field name="disposalMove" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid" readonly="true"/>
     	</panel>
     </form>
     

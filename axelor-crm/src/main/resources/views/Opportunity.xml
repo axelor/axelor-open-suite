@@ -122,6 +122,9 @@
             <panel name="descriptionPanel" title="Description">
                 <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
             </panel>
+            	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
+            		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
+            	</panel>
             <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
         </panel-tabs>
 
@@ -136,7 +139,10 @@
                 <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
                 <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
 				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-				<field name="lostReason" readonly="true" showIf="lostReason != null"/>
+				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
+				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
+          <field name="lostReasonStr" readonly="true" showIf="lostReasonStr" colSpan="12"/>
+				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
 				<field name="partner" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
@@ -258,7 +264,7 @@
     	<field name="user" expr="eval: _partner.user" if="_partner.user != null || _partner.team != null"/>
     	<field name="team" expr="eval: _partner.team" if="_partner.user != null || _partner.team != null"/>
     	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="description" expr="eval: _partner.description"/>
+    	<field name="customerDescription" expr="eval: _partner.description"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">

@@ -4,6 +4,8 @@
 ## Features
 - AVAILABITY REQUEST : error message if availableStock is less than realQty
 - USER : filter assigned to user in partner form
+- MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
+- TRACKING : Added all fields for all apps and also for company's configuration
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
@@ -31,6 +33,8 @@
 - Reserved Qty: Add tracking for allocated and requested quantity.
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
+- CRM : lead description in opportunity description
+
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -60,6 +64,14 @@
 - PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
 - Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
 - CUT-OFF: fix wrong views in the show move lines action view and fix exception when the id list is empty.
+- BANK ORDER : Generate the bank order file when we confirm the bank order even if the ebics module is not enabled 
+- FIXED ASSET : set values for disposalValue and disposalDate, set readonly=true for disposalMove, modify disposalMove amount
+- Sale Order : Modify name of attached file when finalize sale quotation.
+- Sale Order: do not notify stock move creation when stock move generation fails.
+- Requested quantity: do not block when having negative quantity in stock move lines.
+- SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Prod Process : Corrected display of the field Stock move realize order select.
+
 
 ## [5.1.6] - 2019-04-29
 ## Features

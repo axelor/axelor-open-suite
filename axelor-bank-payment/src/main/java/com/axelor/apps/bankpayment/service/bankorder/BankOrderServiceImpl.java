@@ -308,8 +308,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     setSequenceOnBankOrderLines(bankOrder);
 
+    generateFile(bankOrder);
+
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      generateFile(bankOrder);
 
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());

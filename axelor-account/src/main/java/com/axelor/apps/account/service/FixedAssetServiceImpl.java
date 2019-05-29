@@ -24,10 +24,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,17 +47,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Inject FixedAssetLineService fixedAssetLineService;
 
-  @Inject private MoveCreateService moveCreateService;
-
-  @Inject private MoveRepository moveRepo;
-
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
 
     BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset);
     BigDecimal cumulativeValue = depreciationValue;
     LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
+    LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
     int numberOfDepreciation = fixedAsset.getNumberOfDepreciation();
+    boolean isProrataTemporis = fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
     LocalDate endDate = depreciationDate.plusMonths(fixedAsset.getDurationInMonth());
     int counter = 1;
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
@@ -79,6 +75,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         depreciationValue = fixedAssetLine.getResidualValue();
         cumulativeValue = cumulativeValue.add(depreciationValue);
         depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+        if (isProrataTemporis) {
+          endDate =
+              depreciationDate.minusDays(
+                  ChronoUnit.DAYS.between(acquisitionDate, fixedAsset.getFirstDepreciationDate()));
+          depreciationDate = endDate.minusDays(1);
+        }
         counter++;
         continue;
       }
@@ -246,25 +248,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1);
     }
 
-    if (disposalAmount.compareTo(fixedAsset.getResidualValue()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, IExceptionMessage.FIXED_ASSET_DISPOSAL_VALUE);
-    }
-
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
 
-      if (disposalAmount.compareTo(fixedAsset.getResidualValue()) <= 0) {
-
-        FixedAssetLine depreciationFixedAssetLine =
-            generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
-        fixedAssetLineService.realize(depreciationFixedAssetLine);
-        if (previousRealizedLine != null) {
-          fixedAssetLineService.generateDisposalMove(
-              fixedAsset,
-              depreciationFixedAssetLine.getResidualValue(),
-              previousRealizedLine.getCumulativeDepreciation());
-        }
-      }
+      FixedAssetLine depreciationFixedAssetLine =
+          generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
+      fixedAssetLineService.realize(depreciationFixedAssetLine);
+      fixedAssetLineService.generateDisposalMove(depreciationFixedAssetLine);
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
@@ -282,6 +271,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAsset.removeFixedAssetLineListItem(fixedAssetLine);
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
+    fixedAsset.setDisposalDate(disposalDate);
+    fixedAsset.setDisposalValue(disposalAmount);
     fixedAssetRepo.save(fixedAsset);
   }
 

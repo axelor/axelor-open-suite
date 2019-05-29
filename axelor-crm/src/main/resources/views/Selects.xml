@@ -135,8 +135,8 @@
 	</selection>
 	
 	<selection name="crm.app.crm.assignable.user.select">
-		<option value="1">All users</option>
-		<option value="2">Some user groups</option>
+		<option value="0">All users</option>
+		<option value="1">Some user groups</option>
 	</selection>
 
 </object-views>
