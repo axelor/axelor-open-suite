@@ -764,7 +764,6 @@
 "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal.","La date de cession ne devrait pas être après la prochaine date d'amortissement planifié. Merci de réaliser tous les amortissements antérieurs à la cession.",,
 "Disposal move","Ecriture de sortie d'actif",,
 "Disposal value","Valeur cession",,
-"Disposal value cannot be higher then the current residual value","La valeur de cession ne peut pas être supérieur à la valeur résiduelle actuelle",,
 "Do not export","Ne pas exporter le contenu",,
 "Do not shift into irrecoverable","Ne pas passer en irrécouvrable",,
 "Document Subtype","Sous-type de facture",,
