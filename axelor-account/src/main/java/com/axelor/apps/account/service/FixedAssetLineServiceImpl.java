@@ -153,4 +153,97 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
     fixedAssetLine.setDepreciationAccountMove(move);
   }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
+
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    Journal journal = fixedAsset.getJournal();
+    Company company = fixedAsset.getCompany();
+    Partner partner = fixedAsset.getPartner();
+    LocalDate date = fixedAsset.getAcquisitionDate();
+
+    // Creating move
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            partner,
+            date,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    if (move != null) {
+      List<MoveLine> moveLines = new ArrayList<MoveLine>();
+
+      String origin = fixedAsset.getReference();
+      Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
+      Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      Account purchaseAccount = fixedAsset.getPurchaseAccount();
+      BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
+      BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
+
+      // Creating accounting debit move line for charge account
+      MoveLine chargeAccountDebitMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              chargeAccount,
+              date,
+              null,
+              1,
+              chargeAmount,
+              BigDecimal.ZERO,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(chargeAccountDebitMoveLine);
+
+      // Creating accounting debit move line for deprecation account
+      MoveLine deprecationAccountDebitMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              depreciationAccount,
+              date,
+              null,
+              1,
+              cumulativeDepreciationAmount,
+              BigDecimal.ZERO,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(deprecationAccountDebitMoveLine);
+
+      // Creating accounting credit move line
+      MoveLine creditMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              purchaseAccount,
+              date,
+              null,
+              2,
+              BigDecimal.ZERO,
+              fixedAsset.getGrossValue(),
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(creditMoveLine);
+
+      move.getMoveLineList().addAll(moveLines);
+    }
+
+    moveRepo.save(move);
+
+    fixedAsset.setDisposalMove(move);
+  }
 }

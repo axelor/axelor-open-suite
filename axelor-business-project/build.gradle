@@ -13,5 +13,5 @@ axelor {
 
 dependencies {
 	compile project(":modules:axelor-human-resource")
-	compile project(":modules:axelor-supplychain")
+	compile project(":modules:axelor-contract")
 }

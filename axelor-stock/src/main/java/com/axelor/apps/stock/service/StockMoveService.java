@@ -67,7 +67,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       ShipmentMode shipmentMode,
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
@@ -105,7 +105,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       int typeSelect)
       throws AxelorException;
 
@@ -219,4 +219,7 @@ public interface StockMoveService {
    * @param userType
    */
   void setPickingStockMovesEditDate(List<Long> ids, String userType);
+
+  BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

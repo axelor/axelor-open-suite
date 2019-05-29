@@ -127,6 +127,12 @@
 		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
 		<option value="com.axelor.apps.stock.db.StockCorrection" data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
 	</selection>
+	
+	<selection name='inventory.export.format.select'>
+		<option value="pdf">PDF</option>
+		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
+	</selection>
 
 	<selection name="stock.correction.status.select">
 		<option value="1">Draft</option>

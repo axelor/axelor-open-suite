@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -4999,8 +4999,11 @@ row["ClientPartFirstName"]
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; !row["is_title_line"]) {row["quantity"]}</VALUE-OF> <VALUE-OF format="^">if(row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {"  "}</VALUE-OF><VALUE-OF>if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {row["UnitCode"]}</VALUE-OF>
-<I><FONT size="7pt"><VALUE-OF format="#,##0.00">if(row["is_sub_line"]) {row["quantity"]}</VALUE-OF> <VALUE-OF format="^">if(row["is_sub_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_sub_line"]) {row["UnitCode"]}</VALUE-OF></FONT></I><B><VALUE-OF format="#,##0.00">if(row["is_pack_line"]) {row["quantity"]}</VALUE-OF> <VALUE-OF format="^">if(row["is_pack_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_pack_line"]) {row["UnitCode"]}</VALUE-OF></B>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; !row["is_title_line"]) {row["quantity"]}</VALUE-OF>
+<VALUE-OF format="^">if(row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {"  "}</VALUE-OF>
+<VALUE-OF format="^">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {" " + row["UnitCode"]}</VALUE-OF>
+<I><FONT size="7pt"><VALUE-OF format="#,##0.00">if(row["is_sub_line"]) {row["quantity"]}</VALUE-OF><VALUE-OF format="^">if(row["is_sub_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_sub_line"]) {row["UnitCode"]}</VALUE-OF></FONT></I>
+<B><VALUE-OF format="#,##0.00">if(row["is_pack_line"]) {row["quantity"]}</VALUE-OF><VALUE-OF format="^">if(row["is_pack_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_pack_line"]) {row["UnitCode"]}</VALUE-OF></B>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3697">
