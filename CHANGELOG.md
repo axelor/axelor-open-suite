@@ -62,6 +62,7 @@
 - Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
 - BANK ORDER : Generate the bank order file when we confirm the bank order even if the ebics module is not enabled 
 - FIXED ASSET : set values for disposalValue and disposalDate, set readonly=true for disposalMove, modify disposalMove amount
+- Sale Order : Modify name of attached file when finalize sale quotation.
 
 ## [5.1.6] - 2019-04-29
 ## Features
