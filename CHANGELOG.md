@@ -64,6 +64,7 @@
 - FIXED ASSET : set values for disposalValue and disposalDate, set readonly=true for disposalMove, modify disposalMove amount
 - Sale Order : Modify name of attached file when finalize sale quotation.
 - Sale Order: do not notify stock move creation when stock move generation fails.
+- Requested quantity: do not block when having negative quantity in stock move lines.
 
 ## [5.1.6] - 2019-04-29
 ## Features
