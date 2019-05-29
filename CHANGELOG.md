@@ -65,6 +65,7 @@
 - Sale Order : Modify name of attached file when finalize sale quotation.
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
+- Prod Process : Corrected display of the field Stock move realize order select.
 
 ## [5.1.6] - 2019-04-29
 ## Features
