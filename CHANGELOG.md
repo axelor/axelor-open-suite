@@ -73,6 +73,7 @@
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
+- PURCHASE REQUEST : Fix generating PO for null stock location
 
 
 ## [5.1.6] - 2019-04-29
