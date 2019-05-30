@@ -621,6 +621,7 @@
 "Please configure the sent extra hours template in HR config for the company %s",,,
 "Please configure the sent leave template in HR config for the company %s",,,
 "Please configure the sent timehsheet template in HR config for the company %s",,,
+"Please configure the unit for this type of absence",,,
 "Please configure the unjustified absence reason in HR config for the company %s",,,
 "Please configure the validated expense template in HR config for the company %s",,,
 "Please configure the validated extra hours template in HR config for the company %s",,,

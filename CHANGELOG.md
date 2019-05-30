@@ -124,6 +124,7 @@
 - MARKETING : Precise domain for model in message template
 - Change titles for productFamily.
 - CONTRACT : Set project on generated invoices
+- LEAVE REQUEST : Set message for leave reason has no unit
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

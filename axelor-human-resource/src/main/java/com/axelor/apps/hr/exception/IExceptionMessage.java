@@ -192,4 +192,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP = /*$$(*/
       "Employment contracts exported : %s" /*)*/;
+
+  static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
+      "Please configure the unit for this type of absence" /*)*/;
 }
