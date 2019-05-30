@@ -34,6 +34,7 @@
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
+- ACCOUNT FORM : tracking added in form fields.
 
 
 ## Bug Fixes
@@ -71,6 +72,7 @@
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
 - Prod Process : Corrected display of the field Stock move realize order select.
+- DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
 
 
