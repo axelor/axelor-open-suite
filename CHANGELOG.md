@@ -34,6 +34,7 @@
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
+- ACCOUNT FORM : tracking added in form fields.
 
 
 ## Bug Fixes
