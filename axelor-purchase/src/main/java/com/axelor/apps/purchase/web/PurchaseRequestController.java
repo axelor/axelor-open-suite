@@ -72,8 +72,6 @@ public class PurchaseRequestController {
     groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
     Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
     groupByProduct = groupByProduct == null ? false : groupByProduct;
-    Boolean groupByDeliveryAddress = (Boolean) request.getContext().get("groupByDeliveryAddress");
-    groupByDeliveryAddress = groupByDeliveryAddress == null ? false : groupByDeliveryAddress;
     if (requestIds != null && !requestIds.isEmpty()) {
       try {
         List<PurchaseRequest> purchaseRequests =
@@ -92,8 +90,7 @@ public class PurchaseRequestController {
         }
         response.setCanClose(true);
         List<PurchaseOrder> purchaseOrderList =
-            purchaseRequestService.generatePo(
-                purchaseRequests, groupBySupplier, groupByProduct, groupByDeliveryAddress);
+            purchaseRequestService.generatePo(purchaseRequests, groupBySupplier, groupByProduct);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(
                     String.format(
