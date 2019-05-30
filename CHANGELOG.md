@@ -71,6 +71,7 @@
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
 - Prod Process : Corrected display of the field Stock move realize order select.
+- DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 
 
 ## [5.1.6] - 2019-04-29
