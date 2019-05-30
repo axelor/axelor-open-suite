@@ -141,7 +141,9 @@
 				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
 				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
-          <field name="lostReasonStr" readonly="true" showIf="lostReasonStr" colSpan="12"/>
+          <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr" colSpan="12" css="red">
+            <viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
+          </field>
 				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
