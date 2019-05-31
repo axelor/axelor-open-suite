@@ -27,7 +27,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 - JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
-
+- TaxLine : tax field now readonly and can not be edit when selected.
 
 ## [5.0.8] - 2019-01-17
 ## Features

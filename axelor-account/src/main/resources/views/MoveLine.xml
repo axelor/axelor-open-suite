@@ -136,7 +136,7 @@
 	    	</panel>
 
 		    <panel name="others" title="Others" readonly="true">
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
+				<field name="taxLine" canEdit="false" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
 					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 		        <field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect &gt; 1"/>
@@ -159,7 +159,7 @@
 				<field name="amountRemaining" colSpan="3"/>
 				<field name="amountPaid" colSpan="3"/>
 				<field name="origin" colSpan="6" />
-				<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
+				<field name="taxLine" canEdit="false" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge'"
 					   colSpan="6" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="taxAmount" showIf="taxAmount != 0"/>
 				<field name="description" colSpan="12" />
