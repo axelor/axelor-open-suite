@@ -20,29 +20,14 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
 
   @Inject StockLocationRepository stockLocationRepo;
-
-  @Override
-  protected PurchaseOrder getPoBySupplierAndDeliveryAddress(
-      PurchaseRequest purchaseRequest, List<PurchaseOrder> purchaseOrderList) {
-
-    PurchaseOrder purchaseOrder =
-        super.getPoBySupplierAndDeliveryAddress(purchaseRequest, purchaseOrderList);
-    purchaseOrder =
-        purchaseRequest.getStockLocation() != null
-                && purchaseOrder != null
-                && purchaseOrder.getStockLocation().equals(purchaseRequest.getStockLocation())
-            ? purchaseOrder
-            : null;
-    return purchaseOrder;
-  }
 
   @Override
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
@@ -51,5 +36,15 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
     PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
     purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     return purchaseOrder;
+  }
+
+  @Override
+  protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
+    String key = super.getPurchaseOrderGroupBySupplierKey(purchaseRequest);
+    StockLocation stockLocation = purchaseRequest.getStockLocation();
+    if (stockLocation != null) {
+      key = key + "_" + stockLocation.getId().toString();
+    }
+    return key;
   }
 }

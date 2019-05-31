@@ -35,6 +35,7 @@
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
 - Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
+- ACCOUNT FORM : tracking added in form fields.
 
 
 ## Bug Fixes
@@ -64,12 +65,17 @@
 - SaleOrder: show exception on confirm.
 - PURCHASE ORDER : ConstraintViolationException (Duplicate TrackingNumber Error)
 - Stock Move Mass Invoicing: fix anomalies happening with >10 stock moves.
+- CUT-OFF: fix wrong views in the show move lines action view and fix exception when the id list is empty.
 - BANK ORDER : Generate the bank order file when we confirm the bank order even if the ebics module is not enabled 
 - FIXED ASSET : set values for disposalValue and disposalDate, set readonly=true for disposalMove, modify disposalMove amount
 - Sale Order : Modify name of attached file when finalize sale quotation.
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Prod Process : Corrected display of the field Stock move realize order select.
+- DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
+- PURCHASE REQUEST : Fix generating PO for null stock location
+
 
 ## [5.1.6] - 2019-04-29
 ## Features
