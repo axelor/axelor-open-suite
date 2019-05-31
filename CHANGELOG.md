@@ -75,7 +75,7 @@
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
-
+- SALE ORDER : hide and rename some field in advance search.
 
 ## [5.1.6] - 2019-04-29
 ## Features

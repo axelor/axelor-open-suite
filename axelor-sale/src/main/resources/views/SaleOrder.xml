@@ -1136,6 +1136,10 @@
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
+		<field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+		<field name="cancelReason" hidden="true"/>
+		<field name="deliveryAddress" hidden="true"/>
+		<field name="mainInvoicingAddress" hidden="true"/>
 		<filter title="My Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.id = :_internalUser</domain>
 		</filter>
