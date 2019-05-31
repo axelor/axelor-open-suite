@@ -11,7 +11,8 @@
     ]]>
     <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel"/>
     <integer name="typeSelect" title="Query/path" selection="data.config.line.type.select" />
-    <string name="path" title="Path" />
+    <string name="path" title="Query" />
+    <many-to-one name="metaFieldPath" ref="com.axelor.meta.db.MetaField" title="Path Field"/>
     <many-to-many name="toExportMetaFieldSet" ref="com.axelor.meta.db.MetaField" title="Fields to export" />
     <many-to-one name="objectDataConfig" ref="ObjectDataConfig" />
     <integer name="resetPathSelect" title="Action to perform" selection="data.config.line.reset.path.select" />

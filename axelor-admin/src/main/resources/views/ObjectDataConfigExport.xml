@@ -5,7 +5,7 @@
    
 	<grid name="object-data-config-export-grid" title="Object data config exports" model="com.axelor.apps.base.db.ObjectDataConfigExport">
 		<field name="recordName"/>
-		<field name="created"/>
+		<field name="createdOn"/>
 		<field name="exportFormatSelect"/>
 	</grid> 
     
@@ -26,7 +26,7 @@
 		<field name="modelSelect" expr="eval:_objectDataConfig?.modelSelect"/>
 		<field name="langSelect" expr="eval:__user__.language"/>
 		<field name="objectDataConfig" expr="eval:_objectDataConfig"/>
-		<field name="exportFormatSelect" expr="eval:'xlsx'"/>
+		<field name="exportFormatSelect" expr="eval:'csv'"/>
    	</action-record>
    	
 	<action-method name="action-object-data-export-method-export">
