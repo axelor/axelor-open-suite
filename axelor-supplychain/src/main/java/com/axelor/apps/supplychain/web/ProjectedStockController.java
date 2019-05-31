@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
+import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -79,10 +80,9 @@ public class ProjectedStockController {
         TraceBackService.trace(response, e);
       } finally {
         if (mrpLineList != null && !mrpLineList.isEmpty()) {
-          Beans.get(MrpLineRepository.class)
-              .all()
-              .filter("self.mrp.id = ?1", mrpLineList.get(0).getId())
-              .remove();
+          Long mrpId = mrpLineList.get(0).getId();
+          Beans.get(MrpRepository.class).all().filter("self.id = ?1", mrpId).remove();
+          Beans.get(MrpLineRepository.class).all().filter("self.mrp.id = ?1", mrpId).remove();
         }
       }
     } catch (Exception e) {

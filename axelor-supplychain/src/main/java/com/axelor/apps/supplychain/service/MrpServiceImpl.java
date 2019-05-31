@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -1049,11 +1050,30 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp completeProjectedStock(Mrp mrp, Product product) throws AxelorException {
+  public Mrp completeProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
     this.mrp = mrp;
-    this.stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
     mrp.addProductSetItem(product);
+    if (stockLocation != null) {
+      this.stockLocationList =
+          stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
+    } else if (company != null) {
+      this.stockLocationList =
+          stockLocationRepository
+              .all()
+              .filter(
+                  "self.company.id = ?1 AND self.typeSelect != ?2",
+                  company.getId(),
+                  StockLocationRepository.TYPE_VIRTUAL)
+              .fetch();
+    } else {
+      this.stockLocationList =
+          stockLocationRepository
+              .all()
+              .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
+              .fetch();
+    }
     this.startMrp(mrpRepository.find(mrp.getId()));
     this.assignProductAndLevel(this.getProductList());
 

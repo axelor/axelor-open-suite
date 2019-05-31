@@ -28,6 +28,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
@@ -40,6 +41,7 @@ import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -105,16 +107,17 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         Lists.newArrayList(
             new JPQLFilter(
                 "self.product = :product "
-                    + " AND self.stockMove.statusSelect IN (:statusList) "
-                    + " AND self.producedManufOrder IS NOT NULL "));
+                    + " AND self.stockMove.statusSelect = :stockMoveStatus "
+                    + " AND self.stockMove.estimatedDate IS NOT NULL "
+                    + " AND self.stockMove.estimatedDate >= :localDate "
+                    + " AND self.stockMove.toStockLocation.typeSelect != :typeSelect "
+                    + " AND self.producedManufOrder IS NOT NULL "
+                    + " AND self.producedManufOrder.statusSelect IN (:statusListManufOrder)"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
     }
     if (stockLocation != null) {
-      queryFilter.add(
-          new JPQLFilter(
-              "self.stockMove.toStockLocation = :stockLocation "
-                  + " AND self.stockMove.toStockLocation.typeSelect != :typeSelect "));
+      queryFilter.add(new JPQLFilter("self.stockMove.toStockLocation = :stockLocation "));
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -122,8 +125,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
             .build(StockMoveLine.class)
             .bind("product", product)
             .bind("company", company)
-            .bind("statusList", statusList)
+            .bind("statusListManufOrder", statusList)
             .bind("stockLocation", stockLocation)
+            .bind("localDate", LocalDate.now())
+            .bind("stockMoveStatus", StockMoveRepository.STATUS_PLANNED)
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
 
@@ -142,8 +147,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
               productBuildingQty.scale(),
               product);
         }
+        sumBuildingQty = sumBuildingQty.add(productBuildingQty);
       }
-      sumBuildingQty = sumBuildingQty.add(productBuildingQty);
     }
     return sumBuildingQty;
   }
@@ -163,16 +168,17 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         Lists.newArrayList(
             new JPQLFilter(
                 "self.product = :product "
-                    + " AND self.stockMove.statusSelect IN (:statusList) "
-                    + " AND (self.consumedManufOrder IS NOT NULL OR self.consumedOperationOrder IS NOT NULL) "));
+                    + " AND self.stockMove.statusSelect = :stockMoveStatus "
+                    + " AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "
+                    + " AND self.stockMove.estimatedDate IS NOT NULL "
+                    + " AND self.stockMove.estimatedDate >= :localDate "
+                    + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN (:statusListManufOrder))"
+                    + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN (:statusListManufOrder) ) ) "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
     }
     if (stockLocation != null) {
-      queryFilter.add(
-          new JPQLFilter(
-              "self.stockMove.fromStockLocation = :stockLocation "
-                  + "AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "));
+      queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -180,8 +186,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
             .build(StockMoveLine.class)
             .bind("product", product)
             .bind("company", company)
-            .bind("statusList", statusList)
+            .bind("stockMoveStatus", StockMoveRepository.STATUS_PLANNED)
+            .bind("statusListManufOrder", statusList)
             .bind("stockLocation", stockLocation)
+            .bind("localDate", LocalDate.now())
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
@@ -198,8 +206,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
               productConsumeManufOrderQty.scale(),
               product);
         }
+        sumConsumeManufOrderQty = sumConsumeManufOrderQty.add(productConsumeManufOrderQty);
       }
-      sumConsumeManufOrderQty = sumConsumeManufOrderQty.add(productConsumeManufOrderQty);
     }
     return sumConsumeManufOrderQty;
   }

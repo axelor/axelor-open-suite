@@ -9,7 +9,7 @@
       </panel>
    </form>
    
-   <grid name="projected-stock-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Projected stock" >
+   <grid name="projected-stock-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Projected stock" groupBy="stockLocation" >
     <hilite color="info" strong="true" if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1"/>
       <field name="product" hidden="true"/>
       <field name="maturityDate" width="110"/>
@@ -17,7 +17,8 @@
       <field name="qty" width="100"/>
       <field name="cumulativeQty" css="bold" width="130"/>
       <field name="product.unit" width="80"/>
-      <field name="stockLocation" />
+      <field name="company" />
+      <field name="stockLocation" hidden="true"/>
       <field name="mrpLineType.elementSelect" hidden="true"/>
    </grid>
    
