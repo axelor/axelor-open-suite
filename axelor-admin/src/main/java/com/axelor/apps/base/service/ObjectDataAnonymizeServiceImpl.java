@@ -55,6 +55,11 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
       String rootModel = objectDataConfig.getModelSelect();
 
       for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
+        String path =
+            line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH
+                ? line.getMetaFieldPath().getName()
+                : line.getPath();
+
         Class<? extends Model> modelClass =
             ObjectDataCommonService.findModelClass(line.getMetaModel());
         Query<? extends Model> query =
@@ -66,9 +71,9 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
         if (reset != DataConfigLineRepository.RESET_NONE
             && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
           if (reset == DataConfigLineRepository.RESET_DELETE) {
-            deleteLink(mapper, line.getPath(), data);
+            deleteLink(mapper, path, data);
           } else {
-            replaceLink(mapper, line.getPath(), data, rootModel, line.getRecordSelectId());
+            replaceLink(mapper, path, data, rootModel, line.getRecordSelectId());
           }
         }
 

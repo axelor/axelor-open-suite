@@ -86,7 +86,7 @@
 - SALE ORDER : Recompute unit price when hideDiscount is true.
 - OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
 - PROJECT : Add an analytic tab.
-- OBJECT DATA CONFIG : UX improvements
+- OBJECT DATA CONFIG : UX improvements  and Translations and Change in Export Type
 - ANALYTIC MOVE LINE : project field title changed and domain filter added.
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
