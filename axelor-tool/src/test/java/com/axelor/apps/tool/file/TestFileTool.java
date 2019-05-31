@@ -27,10 +27,16 @@ public class TestFileTool {
   @Test
   public void create() throws IOException {
 
+    final String fileSeparator = System.getProperty("file.separator");
+
     String destinationFolder =
         System.getProperty("java.io.tmpdir")
-            + System.getProperty("file.separator")
-            + "tata/titi/toto";
+            + fileSeparator
+            + "tata"
+            + fileSeparator
+            + "titi"
+            + fileSeparator
+            + "toto";
     String fileName = "toto.txt";
 
     File file = FileTool.create(destinationFolder, fileName);
@@ -42,10 +48,18 @@ public class TestFileTool {
   @Test
   public void create2() throws IOException {
 
+    final String fileSeparator = System.getProperty("file.separator");
+
     String fileName =
         System.getProperty("java.io.tmpdir")
-            + System.getProperty("file.separator")
-            + "tata2/titi2/toto2/toto.txt";
+            + fileSeparator
+            + "tata2"
+            + fileSeparator
+            + "titi2"
+            + fileSeparator
+            + "toto2"
+            + fileSeparator
+            + "toto.txt";
     File file = FileTool.create(fileName);
     file.deleteOnExit();
 

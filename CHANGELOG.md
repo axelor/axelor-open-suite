@@ -35,6 +35,7 @@
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
 - ACCOUNT FORM : tracking added in form fields.
+- FILE TOOL : Allow to run file tool test on windows environment.
 
 
 ## Bug Fixes
