@@ -366,6 +366,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
   @Override
   @Transactional
   public Invoice mergeInvoice(
@@ -424,11 +448,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
     Beans.get(InvoiceRepository.class).save(invoiceMerged);
-    deleteOldInvoices(invoiceList);
     return invoiceMerged;
   }
 
   @Override
+  @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);

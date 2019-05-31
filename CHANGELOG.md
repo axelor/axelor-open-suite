@@ -27,6 +27,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 - JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 
 
 ## [5.0.8] - 2019-01-17
