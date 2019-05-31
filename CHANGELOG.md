@@ -36,7 +36,7 @@
 - CRM : lead description in opportunity description
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
-
+- TOOL : test class to allow to run it on windows environment.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
