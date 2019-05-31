@@ -35,6 +35,7 @@
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
 - ACCOUNT FORM : tracking added in form fields.
+- Resolve the working of Open Street Map
 
 
 ## Bug Fixes
