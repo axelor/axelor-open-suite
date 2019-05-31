@@ -148,6 +148,17 @@ public interface InvoiceService {
 
   public void generateBudgetDistribution(Invoice invoice);
 
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException;
+
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,
