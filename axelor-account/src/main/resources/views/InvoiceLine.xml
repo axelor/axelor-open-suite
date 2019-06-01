@@ -107,8 +107,8 @@
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
 				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-				<field name="saleOrderLine" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+				<field name="saleOrderLine" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="purchaseOrderLine" canEdit="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 			</panel>
 		</panel-tabs>
 	</form>
