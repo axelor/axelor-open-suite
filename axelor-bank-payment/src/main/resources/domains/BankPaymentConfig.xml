@@ -24,6 +24,27 @@
 
         <!-- SEPA Direct Debit -->
         <string name="icsNumber" title="ICS Number" min="13" max="13"/>
+        
+        <track>
+        	<field name="company" on="UPDATE"/>
+        	
+        	<field name="defaultSignatoryUser" on="UPDATE"/>
+        	<field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
+        	<field name="internalBankToBankAccount" on="UPDATE"/>
+        	<field name="externalBankToBankAccount" on="UPDATE"/>
+        	
+        	<field name="sepaCreditTransSequence" on="UPDATE"/>
+        	<field name="sepaDirectDebitSequence" on="UPDATE"/>
+        	<field name="intCreditTransSequence" on="UPDATE"/>
+        	<field name="intDirectDebitSequence" on="UPDATE"/>
+        	
+        	<field name="intTreasuryTransSequence" on="UPDATE"/>
+        	<field name="natTreasuryTransSequence" on="UPDATE"/>
+        	<field name="otherBankOrderSequence" on="UPDATE"/>
+        	
+        	<field name="icsNumber" on="UPDATE"/>
+        </track>
+        
     </entity>
 
 </domain-models>

@@ -7,6 +7,11 @@
 
 	<entity name="AppExpense" lang="java" extends="App">
 		<boolean name="computeDistanceWithWebService" />
+		
+		<track>
+			<field name="computeDistanceWithWebService" on="UPDATE"/>
+		</track>
+		
 	</entity>
 
 </domain-models>

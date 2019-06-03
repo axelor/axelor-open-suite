@@ -307,7 +307,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     setNbOfLines(bankOrder);
 
     setSequenceOnBankOrderLines(bankOrder);
-    
+
     generateFile(bankOrder);
 
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {

@@ -63,6 +63,9 @@
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
       		</panel>
 		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+		</panel-mail>
 	</form>
 
     <form name="customer-account-form" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-group-new-customer-account" title="New customer account">
