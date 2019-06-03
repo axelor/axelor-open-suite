@@ -227,7 +227,9 @@ public class StockLocationServiceImpl implements StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude) {
 
     List<StockLocation> resultList = new ArrayList<>();
-
+    if (stockLocation == null) {
+      return null;
+    }
     if (isVirtualInclude) {
       for (StockLocation subLocation :
           stockLocationRepo

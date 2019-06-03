@@ -19,10 +19,11 @@
     	<view type="grid" name="supplychain-stock-location-line-grid"/>
         <view type="form" name="stock-location-line-form"/>
     	<domain>self.product.id = :productId and self.stockLocation.typeSelect != 3 
-      and (:locationId is null or :locationId = self.stockLocation.id)
-      and (:companyId is null or :companyId = self.stockLocation.company.id)</domain>
+      and (:location is null or self.stockLocation IN :location)
+      and (:companyId is null or :companyId = self.stockLocation.company.id)
+      and (self.currentQty != 0 or self.futureQty != 0)</domain>
     	<context name="productId" expr="eval: product?.id"/>
-    	<context name="locationId" expr="eval: stockLocation?.id"/>
+        <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
         <context name="companyId" expr="eval: company?.id "/>
     </action-view>
     

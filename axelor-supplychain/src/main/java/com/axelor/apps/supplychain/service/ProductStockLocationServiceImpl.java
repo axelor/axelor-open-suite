@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.threeten.bp.LocalDate;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -84,57 +83,62 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
-    if(stockLocationId != 0L) {
-	    List<StockLocation> stockLocationList = stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
-	    if(!stockLocationList.isEmpty()) {
-	    	BigDecimal realQty = BigDecimal.ZERO;
-	    	BigDecimal futureQty = BigDecimal.ZERO;
-	    	BigDecimal reservedQty = BigDecimal.ZERO;
-	    	BigDecimal requestedReservedQty = BigDecimal.ZERO;
-	    	BigDecimal saleOrderQty = BigDecimal.ZERO;
-	    	BigDecimal purchaseOrderQty = BigDecimal.ZERO;
-	    	BigDecimal availableQty = BigDecimal.ZERO;
-	    	
-		    for(StockLocation sl : stockLocationList) {
-		    	realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
-		    	futureQty = futureQty.add(stockLocationService.getFutureQty(productId, sl.getId(), companyId));
-		    	reservedQty = reservedQty.add(stockLocationServiceSupplychain
-		                .getReservedQty(productId, sl.getId(), companyId));
-		    	requestedReservedQty = requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
-		    	saleOrderQty = saleOrderQty.add(this.getSaleOrderQty(product, company, sl));
-		    	purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
-		    	availableQty = availableQty.add(this.getAvailableQty(product, company, sl));
-		    }
-		    map.put("$realQty", realQty.setScale(2));
-		    map.put("$futureQty", futureQty.setScale(2));
-		    map.put("$reservedQty", reservedQty.setScale(2));
-		    map.put("$requestedReservedQty", requestedReservedQty.setScale(2));
-		    map.put("$saleOrderQty", saleOrderQty.setScale(2));
-		    map.put("$purchaseOrderQty", purchaseOrderQty.setScale(2));
-		    map.put("$availableQty", availableQty.subtract(requestedReservedQty).setScale(2));
-		    
-		    return map;
-	    }
+    if (stockLocationId != 0L) {
+      List<StockLocation> stockLocationList =
+          stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
+      if (!stockLocationList.isEmpty()) {
+        BigDecimal realQty = BigDecimal.ZERO;
+        BigDecimal futureQty = BigDecimal.ZERO;
+        BigDecimal reservedQty = BigDecimal.ZERO;
+        BigDecimal requestedReservedQty = BigDecimal.ZERO;
+        BigDecimal saleOrderQty = BigDecimal.ZERO;
+        BigDecimal purchaseOrderQty = BigDecimal.ZERO;
+        BigDecimal availableQty = BigDecimal.ZERO;
+
+        for (StockLocation sl : stockLocationList) {
+          realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
+          futureQty =
+              futureQty.add(stockLocationService.getFutureQty(productId, sl.getId(), companyId));
+          reservedQty =
+              reservedQty.add(
+                  stockLocationServiceSupplychain.getReservedQty(productId, sl.getId(), companyId));
+          requestedReservedQty =
+              requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
+          saleOrderQty = saleOrderQty.add(this.getSaleOrderQty(product, company, sl));
+          purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
+          availableQty = availableQty.add(this.getAvailableQty(product, company, sl));
+        }
+        map.put("$realQty", realQty.setScale(2));
+        map.put("$futureQty", futureQty.setScale(2));
+        map.put("$reservedQty", reservedQty.setScale(2));
+        map.put("$requestedReservedQty", requestedReservedQty.setScale(2));
+        map.put("$saleOrderQty", saleOrderQty.setScale(2));
+        map.put("$purchaseOrderQty", purchaseOrderQty.setScale(2));
+        map.put("$availableQty", availableQty.subtract(reservedQty).setScale(2));
+
+        return map;
+      }
     }
-    BigDecimal requestedReservedQty = this.getRequestedReservedQty(product, company, stockLocation).setScale(2);
+    BigDecimal reservedQty =
+        stockLocationServiceSupplychain
+            .getReservedQty(productId, stockLocationId, companyId)
+            .setScale(2);
     map.put(
         "$realQty",
         stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(2));
     map.put(
         "$futureQty",
         stockLocationService.getFutureQty(productId, stockLocationId, companyId).setScale(2));
+    map.put("$reservedQty", reservedQty);
     map.put(
-        "$reservedQty",
-        stockLocationServiceSupplychain
-            .getReservedQty(productId, stockLocationId, companyId)
-            .setScale(2));
-    map.put(
-        "$requestedReservedQty", requestedReservedQty
-        );
+        "$requestedReservedQty",
+        this.getRequestedReservedQty(product, company, stockLocation).setScale(2));
     map.put("$saleOrderQty", this.getSaleOrderQty(product, company, stockLocation).setScale(2));
     map.put(
         "$purchaseOrderQty", this.getPurchaseOrderQty(product, company, stockLocation).setScale(2));
-    map.put("$availableQty", this.getAvailableQty(product, company, stockLocation).subtract(requestedReservedQty).setScale(2));
+    map.put(
+        "$availableQty",
+        this.getAvailableQty(product, company, stockLocation).subtract(reservedQty).setScale(2));
     return map;
   }
 
@@ -205,7 +209,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             new JPQLFilter(
                 "self.product = :product"
                     + " AND self.saleOrder.statusSelect IN (:statusList) "
-                    + " AND self.saleOrder.creationDate >= :localDate "
                     + " AND self.deliveryState != :deliveryStateSaleOrder"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.saleOrder.company = :company "));
@@ -221,7 +224,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .bind("product", product)
             .bind("statusList", statusList)
             .bind("company", company)
-            .bind("localDate", LocalDate.now())
             .bind("stockLocation", stockLocation)
             .fetch();
 
@@ -272,7 +274,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                 "self.product = :product"
                     + " AND self.purchaseOrder.statusSelect IN (:statusList) "
                     + " AND self.purchaseOrder.orderDate IS NOT NULL "
-                    + " AND (self.purchaseOrder.orderDate IS NULL OR self.purchaseOrder.orderDate >= :localDate ) "
                     + " AND self.receiptState != :receiptStatePurchaseOrder "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.purchaseOrder.company = :company"));
@@ -288,7 +289,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .bind("product", product)
             .bind("statusList", statusList)
             .bind("company", company)
-            .bind("localDate", LocalDate.now())
             .bind("stockLocation", stockLocation)
             .fetch();
 
@@ -328,15 +328,13 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     List<Filter> queryFilter =
         Lists.newArrayList(
             new JPQLFilter(
-                "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "));
+                "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "
+                    + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
     }
     if (stockLocation != null) {
-      queryFilter.add(
-          new JPQLFilter(
-              "self.stockLocation = :stockLocation "
-                  + "AND self.stockLocation.isInCalculStock = true"));
+      queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation "));
     }
     List<StockLocationLine> stockLocationLineList =
         Filter.and(queryFilter)

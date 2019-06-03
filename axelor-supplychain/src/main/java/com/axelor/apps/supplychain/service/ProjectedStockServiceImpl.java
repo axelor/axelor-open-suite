@@ -46,13 +46,18 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
     Mrp mrp = new Mrp();
     mrp.setStockLocation(findStockLocation(company, stockLocation));
+    // If a company has no stockLocation
+    if (mrp.getStockLocation() == null) {
+      return null;
+    }
     mrp.addProductSetItem(product);
     mrp = Beans.get(MrpRepository.class).save(mrp);
     mrp = Beans.get(MrpService.class).completeProjectedStock(mrp, product, company, stockLocation);
 
     List<MrpLine> mrpLineList =
         Query.of(MrpLine.class)
-            .filter("self.mrp.id = :mrpId AND self.product.id = :productId")
+            .filter(
+                "self.mrp.id = :mrpId AND self.product.id = :productId AND (self.qty != 0 or self.cumulativeQty != 0)")
             .bind("mrpId", mrp.getId())
             .bind("productId", productId)
             .order("maturityDate")

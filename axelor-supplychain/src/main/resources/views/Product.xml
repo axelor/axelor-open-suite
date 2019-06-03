@@ -6,7 +6,7 @@
 	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Product" canSave="false" width="large" onNew="action-group-stock-details-by-product-on-new">	
       <panel name="MainFilters" itemSpan="4" colSpan="12">
           <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators"/>
-          <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-group-supplychain-update-indicators, action-record-empty-company-and-stock-location"/>
+          <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
           <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = :company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
       </panel>
       <panel name="mainPanelIndicators" showIf="$product">
@@ -15,12 +15,12 @@
                <button name="$realQty" title="Real quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-real-quantity"/>
                <button name="$futureQty" title="Future quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-future-quantity"/>
                <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved"/>
+               <button name="$requestedReservedQty" title="Requested reserved quantity" icon="fa-building-o" widget="info-button" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()" onClick="action-suppplychain-stock-location-line-view-requested-reserved"/>
             </panel>
             <panel name="supplychainIndicators" colSpan="12" itemSpan="3">
                <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart" widget="info-button" onClick="action-supplychain-sale-order-product-planned"/>
                <button name="$purchaseOrderQty" title="Purchase order quantity" icon="fa-shopping-cart"  widget="info-button" onClick="action-supplychain-purchase-order-product-planned"/>
                <button name="$availableQty" title="Available stock" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-available-product"/>
-               <button name="$requestedReservedQty" title="Requested reserved quantity" icon="fa-building-o" widget="info-button" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()" onClick="action-suppplychain-stock-location-line-view-requested-reserved"/>
             </panel>
             <panel name="productionIndicators" colSpan="12" itemSpan="3" if-module="axelor-production">
                <button name="$buildingQty" title="Building quantity" icon="fa-cogs" widget="info-button" onClick="action-production-building-quantity-product"/>
@@ -80,16 +80,16 @@
     model="com.axelor.apps.stock.db.StockMoveLine">
       <view type="grid" name="stock-move-line-all-grid-planned"/>
       <view type="form" name="stock-move-line-all-form"/>
+      <view-param name="popup" value="true"/>
       <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
         AND self.product.id = :productId 
-        AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)
-        AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+        AND (self.stockMove.fromStockLocation IN :location OR :location IS NULL)
+        AND (self.stockMove.toStockLocation IN :location OR :location IS NULL)
         AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
-        AND (self.stockMove.estimatedDate IS NOT NULL AND self.stockMove.estimatedDate >= :localDate)</domain>
+        AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
       <context name="productId" expr="eval: product?.id"/>
-      <context name="locationId" expr="eval: stockLocation?.id "/>
+      <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
       <context name="companyId" expr="eval: company?.id "/>
-      <context name="localDate" expr="eval: __datetime__"/>
       <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
   
@@ -98,15 +98,15 @@
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId 
-      AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
+      AND (self.stockMove.toStockLocation IN :location OR :location IS NULL)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
-      AND (self.stockMove.estimatedDate IS NOT NULL AND self.stockMove.estimatedDate >= :localDate)</domain>
+      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
-    <context name="localDate" expr="eval: __datetime__"/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
   
@@ -115,43 +115,48 @@
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId  
-      AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      AND (self.stockMove.toStockLocation IN :location OR :location IS NULL)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
+      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>  
+  
   
   <action-view name="action-supplychain-stock-move-line-product-real-quantity" title="${product.fullName} real st. move"
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.stockMove.statusSelect = :statusSelectList 
       AND self.product.id = :productId 
-      AND (self.stockMove.toStockLocation.id = :locationId OR :locationId IS NULL)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      AND (self.stockMove.toStockLocation IN :location OR :location IS NULL)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
+      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
   </action-view>
   
+ 
   <action-view name="action-supplychain-purchase-order-product-planned" title="${product.fullName} purchase order line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" >
     <view type="grid" name="purchase-order-line-menu-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.purchaseOrder.statusSelect IN (:statusSelectList) AND self.product.id = :productId
-      AND (self.purchaseOrder.stockLocation.id = :locationId OR :locationId IS NULL)
+      AND (self.purchaseOrder.stockLocation IN :location OR :location IS NULL)
       AND (self.purchaseOrder.company.id = :companyId OR :companyId IS NULL)
-      AND (self.receiptState != :receiptStatePurchaseOrder)
-      AND ((self.purchaseOrder.orderDate IS NOT NULL AND self.purchaseOrder.orderDate >= :localDate) OR self.purchaseOrder.orderDate IS NULL)</domain>
+      AND (self.receiptState != :receiptStatePurchaseOrder)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
-    <context name="localDate" expr="eval: __datetime__"/>
     <context name="receiptStatePurchaseOrder" expr="eval: __repo__(PurchaseOrderLine).RECEIPT_STATE_RECEIVED"/>
     <context name="statusSelectList" expr="eval: com.axelor.apps.tool.StringTool.getIntegerList(__config__.app.getApp('supplychain').getpOFilterOnStockDetailStatusSelect()) ?: [3]" />
   </action-view>
@@ -160,16 +165,15 @@
     model="com.axelor.apps.sale.db.SaleOrderLine" >
     <view type="grid" name="sale-order-line-menu-grid"/>
     <view type="form" name="sale-order-line-all-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.saleOrder.statusSelect IN (:statusSelectList) AND self.product.id = :productId
-      AND (self.saleOrder.stockLocation.id = :locationId OR :locationId IS NULL)
+      AND (self.saleOrder.stockLocation IN :location OR :location IS NULL)
       AND (self.saleOrder.company.id = :companyId OR :companyId IS NULL)
-      AND self.saleOrder.creationDate >= :localDate
       AND (self.deliveryState != :deliveryStateSaleOrder)
       </domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
-    <context name="localDate" expr="eval: __datetime__"/>
     <context name="deliveryStateSaleOrder" expr="eval: __repo__(SaleOrderLine).DELIVERY_STATE_DELIVERED"/>
     <context name="statusSelectList" expr="eval: com.axelor.apps.tool.StringTool.getIntegerList(__config__.app.getApp('supplychain').getsOFilterOnStockDetailStatusSelect()) ?: [__repo__(SaleOrder).STATUS_ORDER_CONFIRMED]" />
   </action-view>
@@ -179,12 +183,15 @@
     model="com.axelor.apps.stock.db.StockLocationLine" >
     <view type="grid" name="stock-location-line-grid"/>
     <view type="form" name="stock-location-line-form"/>
+    <view-param name="popup" value="true"/>
     <domain>self.product.id = :productId 
       AND (self.stockLocation.company.id = :companyId OR :companyId IS NULL)
-      AND (self.stockLocation.id = :locationId OR :locationId IS NULL)
+      AND (self.stockLocation IN :location OR :location IS NULL)
+      AND (self.currentQty != 0 OR self.reservedQty != 0)
+      AND self.stockLocation.typeSelect != 3
      </domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="locationId" expr="eval: stockLocation?.id "/>
+    <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
     <context name="companyId" expr="eval: company?.id "/>
   </action-view>
     

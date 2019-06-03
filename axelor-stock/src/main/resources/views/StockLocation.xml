@@ -65,7 +65,7 @@
 				<field name="usableOnPurchaseOrder" colSpan="3"/>
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
-                <field name="isInCalculStock" colSpan="3"/>
+                <field name="isNotInCalculStock" colSpan="3"/>
 				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
             </panel>
 		</panel-tabs>
