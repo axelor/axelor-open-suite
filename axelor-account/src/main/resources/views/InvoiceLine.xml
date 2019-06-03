@@ -16,7 +16,12 @@
 	    <field name="typeSelect" hidden="true"/>
     </grid>
 	
-	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true">
+	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true" orderBy="-invoice.invoiceDate">
+  	 <hilite color="primary" if="$get('invoice.statusSelect') == 1"/>
+     <hilite color="danger" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt; 0"/>
+     <hilite color="warning" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt;= 5"/>
+     <hilite color="success" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') == 0"/>
+     
   		<field name="invoice.partner.partnerSeq" title="Partner code"/>
   		<field name="invoice.partner.simpleFullName" title="Partner"/>
   		<field name="invoice.invoiceId" width="110"/>
@@ -32,6 +37,8 @@
   		<field name="invoice.currency" width="85"/>
   		<field name="companyExTaxTotal" title="WT amount in company currency" aggregate="sum" hidden="false"/>
   		<field name="invoice.company.currency" title="Company currency" width="125"/>
+  		<field name="invoice.amountRemaining" hidden="true"/>
+  		<field name="invoice.dueDate" hidden="true"/>
 	</grid>
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
