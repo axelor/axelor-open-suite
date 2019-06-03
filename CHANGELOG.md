@@ -40,6 +40,8 @@
 - Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
+- STOCK : filter product according to stochManage = true
+
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
