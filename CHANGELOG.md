@@ -38,6 +38,7 @@
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
 - TOOL : test class to allow to run it on windows environment.
 - Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
+- INVOICE : Set accounting panel hidden for advance invoice
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
