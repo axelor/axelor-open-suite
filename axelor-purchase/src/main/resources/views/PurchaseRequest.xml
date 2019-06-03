@@ -54,6 +54,7 @@
         <field name="unit" />
         <field name="quantity" />
         <field name="supplierUser"/>
+        <field name="stockLocation"/>
         <field name="statusSelect"/>
     </grid>
 
