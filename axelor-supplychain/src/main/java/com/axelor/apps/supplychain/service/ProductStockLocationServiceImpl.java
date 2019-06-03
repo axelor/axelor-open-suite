@@ -84,7 +84,38 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
-
+    if(stockLocationId != 0L) {
+	    List<StockLocation> stockLocationList = stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
+	    if(!stockLocationList.isEmpty()) {
+	    	BigDecimal realQty = BigDecimal.ZERO;
+	    	BigDecimal futureQty = BigDecimal.ZERO;
+	    	BigDecimal reservedQty = BigDecimal.ZERO;
+	    	BigDecimal requestedReservedQty = BigDecimal.ZERO;
+	    	BigDecimal saleOrderQty = BigDecimal.ZERO;
+	    	BigDecimal purchaseOrderQty = BigDecimal.ZERO;
+	    	BigDecimal availableQty = BigDecimal.ZERO;
+	    	
+		    for(StockLocation sl : stockLocationList) {
+		    	realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
+		    	futureQty = futureQty.add(stockLocationService.getFutureQty(productId, sl.getId(), companyId));
+		    	reservedQty = reservedQty.add(stockLocationServiceSupplychain
+		                .getReservedQty(productId, sl.getId(), companyId));
+		    	requestedReservedQty = requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
+		    	saleOrderQty = saleOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
+		    	purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
+		    	availableQty = availableQty.add(this.getAvailableQty(product, company, sl));
+		    }
+		    map.put("$realQty", realQty.setScale(2));
+		    map.put("$futureQty", futureQty.setScale(2));
+		    map.put("$reservedQty", reservedQty.setScale(2));
+		    map.put("$requestedReservedQty", requestedReservedQty.setScale(2));
+		    map.put("$saleOrderQty", saleOrderQty.setScale(2));
+		    map.put("$purchaseOrderQty", purchaseOrderQty.setScale(2));
+		    map.put("$availableQty", availableQty.setScale(2));
+		    
+		    return map;
+	    }
+    }
     map.put(
         "$realQty",
         stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(2));
