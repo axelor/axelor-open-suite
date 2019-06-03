@@ -1,4 +1,7 @@
 "key","message","comment","context"
+"${product.fullName} building",,,
+"${product.fullName} consume",,,
+"${product.fullName} missing",,,
 "105",,,
 "5",,,
 "A cancel reason must be selected",,,
@@ -201,6 +204,7 @@
 "Error during production's order's creation",,,
 "Expected/Future Quantity",,,
 "Export",,,
+"Filters",,,
 "Finish",,,
 "Finished",,,
 "Finished MOs",,,
@@ -451,6 +455,7 @@
 "Product families",,,
 "Product sub-types",,,
 "Product_code",,,
+"Product_currency",,,
 "Product_name",,,
 "Production Batch",,,
 "Production and cost settings",,,

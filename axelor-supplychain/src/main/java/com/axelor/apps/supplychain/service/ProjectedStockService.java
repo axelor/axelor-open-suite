@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
+import java.util.List;
 
-public interface StockLocationServiceSupplychain extends StockLocationService {
+public interface ProjectedStockService {
 
-  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId)
+  List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException;
 }

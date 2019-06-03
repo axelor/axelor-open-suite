@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
@@ -37,4 +40,8 @@ public interface MrpService {
    * @return the mrp end date
    */
   public LocalDate findMrpEndDate(Mrp mrp);
+
+  public Mrp completeProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException;
 }

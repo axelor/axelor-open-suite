@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -893,12 +894,12 @@ public class MrpServiceImpl implements MrpService {
 
     Set<Product> productSet = Sets.newHashSet();
 
-    if (!mrp.getProductSet().isEmpty()) {
+    if (mrp.getProductSet() != null && !mrp.getProductSet().isEmpty()) {
 
       productSet.addAll(mrp.getProductSet());
     }
 
-    if (!mrp.getProductCategorySet().isEmpty()) {
+    if (mrp.getProductCategorySet() != null && !mrp.getProductCategorySet().isEmpty()) {
 
       productSet.addAll(
           productRepository
@@ -910,7 +911,7 @@ public class MrpServiceImpl implements MrpService {
               .fetch());
     }
 
-    if (!mrp.getProductFamilySet().isEmpty()) {
+    if (mrp.getProductFamilySet() != null && !mrp.getProductFamilySet().isEmpty()) {
 
       productSet.addAll(
           productRepository
@@ -921,15 +922,17 @@ public class MrpServiceImpl implements MrpService {
                   ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());
     }
-
-    for (SaleOrderLine saleOrderLine : mrp.getSaleOrderLineSet()) {
-
-      productSet.add(saleOrderLine.getProduct());
+    if (mrp.getSaleOrderLineSet() != null) {
+      for (SaleOrderLine saleOrderLine : mrp.getSaleOrderLineSet()) {
+        productSet.add(saleOrderLine.getProduct());
+      }
     }
 
-    for (MrpForecast mrpForecast : mrp.getMrpForecastSet()) {
+    if (mrp.getMrpForecastSet() != null) {
+      for (MrpForecast mrpForecast : mrp.getMrpForecastSet()) {
 
-      productSet.add(mrpForecast.getProduct());
+        productSet.add(mrpForecast.getProduct());
+      }
     }
 
     if (productSet.isEmpty()) {
@@ -1044,5 +1047,45 @@ public class MrpServiceImpl implements MrpService {
     }
 
     return today;
+  }
+
+  @Override
+  public Mrp completeProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    this.mrp = mrp;
+    mrp.addProductSetItem(product);
+    if (stockLocation != null) {
+      this.stockLocationList =
+          stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
+    } else if (company != null) {
+      this.stockLocationList =
+          stockLocationRepository
+              .all()
+              .filter(
+                  "self.company.id = ?1 AND self.typeSelect != ?2",
+                  company.getId(),
+                  StockLocationRepository.TYPE_VIRTUAL)
+              .fetch();
+    } else {
+      this.stockLocationList =
+          stockLocationRepository
+              .all()
+              .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
+              .fetch();
+    }
+    this.startMrp(mrpRepository.find(mrp.getId()));
+    this.assignProductAndLevel(this.getProductList());
+
+    // Get the stock for each product on each stock location
+    this.createAvailableStockMrpLines();
+
+    this.createPurchaseMrpLines();
+
+    this.createSaleOrderMrpLines();
+
+    this.computeCumulativeQty(product);
+
+    return mrp;
   }
 }

@@ -1261,6 +1261,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     return stockLocationService.getRealQty(
-        stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
+        stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId(), null);
   }
 }
