@@ -101,7 +101,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 		    	reservedQty = reservedQty.add(stockLocationServiceSupplychain
 		                .getReservedQty(productId, sl.getId(), companyId));
 		    	requestedReservedQty = requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
-		    	saleOrderQty = saleOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
+		    	saleOrderQty = saleOrderQty.add(this.getSaleOrderQty(product, company, sl));
 		    	purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
 		    	availableQty = availableQty.add(this.getAvailableQty(product, company, sl));
 		    }
@@ -111,11 +111,12 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 		    map.put("$requestedReservedQty", requestedReservedQty.setScale(2));
 		    map.put("$saleOrderQty", saleOrderQty.setScale(2));
 		    map.put("$purchaseOrderQty", purchaseOrderQty.setScale(2));
-		    map.put("$availableQty", availableQty.setScale(2));
+		    map.put("$availableQty", availableQty.subtract(requestedReservedQty).setScale(2));
 		    
 		    return map;
 	    }
     }
+    BigDecimal requestedReservedQty = this.getRequestedReservedQty(product, company, stockLocation).setScale(2);
     map.put(
         "$realQty",
         stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(2));
@@ -128,12 +129,12 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .getReservedQty(productId, stockLocationId, companyId)
             .setScale(2));
     map.put(
-        "$requestedReservedQty",
-        this.getRequestedReservedQty(product, company, stockLocation).setScale(2));
+        "$requestedReservedQty", requestedReservedQty
+        );
     map.put("$saleOrderQty", this.getSaleOrderQty(product, company, stockLocation).setScale(2));
     map.put(
         "$purchaseOrderQty", this.getPurchaseOrderQty(product, company, stockLocation).setScale(2));
-    map.put("$availableQty", this.getAvailableQty(product, company, stockLocation).setScale(2));
+    map.put("$availableQty", this.getAvailableQty(product, company, stockLocation).subtract(requestedReservedQty).setScale(2));
     return map;
   }
 
