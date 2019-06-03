@@ -1255,12 +1255,4 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
   }
-
-  @Override
-  public BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException {
-
-    return stockLocationService.getRealQty(
-        stockMoveLine.getProduct().getId(), stockMove.getFromStockLocation().getId());
-  }
 }
