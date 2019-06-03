@@ -41,7 +41,6 @@ import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,24 +78,27 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
 
-    if(stockLocationId != 0L) {
-	    List<StockLocation> stockLocationList = stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
-	    if(!stockLocationList.isEmpty()) {
-	    	BigDecimal consumeManufOrderQty = BigDecimal.ZERO;
-	    	BigDecimal buildingQty = BigDecimal.ZERO;
-	    	 BigDecimal availableQty =
-	    		        (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-	    	
-	    	 for(StockLocation sl : stockLocationList) {
-	    		 consumeManufOrderQty = consumeManufOrderQty.add( this.getConsumeManufOrderQty(product, company, sl));
-	    		 buildingQty = buildingQty.add(this.getBuildingQty(product, company, sl));
-	    	 }
-	    	 map.put("$consumeManufOrderQty", consumeManufOrderQty.setScale(2));
-	    	 map.put("$buildingQty", buildingQty.setScale(2));
-	    	 map.put("$missingManufOrderQty",
-	    		        BigDecimal.ZERO.max(consumeManufOrderQty.subtract(availableQty)).setScale(2));
-	    	return map;
-	    }
+    if (stockLocationId != 0L) {
+      List<StockLocation> stockLocationList =
+          stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
+      if (!stockLocationList.isEmpty()) {
+        BigDecimal consumeManufOrderQty = BigDecimal.ZERO;
+        BigDecimal buildingQty = BigDecimal.ZERO;
+        BigDecimal availableQty =
+            (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
+
+        for (StockLocation sl : stockLocationList) {
+          consumeManufOrderQty =
+              consumeManufOrderQty.add(this.getConsumeManufOrderQty(product, company, sl));
+          buildingQty = buildingQty.add(this.getBuildingQty(product, company, sl));
+        }
+        map.put("$consumeManufOrderQty", consumeManufOrderQty.setScale(2));
+        map.put("$buildingQty", buildingQty.setScale(2));
+        map.put(
+            "$missingManufOrderQty",
+            BigDecimal.ZERO.max(consumeManufOrderQty.subtract(availableQty)).setScale(2));
+        return map;
+      }
     }
 
     BigDecimal consumeManufOrderQty =
@@ -128,8 +130,6 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
             new JPQLFilter(
                 "self.product = :product "
                     + " AND self.stockMove.statusSelect = :stockMoveStatus "
-                    + " AND self.stockMove.estimatedDate IS NOT NULL "
-                    + " AND self.stockMove.estimatedDate >= :localDate "
                     + " AND self.stockMove.toStockLocation.typeSelect != :typeSelect "
                     + " AND self.producedManufOrder IS NOT NULL "
                     + " AND self.producedManufOrder.statusSelect IN (:statusListManufOrder)"));
@@ -147,7 +147,6 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
             .bind("company", company)
             .bind("statusListManufOrder", statusList)
             .bind("stockLocation", stockLocation)
-            .bind("localDate", LocalDate.now())
             .bind("stockMoveStatus", StockMoveRepository.STATUS_PLANNED)
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
@@ -190,8 +189,6 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                 "self.product = :product "
                     + " AND self.stockMove.statusSelect = :stockMoveStatus "
                     + " AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "
-                    + " AND self.stockMove.estimatedDate IS NOT NULL "
-                    + " AND self.stockMove.estimatedDate >= :localDate "
                     + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN (:statusListManufOrder))"
                     + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN (:statusListManufOrder) ) ) "));
     if (company != null) {
@@ -209,7 +206,6 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
             .bind("stockMoveStatus", StockMoveRepository.STATUS_PLANNED)
             .bind("statusListManufOrder", statusList)
             .bind("stockLocation", stockLocation)
-            .bind("localDate", LocalDate.now())
             .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .fetch();
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
@@ -230,5 +226,80 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       }
     }
     return sumConsumeManufOrderQty;
+  }
+
+  protected BigDecimal getMissingManufOrderQty(
+      Product product, Company company, StockLocation stockLocation) throws AxelorException {
+    if (product == null || product.getUnit() == null) {
+      return BigDecimal.ZERO;
+    }
+    List<Integer> statusList = new ArrayList<>();
+    statusList.add(ManufOrderRepository.STATUS_PLANNED);
+    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
+    if (!StringUtils.isBlank(status)) {
+      statusList = StringTool.getIntegerList(status);
+    }
+    List<Filter> queryFilter =
+        Lists.newArrayList(
+            new JPQLFilter(
+                "self.product = :product "
+                    + " AND self.stockMove.statusSelect = :stockMoveStatus "
+                    + " AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "));
+    if (company != null) {
+      queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
+    }
+    if (stockLocation != null) {
+      queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
+    }
+
+    List<StockMoveLine> stockMoveLineList =
+        Filter.and(queryFilter)
+            .build(StockMoveLine.class)
+            .bind("product", product)
+            .bind("company", company)
+            .bind("stockMoveStatus", StockMoveRepository.STATUS_PLANNED)
+            .bind("stockLocation", stockLocation)
+            .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
+            .fetch();
+    BigDecimal sumMissingManufOrderQty = BigDecimal.ZERO;
+    if (!stockMoveLineList.isEmpty()) {
+      BigDecimal productMissingManufOrderQty = BigDecimal.ZERO;
+      Unit unitConversion = product.getUnit();
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        productMissingManufOrderQty = getMissingQtyOfStockMoveLine(stockMoveLine);
+        if (!stockMoveLine.getUnit().equals(unitConversion)) {
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              unitConversion,
+              productMissingManufOrderQty,
+              productMissingManufOrderQty.scale(),
+              product);
+        }
+        sumMissingManufOrderQty = sumMissingManufOrderQty.add(productMissingManufOrderQty);
+      }
+    }
+    return sumMissingManufOrderQty;
+  }
+
+  protected BigDecimal getMissingQtyOfStockMoveLine(StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getProduct() != null) {
+      BigDecimal availableQty = stockMoveLine.getAvailableQty();
+      BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
+      BigDecimal realQty = stockMoveLine.getRealQty();
+
+      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
+        return BigDecimal.ZERO;
+      } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
+        return BigDecimal.ZERO;
+      } else if (availableQty.compareTo(realQty) < 0
+          && availableQtyForProduct.compareTo(realQty) < 0) {
+        if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+          return availableQtyForProduct.subtract(realQty);
+        } else {
+          return availableQty.subtract(realQty);
+        }
+      }
+    }
+    return BigDecimal.ZERO;
   }
 }

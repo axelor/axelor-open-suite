@@ -19,6 +19,8 @@
       <field name="product.unit" width="80"/>
       <field name="company" />
       <field name="stockLocation" />
+      <field name="relatedToSelectName"/>
+      <field name="partner"/>
       <field name="mrpLineType.elementSelect" hidden="true"/>
    </grid>
    
