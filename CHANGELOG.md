@@ -79,7 +79,7 @@
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
 - FIXED ASSET :  Remove all lines in the depreciations table
-
+- PURCHASE ORDER : Remove completedBtn
 
 ## [5.1.6] - 2019-04-29
 ## Features
