@@ -219,7 +219,4 @@ public interface StockMoveService {
    * @param userType
    */
   void setPickingStockMovesEditDate(List<Long> ids, String userType);
-
-  BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException;
 }
