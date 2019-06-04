@@ -178,6 +178,8 @@
 "PurchaseOrder.afterDiscount","après remise de",,
 "PurchaseOrder.base","Base",,
 "PurchaseOrder.buyer","Acheteur",,
+"PurchaseOrder.buyerEmail","Email",,
+"PurchaseOrder.buyerPhone","Tél",,
 "PurchaseOrder.canceled","Annulé",,
 "PurchaseOrder.customer","Client",,
 "PurchaseOrder.customerRef","Référence client",,
