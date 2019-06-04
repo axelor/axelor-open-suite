@@ -178,6 +178,8 @@
 "PurchaseOrder.afterDiscount",,,
 "PurchaseOrder.base",,,
 "PurchaseOrder.buyer",,,
+"PurchaseOrder.buyerEmail",,,
+"PurchaseOrder.buyerPhone",,,
 "PurchaseOrder.canceled",,,
 "PurchaseOrder.customer",,,
 "PurchaseOrder.customerRef",,,
