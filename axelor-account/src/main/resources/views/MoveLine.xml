@@ -10,7 +10,7 @@
     	</toolbar>
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
-        <field name="name"/>
+        <field name="name" width="135"/>
         <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
    		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
@@ -27,8 +27,8 @@
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect" width="90"/>
-        <field name="reconcileGroup"/>
-        <field name="origin"/>
+        <field name="reconcileGroup" width="120"/>
+        <field name="origin" width="120"/>
         <field name="description"/>
         <field name="dueDate"/>
         <field name="analyticMoveLineList" hidden="true"/>
@@ -52,7 +52,7 @@
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
 	</grid>
@@ -61,7 +61,7 @@
     groupBy="account" expandable="true"  >
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
-        <field name="name"/>
+        <field name="name" width="135"/>
         <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -77,8 +77,8 @@
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect"/>
-        <field name="reconcileGroup"/>
-        <field name="origin"/>
+        <field name="reconcileGroup" width="120"/>
+        <field name="origin" width="120"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
@@ -86,7 +86,7 @@
     <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
-        <field name="name"/>
+        <field name="name" width="135"/>
         <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
@@ -102,8 +102,8 @@
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.statusSelect"/>
-       	<field name="reconcileGroup"/>
-        <field name="origin"/>
+       	<field name="reconcileGroup" width="120"/>
+        <field name="origin" width="120"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>

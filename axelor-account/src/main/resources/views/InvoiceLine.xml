@@ -5,7 +5,7 @@
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
-       	<field name="product.code"/>
+       	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
@@ -17,13 +17,13 @@
     </grid>
 	
 	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true">
-  		<field name="invoice.partner.partnerSeq" title="Partner code"/>
+  		<field name="invoice.partner.partnerSeq" width="120" title="Partner code"/>
   		<field name="invoice.partner.simpleFullName" title="Partner"/>
-  		<field name="invoice.invoiceId" width="110"/>
+  		<field name="invoice.invoiceId" width="120"/>
  		<field name="invoice.invoiceDate" title="Date"/>
   		<field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
   		<field name="invoice.address.addressL7Country"/>
-  		<field name="product.code" title="product.code"/>
+  		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
   		<field name="qty" width="50" aggregate="sum"/>
   		<field name="price" x-scale="2"/>
