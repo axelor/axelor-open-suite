@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.1.7]
 ## Features
-- AVAILABITY REQUEST : error message if availableStock is less than realQty
+- AVAILABITY REQUEST : error message if availableStock is less than qty - reservedQty on saleOrderLine
 - USER : filter assigned to user in partner form
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - TRACKING : Added all fields for all apps and also for company's configuration
@@ -35,6 +35,12 @@
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
 - ACCOUNT FORM : tracking added in form fields.
+- PURCHASE REQUEST : display stockLocation on purchase-request-grid
+- TOOL : test class to allow to run it on windows environment.
+- Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
+- INVOICE : Set accounting panel hidden for advance invoice
+- PROJECT : display title of membersUserSet Field 
+- STOCK : filter product according to stochManage = true
 
 
 ## Bug Fixes
@@ -74,7 +80,9 @@
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
-
+- FIXED ASSET :  Remove all lines in the depreciations table
+- PURCHASE ORDER : Remove completedBtn
+- Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 
 ## [5.1.6] - 2019-04-29
 ## Features

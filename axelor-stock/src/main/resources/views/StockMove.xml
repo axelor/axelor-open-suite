@@ -775,7 +775,7 @@
 	</action-method>
 	
 	<action-method name="action-stock-move-method-verify-product-stock">
-		<call class="com.axelor.apps.stock.web.StockMoveController" method="verifyProductStock"/>
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="verifyProductStock"/>
 	</action-method>
 
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
