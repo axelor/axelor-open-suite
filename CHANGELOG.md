@@ -41,6 +41,7 @@
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
+- GRID : sequences in comlumn grid are completely display 
 
 
 ## Bug Fixes
