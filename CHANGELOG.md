@@ -125,6 +125,7 @@
 - Change titles for productFamily.
 - CONTRACT : Set project on generated invoices
 - LEAVE REQUEST : Set message for leave reason has no unit
+- LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

@@ -129,6 +129,10 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
     double value = 0;
     DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, date);
 
+    if (dayPlanning == null) {
+      return BigDecimal.valueOf(value);
+    }
+
     // Compute morning leave duration
     LocalTime morningFrom = dayPlanning.getMorningFrom();
     LocalTime morningTo = dayPlanning.getMorningTo();
