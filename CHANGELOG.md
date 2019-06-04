@@ -41,6 +41,7 @@
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
+- Stock Move: update future quantity from real quantity in planned stock moves.
 
 
 ## Bug Fixes

@@ -84,8 +84,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
-  @Inject private StockLocationService stockLocationService;
-
   @Inject
   public StockMoveServiceImpl(
       StockMoveLineService stockMoveLineService,
@@ -1254,5 +1252,43 @@ public class StockMoveServiceImpl implements StockMoveService {
         setPickingStockMoveEditDate(stockMove, userType);
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateStocks(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+      return;
+    }
+    List<StockMoveLine> savedStockMoveLineList =
+        Optional.ofNullable(stockMove.getPlannedStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+    List<StockMoveLine> stockMoveLineList =
+        Optional.ofNullable(stockMove.getStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_PLANNED,
+        StockMoveRepository.STATUS_CANCELED,
+        savedStockMoveLineList,
+        stockMove.getEstimatedDate(),
+        false);
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_DRAFT,
+        StockMoveRepository.STATUS_PLANNED,
+        stockMoveLineList,
+        stockMove.getEstimatedDate(),
+        true);
+
+    stockMove.clearPlannedStockMoveLineList();
+    stockMoveLineList.forEach(
+        stockMoveLine ->
+            stockMove.addPlannedStockMoveLineListItem(
+                stockMoveLineRepo.copy(stockMoveLine, false)));
   }
 }

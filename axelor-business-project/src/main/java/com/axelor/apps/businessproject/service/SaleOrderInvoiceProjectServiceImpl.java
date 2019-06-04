@@ -55,7 +55,13 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       AppBusinessProjectService appBusinessProjectService,
       StockMoveRepository stockMoveRepository,
       SaleOrderLineService saleOrderLineService) {
-    super(appSupplychainService, saleOrderRepo, invoiceRepo, invoiceService, saleOrderLineService, stockMoveRepository);
+    super(
+        appSupplychainService,
+        saleOrderRepo,
+        invoiceRepo,
+        invoiceService,
+        saleOrderLineService,
+        stockMoveRepository);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

@@ -219,4 +219,12 @@ public interface StockMoveService {
    * @param userType
    */
   void setPickingStockMovesEditDate(List<Long> ids, String userType);
+
+  /**
+   * Update stocks using saved stock move line list and current stock move line list. Then we save
+   * current stock move line list, replacing the saved list.
+   *
+   * @param stockMove
+   */
+  void updateStocks(StockMove stockMove) throws AxelorException;
 }
