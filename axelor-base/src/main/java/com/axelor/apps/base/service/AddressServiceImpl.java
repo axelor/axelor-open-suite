@@ -284,14 +284,26 @@ public class AddressServiceImpl implements AddressService {
     if (zip == null) {
       return;
     }
+    Country country = address.getAddressL7Country();
 
-    List<City> cities = cityRepository.all().filter("self.zip = :zip").bind("zip", zip).fetch();
+    List<City> cities =
+        cityRepository
+            .all()
+            .filter("self.zip = :zip AND self.country = :country")
+            .bind("zip", zip)
+            .bind("country", country)
+            .fetch();
     City city = cities.size() == 1 ? cities.get(0) : null;
     address.setCity(city);
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
     List<Street> streets =
-        streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
+        streetRepository
+            .all()
+            .filter("self.city = :city AND self.country = :country")
+            .bind("city", city)
+            .bind("country", country)
+            .fetch();
     if (streets.size() == 1) {
       Street street = streets.get(0);
       address.setStreet(street);
