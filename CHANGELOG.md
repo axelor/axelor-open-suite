@@ -42,6 +42,7 @@
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
 - Stock Move: update future quantity from real quantity in planned stock moves.
+- REPORTING : new indicator for qualified leads on Lead Dashboard One.
 
 
 ## Bug Fixes
