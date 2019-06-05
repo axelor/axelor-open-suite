@@ -164,6 +164,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .build(StockLocationLine.class)
             .bind("product", product)
             .bind("company", company)
+            .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
             .bind("stockLocation", stockLocation)
             .fetch();
 
