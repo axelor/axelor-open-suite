@@ -41,7 +41,7 @@
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
-
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
