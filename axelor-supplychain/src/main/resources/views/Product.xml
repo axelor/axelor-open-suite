@@ -81,7 +81,7 @@
       <view type="grid" name="stock-move-line-all-grid-planned"/>
       <view type="form" name="stock-move-line-all-form"/>
       <view-param name="popup" value="true"/>
-      <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
+      <domain>self.requestedReservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
         AND self.product.id = :productId 
         AND (self.stockMove.fromStockLocation IN :location OR :location IS NULL)
         AND (self.stockMove.toStockLocation IN :location OR :location IS NULL)
