@@ -119,7 +119,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       return BigDecimal.ZERO;
     }
     List<Integer> statusList = new ArrayList<>();
-    statusList.add(ManufOrderRepository.STATUS_PLANNED);
+    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    statusList.add(ManufOrderRepository.STATUS_STANDBY);
     String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
@@ -135,9 +136,9 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " AND self.producedManufOrder.statusSelect IN (:statusListManufOrder)"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
-    }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.stockMove.toStockLocation = :stockLocation "));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+        queryFilter.add(new JPQLFilter("self.stockMove.toStockLocation = :stockLocation "));
+      }
     }
 
     List<StockMoveLine> stockMoveLineList =
@@ -158,14 +159,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productBuildingQty = stockMoveLine.getQty();
-        if (!stockMoveLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unitConversion,
               productBuildingQty,
               productBuildingQty.scale(),
               product);
-        }
         sumBuildingQty = sumBuildingQty.add(productBuildingQty);
       }
     }
@@ -178,7 +177,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       return BigDecimal.ZERO;
     }
     List<Integer> statusList = new ArrayList<>();
-    statusList.add(ManufOrderRepository.STATUS_PLANNED);
+    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    statusList.add(ManufOrderRepository.STATUS_STANDBY);
     String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
@@ -193,10 +193,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN (:statusListManufOrder) ) ) "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
+        }
     }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
-    }
+    
 
     List<StockMoveLine> stockMoveLineList =
         Filter.and(queryFilter)
@@ -214,14 +215,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productConsumeManufOrderQty = stockMoveLine.getQty();
-        if (!stockMoveLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unitConversion,
               productConsumeManufOrderQty,
               productConsumeManufOrderQty.scale(),
               product);
-        }
         sumConsumeManufOrderQty = sumConsumeManufOrderQty.add(productConsumeManufOrderQty);
       }
     }
@@ -234,7 +233,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       return BigDecimal.ZERO;
     }
     List<Integer> statusList = new ArrayList<>();
-    statusList.add(ManufOrderRepository.STATUS_PLANNED);
+    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    statusList.add(ManufOrderRepository.STATUS_STANDBY);
     String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringTool.getIntegerList(status);
@@ -247,10 +247,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
+        }
     }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
-    }
+    
 
     List<StockMoveLine> stockMoveLineList =
         Filter.and(queryFilter)
@@ -267,14 +268,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productMissingManufOrderQty = getMissingQtyOfStockMoveLine(stockMoveLine);
-        if (!stockMoveLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unitConversion,
               productMissingManufOrderQty,
               productMissingManufOrderQty.scale(),
               product);
-        }
         sumMissingManufOrderQty = sumMissingManufOrderQty.add(productMissingManufOrderQty);
       }
     }
