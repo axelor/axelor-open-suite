@@ -1426,4 +1426,32 @@
 		  <series key="_num_event" type="bar" title="Activities"/>
 		</chart>
 		
+		
+		<chart name="chart.lead.new.opportunity" title="New opportunities">
+		  <search-fields>
+		    <field name="dateFrom" title="Date from" type="datetime"/>
+		    <field name="dateTo" title="Date to" type="datetime"/>
+		  </search-fields>
+		  <dataset type="jpql"><![CDATA[
+		
+			SELECT
+			    count(self.id) as opportunities,
+			    ' ' as title
+			FROM
+			    Lead self,
+			    Opportunity op
+			WHERE
+			    self.id = op.lead 
+			    AND op.createdOn = (SELECT min(op.createdOn)
+			     FROM op.createdOn
+			     WHERE op.lead = self.id)
+			    AND op.createdOn > :dateFrom
+			    AND :dateTo > op.createdOn
+		
+			]]></dataset>
+		  <category key="title" type="text"/>
+		  <series key="opportunities" type="bar"/>
+		</chart>
+
+		
 </object-views>

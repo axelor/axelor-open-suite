@@ -93,6 +93,9 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 - TRACKING : Added all fields for all apps and also for company's configuration
+- REPORTING : new indicator for qualified leads on Lead Dashboard One.
+
+
 
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
