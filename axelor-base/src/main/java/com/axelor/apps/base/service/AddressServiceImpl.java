@@ -298,12 +298,7 @@ public class AddressServiceImpl implements AddressService {
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
     List<Street> streets =
-        streetRepository
-            .all()
-            .filter("self.city = :city AND self.country = :country")
-            .bind("city", city)
-            .bind("country", country)
-            .fetch();
+        streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
     if (streets.size() == 1) {
       Street street = streets.get(0);
       address.setStreet(street);
