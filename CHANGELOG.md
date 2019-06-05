@@ -42,7 +42,7 @@
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
 - Stock Move: update future quantity from real quantity in planned stock moves.
-
+- REPORTING : new indicator for new customers on Partner Dashboard.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

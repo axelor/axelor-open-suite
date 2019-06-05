@@ -9,6 +9,12 @@
 	  <field name="monthSelect" expr="eval:6" />
 	</action-record>
 	
+	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.chart.set.date.1m">
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(1)"/>
+	  <field name="monthSelect" expr="eval:1" />
+	</action-record>
+	
 	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.default.month.value">
 	  <field name="monthSelect" expr="eval:12"/>
 	</action-record>
@@ -124,6 +130,33 @@
 	  <category key="_industry_sector" type="text" title="Industry Sector"/>
 	  <series key="_total_partner" type="donut" title="Partners"/>
 	</chart>
+	
+	
+	<chart onInit="action.base.chart.set.date.1m" name="chart.partner.new.customers" title="New customers">
+				<search-fields>
+						<field name="toDate" title="Start date" type="datetime" />
+						<field name="fromDate" title="End date" type="datetime" />
+				</search-fields>
+				<dataset type="jpql">
+			    <![CDATA[
+			SELECT
+			    count(self.id) as partners,
+			    ' ' as title
+			FROM
+			    Partner self,
+			    SaleOrder so
+			WHERE
+			    self.isCustomer = 'true' 
+			    AND so.confirmationDateTime = (SELECT min(so.confirmationDateTime)
+			     FROM so.confirmationDateTime
+			     WHERE so.clientPartner = self.id)
+			    AND so.confirmationDateTime > :startDate
+			    AND :endDate > so.confirmationDateTime
+			]]>
+			</dataset>
+				<category  key="title" type="text" />
+				<series key="partners" type="bar" />
+		</chart>
 
 	
 </object-views>
