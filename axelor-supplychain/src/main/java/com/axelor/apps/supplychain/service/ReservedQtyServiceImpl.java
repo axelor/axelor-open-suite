@@ -114,7 +114,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    */
   protected void changeRequestedQtyLowerThanQty(StockMoveLine stockMoveLine)
       throws AxelorException {
-    BigDecimal qty = stockMoveLine.getRealQty();
+    BigDecimal qty = stockMoveLine.getRealQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     if (requestedReservedQty.compareTo(qty) > 0) {
       Product product = stockMoveLine.getProduct();
@@ -139,7 +139,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    * @throws AxelorException if the quantities are negative or superior to the planned qty.
    */
   protected void checkRequestedAndReservedQty(StockMoveLine stockMoveLine) throws AxelorException {
-    BigDecimal plannedQty = stockMoveLine.getQty();
+    BigDecimal plannedQty = stockMoveLine.getQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     BigDecimal reservedQty = stockMoveLine.getReservedQty();
 

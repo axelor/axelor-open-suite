@@ -24,6 +24,14 @@
    		]]>
    	</extra-code>
   	
+  	<track>
+  		<field name="amount" on="UPDATE"/>
+  		<field name="advancePaymentDate" on="UPDATE"/>
+  		<field name="saleOrder" on="UPDATE"/>
+  		<field name="currency" on="UPDATE"/>
+  		<field name="statusSelect" on="UPDATE"/>
+  	</track>
+  	
   </entity>
 
 </domain-models>

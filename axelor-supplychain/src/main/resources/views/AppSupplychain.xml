@@ -32,6 +32,7 @@
 		<panel name="stackPanel" title="Stock">
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
+			<field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
 		</panel>
 		<panel name="intercoPanel" title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>
@@ -47,6 +48,11 @@
 			<button name="generateSupplychainConfigurationsBtn" colSpan="4" title="Generate supply chain configurations" onClick="save,com.axelor.apps.supplychain.web.AppSupplychainController:generateSupplychainConfigurations"/>
 			<panel-dashlet name="confSupplyChainConfigDashletPanel" action="admin.root.conf.supply.chain.config" colSpan="12"/>
 		</panel>
+		        
+        	<panel-mail name="mailPanel">
+		    	<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
 
 	<action-view name="admin.root.conf.supply.chain.config" title="Supply chain configurations"

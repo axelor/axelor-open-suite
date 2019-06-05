@@ -12,6 +12,12 @@
 	    	<field name="manageTickets" widget="boolean-switch"/>
 	    	<field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
 		</panel>
+				        
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+        
 	</form>
 	
 	

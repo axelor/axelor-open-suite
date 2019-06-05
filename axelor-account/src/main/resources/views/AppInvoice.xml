@@ -10,6 +10,11 @@
 			<field name="isEnabledProductDescriptionCopyForCustomers" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopyForSuppliers" widget="boolean-switch"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	
