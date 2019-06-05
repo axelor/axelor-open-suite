@@ -17,6 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -41,11 +47,6 @@ import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -154,9 +155,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                 "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
-    }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation"));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation"));
+        }
     }
 
     List<StockLocationLine> stockLocationLineList =
@@ -176,7 +177,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         requestedReservedQty = stockLocationLine.getRequestedReservedQty();
-        if (!stockLocationLine.getUnit().equals(unitConversion)) {
           requestedReservedQty =
               unitConversionService.convert(
                   stockLocationLine.getUnit(),
@@ -184,7 +184,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                   requestedReservedQty,
                   requestedReservedQty.scale(),
                   product);
-        }
         sumRequestedReservedQty = sumRequestedReservedQty.add(requestedReservedQty);
       }
     }
@@ -213,9 +212,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                     + " AND self.deliveryState != :deliveryStateSaleOrder"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.saleOrder.company = :company "));
-    }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.saleOrder.stockLocation = :stockLocation"));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.saleOrder.stockLocation = :stockLocation"));
+        }
     }
 
     List<SaleOrderLine> saleOrderLineList =
@@ -240,7 +239,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             == SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
           productSaleOrderQty = productSaleOrderQty.subtract(saleOrderLine.getDeliveredQty());
         }
-        if (!saleOrderLine.getUnit().equals(unitConversion)) {
           productSaleOrderQty =
               unitConversionService.convert(
                   saleOrderLine.getUnit(),
@@ -248,7 +246,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                   productSaleOrderQty,
                   productSaleOrderQty.scale(),
                   product);
-        }
         sumSaleOrderQty = sumSaleOrderQty.add(productSaleOrderQty);
       }
     }
@@ -278,11 +275,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                     + " AND self.receiptState != :receiptStatePurchaseOrder "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.purchaseOrder.company = :company"));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.purchaseOrder.stockLocation = :stockLocation"));
+        }
     }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.purchaseOrder.stockLocation = :stockLocation"));
-    }
-
+    
     List<PurchaseOrderLine> purchaseOrderLineList =
         Filter.and(queryFilter)
             .build(PurchaseOrderLine.class)
@@ -306,7 +303,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
           productPurchaseOrderQty =
               productPurchaseOrderQty.subtract(purchaseOrderLine.getReceivedQty());
         }
-        if (!purchaseOrderLine.getUnit().equals(unitConversion)) {
           productPurchaseOrderQty =
               unitConversionService.convert(
                   purchaseOrderLine.getUnit(),
@@ -314,7 +310,6 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                   productPurchaseOrderQty,
                   productPurchaseOrderQty.scale(),
                   product);
-        }
         sumPurchaseOrderQty = sumPurchaseOrderQty.add(productPurchaseOrderQty);
       }
     }
@@ -333,10 +328,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
                     + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
+      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+          queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation "));
+        }
     }
-    if (stockLocation != null) {
-      queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation "));
-    }
+    
     List<StockLocationLine> stockLocationLineList =
         Filter.and(queryFilter)
             .build(StockLocationLine.class)
@@ -354,14 +350,12 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       Unit unitConversion = product.getUnit();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         productAvailableQty = stockLocationLine.getCurrentQty();
-        if (!stockLocationLine.getUnit().equals(unitConversion)) {
           unitConversionService.convert(
               stockLocationLine.getUnit(),
               unitConversion,
               productAvailableQty,
               productAvailableQty.scale(),
               product);
-        }
         sumAvailableQty = sumAvailableQty.add(productAvailableQty);
       }
     }
