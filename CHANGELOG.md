@@ -1,7 +1,6 @@
 # Changelog
 
-## [Unreleased 5.0.9]
-## Features
+## [5.0.9] - 2019-06-19
 ## Improvements
 - HR : Update kilometric Allowance demo data(fr and en).
 - MOVE : Disable canEdit on journal
@@ -29,7 +28,6 @@
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 
-
 ## [5.0.8] - 2019-01-17
 ## Features
 - Account: add option to automatically create partners' accounts
@@ -40,7 +38,6 @@
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
-- HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
@@ -1108,7 +1105,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...5.0-dev
+[5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
 [5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
