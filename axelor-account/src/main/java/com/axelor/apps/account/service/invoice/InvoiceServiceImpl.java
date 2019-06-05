@@ -322,7 +322,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    if(this.checkEnablePDFGenerationOnVentilation(invoice)) 
+    {
+    	Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    }
   }
 
   /**
@@ -854,4 +857,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     return true;
   }
+  
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) 
+  {
+	  if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForCustomersOnVentilation()) 
+	  {
+			 switch (invoice.getOperationTypeSelect()) 
+			 {
+				case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+					return true;			
+				case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+					return true;			
+			}
+	  }
+	  if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForSuppliersOnVentilation()) 
+	  {
+			 switch (invoice.getOperationTypeSelect()) 
+			 {
+				case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+					return true;			
+				case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+					return true;			
+			}
+	  }
+	  return false;
+  }
+  
 }

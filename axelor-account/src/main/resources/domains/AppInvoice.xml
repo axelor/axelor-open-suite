@@ -10,12 +10,16 @@
 		<boolean name="isVentilationSkipped" title="Skip ventilation"/>
 		<boolean name="isEnabledProductDescriptionCopyForCustomers" title="Enable product description copy for customers"/>
 		<boolean name="isEnabledProductDescriptionCopyForSuppliers" title="Enable product description copy for suppliers"/>
+		<boolean name="isEnablePDFGenerationForCustomersOnVentilation" title="Enable PDF generation for customers on ventilation"/>
+		<boolean name="isEnablePDFGenerationForSuppliersOnVentilation" title="Enable PDF generation for suppliers on ventilation"/>
 		
 		<track>
 			<field name="isInvoiceMoveConsolidated" on="UPDATE"/>
 			<field name="isVentilationSkipped" on="UPDATE"/>
 			<field name="isEnabledProductDescriptionCopyForCustomers" on="UPDATE"/>
 			<field name="isEnabledProductDescriptionCopyForSuppliers" on="UPDATE"/>
+			<field name="isEnablePDFGenerationForCustomersOnVentilation" on="UPDATE"/>
+			<field name="isEnablePDFGenerationForSuppliersOnVentilation" on="UPDATE"/>
 		</track>
 	</entity>
 
