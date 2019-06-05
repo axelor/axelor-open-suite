@@ -124,6 +124,33 @@
 	  <category key="_industry_sector" type="text" title="Industry Sector"/>
 	  <series key="_total_partner" type="donut" title="Partners"/>
 	</chart>
+	
+	
+	<chart name="chart.partner.new.customers" title="New customers">
+				<search-fields>
+						<field name="startDate" title="Start date" type="datetime" />
+						<field name="endDate" title="End date" type="datetime" />
+				</search-fields>
+				<dataset type="jpql">
+			    <![CDATA[
+			SELECT
+			    count(self.id) as partners,
+			    ' ' as title
+			FROM
+			    Partner self,
+			    SaleOrder so
+			WHERE
+			    self.isCustomer = 'true' 
+			    AND so.confirmationDateTime = (SELECT min(so.confirmationDateTime)
+			     FROM so.confirmationDateTime
+			     WHERE so.clientPartner = self.id)
+			    AND so.confirmationDateTime > :startDate
+			    AND :endDate > so.confirmationDateTime
+			]]>
+			</dataset>
+				<category  key="title" type="text" />
+				<series key="partners" type="bar" />
+		</chart>
 
 	
 </object-views>

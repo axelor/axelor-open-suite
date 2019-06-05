@@ -14,6 +14,7 @@
 		<dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/> 
 		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
 		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
+		<dashlet action="chart:chart.partner.new.customers" height="350"/>
   	</dashboard>
   	
   	<dashboard title="Contact Dashboard" name="base.contact.dashboard"  >
