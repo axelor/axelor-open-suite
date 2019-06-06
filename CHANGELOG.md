@@ -85,6 +85,7 @@
 - PURCHASE ORDER : Remove completedBtn
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- Payroll preparation : fixed bug on triggering the "refresh" button
 
 ## [5.1.6] - 2019-04-29
 ## Features
