@@ -85,8 +85,8 @@
 - PURCHASE ORDER : Remove completedBtn
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
--SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
-
+- SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
+- TRAINING : translate "skill"
 
 ## [5.1.6] - 2019-04-29
 ## Features
