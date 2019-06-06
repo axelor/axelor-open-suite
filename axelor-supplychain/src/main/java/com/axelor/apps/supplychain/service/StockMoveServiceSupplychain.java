@@ -19,8 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockMoveServiceSupplychain {
@@ -36,7 +34,4 @@ public interface StockMoveServiceSupplychain {
    * @param stockMove
    */
   void detachNonDeliveredStockMoveLines(StockMove stockMove);
-
-  BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException;
 }

@@ -22,9 +22,9 @@ import com.axelor.apps.base.db.repo.AppSupplychainRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
@@ -39,6 +39,8 @@ public class StockMoveController {
   @Inject private StockMoveServiceSupplychain stockMoveService;
 
   @Inject private AppSupplychainRepository appSupplychainRepo;
+
+  @Inject private StockMoveLineService stockMoveLineService;
 
   public void addSubLines(ActionRequest request, ActionResponse response) {
     try {
@@ -70,31 +72,30 @@ public class StockMoveController {
         && stockMove.getStockMoveLineList() != null
         && appSupplychain.getIsVerifyProductStock()
         && stockMove.getFromStockLocation() != null) {
-      try {
-        int counter = 1;
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-          if (saleOrderLine != null) {
-            BigDecimal availableStock =
-                stockMoveService.getAvailableStock(stockMove, stockMoveLine);
-            if (availableStock.compareTo(
-                        saleOrderLine.getQty().subtract(saleOrderLine.getReservedQty()))
-                    < 0
-                && counter <= 10) {
-              notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
-              counter++;
-            }
+
+      int counter = 1;
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+        if (saleOrderLine != null) {
+          stockMoveLineService.updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+          BigDecimal availableQty =
+              stockMoveLine.getTrackingNumber() != null
+                  ? stockMoveLine.getAvailableQty()
+                  : stockMoveLine.getAvailableQtyForProduct();
+          BigDecimal realQty = stockMoveLine.getRealQty();
+          if (availableQty.compareTo(realQty.subtract(saleOrderLine.getReservedQty())) < 0
+              && counter <= 10) {
+            notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
+            counter++;
           }
         }
-        if (!Strings.isNullOrEmpty(notAvailableProducts.toString())) {
-          response.setValue("availabilityRequest", false);
-          response.setFlash(
-              String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
-                  notAvailableProducts.toString()));
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(response, e);
+      }
+      if (!Strings.isNullOrEmpty(notAvailableProducts.toString())) {
+        response.setValue("availabilityRequest", false);
+        response.setFlash(
+            String.format(
+                I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
+                notAvailableProducts.toString()));
       }
     }
   }
