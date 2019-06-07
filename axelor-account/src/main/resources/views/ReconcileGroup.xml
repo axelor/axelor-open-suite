@@ -6,7 +6,7 @@
   <grid name="reconcile-group-grid" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup"
     canNew="false">
-    <field name="code"/>
+    <field name="code" width="120"/>
     <field name="company"/>
   </grid>
 
