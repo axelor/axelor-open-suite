@@ -27,10 +27,12 @@ import com.axelor.i18n.I18n;
 
 public class StockConfigProductionService extends StockConfigService {
 
-  public StockLocation getProductionVirtualStockLocation(StockConfig stockConfig)
-      throws AxelorException {
+  public StockLocation getProductionVirtualStockLocation(
+      StockConfig stockConfig, boolean isOutsource) throws AxelorException {
 
-    if (stockConfig.getProductionVirtualStockLocation() == null) {
+    if (stockConfig.getProductionVirtualStockLocation() == null
+        || (isOutsource
+            && !stockConfig.getProductionVirtualStockLocation().getIsOutsourcingLocation())) {
       throw new AxelorException(
           stockConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

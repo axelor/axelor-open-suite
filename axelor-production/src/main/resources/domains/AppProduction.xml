@@ -29,6 +29,8 @@
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
+		
+		<boolean name="manageOutsourcing" title="Manage outsourcing"/>
 	</entity>
 
 </domain-models>

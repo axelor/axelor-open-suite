@@ -65,7 +65,8 @@
 				<field name="usableOnPurchaseOrder" colSpan="3"/>
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
-				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
+				<field name="isWorkshop"  colSpan="3" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
+				<field name="isOutsourcingLocation" showIf="typeSelect==2 || typeSelect==3"  colSpan="3" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
 			</panel>
 		</panel-tabs>
 		

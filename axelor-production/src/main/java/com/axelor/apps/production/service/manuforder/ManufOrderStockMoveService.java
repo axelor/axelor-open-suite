@@ -104,7 +104,8 @@ public class ManufOrderStockMoveService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation =
         getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
@@ -240,8 +241,10 @@ public class ManufOrderStockMoveService {
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
     LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
@@ -398,11 +401,15 @@ public class ManufOrderStockMoveService {
     if (inOrOut == PART_FINISH_IN) {
       stockMoveList = manufOrder.getInStockMoveList();
       fromStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
-      toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+      toStockLocation =
+          stockConfigService.getProductionVirtualStockLocation(
+              stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     } else {
       stockMoveList = manufOrder.getOutStockMoveList();
-      fromStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+      fromStockLocation =
+          stockConfigService.getProductionVirtualStockLocation(
+              stockConfig, manufOrder.getProdProcess().getOutsourcing());
       toStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_OUT);
     }
 
