@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.1.7]
 ## Features
-- AVAILABITY REQUEST : error message if availableStock is less than qty - reservedQty on saleOrderLine
+- AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on saleOrderLine
 - USER : filter assigned to user in partner form
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - TRACKING : Added all fields for all apps and also for company's configuration
@@ -41,8 +41,8 @@
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
-- GRID : sequences in comlumn grid are completely display 
-
+- GRID : sequences in column grid are now completely displayed 
+- Stock Move: update future quantity from real quantity in planned stock moves.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -85,6 +85,9 @@
 - PURCHASE ORDER : Remove completedBtn
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- Payroll preparation : fixed bug on triggering the "refresh" button
+- SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
+- TRAINING : translate "skill"
 
 ## [5.1.6] - 2019-04-29
 ## Features
