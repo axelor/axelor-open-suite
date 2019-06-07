@@ -95,9 +95,11 @@
 	</action-record>
 	
 	<action-record name="action-address-change-city" model="com.axelor.apps.base.db.Address">
-		<field name="addressL6" if="city" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
+		<field name="addressL6" if="city &amp;&amp; city.zip" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
+        <field name="addressL6" if="city &amp;&amp; !city.zip" expr="eval: city.name"/>
+        <field name="addressL6" if="!city" expr="eval: null"/>
 <!--   		<field name="addressL7Country" expr="eval:city.department==null?addressL7Country:city.department.region!=null?city.department.region.country:addressL7Country"/> -->
-  		<field name="addressL7Country" expr="eval:city?.country"/>
+  		<field name="addressL7Country" expr="eval: city?.country" if="city" />
 		<field name="zip" expr="eval: city?.zip"/>
         <field name="street" expr="eval: null"/>
 	</action-record>
@@ -148,6 +150,9 @@
 		<field name="city" expr="eval: null"/>
         <field name="zip" expr="eval: null"/>
         <field name="addressL6" expr="eval: null"/>
+        <field name="streetNumber" expr="eval: null"/>
+        <field name="street" expr="eval: null"/>
+        <field name="addressL4" expr="eval: null"/>
 	</action-record>
     
     <action-method name="action-address-method-autocomplete-address">
@@ -160,7 +165,9 @@
         <field name="addressL4" expr="eval: null" if="!street" />
         <field name="city" expr="eval: street.city" if="street" />
         <field name="zip" expr="eval: street.city.zip" if="street" />
-        <field name="addressL6" if="city" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
+        <field name="addressL6" if="street &amp;&amp; street.city.zip" expr="eval: street.city.hasZipOnRight ? street.city.name+' '+street.city.zip :street.city.zip+' '+street.city.name"/>
+        <field name="addressL6" if="street &amp;&amp; !street.city.zip" expr="eval: street.city.name"/>
+        <field name="addressL7Country" expr="eval: street.city.country" if="street" />
     </action-record>
 
 </object-views>
