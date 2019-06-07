@@ -105,5 +105,8 @@
 		<series key="_num_prod" groupBy="_label" type="bar" title="Products"/>
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
+  
+  
+  
 
 </object-views>

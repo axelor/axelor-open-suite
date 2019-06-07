@@ -8,22 +8,24 @@
         <field name="product" width="300"/>	
         <field name="product.unit"  width="100"/>  
         <field name="stockLocation.company" width="120"/>
-        <field name="stockLocation.parentStockLocation.name" title="Parent Stock location"/>
         <field name="stockLocation.name" title="Stock location"/>
+        <field name="stockLocation.parentStockLocation.name" title="Parent Stock location"/>
         <field name="currentQty" width="150"/> 
         <field name="futureQty" title="Future quantity" width="150"/>
         <field name="reservedQty" width="150"/>
+        <field name="requestedReservedQty" width="150"/>
     </grid>
 	
+  
 	<action-view name="action-stock-location-line-view-by-product" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="grid" name="supplychain-stock-location-line-grid"/>
         <view type="form" name="stock-location-line-form"/>
-    	<domain>self.product.id = :productId and self.stockLocation.typeSelect != 3 
-      and (:location is null or self.stockLocation IN :location)
-      and (:companyId is null or :companyId = self.stockLocation.company.id)
-      and (self.currentQty != 0 or self.futureQty != 0)</domain>
+    	<domain>self.product.id = :productId AND self.stockLocation.typeSelect != 3 
+      AND (:location IS NULL OR self.stockLocation.id IN :location)
+      AND (:companyId IS NULL OR self.stockLocation.company.id = :companyId)
+      AND (self.currentQty != 0 OR self.futureQty != 0)</domain>
     	<context name="productId" expr="eval: product?.id"/>
-        <context name="location" expr="call: com.axelor.apps.supplychain.service.StockLocationService.getAllLocationAndSubLocation(stockLocation, false) "/>
+        <context name="location" expr="eval: __stockLocationIdList"/>
         <context name="companyId" expr="eval: company?.id "/>
     </action-view>
     

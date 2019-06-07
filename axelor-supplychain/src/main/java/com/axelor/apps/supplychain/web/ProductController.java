@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -29,6 +27,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.MoreObjects;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductController {
 
@@ -58,16 +59,16 @@ public class ProductController {
       if (stockLocationHashMap != null) {
         stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
       }
-      
+
       if (companyId != 0L && stockLocationId != 0L) {
-      StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
-	      if(sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
-	    	  stockLocationId = 0L;
-	    	  response.setValue("stockLocation", null);
-	    	  context.put("$stockLocation", null);
-	      }
+        StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
+        if (sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
+          stockLocationId = 0L;
+          response.setValue("stockLocation", null);
+          context.put("$stockLocation", null);
+        }
       }
-      
+
       Map<String, Object> map =
           Beans.get(ProductStockLocationService.class)
               .computeIndicators(productId, companyId, stockLocationId);
@@ -75,5 +76,35 @@ public class ProductController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+public void findAllSubLocation(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Long stockLocationId = 0L;
+    Long companyId = 0L;
+
+    LinkedHashMap<String, Object> companyHashMap =
+        (LinkedHashMap<String, Object>) context.get("company");
+    if (companyHashMap != null) {
+      companyId = Long.valueOf(companyHashMap.get("id").toString());
+    }
+    LinkedHashMap<String, Object> stockLocationHashMap =
+        (LinkedHashMap<String, Object>) context.get("stockLocation");
+    if (stockLocationHashMap != null) {
+      stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
+    }
+
+    if (companyId != 0L && stockLocationId != 0L) {
+      StockLocation stockLocation = Beans.get(StockLocationRepository.class).find(stockLocationId);
+      if (stockLocation != null && stockLocation.getCompany().getId() == companyId) {
+        List<Long> stockLocationIdList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocationId(stockLocation, false);
+        response.setValue("__stockLocationIdList", stockLocationIdList);
+        return;
+      }
+    }
+    response.setValue("__stockLocationIdList", null);
   }
 }

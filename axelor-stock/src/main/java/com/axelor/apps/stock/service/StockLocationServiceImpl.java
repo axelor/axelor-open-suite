@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 @RequestScoped
@@ -228,7 +229,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
     List<StockLocation> resultList = new ArrayList<>();
     if (stockLocation == null) {
-      return null;
+      return resultList;
     }
     if (isVirtualInclude) {
       for (StockLocation subLocation :
@@ -274,5 +275,18 @@ public class StockLocationServiceImpl implements StockLocationService {
     return result.get(0) == null
         ? BigDecimal.ZERO
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+  }
+
+  @Override
+  public List<Long> getAllLocationAndSubLocationId(
+      StockLocation stockLocation, boolean isVirtualInclude) {
+    List<StockLocation> stockLocationList =
+        getAllLocationAndSubLocation(stockLocation, isVirtualInclude);
+    List<Long> stockLocationListId = null;
+    if (stockLocationList != null) {
+      stockLocationListId =
+          stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
+    }
+    return stockLocationListId;
   }
 }

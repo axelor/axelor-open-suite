@@ -61,4 +61,7 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   public BigDecimal getStockLocationValue(StockLocation stockLocation);
+
+  public List<Long> getAllLocationAndSubLocationId(
+      StockLocation stockLocation, boolean isVirtualInclude);
 }

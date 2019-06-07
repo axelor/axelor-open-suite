@@ -102,10 +102,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     }
 
     BigDecimal consumeManufOrderQty =
-        this.getConsumeManufOrderQty(product, company, stockLocation).setScale(2);
+        this.getConsumeManufOrderQty(product, company, null).setScale(2);
     BigDecimal availableQty =
         (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-    map.put("$buildingQty", this.getBuildingQty(product, company, stockLocation).setScale(2));
+    map.put("$buildingQty", this.getBuildingQty(product, company, null).setScale(2));
     map.put("$consumeManufOrderQty", consumeManufOrderQty);
     map.put(
         "$missingManufOrderQty",
@@ -136,7 +136,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " AND self.producedManufOrder.statusSelect IN (:statusListManufOrder)"));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
-      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
+      if (stockLocation != null) {
         queryFilter.add(new JPQLFilter("self.stockMove.toStockLocation = :stockLocation "));
       }
     }
@@ -159,12 +159,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productBuildingQty = stockMoveLine.getQty();
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              unitConversion,
-              productBuildingQty,
-              productBuildingQty.scale(),
-              product);
+        unitConversionService.convert(
+            stockMoveLine.getUnit(),
+            unitConversion,
+            productBuildingQty,
+            productBuildingQty.scale(),
+            product);
         sumBuildingQty = sumBuildingQty.add(productBuildingQty);
       }
     }
@@ -193,11 +193,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN (:statusListManufOrder) ) ) "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
-      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
-          queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
-        }
+      if (stockLocation != null) {
+        queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
+      }
     }
-    
 
     List<StockMoveLine> stockMoveLineList =
         Filter.and(queryFilter)
@@ -215,12 +214,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productConsumeManufOrderQty = stockMoveLine.getQty();
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              unitConversion,
-              productConsumeManufOrderQty,
-              productConsumeManufOrderQty.scale(),
-              product);
+        unitConversionService.convert(
+            stockMoveLine.getUnit(),
+            unitConversion,
+            productConsumeManufOrderQty,
+            productConsumeManufOrderQty.scale(),
+            product);
         sumConsumeManufOrderQty = sumConsumeManufOrderQty.add(productConsumeManufOrderQty);
       }
     }
@@ -247,11 +246,10 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
                     + " AND self.stockMove.fromStockLocation.typeSelect != :typeSelect "));
     if (company != null) {
       queryFilter.add(new JPQLFilter("self.stockMove.company = :company "));
-      if (stockLocation != null && stockLocation.getCompany().equals(company)) {
-          queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
-        }
+      if (stockLocation != null) {
+        queryFilter.add(new JPQLFilter("self.stockMove.fromStockLocation = :stockLocation "));
+      }
     }
-    
 
     List<StockMoveLine> stockMoveLineList =
         Filter.and(queryFilter)
@@ -268,12 +266,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         productMissingManufOrderQty = getMissingQtyOfStockMoveLine(stockMoveLine);
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              unitConversion,
-              productMissingManufOrderQty,
-              productMissingManufOrderQty.scale(),
-              product);
+        unitConversionService.convert(
+            stockMoveLine.getUnit(),
+            unitConversion,
+            productMissingManufOrderQty,
+            productMissingManufOrderQty.scale(),
+            product);
         sumMissingManufOrderQty = sumMissingManufOrderQty.add(productMissingManufOrderQty);
       }
     }
