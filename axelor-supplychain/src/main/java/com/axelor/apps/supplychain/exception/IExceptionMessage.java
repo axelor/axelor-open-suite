@@ -37,6 +37,8 @@ public interface IExceptionMessage {
   static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
   static final String SO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
+  static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
+      "The amount to invoice is superior than the amount in the sale order" /*)*/;
   static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/
       "Please configure the sale order invoicing product" /*)*/;
   static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
@@ -45,6 +47,8 @@ public interface IExceptionMessage {
       "You must configure an advance payment account for the company %s" /*)*/;
   static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  static final String SO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
+      "All invoices have been generated for this sale order." /*)*/;
 
   /** Sale order Purchase Service */
   static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
@@ -176,8 +180,23 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE = /*$$(*/
+      "Please do not enter negative quantity for reservation." /*)*/;
+
+  static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_HIGH = /*$$(*/
+      "The requested quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
+  static final String SALE_ORDER_LINE_ALLOCATED_QTY_TOO_HIGH = /*$$(*/
+      "The allocated quantity must not be greater than the quantity in the stock move line %s." /*)*/;
+
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
+
+  static final String SALE_ORDER_LINE_AVAILABILITY_REQUEST = /*$$(*/
+      "The reservation for an availability requested stock move cannot be lowered." /*)*/;
+
+  static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW = /*$$(*/
+      "The requested quantity must be greater than the already delivered quantity." /*)*/;
 
   /** Account config supplychain service */
   static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
@@ -195,4 +214,7 @@ public interface IExceptionMessage {
 
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;
+
+  static final String STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR = /*$$(*/
+      "Product stock for %s is not enough for availability request" /*)*/;
 }

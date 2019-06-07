@@ -19,6 +19,7 @@ package com.axelor.apps.account.report;
 
 public interface ITranslation {
 
+  public static final String INVOICE_ADVANCE_PAYMENTS = /*$$(*/ "Invoice.advancePayments"; /*)*/
   public static final String INVOICE_DATE = /*$$(*/ "Invoice.date"; /*)*/
   public static final String INVOICE_PAYMENT_TERMS = /*$$(*/ "Invoice.paymentTerms"; /*)*/
   public static final String INVOICE_DUE_DATE = /*$$(*/ "Invoice.dueDate"; /*)*/
@@ -134,6 +135,8 @@ public interface ITranslation {
       "AccountingReportType7.dueDate"; /*)*/
   public static final String ACCOUNTING_REPORT_7_RECONCILE_GROUP = /*$$(*/
       "AccountingReportType7.reconcileGroup"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_JOURNAL_DATE = /*$$(*/
+      "AccountingReportType7.journalCode"; /*)*/
 
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/

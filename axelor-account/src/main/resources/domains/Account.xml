@@ -28,5 +28,21 @@
         <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true"/>
         <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line" massUpdate="true"/>
     	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true"/>
+    	
+        <track>
+      		<field name="name"/>
+      		<field name="code"/>
+      		<field name="parentAccount"/>
+      		<field name="accountType"/>
+      		<field name="reconcileOk"/>
+      		<field name="company"/>
+      		<field name="useForPartnerBalance"/>
+      		<field name="analyticDistributionRequiredOnInvoiceLines"/>
+      		<field name="analyticDistributionRequiredOnMoveLines"/>
+      		<field name="analyticDistributionAuthorized"/>
+      		<field name="isTaxAuthorizedOnMoveLine"/>
+      		<field name="isTaxRequiredOnMoveLine"/>
+      	</track>
+      	
     </entity>
 </domain-models>

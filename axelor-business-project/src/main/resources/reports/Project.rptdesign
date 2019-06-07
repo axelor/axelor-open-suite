@@ -507,11 +507,23 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
+            <xml-property name="queryText"><![CDATA[select
  SO.sale_order_seq as so_seq,
  SO.order_date as so_date,
- SUM(SOL.company_ex_tax_total - (SOL.company_ex_tax_total * (SOL.amount_invoiced / NULLIF(SOL.ex_tax_total, 0)))) as sol_sales,
- SUM(COALESCE(((SOL.company_ex_tax_total - SOL.amount_invoiced) / NULLIF(SOL.company_ex_tax_total, 0)) * SOL.sub_total_cost_price, 0)) as sol_costs,
+ SUM(
+	case
+		when SOL.amount_invoiced > SOL.ex_tax_total then
+			0
+		else
+			SOL.company_ex_tax_total - (SOL.company_ex_tax_total * (SOL.amount_invoiced / NULLIF(SOL.ex_tax_total, 0)))
+		end ) as sol_sales,
+ SUM(
+	case
+		when SOL.amount_invoiced > SOL.ex_tax_total then
+			0
+		else
+			COALESCE(((SOL.company_ex_tax_total - SOL.amount_invoiced) / NULLIF(SOL.company_ex_tax_total, 0)) * SOL.sub_total_cost_price, 0)
+		end ) as sol_costs,
  SUM(SOL.sub_total_gross_margin) as sol_expected_margin
 from sale_sale_order_line SOL
 left join sale_sale_order SO on (SO.id = SOL.sale_order)
@@ -11696,7 +11708,7 @@ order by task_end_date]]></xml-property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["sol_sales"] == 0</expression>
+                                        <expression name="valueExpr" type="javascript">row["sol_sales"] &lt;= 0</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4570">

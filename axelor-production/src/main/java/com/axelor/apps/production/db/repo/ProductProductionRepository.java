@@ -15,21 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.production.db.repo;
 
-import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.db.JPA;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.repo.ProductStockRepository;
 
-public class AddressServicePurchaseImpl extends AddressServiceImpl {
-  static {
-    registerCheckUsedFunc(AddressServicePurchaseImpl::checkAddressUsedPurchase);
-  }
+public class ProductProductionRepository extends ProductStockRepository {
 
-  private static boolean checkAddressUsedPurchase(Long addressId) {
-    return JPA.all(PurchaseRequest.class)
-            .filter("self.deliveryAddress.id = ?1", addressId)
-            .fetchOne()
-        != null;
+  @Override
+  public Product copy(Product product, boolean deep) {
+    Product copy = super.copy(product, deep);
+    copy.setDefaultBillOfMaterial(null);
+    return copy;
   }
 }

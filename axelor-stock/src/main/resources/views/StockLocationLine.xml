@@ -34,10 +34,17 @@
         	<button name="$realQtyBtn" title="Real qty" icon="fa-building-o" onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3" widget="info-button"/>
         	<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3" widget="info-button"/>
         	<button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes" onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3" widget="info-button" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-        	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
+        <panel name="simpleButtonPanel">
+          <button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
+          <button name="allocateAll" title="Allocate all" onClick="save,action-stock-location-line-allocate-all" colSpan="3" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+          <button name="deallocateAll" title="Deallocate all" onClick="save,action-stock-location-line-deallocate-all" colSpan="3" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        </panel>
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel-mail name="mailsPanel">
+          <mail-messages />
+        </panel-mail>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -136,6 +143,9 @@
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
     </form>
     
     <action-group name="action-stock-location-line-group-onload">
@@ -201,5 +211,13 @@
     	<context name="productId" expr="eval: product?.id"/> 
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
-    
+
+  <action-method name="action-stock-location-line-allocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-stock-location-line-deallocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="deallocateAll"/>
+  </action-method>
+
 </object-views>

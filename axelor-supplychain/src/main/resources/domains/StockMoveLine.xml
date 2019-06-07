@@ -45,6 +45,11 @@
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
 	      orderBy="stockMove.realDate,id" all="true"/>
+		
+		<track on="UPDATE">
+			<field name="requestedReservedQty"/>
+			<field name="reservedQty"/>
+		</track>
 
 	</entity>
 </domain-models>

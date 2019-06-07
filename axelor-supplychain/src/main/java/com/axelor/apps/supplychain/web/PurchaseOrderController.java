@@ -72,6 +72,7 @@ public class PurchaseOrderController {
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .param("forceEdit", "true")
+                  .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {

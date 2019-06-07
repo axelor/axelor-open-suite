@@ -6,7 +6,7 @@
 		<hilite color="danger" if="statusSelect == 5"/>
 		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
 		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="expenseSeq"/>
+		<field name="expenseSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
@@ -27,7 +27,7 @@
 		</toolbar>
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
-		<field name="expenseSeq"/>
+		<field name="expenseSeq" width="120"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
@@ -162,8 +162,10 @@
 	</form>
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
-		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
-		<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
+		<panel name="mainPanel">
+			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
+			<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+		</panel>
 	</form>
 
 	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">

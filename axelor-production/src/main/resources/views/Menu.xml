@@ -246,8 +246,8 @@
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
 	</action-view>
-	
-	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop"/>
+	 
+	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop" if="__config__.app.getApp('production').manageWorkshop" />
 	
 	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">
 		<view type="grid" name="stock-location-grid"/>

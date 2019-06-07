@@ -7,7 +7,7 @@
 		<toolbar>
 			<button name="takeChargeBtn" title="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
 		</toolbar>
-		<field name="ticketSeq"/>
+		<field name="ticketSeq" width="120"/>
 		<field name="subject"/>
 		<field name="ticketType"/>
 		<field name="startDateT"/>
@@ -268,8 +268,8 @@
 	</action-method>
 
 	<action-group name="action-ticket-group-timer-process">
-		<action name="action-ticket-method-manage-timer-buttons"/>
-		<action name="action-ticket-method-compute-total-timer-duration"/>
+		<action name="action-ticket-method-manage-timer-buttons" if="__config__.app.getApp('helpdesk').manageTimer"/>
+		<action name="action-ticket-method-compute-total-timer-duration" if="__config__.app.getApp('helpdesk').manageTimer"/>
 	</action-group>
 
 	<action-method name="action-ticket-method-start-timer">

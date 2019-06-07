@@ -15,6 +15,12 @@
                 onClick="save,com.axelor.apps.bankpayment.web.AppBankPaymentController:generateBankPaymentConfigurations"/>
             <panel-dashlet name="bankPaymentConfigPanel" action="admin.root.conf.bank.payment.config" colSpan="12"/>
         </panel>
+        
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+        
     </form>
 
     <action-view name="action-company-view-bank-payment-config" title="Bank payment config (${ name })" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">

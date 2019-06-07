@@ -45,6 +45,8 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
       throw new ValidationException(I18n.get(IExceptionMessage.INVALID_TR_DATE));
     }
 
+    trainingRegister.setFullName(trainingRegisterService.computeFullName(trainingRegister));
+
     trainingRegister = super.save(trainingRegister);
 
     trainingRegisterService.updateTrainingRating(trainingRegister.getTraining(), null);

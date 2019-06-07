@@ -34,6 +34,11 @@
                 <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
         </panel>
+       
+        <panel-mail name="mailPanel">
+        	<mail-messages limit="4"/>
+        	<mail-followers/>
+        </panel-mail>
     </form>
 
     <action-record name="action-bank-payment-config-record-default" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">

@@ -143,12 +143,12 @@ public class TaxInvoiceLine extends TaxGenerator {
 
             // Dans la devise de la facture
             invoiceLineTaxRC.setExTaxBase(
-                invoiceLineTaxRC.getExTaxBase().subtract(invoiceLine.getExTaxTotal()));
+                invoiceLineTaxRC.getExTaxBase().add(invoiceLine.getExTaxTotal()));
             // Dans la devise de la comptabilité du tiers
             invoiceLineTaxRC.setCompanyExTaxBase(
                 invoiceLineTaxRC
                     .getCompanyExTaxBase()
-                    .subtract(invoiceLine.getCompanyExTaxTotal())
+                    .add(invoiceLine.getCompanyExTaxTotal())
                     .setScale(2, RoundingMode.HALF_UP));
 
             invoiceLineTaxRC.setReverseCharged(true);

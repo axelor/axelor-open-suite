@@ -21,7 +21,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.AddressServicePurchaseImpl;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -38,7 +39,6 @@ public class PurchaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(AddressServicePurchaseImpl.class);
     bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
     bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
     bind(AppPurchaseService.class).to(AppPurchaseServiceImpl.class);
@@ -46,5 +46,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
     bind(PurchaseOrderPrintService.class).to(PurchaseOrderPrintServiceImpl.class);
     bind(ProductServiceImpl.class).to(ProductServicePurchaseImpl.class);
+    bind(PurchaseRequestRepository.class).to(PurchaseRequestManagementRepository.class);
   }
 }

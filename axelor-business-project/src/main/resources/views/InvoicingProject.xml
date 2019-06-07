@@ -4,7 +4,7 @@
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
-		<field name="invoice"/>
+		<field name="invoice" width="120"/>
 		<field name="deadlineDate"/>
 		<field name="createdOn"/>
 	</grid>

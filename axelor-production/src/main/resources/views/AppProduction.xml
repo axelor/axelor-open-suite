@@ -21,10 +21,6 @@
 			</panel>
 			<panel name="manufacturingProcessPanel" title="Manufacturing process">
    				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
-   				<field name="finishMoAutomaticEmail"/>
-   				<field name="finishMoMessageTemplate" requiredIf="finishMoAutomaticEmail" showIf="finishMoAutomaticEmail" form-view="template-form" grid-view="template-grid" domain="self.metaModel.name = 'ManufOrder'"/>
-   				<field name="partFinishMoAutomaticEmail"/>
-   				<field name="partFinishMoMessageTemplate" requiredIf="partFinishMoAutomaticEmail" showIf="partFinishMoAutomaticEmail" form-view="template-form" grid-view="template-grid" domain="self.metaModel.name = 'ManufOrder'"/>
 			</panel>
 			<panel name="prodProcessPanel" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>
@@ -51,6 +47,12 @@
 			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
 			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"

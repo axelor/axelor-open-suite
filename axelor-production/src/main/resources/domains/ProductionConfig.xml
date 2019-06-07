@@ -12,6 +12,10 @@
 			 selection="production.manuf.order.stock.move.realize.order.select"/>
 		<many-to-one name="manufOrderSequence" title="Default sequence" ref="com.axelor.apps.base.db.Sequence"/>
 		<one-to-many name="workshopSequenceConfigLineList" title="Sequence by workshop" mappedBy="productionConfig" ref="com.axelor.apps.production.db.WorkshopSequenceConfigLine"/>
+		<boolean name="finishMoAutomaticEmail" title="Send email when manufacturing order finished" default="false"/>
+		<many-to-one name="finishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		<boolean name="partFinishMoAutomaticEmail" title="Send email when manufacturing order partially finished" default="false"/>
+		<many-to-one name="partFinishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
 	  <finder-method name="findByCompany" using="company"/>
 
@@ -22,6 +26,15 @@
    		]]>
 	  </extra-code>
 
+		<track>
+			<field name="company" on="UPDATE"/>
+			<field name="stockMoveRealizeOrderSelect" on="UPDATE"/>
+			<field name="manufOrderSequence" on="UPDATE"/>
+			<field name="finishMoAutomaticEmail" on="UPDATE"/>
+			<field name="finishMoMessageTemplate" on="UPDATE"/>
+			<field name="partFinishMoAutomaticEmail" on="UPDATE"/>
+			<field name="partFinishMoMessageTemplate" on="UPDATE"/>
+		</track>
 
   </entity>
   

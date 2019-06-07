@@ -224,14 +224,18 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+  public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+      Beans.get(SaleOrderWorkflowService.class)
+          .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
@@ -518,8 +522,12 @@ public class SaleOrderController {
             .find(request.getContext().asType(SaleOrder.class).getId());
 
     try {
-      Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+      boolean checkAvailabiltyRequest =
+          Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
+      if (checkAvailabiltyRequest) {
+        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
