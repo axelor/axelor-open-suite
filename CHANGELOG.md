@@ -90,6 +90,7 @@
 - SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
+- Tool : Increase of time in Unit Test.
 
 ## [5.1.6] - 2019-04-29
 ## Features
@@ -293,7 +294,6 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Stock Move Line: stock move is readonly in form view.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
-
 
 ## [5.1.4] - 2019-03-11
 ## Features
