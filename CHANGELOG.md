@@ -88,6 +88,7 @@
 - Payroll preparation : fixed bug on triggering the "refresh" button
 - SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
 - TRAINING : translate "skill"
+- PACKING LIST : display productName instead of product on printing
 
 ## [5.1.6] - 2019-04-29
 ## Features
