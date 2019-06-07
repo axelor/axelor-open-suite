@@ -79,7 +79,7 @@ public class ProductController {
   }
 
   @SuppressWarnings("unchecked")
-public void findAllSubLocation(ActionRequest request, ActionResponse response) {
+  public void findAllSubLocation(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Long stockLocationId = 0L;
     Long companyId = 0L;
