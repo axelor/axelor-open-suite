@@ -91,6 +91,7 @@
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
+- REQUEST LEAVE CALENDAR : colorBy is now set to user.
 
 ## [5.1.6] - 2019-04-29
 ## Features
