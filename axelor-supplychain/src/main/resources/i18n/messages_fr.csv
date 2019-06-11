@@ -340,6 +340,7 @@
 "Qty","Qté",,
 "Qty to invoice","Qté à facturer",,
 "Quantity cannot be lower than already delivered quantity on detail line %s.","La quantité ne peut pas être inférieure à la quantité déjà livrée sur la ligne de détail %s.",,
+"Quantity requested","Quantité demandée",,
 "Real/Current Quantity","Quantité Réelle/Actuelle",,
 "Receipt state","État de réception",,
 "Recovered tax","Taxes récupérées",,

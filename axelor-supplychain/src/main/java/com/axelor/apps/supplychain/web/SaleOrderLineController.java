@@ -139,6 +139,42 @@ public class SaleOrderLineController {
   }
 
   /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#requestQty(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void requestQty(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#cancelReservation(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Called from sale order line form. Set domain for supplier partner.
    *
    * @param request
