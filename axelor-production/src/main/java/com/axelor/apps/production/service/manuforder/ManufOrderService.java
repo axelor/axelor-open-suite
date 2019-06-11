@@ -62,6 +62,7 @@ public interface ManufOrderService {
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
       int originType)
       throws AxelorException;
 
@@ -89,7 +90,8 @@ public interface ManufOrderService {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException;
 
   @Transactional

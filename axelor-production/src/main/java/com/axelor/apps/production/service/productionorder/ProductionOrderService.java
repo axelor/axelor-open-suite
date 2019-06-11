@@ -73,6 +73,7 @@ public interface ProductionOrderService {
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder,
       int originType)
       throws AxelorException;

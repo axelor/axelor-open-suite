@@ -92,12 +92,20 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException {
 
     ManufOrder manufOrder =
         super.createManufOrder(
-            product, qty, priority, isToInvoice, company, billOfMaterial, plannedStartDateT);
+            product,
+            qty,
+            priority,
+            isToInvoice,
+            company,
+            billOfMaterial,
+            plannedStartDateT,
+            plannedEndDateT);
 
     manufOrder.setIsToInvoice(isToInvoice);
 
