@@ -16,6 +16,9 @@
         <field name="requestedReservedQty" width="150"/>
     </grid>
 	
+  <action-method name="action-method-stock-location-line-view-by-product" model="com.axelor.apps.stock.db.StockLocationLine">
+    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="searchStockLocationLineByProduct"/>
+  </action-method>
   
 	<action-view name="action-stock-location-line-view-by-product" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="grid" name="supplychain-stock-location-line-grid"/>

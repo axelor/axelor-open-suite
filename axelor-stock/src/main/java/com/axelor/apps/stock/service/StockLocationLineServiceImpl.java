@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -654,5 +655,51 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
     }
     return stockMoveLineQuery.fetch();
+  }
+
+  @Override
+  public String getStockLocationLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL;
+
+    if (companyId != 0L) {
+      query += " AND self.stockLocation.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          query +=
+              " AND self.stockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+    return query;
+  }
+
+  @Override
+  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId) {
+    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
+    query +=
+        " AND (self.currentQty != 0 OR self.futureQty != 0) "
+            + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)";
+    return query;
+  }
+
+  @Override
+  public String getRequestedReservedQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
+    query += " AND self.requestedReservedQty > 0";
+    return query;
   }
 }

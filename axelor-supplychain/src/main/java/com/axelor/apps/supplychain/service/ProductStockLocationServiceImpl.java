@@ -23,26 +23,21 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.filter.Filter;
-import com.axelor.rpc.filter.JPQLFilter;
-import com.google.common.collect.Lists;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,35 +140,28 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     if (product == null || product.getUnit() == null) {
       return BigDecimal.ZERO;
     }
-    // JPQL request
-    List<Filter> queryFilter =
-        Lists.newArrayList(
-            new JPQLFilter(
-                "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "));
+    Long companyId = 0L;
+    Long stockLocationId = 0L;
     if (company != null) {
-      queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
-      if (stockLocation != null) {
-        queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation"));
-      }
+      companyId = company.getId();
     }
+    if (stockLocation != null) {
+      stockLocationId = stockLocation.getId();
+    }
+    String query =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLineListForAProduct(product.getId(), companyId, stockLocationId);
 
     List<StockLocationLine> stockLocationLineList =
-        Filter.and(queryFilter)
-            .build(StockLocationLine.class)
-            .bind("product", product)
-            .bind("company", company)
-            .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
-            .bind("stockLocation", stockLocation)
-            .fetch();
+        Beans.get(StockLocationLineRepository.class).all().filter(query).fetch();
 
     // Compute
     BigDecimal sumRequestedReservedQty = BigDecimal.ZERO;
     if (!stockLocationLineList.isEmpty()) {
-      BigDecimal requestedReservedQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
 
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        requestedReservedQty = stockLocationLine.getRequestedReservedQty();
+        BigDecimal requestedReservedQty = stockLocationLine.getRequestedReservedQty();
         requestedReservedQty =
             unitConversionService.convert(
                 stockLocationLine.getUnit(),
@@ -193,45 +181,27 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     if (product == null || product.getUnit() == null) {
       return BigDecimal.ZERO;
     }
-    List<Integer> statusList = new ArrayList<>();
-    statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    String status =
-        appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
-    if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
-    }
-    // JPQL request
-    List<Filter> queryFilter =
-        Lists.newArrayList(
-            new JPQLFilter(
-                "self.product = :product"
-                    + " AND self.saleOrder.statusSelect IN (:statusList) "
-                    + " AND self.deliveryState != :deliveryStateSaleOrder"));
+    Long companyId = 0L;
+    Long stockLocationId = 0L;
     if (company != null) {
-      queryFilter.add(new JPQLFilter("self.saleOrder.company = :company "));
-      if (stockLocation != null) {
-        queryFilter.add(new JPQLFilter("self.saleOrder.stockLocation = :stockLocation"));
-      }
+      companyId = company.getId();
     }
-
+    if (stockLocation != null) {
+      stockLocationId = stockLocation.getId();
+    }
+    String query =
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .getSaleOrderLineListForAProduct(product.getId(), companyId, stockLocationId);
     List<SaleOrderLine> saleOrderLineList =
-        Filter.and(queryFilter)
-            .build(SaleOrderLine.class)
-            .bind("deliveryStateSaleOrder", SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
-            .bind("product", product)
-            .bind("statusList", statusList)
-            .bind("company", company)
-            .bind("stockLocation", stockLocation)
-            .fetch();
+        Beans.get(SaleOrderLineRepository.class).all().filter(query).fetch();
 
     // Compute
     BigDecimal sumSaleOrderQty = BigDecimal.ZERO;
     if (!saleOrderLineList.isEmpty()) {
-      BigDecimal productSaleOrderQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        productSaleOrderQty = saleOrderLine.getQty();
+        BigDecimal productSaleOrderQty = saleOrderLine.getQty();
         if (saleOrderLine.getDeliveryState()
             == SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
           productSaleOrderQty = productSaleOrderQty.subtract(saleOrderLine.getDeliveredQty());
@@ -255,46 +225,28 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     if (product == null || product.getUnit() == null) {
       return BigDecimal.ZERO;
     }
-    List<Integer> statusList = new ArrayList<>();
-    statusList.add(IPurchaseOrder.STATUS_VALIDATED);
-    String status =
-        appSupplychainService.getAppSupplychain().getpOFilterOnStockDetailStatusSelect();
-    if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
-    }
-    // JPQL request
-    List<Filter> queryFilter =
-        Lists.newArrayList(
-            new JPQLFilter(
-                "self.product = :product"
-                    + " AND self.purchaseOrder.statusSelect IN (:statusList) "
-                    + " AND self.purchaseOrder.orderDate IS NOT NULL "
-                    + " AND self.receiptState != :receiptStatePurchaseOrder "));
-    if (company != null) {
-      queryFilter.add(new JPQLFilter("self.purchaseOrder.company = :company"));
-      if (stockLocation != null) {
-        queryFilter.add(new JPQLFilter("self.purchaseOrder.stockLocation = :stockLocation"));
-      }
-    }
 
+    Long companyId = 0L;
+    Long stockLocationId = 0L;
+    if (company != null) {
+      companyId = company.getId();
+    }
+    if (stockLocation != null) {
+      stockLocationId = stockLocation.getId();
+    }
+    String query =
+        Beans.get(PurchaseOrderStockService.class)
+            .getPurchaseOrderLineListForAProduct(product.getId(), companyId, stockLocationId);
     List<PurchaseOrderLine> purchaseOrderLineList =
-        Filter.and(queryFilter)
-            .build(PurchaseOrderLine.class)
-            .bind("receiptStatePurchaseOrder", PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
-            .bind("product", product)
-            .bind("statusList", statusList)
-            .bind("company", company)
-            .bind("stockLocation", stockLocation)
-            .fetch();
+        Beans.get(PurchaseOrderLineRepository.class).all().filter(query).fetch();
 
     // Compute
     BigDecimal sumPurchaseOrderQty = BigDecimal.ZERO;
     if (!purchaseOrderLineList.isEmpty()) {
-      BigDecimal productPurchaseOrderQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
 
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-        productPurchaseOrderQty = purchaseOrderLine.getQty();
+        BigDecimal productPurchaseOrderQty = purchaseOrderLine.getQty();
         if (purchaseOrderLine.getReceiptState()
             == PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED) {
           productPurchaseOrderQty =
@@ -318,35 +270,27 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     if (product == null || product.getUnit() == null) {
       return BigDecimal.ZERO;
     }
-    List<Filter> queryFilter =
-        Lists.newArrayList(
-            new JPQLFilter(
-                "self.product = :product AND self.stockLocation.typeSelect != :typeSelect "
-                    + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)"));
+    Long companyId = 0L;
+    Long stockLocationId = 0L;
     if (company != null) {
-      queryFilter.add(new JPQLFilter("self.stockLocation.company = :company "));
-      if (stockLocation != null) {
-        queryFilter.add(new JPQLFilter("self.stockLocation = :stockLocation "));
-      }
+      companyId = company.getId();
     }
-
+    if (stockLocation != null) {
+      stockLocationId = stockLocation.getId();
+    }
+    String query =
+        Beans.get(StockLocationLineService.class)
+            .getAvailableStockForAProduct(product.getId(), companyId, stockLocationId);
     List<StockLocationLine> stockLocationLineList =
-        Filter.and(queryFilter)
-            .build(StockLocationLine.class)
-            .bind("product", product)
-            .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
-            .bind("company", company)
-            .bind("stockLocation", stockLocation)
-            .fetch();
+        Beans.get(StockLocationLineRepository.class).all().filter(query).fetch();
 
     // Compute
     BigDecimal sumAvailableQty = BigDecimal.ZERO;
     if (!stockLocationLineList.isEmpty()) {
 
-      BigDecimal productAvailableQty = BigDecimal.ZERO;
       Unit unitConversion = product.getUnit();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        productAvailableQty = stockLocationLine.getCurrentQty();
+        BigDecimal productAvailableQty = stockLocationLine.getCurrentQty();
         unitConversionService.convert(
             stockLocationLine.getUnit(),
             unitConversion,

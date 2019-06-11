@@ -19,10 +19,14 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectedStockService {
 
   List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException;
+
+  Map<String, Long> getProductIdCompanyIdStockLocationIdFromContext(Context context);
 }

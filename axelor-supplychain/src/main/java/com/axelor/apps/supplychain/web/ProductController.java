@@ -21,44 +21,30 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
+import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.MoreObjects;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductController {
 
-  @SuppressWarnings("unchecked")
   public void setIndicatorsOfProduct(ActionRequest request, ActionResponse response) {
     try {
-      Context context = request.getContext();
-      Long productId = 0L;
-      Long companyId = 0L;
-      Long stockLocationId = 0L;
-
-      LinkedHashMap<String, Object> productHashMap =
-          (LinkedHashMap<String, Object>)
-              MoreObjects.firstNonNull(context.get("product"), context.get("$product"));
-      if (productHashMap != null) {
-        productId = Long.valueOf(productHashMap.get("id").toString());
-      } else {
+      Map<String, Long> mapId =
+          Beans.get(ProjectedStockService.class)
+              .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+      if (mapId == null) {
         return;
       }
-      LinkedHashMap<String, Object> companyHashMap =
-          (LinkedHashMap<String, Object>) context.get("company");
-      if (companyHashMap != null) {
-        companyId = Long.valueOf(companyHashMap.get("id").toString());
-      }
-      LinkedHashMap<String, Object> stockLocationHashMap =
-          (LinkedHashMap<String, Object>) context.get("stockLocation");
-      if (stockLocationHashMap != null) {
-        stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
-      }
+      Context context = request.getContext();
+      Long productId = mapId.get("productId");
+      Long companyId = mapId.get("companyId");
+      Long stockLocationId = mapId.get("stockLocationId");
 
       if (companyId != 0L && stockLocationId != 0L) {
         StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
