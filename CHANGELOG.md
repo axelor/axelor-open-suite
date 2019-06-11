@@ -44,6 +44,7 @@
 - STOCK : filter product according to stochManage = true
 - GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
+- EMPLOYEE CARD : add tag for rh, company and department field.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid

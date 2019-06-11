@@ -171,6 +171,9 @@
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />
 		<field name="contactPartner.mobilePhone" />
+		<field name="mainEmploymentContract.payCompany"/>
+		<field name="mainEmploymentContract.companyDepartment"/>
+		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
@@ -180,8 +183,13 @@
 			  	<span>
 				<strong>{{contactPartner.fullName}}</strong><br/>
 			    FP : {{contactPartner.fixedPhone}}<br/>
-			    MP : {{contactPartner.mobilePhone}}
+			    MP : {{contactPartner.mobilePhone}}<br/>
+			    Co. : {{mainEmploymentContract.payCompany.name}}<br/>
+			    Dept. : {{mainEmploymentContract.companyDepartment.name}}
 			    </span>
+			  </div>
+			  <div class="span12" style="margin-left:30px;">
+			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
 			  </div>
 			</div>
 		]]>
