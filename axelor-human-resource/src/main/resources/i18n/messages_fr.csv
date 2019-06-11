@@ -604,7 +604,7 @@
 "Please add an employee's planning related to user %s","Merci de rentrer un planning pour l'employé rattaché à l'utilisateur %s",,
 "Please add an employee's public holiday events planning related to user %s","Merci de rentrer un planning des jours fériés pour l'employé rattaché à l'utilisateur %s",,
 "Please add an end date for generation","Merci de rentrer une date de fin pour la génération",,
-"Please configure informations for human resources for the company %s","Merci de configurer les informations des ressources humaines pour la société %s",,
+"Please configure information for human resources for the company %s","Merci de configurer les informations des ressources humaines pour la société %s",,
 "Please configure the canceled expense template in HR config for the company %s","Merci de configurer le modèle d'annulation des notes de frais dans la configuration RH pour la société %s",,
 "Please configure the canceled extra hours template in HR config for the company %s","Merci de configurer le modèle d'annulation des heures sup. dans la configuration RH pour la société %s",,
 "Please configure the canceled leave template in HR config for the company %s","Merci de configurer le modèle d'annulation des demandes de congés dans la configuration RH pour la société %s",,

@@ -113,7 +113,7 @@
 		<option value="1">Partial end of production</option>
 		<option value="2">End of production</option>
 		<option value="3">Work in progress</option>
-		<option value="4">Bill of material</option>
+		<option value="4">Bill of materials</option>
 	</selection>
 
 	<selection name="production.weekly.planning.type.select">

@@ -5,7 +5,7 @@
 	
     <form name="mail-account-form" id="base-mail-account-form" title="Mail account" model="com.axelor.apps.message.db.EmailAccount"
     	onNew="action-mail-account-default-record" onSave="action-mail-account-method-check-default-mail-account,action-method-mail-account-validate-password">
-    	<panel name="informationsPanel" title="Informations" >
+    	<panel name="informationsPanel" title="Information" >
             <field name="name" />
 			<field name="isDefault" onChange="action-mail-account-method-check-default-mail-account" />
         	<field name="signature" widget="Html" x-lite="true" height="7" colSpan="12"/>

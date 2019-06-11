@@ -59,7 +59,7 @@
 	<decimal name="markup" title="Markup (%)"/>
   	
 <!--   	Onglet Autres informations -->
-	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
+	<many-to-one name="salespersonUser" ref="com.axelor.auth.db.User" title="Salesperson" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->

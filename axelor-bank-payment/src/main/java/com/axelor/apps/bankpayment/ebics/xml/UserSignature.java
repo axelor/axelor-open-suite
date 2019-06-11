@@ -94,7 +94,7 @@ public class UserSignature extends DefaultEbicsRootElement {
     userSignatureVerify.verify();
 
     /**
-     * Include certificate informations
+     * Include certificate information
      *
      * <p>EbicsCertificate ebicsEertificate = user.getA005Certificate();
      *

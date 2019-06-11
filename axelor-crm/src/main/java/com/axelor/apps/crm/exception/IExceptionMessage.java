@@ -64,7 +64,7 @@ public interface IExceptionMessage {
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
-      "Please configure informations for CRM for company %s" /*)*/;
+      "Please configure information for CRM for company %s" /*)*/;
 
   static final String CRM_CONFIG_USER_COMPANY = /*$$(*/
       "User %s must have an active company to use templates" /*)*/;
