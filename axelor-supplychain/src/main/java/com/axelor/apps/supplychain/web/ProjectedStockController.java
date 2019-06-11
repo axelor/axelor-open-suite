@@ -17,10 +17,26 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -29,53 +45,132 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.google.inject.Inject;
 
 public class ProjectedStockController {
 
-  @SuppressWarnings("unchecked")
+  @Inject ProductRepository productRepository;
+
+  public void showStockAvailableProduct(ActionRequest request, ActionResponse response) {
+    Map<String, Long> mapId =
+        Beans.get(ProjectedStockService.class)
+            .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+    if (mapId == null || mapId.get("productId") == 0L) {
+      return;
+    }
+
+    Long productId = mapId.get("productId");
+    Long companyId = mapId.get("companyId");
+    Long stockLocationId = mapId.get("stockLocationId");
+    String domain =
+        Beans.get(StockLocationLineService.class)
+            .getAvailableStockForAProduct(productId, companyId, stockLocationId);
+
+    Product product = productRepository.find(mapId.get("productId"));
+    response.setView(
+        ActionView.define(I18n.get(product.getCode() + " stock location"))
+            .model(StockLocationLine.class.getName())
+            .add("grid", "stock-location-line-grid")
+            .add("form", "stock-location-line-form")
+            .domain(domain)
+            .param("forceEdit", "true")
+            .param("popup", "true")
+            .map());
+  }
+
+  public void showSaleOrderOfProduct(ActionRequest request, ActionResponse response) {
+    Map<String, Long> mapId =
+        Beans.get(ProjectedStockService.class)
+            .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+    if (mapId == null || mapId.get("productId") == 0L) {
+      return;
+    }
+    Long productId = mapId.get("productId");
+    Long companyId = mapId.get("companyId");
+    Long stockLocationId = mapId.get("stockLocationId");
+    String domain =
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .getSaleOrderLineListForAProduct(productId, companyId, stockLocationId);
+    Product product = productRepository.find(mapId.get("productId"));
+    response.setView(
+        ActionView.define(I18n.get(product.getCode() + " sale order"))
+            .model(SaleOrderLine.class.getName())
+            .add("grid", "sale-order-line-menu-grid")
+            .add("form", "sale-order-line-all-form")
+            .domain(domain)
+            .param("forceEdit", "true")
+            .param("popup", "true")
+            .map());
+  }
+
+  public void showPurchaseOrderOfProduct(ActionRequest request, ActionResponse response) {
+    Map<String, Long> mapId =
+        Beans.get(ProjectedStockService.class)
+            .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+    if (mapId == null || mapId.get("productId") == 0L) {
+      return;
+    }
+    Long productId = mapId.get("productId");
+    Long companyId = mapId.get("companyId");
+    Long stockLocationId = mapId.get("stockLocationId");
+    String domain =
+        Beans.get(PurchaseOrderStockService.class)
+            .getPurchaseOrderLineListForAProduct(productId, companyId, stockLocationId);
+    Product product = productRepository.find(mapId.get("productId"));
+    response.setView(
+        ActionView.define(I18n.get(product.getCode() + " purchase order"))
+            .model(PurchaseOrderLine.class.getName())
+            .add("grid", "purchase-order-line-menu-grid")
+            .add("form", "purchase-order-line-all-form")
+            .domain(domain)
+            .param("forceEdit", "true")
+            .param("popup", "true")
+            .map());
+  }
+
+  public void showStockRequestedReservedQuantityOfProduct(
+      ActionRequest request, ActionResponse response) {
+    Map<String, Long> mapId =
+        Beans.get(ProjectedStockService.class)
+            .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+    if (mapId == null || mapId.get("productId") == 0L) {
+      return;
+    }
+    Long productId = mapId.get("productId");
+    Long companyId = mapId.get("companyId");
+    Long stockLocationId = mapId.get("stockLocationId");
+    String domain =
+        Beans.get(StockLocationLineService.class)
+            .getRequestedReservedQtyForAProduct(productId, companyId, stockLocationId);
+    Product product = productRepository.find(mapId.get("productId"));
+    response.setView(
+        ActionView.define(I18n.get(product.getCode() + " requested reserved"))
+            .model(StockLocationLine.class.getName())
+            .add("grid", "stock-location-line-grid")
+            .add("form", "stock-location-line-form")
+            .domain(domain)
+            .param("forceEdit", "true")
+            .param("popup", "true")
+            .map());
+  }
+
   public void showProjectedStock(ActionRequest request, ActionResponse response) {
 
     try {
-      Context context = request.getContext();
-      Long productId = 0L;
-      Long companyId = 0L;
-      Long stockLocationId = 0L;
-      String productName;
-
-      LinkedHashMap<String, Object> productHashMap =
-          (LinkedHashMap<String, Object>) context.get("product");
-      if (productHashMap != null) {
-        productId = Long.valueOf(productHashMap.get("id").toString());
-        productName = (String) productHashMap.get("fullName");
-      } else {
+      Map<String, Long> mapId =
+          Beans.get(ProjectedStockService.class)
+              .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+      if (mapId == null || mapId.get("productId") == 0L) {
         return;
       }
-      LinkedHashMap<String, Object> companyHashMap =
-          (LinkedHashMap<String, Object>) context.get("company");
-      if (companyHashMap != null) {
-        companyId = Long.valueOf(companyHashMap.get("id").toString());
-      }
-      LinkedHashMap<String, Object> stockLocationHashMap =
-          (LinkedHashMap<String, Object>) context.get("stockLocation");
-      if (stockLocationHashMap != null) {
-        stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
-      }
-
       List<MrpLine> mrpLineList = new ArrayList<>();
       try {
         mrpLineList =
             Beans.get(ProjectedStockService.class)
-                .createProjectedStock(productId, companyId, stockLocationId);
+                .createProjectedStock(
+                    mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId"));
         response.setView(
-            ActionView.define(productName + I18n.get(" Projected stock"))
+            ActionView.define(I18n.get("Projected stock"))
                 .model(MrpLine.class.getName())
                 .add("form", "projected-stock-form")
                 .param("forceEdit", "true")

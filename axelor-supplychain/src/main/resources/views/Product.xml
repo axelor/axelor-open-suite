@@ -15,17 +15,17 @@
                <button name="$realQty" title="Real quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-real-quantity"/>
                <button name="$futureQty" title="Future quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-future-quantity"/>
                <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved"/>
-               <button name="$requestedReservedQty" title="Requested reserved quantity" icon="fa-building-o" widget="info-button" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()" onClick="action-suppplychain-stock-location-line-view-requested-reserved"/>
+               <button name="$requestedReservedQty" title="Requested reserved quantity" icon="fa-building-o" widget="info-button" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()" onClick="action-method-suppplychain-stock-location-line-view-requested-reserved"/>
             </panel>
             <panel name="supplychainIndicators" colSpan="12" itemSpan="3">
-               <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart" widget="info-button" onClick="action-supplychain-sale-order-product-planned"/>
-               <button name="$purchaseOrderQty" title="Purchase order quantity" icon="fa-shopping-cart"  widget="info-button" onClick="action-supplychain-purchase-order-product-planned"/>
-               <button name="$availableQty" title="Available stock" icon="fa-building-o" widget="info-button" onClick="action-supplychain-stock-available-product"/>
+               <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart" widget="info-button" onClick="action-method-supplychain-sale-order-product-planned"/>
+               <button name="$purchaseOrderQty" title="Purchase order quantity" icon="fa-shopping-cart"  widget="info-button" onClick="action-method-supplychain-purchase-order-product-planned"/>
+               <button name="$availableQty" title="Available stock" icon="fa-building-o" widget="info-button" onClick="action-method-supplychain-stock-available-product"/>
             </panel>
             <panel name="productionIndicators" colSpan="12" itemSpan="3" if-module="axelor-production">
-               <button name="$buildingQty" title="Building quantity" icon="fa-cogs" widget="info-button" onClick="action-production-building-quantity-product"/>
-               <button name="$consumeManufOrderQty" title="Consume manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-production-consume-product" />
-               <button name="$missingManufOrderQty" title="Missing manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-production-missing-product" />
+               <button name="$buildingQty" title="Building quantity" icon="fa-cogs" widget="info-button" onClick="action-method-production-building-quantity-product"/>
+               <button name="$consumeManufOrderQty" title="Consume manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-method-production-consume-product" />
+               <button name="$missingManufOrderQty" title="Missing manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-method-production-missing-product" />
             </panel>
             <panel name="projectedStockPanel" colSpan="12" itemSpan="4" >
                <button name="$projectedStock" title="See projected stock" onClick="action-supplychain-method-projected-stock" showIf="$product"/>
@@ -81,21 +81,9 @@
       <context name="_company" expr="eval:saleOrder?.company"/>
   </action-view>
   
-  <action-view name="action-suppplychain-stock-location-line-view-requested-reserved" title="${product.fullName} requested reserved" 
-    model="com.axelor.apps.stock.db.StockLocationLine">
-      <view type="grid" name="stock-location-line-grid"/>
-      <view type="form" name="stock-location-line-form"/>
-      <view-param name="popup" value="true"/>
-      <domain>self.requestedReservedQty > 0
-        AND self.product.id = :productId 
-        AND (self.stockLocation.id IN :location OR :location IS NULL)
-        AND (self.stockLocation.company.id = :companyId OR :companyId IS NULL)
-        AND (self.stockLocation.typeSelect = 1)</domain>
-      <context name="productId" expr="eval: product?.id"/>
-      <context name="location" expr="eval: __stockLocationIdList"/>
-      <context name="companyId" expr="eval: company?.id "/>
-  </action-view>
-  
+  <action-method name="action-method-suppplychain-stock-location-line-view-requested-reserved">
+  <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showStockRequestedReservedQuantityOfProduct"/>
+  </action-method>
     
   <action-view name="action-supplychain-stock-move-line-product-reserved" title="${product.fullName} reserved"
     model="com.axelor.apps.stock.db.StockMoveLine">
@@ -113,7 +101,6 @@
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
   
-  
   <action-view name="action-supplychain-stock-move-line-product-future-quantity" title="${product.fullName} plan. st. move"
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid-planned"/>
@@ -130,7 +117,6 @@
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>  
   
-  
   <action-view name="action-supplychain-stock-move-line-product-real-quantity" title="${product.fullName} real st. move"
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid"/>
@@ -146,58 +132,19 @@
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
   </action-view>
-  
  
-  <action-view name="action-supplychain-purchase-order-product-planned" title="${product.fullName} purchase order line"
-    model="com.axelor.apps.purchase.db.PurchaseOrderLine" >
-    <view type="grid" name="purchase-order-line-menu-grid"/>
-    <view type="form" name="purchase-order-line-all-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.purchaseOrder.statusSelect IN (:statusSelectList) AND self.product.id = :productId
-      AND (self.purchaseOrder.stockLocation.id IN :location OR :location IS NULL)
-      AND (self.purchaseOrder.company.id = :companyId OR :companyId IS NULL)
-      AND (self.receiptState != :receiptStatePurchaseOrder)</domain>
-    <context name="productId" expr="eval:product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
-    <context name="companyId" expr="eval: company?.id "/>
-    <context name="receiptStatePurchaseOrder" expr="eval: __repo__(PurchaseOrderLine).RECEIPT_STATE_RECEIVED"/>
-    <context name="statusSelectList" expr="eval: com.axelor.apps.tool.StringTool.getIntegerList(__config__.app.getApp('supplychain').getpOFilterOnStockDetailStatusSelect()) ?: [3]" />
-  </action-view>
+ <action-method name="action-method-supplychain-purchase-order-product-planned">
+  	 <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showPurchaseOrderOfProduct"/>
+ </action-method>
+ 
+   <action-method name="action-method-supplychain-sale-order-product-planned">
+       <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showSaleOrderOfProduct"/>
+    </action-method>
+   
+  <action-method name="action-method-supplychain-stock-available-product">
+  	  <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showStockAvailableProduct"/>
+  </action-method>
   
-  <action-view name="action-supplychain-sale-order-product-planned" title="${product.fullName} sale order line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" >
-    <view type="grid" name="sale-order-line-menu-grid"/>
-    <view type="form" name="sale-order-line-all-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.saleOrder.statusSelect IN (:statusSelectList) AND self.product.id = :productId
-      AND (self.saleOrder.stockLocation.id IN :location OR :location IS NULL)
-      AND (self.saleOrder.company.id = :companyId OR :companyId IS NULL)
-      AND (self.deliveryState != :deliveryStateSaleOrder)
-      </domain>
-    <context name="productId" expr="eval:product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
-    <context name="companyId" expr="eval: company?.id "/>
-    <context name="deliveryStateSaleOrder" expr="eval: __repo__(SaleOrderLine).DELIVERY_STATE_DELIVERED"/>
-    <context name="statusSelectList" expr="eval: com.axelor.apps.tool.StringTool.getIntegerList(__config__.app.getApp('supplychain').getsOFilterOnStockDetailStatusSelect()) ?: [__repo__(SaleOrder).STATUS_ORDER_CONFIRMED]" />
-  </action-view>
-  
-  
-  <action-view name="action-supplychain-stock-available-product" title="${product.fullName} stock location line"
-    model="com.axelor.apps.stock.db.StockLocationLine" >
-    <view type="grid" name="stock-location-line-grid"/>
-    <view type="form" name="stock-location-line-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.product.id = :productId 
-      AND (:companyId IS NULL OR self.stockLocation.company.id = :companyId )
-      AND (:location IS NULL OR self.stockLocation.id IN :location )
-      AND (self.currentQty != 0 OR self.reservedQty != 0)
-      AND self.stockLocation.typeSelect != 3
-     </domain>
-    <context name="productId" expr="eval:product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
-    <context name="companyId" expr="eval: company?.id "/>
-  </action-view>
-    
   <action-method name="action-supplychain-method-projected-stock">
     <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showProjectedStock"/>
   </action-method>

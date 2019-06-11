@@ -29,9 +29,13 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectedStockServiceImpl implements ProjectedStockService {
 
@@ -80,5 +84,37 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
           .fetchOne();
     }
     return stockLocationRepository.all().fetchOne();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<String, Long> getProductIdCompanyIdStockLocationIdFromContext(Context context) {
+    Long productId = 0L;
+    Long companyId = 0L;
+    Long stockLocationId = 0L;
+    Map<String, Long> mapId = new HashMap<>();
+
+    LinkedHashMap<String, Object> productHashMap =
+        (LinkedHashMap<String, Object>) context.get("product");
+    if (productHashMap != null) {
+      productId = Long.valueOf(productHashMap.get("id").toString());
+    } else {
+      return null;
+    }
+    LinkedHashMap<String, Object> companyHashMap =
+        (LinkedHashMap<String, Object>) context.get("company");
+    if (companyHashMap != null) {
+      companyId = Long.valueOf(companyHashMap.get("id").toString());
+    }
+    LinkedHashMap<String, Object> stockLocationHashMap =
+        (LinkedHashMap<String, Object>) context.get("stockLocation");
+    if (stockLocationHashMap != null) {
+      stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
+    }
+
+    mapId.put("productId", productId);
+    mapId.put("companyId", companyId);
+    mapId.put("stockLocationId", stockLocationId);
+    return mapId;
   }
 }
