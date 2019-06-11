@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -55,15 +55,15 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     mrp = Beans.get(MrpService.class).completeProjectedStock(mrp, product, company, stockLocation);
 
     List<MrpLine> mrpLineList =
-        Query.of(MrpLine.class)
-            .filter(
-                "self.mrp.id = :mrpId AND self.product.id = :productId AND (self.qty != 0 or self.cumulativeQty != 0)")
-            .bind("mrpId", mrp.getId())
-            .bind("productId", productId)
+        Beans.get(MrpLineRepository.class)
+            .all()
+            .filter("self.mrp = ?1 AND self.product = ?2", mrp, product)
             .order("maturityDate")
             .order("mrpLineType.typeSelect")
             .order("mrpLineType.sequence")
+            .order("id")
             .fetch();
+
     for (MrpLine mrpLine : mrpLineList) {
       mrpLine.setCompany(mrpLine.getStockLocation().getCompany());
     }
