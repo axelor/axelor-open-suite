@@ -38,6 +38,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,6 +238,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     String query =
         Beans.get(PurchaseOrderStockService.class)
             .getPurchaseOrderLineListForAProduct(product.getId(), companyId, stockLocationId);
+
     List<PurchaseOrderLine> purchaseOrderLineList =
         Beans.get(PurchaseOrderLineRepository.class).all().filter(query).fetch();
 

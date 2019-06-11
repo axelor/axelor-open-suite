@@ -111,7 +111,5 @@
     <category key="name" type="date" title="Date"/>
     <series key="cumulativeQty" type="line" title="Cumulative Qty"/>
  </chart>
-  
-  
 
 </object-views>
