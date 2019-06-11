@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDateT,startOnSelect">
+	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
 		 <hilite color="success" if="statusSelect == 3"/>
 		 <hilite color="warning" if="statusSelect == 2"/>

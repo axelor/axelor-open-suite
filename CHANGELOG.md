@@ -91,6 +91,7 @@
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
+- LEAVE REQUEST : grid-view is now order by fromDateT DESC. 
 
 ## [5.1.6] - 2019-04-29
 ## Features
