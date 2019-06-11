@@ -60,7 +60,7 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
 
     EbicsCertificate ebicsEertificate = session.getUser().getA005Certificate();
 
-    // Include certificate issuer and serial (certificate informations)
+    // Include certificate issuer and serial (certificate information)
     //    x509Data = EbicsXmlFactory.createX509DataType(ebicsEertificate.getSubject(), certEncoded,
     // ebicsEertificate.getIssuer(),  new BigInteger(ebicsEertificate.getSerial(), 16));
 

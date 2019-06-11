@@ -195,7 +195,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public String getFileName(BillOfMaterial billOfMaterial) {
 
-    return I18n.get("Bill of Material")
+    return I18n.get("Bill of Materials")
         + "-"
         + billOfMaterial.getName()
         + ((billOfMaterial.getVersionNumber() > 1) ? "-V" + billOfMaterial.getVersionNumber() : "");

@@ -88,7 +88,7 @@ public class ManufOrderWorkflowService {
       throw new AxelorException(
           manufOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("Bill of material and production process must be applicable"));
+          I18n.get("Bill of materials and production process must be applicable"));
     }
 
     if (Beans.get(SequenceService.class)

@@ -56,7 +56,7 @@
 		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
-		<field name="salemanUser"/>
+		<field name="salespersonUser"/>
 		<button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order" />
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template" />
 	</grid>
@@ -402,7 +402,7 @@
 	    </field>
 	  </panel>
 	  <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
-	    <field name="salemanUser" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+	    <field name="salespersonUser" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 	    <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	  </panel>
 	  <panel name="characteristicsPanel" title="Characteristics" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
@@ -533,9 +533,9 @@
 	        </field>
 		</panel>
 
-	    <panel name="otherInformationsPanel" title="Other informations" showTitle="false">
+	    <panel name="otherInformationsPanel" title="Other information" showTitle="false">
 	      <panel name="salesFollowUpPanel" title="Sales follow-up" colSpan="12">
-	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
+	        <field name="salespersonUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -655,7 +655,7 @@
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
-	        <field name="salemanUser" canNew="false" canEdit="false" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
+	        <field name="salespersonUser" canNew="false" canEdit="false" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>
             <panel name="inTaxTotalPanel" readonly="true"  css="order-subtotal" colSpan="4">
@@ -818,7 +818,7 @@
 	</cards>
 
     <action-attrs name="action-sale-order-domain-on-team">
-    	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
+    	<attribute name="domain" for="team" expr="eval: salespersonUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salespersonUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
 
 	<action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
@@ -1049,8 +1049,8 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
-    	<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+    	<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+    	<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
@@ -1071,8 +1071,8 @@
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
 			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
-		<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
-		<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+		<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
 		<field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
 		<field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
@@ -1127,10 +1127,10 @@
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
 		<filter title="My Proposals">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salespersonUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>self.statusSelect = 3 and self.salemanUser.id = :_internalUser</domain>
+			<domain>self.statusSelect = 3 and self.salespersonUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Team Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>

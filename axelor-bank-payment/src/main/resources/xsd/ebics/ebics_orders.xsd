@@ -1240,7 +1240,7 @@
 	<complexType name="HVZResponseOrderDataType">
 		<annotation>
 			<documentation xml:lang="de">Datentyp für Auftragsdaten für Auftragsart HVZ (Antwort: VEU-Übersicht mit Zusatzinformationen abholen).</documentation>
-			<documentation xml:lang="en">Order data for order type HVZ (response: receive summary of orders currently stored in the distributed signature processing unit with additional informations).</documentation>
+			<documentation xml:lang="en">Order data for order type HVZ (response: receive summary of orders currently stored in the distributed signature processing unit with additional information).</documentation>
 		</annotation>
 		<sequence>
 			<annotation>

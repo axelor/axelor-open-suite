@@ -1357,14 +1357,14 @@ left outer join base_printing_settings as PrintingSettings on (SaleOrder.printin
 AppSale.printing_config_per_sale_order = true ) OR (Company.printing_settings = PrintingSettings.id 
 AND (AppSale.printing_config_per_sale_order = null OR AppSale.printing_config_per_sale_order = false 
 OR SaleOrder.printing_settings is null )) 
-left outer join auth_user as SalemanUser on (SaleOrder.saleman_user = SalemanUser.id) 
-left outer join base_partner as SalemanPartner on (SalemanUser.partner = SalemanPartner.id) 
+left outer join auth_user as SalespersonUser on (SaleOrder.salesperson_user = SalespersonUser.id) 
+left outer join base_partner as SalemanPartner on (SalespersonUser.partner = SalemanPartner.id) 
 left outer join message_email_address as SalemanEmailAddress on (SalemanPartner.email_address = SalemanEmailAddress.id) 
 left outer join sale_sale_config as SaleConfig on (SaleConfig.company = Company.id) 
 left outer join base_duration as Duration on (SaleOrder.duration = Duration.id) 
 left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
 left outer join base_bank_address as BankAddress on (BankDetail.bank_address = BankAddress.id)
-left outer join meta_file as SignatureFile on SalemanUser.electronic_signature = SignatureFile.id
+left outer join meta_file as SignatureFile on SalespersonUser.electronic_signature = SignatureFile.id
 left outer join base_trading_name as TradingName on (TradingName.id = SaleOrder.trading_name)
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 where SaleOrder.id = ?]]></xml-property>

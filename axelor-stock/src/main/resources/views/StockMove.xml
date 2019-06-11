@@ -289,7 +289,7 @@
                 </field>
             </panel>
             <field name="filterOnAvailableProducts" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
-			<panel name="shipmentInformationsPanel" title="Shipment Informations" showIf="typeSelect == 3 &amp;&amp; !isReversion" >
+			<panel name="shipmentInformationsPanel" title="Shipment Information" showIf="typeSelect == 3 &amp;&amp; !isReversion" >
 					<field name="supplierShipmentDate"/>
 					<field name="supplierShipmentRef"/>
 			</panel>

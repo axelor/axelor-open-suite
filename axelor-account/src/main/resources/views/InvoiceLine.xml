@@ -125,7 +125,7 @@
 			<field name="productName" showIf="typeSelect == 1" title="Title" requiredIf="typeSelect == 1"/>
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
-			<panel name="informationsPanel" title="Informations">
+			<panel name="informationsPanel" title="Information">
 				<field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" canView="false"/>
 				<field name="productName" requiredIf="!typeSelect == 1"/>
 				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>

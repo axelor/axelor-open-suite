@@ -387,7 +387,7 @@
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel name="informationPanel" title="Informations">
+			<panel name="informationPanel" title="Information">
 				<panel name="departmentPanel" title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form" grid-view="department-grid"/>
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>

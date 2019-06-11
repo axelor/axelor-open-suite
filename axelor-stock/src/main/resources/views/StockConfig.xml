@@ -11,13 +11,13 @@
 	  <panel name="mainPanel" >
 	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
-	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations informations">
+	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations information">
 	    <field name="customerVirtualStockLocation" onSelect="action-stock-config-attrs-customer-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="supplierVirtualStockLocation" onSelect="action-stock-config-attrs-supplier-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="inventoryVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		  <field name="productionVirtualStockLocation" domain="self.usableOnProduction = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
-	  <panel name="stockMoveInfoPanel" title="Stock move informations">
+	  <panel name="stockMoveInfoPanel" title="Stock move information">
 		  <panel colSpan="12" name="subStockMoveInfoPanel">
 			  <field name="receiptDefaultStockLocation" onSelect="action-stock-config-attrs-receipt-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="pickupDefaultStockLocation" onSelect="action-stock-config-attrs-pickup-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>

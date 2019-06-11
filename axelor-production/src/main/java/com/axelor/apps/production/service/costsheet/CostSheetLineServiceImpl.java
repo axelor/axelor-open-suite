@@ -216,7 +216,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           }
         }
         // If we didn't have a computed price in cost calculation session, so we compute the price
-        // from its bill of material
+        // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =
             this.getComponentCostPrice(

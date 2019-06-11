@@ -215,7 +215,7 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
-		<panel name="informationsPanel" title="Informations" colSpan="12">
+		<panel name="informationsPanel" title="Information" colSpan="12">
 
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">

@@ -29,7 +29,7 @@
 				</editor>
 			</field>
 			<spacer name="nameSpacer"/>
-			<panel name="informationPanel" title="Informations" colSpan="12">
+			<panel name="informationPanel" title="Information" colSpan="12">
 				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>

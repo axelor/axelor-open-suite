@@ -228,7 +228,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           // A component of a manuf order that is not loaded on MRP because there is no default
           // BOM or
-          // because the component of manuf order is not a component of the bill of material, we
+          // because the component of manuf order is not a component of the bill of materials, we
           // add it with the level of manuf order product + 1.
           if (!this.productMap.containsKey(product.getId())) {
             this.assignProductAndLevel(product, manufOrder.getProduct());
@@ -365,7 +365,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   /**
-   * Update the level of Bill of material. The highest for each product (0: product with parent, 1:
+   * Update the level of Bill of materials. The highest for each product (0: product with parent, 1:
    * product with a parent, 2: product with a parent that have a parent, ...)
    *
    * @param billOfMaterial
@@ -403,7 +403,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   /**
    * Add a component product of a manuf order where the component product is not contained on the
-   * default bill of material of the produced product.
+   * default bill of materials of the produced product.
    *
    * @param manufOrderComponentProduct
    * @param manufOrderProducedProduct
