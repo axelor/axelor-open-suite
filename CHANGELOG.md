@@ -91,7 +91,8 @@
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
-- INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating
+- Sale order : fix printing issues on subscription sale quotations & orders
 
 ## [5.1.6] - 2019-04-29
 ## Features
