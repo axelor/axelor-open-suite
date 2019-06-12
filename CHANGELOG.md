@@ -35,6 +35,7 @@
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
+- Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
 - TOOL : test class to allow to run it on windows environment.
@@ -79,6 +80,7 @@
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Ticket : corrected appearance behavior of cancel button in the ticket form. 
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
@@ -92,6 +94,8 @@
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
 - REQUEST LEAVE CALENDAR : colorBy is now set to user.
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- Currency Conversion : Fix divideByZero arithmetic exception
 
 ## [5.1.6] - 2019-04-29
 ## Features
