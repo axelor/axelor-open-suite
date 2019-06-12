@@ -93,6 +93,7 @@
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
+- LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
 
