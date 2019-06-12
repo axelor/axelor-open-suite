@@ -858,29 +858,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return true;
   }
   
-  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) 
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException 
   {
-	  if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForCustomersOnVentilation()) 
-	  {
-			 switch (invoice.getOperationTypeSelect()) 
-			 {
-				case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-					return true;			
-				case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-					return true;			
-			}
-	  }
-	  if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForSuppliersOnVentilation()) 
-	  {
-			 switch (invoice.getOperationTypeSelect()) 
-			 {
-				case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-					return true;			
-				case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-					return true;			
-			}
-	  }
-	  return false;
+	  	//isPurchase() = isSupplier()
+		if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForCustomersOnVentilation() && !InvoiceToolService.isPurchase(invoice)) 
+		{
+			return true;			
+		}
+	  	if(appAccountService.getAppInvoice().getIsEnablePDFGenerationForSuppliersOnVentilation() && InvoiceToolService.isPurchase(invoice) ) 
+	  	{
+	  		return true;
+	  	}
+	  	return false;
   }
   
 }
