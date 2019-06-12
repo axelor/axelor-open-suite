@@ -45,6 +45,7 @@
 - STOCK : filter product according to stochManage = true
 - GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
+- Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
 - INVOICE : optimisation of the performance of the invoice services.
 
 ## Bug Fixes

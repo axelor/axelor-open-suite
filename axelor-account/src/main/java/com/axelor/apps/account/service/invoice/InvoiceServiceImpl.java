@@ -322,7 +322,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    }
   }
 
   /**
@@ -853,5 +855,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     return true;
+  }
+
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {
+    // isPurchase() = isSupplier()
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnSaleInvoice()
+        && !InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnPurchaseInvoice()
+        && InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    return false;
   }
 }
