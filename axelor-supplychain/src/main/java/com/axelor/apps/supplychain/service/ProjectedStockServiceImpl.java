@@ -99,7 +99,12 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     if (productHashMap != null) {
       productId = Long.valueOf(productHashMap.get("id").toString());
     } else {
-      return null;
+      productHashMap = (LinkedHashMap<String, Object>) context.get("$product");
+      if (productHashMap != null) {
+        productId = Long.valueOf(productHashMap.get("id").toString());
+      } else {
+        return null;
+      }
     }
     LinkedHashMap<String, Object> companyHashMap =
         (LinkedHashMap<String, Object>) context.get("company");

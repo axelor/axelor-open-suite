@@ -17,14 +17,6 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -45,11 +37,21 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProjectedStockController {
 
-  @Inject ProductRepository productRepository;
+  public static final String VIEW_AVAILABLE_STOCK_QTY_TITLE = /*$$(*/ "%s stock location" /*)*/;
+  public static final String VIEW_SOL_OF_PRODUCT_TITLE = /*$$(*/ "%s sale order" /*)*/;
+  public static final String VIEW_POL_OF_PRODUCT_TITLE = /*$$(*/ "%s purchase order" /*)*/;
+  public static final String VIEW_REQUESTED_RESERVED_QTY_TITLE = /*$$(*/
+      "%s requested reserved" /*)*/;
 
   public void showStockAvailableProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
@@ -66,14 +68,15 @@ public class ProjectedStockController {
         Beans.get(StockLocationLineService.class)
             .getAvailableStockForAProduct(productId, companyId, stockLocationId);
 
-    Product product = productRepository.find(mapId.get("productId"));
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_AVAILABLE_STOCK_QTY_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " stock location"))
+        ActionView.define(title)
             .model(StockLocationLine.class.getName())
             .add("grid", "stock-location-line-grid")
             .add("form", "stock-location-line-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -91,14 +94,15 @@ public class ProjectedStockController {
     String domain =
         Beans.get(SaleOrderLineServiceSupplyChain.class)
             .getSaleOrderLineListForAProduct(productId, companyId, stockLocationId);
-    Product product = productRepository.find(mapId.get("productId"));
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_SOL_OF_PRODUCT_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " sale order"))
+        ActionView.define(title)
             .model(SaleOrderLine.class.getName())
             .add("grid", "sale-order-line-menu-grid")
             .add("form", "sale-order-line-all-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -116,14 +120,15 @@ public class ProjectedStockController {
     String domain =
         Beans.get(PurchaseOrderStockService.class)
             .getPurchaseOrderLineListForAProduct(productId, companyId, stockLocationId);
-    Product product = productRepository.find(mapId.get("productId"));
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_POL_OF_PRODUCT_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " purchase order"))
+        ActionView.define(title)
             .model(PurchaseOrderLine.class.getName())
             .add("grid", "purchase-order-line-menu-grid")
             .add("form", "purchase-order-line-all-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -142,14 +147,15 @@ public class ProjectedStockController {
     String domain =
         Beans.get(StockLocationLineService.class)
             .getRequestedReservedQtyForAProduct(productId, companyId, stockLocationId);
-    Product product = productRepository.find(mapId.get("productId"));
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_REQUESTED_RESERVED_QTY_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " requested reserved"))
+        ActionView.define(title)
             .model(StockLocationLine.class.getName())
             .add("grid", "stock-location-line-grid")
             .add("form", "stock-location-line-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -173,7 +179,6 @@ public class ProjectedStockController {
             ActionView.define(I18n.get("Projected stock"))
                 .model(MrpLine.class.getName())
                 .add("form", "projected-stock-form")
-                .param("forceEdit", "true")
                 .param("popup", "true")
                 .context("_mrpLineList", mrpLineList)
                 .map());

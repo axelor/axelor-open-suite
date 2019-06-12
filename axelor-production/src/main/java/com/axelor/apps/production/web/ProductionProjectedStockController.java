@@ -27,13 +27,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.util.Map;
 
 public class ProductionProjectedStockController {
 
-  @Inject ProductRepository productRepository;
-  @Inject ManufOrderService manufOrderService;
+  public static final String VIEW_BUILDING_QTY_TITLE = /*$$(*/ "%s building" /*)*/;
+  public static final String VIEW_MISSING_QTY_TITLE = /*$$(*/ "%s missing" /*)*/;
+  public static final String VIEW_CONSUME_QTY_TITLE = /*$$(*/ "%s consume" /*)*/;
 
   public void showBuildingQuantityOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
@@ -46,15 +46,17 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        manufOrderService.getBuildingQtyForAProduct(productId, companyId, stockLocationId);
-    Product product = productRepository.find(mapId.get("productId"));
+        Beans.get(ManufOrderService.class)
+            .getBuildingQtyForAProduct(productId, companyId, stockLocationId);
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_BUILDING_QTY_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " building"))
+        ActionView.define(title)
             .model(StockMoveLine.class.getName())
             .add("grid", "stock-move-line-produced-manuf-order-grid")
             .add("form", "stock-move-line-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -70,16 +72,18 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        manufOrderService.getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
+        Beans.get(ManufOrderService.class)
+            .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
 
-    Product product = productRepository.find(mapId.get("productId"));
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_CONSUME_QTY_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " consume"))
+        ActionView.define(title)
             .model(StockMoveLine.class.getName())
             .add("grid", "stock-move-line-consumed-manuf-order-grid")
             .add("form", "stock-move-line-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }
@@ -95,15 +99,17 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        manufOrderService.getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
-    Product product = productRepository.find(mapId.get("productId"));
+        Beans.get(ManufOrderService.class)
+            .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
+    Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
+    String title = I18n.get(VIEW_MISSING_QTY_TITLE);
+    title = String.format(title, product.getName());
     response.setView(
-        ActionView.define(I18n.get(product.getCode() + " missing"))
+        ActionView.define(title)
             .model(StockMoveLine.class.getName())
             .add("grid", "stock-move-line-consumed-manuf-order-grid")
             .add("form", "stock-move-line-form")
             .domain(domain)
-            .param("forceEdit", "true")
             .param("popup", "true")
             .map());
   }

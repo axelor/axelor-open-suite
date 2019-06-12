@@ -1,7 +1,7 @@
 "key","message","comment","context"
-"${product.fullName} building","${product.fullName} en fabrication",,
-"${product.fullName} consume","${product.fullName} en consommation",,
-"${product.fullName} missing","${product.fullName} manquant",,
+"%s building","%s en production",,
+"%s consume","%s en consommation",,
+"%s missing","%s manquant",,
 "105",,,
 "5",,,
 "A cancel reason must be selected",,,

@@ -38,7 +38,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
   protected CompanyRepository companyRepository;
   protected StockLocationRepository stockLocationRepository;
   protected StockLocationService stockLocationService;
+  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineRepository stockLocationLineRepository;
   protected StockLocationServiceSupplychain stockLocationServiceSupplychain;
 
   @Inject
@@ -61,7 +62,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       CompanyRepository companyRepository,
       StockLocationRepository stockLocationRepository,
       StockLocationService stockLocationService,
-      StockLocationServiceSupplychain stockLocationServiceSupplychain) {
+      StockLocationServiceSupplychain stockLocationServiceSupplychain,
+      StockLocationLineService stockLocationLineService,
+      StockLocationLineRepository stockLocationLineRepository) {
     super();
     this.unitConversionService = unitConversionService;
     this.appSupplychainService = appSupplychainService;
@@ -70,6 +73,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     this.stockLocationRepository = stockLocationRepository;
     this.stockLocationService = stockLocationService;
     this.stockLocationServiceSupplychain = stockLocationServiceSupplychain;
+    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineRepository = stockLocationLineRepository;
   }
 
   @Override
@@ -150,11 +155,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       stockLocationId = stockLocation.getId();
     }
     String query =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLineListForAProduct(product.getId(), companyId, stockLocationId);
+        stockLocationLineService.getStockLocationLineListForAProduct(
+            product.getId(), companyId, stockLocationId);
 
     List<StockLocationLine> stockLocationLineList =
-        Beans.get(StockLocationLineRepository.class).all().filter(query).fetch();
+        stockLocationLineRepository.all().filter(query).fetch();
 
     // Compute
     BigDecimal sumRequestedReservedQty = BigDecimal.ZERO;
@@ -281,10 +286,10 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       stockLocationId = stockLocation.getId();
     }
     String query =
-        Beans.get(StockLocationLineService.class)
-            .getAvailableStockForAProduct(product.getId(), companyId, stockLocationId);
+        stockLocationLineService.getAvailableStockForAProduct(
+            product.getId(), companyId, stockLocationId);
     List<StockLocationLine> stockLocationLineList =
-        Beans.get(StockLocationLineRepository.class).all().filter(query).fetch();
+        stockLocationLineRepository.all().filter(query).fetch();
 
     // Compute
     BigDecimal sumAvailableQty = BigDecimal.ZERO;

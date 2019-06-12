@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Product" canSave="false" width="large" onNew="action-group-stock-details-by-product-on-new">	
+	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" onNew="action-group-stock-details-by-product-on-new">	
       <panel name="MainFilters" itemSpan="4" colSpan="12">
           <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
@@ -47,7 +47,7 @@
   
   <action-group name="action-group-stock-details-by-product-on-new">
     <action name="action-record-stock-details-by-product-init-product"/>
-    <action name="action-method-update-indicators" if="$product"/>
+    <action name="action-method-update-indicators" />
   </action-group>
   
   <action-record name="action-record-stock-details-by-product-init-product" model="com.axelor.apps.base.db.Product">
@@ -70,6 +70,7 @@
   
   <action-view name="action-stock-location-line-view-for-a-product-from-product-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Product">
       <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <view-param name="popup" value="true"/>
       <context name="_product" expr="eval:__self__"/>
   </action-view>
   
