@@ -171,7 +171,6 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     String query =
         manufOrderService.getConsumeAndMissingQtyForAProduct(
             product.getId(), companyId, stockLocationId);
-
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;

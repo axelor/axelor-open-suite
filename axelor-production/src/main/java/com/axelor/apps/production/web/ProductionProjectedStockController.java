@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.web;
 
+import java.util.Map;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -27,13 +29,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.Map;
 
 public class ProductionProjectedStockController {
 
   public static final String VIEW_BUILDING_QTY_TITLE = /*$$(*/ "%s building" /*)*/;
   public static final String VIEW_MISSING_QTY_TITLE = /*$$(*/ "%s missing" /*)*/;
   public static final String VIEW_CONSUME_QTY_TITLE = /*$$(*/ "%s consume" /*)*/;
+
 
   public void showBuildingQuantityOfProduct(ActionRequest request, ActionResponse response) {
     Map<String, Long> mapId =
@@ -46,8 +48,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
-            .getBuildingQtyForAProduct(productId, companyId, stockLocationId);
+    		Beans.get(ManufOrderService.class).getBuildingQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_BUILDING_QTY_TITLE);
     title = String.format(title, product.getName());
@@ -72,8 +73,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
-            .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
+    		Beans.get(ManufOrderService.class).getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
 
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_CONSUME_QTY_TITLE);
@@ -99,8 +99,7 @@ public class ProductionProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(ManufOrderService.class)
-            .getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
+        Beans.get(ManufOrderService.class).getConsumeAndMissingQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_MISSING_QTY_TITLE);
     title = String.format(title, product.getName());

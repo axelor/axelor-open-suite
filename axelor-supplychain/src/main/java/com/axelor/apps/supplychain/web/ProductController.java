@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
@@ -27,9 +31,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProductController {
 
