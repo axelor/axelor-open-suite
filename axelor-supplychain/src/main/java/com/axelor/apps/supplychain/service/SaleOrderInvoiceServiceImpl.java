@@ -266,8 +266,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         invoice,
         this.createInvoiceLinesFromTax(invoice, taxLineList, invoicingProduct, percentToInvoice));
 
-    this.fillInLines(invoice);
-
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
@@ -488,8 +486,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoiceGenerator.populate(
         invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
-    this.fillInLines(invoice);
-
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
     return invoice;
@@ -723,13 +719,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int invoiceOperationTypeSelect) {
 
     String query = "SELECT SUM(self.companyExTaxTotal)" + " FROM InvoiceLine as self";
-
-    if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
-      query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
-    } else {
-      query += " WHERE self.saleOrder.id = :saleOrderId";
-    }
-
+    query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
     query +=
         " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
             + " AND self.invoice.statusSelect = :statusVentilated";
@@ -764,16 +754,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       return invoicedAmount;
     } else {
       return BigDecimal.ZERO;
-    }
-  }
-
-  @Override
-  public void fillInLines(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    if (invoiceLineList != null) {
-      for (InvoiceLine invoiceLine : invoiceLineList) {
-        invoiceLine.setSaleOrder(invoice.getSaleOrder());
-      }
     }
   }
 
@@ -821,46 +801,22 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-      if (!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
-        this.fillInLines(invoiceMerged);
-      } else {
-        invoiceMerged.setSaleOrder(null);
-      }
+      invoiceMerged.setSaleOrder(null);
       invoiceRepo.save(invoiceMerged);
       swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
-      if (!appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
-        Invoice invoiceMerged =
-            invoiceService.mergeInvoice(
-                invoiceList,
-                company,
-                currency,
-                partner,
-                contactPartner,
-                priceList,
-                paymentMode,
-                paymentCondition);
-        swapStockMoveInvoices(invoiceList, invoiceMerged);
-        invoiceService.deleteOldInvoices(invoiceList);
-        this.fillInLines(invoiceMerged);
-        return invoiceMerged;
-      } else {
-        Invoice invoiceMerged =
-            invoiceService.mergeInvoice(
-                invoiceList,
-                company,
-                currency,
-                partner,
-                contactPartner,
-                priceList,
-                paymentMode,
-                paymentCondition);
-        swapStockMoveInvoices(invoiceList, invoiceMerged);
-        invoiceService.deleteOldInvoices(invoiceList);
-        return invoiceMerged;
-      }
+
+      return invoiceService.mergeInvoice(
+          invoiceList,
+          company,
+          currency,
+          partner,
+          contactPartner,
+          priceList,
+          paymentMode,
+          paymentCondition);
     }
   }
 
@@ -907,12 +863,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
             ? SaleOrderRepository.INVOICE_ALL
             : 0);
-    contextValues.put(
-        "invoiceFraction",
-        appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()
-                || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
-            ? 0
-            : SaleOrderRepository.INVOICE_PART);
+
+    contextValues.put("invoiceFraction", 0);
+
     contextValues.put(
         "invoiceLines",
         exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);

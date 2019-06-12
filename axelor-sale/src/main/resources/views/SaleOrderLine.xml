@@ -184,7 +184,7 @@
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
-			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
+			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="invoicingDate"/>
 				<field name="amountInvoiced" />
 				<panel-dashlet name="invoiceLinesFromSOLinePanel" action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>

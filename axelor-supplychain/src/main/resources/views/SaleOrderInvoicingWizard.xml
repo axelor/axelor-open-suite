@@ -7,11 +7,13 @@
 		  model="com.axelor.apps.sale.db.SaleOrder"
 		  onLoad="action-group-sale-order-invoicing-wizard-onload">
 		<panel name="operationSelectPanel">
-            <field name="operationSelect" title="Operation choice"
+
+			<field name="operationSelect" title="Operation choice"
 				   type="selection"
 				   selection="supplychain.sale.order.invoicing.wizard.select"
-                   selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment]"
+                   selection-in="[invoiceAll, invoiceLines, invoiceAdvPayment]"
 				   required="true"/>
+				   
 		</panel>
         <panel name="amountPanel" showIf="[2,3,4].includes($number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"

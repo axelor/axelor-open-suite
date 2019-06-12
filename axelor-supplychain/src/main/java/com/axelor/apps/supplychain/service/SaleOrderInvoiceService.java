@@ -272,8 +272,6 @@ public interface SaleOrderInvoiceService {
    */
   List<Invoice> getInvoices(SaleOrder saleOrder);
 
-  void fillInLines(Invoice invoice);
-
   @Transactional
   Invoice mergeInvoice(
       List<Invoice> invoiceList,

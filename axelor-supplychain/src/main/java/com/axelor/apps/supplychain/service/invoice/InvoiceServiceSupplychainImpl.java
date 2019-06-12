@@ -120,8 +120,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoice
             .getInvoiceLineList()
             .stream()
-            .map(InvoiceLine::getSaleOrder)
+            .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
+
     saleOrderList.add(saleOrder);
 
     // remove null value and duplicates

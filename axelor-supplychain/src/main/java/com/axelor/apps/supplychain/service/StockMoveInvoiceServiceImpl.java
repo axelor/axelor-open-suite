@@ -120,7 +120,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     if (invoice != null) {
       invoice.setSaleOrder(saleOrder);
-      saleOrderInvoiceService.fillInLines(invoice);
       this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
@@ -234,7 +233,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
     if (invoice != null) {
-      saleOrderInvoiceService.fillInLines(invoice);
+
       this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
