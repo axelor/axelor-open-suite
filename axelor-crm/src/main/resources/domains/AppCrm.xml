@@ -8,6 +8,12 @@
 	<integer name="assignableUsers" title="Assignable Users" selection="crm.app.crm.assignable.user.select"/>
 	<many-to-many name="groupsAssignable" title="Groups Assignable" ref="com.axelor.auth.db.Group"/>
 		<boolean name="displayCustomerDescriptionInOpportunity" title="Display customer description in opportunity"/>
+
+		<track>
+			<field name="assignableUsers" on="UPDATE"/>
+			<field name="groupsAssignable" on="UPDATE"/>
+			<field name="displayCustomerDescriptionInOpportunity" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

@@ -19,6 +19,11 @@
 			<panel-related name="leadSetPanel" field="leadSet"  showIf="isCrmAppEnable"  form-view="lead-form" grid-view="lead-grid"/>
 			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable"  form-view="product-form" grid-view="product-grid"/>
 		</panel-tabs>
+				        
+        <panel-mail name="mailPanel">
+		    <mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
 	
 </object-views>

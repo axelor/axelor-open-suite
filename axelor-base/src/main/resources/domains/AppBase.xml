@@ -73,6 +73,46 @@
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
 	   		]]>
 	   	</extra-code>
+	   	
+	   	<track>
+		   	<field name="today"  on="UPDATE"/>
+		   	<field name="defaultProjectUnit" on="UPDATE"/>
+		   	<field name="defaultPartnerLanguage" on="UPDATE"/>
+		   	<field name="emailAccountByUser" on="UPDATE"/>
+
+		   	<field name="qasWsdlUrl" on="UPDATE"/>
+		   	<field name="mapApiSelect" on="UPDATE"/>
+		   	<field name="googleMapsApiKey" on="UPDATE"/>
+		   	<field name="currencyWsURL" on="UPDATE"/>
+		   	<field name="hasQasValidation" on="UPDATE"/>
+		   	<field name="productInAtiSelect" on="UPDATE"/>
+		   	<field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
+		   	<field name="computeMethodDiscountSelect" on="UPDATE"/>
+		   	<field name="timeLoggingPreferenceSelect" on="UPDATE"/>
+		   	<field name="dailyWorkHours" on="UPDATE"/>
+		   	
+			<field name="unitDays" on="UPDATE"/>
+		   	<field name="unitHours" on="UPDATE"/>
+		   	<field name="unitMinutes" on="UPDATE"/>
+		   	
+			<field name="teamManagement" on="UPDATE"/>
+		   	<field name="activateSendingEmail" on="UPDATE"/>
+		   	
+			<field name="activateBarCodeGeneration" on="UPDATE"/>
+		   	<field name="editProductBarcodeType" on="UPDATE"/>
+		   	<field name="barcodeTypeConfig" on="UPDATE"/>
+		   	<field name="generateProductSequence" on="UPDATE"/>
+		   	
+			<field name="manageMultiBanks" on="UPDATE"/>
+		   	<field name="manageProductVariants" on="UPDATE"/>
+		   	<field name="enterpriseCommunication" on="UPDATE"/>
+		   	<field name="document" on="UPDATE"/>
+		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
+		   	<field name="enableCalendars" on="UPDATE"/>
+		   	<field name="passwordChangedTemplate" on="UPDATE"/>
+<!-- 		   	31 fields -->
+	   	</track>
+	   	
    	</entity>
 
 </domain-models>

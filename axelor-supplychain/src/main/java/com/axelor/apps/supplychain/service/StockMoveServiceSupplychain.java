@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface StockMoveServiceSupplychain {
@@ -34,4 +35,6 @@ public interface StockMoveServiceSupplychain {
    * @param stockMove
    */
   void detachNonDeliveredStockMoveLines(StockMove stockMove);
+
+  void verifyProductStock(StockMove stockMove) throws AxelorException;
 }
