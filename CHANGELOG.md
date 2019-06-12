@@ -96,6 +96,7 @@
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- PROJECT/TEAMWORK : corrected error in enumeration when the value PROJECT_ALONE is selected
 
 ## [5.1.6] - 2019-04-29
 ## Features
