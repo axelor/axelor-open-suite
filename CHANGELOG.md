@@ -92,6 +92,7 @@
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- Currency Conversion : Fix divideByZero arithmetic exception
 
 ## [5.1.6] - 2019-04-29
 ## Features
