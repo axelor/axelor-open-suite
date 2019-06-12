@@ -33,6 +33,7 @@
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = true AND self.mainPartner.isSupplier = true</domain>
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isSupplier = true"/>
 	</action-view>
