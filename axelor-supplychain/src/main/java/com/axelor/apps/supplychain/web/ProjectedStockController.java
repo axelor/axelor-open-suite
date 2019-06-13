@@ -78,6 +78,7 @@ public class ProjectedStockController {
             .add("form", "stock-location-line-form")
             .domain(domain)
             .param("popup", "true")
+            .param("popup-save", "false")
             .map());
   }
 
@@ -104,6 +105,7 @@ public class ProjectedStockController {
             .add("form", "sale-order-line-all-form")
             .domain(domain)
             .param("popup", "true")
+            .param("popup-save", "false")
             .map());
   }
 
@@ -130,6 +132,7 @@ public class ProjectedStockController {
             .add("form", "purchase-order-line-all-form")
             .domain(domain)
             .param("popup", "true")
+            .param("popup-save", "false")
             .map());
   }
 
@@ -157,6 +160,7 @@ public class ProjectedStockController {
             .add("form", "stock-location-line-form")
             .domain(domain)
             .param("popup", "true")
+            .param("popup-save", "false")
             .map());
   }
 
@@ -180,6 +184,7 @@ public class ProjectedStockController {
                 .model(MrpLine.class.getName())
                 .add("form", "projected-stock-form")
                 .param("popup", "true")
+                .param("popup-save", "false")
                 .context("_mrpLineList", mrpLineList)
                 .map());
       } catch (Exception e) {

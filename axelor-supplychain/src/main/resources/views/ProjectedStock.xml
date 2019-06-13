@@ -26,12 +26,13 @@
    </grid>
    
 
-<action-record name="action-record-supplychain-projected-stock-on-new" model="com.axelor.apps.supplychain.db.MrpLine">
-  <field name="$mrpLineList" expr="eval: _mrpLineList"/>
-</action-record>
+   <action-record name="action-record-supplychain-projected-stock-on-new" model="com.axelor.apps.supplychain.db.MrpLine">
+      <field name="$mrpLineList" expr="eval: _mrpLineList"/>
+   </action-record>
 
-  <action-view title="Projected Stock" name="action.projected.stock.dashlet">
-    <view type="chart" name="chart.projected.stock"/>
-    <context name="_mrpLineListToProject" expr="eval: _mrpLineList" />
-  </action-view>
+   <action-view title="Projected Stock" name="action.projected.stock.dashlet">
+      <view type="chart" name="chart.projected.stock"/>
+      <context name="_mrpLineListToProject" expr="eval: _mrpLineList" />
+   </action-view>
+   
 </object-views> 

@@ -17,12 +17,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
+import java.util.List;
+import java.util.Map;
 
 public interface ProjectedStockService {
 
