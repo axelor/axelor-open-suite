@@ -106,10 +106,10 @@
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
   
-  <chart name="chart.projected.stock" title="Projected Stock">
+  <chart name="chart.projected.stock" title="Projected stock">
     <dataset type="rpc">com.axelor.apps.supplychain.web.ProjectedStockController:showChartProjectedStock</dataset>
     <category key="name" type="date" title="Date"/>
-    <series key="cumulativeQty" type="line" title="Cumulative Qty"/>
+    <series key="cumulativeQty" type="line" title="Cumulative qty"/>
  </chart>
 
 </object-views>

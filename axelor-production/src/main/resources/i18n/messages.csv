@@ -1,7 +1,7 @@
 "key","message","comment","context"
-"${product.fullName} building",,,
-"${product.fullName} consume",,,
-"${product.fullName} missing",,,
+"%s building",,,
+"%s consume",,,
+"%s missing",,,
 "105",,,
 "5",,,
 "A cancel reason must be selected",,,

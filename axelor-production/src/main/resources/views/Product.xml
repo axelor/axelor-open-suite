@@ -56,7 +56,7 @@
 		<call class="com.axelor.apps.production.web.ProductionProjectedStockController" method="showConsumeQuantityOfProduct"/>
     </action-method>
   
-	<action-method name="action-method-production-show-missing-product">
+	<action-method name="action-method-production-missing-product">
 		<call class="com.axelor.apps.production.web.ProductionProjectedStockController" method="showMissingQuantityOfProduct"/>
 	</action-method>
   

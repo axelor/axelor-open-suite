@@ -27,14 +27,15 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,6 +45,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
 
   protected AppProductionService appProductionService;
   protected ManufOrderService manufOrderService;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public ProductionProductStockLocationServiceImpl(
@@ -54,8 +56,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       StockLocationRepository stockLocationRepository,
       StockLocationService stockLocationService,
       StockLocationServiceSupplychain stockLocationServiceSupplychain,
+      StockLocationLineService stockLocationLineService,
+      StockLocationLineRepository stockLocationLineRepository,
       AppProductionService appProductionService,
-      ManufOrderService manufOrderService) {
+      ManufOrderService manufOrderService,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(
         unitConversionService,
         appSupplychainService,
@@ -63,9 +68,12 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         companyRepository,
         stockLocationRepository,
         stockLocationService,
-        stockLocationServiceSupplychain);
+        stockLocationServiceSupplychain,
+        stockLocationLineService,
+        stockLocationLineRepository);
     this.appProductionService = appProductionService;
     this.manufOrderService = manufOrderService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   @Override
@@ -127,8 +135,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
 
     String query =
         manufOrderService.getBuildingQtyForAProduct(product.getId(), companyId, stockLocationId);
-    List<StockMoveLine> stockMoveLineList =
-        Beans.get(StockMoveLineRepository.class).all().filter(query).fetch();
+    List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumBuildingQty = BigDecimal.ZERO;
     if (!stockMoveLineList.isEmpty()) {
@@ -164,9 +171,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     String query =
         manufOrderService.getConsumeAndMissingQtyForAProduct(
             product.getId(), companyId, stockLocationId);
-
-    List<StockMoveLine> stockMoveLineList =
-        Beans.get(StockMoveLineRepository.class).all().filter(query).fetch();
+    List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
     if (!stockMoveLineList.isEmpty()) {
@@ -201,8 +206,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     String query =
         manufOrderService.getConsumeAndMissingQtyForAProduct(
             product.getId(), companyId, stockLocationId);
-    List<StockMoveLine> stockMoveLineList =
-        Beans.get(StockMoveLineRepository.class).all().filter(query).fetch();
+    List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumMissingManufOrderQty = BigDecimal.ZERO;
     if (!stockMoveLineList.isEmpty()) {
