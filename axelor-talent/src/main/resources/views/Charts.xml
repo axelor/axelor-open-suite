@@ -13,7 +13,7 @@
 			TrainingRegister self
 		WHERE
 			YEAR(self.fromDate) >= (YEAR(CURRENT_DATE)-3)
-			AND self.employee =:employeeId
+			AND self.employee =:id
 		GROUP BY
 			self.training.category.name,
 			YEAR(self.fromDate)
