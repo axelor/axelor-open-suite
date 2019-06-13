@@ -98,6 +98,7 @@
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- MOVELINE taxAmount : change showIf condtion.
 
 ## [5.1.6] - 2019-04-29
 ## Features
