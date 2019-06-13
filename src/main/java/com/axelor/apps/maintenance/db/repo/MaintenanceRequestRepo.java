@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.maintenance.db.repo;
 
-import java.time.LocalDate;
-
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
+import java.time.LocalDate;
 
 public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
 

@@ -17,15 +17,12 @@
  */
 package com.axelor.apps.maintenance.web;
 
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -35,6 +32,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

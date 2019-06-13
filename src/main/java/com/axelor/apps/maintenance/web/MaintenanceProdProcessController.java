@@ -18,8 +18,8 @@
 package com.axelor.apps.maintenance.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.maintenance.report.IReport;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;

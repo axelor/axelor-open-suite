@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.maintenance.service;
 
-import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -41,6 +32,13 @@ import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowService {
 

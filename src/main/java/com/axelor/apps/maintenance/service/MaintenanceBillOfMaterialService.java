@@ -18,8 +18,8 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.maintenance.report.IReport;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.exception.AxelorException;
 
