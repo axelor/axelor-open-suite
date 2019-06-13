@@ -47,6 +47,7 @@
 - Stock Move: update future quantity from real quantity in planned stock moves.
 - Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
 - Sale Order Line: new buttons to create/cancel a reservation for a given line.
+- DebtRecovery : add a new report as PDF for payment reminder message. 
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
