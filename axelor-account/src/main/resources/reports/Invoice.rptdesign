@@ -3479,7 +3479,10 @@ if(row["operation_type_select"] == "1" ){
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
+                                    <value type="javascript">if(params["ReportType"].value == 1){
+	'Invoice.proformaInvoice'
+}else{
+if(row["operation_type_select"] == "1" ){
 	if (row["operation_sub_type_select"] == "2") {
 			'Invoice.purchaseInvoiceAdvPaymentNo'
 	} else if (row["operation_sub_type_select"] == "3") {
@@ -3501,6 +3504,7 @@ if(row["operation_type_select"] == "1" ){
 	}
 }else if(row["operation_type_select"] == "4" ){
 'Invoice.refundNo'
+}
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -5002,7 +5006,7 @@ row["partnerFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null || params["ReportType"].value == 3</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -5467,7 +5471,6 @@ row["partnerFirstName"]
                             <column id="4531"/>
                             <column id="4535"/>
                             <row id="5252">
-                                <property name="height">10.874375cm</property>
                                 <cell id="5253">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -5527,6 +5530,7 @@ row["partnerFirstName"]
                                         </column>
                                         <header>
                                             <row id="4705">
+                                                <property name="fontSize">8pt</property>
                                                 <cell id="4706">
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
@@ -5657,6 +5661,7 @@ row["partnerFirstName"]
                                         </header>
                                         <detail>
                                             <row id="4712">
+                                                <property name="fontSize">8pt</property>
                                                 <cell id="4713">
                                                     <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
@@ -5711,8 +5716,34 @@ row["partnerFirstName"]
                                                     <text id="4718">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
+                                                </cell>
+                                            </row>
+                                            <row id="5597">
+                                                <property name="fontSize">8pt</property>
+                                                <property name="borderBottomStyle">none</property>
+                                                <property name="borderLeftStyle">none</property>
+                                                <property name="borderRightStyle">none</property>
+                                                <property name="borderTopStyle">none</property>
+                                                <property name="height">0.5cm</property>
+                                                <cell id="5598">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
+                                                </cell>
+                                                <cell id="5599">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
+                                                </cell>
+                                                <cell id="5600">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
                                                 </cell>
                                             </row>
                                         </detail>
@@ -5723,7 +5754,7 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">params["ReportType"].value == null || params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -6453,6 +6484,8 @@ row["partnerFirstName"]
                                             </cell>
                                         </row>
                                         <row id="3524">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <cell id="3525">
                                                 <property name="backgroundAttachment">scroll</property>
@@ -6569,6 +6602,8 @@ row["partnerFirstName"]
                                             </cell>
                                         </row>
                                         <row id="4443">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -6704,6 +6739,12 @@ row["partnerFirstName"]
                                         </row>
                                         <row id="5301">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value == 1</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5302">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -6845,6 +6886,12 @@ row["partnerFirstName"]
                                         </row>
                                         <row id="5589">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value != 3</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5590">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>

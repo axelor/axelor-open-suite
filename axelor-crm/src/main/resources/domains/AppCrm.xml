@@ -5,6 +5,8 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppCrm" lang="java" extends="App">
+	<integer name="assignableUsers" title="Assignable Users" selection="crm.app.crm.assignable.user.select" default="1"/>
+	<many-to-many name="groupsAssignable" title="Groups Assignable" ref="com.axelor.auth.db.Group"/>
 	</entity>
 
 </domain-models>

@@ -55,12 +55,14 @@ public class OpportunitySaleOrderController {
 
   public void cancelSaleOrders(ActionRequest request, ActionResponse response) {
     Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
-    if (saleOrderList != null && !saleOrderList.isEmpty()) {
-      for (SaleOrder saleOrder : saleOrderList) {
-        if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-            || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-          saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+    if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
+      List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
+      if (saleOrderList != null && !saleOrderList.isEmpty()) {
+        for (SaleOrder saleOrder : saleOrderList) {
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+              || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+            saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
+          }
         }
       }
     }

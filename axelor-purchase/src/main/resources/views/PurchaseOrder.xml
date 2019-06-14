@@ -154,8 +154,8 @@
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
-				<field name="priceDisplay" colSpan="12"/>
-				<field name="priceRequest" hideIf="priceDisplay" colSpan="12" x-height="5"/>
+				<field name="displayPriceOnQuotationRequest" colSpan="12"/>
+				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" hideIf="statusSelect &lt; 3">
 				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
@@ -402,6 +402,7 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
+    	<action name="action-purchase-order-validate-purchase-order-line"/>
     	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
     	<action name="action-purchase-order-method-validate"/>
@@ -459,7 +460,7 @@
     </action-record>
 
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="priceDisplay" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceDisplay"/>
+    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"/>
     	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
     </action-record>
 
@@ -468,6 +469,9 @@
     	<field name="taxTotal" expr="eval: 0"/>
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="statusSelect" expr="1"/>
+    	
+    	
+    	
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="buyerUser" expr="eval:__user__"/>
@@ -596,7 +600,11 @@
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
 	</action-validate>
-
+	
+	<action-validate name="action-purchase-order-validate-purchase-order-line">
+		<error message="Please enter at least one detail line." if="purchaseOrderLineList?.isEmpty()"/>
+	</action-validate>
+	
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>

@@ -157,7 +157,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setContactPartner(saleOrder.getContactPartner());
     purchaseOrder.setCurrency(saleOrder.getCurrency());
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
-    purchaseOrder.setOrderDate(saleOrder.getOrderDate());
+    purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
@@ -171,8 +171,6 @@ public class IntercoServiceImpl implements IntercoService {
 
     // in ati
     purchaseOrder.setInAti(saleOrder.getInAti());
-    // copy date
-    purchaseOrder.setOrderDate(saleOrder.getOrderDate());
 
     // copy payments
     PaymentMode intercoPaymentMode =

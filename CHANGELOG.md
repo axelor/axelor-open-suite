@@ -86,6 +86,11 @@
 - SALE ORDER : Recompute unit price when hideDiscount is true.
 - OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
 - PROJECT : Add an analytic tab.
+- OBJECT DATA CONFIG : UX improvements  and Translations and Change in Export Type
+- ANALYTIC MOVE LINE : project field title changed and domain filter added.
+- CONTRACT : Set Invoice date with newly added options for invoicing Moment
+- Inventory : Added new field 'typeSelect' and change in product doman filter.
+- Address: Street have now a dedicated object.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -117,6 +122,11 @@
 - TeamTask : copy object with empty fields
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
 - PRICE LIST : hide O2M historized price lists in pop-up view
+- MARKETING : Precise domain for model in message template
+- Change titles for productFamily.
+- CONTRACT : Set project on generated invoices
+- LEAVE REQUEST : Set message for leave reason has no unit
+- LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -132,6 +142,13 @@
 - Marketing : Fix error when trying to generate an event per target
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
+- BoM:  added a menu showing personalized bills of materials
 - BUSINESS PROJECT : Report printing Division by zero
+- UnitCostCalculation : Fixed the date format in the csv export name file.
+- BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
+- INVOICE :  Hide Due amount in report while printing "Original invoice / Updated copy"
+- PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
+- INVOICE : Reduce font size of tax table in Invoice printing
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.exception.AxelorException;
@@ -30,8 +31,10 @@ public interface ConfiguratorProdProcessService {
    *
    * @param confProdProcess
    * @param attributes
+   * @param product the generated product in configurator BOM.
    * @return
    */
   ProdProcess generateProdProcessService(
-      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException;
+      ConfiguratorProdProcess confProdProcess, JsonContext attributes, Product product)
+      throws AxelorException;
 }

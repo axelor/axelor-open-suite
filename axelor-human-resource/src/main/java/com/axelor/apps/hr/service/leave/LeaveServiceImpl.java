@@ -177,7 +177,9 @@ public class LeaveServiceImpl implements LeaveService {
           break;
 
         default:
-          throw new AxelorException(null, TraceBackRepository.CATEGORY_NO_VALUE);
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(IExceptionMessage.UNIT_SELECT_FOR_LEAVE_REASON));
       }
     }
 

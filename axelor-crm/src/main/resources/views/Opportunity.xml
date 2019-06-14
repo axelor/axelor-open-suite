@@ -135,7 +135,10 @@
                 <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
                 <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
 				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-				<field name="lostReason" readonly="true" showIf="lostReason != null"/>
+				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
+				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
+         		  <field name="lostReasonStr" readonly="true" showIf="lostReasonStr" colSpan="12"/>
+				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
 				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
@@ -155,7 +158,7 @@
 		</panel-mail>
 	</form>
  
-	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10" name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10" name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" onMove="action-opportunity-method-cancel-saleorders">
 		<field name="name"/>
 		<field name="description"/>
 		<field name="probability"/>

@@ -7,7 +7,7 @@
 
   <entity name="AnalyticMoveLine" lang="java">
   
-    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Business project"/>
     
   </entity>
 

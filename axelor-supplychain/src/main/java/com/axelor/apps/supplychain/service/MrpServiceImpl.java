@@ -145,6 +145,7 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   protected void startMrp(Mrp mrp) {
 
+    mrp.setStartDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     log.debug("Start MRP");
 
     mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_STARTED);
@@ -206,6 +207,7 @@ public class MrpServiceImpl implements MrpService {
     log.debug("Finish MRP");
 
     mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_ENDED);
+    mrp.setEndDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     mrpRepository.save(mrp);
   }
 

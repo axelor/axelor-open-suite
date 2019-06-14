@@ -53,6 +53,7 @@ import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomServiceImpl;
+import com.axelor.apps.production.service.configurator.ConfiguratorCreatorImportServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessService;
@@ -75,6 +76,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderService
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
@@ -125,5 +127,7 @@ public class ProductionModule extends AxelorModule {
     bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
     bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
+    bind(ConfiguratorCreatorImportServiceImpl.class)
+        .to(ConfiguratorCreatorImportServiceProductionImpl.class);
   }
 }
