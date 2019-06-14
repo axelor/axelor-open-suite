@@ -30,8 +30,10 @@ public class TestFileTool {
     String destinationFolder =
         System.getProperty("java.io.tmpdir")
             + File.separator
-            + "tata" + File.separator
-            + "titi" + File.separator
+            + "tata"
+            + File.separator
+            + "titi"
+            + File.separator
             + "toto";
     String fileName = "toto.txt";
 
@@ -47,9 +49,12 @@ public class TestFileTool {
     String fileName =
         System.getProperty("java.io.tmpdir")
             + File.separator
-            + "tata2" + File.separator
-            + "titi2" + File.separator
-            + "toto2" + File.separator
+            + "tata2"
+            + File.separator
+            + "titi2"
+            + File.separator
+            + "toto2"
+            + File.separator
             + "toto.txt";
     File file = FileTool.create(fileName);
     file.deleteOnExit();

@@ -35,7 +35,7 @@
 
 	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice" edit-icon="false"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="product.code"/>
+		<field name="product.code" width="120"/>
 		<field name="productName" readonly="true"/>
 		<field name="qty" readonly="true" aggregate="sum"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
