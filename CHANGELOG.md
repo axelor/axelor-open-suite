@@ -98,6 +98,7 @@
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
 
 ## [5.1.6] - 2019-04-29
 ## Features
