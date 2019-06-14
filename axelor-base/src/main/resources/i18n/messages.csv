@@ -974,6 +974,7 @@
 "Picture",,,
 "Please configure unit conversion from '%s' to '%s'.",,,
 "Please configure units.",,,
+"Please do use ';' or '|' as separator between two email addresses.",,,
 "Please enter a tax version for the tax %s",,,
 "Please fill in task date.",,,
 "Please import only excel file.",,,

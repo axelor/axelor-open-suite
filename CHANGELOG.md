@@ -91,6 +91,7 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
