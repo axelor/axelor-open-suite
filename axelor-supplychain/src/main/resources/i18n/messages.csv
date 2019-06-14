@@ -340,6 +340,7 @@
 "Qty",,,
 "Qty to invoice",,,
 "Quantity cannot be lower than already delivered quantity on detail line %s.",,,
+"Quantity requested",,,
 "Real/Current Quantity",,,
 "Receipt state",,,
 "Recovered tax",,,
