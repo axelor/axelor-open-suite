@@ -194,7 +194,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         ABCAnalysisLine abcAnalysisLine = new ABCAnalysisLine();
 
         abcAnalysisLine.setAbcAnalysis(abcAnalysis);
-        abcAnalysisLine.setProduct(productRepository.find(product.getId()));
+        abcAnalysisLine.setProduct(product);
 
         abcAnalysisLineRepository.save(abcAnalysisLine);
 
