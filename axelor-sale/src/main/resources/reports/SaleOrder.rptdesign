@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -5331,12 +5331,6 @@ row["ClientPartFirstName"]
                 <cell id="3976"/>
             </row>
             <row id="3977">
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                    </structure>
-                </list-property>
                 <cell id="3978">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">5</property>
@@ -5348,7 +5342,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["displayTaxDetailOnPrinting"] != 1 || row["sale_order_type_select"] == 2</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["displayTaxDetailOnPrinting"] != 1</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -5609,7 +5603,7 @@ row["ClientPartFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -5661,7 +5655,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalWithoutDiscount</property>
@@ -5680,7 +5674,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["sale_order_type_select"] == 2 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -5692,7 +5686,7 @@ row["ClientPartFirstName"]
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2 || row["in_ati"]</expression>
+                        <expression name="valueExpr" type="javascript">row["in_ati"]</expression>
                     </structure>
                 </list-property>
                 <cell id="4161"/>
@@ -5717,7 +5711,7 @@ row["ClientPartFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -5768,7 +5762,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -5785,7 +5779,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -5794,12 +5788,6 @@ row["ClientPartFirstName"]
                 </cell>
             </row>
             <row id="4166">
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                    </structure>
-                </list-property>
                 <cell id="4170"/>
                 <cell id="4171">
                     <property name="colSpan">2</property>
@@ -5813,12 +5801,6 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -5852,12 +5834,6 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">right</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5869,24 +5845,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="3984">
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                    </structure>
-                </list-property>
                 <cell id="3988"/>
                 <cell id="4077">
                     <property name="colSpan">2</property>
@@ -5900,12 +5864,6 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -5939,12 +5897,6 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">right</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5956,12 +5908,6 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="textAlign">left</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5969,12 +5915,6 @@ row["ClientPartFirstName"]
             </row>
             <row id="3991">
                 <property name="height">0.25in</property>
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                    </structure>
-                </list-property>
                 <cell id="3995"/>
                 <cell id="4078">
                     <property name="colSpan">2</property>
@@ -5989,12 +5929,6 @@ row["ClientPartFirstName"]
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
@@ -6031,12 +5965,6 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">right</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                     </text>
@@ -6051,24 +5979,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="4457">
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 2</expression>
-                    </structure>
-                </list-property>
                 <cell id="4458">
                     <property name="paddingLeft">0pt</property>
                     <property name="paddingRight">0pt</property>
@@ -6106,7 +6022,7 @@ row["ClientPartFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2 || (row._outer["Column Binding_tot_all_sub"]== 0) || !row._outer["in_ati"]</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || (row._outer["Column Binding_tot_all_sub"]== 0) || !row._outer["in_ati"]</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -6160,7 +6076,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0) || !row["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || (row["Column Binding_tot_all_sub"]== 0) || !row["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">totalDiscount</property>
@@ -6180,7 +6096,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0) || !row["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || (row["Column Binding_tot_all_sub"]== 0) || !row["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
@@ -6190,12 +6106,6 @@ row["ClientPartFirstName"]
             </row>
             <row id="3998">
                 <property name="height">0.3in</property>
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["sale_order_type_select"] == 1</expression>
-                    </structure>
-                </list-property>
                 <cell id="3999"/>
                 <cell id="4000"/>
                 <cell id="4001"/>
@@ -6484,54 +6394,5 @@ row["ClientPartFirstName"]
                 </cell>
             </row>
         </grid>
-        <table id="4475">
-            <property name="dataBindingRef">SaleOrderLines</property>
-            <column id="4480"/>
-            <header>
-                <row id="4476">
-                    <cell id="4477">
-                        <text id="4478">
-                            <property name="fontSize">9pt</property>
-                            <property name="fontWeight">normal</property>
-                            <property name="textAlign">left</property>
-                            <property name="dataSet">TranslateDS</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer._outer["sale_order_type_select"] == 2 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
-                                </structure>
-                            </list-property>
-                            <list-property name="paramBindings">
-                                <structure>
-                                    <property name="paramName">param_1</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'SaleOrder.totalDiscount'</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">key</property>
-                                    <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">translation</property>
-                                    <text-property name="displayName">translation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                </row>
-            </header>
-            <group id="4479">
-                <property name="groupName">NewTableGroup1</property>
-            </group>
-        </table>
     </body>
 </report>
