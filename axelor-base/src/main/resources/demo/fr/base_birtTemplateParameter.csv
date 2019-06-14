@@ -112,3 +112,6 @@
 111;32;"Locale";"fr";"string"
 112;32;"TimesheetId";"$Timesheet.id$";"decimal"
 103;8;"ReportType";2;"integer"
+113;33;"__locale";"fr_FR";"string"
+114;33;"Locale";"fr";"string"
+115;33;"DebtRecoveryHistoryID";"$DebtRecoveryHistory.id$";"decimal"
