@@ -101,6 +101,7 @@
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- PROJECT/TEAMWORK : corrected error in enumeration when the value PROJECT_ALONE is selected
 - Employee : the category formation chart is now correctly centered on the employee
 - Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
 - Reconcile : set company currency if move's currency is null
