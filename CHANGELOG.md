@@ -99,6 +99,7 @@
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
 - Reconcile : set company currency if move's currency is null
+- Team Task : Removed adding new task from Kanban view through "Add" button
 
 ## [5.1.6] - 2019-04-29
 ## Features
