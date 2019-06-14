@@ -39,5 +39,9 @@
 		<option value="purchaseOrder">Purchase order</option>
 		<option value="PurchaseRequest">Purchase request</option>
 	</selection>
+
+	<selection name="abc.analysis.type.select" id="purchase.abc.analysis.type.select">
+		<option value="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl">Purchase</option>
+	</selection>
 	
 </object-views>

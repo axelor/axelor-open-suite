@@ -320,4 +320,12 @@ public interface IExceptionMessage {
       "Import completed successfully. Please check the log for more details." /*)*/;
   public static final String INVALID_DATA_FORMAT_ERROR = /*$$(*/
       "Invalid data format. Please check log for more details." /*)*/;
+
+  /* ABC Analysis */
+  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
+          "The analysis must be completed before the report can be printed." /*)*/;
+  public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
+          "The classes total quantity and total worth must equal 100%." /*)*/;
+  public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
+          "The worth and quantity value of each class must be greater than 0." /*)*/;
 }
