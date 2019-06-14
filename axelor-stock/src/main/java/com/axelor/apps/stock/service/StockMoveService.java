@@ -220,6 +220,11 @@ public interface StockMoveService {
    */
   void setPickingStockMovesEditDate(List<Long> ids, String userType);
 
-  BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException;
+  /**
+   * Update stocks using saved stock move line list and current stock move line list. Then we save
+   * current stock move line list, replacing the saved list.
+   *
+   * @param stockMove
+   */
+  void updateStocks(StockMove stockMove) throws AxelorException;
 }

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="quality-control-grid" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl">
-		<field name="reference"/>
+		<field name="reference" width="120"/>
 		<field name="product"/>
 		<field name="qualityProcess"/>
 		<field name="team"/>

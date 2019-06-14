@@ -4,7 +4,7 @@
 
     <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
         orderBy="-depositDate,-depositNumber">
-        <field name="depositNumber" />
+        <field name="depositNumber" width="120"/>
         <field name="company" />
         <field name="companyBankDetails" />
         <field name="depositDate" />

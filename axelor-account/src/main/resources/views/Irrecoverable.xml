@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="irrecoverable-grid" title="Irrecoverables" model="com.axelor.apps.account.db.Irrecoverable">
-        <field name="name"/>
+        <field name="name" width="120"/>
         <field name="dateTime"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="statusSelect"/>
