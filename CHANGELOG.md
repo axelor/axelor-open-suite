@@ -90,6 +90,7 @@
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
+- INVOICE : rename and hide field for advance search.
 - QUALITY PROCESS : order controlPointModeList by priority DESC
 - FIXED ASSET :  Remove all lines in the depreciations table
 - PURCHASE ORDER : Remove completedBtn
