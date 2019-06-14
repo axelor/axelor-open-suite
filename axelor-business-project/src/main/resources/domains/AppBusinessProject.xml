@@ -30,6 +30,27 @@
 
 		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
 		
+		<track>
+			<field name="productInvoicingProject" on="UPDATE"/>
+			
+			<field name="showPurchaseOrderLineRelatedToProject" on="UPDATE"/>
+			<field name="showSaleOrderLineRelatedToProject" on="UPDATE"/>
+			<field name="showExpenseLineRelatedToProject" on="UPDATE"/>
+			<field name="showProductionOrderRelatedToProject" on="UPDATE"/>
+			<field name="showPurchaseInvoiceLineRelatedToProject" on="UPDATE"/>
+			<field name="showSaleInvoiceLineRelatedToProject" on="UPDATE"/>
+			
+			<field name="enableToInvoiceTimesheet" on="UPDATE"/>
+			<field name="enableToInvoiceExpense" on="UPDATE"/>
+			<field name="generateProjectOrder" on="UPDATE"/>
+			<field name="automaticProject" on="UPDATE"/>
+			<field name="generatedElementTypeSelect" on="UPDATE"/>
+			<field name="projectSaleOrderLines" on="UPDATE"/>
+			<field name="projectPurchaseOrderLines" on="UPDATE"/>
+			<field name="projectInvoiceLines" on="UPDATE"/>
+			<field name="enableTaskTemplatesByProduct" on="UPDATE"/>
+		</track>
+		
 	</entity>
 
 </domain-models>

@@ -8,7 +8,7 @@
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -21,7 +21,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -40,7 +40,7 @@
     <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -54,7 +54,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -74,7 +74,7 @@
     <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -87,7 +87,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -107,7 +107,7 @@
     <grid name="invoice-supplier-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -120,7 +120,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
    		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
@@ -141,7 +141,7 @@
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	            <item title="Print invoices" action="action-invoice-method-show-invoices"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
@@ -154,7 +154,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="operationSubTypeSelect"/>
@@ -166,12 +166,12 @@
         <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
 
-    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <grid name="invoice-refund-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="exTaxTotal" aggregate="sum"/>
@@ -314,7 +314,7 @@
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
-					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid"/>
+					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
 				<panel colSpan="12"  name="irrecoverablePanel" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
@@ -386,8 +386,8 @@ InvoiceSet.length > 0))"
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
-            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate-and-ventilate"/>
+            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
+            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -404,7 +404,7 @@ InvoiceSet.length > 0))"
 				<field name="externalReference"/>
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -440,7 +440,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
@@ -559,7 +559,7 @@ InvoiceSet.length > 0))"
 				<field name="externalReference"/>
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -609,7 +609,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}<font/>
+                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
@@ -676,8 +676,8 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<field name="invoiceId" />
-		<field name="partner.partnerSeq" />
+		<field name="invoiceId" width="120"/>
+		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
 		<field name="invoiceDate" />
 		<field name="dueDate" />
@@ -992,9 +992,13 @@ InvoiceSet.length > 0))"
     	<call class="com.axelor.apps.account.web.InvoiceController" method="massVentilation"/>
     </action-method>
 
-	<action-method name="action-invoice-method-show-invoice">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
-	</action-method>
+    <action-method name="action-invoice-method-show-invoice">
+        <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
+    </action-method>
+
+    <action-method name="action-invoice-method-show-invoices">
+        <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoices"/>
+    </action-method>
 
 	<action-method name="action-invoice-method-regenerate-and-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>
@@ -1095,6 +1099,10 @@ InvoiceSet.length > 0))"
 			  method="massPaymentOnSupplierInvoices"/>
 	</action-method>
 	
+	<action-method name="action-invoice-method-check-not-imputed-refunds">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="checkNotImputedRefunds"/>
+  </action-method>
+
 	<action-method name="action-invoice-method-check-partner-bank-details-list">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkPartnerBankDetailsList"/>
 	</action-method>

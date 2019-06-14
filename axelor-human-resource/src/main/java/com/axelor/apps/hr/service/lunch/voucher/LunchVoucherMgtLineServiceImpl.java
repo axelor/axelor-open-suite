@@ -110,11 +110,12 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 
   @Override
   public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException {
-    lunchVoucherMgtLine.setLunchVoucherNumber(
+    Integer lunchVoucherNumber =
         lunchVoucherMgtLine.getDaysWorkedNbr()
             - (lunchVoucherMgtLine.getCanteenEntries()
                 + lunchVoucherMgtLine.getDaysOverseas()
                 + lunchVoucherMgtLine.getInAdvanceNbr()
-                + lunchVoucherMgtLine.getInvitation()));
+                + lunchVoucherMgtLine.getInvitation());
+    lunchVoucherMgtLine.setLunchVoucherNumber(Integer.max(lunchVoucherNumber, 0));
   }
 }

@@ -184,4 +184,5 @@ public interface IExceptionMessage {
 
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
+  String TRACK_NUMBER_DATE_MISSING = /*$$(*/ "Please filled estimated delivery date" /*)*/;
 }

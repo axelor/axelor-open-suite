@@ -13,7 +13,7 @@
   		<hilite color="primary" if="prioritySelect == 2"/>
   		<hilite color="info" if="prioritySelect == 1"/>
   		<field name="prioritySelect" hidden="true"/>
-        <field name="manufOrderSeq"/>
+        <field name="manufOrderSeq" width="120"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -37,8 +37,8 @@
     	<toolbar>
     		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
-    	<field name="productionOrder"/>
-        <field name="manufOrderSeq"/>
+    	<field name="productionOrder" width="120"/>
+        <field name="manufOrderSeq" width="120"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
@@ -58,8 +58,8 @@
     </grid>
     
     <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
-    	<field name="productionOrder"/>
-        <field name="manufOrderSeq"/>
+    	<field name="productionOrder" width="120"/>
+        <field name="manufOrderSeq" width="120"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -69,8 +69,8 @@
     </grid>
     
     <grid name="manuf-order-time-tracking-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder" >
-        <field name="productionOrder"/>
-        <field name="manufOrderSeq"/>
+        <field name="productionOrder" width="120" />
+        <field name="manufOrderSeq" width="120"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -94,7 +94,7 @@
 		</menubar>
 		<panel name="mainPanel">
 		<panel name="detailsPanel" colSpan="8">
-			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="2"/>
+			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
 			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>

@@ -322,7 +322,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    }
   }
 
   /**
@@ -368,6 +370,49 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  @Override
+  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        long clientRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+        if (clientRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+        }
+      }
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        long supplierRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+
+        if (supplierRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private long getRefundsAmount(Long partnerId, int refundType) {
+    return invoiceRepo
+        .all()
+        .filter(
+            "self.partner.id = ?"
+                + " AND self.operationTypeSelect = ?"
+                + " AND self.statusSelect = ?"
+                + " AND self.amountRemaining > 0",
+            partnerId,
+            refundType,
+            InvoiceRepository.STATUS_VENTILATED)
+        .count();
+  }
+
   /**
    * Créer un avoir.
    *
@@ -395,6 +440,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId())) {
       invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
     }
+  }
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
   }
 
   @Override
@@ -455,11 +524,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
     Beans.get(InvoiceRepository.class).save(invoiceMerged);
-    deleteOldInvoices(invoiceList);
     return invoiceMerged;
   }
 
   @Override
+  @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);
@@ -786,5 +855,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     return true;
+  }
+
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {
+    // isPurchase() = isSupplier()
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnSaleInvoice()
+        && !InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnPurchaseInvoice()
+        && InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    return false;
   }
 }

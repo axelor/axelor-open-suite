@@ -51,7 +51,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -159,6 +158,7 @@ public class LeaveController {
   public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
+
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
     long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
@@ -204,11 +204,7 @@ public class LeaveController {
                 leaveRequest.getUser().getEmployee().getName()));
         return;
       }
-      if (leaveRequest
-              .getLeaveLine()
-              .getQuantity()
-              .subtract(leaveRequest.getDuration())
-              .compareTo(BigDecimal.ZERO)
+      if (leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).signum()
           < 0) {
         if (!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue()
             && !leaveService.willHaveEnoughDays(leaveRequest)) {
@@ -273,7 +269,9 @@ public class LeaveController {
       }
       Beans.get(PeriodService.class)
           .checkPeriod(
-              leaveRequest.getCompany(), leaveRequest.getToDate(), leaveRequest.getFromDate());
+              leaveRequest.getCompany(),
+              leaveRequest.getToDateT().toLocalDate(),
+              leaveRequest.getFromDateT().toLocalDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

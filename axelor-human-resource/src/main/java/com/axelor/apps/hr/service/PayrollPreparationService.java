@@ -142,7 +142,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",
+                "self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDateT <= ?1 AND self.toDateT >= ?2",
                 toDate,
                 fromDate,
                 employee,
@@ -153,16 +153,16 @@ public class PayrollPreparationService {
 
       PayrollLeave payrollLeave = new PayrollLeave();
 
-      if (leaveRequest.getFromDate().isBefore(fromDate)) {
+      if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
         payrollLeave.setFromDate(fromDate);
       } else {
-        payrollLeave.setFromDate(leaveRequest.getFromDate());
+        payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
       }
 
-      if (leaveRequest.getToDate().isAfter(toDate)) {
+      if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
         payrollLeave.setToDate(toDate);
       } else {
-        payrollLeave.setToDate(leaveRequest.getToDate());
+        payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
       }
 
       payrollLeave.setDuration(
@@ -185,7 +185,7 @@ public class PayrollPreparationService {
       workingDays =
           workingDays.add(
               BigDecimal.valueOf(
-                  weeklyPlanningService.workingDayValue(
+                  weeklyPlanningService.getWorkingDayValueInDays(
                       payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
       itDate = itDate.plusDays(1);
     }
@@ -368,8 +368,8 @@ public class PayrollPreparationService {
           String[] leaveLine = createExportFileLine(payrollPreparation);
           leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
           leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
           leaveLine[6] = payrollLeave.getDuration().toString();
           list.add(leaveLine);
         }
