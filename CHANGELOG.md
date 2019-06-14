@@ -48,6 +48,8 @@
 - Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
 - Sale Order Line: new buttons to create/cancel a reservation for a given line.
 - EVENTSPLANNING : update demo data with 2018/2019 event days.
+- INVOICE : Reduce padding in sequence for invoice number.
+- INVOICE : Concatenate content of 'note' field instead of override.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -99,6 +101,10 @@
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
+- Reconcile : set company currency if move's currency is null
+- Team Task : Removed adding new task from Kanban view through "Add" button
+- INVOICE : NPE when companyBankDetails is null
 
 ## [5.1.6] - 2019-04-29
 ## Features
