@@ -100,6 +100,7 @@
 - Currency Conversion : Fix divideByZero arithmetic exception
 - Reconcile : set company currency if move's currency is null
 - Team Task : Removed adding new task from Kanban view through "Add" button
+- INVOICE : NPE when companyBankDetails is null
 
 ## [5.1.6] - 2019-04-29
 ## Features
