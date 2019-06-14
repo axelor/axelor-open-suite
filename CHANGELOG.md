@@ -35,6 +35,7 @@
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
+- Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
 - TOOL : test class to allow to run it on windows environment.
@@ -44,6 +45,12 @@
 - STOCK : filter product according to stochManage = true
 - GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
+- Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
+- INVOICE : optimisation of the performance of the invoice services.
+- Sale Order Line: new buttons to create/cancel a reservation for a given line.
+- EVENTSPLANNING : update demo data with 2018/2019 event days.
+- INVOICE : Reduce padding in sequence for invoice number.
+- INVOICE : Concatenate content of 'note' field instead of override.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
@@ -79,6 +86,7 @@
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Ticket : corrected appearance behavior of cancel button in the ticket form. 
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
@@ -93,6 +101,15 @@
 - Tool : Increase of time in Unit Test.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating
 - Sale order : fix printing issues on subscription sale quotations & orders
+- LEAVE REQUEST CALENDAR : colorBy is now set to user.
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- Currency Conversion : Fix divideByZero arithmetic exception
+- PROJECT/TEAMWORK : corrected error in enumeration when the value PROJECT_ALONE is selected
+- Employee : the category formation chart is now correctly centered on the employee
+- Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
+- Reconcile : set company currency if move's currency is null
+- Team Task : Removed adding new task from Kanban view through "Add" button
+- INVOICE : NPE when companyBankDetails is null
 
 ## [5.1.6] - 2019-04-29
 ## Features

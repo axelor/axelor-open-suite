@@ -10,7 +10,7 @@
 		</panel>
 		<panel name="trainingPanel" title="Training" if="__config__.app.isApp('training')">
 			<panel-dashlet name="employeeTrainingRegisterPanel" action="action-dashlet-employee-training-register" colSpan="12"/>
-			<panel-dashlet name="employeeTrainingPerCategoryPanel" action="chart:chart.employee.training.per.category" colSpan="12"/>
+			<panel-dashlet name="employeeTrainingPerCategoryPanel" action="chart:chart.employee.training.per.category"  colSpan="12"/>
 		</panel>
 		<panel name="appraisalPanel" title="Appraisal" if="__config__.app.isApp('appraisal')">
 			<panel-dashlet name="employeeAppraisalSentPanel" action="action-dashlet-employee-appraisal-sent" colSpan="12"/>
@@ -28,6 +28,5 @@
 		<view type="form" name="appraisal-form"/>
 		<domain>self.employee = :__self__</domain>
 	</action-view>
-	
 	
 </object-views>
