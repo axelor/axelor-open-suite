@@ -2,10 +2,11 @@
 
 ## [Unreleased 5.1.7]
 ## Features
-- AVAILABITY REQUEST : error message if availableStock is less than qty - reservedQty on saleOrderLine
+- AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 - USER : filter assigned to user in partner form
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - TRACKING : Added all fields for all apps and also for company's configuration
+- SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
@@ -34,6 +35,7 @@
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
 - FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
 - CRM : lead description in opportunity description
+- Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
 - TOOL : test class to allow to run it on windows environment.
@@ -41,6 +43,11 @@
 - INVOICE : Set accounting panel hidden for advance invoice
 - PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
+- GRID : sequences in column grid are now completely displayed 
+- Stock Move: update future quantity from real quantity in planned stock moves.
+- Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
+- Sale Order Line: new buttons to create/cancel a reservation for a given line.
+- INVOICE : Reduce padding in sequence for invoice number.
 - INVOICE : Concatenate content of 'note' field instead of override.
 
 ## Bug Fixes
@@ -77,11 +84,25 @@
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Ticket : corrected appearance behavior of cancel button in the ticket form. 
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
 - FIXED ASSET :  Remove all lines in the depreciations table
 - PURCHASE ORDER : Remove completedBtn
+- Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
+- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- Payroll preparation : fixed bug on triggering the "refresh" button
+- SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
+- TRAINING : translate "skill"
+- PACKING LIST : display productName instead of product on printing
+- Tool : Increase of time in Unit Test.
+- LEAVE REQUEST CALENDAR : colorBy is now set to user.
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- Currency Conversion : Fix divideByZero arithmetic exception
+- Reconcile : set company currency if move's currency is null
+- Team Task : Removed adding new task from Kanban view through "Add" button
+- INVOICE : NPE when companyBankDetails is null
 
 ## [5.1.6] - 2019-04-29
 ## Features
@@ -285,7 +306,6 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - Stock Move Line: stock move is readonly in form view.
 - FixedAsset : Generation / Prorata. Change computation process for Linear method when isProrataTemporis=true
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
-
 
 ## [5.1.4] - 2019-03-11
 ## Features

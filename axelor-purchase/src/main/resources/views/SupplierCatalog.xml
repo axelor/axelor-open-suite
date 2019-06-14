@@ -14,7 +14,7 @@
     </grid>
 
 	<grid name="supplier-catalog-partner-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
-		<field name="product.code"/>
+		<field name="product.code" width="120"/>
 		<field name="product.name"/>
 		<field name="productSupplierCode"/>
 		<field name="productSupplierName"/>
