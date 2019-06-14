@@ -48,6 +48,7 @@
 - Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
 - Sale Order Line: new buttons to create/cancel a reservation for a given line.
 - INVOICE : Reduce padding in sequence for invoice number.
+- INVOICE : Concatenate content of 'note' field instead of override.
 
 ## Bug Fixes
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
