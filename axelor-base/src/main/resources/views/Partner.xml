@@ -830,7 +830,9 @@
 	</action-record>
 
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
-		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
+		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('base').getDefaultPartnerTypeSelect()"/>
+		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('sale').getDefaultPartnerTypeSelect()" if="_isCustomer"/>
+		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('purchase').getDefaultPartnerTypeSelect()" if="_isSupplier"/>
 	</action-record>
 	
 	<action-record name="action-partner-record-simple-and-full-name" model="com.axelor.apps.base.db.Partner" >
@@ -850,7 +852,7 @@
 	</action-record>
 
 	<action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
-		<field name="partnerTypeSelect" expr="#{2}" />
+		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('base').getDefaultPartnerTypeSelect()" />
 		<field name="isContact" expr="#{true}"/>
 		<field name="companySet" expr="#{_parent.companySet}"/>
 		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
@@ -861,7 +863,7 @@
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
-		<field name="partnerTypeSelect" expr="#{2}" />
+		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('base').getDefaultPartnerTypeSelect()" />
 		<field name="isContact" expr="#{false}"/>
 		<field name="isEmployee" expr="#{true}"/>
 		<field name="companySet" expr="#{__parent__.companySet}"/>

@@ -6,7 +6,7 @@
 
 	<entity name="AppSale" lang="java" extends="App">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
-    <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
+        <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
 		<boolean name="productPackMgt" title="Product Pack Management" />
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
@@ -14,9 +14,11 @@
         <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
         <boolean  name="printingConfigPerSaleOrder" title="Printing config per Sale Order"/>
         <boolean name="closeOpportunityUponSaleOrderConfirmation"
-            title="Close opportunity when one of the linked sale orders is confirmed"/><boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+            title="Close opportunity when one of the linked sale orders is confirmed"/>
+        <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
+		<integer name="defaultPartnerTypeSelect" title="Default type for new customer" selection="company.partner.type.select" default="1"/>
 	</entity>
 
 </domain-models>

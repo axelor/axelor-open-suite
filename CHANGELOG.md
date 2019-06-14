@@ -91,6 +91,7 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- Can config partner type per default for module base, purchase and sale.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

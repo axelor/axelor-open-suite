@@ -10,6 +10,7 @@
         <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
+		<integer name="defaultPartnerTypeSelect" title="Default type for new supplier" selection="company.partner.type.select" default="1"/>
 	</entity>
 
 </domain-models>
