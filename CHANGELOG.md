@@ -46,6 +46,7 @@
 - GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
 - Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
+- INVOICE : optimisation of the performance of the invoice services.
 - Sale Order Line: new buttons to create/cancel a reservation for a given line.
 - EVENTSPLANNING : update demo data with 2018/2019 event days.
 - INVOICE : Reduce padding in sequence for invoice number.
