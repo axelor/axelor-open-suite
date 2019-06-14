@@ -100,6 +100,7 @@
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating
+- Account : correction of the french account codification in accordance to the FEC
 - Sale order : fix printing issues on subscription sale quotations & orders
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
