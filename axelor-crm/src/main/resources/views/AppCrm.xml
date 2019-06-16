@@ -5,9 +5,14 @@
 	
 	<form name="app-crm-config-form" title="App Crm" model="com.axelor.apps.base.db.AppCrm" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
-			<button name="generateCRMConfigurationsBtn" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
-			<panel-dashlet name="confCrmConfigPanel" action="admin.root.conf.crm.config" colSpan="12"/>
+			<field name="assignableUsers"/>
+			<field name="groupsAssignable" showIf="assignableUsers == 1" widget="TagSelect" requiredIf="assignableUsers == 1"/>
+			<field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
 		</panel>
+		<panel name="actionPanel">
+  			<button name="generateCRMConfigurationsBtn" title="Generate CRM configurations" colSpan="4" onClick="save,com.axelor.apps.crm.web.AppCrmController:generateCrmConfigurations"/>
+    		<panel-dashlet name="confCrmConfigPanel" colSpan="12" action="admin.root.conf.crm.config"/>
+  		</panel>
 	</form>
 	
 	<action-view name="admin.root.conf.crm.config" title="CRM configurations"
@@ -15,5 +20,6 @@
 		<view type="grid" name="crm-config-grid" />
 		<view type="form" name="crm-config-form"/>
 	</action-view>
+	
 	
 </object-views>

@@ -18,7 +18,6 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.inject.Beans;
@@ -66,9 +65,8 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     FixedAsset copy = super.copy(entity, deep);
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setReference(null);
-    for (FixedAssetLine fixedAssetLine : copy.getFixedAssetLineList()) {
-      fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
-    }
+    copy.setResidualValue(entity.getGrossValue());
+    copy.setFixedAssetLineList(null);
     return copy;
   }
 }

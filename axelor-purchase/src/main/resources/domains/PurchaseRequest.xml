@@ -39,6 +39,7 @@
     	<field name="product"/>
     	<field name="quantity"/>
     	<field name="supplierUser"/>
+    	<field name="unit"/>
     </track>
   	
   </entity>

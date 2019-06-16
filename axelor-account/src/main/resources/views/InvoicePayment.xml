@@ -11,7 +11,7 @@
     	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 		<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="typeSelect"/>
-    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+    	<field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
     	<field name="statusSelect"/>
    		<button name="cancelBtn" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>

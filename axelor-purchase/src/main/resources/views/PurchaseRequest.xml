@@ -54,6 +54,7 @@
         <field name="unit" />
         <field name="quantity" />
         <field name="supplierUser"/>
+        <field name="stockLocation"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -116,7 +117,7 @@
 			canCollapse="true">
 			<field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" 
 				if-module="axelor-supplychain" colSpan="12" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
-			<field name="supplierUser" search="self.isSupplier = true" colSpan="12" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="supplierUser" domain="self.isSupplier = true" colSpan="12" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true">
@@ -133,28 +134,16 @@
     
     <form name="purchase-request-wizard-generate-po-form"  title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest" >
     	<panel name="mainPanel">
-    		<field name="$groupBySupplier" title="Group by supplier" type="boolean" onChange="action-purchase-request-set-group-by-delivery-address"/>
+    		<field name="$groupBySupplier" title="Group by supplier" type="boolean"/>
     		<spacer name="supplierSpacer"/>
-    		<field name="$groupByProduct" title="Group by product" type="boolean" onChange="action-purchase-request-set-group-by-delivery-address-and-supplier"/>
+    		<field name="$groupByProduct" title="Group by product" type="boolean" onChange="action-purchase-request-set-group-by-supplier"/>
     		<spacer name="productSpacer"/>
-    		<field name="$groupByDeliveryAddress" title="Group by delivery address" type="boolean" onChange="action-purchase-request-set-group-by-supplier"/>
-    		<spacer name="deliverySpacer"/>
     		<button name="generatePOBtn" title="Generate PO" onClick="action-purchase-request-method-generate-po"/>
     	</panel>
     </form>
-    
-    <action-attrs name="action-purchase-request-set-group-by-delivery-address">
-    	<attribute name="value" for="$groupByDeliveryAddress" expr="eval: groupBySupplier"/>
-    </action-attrs>
-    
+
     <action-attrs name="action-purchase-request-set-group-by-supplier">
-    	<attribute name="value" for="$groupBySupplier" expr="eval: groupByDeliveryAddress"/>
-    </action-attrs>
-    
-    <action-attrs name="action-purchase-request-set-group-by-delivery-address-and-supplier">
-    	<attribute name="value" for="$groupByDeliveryAddress" expr="eval: groupByProduct"/>
     	<attribute name="value" for="$groupBySupplier" expr="eval: groupByProduct"/>
-    	<attribute name="readonly" for="$groupByDeliveryAddress" expr="eval: groupByProduct"/>
     	<attribute name="readonly" for="$groupBySupplier" expr="eval: groupByProduct"/>
     </action-attrs>
 	
