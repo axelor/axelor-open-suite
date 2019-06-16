@@ -38,10 +38,10 @@
     </grid>
 
 	<grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines" name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
-		<field name="purchaseOrder.purchaseOrderSeq"/>
+		<field name="purchaseOrder.purchaseOrderSeq" width="120"/>
 		<field name="purchaseOrder.supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="productCode"/>
-		<field name="product.code" title="Code"/>
+		<field name="product.code" title="Code" width="120"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>

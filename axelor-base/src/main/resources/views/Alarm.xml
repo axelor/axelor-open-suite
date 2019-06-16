@@ -6,7 +6,7 @@
     <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
         <field name="date"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
+        <field name="invoice" width="120" form-view="invoice-form" grid-view="invoice-grid"/>
         <field name="alarmEngine.alarmMessage" />
         <field name="acquitOk"/>
     </grid>
@@ -14,7 +14,7 @@
 	<grid name="alarm-grid" title="Alarms" model="com.axelor.apps.base.db.Alarm">
 	    <field name="date"/>
 	    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
+        <field name="invoice" width="120" form-view="invoice-form" grid-view="invoice-grid"/>
 	    <field name="alarmEngine.alarmMessage"/>
 	    <field name="alarmEngine.alarmMessage.typeSelect"/>
 	    <field name="acquitOk"/>

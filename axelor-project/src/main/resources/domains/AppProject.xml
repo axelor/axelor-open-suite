@@ -7,6 +7,11 @@
 	<entity name="AppProject" lang="java" extends="App">
 		<string name="projectLabel" title="Project Label"/>
 		<boolean name="resourceManagement" title="Resource management" />
+		
+		<track>
+			<field name="projectLabel" on="UPDATE"/>
+			<field name="resourceManagement" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

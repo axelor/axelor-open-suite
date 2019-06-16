@@ -24,44 +24,27 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
 
   @Inject StockLocationRepository stockLocationRepo;
 
   @Override
-  protected PurchaseOrder getPoBySupplierAndDeliveryAddress(
-      PurchaseRequest purchaseRequest, List<PurchaseOrder> purchaseOrderList) {
-
-    PurchaseOrder purchaseOrder =
-        super.getPoBySupplierAndDeliveryAddress(purchaseRequest, purchaseOrderList);
-    List<StockLocation> stockLocations =
-        stockLocationRepo
-            .all()
-            .filter("self.address = ?1", purchaseRequest.getDeliveryAddress())
-            .fetch();
-    StockLocation stockLocation = stockLocations.size() == 1 ? stockLocations.get(0) : null;
-    purchaseOrder =
-        stockLocation != null
-                && purchaseOrder != null
-                && purchaseOrder.getStockLocation().equals(stockLocation)
-            ? purchaseOrder
-            : null;
-    return purchaseOrder;
-  }
-
-  @Override
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
-    StockLocation stockLocation =
-        stockLocationRepo
-            .all()
-            .filter("self.address = ?1", purchaseRequest.getDeliveryAddress())
-            .fetchOne();
-    purchaseOrder.setStockLocation(stockLocation);
+    purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     return purchaseOrder;
+  }
+
+  @Override
+  protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
+    String key = super.getPurchaseOrderGroupBySupplierKey(purchaseRequest);
+    StockLocation stockLocation = purchaseRequest.getStockLocation();
+    if (stockLocation != null) {
+      key = key + "_" + stockLocation.getId().toString();
+    }
+    return key;
   }
 }

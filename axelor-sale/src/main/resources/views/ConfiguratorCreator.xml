@@ -58,7 +58,10 @@
 		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
             <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12">
                 <editor>
-                    <field name="company"/>
+                    <panel>
+                        <field name="company"/>
+                        <field name="statusSelect" selection-in="[2,3]"/>
+                    </panel>
                     <panel name="labelPanel" title="Label">
                         <field name="defNameAsFormula" colSpan="6"/>
                         <field name="name" colSpan="12" showIf="!defNameAsFormula"/>

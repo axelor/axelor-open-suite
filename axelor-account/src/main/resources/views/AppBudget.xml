@@ -9,5 +9,10 @@
 			<field name="manageMultiBudget" widget="boolean-switch"/>
 			<field name="budgetStatusSelect" widget="MultiSelect" />
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 </object-views>

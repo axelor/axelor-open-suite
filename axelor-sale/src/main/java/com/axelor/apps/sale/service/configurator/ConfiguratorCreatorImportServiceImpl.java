@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -16,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -67,12 +83,10 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
 
           @Override
           public void imported(Model arg0) {
-            if (arg0.getClass().equals(ConfiguratorCreator.class)) {
-              try {
-                completeAfterImport((ConfiguratorCreator) arg0);
-              } catch (AxelorException e) {
-                importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
-              }
+            try {
+              completeAfterImport(arg0);
+            } catch (AxelorException e) {
+              importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
             }
           }
 
@@ -93,8 +107,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     return importLog.toString();
   }
 
+  protected void completeAfterImport(Object arg0) throws AxelorException {
+    if (arg0.getClass().equals(ConfiguratorCreator.class)) {
+      completeAfterImport((ConfiguratorCreator) arg0);
+    }
+  }
+
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
-    creator.setIndicators(new ArrayList<MetaJsonField>());
     fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
     configuratorCreatorService.updateIndicators(creator);

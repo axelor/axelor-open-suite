@@ -602,7 +602,7 @@ public class InvoiceController {
     }
     try {
       Invoice invoice =
-          invoiceService.mergeInvoice(
+          invoiceService.mergeInvoiceProcess(
               invoiceList,
               commonCompany,
               commonCurrency,
