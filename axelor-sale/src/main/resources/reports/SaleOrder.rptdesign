@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -4190,21 +4190,8 @@ row["ClientPartFirstName"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">sumNegativeExTaxTotal</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"] &lt; 0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]+row["sumNegativeExTaxTotal"]</expression>
+                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
