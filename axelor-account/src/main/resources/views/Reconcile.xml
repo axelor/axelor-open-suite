@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-    	<field name="reconcileSeq"/>
+    	<field name="reconcileSeq" width="120"/>
     	<field name="company"/>
         <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
@@ -16,7 +16,7 @@
     </grid>
 
 	<grid name="move-line-reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-		<field name="reconcileSeq"/>
+		<field name="reconcileSeq" width="120"/>
         <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="amount" aggregate="sum"/>

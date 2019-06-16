@@ -49,4 +49,14 @@ public class StockMoveController {
       response.setReload(true);
     }
   }
+
+  public void verifyProductStock(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMoveService.verifyProductStock(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
 }

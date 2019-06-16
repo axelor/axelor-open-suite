@@ -29,8 +29,10 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
@@ -69,23 +71,25 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Transactional
   @Override
   public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests,
-      Boolean groupBySupplier,
-      Boolean groupByProduct,
-      Boolean groupByDeliveryAddress)
+      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException {
-    List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
+
+    Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
 
     for (PurchaseRequest purchaseRequest : purchaseRequests) {
-
-      PurchaseOrder purchaseOrder =
-          groupBySupplier && groupByDeliveryAddress
-              ? this.getPoBySupplierAndDeliveryAddress(purchaseRequest, purchaseOrderList)
-              : null;
       Product product = purchaseRequest.getProduct();
+      String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
+      PurchaseOrder purchaseOrder;
+      if (key != null && purchaseOrderMap.containsKey(key)) {
+        purchaseOrder = purchaseOrderMap.get(key);
+      } else {
+        purchaseOrder = createPurchaseOrder(purchaseRequest);
+        key = key == null ? purchaseRequest.getId().toString() : key;
+        purchaseOrderMap.put(key, purchaseOrder);
+      }
       PurchaseOrderLine purchaseOrderLine =
           groupByProduct && purchaseOrder != null
-              ? this.getPoLineByProduct(product, purchaseOrder)
+              ? getPoLineByProduct(product, purchaseOrder)
               : null;
 
       if (purchaseOrder == null) {
@@ -96,8 +100,10 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                product.getName(),
-                product.getDescription(),
+                purchaseRequest.getNewProduct()
+                    ? purchaseRequest.getProductTitle()
+                    : product.getName(),
+                purchaseRequest.getNewProduct() ? null : product.getDescription(),
                 purchaseRequest.getQuantity(),
                 purchaseRequest.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
@@ -107,25 +113,10 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
       purchaseOrderLineRepo.save(purchaseOrderLine);
-      purchaseOrderList.add(purchaseOrder);
     }
-
-    return purchaseOrderList;
-  }
-
-  protected PurchaseOrder getPoBySupplierAndDeliveryAddress(
-      PurchaseRequest purchaseRequest, List<PurchaseOrder> purchaseOrderList) {
-
-    PurchaseOrder purchaseOrder =
-        purchaseOrderList != null && !purchaseOrderList.isEmpty()
-            ? purchaseOrderList
-                .stream()
-                .filter(po -> po.getSupplierPartner().equals(purchaseRequest.getSupplier()))
-                .findFirst()
-                .orElse(null)
-            : null;
-
-    return purchaseOrder;
+    List<PurchaseOrder> purchaseOrders =
+        purchaseOrderMap.values().stream().collect(Collectors.toList());
+    return purchaseOrders;
   }
 
   private PurchaseOrderLine getPoLineByProduct(Product product, PurchaseOrder purchaseOrder) {
@@ -150,13 +141,17 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             AuthUtils.getUser(),
             purchaseRequest.getCompany(),
             null,
-            purchaseRequest.getSupplier().getCurrency(),
+            purchaseRequest.getSupplierUser().getCurrency(),
             null,
             null,
             null,
             LocalDate.now(),
             null,
-            purchaseRequest.getSupplier(),
+            purchaseRequest.getSupplierUser(),
             null));
+  }
+
+  protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
+    return purchaseRequest.getSupplierUser().getId().toString();
   }
 }

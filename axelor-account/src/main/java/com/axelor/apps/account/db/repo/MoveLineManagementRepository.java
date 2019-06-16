@@ -20,9 +20,11 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
@@ -52,6 +54,11 @@ public class MoveLineManagementRepository extends MoveLineRepository {
         analyticMoveLine.setAccount(entity.getAccount());
         analyticMoveLine.setAccountType(entity.getAccount().getAccountType());
       }
+    }
+    try {
+      Beans.get(MoveLineService.class).validateMoveLine(entity);
+    } catch (Exception e) {
+      throw new PersistenceException(e);
     }
     return super.save(entity);
   }

@@ -9,6 +9,13 @@
         <boolean name="manageCreditTransferPayment" title="Manage credit transfer payment" default="true"/>
         <boolean name="manageBankToBankTransferPayment" title="Manage bank to bank transfer payment" default="true"/>
         <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
+        
+        <track>
+        	<field name="manageDirectDebitPayment" on="UPDATE"/>
+        	<field name="manageCreditTransferPayment" on="UPDATE"/>
+        	<field name="manageBankToBankTransferPayment" on="UPDATE"/>
+        	<field name="enableEbicsModule" on="UPDATE"/>
+        </track>
     </entity>
 
 </domain-models>

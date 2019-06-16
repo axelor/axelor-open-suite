@@ -551,6 +551,7 @@
 "To produce manuf order",,,
 "Too many days",,,
 "Too many recursive calls to create the bill of material.",,,
+"Too many recursive calls to import the bill of material configurator.",,,
 "Tracking number search",,,
 "Type",,,
 "Type select",,,

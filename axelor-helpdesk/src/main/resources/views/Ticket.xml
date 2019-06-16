@@ -7,7 +7,7 @@
 		<toolbar>
 			<button name="takeChargeBtn" title="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
 		</toolbar>
-		<field name="ticketSeq"/>
+		<field name="ticketSeq" width="120"/>
 		<field name="subject"/>
 		<field name="ticketType"/>
 		<field name="startDateT"/>

@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
@@ -28,25 +32,74 @@ import java.util.List;
 public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProcessService {
 
   protected ConfiguratorProdProcessLineService confProdProcessLineService;
+  protected ConfiguratorService configuratorService;
+  protected ProdProcessRepository prodProcessRepository;
 
   @Inject
   ConfiguratorProdProcessServiceImpl(
-      ConfiguratorProdProcessLineService confProdProcessLineService) {
+      ConfiguratorProdProcessLineService confProdProcessLineService,
+      ConfiguratorService configuratorService,
+      ProdProcessRepository prodProcessRepository) {
     this.confProdProcessLineService = confProdProcessLineService;
+    this.configuratorService = configuratorService;
+    this.prodProcessRepository = prodProcessRepository;
   }
 
   @Override
   public ProdProcess generateProdProcessService(
-      ConfiguratorProdProcess confProdProcess, JsonContext attributes) throws AxelorException {
+      ConfiguratorProdProcess confProdProcess, JsonContext attributes, Product product)
+      throws AxelorException {
     if (confProdProcess == null) {
       return null;
     }
+    String code;
+    StockLocation stockLocation;
+    StockLocation producedProductStockLocation;
+    StockLocation workshopStockLocation;
+
+    if (confProdProcess.getDefCodeAsFormula()) {
+      code =
+          String.valueOf(
+              configuratorService.computeFormula(confProdProcess.getCodeFormula(), attributes));
+    } else {
+      code = confProdProcess.getCode();
+    }
+    if (confProdProcess.getDefStockLocationAsFormula()) {
+      stockLocation =
+          (StockLocation)
+              configuratorService.computeFormula(
+                  confProdProcess.getStockLocationFormula(), attributes);
+    } else {
+      stockLocation = confProdProcess.getStockLocation();
+    }
+    if (confProdProcess.getDefProducedProductStockLocationAsFormula()) {
+      producedProductStockLocation =
+          (StockLocation)
+              configuratorService.computeFormula(
+                  confProdProcess.getProducedProductStockLocationFormula(), attributes);
+    } else {
+      producedProductStockLocation = confProdProcess.getProducedProductStockLocation();
+    }
+    if (confProdProcess.getDefWorkshopStockLocationAsFormula()) {
+      workshopStockLocation =
+          (StockLocation)
+              configuratorService.computeFormula(
+                  confProdProcess.getWorkshopStockLocationFormula(), attributes);
+    } else {
+      workshopStockLocation = confProdProcess.getWorkshopStockLocation();
+    }
+
+    ProdProcess prodProcess =
+        createProdProcessHeader(
+            confProdProcess,
+            code,
+            stockLocation,
+            producedProductStockLocation,
+            workshopStockLocation,
+            product);
+
     List<ConfiguratorProdProcessLine> confLines =
         confProdProcess.getConfiguratorProdProcessLineList();
-    ProdProcess prodProcess = new ProdProcess();
-    prodProcess.setName(confProdProcess.getName());
-    prodProcess.setCompany(confProdProcess.getCompany());
-    prodProcess.setStockLocation(confProdProcess.getStockLocation());
     if (confLines != null) {
       for (ConfiguratorProdProcessLine confLine : confLines) {
         prodProcess.addProdProcessLineListItem(
@@ -54,5 +107,25 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       }
     }
     return prodProcess;
+  }
+
+  /** Instantiate a new prod process and set the right attributes. */
+  protected ProdProcess createProdProcessHeader(
+      ConfiguratorProdProcess confProdProcess,
+      String code,
+      StockLocation stockLocation,
+      StockLocation producedProductStockLocation,
+      StockLocation workshopStockLocation,
+      Product product) {
+    ProdProcess prodProcess = new ProdProcess();
+    prodProcess.setName(confProdProcess.getName());
+    prodProcess.setCompany(confProdProcess.getCompany());
+    prodProcess.setStatusSelect(confProdProcess.getStatusSelect());
+    prodProcess.setCode(code);
+    prodProcess.setStockLocation(stockLocation);
+    prodProcess.setProducedProductStockLocation(producedProductStockLocation);
+    prodProcess.setWorkshopStockLocation(workshopStockLocation);
+    prodProcess.setProduct(product);
+    return prodProcessRepository.save(prodProcess);
   }
 }
