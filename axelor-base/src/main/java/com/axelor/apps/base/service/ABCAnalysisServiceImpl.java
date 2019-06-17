@@ -170,6 +170,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
             offset += productList.size();
 
             for (Product product : productList) {
+                product = productRepository.find(product.getId());
                 createABCAnalysisLineForEachProduct(abcAnalysis, product);
             }
 
