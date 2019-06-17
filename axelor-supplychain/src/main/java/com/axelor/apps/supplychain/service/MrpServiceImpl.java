@@ -161,7 +161,10 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void reset(Mrp mrp) {
 
-    mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
+    mrpLineRepository
+        .all()
+        .filter("self.mrp.id = ?1 AND self.isEditedByUser = false", mrp.getId())
+        .remove();
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
 
@@ -1042,5 +1045,15 @@ public class MrpServiceImpl implements MrpService {
     }
 
     return today;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void undoManualChanges(Mrp mrp) {
+
+    mrpLineRepository
+        .all()
+        .filter("self.mrp.id = ?1", mrp.getId())
+        .update("isEditedByUser", false);
   }
 }

@@ -20,6 +20,7 @@
   		<string name="proposalSelect" selection="mrp.line.proposal.ref.select" readonly="true"/>
   		<long name="proposalSelectId" readonly="true"/>
 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+		<boolean name="isEditedByUser" title="Edited by user"/>
 		
   </entity>
 
