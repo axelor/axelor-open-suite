@@ -1,5 +1,13 @@
 # Changelog
 
+##[Unreleased 5.1.8]
+##Features
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+
+##Improvements
+
+##Bug Fixes
+
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
