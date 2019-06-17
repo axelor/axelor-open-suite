@@ -5,6 +5,7 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
+- DEMO DATA : Reduce padding in sequence for all modules.
 
 ##Bug Fixes
 
