@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -160,6 +160,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1287,9 +1290,11 @@ order by StockMoveLine.sequence]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>if(row._outer["type_select"] == "1"){
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>if(row._outer["type_select"] == "1") {
 row._outer["sale_order_seq"]
-}else if(row._outer["type_select"] == "3" || row._outer["type_select"] == "2"){
+} else if (row._outer["type_select"] == "2") {
+row._outer["sale_order_seq"]
+}else if(row._outer["type_select"] == "3") {
 row._outer["purchase_order_seq"]
 }</VALUE-OF>]]></text-property>
                                                 </text>
