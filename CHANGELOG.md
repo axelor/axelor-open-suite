@@ -1,25 +1,29 @@
 # Changelog
 
-## [Unreleased 5.1.7]
-## Features
-- AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
+##[Unreleased 5.1.8]
+##Features
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+
+##Improvements
+
+##Bug Fixes
+
+## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
-- MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
-- TRACKING : Added all fields for all apps and also for company's configuration
-- SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
+- AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
 - Project : Reset the progression when we copy a Project
 - EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
 - Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
-- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
 - SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
-- Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
-- Configurator Prod Process and BOM: add new fields.
+- Configurator Prod Process and BOM: add new fields : code, codeFormula, defCodeAsFormula, stockLocationFormula, 
+defStockLocationAsFormula, producedProductStockLocation, producedProductStockLocationFormula, defProducedProductStockLocationAsFormula, 
+workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsFormula
 - Availability Request: cannot lower reserved quantity.
 - PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO
 - FIXED ASSET : Change in the process of calculation
@@ -27,29 +31,36 @@
 - Sale Order Line: improve the logic of requested quantity.
 - MRP: Add the start date time and end date time
 - FIXED ASSET : Change in disposal process
-- MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
+- MoveLine : The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
 - LOCATION FINANCIAL DATA : Change report design
 - PURCHASE ORDER : Updated Error Message for delivery date
 - INVENTORY : new selection for formatSelect
 - Reserved Qty: Add tracking for allocated and requested quantity.
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
-- FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
-- CRM : lead description in opportunity description
+- FIXED ASSET : management (Validate disposal date, Modify disposal move amount calculation)
+- CRM : copy lead description in opportunity description
 - Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
-- TOOL : test class to allow to run it on windows environment.
 - Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
-- INVOICE : Set accounting panel hidden for advance invoice
-- PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
 - GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
-- Invoice : add the possiblity to active/desactive the pdf generation on ventilation for customers or suppliers in invoice application configuration
+- Invoice : add the possibility to enable/disable the pdf generation on ventilation for customers or suppliers in invoice application configuration
 - Sale Order Line: new buttons to create/cancel a reservation for a given line.
+- EVENTSPLANNING : update demo data with 2018/2019 event days.
 - INVOICE : Reduce padding in sequence for invoice number.
+- INVOICE : Concatenate content of 'note' field instead of override.
+- MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
+- SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
+- TRACKING : Added all fields for all apps and also for company's configuration
 
 ## Bug Fixes
+- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
+- TOOL : test class to allow to run it on windows environment.
+- Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
+- PROJECT : display title of membersUserSet Field 
+- INVOICE : Set accounting panel hidden for advance invoice
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 - SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
@@ -87,6 +98,8 @@
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
+- INVOICE : rename and hide field for advance search.
+- QUALITY PROCESS : order controlPointModeList by priority DESC
 - FIXED ASSET :  Remove all lines in the depreciations table
 - PURCHASE ORDER : Remove completedBtn
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
@@ -96,12 +109,20 @@
 - TRAINING : translate "skill"
 - PACKING LIST : display productName instead of product on printing
 - Tool : Increase of time in Unit Test.
+- LEAVE REQUEST : grid-view is now order by fromDateT DESC. 
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating
+- Account : correction of the french account codification in accordance to the FEC
+- Sale order : fix printing issues on subscription sale quotations & orders
 - LEAVE REQUEST CALENDAR : colorBy is now set to user.
 - INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
 - Currency Conversion : Fix divideByZero arithmetic exception
+- PROJECT/TEAMWORK : corrected error in enumeration when the value PROJECT_ALONE is selected
+- Employee : the category formation chart is now correctly centered on the employee
+- Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
 - Reconcile : set company currency if move's currency is null
 - Team Task : Removed adding new task from Kanban view through "Add" button
 - INVOICE : NPE when companyBankDetails is null
+- SALE ORDER : Update discount calculation in sale order report
 
 ## [5.1.6] - 2019-04-29
 ## Features
@@ -1053,7 +1074,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...dev
+[5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4

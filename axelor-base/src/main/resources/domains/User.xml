@@ -44,6 +44,32 @@
     <string name="transientPassword" transient="true"/>
 
     <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+
+    <track>
+			<field name="name"/>
+			<field name="code"/>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="activateOn"/>
+			<field name="expiresOn"/>
+			<field name="activeCompany"/>
+			<field name="partner"/>
+			<field name="today"/>
+			<field name="activeTeam"/>
+			<field name="fullName"/>
+			<field name="iCalendar"/>
+			<field name="electronicSignature"/>
+			<field name="useSignatureForQuotations"/>
+			<field name="group"/>
+			<field name="language"/>
+			<field name="singleTab"/>
+			<field name="noHelp"/>
+			<field name="blocked"/>
+			<field name="sendEmailUponPasswordChange"/>
+			<field name="homeAction"/>
+			<field name="receiveEmails"/>
+	</track>
+
   </entity>
 
 </domain-models>

@@ -523,7 +523,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-    Beans.get(InvoiceRepository.class).save(invoiceMerged);
+    invoiceRepo.save(invoiceMerged);
     return invoiceMerged;
   }
 
@@ -597,7 +597,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     advancePaymentInvoices =
         new HashSet<>(
-            Beans.get(InvoiceRepository.class)
+            invoiceRepo
                 .all()
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
@@ -687,7 +687,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+    if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
       return getMoveLinesFromInvoiceAdvancePayments(invoice);
     } else {
       return getMoveLinesFromSOAdvancePayments(invoice);
