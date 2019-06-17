@@ -111,7 +111,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
@@ -130,7 +130,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       ShipmentMode shipmentMode,
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
@@ -148,7 +148,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             toStockLocation,
             realDate,
             estimatedDate,
-            description,
+            note,
             typeSelect);
     stockMove.setPartner(clientPartner);
     stockMove.setShipmentMode(shipmentMode);
@@ -156,6 +156,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setCarrierPartner(carrierPartner);
     stockMove.setForwarderPartner(forwarderPartner);
     stockMove.setIncoterm(incoterm);
+    stockMove.setNote(note);
     stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
 
     return stockMove;
@@ -171,7 +172,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
@@ -185,7 +186,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       int typeSelect)
       throws AxelorException {
 
@@ -204,7 +205,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setEstimatedDate(estimatedDate);
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setToStockLocation(toStockLocation);
-    stockMove.setDescription(description);
+    stockMove.setNote(note);
     stockMove.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
@@ -1248,8 +1249,48 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setPickingStockMoveEditDate(stockMove, userType);
+        if (stockMove != null) {
+          setPickingStockMoveEditDate(stockMove, userType);
+        }
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateStocks(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+      return;
+    }
+    List<StockMoveLine> savedStockMoveLineList =
+        Optional.ofNullable(stockMove.getPlannedStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+    List<StockMoveLine> stockMoveLineList =
+        Optional.ofNullable(stockMove.getStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_PLANNED,
+        StockMoveRepository.STATUS_CANCELED,
+        savedStockMoveLineList,
+        stockMove.getEstimatedDate(),
+        false);
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_DRAFT,
+        StockMoveRepository.STATUS_PLANNED,
+        stockMoveLineList,
+        stockMove.getEstimatedDate(),
+        true);
+
+    stockMove.clearPlannedStockMoveLineList();
+    stockMoveLineList.forEach(
+        stockMoveLine ->
+            stockMove.addPlannedStockMoveLineListItem(
+                stockMoveLineRepo.copy(stockMoveLine, false)));
   }
 }

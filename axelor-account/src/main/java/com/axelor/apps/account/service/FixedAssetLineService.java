@@ -23,4 +23,6 @@ import com.axelor.exception.AxelorException;
 public interface FixedAssetLineService {
 
   public void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

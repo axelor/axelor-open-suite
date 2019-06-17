@@ -8,9 +8,9 @@
         <hilite if="$get('saleOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
         <field name="project" />
-        <field name="saleOrder.saleOrderSeq" title="Reference"/>
+        <field name="saleOrder.saleOrderSeq" width="120" title="Reference"/>
         <field name="saleOrder.creationDate"/>
-        <field name="product.code"/>
+        <field name="product.code" width="120"/>
         <field name="productName" readonly="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
