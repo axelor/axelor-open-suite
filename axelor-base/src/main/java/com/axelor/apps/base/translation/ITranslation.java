@@ -34,8 +34,11 @@ public interface ITranslation {
   public static final String ABC_ANALYSIS_LINE_NAME = /*$$(*/ "AbcAnalysisLine.name"; /*)*/
   public static final String ABC_ANALYSIS_LINE_CATEGORY = /*$$(*/ "AbcAnalysisLine.category"; /*)*/
   public static final String ABC_ANALYSIS_LINE_WORTH = /*$$(*/ "AbcAnalysisLine.worth"; /*)*/
-  public static final String ABC_ANALYSIS_LINE_CUMULATED_WORTH = /*$$(*/ "AbcAnalysisLine.cumulatedWorth"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_WORTH = /*$$(*/
+      "AbcAnalysisLine.cumulatedWorth"; /*)*/
   public static final String ABC_ANALYSIS_LINE_QTY = /*$$(*/ "AbcAnalysisLine.qty"; /*)*/
-  public static final String ABC_ANALYSIS_LINE_CUMULATED_QTY = /*$$(*/ "AbcAnalysisLine.cumulatedQty"; /*)*/
-  public static final String ABC_ANALYSIS_LINE_CUMULATED_CLASS = /*$$(*/ "AbcAnalysisLine.class"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_QTY = /*$$(*/
+      "AbcAnalysisLine.cumulatedQty"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_CLASS = /*$$(*/
+      "AbcAnalysisLine.class"; /*)*/
 }

@@ -31,8 +31,8 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

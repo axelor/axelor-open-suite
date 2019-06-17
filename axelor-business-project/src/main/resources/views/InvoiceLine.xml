@@ -5,8 +5,8 @@
    
 	<grid name="invoice-line-project-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
 		<field name="project"/>
-		<field name="invoice" />
-		<field name="product.code"/>
+		<field name="invoice" width="120"/>
+		<field name="product.code" width="120"/>
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
 		<field name="price" x-scale="2"/>

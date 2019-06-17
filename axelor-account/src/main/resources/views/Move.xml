@@ -17,7 +17,7 @@
 		<field name="date" width="90"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" width="140" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+		<field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
 		<field name="statusSelect" width="90"/>
 	</grid>
 
@@ -162,7 +162,7 @@
     		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
     	</panel>
     </form>
-	
+
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>

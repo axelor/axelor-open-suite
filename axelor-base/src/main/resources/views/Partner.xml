@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    <field name="partnerSeq"/>
+    <field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -35,7 +35,7 @@
 	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       </menu>
     </menubar>
-		<field name="partnerSeq"/>
+		<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
@@ -59,7 +59,7 @@
 	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	    </menu>
 	  </menubar>
-    <field name="partnerSeq"/>
+    <field name="partnerSeq" width="120" />
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
@@ -77,7 +77,7 @@
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -90,7 +90,7 @@
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -283,11 +283,11 @@
 						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 					</panel>
 				</panel>
-				
+
 				<panel name="employeePanel" hidden="true">
     				<button name="openEmployeeFormBtn" title="Open employee form" colSpan="6" onClick="action-partner-view-open-employee-form"/>
  		 		</panel>
-				
+
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
 					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
@@ -497,11 +497,11 @@
 			</panel>
 			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
-		
+
 		<panel name="employeePanel" hidden="true" sidebar="true">
         	<button name="openEmployeeFormBtn" title="Open employee form" onClick="action-partner-view-open-employee-form"/>
       	</panel>
-		
+
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
@@ -799,10 +799,10 @@
 	<action-attrs name="action-partner-attrs-hide-customer-recovery-btn">
 		<attribute name="hidden" for="customerRecoveryBtn" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-partner-attrs-hide-employee-panel">
-		<attribute name="hidden" for="employeePanel" 
-		expr="eval:!( __this__.employee != null &amp;&amp; __user__.employee != null  &amp;&amp; 
+		<attribute name="hidden" for="employeePanel"
+		expr="eval:!( __this__.employee != null &amp;&amp; __user__.employee != null  &amp;&amp;
 		(__user__.employee.hrManager &amp;&amp;  __user__ == __this__.employee.managerUser))"/>
 	</action-attrs>
 
@@ -973,7 +973,7 @@
     </action-validate>
    	 
    	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
-		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 2"/>
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 1"/>
 	</action-attrs>
    	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">

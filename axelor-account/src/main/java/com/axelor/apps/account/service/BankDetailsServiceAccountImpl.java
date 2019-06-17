@@ -167,6 +167,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       throws AxelorException {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+    if (accountConfig.getFactorPartner() == null) {
+      return null;
+    }
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
     return bankDetailsList
         .stream()

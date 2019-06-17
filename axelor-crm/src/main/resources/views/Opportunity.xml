@@ -51,7 +51,7 @@
 		<button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
 	</grid>
 
-  <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
+  <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
 		<field name="name"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -121,6 +121,9 @@
             <panel name="descriptionPanel" title="Description">
                 <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
             </panel>
+            	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
+            		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
+            	</panel>
             <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
         </panel-tabs>
 
@@ -137,7 +140,9 @@
 				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
 				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
-         		  <field name="lostReasonStr" readonly="true" showIf="lostReasonStr" colSpan="12"/>
+         		  <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr" colSpan="12" css="red">
+            <viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
+          </field>
 				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
@@ -235,7 +240,7 @@
     	<action name="action-opportunity-set-closed-lost"/>
     	<action name="save"/>
     </action-group>
-    
+
     <action-view name="action-opportunity-view-schedule-event" model="com.axelor.apps.crm.db.Event" title="Create event">
   		<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
@@ -267,7 +272,7 @@
     	<field name="user" expr="eval: _partner.user" if="_partner.user != null || _partner.team != null"/>
     	<field name="team" expr="eval: _partner.team" if="_partner.user != null || _partner.team != null"/>
     	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="description" expr="eval: _partner.description"/>
+    	<field name="customerDescription" expr="eval: _partner.description"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">

@@ -9,6 +9,11 @@
 		<panel name="mainPanel">
 			<field name="computeDistanceWithWebService" />
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 
 </object-views>

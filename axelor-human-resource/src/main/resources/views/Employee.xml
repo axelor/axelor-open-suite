@@ -6,8 +6,8 @@
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
 			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
-		 </toolbar>	
-		 <field name="contactPartner.partnerSeq"/>
+		 </toolbar>
+		 <field name="contactPartner.partnerSeq" width="120"/>
 		 <field name="contactPartner.simpleFullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
@@ -143,7 +143,7 @@
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
-    
+
     <!-- User creation -->
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
     	<field name="user" title="Attach to"/>
@@ -438,11 +438,11 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-    
+
     <action-method name="action-print-employee-phonebook" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
 	</action-method>
-    
+
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>

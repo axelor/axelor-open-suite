@@ -323,9 +323,9 @@ public interface IExceptionMessage {
 
   /* ABC Analysis */
   public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
-          "The analysis must be completed before the report can be printed." /*)*/;
+      "The analysis must be completed before the report can be printed." /*)*/;
   public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
-          "The classes total quantity and total worth must equal 100%." /*)*/;
+      "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
-          "The worth and quantity value of each class must be greater than 0." /*)*/;
+      "The worth and quantity value of each class must be greater than 0." /*)*/;
 }

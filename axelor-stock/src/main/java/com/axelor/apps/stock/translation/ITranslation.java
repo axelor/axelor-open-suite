@@ -21,5 +21,6 @@ public interface ITranslation {
 
   public static final String STOCK_APP_NAME = /*$$(*/ "value:Stock"; /*)*/
 
-  public static final String ABC_ANALYSIS_STOCK_LOCATION = /*$$(*/ "AbcAnalysis.stockLocation"; /*)*/
+  public static final String ABC_ANALYSIS_STOCK_LOCATION = /*$$(*/
+      "AbcAnalysis.stockLocation"; /*)*/
 }
