@@ -872,6 +872,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       }
     }
 
+    timesheet.setPeriodTotal(periodTotal);
     return periodTotal;
   }
 

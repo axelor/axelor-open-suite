@@ -383,6 +383,10 @@ public class TimesheetController {
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
+      BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+
+      response.setValue("periodTotal", periodTotal);
+
       Message message = timesheetService.confirmAndSendConfirmationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
