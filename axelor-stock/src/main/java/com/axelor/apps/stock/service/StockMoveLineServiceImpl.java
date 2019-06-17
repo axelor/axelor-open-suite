@@ -678,47 +678,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
-      throws AxelorException {
-    if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
-      return null;
-    }
-
-    StockMoveLine firstStockMoveLine = stockMoveLineList.get(0);
-
-    if (stockMoveLineList.size() == 1) {
-      return firstStockMoveLine;
-    }
-
-    Product product = firstStockMoveLine.getProduct();
-    String productName = firstStockMoveLine.getProductName();
-    String description = firstStockMoveLine.getDescription();
-    BigDecimal quantity = firstStockMoveLine.getQty();
-    BigDecimal unitPriceUntaxed = firstStockMoveLine.getUnitPriceUntaxed();
-    BigDecimal unitPriceTaxed = firstStockMoveLine.getUnitPriceTaxed();
-    BigDecimal companyUnitPriceUntaxed = firstStockMoveLine.getCompanyUnitPriceUntaxed();
-    Unit unit = firstStockMoveLine.getUnit();
-    StockMove stockMove = firstStockMoveLine.getStockMove();
-    TrackingNumber trackingNumber = firstStockMoveLine.getTrackingNumber();
-
-    for (StockMoveLine stockMoveLine : stockMoveLineList.subList(1, stockMoveLineList.size())) {
-      quantity = quantity.add(stockMoveLine.getQty());
-    }
-
-    return createStockMoveLine(
-        product,
-        productName,
-        description,
-        quantity,
-        unitPriceUntaxed,
-        unitPriceTaxed,
-        companyUnitPriceUntaxed,
-        unit,
-        stockMove,
-        trackingNumber);
-  }
-
-  @Override
   public boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine) {
     return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine).signum() <= 0;
   }

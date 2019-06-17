@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.10] - unreleased
+## Improvements
+
+## Bug Fixes
+- STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
+- STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
+
 ## [5.0.9] - 2019-06-19
 ## Improvements
 - HR : Update kilometric Allowance demo data(fr and en).
