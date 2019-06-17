@@ -5,6 +5,7 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
 
 ##Bug Fixes
 

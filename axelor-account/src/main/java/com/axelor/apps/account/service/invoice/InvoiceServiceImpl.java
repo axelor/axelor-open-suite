@@ -91,6 +91,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -101,7 +102,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -111,6 +113,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
+    this.accountConfigService = accountConfigService;
   }
 
   // WKF
@@ -154,7 +157,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Company company = invoice.getCompany();
     if (company == null) return null;
 
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     // Taken from legacy JournalService but negative cases seem rather strange
@@ -373,7 +375,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    		accountConfigService.getAccountConfig(invoice.getCompany());
     if (!accountConfig.getAutoReconcileOnInvoice()) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
@@ -625,7 +627,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   protected boolean removeBecauseOfTotalAmount(Invoice invoice, Invoice candidateAdvancePayment)
       throws AxelorException {
-    if (Beans.get(AccountConfigService.class)
+    if (accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       return false;
@@ -654,7 +656,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if there is no move generated, we simply check if the payment was
     // imputed
-    if (!Beans.get(AccountConfigService.class)
+    if (!accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       for (InvoicePayment invoicePayment : invoicePayments) {
