@@ -5,6 +5,8 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
+- MOVELINE : bank reconciled amount is now editable 
+- MOVELINE : reverse moveline stop to appear in bank reconciliation
 
 ##Bug Fixes
 
