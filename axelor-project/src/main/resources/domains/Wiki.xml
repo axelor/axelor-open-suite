@@ -9,6 +9,7 @@
   		<string name="title"/>
   		<string name="content" large="true"/>
   		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+  		<many-to-one name="projectTemplate" ref="com.axelor.apps.project.db.ProjectTemplate" title="Project template"/>
 	</entity>
 	
 </domain-models>
