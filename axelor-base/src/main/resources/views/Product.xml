@@ -264,8 +264,7 @@
 	      			<button name="updateProductsPricesBtn" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 					</panel>
 				<panel name="taskPanel" title="Task templates" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct" if-module="axelor-business-project">
-					<button name="addTaskBtn" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
-					<panel-dashlet name="productTemplateTaskTreePanel" title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
+					<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
 				</panel>
             <panel name="linksPanel" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged" showIf="id">
 				<panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />

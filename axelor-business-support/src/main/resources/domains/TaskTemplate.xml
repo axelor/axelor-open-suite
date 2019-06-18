@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="project" package="com.axelor.apps.businessproject.db"/>
+  <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProductTaskTemplate" extends="com.axelor.apps.project.db.TaskTemplate">
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  <entity name="TaskTemplate">
+    <string name="internalDescription" title="Internal Description" large="true" multiline="true"/>
   </entity>
 
 </domain-models>

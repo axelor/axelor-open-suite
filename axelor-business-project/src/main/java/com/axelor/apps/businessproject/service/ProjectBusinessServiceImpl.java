@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -200,6 +201,25 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
     saleOrderLine.setProject(project);
+    return project;
+  }
+
+  @Override
+  @Transactional
+  public Project createProjectFromTemplate(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+
+    Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+
+    if (projectTemplate.getIsBusinessProject()) {
+      project.setTeamTaskInvoicing(projectTemplate.getTeamTaskInvoicing());
+      project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());
+      project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
+      project.setInvoicingType(projectTemplate.getInvoicingTypeSelect());
+      project.setInvoicingComment(projectTemplate.getInvoicingComment());
+      project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
+    }
+
     return project;
   }
 }

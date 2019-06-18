@@ -12,8 +12,8 @@
 		<panel name="overviewPanel" title="Overview">
 			<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 				<editor x-show-titles="false">
-					<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" css="label-bold bold large" colSpan="3"/>
-					<field name="name" showTitle="false" css="label-bold bold large" colSpan="9"/>
+					<field name="code" required="true" x-bind="{{code|unaccent|uppercase}}" showTitle="false" css="label-bold bold large" colSpan="3"/>
+					<field name="name" required="true" showTitle="false" css="label-bold bold large" colSpan="9"/>
 				</editor>
 			</field>
 		</panel>
