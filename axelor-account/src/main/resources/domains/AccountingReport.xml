@@ -32,6 +32,7 @@
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Account types"/>
     
 	<unique-constraint columns="ref,company"/>
     

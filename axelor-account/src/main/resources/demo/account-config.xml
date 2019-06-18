@@ -101,7 +101,9 @@
 	
 	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" />
 	
-	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" />
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind column="adminExpAccountTypes" to="adminExpAccountTypeSet" search="self.technicalTypeSelect in :adminExpAccountTypes" eval="adminExpAccountTypes.split('\\|') as List"/>
+	</input>
 	
 	<input file="account_debtRecoveryConfigLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryConfigLine" />
 	

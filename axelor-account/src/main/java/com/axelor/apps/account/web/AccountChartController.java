@@ -20,9 +20,11 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
 import com.axelor.apps.base.db.Company;
@@ -34,6 +36,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class AccountChartController {
@@ -47,6 +51,8 @@ public class AccountChartController {
   @Inject AccountRepository accountRepo;
 
   @Inject AccountChartRepository accountChartRepo;
+
+  @Inject AccountTypeRepository accountTypeRepository;
 
   public void installChart(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -67,5 +73,19 @@ public class AccountChartController {
       response.setReload(true);
 
     } else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
+  }
+
+  public void setAdminExpAccountType(ActionRequest request, ActionResponse response) {
+
+    AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
+
+    Set<AccountType> adminExpAccountTypeSet =
+        accountTypeRepository
+            .all()
+            .filter("self.technicalTypeSelect not in ('commitment','view')")
+            .fetch()
+            .stream()
+            .collect(Collectors.toSet());
+    response.setValue("adminExpAccountTypeSet", adminExpAccountTypeSet);
   }
 }

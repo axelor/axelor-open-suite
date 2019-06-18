@@ -168,6 +168,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.paymentMode = ?%d", accountingReport.getPaymentMode());
     }
 
+    if (accountingReport.getAccountTypeSet() != null) {
+      this.addParams("self.account.accountType in (?%d)", accountingReport.getAccountTypeSet());
+    }
+
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_CHEQUE_DEPOSIT) {
       this.addParams("self.amountPaid > 0 AND self.credit > 0");
     }
