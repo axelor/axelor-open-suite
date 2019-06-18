@@ -86,7 +86,8 @@
 		<field name="balance"/>
 		<field name="statusSelect"/>
     </grid>
-    
+    	
+
 	<form name="accounting-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.AccountingReport"
 	onNew="action-accounting-report-record-default">
 		
@@ -100,6 +101,7 @@
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>
+			<field name="accountTypeSet" widget="TagSelect" canNew="false" readonlyIf="typeSelect == 1000" />
 		</panel>
 		
 		<panel sidebar="true" name="infoPanel" title="Info">
@@ -132,6 +134,7 @@
     	<action name="save"/>
     	<action name="action-accounting-report-method-print-export-moveLine"/>
     	<action name="action-accounting-report-method-get-reload"/>
+    	<action name="action-accounting-report-method-set-account-type"/>
     </action-group>
     
     <action-group name="action-group-account-accounting-report-period-onchange">
@@ -259,5 +262,8 @@
 		<call class="com.axelor.apps.account.web.AccountingReportController" method="getJournalType"/>
 	</action-method>
 	
-    
+	<action-method name="action-accounting-report-method-set-account-type">
+		<call class="com.axelor.apps.account.web.AccountingReportController" method="setAccountTypeForAccountReport"/>
+	</action-method>
+	   
 </object-views>

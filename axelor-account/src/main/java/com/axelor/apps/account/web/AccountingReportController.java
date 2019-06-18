@@ -19,10 +19,14 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -41,6 +45,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +58,11 @@ public class AccountingReportController {
   @Inject AccountingReportService accountingReportService;
 
   @Inject AccountingReportRepository accountingReportRepo;
+
+  @Inject AccountTypeRepository accountTypeRepository;
+
+  @Inject AccountConfigRepository accountConfigRepository;
+
   /**
    * @param request
    * @param response
@@ -227,5 +238,21 @@ public class AccountingReportController {
     actionViewBuilder.context("_accountingReportId", accountingReport.getId());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void setAccountTypeForAccountReport(ActionRequest request, ActionResponse response) {
+
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    if (accountingReport.getTypeSelect() == accountingReportRepo.EXPORT_ADMINISTRATION) {
+      AccountConfig accountConfig = accountingReport.getCompany().getAccountConfig();
+      if (accountConfig != null) {
+        response.setValue("accountTypeSet", accountConfig.getAdminExpAccountTypeSet());
+      }
+    } else if (accountingReport.getTypeSelect()
+        == accountingReportRepo.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+      Set<AccountType> accountTypeSet =
+          accountTypeRepository.all().fetch().stream().collect(Collectors.toSet());
+      response.setValue("accountTypeSet", accountTypeSet);
+    }
   }
 }

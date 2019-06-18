@@ -71,7 +71,7 @@
 				</panel>
 				<panel name="exportsPanel" title="Exports" colSpan="12">
 					<field name="exportPath"/>
-					<!-- <field name="exportFileName"/> -->
+					<field name="adminExpAccountTypeSet" widget="TagSelect" canNew="false" />
 				</panel>
 				<panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
 					<field name="irrecoverableReasonPassage"/>
@@ -255,10 +255,15 @@
 	<action-group name="action-group-account-config-installchart-click">
 		<action name="save"/>
 		<action name="action-method-account-config-install-chart"/>
+		<action if="accountChart?.countryCode == 'fr' &amp;&amp; accountChart?.metaFile != null" name="action-method-account-config-set-account-type"/>
 	</action-group>
 
 	<action-method name="action-method-account-config-install-chart">
 		<call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
+	</action-method>
+	
+	<action-method name="action-method-account-config-set-account-type">
+			<call class="com.axelor.apps.account.web.AccountChartController" method="setAdminExpAccountType"/>
 	</action-method>
 
 	<action-view name="action-company-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">

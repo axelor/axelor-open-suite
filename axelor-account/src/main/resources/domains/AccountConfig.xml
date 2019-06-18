@@ -88,6 +88,7 @@
 
 		<string name="exportPath" title="Filepath for exported files (Accounting)"/>
 		<string name="exportFileName" title="File name for payroll journal entries"/>
+		<many-to-many name="adminExpAccountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Account types"/>
 
 		<!-- Onglet Prélèvements -->
 		<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)"/>
