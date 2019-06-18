@@ -44,6 +44,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -537,5 +538,16 @@ public class MoveService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Move generateReverse(Move move, LinkedHashMap<String, Object> assistantMap)
+      throws AxelorException {
+    move =
+        generateReverse(
+            move,
+            (boolean) assistantMap.get("isAutomaticReconcile"),
+            (boolean) assistantMap.get("isAutomaticAccounting"),
+            (boolean) assistantMap.get("isUnreconcileOriginalMove"));
+    return move;
   }
 }

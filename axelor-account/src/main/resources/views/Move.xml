@@ -159,6 +159,7 @@
     		<field name="dateOfReversionSelect" title="Date of reversion" selection="account.move.date.of.reversion.type.select"/>
     		<field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
     		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
+    		<field name="isHiddenMoveLinesInBankReconcilliation" title="Hide move lines in bank reconciliation" type="boolean" if-module="axelor-bank-payment"/>
     		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
     	</panel>
     </form>
@@ -239,6 +240,7 @@
 		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
 		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
 		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
+		<attribute name="value" for="isHiddenMoveLinesInBankReconcilliation" expr="eval: true"/>
 	</action-attrs>
 
 	<!-- ACTION METHOD -->

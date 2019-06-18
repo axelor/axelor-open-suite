@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.LinkedHashMap;
 
 public class BankPaymentMoveServiceImpl extends MoveService {
 
@@ -51,10 +52,16 @@ public class BankPaymentMoveServiceImpl extends MoveService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Move generateReverse(Move move) throws AxelorException {
-    Move newMove = super.generateReverse(move);
-    move = this.updateBankAmountReconcile(move);
-    newMove = this.updateBankAmountReconcile(newMove);
+  public Move generateReverse(Move move, LinkedHashMap<String, Object> assistantMap)
+      throws AxelorException {
+    Move newMove = super.generateReverse(move, assistantMap);
+
+    boolean isHiddenMoveLinesInBankReconcilliation =
+        (boolean) assistantMap.get("isHiddenMoveLinesInBankReconcilliation");
+    if (isHiddenMoveLinesInBankReconcilliation) {
+      move = this.updateBankAmountReconcile(move);
+      newMove = this.updateBankAmountReconcile(newMove);
+    }
     return newMove;
   }
 

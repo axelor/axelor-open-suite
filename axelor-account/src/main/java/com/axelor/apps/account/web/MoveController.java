@@ -88,17 +88,16 @@ public class MoveController {
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> moveMap = (LinkedHashMap<String, Object>) context.get("_move");
     Integer moveId = (Integer) moveMap.get("id");
-    boolean isAutomaticReconcile = (boolean) context.get("isAutomaticReconcile");
-    boolean isAutomaticAccounting = (boolean) context.get("isAutomaticAccounting");
-    boolean isUnreconcileOriginalMove = (boolean) context.get("isUnreconcileOriginalMove");
-
+    LinkedHashMap<String, Object> assistantMap = new LinkedHashMap<String, Object>();
+    assistantMap.put("isAutomaticReconcile", (boolean) context.get("isAutomaticReconcile"));
+    assistantMap.put("isAutomaticAccounting", (boolean) context.get("isAutomaticAccounting"));
+    assistantMap.put(
+        "isUnreconcileOriginalMove", (boolean) context.get("isUnreconcileOriginalMove"));
+    assistantMap.put(
+        "isHiddenMoveLinesInBankReconcilliation",
+        (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconcilliation", true));
     try {
-      Move newMove =
-          moveService.generateReverse(
-              moveRepo.find(new Long(moveId)),
-              isAutomaticReconcile,
-              isAutomaticAccounting,
-              isUnreconcileOriginalMove);
+      Move newMove = moveService.generateReverse(moveRepo.find(new Long(moveId)), assistantMap);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
