@@ -152,5 +152,6 @@
 - PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
+- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
