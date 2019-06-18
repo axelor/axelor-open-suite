@@ -7,6 +7,7 @@
 ##Improvements
 
 ##Bug Fixes
+- INVOICE : add in demo data more information for demo supplier invoices.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

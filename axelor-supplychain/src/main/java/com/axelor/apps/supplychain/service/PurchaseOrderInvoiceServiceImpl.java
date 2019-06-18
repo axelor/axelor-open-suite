@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -64,7 +65,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
-
+    invoice.setSupplierInvoiceNb(purchaseOrder.getPurchaseOrderSeq());
+    invoice.setInternalReference(purchaseOrder.getExternalReference());
+    invoice.setOriginDate(Beans.get(AppBaseService.class).getTodayDate());
+    
     if (invoice != null) {
       purchaseOrder.setInvoice(invoice);
       purchaseOrderRepo.save(purchaseOrder);
