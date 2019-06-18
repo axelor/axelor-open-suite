@@ -156,10 +156,13 @@
     <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.base.db.Wizard">
     	<panel name="mainPanel">
     		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
-    		<field name="dateOfReversionSelect" title="Date of reversion" selection="account.move.date.of.reversion.type.select"/>
+    		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select"/>
     		<field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
+    		<field name="dateOfReversion" type="date" showTitle="false" requiredIf="dateOfReversionSelect == 3" showIf="dateOfReversionSelect == 3"
+    			onChange="action-move-validate-check-date-of-reversion"/>
     		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
-    		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move"/>
+    		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move" 
+    			readonlyIf="dateOfReversionSelect == 3 &amp;&amp; !dateOfReversion"/>
     	</panel>
     </form>
 
@@ -189,6 +192,11 @@
 
     <action-validate name="action-account-validate-prompt">
       <alert message="The validation of a move brings irrevocable integration of a move in Moves book"/>
+    </action-validate>
+    
+    <action-validate name="action-move-validate-check-date-of-reversion">
+      <error message="Reverse move date should not be prior to the original move date (${_moveDate})." 
+      		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isAfter(LocalDate.parse(_moveDate))"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->
@@ -295,6 +303,7 @@
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false"/>
 		<context name="_move" expr="eval: __this__"/>
+		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
 
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">

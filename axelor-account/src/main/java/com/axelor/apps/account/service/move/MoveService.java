@@ -425,10 +425,9 @@ public class MoveService {
       Move move,
       boolean isAutomaticReconcile,
       boolean isAutomaticAccounting,
-      boolean isUnreconcileOriginalMove)
+      boolean isUnreconcileOriginalMove,
+      LocalDate dateOfReversion)
       throws AxelorException {
-
-    LocalDate todayDate = move.getDate();
 
     Move newMove =
         moveCreateService.createMove(
@@ -436,7 +435,7 @@ public class MoveService {
             move.getCompany(),
             move.getCurrency(),
             move.getPartner(),
-            todayDate,
+            dateOfReversion,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
@@ -460,7 +459,7 @@ public class MoveService {
               moveLine.getAccount(),
               moveLine.getCurrencyAmount(),
               !isDebit,
-              todayDate,
+              dateOfReversion,
               moveLine.getCounter(),
               moveLine.getName(),
               null);
