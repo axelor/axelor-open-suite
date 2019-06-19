@@ -129,6 +129,7 @@
 - CONTRACT : Set project on generated invoices
 - LEAVE REQUEST : Set message for leave reason has no unit
 - LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'. 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
