@@ -7,6 +7,7 @@
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
