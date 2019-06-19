@@ -91,6 +91,8 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
+- PROJECT : Add new feature 'Project template'
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

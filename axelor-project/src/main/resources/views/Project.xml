@@ -77,9 +77,9 @@
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3"
+						<field name="code" showTitle="false" colSpan="3" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
-						<field name="name" showTitle="false" colSpan="9"
+						<field name="name" showTitle="false" colSpan="9" required="true"
 							css="label-bold bold large" />
 					</editor>
 				</field>
@@ -814,8 +814,7 @@
 	</action-view>
 	
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="value" for="project" expr="eval:_parent" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
-		<attribute name="readonly" for="project" expr="eval:true" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">

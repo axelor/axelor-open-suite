@@ -26,6 +26,7 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -39,6 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +90,28 @@ public class MoveController {
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> moveMap = (LinkedHashMap<String, Object>) context.get("_move");
     Integer moveId = (Integer) moveMap.get("id");
+
+    Move move = moveRepo.find(new Long(moveId));
     LinkedHashMap<String, Object> assistantMap = new LinkedHashMap<String, Object>();
+
+    int dateOfReversionSelect = (int) context.get("dateOfReversionSelect");
+    LocalDate dateOfReversion;
+    switch (dateOfReversionSelect) {
+      case 1:
+      default:
+        dateOfReversion = Beans.get(AppBaseService.class).getTodayDate();
+        break;
+
+      case 2:
+        dateOfReversion = move.getDate();
+        break;
+
+      case 3:
+        dateOfReversion = LocalDate.parse(context.get("dateOfReversion").toString());
+        break;
+    }
+    assistantMap.put("dateOfReversion", dateOfReversion);
+
     assistantMap.put("isAutomaticReconcile", (boolean) context.get("isAutomaticReconcile"));
     assistantMap.put("isAutomaticAccounting", (boolean) context.get("isAutomaticAccounting"));
     assistantMap.put(
@@ -97,7 +120,7 @@ public class MoveController {
         "isHiddenMoveLinesInBankReconcilliation",
         (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconcilliation", true));
     try {
-      Move newMove = moveService.generateReverse(moveRepo.find(new Long(moveId)), assistantMap);
+      Move newMove = moveService.generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
