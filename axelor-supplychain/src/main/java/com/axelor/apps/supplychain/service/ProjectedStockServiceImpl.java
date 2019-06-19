@@ -41,7 +41,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
 
   @Inject StockLocationRepository stockLocationRepository;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException {
@@ -61,7 +61,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     List<MrpLine> mrpLineList =
         Beans.get(MrpLineRepository.class)
             .all()
-            .filter("self.mrp = ?1 AND self.product = ?2", mrp, product)
+            .filter("self.mrp = ?1 AND self.product = ?2 AND self.qty != 0", mrp, product)
             .order("maturityDate")
             .order("mrpLineType.typeSelect")
             .order("mrpLineType.sequence")

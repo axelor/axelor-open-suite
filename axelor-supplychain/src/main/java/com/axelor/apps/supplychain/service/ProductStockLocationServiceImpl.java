@@ -107,8 +107,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
               requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
           saleOrderQty = saleOrderQty.add(this.getSaleOrderQty(product, company, sl));
           purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
-          availableQty = availableQty.add(this.getAvailableQty(product, company, sl));
         }
+        availableQty = this.getAvailableQty(product, company, stockLocation);
         map.put("$realQty", realQty.setScale(2));
         map.put("$futureQty", futureQty.setScale(2));
         map.put("$reservedQty", reservedQty.setScale(2));

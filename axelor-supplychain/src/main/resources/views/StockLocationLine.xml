@@ -16,16 +16,12 @@
         <field name="requestedReservedQty" width="150"/>
     </grid>
 	
-  <action-method name="action-method-stock-location-line-view-by-product" model="com.axelor.apps.stock.db.StockLocationLine">
-    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="searchStockLocationLineByProduct"/>
-  </action-method>
-  
 	<action-view name="action-stock-location-line-view-by-product" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
     	<view type="grid" name="supplychain-stock-location-line-grid"/>
         <view type="form" name="stock-location-line-form"/>
     	<domain>self.product.id = :productId AND self.stockLocation.typeSelect != 3 
       AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)
-      AND (:location IS NULL OR self.stockLocation.id IN :location)
+      AND (0 IN :location OR self.stockLocation.id IN :location)
       AND (:companyId IS NULL OR self.stockLocation.company.id = :companyId)
       AND (self.currentQty != 0 OR self.futureQty != 0 OR self.reservedQty != 0 OR self.requestedReservedQty != 0)</domain>
     	<context name="productId" expr="eval: product?.id"/>
