@@ -1,10 +1,10 @@
 "importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 100;"accountClearance";"Overpayment clearance";1;10;"ACCCLR_%YY_";;1;1
 101;"chequeReject";"Cheque reject";1;10;"CHQREJ_%YY_";;1;1
-102;"invoice";"Customer Invoice";1;7;"INV_%YY";;1;1
-103;"invoice";"Customer Refund";1;7;"REF_%YY";;1;1
-104;"invoice";"Supplier Invoice";1;7;"SINV_%YY";;1;1
-105;"invoice";"Supplier Refund";1;7;"SREF_%YY";;1;1
+102;"invoice";"Customer Invoice";1;4;"INV_%YY";;1;1
+103;"invoice";"Customer Refund";1;4;"REF_%YY";;1;1
+104;"invoice";"Supplier Invoice";1;4;"SINV_%YY";;1;1
+105;"invoice";"Supplier Refund";1;4;"SREF_%YY";;1;1
 106;"debit";"Direct debit (invoice and installments)";1;7;"DDINV_%YY_";;1;1
 109;"irrecoverable";"Transfer in irrecoverables";1;7;"IRRECOV_%YY_";;1;1
 110;"move";"Sales move line";1;7;"MVSAL_%YY_";;1;1

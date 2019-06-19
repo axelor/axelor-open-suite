@@ -181,7 +181,7 @@
 
 	</tree>
 	
-	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence" onNew="action-task-defaults" model="com.axelor.team.db.TeamTask">
+	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
 		<field name="status"/>
 		<field name="assignedTo"/>
