@@ -7,6 +7,7 @@
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
