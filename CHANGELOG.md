@@ -6,9 +6,11 @@
 
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
+- PURCHASE REQUEST : fill stockLocation automatically
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
 
 ## [5.1.7] - 2019-06-17
