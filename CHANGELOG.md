@@ -9,6 +9,7 @@
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- BANKORDERLINE : grid view sorting on bankOrderDate
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
