@@ -163,7 +163,7 @@ public class PayerQualityService {
     return partnerRepository.all().filter("self.isCustomer = true").fetch();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void payerQualityProcess() throws AxelorException {
     List<PayerQualityConfigLine> payerQualityConfigLineList =
         appAccountService.getAppAccount().getPayerQualityConfigLineList();

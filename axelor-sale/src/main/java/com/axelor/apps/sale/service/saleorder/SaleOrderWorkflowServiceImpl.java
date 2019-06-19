@@ -126,8 +126,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  @Transactional(
-    rollbackOn = {AxelorException.class, RuntimeException.class},
+  @Transactional(rollbackOn = {Exception.class},
     ignore = {BlockedSaleOrderException.class}
   )
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
@@ -161,7 +160,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
@@ -180,8 +179,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     saleOrderRepo.save(saleOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  @Transactional
+  public void completeSaleOrder(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     saleOrder.setOrderBeingEdited(false);
 

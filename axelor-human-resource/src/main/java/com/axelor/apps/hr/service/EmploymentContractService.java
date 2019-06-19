@@ -48,7 +48,7 @@ public class EmploymentContractService {
 
   @Inject private EmploymentContractRepository employmentContractRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public int addAmendment(EmploymentContract employmentContract) throws AxelorException {
     String name =
         employmentContract.getFullName() + "_" + employmentContract.getEmploymentContractVersion();

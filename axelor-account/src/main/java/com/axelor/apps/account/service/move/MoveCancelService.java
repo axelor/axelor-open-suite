@@ -47,7 +47,7 @@ public class MoveCancelService {
     this.moveRepository = moveRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Move move) throws AxelorException {
 
     if (move == null) {

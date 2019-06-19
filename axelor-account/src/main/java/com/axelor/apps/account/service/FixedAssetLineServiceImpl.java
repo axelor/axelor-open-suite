@@ -51,7 +51,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Inject private MoveRepository moveRepo;
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(FixedAssetLine fixedAssetLine) throws AxelorException {
 
     generateMove(fixedAssetLine);
@@ -78,7 +78,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAssetLineRepo.save(fixedAssetLine);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   private void generateMove(FixedAssetLine fixedAssetLine) throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
 
@@ -155,7 +155,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
 
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();

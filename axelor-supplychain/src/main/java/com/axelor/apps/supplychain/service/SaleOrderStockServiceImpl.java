@@ -93,7 +93,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {

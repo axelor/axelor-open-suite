@@ -102,7 +102,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public CostSheet computeCostPrice(
       BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
       throws AxelorException {
@@ -141,7 +141,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {

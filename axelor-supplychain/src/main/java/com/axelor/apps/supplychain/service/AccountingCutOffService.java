@@ -36,7 +36,7 @@ public interface AccountingCutOffService {
       Integer limit,
       Integer offset);
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCutOffMoves(
       StockMove stockMove,
       LocalDate moveDate,

@@ -201,7 +201,7 @@ public class MrpServiceImpl implements MrpService {
 
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void finish(Mrp mrp) {
 
     log.debug("Finish MRP");
@@ -294,7 +294,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected boolean checkInsufficientCumulativeQty(
       MrpLine mrpLine, Product product, boolean firstPass) throws AxelorException {
 
@@ -385,7 +385,7 @@ public class MrpServiceImpl implements MrpService {
         .fetchOne();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createProposalMrpLine(
       Mrp mrp,
       Product product,
@@ -394,8 +394,7 @@ public class MrpServiceImpl implements MrpService {
       StockLocation stockLocation,
       LocalDate maturityDate,
       List<MrpLineOrigin> mrpLineOriginList,
-      String relatedToSelectName)
-      throws AxelorException {
+      String relatedToSelectName) throws AxelorException {
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
@@ -518,7 +517,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void computeCumulativeQty(Product product) {
 
     List<MrpLine> mrpLineList =
@@ -589,7 +588,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createPurchaseMrpLines(
       Mrp mrp, PurchaseOrderLine purchaseOrderLine, MrpLineType purchaseOrderMrpLineType)
       throws AxelorException {
@@ -674,7 +673,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createSaleOrderMrpLines(
       Mrp mrp,
       SaleOrderLine saleOrderLine,
@@ -767,7 +766,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createSaleForecastMrpLines(
       Mrp mrp, MrpForecast mrpForecast, MrpLineType saleForecastMrpLineType)
       throws AxelorException {
@@ -839,7 +838,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected MrpLine createAvailableStockMrpLine(
       Mrp mrp,
       Product product,
@@ -1006,7 +1005,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProposals(Mrp mrp) throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();

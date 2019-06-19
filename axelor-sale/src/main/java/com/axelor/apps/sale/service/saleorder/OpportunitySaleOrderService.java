@@ -24,6 +24,6 @@ import com.google.inject.persist.Transactional;
 
 public interface OpportunitySaleOrderService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
 }

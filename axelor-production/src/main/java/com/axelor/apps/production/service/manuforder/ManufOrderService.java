@@ -54,7 +54,7 @@ public interface ManufOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -92,7 +92,7 @@ public interface ManufOrderService {
       LocalDateTime plannedStartDateT)
       throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;

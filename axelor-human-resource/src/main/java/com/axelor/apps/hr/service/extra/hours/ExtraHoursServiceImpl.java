@@ -54,7 +54,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     this.templateMessageService = templateMessageService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CANCELED);
@@ -76,7 +76,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
@@ -100,7 +100,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
@@ -125,7 +125,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);

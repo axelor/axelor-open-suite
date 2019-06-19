@@ -83,7 +83,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoice(StockMove stockMove) throws AxelorException {
 
     Long origin = stockMove.getOriginId();
@@ -98,7 +98,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
       throws AxelorException {
 
@@ -143,7 +143,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -178,7 +178,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException {
 
     int stockMoveType = stockMove.getTypeSelect();

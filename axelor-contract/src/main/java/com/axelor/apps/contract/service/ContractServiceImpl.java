@@ -113,14 +113,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
     versionService.waiting(currentVersion, date);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
@@ -255,7 +255,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion version = contract.getNextVersion();
     versionService.waiting(version, date);
@@ -264,7 +264,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void activeNextVersion(Contract contract, LocalDate date) throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
@@ -348,7 +348,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void terminateContract(Contract contract, Boolean isManual, LocalDate date)
       throws AxelorException {
     ContractVersion currentVersion = contract.getCurrentContractVersion();
@@ -387,7 +387,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
     Invoice invoice = generateInvoice(contract);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
@@ -583,7 +583,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void renewContract(Contract contract, LocalDate date) throws AxelorException {
 
     ContractVersion currentVersion = contract.getCurrentContractVersion();
@@ -636,7 +636,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         .fetch();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
 

@@ -81,7 +81,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(Long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {

@@ -138,7 +138,7 @@ public class PermissionAssistantService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createMetaFile(File permFile, PermissionAssistant assistant) throws IOException {
 
     assistant.setMetaFile(metaFiles.upload(permFile));

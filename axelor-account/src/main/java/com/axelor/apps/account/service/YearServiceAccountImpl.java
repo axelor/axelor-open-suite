@@ -81,7 +81,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @param year Un exercice comptable
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void closeYear(Year year) throws AxelorException {
     year = yearRepo.find(year.getId());
 
@@ -176,7 +176,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @param year Un exercice comptable
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void adjust(Year year) {
     year = yearRepo.find(year.getId());
 
@@ -186,7 +186,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     yearRepo.save(year);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public ReportedBalanceLine createReportedBalanceLine(BigDecimal amount, Year year) {
     ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
     reportedBalanceLine.setAmount(amount);

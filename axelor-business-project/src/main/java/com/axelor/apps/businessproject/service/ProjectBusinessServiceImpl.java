@@ -60,7 +60,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
     SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 

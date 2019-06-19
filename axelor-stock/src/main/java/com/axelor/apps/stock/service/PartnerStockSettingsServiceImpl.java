@@ -50,7 +50,7 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PartnerStockSettings createMailSettings(Partner partner, Company company)
       throws AxelorException {
     PartnerStockSettings mailSettings = new PartnerStockSettings();

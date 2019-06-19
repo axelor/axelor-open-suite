@@ -70,7 +70,7 @@ public class ChequeRejectionService {
    * @param chequeRejection Un rejet de chèque brouillon
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateChequeRejection(ChequeRejection chequeRejection) throws AxelorException {
 
     Company company = chequeRejection.getCompany();

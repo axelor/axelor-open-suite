@@ -82,7 +82,7 @@ public class LeaveManagementService {
    * @param fromDate
    * @param toDate
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void reset(
       LeaveLine leaveLine,
       User user,

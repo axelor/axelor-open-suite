@@ -100,7 +100,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -285,7 +285,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException {
 
     BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
@@ -398,7 +398,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException {
     StockMove wasteStockMove = null;
     Company company = manufOrder.getCompany();
@@ -453,7 +453,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePlannedQty(ManufOrder manufOrder) throws AxelorException {
     manufOrder.clearToConsumeProdProductList();
     manufOrder.clearToProduceProdProductList();
@@ -465,7 +465,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
@@ -570,7 +570,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     this.updateDiffProdProductList(manufOrder);
     List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
@@ -594,7 +594,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
     ManufOrderStockMoveService manufOrderStockMoveService =

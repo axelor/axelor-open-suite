@@ -71,7 +71,7 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -145,7 +145,7 @@ public class IntercoServiceImpl implements IntercoService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException {
 
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);

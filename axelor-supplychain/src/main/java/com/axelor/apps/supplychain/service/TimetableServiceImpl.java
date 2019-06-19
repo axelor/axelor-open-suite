@@ -48,7 +48,7 @@ import java.util.List;
 public class TimetableServiceImpl implements TimetableService {
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(Timetable timetable) throws AxelorException {
     if (Strings.isNullOrEmpty(timetable.getProductName())) {
       throw new AxelorException(

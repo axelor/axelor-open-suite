@@ -34,7 +34,7 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
@@ -43,11 +43,11 @@ public interface AccountingReportService {
 
   public Account getAccount(AccountingReport accountingReport);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setStatus(AccountingReport accountingReport);
 
   /** @param accountingReport */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setPublicationDateTime(AccountingReport accountingReport);
 
   /**

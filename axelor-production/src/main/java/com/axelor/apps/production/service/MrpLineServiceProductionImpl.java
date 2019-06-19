@@ -78,7 +78,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateManufacturingProposal(MrpLine mrpLine) throws AxelorException {
 
     Product product = mrpLine.getProduct();

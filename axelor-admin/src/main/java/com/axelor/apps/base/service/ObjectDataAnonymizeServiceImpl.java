@@ -100,7 +100,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void replaceLink(
       Mapper mapper, String path, List<? extends Model> data, String rootModel, Long recordValue)
       throws ClassNotFoundException, AxelorException {

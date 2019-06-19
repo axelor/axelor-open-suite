@@ -46,7 +46,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void computeAvgPriceForProduct(Product product) {
 
     BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);

@@ -137,17 +137,17 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void splitStockMoveLinesSpecial(
       StockMove stockMove, List<StockMoveLine> list, BigDecimal splitQty);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void copyQtyToRealQty(StockMove stockMove);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException;
 
   public StockMove splitInto2(
