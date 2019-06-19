@@ -59,7 +59,7 @@
     </grid>
 
 	<form name="purchase-request-form" title="Purchase request"
-		model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-record-default"
+		model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-group-onnew"
 		width="large">
 		<panel name="statusSelectPanel" colSpan="12">
 			<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select"
@@ -74,7 +74,7 @@
 			</field>
 		</panel>
 		<panel name="mainPanel" readonlyIf="![1,2].includes(statusSelect)">
-			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"/>
+			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" onChange="action-purchase-request-group-company-onchange"/>
 			<field name="newProduct" widget="boolean-switch" colSpan="2"
 				colOffset="4" hideIf="statusSelect &gt; 2 &amp;&amp; !newProduct" />
 			<field name="product" colSpan="3" form-view="product-form"
@@ -222,6 +222,15 @@
 		<action name="action-purchase-request-validate-check-supplier-user" if="!supplierUser"/>
 		<action name="action-purchase-request-set-status-purchased" if="supplierUser"/>
 		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-purchase-request-group-onnew">
+		<action name="action-purchase-request-record-default"/>
+		<action name="action-purchase-request-method-get-stock-location" if="__config__.app.isApp('supplychain')"/>
+	</action-group>
+
+	<action-group name="action-purchase-request-group-company-onchange">
+		<action name="action-purchase-request-method-get-stock-location" if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
 	<action-validate name="action-purchase-request-validate-check-supplier-user">
