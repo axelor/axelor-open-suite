@@ -6,6 +6,7 @@
 
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
+- PURCHASE REQUEST : fill stockLocation automatically
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
