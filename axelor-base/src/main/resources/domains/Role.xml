@@ -5,13 +5,12 @@
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="User" sequential="true" lang="java">
+  <entity name="Role">
 
-  	<string name="appPermissions" title="Apps permissions" selection="mobile.user.app.permissions.select"/>
-
-	 <track>
-	   <field name="appPermissions"/>
-   </track>
+    <track>
+			<field name="name"/>
+			<field name="description"/>
+	  </track>
 
   </entity>
 
