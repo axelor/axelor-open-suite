@@ -195,8 +195,8 @@
     </action-validate>
     
     <action-validate name="action-move-validate-check-date-of-reversion">
-      <error message="Reverse move date should not be prior to the original move date (${_moveDate})." 
-      		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isAfter(LocalDate.parse(_moveDate))"/>
+      <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})." 
+      		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->
