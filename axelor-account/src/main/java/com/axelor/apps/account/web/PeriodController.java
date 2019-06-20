@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
@@ -27,14 +26,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.LinkedHashMap;
 
 public class PeriodController {
 
   public void searchPeriodMoves(ActionRequest request, ActionResponse response) {
-	try {
-	  Period period = request.getContext().asType(Period.class);
-	  period = Beans.get(PeriodRepository.class).find(period.getId());
+    try {
+      Period period = request.getContext().asType(Period.class);
+      period = Beans.get(PeriodRepository.class).find(period.getId());
       Long moveCount =
           Beans.get(PeriodServiceAccount.class).getMoveListToValidateQuery(period).count();
       if (moveCount > 0) {
@@ -60,9 +58,9 @@ public class PeriodController {
   }
 
   public void continueClose(ActionRequest request, ActionResponse response) {
-	try {
-	  Period period = request.getContext().asType(Period.class);
-	  period = Beans.get(PeriodRepository.class).find(period.getId());
+    try {
+      Period period = request.getContext().asType(Period.class);
+      period = Beans.get(PeriodRepository.class).find(period.getId());
       Beans.get(PeriodService.class).close(period);
       response.setCanClose(true);
     } catch (Exception e) {
