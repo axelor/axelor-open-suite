@@ -7,6 +7,7 @@
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
