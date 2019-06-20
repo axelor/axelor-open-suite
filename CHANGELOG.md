@@ -153,5 +153,6 @@
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- ACCOUNT MOVE REVERSE: add translation
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
