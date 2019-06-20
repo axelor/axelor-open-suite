@@ -13,6 +13,7 @@
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
+- PAYMENT VOUCHER : trace exceptions happening on save in repository
 - ACCOUNT/STOCK : add more french translation.
 
 ## [5.1.7] - 2019-06-17
