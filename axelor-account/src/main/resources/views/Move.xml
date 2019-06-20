@@ -21,6 +21,17 @@
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
+    
+	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
+        <field name="reference" width="200"/>
+        <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+        <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
+        <field name="date" width="90"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
+        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+        <field name="statusSelect" width="90"/>
+    </grid>
 
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
@@ -269,6 +280,13 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
+	
+	<!--ACTION VIEW-->
+	<action-view name="action-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
+		<view type="grid" name="move-grid-period"/>
+		<view type="form" name="move-form"/>
+		<domain>self.period = :_period AND self.statusSelect NOT IN (3,4)</domain>
+	</action-view>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
