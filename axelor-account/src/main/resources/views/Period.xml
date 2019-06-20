@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Moves to validate" name="preriod-moves-to-validate-form">
+	<form model="com.axelor.apps.base.db.Period" title="Moves to validate" name="period-moves-to-validate-form">
 		<panel-dashlet action="action-view-period-moves-to-validate"/>
 		<panel name="buttonsPanel">
 			<button name="continueBtn" title="Continue" onClick="action-method-period-close-continue"/>

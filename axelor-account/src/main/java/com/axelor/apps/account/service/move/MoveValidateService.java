@@ -376,12 +376,11 @@ public class MoveValidateService {
   }
 
   public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {
-    int offset = 0;
-    int fetchtLimit = 1;
-    List<Move> moveList;
+    Move move;
 
-    while (!(moveList = moveListQuery.fetch(fetchtLimit, offset)).isEmpty()) {
-      validate(moveList.get(0));
+    while (!((move = moveListQuery.fetchOne()) == null)) {
+      validate(move);
+      JPA.clear();
     }
   }
 

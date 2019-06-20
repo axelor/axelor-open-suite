@@ -32,24 +32,22 @@ import java.util.LinkedHashMap;
 public class PeriodController {
 
   public void searchPeriodMoves(ActionRequest request, ActionResponse response) {
-
-    Period period = request.getContext().asType(Period.class);
-    period = Beans.get(PeriodRepository.class).find(period.getId());
-    try {
+	try {
+	  Period period = request.getContext().asType(Period.class);
+	  period = Beans.get(PeriodRepository.class).find(period.getId());
       Long moveCount =
           Beans.get(PeriodServiceAccount.class).getMoveListToValidateQuery(period).count();
       if (moveCount > 0) {
 
         response.setView(
             ActionView.define("Moves to validate")
-                .model(Wizard.class.getName())
-                .add("form", "preriod-moves-to-validate-form")
-                .param("popup", "true")
+                .model(Period.class.getName())
+                .add("form", "period-moves-to-validate-form")
                 .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
-                .context("_period", period)
+                .context("_showRecord", period.getId())
                 .map());
       } else {
 
@@ -62,9 +60,9 @@ public class PeriodController {
   }
 
   public void continueClose(ActionRequest request, ActionResponse response) {
-    long periodId = (int) ((LinkedHashMap) request.getContext().get("_period")).get("id");
-    Period period = Beans.get(PeriodRepository.class).find(periodId);
-    try {
+	try {
+	  Period period = request.getContext().asType(Period.class);
+	  period = Beans.get(PeriodRepository.class).find(period.getId());
       Beans.get(PeriodService.class).close(period);
       response.setCanClose(true);
     } catch (Exception e) {
