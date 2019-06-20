@@ -248,11 +248,10 @@ public class BankOrderController {
       ActionRequest actionRequest, ActionResponse response) {
     try {
       String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
-      System.out.println(linesDomain);
       response.setView(
           bankOrderService
               .buildBankOrderLineView(
-                  "bank-order-line-grid-bank-to-bank", "bank-order-line-form", linesDomain)
+                  "bank-order-line-bank-to-bank-grid", "bank-order-line-form", linesDomain)
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
