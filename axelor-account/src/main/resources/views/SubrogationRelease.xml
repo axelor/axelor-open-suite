@@ -5,7 +5,7 @@
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease"
 		orderBy="-sequenceNumber">
-		<field name="sequenceNumber" />
+		<field name="sequenceNumber" width="120"/>
 		<field name="company" />
 		<field name="company.accountConfig.factorPartner" />
 		<field name="transmissionDate"/>

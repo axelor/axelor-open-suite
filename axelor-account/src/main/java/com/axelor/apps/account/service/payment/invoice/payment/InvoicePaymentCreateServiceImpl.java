@@ -103,6 +103,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
     Currency currency = paymentMove.getCurrency();
+    if (currency == null) {
+      currency = paymentMove.getCompanyCurrency();
+    }
     PaymentMode paymentMode;
     InvoicePayment invoicePayment;
     if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE

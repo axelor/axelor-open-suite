@@ -169,7 +169,7 @@
 "Display barcode on Picking printing","Afficher les codes barres sur l'impression des bon de préparation",,
 "Display customer code on picking printing",,,
 "Display line details on printing",,,
-"Display partner sequence on printing",,,
+"Display partner sequence on printing","Afficher la référence tiers sur les impressions",,
 "Display sale value in location financial data printing","Afficher la valorisation de vente sur l'impression des données financières d'emplacements",,
 "Display tracking number details on Picking printing","Afficher les numéros de suivi sur l'impression des bon de préparation",,
 "Do you want to generate backorder for not delivered quantities?","Voulez-vous gérer les reliquats pour les quantités non livrées ?",,

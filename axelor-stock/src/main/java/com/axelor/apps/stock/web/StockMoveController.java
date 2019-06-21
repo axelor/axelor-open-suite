@@ -520,4 +520,21 @@ public class StockMoveController {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
     }
   }
+
+  /**
+   * Called from stock move form view on save. Call {@link
+   * StockMoveService#updateStocks(StockMove)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateStocks(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveService.class).updateStocks(stockMoveRepo.find(stockMove.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

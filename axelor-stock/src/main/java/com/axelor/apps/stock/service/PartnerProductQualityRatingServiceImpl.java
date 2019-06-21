@@ -111,11 +111,20 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return Optional.empty();
     }
 
-    return partnerProductQualityRatingList
-        .stream()
-        .filter(
-            PartnerProductQualityRating -> PartnerProductQualityRating.getProduct().equals(product))
-        .findFirst();
+    Optional<PartnerProductQualityRating> productQualityRating =
+        partnerProductQualityRatingList
+            .stream()
+            .filter(
+                PartnerProductQualityRating ->
+                    PartnerProductQualityRating.getProduct() != null
+                        && PartnerProductQualityRating.getProduct().equals(product))
+            .findFirst();
+
+    if (productQualityRating == null) {
+      productQualityRating = Optional.empty();
+    }
+
+    return productQualityRating;
   }
 
   /**

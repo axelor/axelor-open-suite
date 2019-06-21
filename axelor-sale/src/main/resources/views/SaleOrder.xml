@@ -16,7 +16,7 @@
 	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
 	    <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
         <field name="endOfValidityDate" hidden="true"/>
-        <field name="saleOrderSeq"/>
+        <field name="saleOrderSeq" width="120"/>
         <field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
@@ -46,7 +46,7 @@
 		<hilite background="danger"
 			if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)" />
 		<field name="endOfValidityDate" hidden="true" />
-		<field name="saleOrderSeq" />
+		<field name="saleOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
@@ -76,7 +76,7 @@
                 <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
             </menu>
         </menubar>
-		<field name="saleOrderSeq" />
+		<field name="saleOrderSeq" width="120" />
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="externalReference"/>
@@ -93,7 +93,7 @@
         <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
         <hilite background="danger" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 2)"/>
         <field name="endOfValidityDate" hidden="true"/>
-        <field name="saleOrderSeq"/>
+        <field name="saleOrderSeq" width="120"/>
         <field name="creationDate"/>
 		<field name="exTaxTotal" aggregate="sum"/>
         <field name="inTaxTotal" aggregate="sum"/>
@@ -459,7 +459,7 @@
 
 	<grid name="sale-order-template-grid" title="Templates"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-		<field name="saleOrderSeq" />
+		<field name="saleOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field  name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
@@ -591,7 +591,7 @@
 
 	<grid name="sale-order-grid-client" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
-		<field name="saleOrderSeq" />
+		<field name="saleOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" />
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />

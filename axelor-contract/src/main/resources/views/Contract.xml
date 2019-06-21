@@ -6,7 +6,7 @@
 
     <grid name="contract-grid" title="Contracts"
           model="com.axelor.apps.contract.db.Contract">
-        <field name="contractId"/>
+        <field name="contractId" width="120"/>
         <field name="name"/>
         <field name="targetTypeSelect"/>
         <field name="company"/>
@@ -313,7 +313,7 @@
     </action-view>
 
     <grid name="contract-version-next-grid" title="Versions" model="com.axelor.apps.contract.db.ContractVersion">
-        <field name="contract.contractId"/>
+        <field name="contract.contractId" width="120"/>
         <field name="contract.name"/>
         <field name="contract.partner"/>
         <field name="activationDate"/>
