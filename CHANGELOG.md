@@ -91,6 +91,7 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
 - ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
 - PROJECT : Add new feature 'Project template'
 
