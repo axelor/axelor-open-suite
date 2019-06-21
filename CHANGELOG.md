@@ -5,9 +5,15 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
+- DEMO DATA : Reduce padding in sequence for all modules.
+- PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
 - INVOICE : optimisation of injections in invoice services in order to improve their performance
 
 ##Bug Fixes
+- SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- PROJECT : display the cancel button even if the status is draft
+- BANKORDERLINE : grid view sorting on bankOrderDate
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
