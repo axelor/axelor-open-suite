@@ -284,7 +284,7 @@
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
-			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			   showIf="$contains([6, 7],operationSubTypeSelect)">
 			<field name="subscriptionFromDate" />
 			<field name="subscriptionToDate" />
 		</panel>
