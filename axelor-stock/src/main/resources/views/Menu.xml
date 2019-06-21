@@ -99,6 +99,7 @@
 
 	<action-view name="stock.root.search" title="Search">
 		<view name="tracking-number-search" type="search"/>
+		<view-param name="hideActions" value="true"/>
 	</action-view>
 	
 <!-- 	MUST BE DELETED -->

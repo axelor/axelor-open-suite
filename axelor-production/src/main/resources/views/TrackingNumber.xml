@@ -3,17 +3,17 @@
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<search name="tracking-number-search" title="Tracking number search" limit="50" id="tracking-number-production-search">
-		<search-fields>
+	<search name="tracking-number-search" title="Tracking number search" limit="50" id="tracking-number-production-search" search-form="tracking-number-search-form">
+		<search-fields> <field name="hideActions" value="true"/>
 			<field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
 			<field name="trackingNumber" type="reference" target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox" domain="self.product = :product"/>
 		</search-fields>
-
+		
 		<result-fields>
-			<field name="object" width="75"/>
+			<field name="object" width="250"/>
 			<field name="trackingNumber" type="reference" target="com.axelor.apps.stock.db.TrackingNumber"/>
 			<field name="product" type="string"/>
-			<field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
+			<field name="futureQty" title="Expected/Future Quantity" type="decimal" width="200"/>
 			<field name="currentQty" title="Real/Current Quantity" type="decimal"/>
 			<field name="stockLocation" title="Stock location" type="string"/>
 			<field name="moveLine" title="Stock move line" type="string"/>
@@ -68,4 +68,15 @@
 			</where>
 		</select>
 	</search>
+	
+		
+	<form model="com.axelor.apps.base.db.Product" title="tracking-number-search-form" name="Form search tracking number">
+			<field name="product"  onChange="action-attrs-tracking-number-empty-on-change"/>
+			<field name="trackingNumber"/>
+	</form>
+	
+    <action-attrs name="action-attrs-tracking-number-empty-on-change">
+		<attribute name="value:set" for="trackingNumber" expr=""/>
+	</action-attrs>
+	
 </object-views>
