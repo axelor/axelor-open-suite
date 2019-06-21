@@ -184,8 +184,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/abs51</property>
-            <property name="odaUser">admin</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YWRtaW4=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
