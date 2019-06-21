@@ -16,7 +16,7 @@
 - CHEQUE REJECTION : fix payment voucher selection.
 - PAYMENT VOUCHER : trace exceptions happening on save in repository
 - ACCOUNT/STOCK : add more french translation.
-- PURCHASEORDERLINE : corrected potential error when calling service
+- PURCHASEORDERLINE : corrected potential injection error when calling service
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
