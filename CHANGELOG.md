@@ -12,7 +12,6 @@
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
-- java script include : make use of helper $contains
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
