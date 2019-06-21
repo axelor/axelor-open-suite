@@ -91,7 +91,17 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_status" expr="eval: 3"/>
 	</action-view>
-	
+
+	<menuitem name="purchase-root-abc-analysis" title="ABC analysis" order="27"
+		action="purchase.root.abc.analysis" parent="sc-root-purchase"/>
+
+	<action-view name="purchase.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl"/>
+	</action-view>
 	
 	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase" 
 		action="purchase.historical.orders"/>

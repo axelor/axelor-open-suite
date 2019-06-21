@@ -9,7 +9,7 @@
     <field name="qty" aggregate="sum" required="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
     <field name="$missingQty" title="Missing quantity"/>
-    <field name="toConsumeManufOrder" hidden="true"/>
+    <field name="toConsumeManufOrder" width="120" hidden="true"/>
   </grid>
 
   <grid name="prod-product-diff-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
@@ -28,7 +28,7 @@
     
     <grid name="prod-product-detailed-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" groupBy="product">
     	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
-    	<field name="wasteManufOrder"/>
+    	<field name="wasteManufOrder" width="120"/>
         <field name="wasteManufOrder.billOfMaterial"/>
         <field name="wasteManufOrder.prodProcess"/>
     	<field name="qty" aggregate="sum" required="true"/>

@@ -10,6 +10,11 @@
 			<field name="isEnableSignature" widget="boolean-switch" />
 			<field name="generateProjectSequence" widget="boolean-switch"/>
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	

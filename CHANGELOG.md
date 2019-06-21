@@ -92,6 +92,8 @@
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
 - SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
+- ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
+- PROJECT : Add new feature 'Project template'
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -151,5 +153,7 @@
 - PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
+- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- ACCOUNT MOVE REVERSE: add translation
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

@@ -15,21 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.project.db.repo;
 
-import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.db.JPA;
+import com.axelor.apps.project.db.ProjectTemplate;
+import com.google.common.base.Strings;
 
-public class AddressServicePurchaseImpl extends AddressServiceImpl {
-  static {
-    registerCheckUsedFunc(AddressServicePurchaseImpl::checkAddressUsedPurchase);
+public class ProjectTemplateManagementRepository extends ProjectTemplateRepository {
+
+  private void setProjectTemplateFullName(ProjectTemplate entity) {
+    String projectCode = (Strings.isNullOrEmpty(entity.getCode())) ? "" : entity.getCode() + " - ";
+    entity.setFullName(projectCode + entity.getName());
   }
 
-  private static boolean checkAddressUsedPurchase(Long addressId) {
-    return JPA.all(PurchaseRequest.class)
-            .filter("self.deliveryAddress.id = ?1", addressId)
-            .fetchOne()
-        != null;
+  @Override
+  public ProjectTemplate save(ProjectTemplate entity) {
+    this.setProjectTemplateFullName(entity);
+
+    return super.save(entity);
   }
 }

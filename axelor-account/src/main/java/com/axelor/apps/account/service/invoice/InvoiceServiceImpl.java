@@ -322,8 +322,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    Beans.get(InvoicePrintService.class)
-        .printAndSave(invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE);
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      Beans.get(InvoicePrintService.class)
+          .printAndSave(invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE);
+    }
   }
 
   /**
@@ -441,6 +443,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
   @Override
   @Transactional
   public Invoice mergeInvoice(
@@ -498,12 +524,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-    Beans.get(InvoiceRepository.class).save(invoiceMerged);
-    deleteOldInvoices(invoiceList);
+    invoiceRepo.save(invoiceMerged);
     return invoiceMerged;
   }
 
   @Override
+  @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);
@@ -572,7 +598,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     advancePaymentInvoices =
         new HashSet<>(
-            Beans.get(InvoiceRepository.class)
+            invoiceRepo
                 .all()
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
@@ -662,7 +688,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+    if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
       return getMoveLinesFromInvoiceAdvancePayments(invoice);
     } else {
       return getMoveLinesFromSOAdvancePayments(invoice);
@@ -830,5 +856,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     return true;
+  }
+
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {
+    // isPurchase() = isSupplier()
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnSaleInvoice()
+        && !InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnPurchaseInvoice()
+        && InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    return false;
   }
 }

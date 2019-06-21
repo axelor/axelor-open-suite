@@ -21,6 +21,12 @@
 	    	<field name="meetingGuestDeletedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	  	</panel>
+	  					        
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+        
 	</form>
 	
 	<action-record name="action-crm-config-record-default" model="com.axelor.apps.crm.db.CrmConfig">

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
-    	<field name="ref"/>
+    	<field name="ref" width="120"/>
         <field name="statusSelect"/>
         <field name="amountToReimburse" aggregate="sum"/>
     </grid>

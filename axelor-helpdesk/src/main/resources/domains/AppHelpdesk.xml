@@ -7,6 +7,11 @@
 	<entity name="AppHelpdesk" lang="java" cachable="true" extends="App" >
 		<boolean name="isSla" title="SLA" default="false"/>
 		<boolean name="manageTimer" title="Manage Timer" default="false"/>
+		
+		<track>
+			<field name="isSla" on="UPDATE"/>
+			<field name="manageTimer" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

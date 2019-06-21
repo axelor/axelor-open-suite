@@ -1,10 +1,10 @@
 "importId";"code";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 100;"accountClearance";"Apurement des trop-perçus";"NUMBERS";"UPPERCASE";1;6;"APURMT%YY";;1;1
 101;"chequeReject";"Rejet chèques";"NUMBERS";"UPPERCASE";1;6;"REJCHQ%YY";;1;1
-102;"invoice";"Facture de vente";"NUMBERS";"UPPERCASE";1;10;"FC%YY";;1;1
-103;"invoice";"Avoir client";"NUMBERS";"UPPERCASE";1;10;"AC%YY";;1;1
-104;"invoice";"Facture d'achat";"NUMBERS";"UPPERCASE";1;10;"FF%YY";;1;1
-105;"invoice";"Avoir fournisseur";"NUMBERS";"UPPERCASE";1;10;"AF%YY";;1;1
+102;"invoice";"Facture de vente";"NUMBERS";"UPPERCASE";1;4;"FC%YY";;1;1
+103;"invoice";"Avoir client";"NUMBERS";"UPPERCASE";1;4;"AC%YY";;1;1
+104;"invoice";"Facture d'achat";"NUMBERS";"UPPERCASE";1;4;"FF%YY";;1;1
+105;"invoice";"Avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"AF%YY";;1;1
 106;"debit";"Prélèvement (facture et echeanciers hors mensu)";"NUMBERS";"UPPERCASE";1;6;"PRLFAC%YY";;1;1
 109;"irrecoverable";"Passage en irrécouvrable";"NUMBERS";"UPPERCASE";1;6;"IRRECO%YY";;1;1
 110;"move";"Ecriture Vente";"NUMBERS";"UPPERCASE";1;6;"EP_VTE%YY";;1;1

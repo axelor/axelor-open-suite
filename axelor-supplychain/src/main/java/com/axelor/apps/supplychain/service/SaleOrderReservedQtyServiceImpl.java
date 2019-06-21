@@ -68,7 +68,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
             ? new ArrayList<>()
             : saleOrder.getSaleOrderLineList();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      reservedQtyService.updateReservedQty(saleOrderLine, saleOrderLine.getQty());
+      reservedQtyService.requestQty(saleOrderLine);
     }
   }
 
@@ -80,7 +80,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
             ? new ArrayList<>()
             : saleOrder.getSaleOrderLineList();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      reservedQtyService.updateRequestedReservedQty(saleOrderLine, BigDecimal.ZERO);
+      reservedQtyService.cancelReservation(saleOrderLine);
     }
   }
 }

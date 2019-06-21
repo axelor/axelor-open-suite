@@ -22,6 +22,11 @@
 			<field name="displayPriceOnQuotationRequest" widget="boolean-switch"/>
 		  	<field name="priceRequest" colSpan="12"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
     </form>
     
 	<action-record name="action-purchase-config-record-default" model="com.axelor.apps.purchase.db.PurchaseConfig">

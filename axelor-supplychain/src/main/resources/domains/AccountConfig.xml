@@ -13,6 +13,11 @@
 		<many-to-one name="forecastedInvCustAccount" ref="com.axelor.apps.account.db.Account" title="Forecasted invoice customer account"/>
 		<many-to-one name="forecastedInvSuppAccount" ref="com.axelor.apps.account.db.Account" title="Forecasted invoice supplier account"/>
 
+	<track>
+		<field name="company" on="UPDATE"/>
+		<field name="forecastedInvCustAccount" on="UPDATE"/>
+		<field name="forecastedInvSuppAccount" on="UPDATE"/>
+	</track>
 	</entity>
 
 </domain-models>

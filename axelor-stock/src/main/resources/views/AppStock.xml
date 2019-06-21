@@ -9,7 +9,6 @@
 			<field name="requireToFillConformityOnReceipt" widget="boolean-switch" colSpan="4"/>
 			<field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
 			<field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
-			<field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
 		</panel> 
 		<panel name="actionPanel">
 			<button name="generateStockConfigurationsBtn" colSpan="4" title="Generate stock configurations" onClick="save,com.axelor.apps.stock.web.AppStockController:generateStockConfigurations" />
@@ -18,6 +17,11 @@
         <panel name="customPanel" title="Customs">
           <field name="economicArea"/>
         </panel> 
+        		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-view name="admin.root.conf.stock.config" title="Stock configurations"
