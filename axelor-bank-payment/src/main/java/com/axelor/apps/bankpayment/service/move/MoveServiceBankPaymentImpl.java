@@ -20,10 +20,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.LinkedHashMap;
 
-public class BankPaymentMoveServiceImpl extends MoveService {
+public class MoveServiceBankPaymentImpl extends MoveService {
 
   @Inject
-  public BankPaymentMoveServiceImpl(
+  public MoveServiceBankPaymentImpl(
       AppAccountService appAccountService,
       MoveLineService moveLineService,
       MoveCreateService moveCreateService,
@@ -56,9 +56,9 @@ public class BankPaymentMoveServiceImpl extends MoveService {
       throws AxelorException {
     Move newMove = super.generateReverse(move, assistantMap);
 
-    boolean isHiddenMoveLinesInBankReconcilliation =
-        (boolean) assistantMap.get("isHiddenMoveLinesInBankReconcilliation");
-    if (isHiddenMoveLinesInBankReconcilliation) {
+    boolean isHiddenMoveLinesInBankReconciliation =
+        (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
+    if (isHiddenMoveLinesInBankReconciliation) {
       move = this.updateBankAmountReconcile(move);
       newMove = this.updateBankAmountReconcile(newMove);
     }

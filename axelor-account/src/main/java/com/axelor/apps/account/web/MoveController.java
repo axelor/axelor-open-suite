@@ -117,8 +117,8 @@ public class MoveController {
     assistantMap.put(
         "isUnreconcileOriginalMove", (boolean) context.get("isUnreconcileOriginalMove"));
     assistantMap.put(
-        "isHiddenMoveLinesInBankReconcilliation",
-        (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconcilliation", true));
+        "isHiddenMoveLinesInBankReconciliation",
+        (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));
     try {
       Move newMove = moveService.generateReverse(move, assistantMap);
       if (newMove != null) {

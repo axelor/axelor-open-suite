@@ -161,7 +161,7 @@
     		<field name="dateOfReversion" type="date" showTitle="false" requiredIf="dateOfReversionSelect == 3" showIf="dateOfReversionSelect == 3"
     			onChange="action-move-validate-check-date-of-reversion"/>
     		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
-    		<field name="isHiddenMoveLinesInBankReconcilliation" title="Hide move lines in bank reconciliation" type="boolean" if-module="axelor-bank-payment" colSpan="12"/>
+    		<field name="isHiddenMoveLinesInBankReconciliation" title="Hide move lines in bank reconciliation" type="boolean" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
     		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move" 
     			readonlyIf="dateOfReversionSelect == 3 &amp;&amp; !dateOfReversion"/>
     	</panel>
@@ -248,7 +248,7 @@
 		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
 		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
 		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
-		<attribute name="value" for="isHiddenMoveLinesInBankReconcilliation" expr="eval: true"/>
+		<attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
 	</action-attrs>
 
 	<!-- ACTION METHOD -->
