@@ -70,7 +70,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceRepo,
         appAccountService,
         partnerService,
-        invoiceLineService, 
+        invoiceLineService,
         accountConfigService);
   }
 
