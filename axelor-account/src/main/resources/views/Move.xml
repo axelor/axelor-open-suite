@@ -153,7 +153,7 @@
 		</panel-mail>
     </form>
 
-    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.base.db.Wizard">
+    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onLoad="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
     	<panel name="mainPanel">
     		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
     		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select"/>
@@ -161,6 +161,7 @@
     		<field name="dateOfReversion" type="date" showTitle="false" requiredIf="dateOfReversionSelect == 3" showIf="dateOfReversionSelect == 3"
     			onChange="action-move-validate-check-date-of-reversion"/>
     		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
+    		<field name="isHiddenMoveLinesInBankReconciliation" title="Hide move lines in bank reconciliation" type="boolean" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
     		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move" 
     			readonlyIf="dateOfReversionSelect == 3 &amp;&amp; !dateOfReversion"/>
     	</panel>
@@ -248,6 +249,7 @@
 		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
 		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
 		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
+		<attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
 	</action-attrs>
 
 	<!-- ACTION METHOD -->
@@ -296,14 +298,14 @@
 	</action-method>
 
 	<!-- ACTION VIEW -->
-	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
 		<view type="form" name="move-wizard-generate-reverse-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="forceEdit" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false"/>
-		<context name="_move" expr="eval: __this__"/>
+		<context name="_showRecord" expr="eval: __this__.id"/>
 		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
 

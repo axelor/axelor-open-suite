@@ -537,4 +537,15 @@ public class MoveService {
 
     return values;
   }
+
+  public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+    move =
+        generateReverse(
+            move,
+            (boolean) assistantMap.get("isAutomaticReconcile"),
+            (boolean) assistantMap.get("isAutomaticAccounting"),
+            (boolean) assistantMap.get("isUnreconcileOriginalMove"),
+            (LocalDate) assistantMap.get("dateOfReversion"));
+    return move;
+  }
 }

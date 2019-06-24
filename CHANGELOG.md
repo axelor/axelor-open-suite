@@ -133,6 +133,7 @@
 - LEAVE REQUEST : Set message for leave reason has no unit
 - LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
 - ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
+- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
