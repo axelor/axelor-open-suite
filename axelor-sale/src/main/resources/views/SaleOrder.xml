@@ -398,7 +398,7 @@
 	      <field name="paymentMode" readonlyIf="statusSelect > 2" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 		    <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	    </panel>
-	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	    <field name="companyBankDetails" canEdit="false" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	  </panel>
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
