@@ -1026,6 +1026,11 @@ WHERE message_key = ? AND language = ?]]></xml-property>
             <property name="topMargin">0in</property>
             <page-footer>
                 <grid id="199">
+                    <column id="4050">
+                        <property name="fontFamily">serif</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">4cm</property>
+                    </column>
                     <column id="211">
                         <property name="width">75%</property>
                     </column>
@@ -1040,7 +1045,29 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <property name="width">6%</property>
                     </column>
                     <row id="203">
+                        <cell id="4049">
+                            <text id="4026">
+                                <property name="dataSet">abcAnalysisHeaderDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">
+		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' height='48'/></TD>"
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
+                        </cell>
                         <cell id="210">
+                            <property name="verticalAlign">middle</property>
                             <text id="270">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">center</property>
@@ -1066,12 +1093,14 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </text>
                         </cell>
                         <cell id="204">
+                            <property name="verticalAlign">middle</property>
                             <auto-text id="205">
                                 <property name="textAlign">right</property>
                                 <property name="type">page-number</property>
                             </auto-text>
                         </cell>
                         <cell id="206">
+                            <property name="verticalAlign">middle</property>
                             <text id="207">
                                 <property name="textAlign">center</property>
                                 <property name="contentType">plain</property>
@@ -1079,6 +1108,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </text>
                         </cell>
                         <cell id="208">
+                            <property name="verticalAlign">middle</property>
                             <auto-text id="209">
                                 <property name="textAlign">left</property>
                                 <property name="type">total-page</property>
@@ -1122,14 +1152,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <column id="4020">
-                <property name="suppressDuplicates">false</property>
-                <property name="width">5cm</property>
-            </column>
-            <column id="4028">
-                <property name="suppressDuplicates">false</property>
-                <property name="width">100%</property>
-            </column>
             <column id="265">
                 <property name="suppressDuplicates">false</property>
                 <property name="width">100%</property>
@@ -1140,28 +1162,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 <property name="borderRightStyle">none</property>
                 <property name="borderTopStyle">none</property>
                 <property name="height">54px</property>
-                <cell id="4019">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <text id="4026">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">
-		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD>"
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4027">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                </cell>
                 <cell id="267">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
@@ -1169,10 +1169,11 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="borderLeftStyle">none</property>
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
+                    <property name="textAlign">center</property>
                     <text id="179">
                         <property name="fontSize">16pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">center</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[ABC Analysis N°<VALUE-OF>row["abc_analysis_seq"]</VALUE-OF>]]></text-property>
                     </text>
@@ -1185,18 +1186,6 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 <property name="borderRightStyle">none</property>
                 <property name="borderTopStyle">none</property>
                 <property name="height">9px</property>
-                <cell id="4031">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                </cell>
-                <cell id="4032">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                </cell>
                 <cell id="4033">
                     <property name="borderBottomStyle">none</property>
                     <property name="borderLeftStyle">none</property>
@@ -1440,6 +1429,12 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="193">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">row["description"] == null</expression>
+                    </structure>
+                </list-property>
                 <cell id="194">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>

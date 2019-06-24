@@ -296,7 +296,7 @@
 	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null">
 	    <panel name="contentPanel" title="Content">
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
-                     canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true"/>
+                     canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
 	      <panel name="descriptionPanel" title="Description to display" colSpan="12">
 	        <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	      </panel>
@@ -678,7 +678,7 @@
                 </field>
             </panel>
 	    </panel>
-	    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence" height="30"/>
 	    <panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    <panel-dashlet name="invoicesFromSOPanel" action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	  </panel-tabs>
@@ -892,7 +892,7 @@
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
-    	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
+    	<action name="action-business-project-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
 		<action name="action-sale-order-validate-check-on-confirm"/>
     	<action name="action-sale-order-method-confirm"/>
 		<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>

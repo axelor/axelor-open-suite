@@ -38,4 +38,13 @@ public class ContractLineController {
       response.setValues(contractLineService.reset(contractLine));
     }
   }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+    contractLine =
+        Beans.get(ContractLineService.class).createAnalyticDistributionWithTemplate(contractLine);
+    response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
+  }
 }
