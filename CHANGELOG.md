@@ -17,6 +17,7 @@
 - PAYMENT VOUCHER : trace exceptions happening on save in repository
 - ACCOUNT/STOCK : add more french translation.
 - PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALE ORDER LINE: Fix NPE in groovy script.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
