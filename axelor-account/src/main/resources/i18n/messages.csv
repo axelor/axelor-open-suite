@@ -1725,6 +1725,7 @@
 "The validation of a move brings irrevocable integration of a move in Moves book",,,
 "There is no configured sequence for final reconcile group",,,
 "There is no configured sequence for temporary reconcile group",,,
+"TThere is no reverse date select value of value %d",,,
 "There's no accounting situation.",,,
 "This batch requires the bank payment module.",,,
 "This batch requires the human resources module.",,,

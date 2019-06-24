@@ -1725,6 +1725,7 @@
 "The validation of a move brings irrevocable integration of a move in Moves book","La validation des écritures comptables entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,
 "There is no configured sequence for final reconcile group","Il n'y a pas de séquence configurée pour les lettrages définitifs",,
 "There is no configured sequence for temporary reconcile group","Il n'y a pas de séquence configurée pour les lettrages provisoires",,
+"There is no reverse date select value of value %d","Il n'y a pas de sélection de date d'extourne de valeur %d",,
 "There's no accounting situation.","Pas de situation comptable.",,
 "This batch requires the bank payment module.","Ce batch nécessite le module des paiements bancaires.",,
 "This batch requires the human resources module.","Ce batch nécessite le module des ressources humaines.",,

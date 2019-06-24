@@ -85,15 +85,16 @@ public class MoveController {
 
   public void generateReverse(ActionRequest request, ActionResponse response) {
 
-    Context context = request.getContext();
-
-    Move move = context.asType(Move.class);
-    move = moveRepo.find(move.getId());
-
-    LinkedHashMap<String, Object> assistantMap =
-        Beans.get(ExtractContextMoveService.class).getMapFromMoveWizardGenerateReverseForm(context);
-
     try {
+      Context context = request.getContext();
+
+      Move move = context.asType(Move.class);
+      move = moveRepo.find(move.getId());
+
+      LinkedHashMap<String, Object> assistantMap =
+          Beans.get(ExtractContextMoveService.class)
+              .getMapFromMoveWizardGenerateReverseForm(context);
+
       Move newMove = moveService.generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
