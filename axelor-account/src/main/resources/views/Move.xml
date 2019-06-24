@@ -282,7 +282,7 @@
 	</action-method>
 	
 	<!--ACTION VIEW-->
-	<action-view name="action-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
+	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid-period"/>
 		<view type="form" name="move-form"/>
 		<domain>self.period = :_id AND self.statusSelect NOT IN (3,4)</domain>
