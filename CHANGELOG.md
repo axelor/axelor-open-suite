@@ -18,6 +18,7 @@
 - ACCOUNT/STOCK : add more french translation.
 - PURCHASEORDERLINE : corrected potential injection error when calling service
 - SALE ORDER LINE: Fix NPE in groovy script.
+- PACKING LIST : address not readable on printing
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
@@ -134,7 +135,6 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - Team Task : Removed adding new task from Kanban view through "Add" button
 - INVOICE : NPE when companyBankDetails is null
 - SALE ORDER : Update discount calculation in sale order report
-- PACKING LIST : address not readable on printing
 
 ## [5.1.6] - 2019-04-29
 ## Features
