@@ -1356,6 +1356,7 @@
 "Please input values between 1 to 100",,,
 "Please select 'Draft' moves",,,
 "Please select 'Draft' or 'Simulated' moves",,,
+"Please select an earlier date or equal to today's date",,,
 "Please select the invoice(s) to print.",,,
 "Prefix based",,,
 "Prefix to be prepended on customer accounts' codes, the code will be [prefix]PARTNERNAME",,,
