@@ -44,7 +44,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -539,7 +538,7 @@ public class MoveService {
     return values;
   }
 
-  public Move generateReverse(Move move, LinkedHashMap<String, Object> assistantMap)
+  public Move generateReverse(Move move, HashMap<String, Object> assistantMap)
       throws AxelorException {
     move =
         generateReverse(

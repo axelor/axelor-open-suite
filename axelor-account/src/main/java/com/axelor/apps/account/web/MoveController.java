@@ -40,7 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +91,7 @@ public class MoveController {
       Move move = context.asType(Move.class);
       move = moveRepo.find(move.getId());
 
-      LinkedHashMap<String, Object> assistantMap =
+      HashMap<String, Object> assistantMap =
           Beans.get(ExtractContextMoveService.class)
               .getMapFromMoveWizardGenerateReverseForm(context);
 

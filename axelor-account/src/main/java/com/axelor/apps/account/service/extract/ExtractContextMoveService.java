@@ -2,10 +2,10 @@ package com.axelor.apps.account.service.extract;
 
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 public interface ExtractContextMoveService {
 
-  public LinkedHashMap<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
+  public HashMap<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
       throws AxelorException;
 }
