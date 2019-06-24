@@ -40,7 +40,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

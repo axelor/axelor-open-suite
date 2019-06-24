@@ -10,7 +10,7 @@ public class ExtractContextMoveServiceBankPaymentImpl extends ExtractContextMove
   @Override
   public Map<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
       throws AxelorException {
-	  Map<String, Object> assistantMap = super.getMapFromMoveWizardGenerateReverseForm(context);
+    Map<String, Object> assistantMap = super.getMapFromMoveWizardGenerateReverseForm(context);
     assistantMap.put(
         "isHiddenMoveLinesInBankReconciliation",
         (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));

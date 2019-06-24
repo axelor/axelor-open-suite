@@ -52,8 +52,7 @@ public class MoveServiceBankPaymentImpl extends MoveService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Move generateReverse(Move move, Map<String, Object> assistantMap)
-      throws AxelorException {
+  public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
     Move newMove = super.generateReverse(move, assistantMap);
 
     boolean isHiddenMoveLinesInBankReconciliation =
