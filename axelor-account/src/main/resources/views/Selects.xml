@@ -383,6 +383,7 @@
 	<selection name="account.move.date.of.reversion.type.select">
 		<option value="1">Today</option>
 		<option value="2">Date of original move</option>
+		<option value="3">Choose date</option>
 	</selection>
 
 	<selection name="invoice.report.type">

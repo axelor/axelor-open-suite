@@ -18,8 +18,6 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.businessproject.db.ProductTaskTemplate;
-import com.axelor.apps.businessproject.db.repo.ProductTaskTemplateRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -34,16 +32,13 @@ import java.util.List;
 
 public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateService {
 
-  protected ProductTaskTemplateRepository repository;
   protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   protected TeamTaskRepository teamTaskRepository;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
-      ProductTaskTemplateRepository repository,
       TeamTaskBusinessProjectService teamTaskBusinessProjectService,
       TeamTaskRepository teamTaskRepository) {
-    this.repository = repository;
     this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
   }
@@ -97,14 +92,5 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     return tasks;
-  }
-
-  @Override
-  @Transactional
-  public void remove(ProductTaskTemplate productTaskTemplate) {
-    productTaskTemplate = repository.find(productTaskTemplate.getId());
-    if (productTaskTemplate != null) {
-      repository.remove(productTaskTemplate);
-    }
   }
 }

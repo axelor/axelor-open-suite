@@ -6,6 +6,10 @@
 
 	<entity name="AppPurchase" lang="java" extends="App">
 		<boolean name="supplierRequestMgt" title="Supplier request management"/>
+		
+		<track>
+			<field name="supplierRequestMgt" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

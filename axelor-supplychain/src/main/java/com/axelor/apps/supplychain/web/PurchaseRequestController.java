@@ -15,27 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.web;
+package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.businessproject.db.ProductTaskTemplate;
-import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 
-@Singleton
-public class ProductTaskTemplateController {
+public class PurchaseRequestController {
 
-  public void removeTask(ActionRequest request, ActionResponse response) {
-    try {
-      ProductTaskTemplate template = request.getContext().asType(ProductTaskTemplate.class);
-      Beans.get(ProductTaskTemplateService.class).remove(template);
+  public void getStockLocation(ActionRequest request, ActionResponse response) {
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+
+    if (purchaseRequest.getCompany() != null) {
+
+      response.setValue(
+          "stockLocation",
+          Beans.get(StockLocationService.class)
+              .getDefaultReceiptStockLocation(purchaseRequest.getCompany()));
     }
   }
 }

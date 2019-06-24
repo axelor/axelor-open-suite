@@ -91,6 +91,10 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
+- ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
+- PROJECT : Add new feature 'Project template'
+- Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 
 ## Improvements
@@ -128,6 +132,7 @@
 - CONTRACT : Set project on generated invoices
 - LEAVE REQUEST : Set message for leave reason has no unit
 - LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
+- ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -151,5 +156,8 @@
 - PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
+- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- ACCOUNT MOVE REVERSE: add translation
+- SALEORDER : fix action with obsolete name
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

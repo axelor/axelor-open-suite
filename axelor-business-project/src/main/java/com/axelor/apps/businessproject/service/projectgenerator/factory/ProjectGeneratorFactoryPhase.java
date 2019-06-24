@@ -80,10 +80,10 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
         saleOrderLineRepository.save(saleOrderLine);
         projects.add(phase);
 
-        if (!CollectionUtils.isEmpty(product.getTaskTemplateList())) {
+        if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
           productTaskTemplateService.convert(
               product
-                  .getTaskTemplateList()
+                  .getTaskTemplateSet()
                   .stream()
                   .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
                   .collect(Collectors.toList()),
