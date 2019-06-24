@@ -374,7 +374,7 @@
 			<button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
 				colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save" />
 			<button name="cancelBtn" title="Cancel" hidden="true"
-				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
+				showIf="statusSelect != 4" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
 			<button name="newStatusBtn" title="Reset to New" hidden="true"
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"

@@ -196,8 +196,8 @@
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery">
-				<field name="desiredDelivDate" readonlyIf="$isReadOnly !== false"/>
-				<field name="estimatedDelivDate" readonlyIf="$isReadOnly !== false"/>
+				<field name="desiredDelivDate"/>
+				<field name="estimatedDelivDate"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
 				<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" colSpan="3" onClick="action-view-sale-order-line-view-planned-stock-move-lines" widget="info-button" if-module="axelor-supplychain"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
@@ -638,8 +638,8 @@
 	</action-attrs>
 
     <action-attrs name="action-sale-order-line-attrs-show-delivery-panel">
-      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForStorableProduct()" if="product.productTypeSelect == 'storable'"/>
-      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForNonStorableProduct()" if="product.productTypeSelect == 'service'"/>
+      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForStorableProduct()" if="product?.productTypeSelect == 'storable'"/>
+      <attribute name="hidden" for="deliveryPanel" expr="eval: !__user__.getActiveCompany().getSupplyChainConfig().getHasOutSmForNonStorableProduct()" if="product?.productTypeSelect == 'service'"/>
     </action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-sub-line">
