@@ -11,15 +11,16 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ExtractContextMoveServiceImpl implements ExtractContextMoveService {
 
   @Override
-  public HashMap<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
+  public Map<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
       throws AxelorException {
     Move move = context.asType(Move.class);
 
-    HashMap<String, Object> assistantMap = new HashMap<String, Object>();
+    Map<String, Object> assistantMap = new HashMap<String, Object>();
     int dateOfReversionSelect = (int) context.get("dateOfReversionSelect");
     LocalDate dateOfReversion;
     switch (dateOfReversionSelect) {

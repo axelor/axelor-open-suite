@@ -91,7 +91,7 @@ public class MoveController {
       Move move = context.asType(Move.class);
       move = moveRepo.find(move.getId());
 
-      HashMap<String, Object> assistantMap =
+      Map<String, Object> assistantMap =
           Beans.get(ExtractContextMoveService.class)
               .getMapFromMoveWizardGenerateReverseForm(context);
 

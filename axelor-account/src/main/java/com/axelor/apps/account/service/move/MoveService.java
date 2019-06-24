@@ -538,7 +538,7 @@ public class MoveService {
     return values;
   }
 
-  public Move generateReverse(Move move, HashMap<String, Object> assistantMap)
+  public Move generateReverse(Move move, Map<String, Object> assistantMap)
       throws AxelorException {
     move =
         generateReverse(

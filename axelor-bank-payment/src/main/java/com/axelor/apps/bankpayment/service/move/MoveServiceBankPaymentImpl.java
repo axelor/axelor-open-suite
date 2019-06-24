@@ -18,7 +18,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
+import java.util.Map;
 
 public class MoveServiceBankPaymentImpl extends MoveService {
 
@@ -52,7 +52,7 @@ public class MoveServiceBankPaymentImpl extends MoveService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Move generateReverse(Move move, HashMap<String, Object> assistantMap)
+  public Move generateReverse(Move move, Map<String, Object> assistantMap)
       throws AxelorException {
     Move newMove = super.generateReverse(move, assistantMap);
 
