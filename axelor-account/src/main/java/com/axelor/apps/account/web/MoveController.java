@@ -23,10 +23,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -40,7 +40,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,38 +86,13 @@ public class MoveController {
   public void generateReverse(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> moveMap = (LinkedHashMap<String, Object>) context.get("_move");
-    Integer moveId = (Integer) moveMap.get("id");
 
-    Move move = moveRepo.find(new Long(moveId));
-    LinkedHashMap<String, Object> assistantMap = new LinkedHashMap<String, Object>();
+    Move move = context.asType(Move.class);
+    move = moveRepo.find(move.getId());
 
-    int dateOfReversionSelect = (int) context.get("dateOfReversionSelect");
-    LocalDate dateOfReversion;
-    switch (dateOfReversionSelect) {
-      case 1:
-      default:
-        dateOfReversion = Beans.get(AppBaseService.class).getTodayDate();
-        break;
+    LinkedHashMap<String, Object> assistantMap =
+        Beans.get(ExtractContextMoveService.class).getMapFromMoveWizardGenerateReverseForm(context);
 
-      case 2:
-        dateOfReversion = move.getDate();
-        break;
-
-      case 3:
-        dateOfReversion = LocalDate.parse(context.get("dateOfReversion").toString());
-        break;
-    }
-    assistantMap.put("dateOfReversion", dateOfReversion);
-
-    assistantMap.put("isAutomaticReconcile", (boolean) context.get("isAutomaticReconcile"));
-    assistantMap.put("isAutomaticAccounting", (boolean) context.get("isAutomaticAccounting"));
-    assistantMap.put(
-        "isUnreconcileOriginalMove", (boolean) context.get("isUnreconcileOriginalMove"));
-    assistantMap.put(
-        "isHiddenMoveLinesInBankReconciliation",
-        (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));
     try {
       Move newMove = moveService.generateReverse(move, assistantMap);
       if (newMove != null) {

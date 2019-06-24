@@ -91,6 +91,8 @@ import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -235,5 +237,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(ExtractContextMoveService.class).to(ExtractContextMoveServiceImpl.class);
   }
 }

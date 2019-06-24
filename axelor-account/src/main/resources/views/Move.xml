@@ -153,7 +153,7 @@
 		</panel-mail>
     </form>
 
-    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.base.db.Wizard">
+    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
     	<panel name="mainPanel">
     		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
     		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select"/>
@@ -297,14 +297,14 @@
 	</action-method>
 
 	<!-- ACTION VIEW -->
-	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
 		<view type="form" name="move-wizard-generate-reverse-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="forceEdit" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false"/>
-		<context name="_move" expr="eval: __this__"/>
+		<context name="_showRecord" expr="eval: __this__.id"/>
 		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
 
