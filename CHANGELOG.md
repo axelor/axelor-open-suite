@@ -7,12 +7,19 @@
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
-- HUMAN RESOURCE DEMO DATA : holyday planning is now correctly imported.
+- CHEQUE REJECTION : fix payment voucher selection.
+- PAYMENT VOUCHER : trace exceptions happening on save in repository
+- ACCOUNT/STOCK : add more french translation.
+- PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALE ORDER LINE: Fix NPE in groovy script.
+- PACKING LIST : address not readable on printing
+- HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
