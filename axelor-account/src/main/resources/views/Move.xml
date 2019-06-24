@@ -153,7 +153,7 @@
 		</panel-mail>
     </form>
 
-    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onNew="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
+    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onLoad="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
     	<panel name="mainPanel">
     		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
     		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select"/>
