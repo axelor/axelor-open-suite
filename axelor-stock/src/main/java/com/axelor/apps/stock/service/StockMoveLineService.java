@@ -174,16 +174,6 @@ public interface StockMoveLineService {
   public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
 
   /**
-   * Get a merged stock move line.
-   *
-   * @param stockMoveLineList
-   * @return
-   * @throws AxelorException
-   */
-  StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
-      throws AxelorException;
-
-  /**
    * Check whether a stock move line is fully spread over logistical form lines.
    *
    * @param stockMoveLine
