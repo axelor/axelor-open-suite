@@ -436,7 +436,7 @@
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="duration" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -562,7 +562,7 @@
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
+	    <field name="duration" canEdit="false" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	  </panel>
 
         <panel name="inTaxTotalPanel" sidebar="true" readonly="true"  colSpan="4">
@@ -649,7 +649,7 @@
 	        <field name="creationDate"/>
 	        <field name="orderDate"/>
 	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-	        <field name="duration"/>
+	        <field name="duration" canEdit="false"/>
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
