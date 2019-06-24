@@ -94,6 +94,7 @@
 - SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
 - ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
 - PROJECT : Add new feature 'Project template'
+- Contract : Add analytic information to contract lines.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
