@@ -11,13 +11,14 @@
 		<panel name="mainPanel" >
 		  <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 		  <field name="purchaseOrderInAtiSelect"/>
+		  <field name="displaySupplierCodeOnPrinting" widget="boolean-switch"/>
+		  <field name="defaultPartnerTypeSelect"/>
 		</panel>
 		<panel name="printingSettingsPanel" title="Printing settings">
 			<field name="displayBuyerOnPrinting" widget="boolean-switch"/>
 			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
 			<field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
 			<field name="displayProductDetailOnPrinting" widget="boolean-switch"/>
-			<field name="displaySupplierCodeOnPrinting" widget="boolean-switch"/>
 			<field name="purchaseOrderSupplierBox" widget="html" colSpan="12"/>
 			<field name="displayPriceOnQuotationRequest" widget="boolean-switch"/>
 		  	<field name="priceRequest" colSpan="12"/>

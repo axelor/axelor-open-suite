@@ -18,7 +18,6 @@
         <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
-		<integer name="defaultPartnerTypeSelect" title="Default type for new customer" selection="company.partner.type.select" default="1"/>
 	</entity>
 
 </domain-models>

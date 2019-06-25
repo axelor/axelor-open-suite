@@ -21,6 +21,7 @@
 		<boolean name="displayProductPictureOnPrinting" title="Display product picture on printing"/>
 		<many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration" title="Validity duration per default"/>
 
+		<integer name="defaultPartnerTypeSelect" title="Default type for new customer" selection="company.partner.type.select" default="1"/>
 	</entity>
 
 </domain-models>

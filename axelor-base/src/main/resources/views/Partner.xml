@@ -831,8 +831,8 @@
 
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
 		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('base').getDefaultPartnerTypeSelect()"/>
-		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('sale').getDefaultPartnerTypeSelect()" if="_isCustomer"/>
-		<field name="partnerTypeSelect" expr="eval: __config__.app.getApp('purchase').getDefaultPartnerTypeSelect()" if="_isSupplier"/>
+		<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.purchaseConfig.getDefaultPartnerTypeSelect()" if="_isCustomer"/>
+		<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.saleConfig.getDefaultPartnerTypeSelect()" if="_isSupplier"/>
 	</action-record>
 	
 	<action-record name="action-partner-record-simple-and-full-name" model="com.axelor.apps.base.db.Partner" >

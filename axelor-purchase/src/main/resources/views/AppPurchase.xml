@@ -11,7 +11,6 @@
             <field name="manageMultiplePurchaseQuantity" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
 			<field name="manageSupplierCatalog" widget="boolean-switch"/>
-			<field name="defaultPartnerTypeSelect"/>
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />

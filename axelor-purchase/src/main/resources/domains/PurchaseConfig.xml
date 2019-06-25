@@ -20,6 +20,7 @@
   	
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
   	
+	<integer name="defaultPartnerTypeSelect" title="Default type for new supplier" selection="company.partner.type.select" default="1"/>
   </entity>
   
 </domain-models>
