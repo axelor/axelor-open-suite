@@ -51,6 +51,10 @@
 	<action-method name="action-method-sale-order-line-change-requested-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
 	</action-method>
+	
+	<action-method name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkInvoicedOrDeliveredOrderQty"/>
+	</action-method>
 
 	<action-method name="action-method-sale-order-line-request-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="requestQty"/>
