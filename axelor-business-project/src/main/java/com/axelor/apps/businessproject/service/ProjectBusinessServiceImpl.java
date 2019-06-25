@@ -207,7 +207,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   @Transactional
   public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)throws AxelorException {
 
     Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
 
