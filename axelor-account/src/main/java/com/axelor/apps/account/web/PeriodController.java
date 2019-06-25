@@ -65,6 +65,7 @@ public class PeriodController {
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 }
