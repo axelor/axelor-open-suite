@@ -10,7 +10,7 @@
 		</panel>
 	</form>
 	
-	<action-group name="action-group-period-close" id="action-account-group-period-close">
+	<action-group name="action-period-group-close" id="action-account-period-group-close">
 		<action name="save"/>
 		<action name="action-method-period-search-moves"/>
 	</action-group>
