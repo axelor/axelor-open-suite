@@ -12,7 +12,8 @@
 	
 	<action-group name="action-period-group-close" id="action-account-period-group-close">
 		<action name="save"/>
-		<action name="action-method-period-search-moves"/>
+		<action name="action-method-period-search-moves" if="eval:year.typeSelect == 1"/>
+		<action name="action-method-period-close" if="eval:year.typeSelect != 1"/>
 	</action-group>
 	
 	<action-method name="action-method-period-search-moves">

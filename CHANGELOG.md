@@ -96,6 +96,7 @@
 - PROJECT : Add new feature 'Project template'
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
+- PERIOD : add a new interface in the step of validate moves in the action of closing a fiscal period.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
