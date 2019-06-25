@@ -12,6 +12,8 @@
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -459,7 +461,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
 
 ## [5.1.2] - 2019-02-11
 ## Features
