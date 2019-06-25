@@ -10,6 +10,7 @@
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
