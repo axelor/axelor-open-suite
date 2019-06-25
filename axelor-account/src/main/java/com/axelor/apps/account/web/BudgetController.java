@@ -33,15 +33,23 @@ import java.util.List;
 public class BudgetController {
 
   public void compute(ActionRequest request, ActionResponse response) {
-    Budget budget = request.getContext().asType(Budget.class);
-    response.setValue("totalAmountExpected", Beans.get(BudgetService.class).compute(budget));
+    try{
+      Budget budget = request.getContext().asType(Budget.class);
+      response.setValue("totalAmountExpected", Beans.get(BudgetService.class).compute(budget));
+    } catch (Exception e){
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) {
+    try {
     Budget budget = request.getContext().asType(Budget.class);
     budget = Beans.get(BudgetRepository.class).find(budget.getId());
     List<BudgetLine> budgetLineList = Beans.get(BudgetService.class).updateLines(budget);
     response.setValue("budgetLineList", budgetLineList);
+    } catch (Exception e){
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generatePeriods(ActionRequest request, ActionResponse response) {
@@ -74,15 +82,23 @@ public class BudgetController {
   }
 
   public void draft(ActionRequest request, ActionResponse response) {
+    try {
     Budget budget = request.getContext().asType(Budget.class);
     budget = Beans.get(BudgetRepository.class).find(budget.getId());
     Beans.get(BudgetService.class).draft(budget);
     response.setReload(true);
+    } catch (Exception e){
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void computeTotalAmountRealized(ActionRequest request, ActionResponse response){
-    Budget budget = request.getContext().asType(Budget.class);
+    try{
+      Budget budget = request.getContext().asType(Budget.class);
     budget = Beans.get(BudgetRepository.class).find(budget.getId());
     response.setValue("totalAmountRealized", Beans.get(BudgetService.class).computeTotalAmountRealized(budget));
+    } catch(Exception e){
+      TraceBackService.trace(response, e);
+    }
   }
 }

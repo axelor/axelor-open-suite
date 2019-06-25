@@ -41,6 +41,9 @@ import java.util.Optional;
 
 public class BudgetSupplychainService extends BudgetService {
 
+  private static final int STATUS_VALIDATED = 3;
+  private static final int STATUS_FINISHED = 4;
+
   @Inject
   public BudgetSupplychainService(BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
     super(budgetLineRepository, budgetRepository);
@@ -61,8 +64,8 @@ public class BudgetSupplychainService extends BudgetService {
               .filter(
                   "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2,?3)",
                   budget.getId(),
-                  3,
-                  4)
+                  STATUS_VALIDATED,
+                  STATUS_FINISHED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate =
@@ -141,7 +144,6 @@ public class BudgetSupplychainService extends BudgetService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     budget.setTotalAmountCommitted(totalAmountCommitted);
-    budgetRepository.save(budget);
 
     return totalAmountCommitted;
   }

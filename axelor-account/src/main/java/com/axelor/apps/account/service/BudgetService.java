@@ -73,7 +73,6 @@ public class BudgetService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     budget.setTotalAmountRealized(totalAmountRealized);
-    budgetRepository.save(budget);
 
     return totalAmountRealized;
   }
