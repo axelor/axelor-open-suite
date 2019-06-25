@@ -307,7 +307,6 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
-<<<<<<< HEAD
 
 	<!-- ACTION VIEW -->
 	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
@@ -321,7 +320,6 @@
 		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
 
-=======
 	
 	<!--ACTION VIEW-->
 	<action-view name="action-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
@@ -330,7 +328,6 @@
 		<domain>self.period = :_period AND self.statusSelect NOT IN (3,4)</domain>
 	</action-view>
 	
->>>>>>> 190fb42cfc... RM#18739: add the case of validate moves to close function of period
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
