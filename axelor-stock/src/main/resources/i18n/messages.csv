@@ -682,6 +682,7 @@
 "There's no destination stock location selected for the stock's movement %s",,,
 "There's no product in stock location.",,,
 "There's no source stock location selected for the stock's movement %s",,,
+"This move has been edited, please refresh.",,,
 "Title",,,
 "To",,,
 "To Date",,,

@@ -103,11 +103,13 @@ public interface IExceptionMessage {
   /*
    * Stock Move printing
    */
-  String STOCK_MOVES_MISSING_PRINTING_SETTINGS = /*$$(*/
+  static final String STOCK_MOVES_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on following stock moves: %s" /*)*/;
 
-  String STOCK_MOVE_PRINT = /*$$(*/ "Please select the stock move(s) to print" /*)*/;
+  static final String STOCK_MOVE_PRINT = /*$$(*/ "Please select the stock move(s) to print" /*)*/;
 
+  static final String STOCK_MOVE_PRINT_DELETED = /*$$(*/ "This move has been edited, please refresh." /*)*/;
+  
   /** Tracking Number Service */
   static final String TRACKING_NUMBER_1 = /*$$(*/
       "There's no configured sequence for tracking number for the product %s:%s" /*)*/;

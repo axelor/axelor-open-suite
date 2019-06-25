@@ -162,12 +162,23 @@ public class StockMoveController {
                 });
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
-      } else if (context.get("id") != null) {
-        StockMove stockMove = request.getContext().asType(StockMove.class);
-        stockMove = stockMoveRepo.find(stockMove.getId());
-        title = stockMovePrintService.getFileName(stockMove);
-        fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        logger.debug("Printing " + title);
+      } else if (context.get("id") != null)
+      {
+    	  if(ObjectUtils.isEmpty(stockMoveRepo.find((Long) context.get("id"))))
+    	  {
+    		  throw new AxelorException(
+    				  TraceBackRepository.CATEGORY_INCONSISTENCY,
+    				  I18n.get(IExceptionMessage.STOCK_MOVE_PRINT_DELETED));
+    	  }
+    	  else
+    	  {
+
+    		  StockMove stockMove = request.getContext().asType(StockMove.class);
+    		  stockMove = stockMoveRepo.find(stockMove.getId());
+    		  title = stockMovePrintService.getFileName(stockMove);
+    		  fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
+    		  logger.debug("Printing " + title);
+    	  }
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
